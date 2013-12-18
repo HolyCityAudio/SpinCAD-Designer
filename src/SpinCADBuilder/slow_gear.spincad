@@ -1,0 +1,81 @@
+@name Slow_gear 
+@audioInput adcl Input_Left
+@audioOutput dacl Audio_Output_1 
+@audioOutput ramp Ramp
+
+@controlInput input0 Attack
+
+;slow attack 
+;Pot0 = attack rate 
+equ	in	reg1 
+equ	envlop	reg2 
+equ	peak	reg4
+equ	trig	reg5 
+equ	ramp	reg6 
+equ	attack	reg8 
+equ	slope	reg10 
+equ dacl reg11
+@isPinConnected Input_Left
+
+mem	delay	256	; Short delay to match the note detect delay 
+; 
+;sum inputs to mono: 
+rdax	adcl,1 
+wra	delay,1 
+wrax	in,1 
+; 
+; Note trigger and timer ramp 
+maxx	envlop,0.9999	; full-wave rectify w/ long decay 
+wrax	envlop,1	 ; envelope filter, leave in ACC 
+rdfx	peak,0.0001	; high-pass filter, differentiate attack transient 
+wrhx	peak, -1	 ; no shelf 
+
+skp	gez,pos	 ; only positive peaks for note-on 
+clr	 ; neg transients set to zero 
+pos:
+log	1.999,0.5	; 0.5 convert to dB for wide range 
+wrax	trig,0	 ; save it 
+ 
+; Reset timer on leading edge of trigger 
+sof	0,0.4	 ; get trigger threshold 
+rdax	trig,1	 ; compare to trigger 
+skp	neg,NoTrig	; is trigger above it? 
+clr	 ; yes 
+wrax	ramp,0	 ; clear ramp as well 
+wrax	envlop,0	 ; clear envlop in case of new attack 
+wrax	peak,0 
+
+rdax	attack,1	
+wrax	slope,0	 ; 
+NoTrig: 
+; 
+; attack time 
+
+@isPinConnected Attack
+rdax	pot0,1 
+@else
+sof 0.0, 0.5
+@endif
+
+log	-1,0 
+sof	1,0.01 
+sof	0.003,0 
+wrax	attack,0 
+; 
+clr 
+rdax	slope,1 
+rdax	ramp,1	 ; integrate from 0 to 1 
+skp	gez,lzr	 ; if ramp is <0, set to zero 
+clr 
+lzr:
+wrax	ramp,0 
+; 
+; Use timer to modulate delayed signal 
+rda	delay+20,1	; 
+mulx	ramp	 ; multiply by ramp 
+mulx	ramp	 ; twice to get nonlinear volume 
+
+; write output
+wrax	dacl,0 
+@endif
+ 

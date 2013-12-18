@@ -1,0 +1,974 @@
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * SpinCADFrame.java
+ * Copyright (C)2013 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 	
+ */
+
+package com.holycityaudio.SpinCAD;
+
+import java.awt.BorderLayout;
+
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+// import javax.sound.sampled.spi.AudioFileReader;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JToolBar;
+import javax.swing.JButton;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.SwingConstants;
+import javax.swing.JProgressBar;
+import javax.swing.JMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.WindowConstants;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
+import org.andrewkilpatrick.elmGen.ElmProgram;
+import org.andrewkilpatrick.elmGen.simulator.AudioCardOutput;
+import org.andrewkilpatrick.elmGen.simulator.AudioFileReader;
+import org.andrewkilpatrick.elmGen.simulator.AudioFileWriter;
+import org.andrewkilpatrick.elmGen.simulator.AudioSource;
+import org.andrewkilpatrick.elmGen.simulator.SignalGenerator;
+import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
+
+import com.holycityaudio.SpinCAD.CADBlocks.*;
+import com.holycityaudio.SpinCAD.ControlBlocks.*;
+
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.prefs.Preferences;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.SystemColor;
+
+public class SpinCADFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private boolean simRunning = false;
+	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
+	public final EditResourcesToolBar etb = new EditResourcesToolBar();
+	private final simControlToolBar sctb = new simControlToolBar();
+	private final JPanel controlPanels = new JPanel();
+	private final JPanel simPanel = new JPanel();
+	private JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
+	private boolean loggerIsVisible = false;
+	// String outputFile = "C:\\temp\\output.wav"; // filter input WAV to output
+
+	SpinSimulator sim;
+
+	// following things are saved in the SpinCAD preferences
+	private Preferences prefs;
+
+	// simulator input file
+	private static String spcFileName = null;
+	// simulator output file
+	private String outputFile = null; // play out through the sound card
+
+	// ========================================================
+	private static SpinCADModel model = new SpinCADModel();
+
+	private static double pot0Level = 0;
+	private static double pot1Level = 0;
+	private static double pot2Level = 0;
+
+	// ------------------------------------------------------------
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					SpinCADFrame dspFrame = new SpinCADFrame();
+					dspFrame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public SpinCADFrame() {
+		// panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
+		setTitle("SpinCAD Designer");
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setBounds(100, 100, 800, 600);
+
+		final SpinCADPanel panel = new SpinCADPanel(this);
+		panel.setBackground(SystemColor.inactiveCaption);
+		// create a Preferences instance (somewhere later in the code)
+		prefs = Preferences.userNodeForPackage(this.getClass());
+
+		WindowListener exitListener = window();
+
+		addWindowListener(exitListener);
+
+		// ==========================================================================================
+		// ======================= main panel
+		// =========================================================
+
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.LIGHT_GRAY);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
+
+		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		setPreferredSize(new Dimension(450, 1200));
+
+		contentPane.add(scrollPane, BorderLayout.CENTER);
+
+		// =========================================================
+		// ======================= toolbars ========================
+		// =========================================================
+
+		JPanel toolBarPanel = new JPanel();
+		toolBarPanel.setLayout(new BoxLayout(toolBarPanel, BoxLayout.Y_AXIS));
+		contentPane.add(toolBarPanel, BorderLayout.SOUTH);
+
+		etb.setFloatable(false);
+		toolBarPanel.add(etb, BorderLayout.SOUTH);
+
+		pb.setFloatable(false);
+		toolBarPanel.add(pb, BorderLayout.SOUTH);
+
+		sctb.setFloatable(false);
+		simPanel.setLayout(new BoxLayout(simPanel, BoxLayout.Y_AXIS));
+		contentPane.add(simPanel, BorderLayout.NORTH);
+		simPanel.add(sctb);
+		simPanel.add(loggerPanel);
+		loggerPanel.setVisible(false);
+
+		// controlPanels.setFloatable(false);
+		contentPane.add(controlPanels, BorderLayout.EAST);
+		controlPanels.setLayout(new BoxLayout(controlPanels, BoxLayout.Y_AXIS));
+		// ======================================================
+		// ; ==================== menu bar and items ==========
+
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+
+		JMenu mnNewMenu = new JMenu("File");
+		menuBar.add(mnNewMenu);
+
+		JMenu mnEdit = new JMenu("Edit");
+		menuBar.add(mnEdit);
+
+		JMenuItem mntmNew = new JMenuItem("New");
+		fileNew(panel, mntmNew);
+		mnNewMenu.add(mntmNew);
+
+		JMenuItem mntmFile = new JMenuItem("Open");
+		fileOpen(panel, mntmFile);
+		mnNewMenu.add(mntmFile);
+
+		JMenuItem mntmSave = new JMenuItem("Save");
+		fileSave(mntmSave);
+		mnNewMenu.add(mntmSave);
+
+		JMenuItem mntmSaveAs = new JMenuItem("Save As");
+		mntmSaveAs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fileSaveAs();
+			}
+		});
+		mnNewMenu.add(mntmSaveAs);
+
+		JMenuItem mntmSaveAsm = new JMenuItem("Save As Spin ASM");
+		mntmSaveAsm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// debug this!!!
+				getModel().sortAlignGen();
+				fileSaveAsm();
+			}
+		});
+		mnNewMenu.add(mntmSaveAsm);
+
+		JMenuItem mntmExit = new JMenuItem("Exit");
+		fileSaveAs(panel, mntmExit);
+		mnNewMenu.add(mntmExit);
+
+		JMenuItem mntmDelete = new JMenuItem("Delete");
+		mntmDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				panel.setDragModeDelete(); // delete mode - this also changes
+				// the cursor
+			}
+		});
+		mnEdit.add(mntmDelete);
+// most of the menu is generated right here.
+// standardmenu is generated by the spincadmenu DSL
+		new standardMenu(this, panel, menuBar);
+
+		final JMenu mnSimulator = new JMenu("Simulator");
+		menuBar.add(mnSimulator);
+		JMenuItem mntmSetSampleRate = new JMenuItem("Set Sample Rate");
+
+		mntmSetSampleRate.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SampleRateComboBox srCB = new SampleRateComboBox();
+				srCB.setLocation(mnSimulator.getLocation());
+			}
+		});
+		mnSimulator.add(mntmSetSampleRate);
+
+		final JMenuItem mntmSimLogger = new JMenuItem("Enable Level Viewer");
+		mntmSimLogger.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(loggerIsVisible == true) {
+					loggerIsVisible = false;
+					mntmSimLogger.setText("Enable Level Viewer");
+				}
+				else {
+					loggerIsVisible = true;
+					mntmSimLogger.setText("Disable Level Viewer");
+				}
+			}
+		});
+		mnSimulator.add(mntmSimLogger);
+
+		JMenuItem mntmSimSendToFile = new JMenuItem("Simulator->File");
+		mntmSimSendToFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				outputFile = prefs.get("SIMULATOR_OUT_FILE", "");
+			}
+		});
+		mnSimulator.add(mntmSimSendToFile);
+
+		JMenuItem mntmSimSendToSound = new JMenuItem("Simulator->Sound Card");
+		mntmSimSendToSound.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				outputFile = null;
+			}
+		});
+		mnSimulator.add(mntmSimSendToSound);
+
+		JMenuItem mntmSimOutFile = new JMenuItem("Set Simulator Output File");
+		mntmSimOutFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setSimulatorOutputFile();
+			}
+		});
+		mnSimulator.add(mntmSimOutFile);
+
+		JMenuItem mntmSourceFile = new JMenuItem("Set Simulator Source file");
+		mntmSourceFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				getSimulatorFile();
+			}
+		});
+		mnSimulator.add(mntmSourceFile);
+
+		JMenu mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
+
+		JMenuItem mntmHelp = new JMenuItem("Help");
+		mntmHelp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					openWebpage(new URL("http://joefriday-lg.com/spincad-designer-2/spincad-designer-help-pages/"));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		mnHelp.add(mntmHelp);
+
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFrame frame = new JFrame();
+				JOptionPane
+				.showMessageDialog(
+						frame,
+						"Version 0.95\nBuild 495\nCopyright 2013\n"
+								+ "Gary Worsham, Holy City Audio\nElmGen Open Source Library\nCourtesy of Andrew Kilpatrick",
+								"About SpinCAD Designer", JOptionPane.OK_OPTION);
+			}
+		});
+		mnHelp.add(mntmAbout);
+	}
+
+	/**
+	 * @param panel
+	 * @param mntmExit
+	 */
+	private void fileSaveAs(final SpinCADPanel panel, JMenuItem mntmExit) {
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (getModel().getChanged() == true) {
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(panel,
+							"You have unsaved changes!  Save first?",
+							"Warning!", dialogButton);
+					if (dialogResult == JOptionPane.YES_OPTION) {
+						File fileToBeSaved = new File(spcFileName);
+						if (fileToBeSaved.exists()) {
+							SpinCADFile.fileSave(getModel(),
+									fileToBeSaved.getPath());
+						} else
+							fileSaveAs();
+					}
+					System.exit(0);
+				}
+			}
+		});
+	}
+
+	/**
+	 * @param mntmSave
+	 */
+	private void fileSave(JMenuItem mntmSave) {
+		mntmSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(spcFileName != null) {
+					File fileToBeSaved = new File(spcFileName);
+					try {
+						SpinCADFile.fileSave(getModel(),
+								fileToBeSaved.getPath());
+						getModel().setChanged(false);
+					} finally {
+					}
+
+				} else
+					fileSaveAs();
+			}
+		});
+	}
+
+	/**
+	 * @param panel
+	 * @param mntmFile
+	 */
+	private void fileOpen(final SpinCADPanel panel, JMenuItem mntmFile) {
+		mntmFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// Create a file chooser
+				if (getModel().getChanged() == true) {
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(panel,
+							"You have unsaved changes!  Continue?", "Warning!",
+							dialogButton);
+					if (dialogResult == 0) {
+						getModel().newModel();
+						repaint();
+						// System.out.println("Yes option");
+					}
+				}
+				final JFileChooser fc = new JFileChooser("c:\\temp\\");
+				final String newline = "\n";
+				// In response to a button click:
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"SpinCAD Files", "spcd");
+				fc.setFileFilter(filter);
+
+				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					// This is where a real application would open the file.
+					System.out.println("Opening: " + file.getName() + "."
+							+ newline);
+					try {
+						model = SpinCADFile.fileRead(getModel(), file.getPath());
+						spcFileName = file.getPath();
+						getModel().setChanged(false);
+					} catch (Exception e) {
+						spcFileName = null;
+						e.printStackTrace();
+					}
+				} else {
+					System.out.println("Open command cancelled by user."
+							+ newline);
+				}
+				pb.update();
+				panel.repaint();
+			}
+
+		});
+	}
+
+	/**
+	 * @param panel
+	 * @param mntmNew
+	 */
+	private void fileNew(final SpinCADPanel panel, JMenuItem mntmNew) {
+		mntmNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (getModel().getChanged() == true) {
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(panel,
+							"You have unsaved changes!  Continue?", "Warning!",
+							dialogButton);
+					if (dialogResult == JOptionPane.NO_OPTION) {
+						return;
+					}
+				}
+				spcFileName = null;
+				getModel().newModel();
+				repaint();
+				// System.out.println("Yes option");
+			}
+		});
+	}
+
+	private WindowListener window() {
+		WindowListener exitListener = new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int confirm = JOptionPane.showOptionDialog(null,
+						"Do you wish to exit SpinCAD?", "Exit Confirmation",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);
+				if (confirm == JOptionPane.YES_OPTION) {
+					System.exit(0);
+				}
+			}
+		};
+		return exitListener;
+	}
+
+	public void getSimulatorFile() {
+		String testWavFileName = prefs.get("SIMULATOR_FILE", "");
+		final JFileChooser fc = new JFileChooser(testWavFileName);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"WAV files", "wav");
+		fc.setSelectedFile(new File(testWavFileName));
+		fc.setFileFilter(filter);
+
+		final String newline = "\n";
+
+		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			testWavFileName = fc.getSelectedFile().getPath();
+			prefs.put("SIMULATOR_FILE", testWavFileName);
+			System.out.println("Opening: " + testWavFileName + "." + newline);
+		} else {
+			System.out.println("Command cancelled by user." + newline);
+		}
+	}
+
+	public void setSimulatorOutputFile() {
+		String simWavOutFileName = prefs.get("SIMULATOR_OUT_FILE", "");
+		final JFileChooser fc = new JFileChooser(simWavOutFileName);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"WAV files", "wav");
+		fc.setSelectedFile(new File(simWavOutFileName));
+
+		fc.setFileFilter(filter);
+
+		final String newline = "\n";
+
+		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			simWavOutFileName = fc.getSelectedFile().getPath();
+			prefs.put("SIMULATOR_OUT_FILE", simWavOutFileName);
+
+			System.out.println("Simulator output file: " + simWavOutFileName);
+		} else {
+			System.out.println("Command cancelled by user." + newline);
+		}
+	}
+
+	public void dropBlock(SpinCADPanel p, SpinCADBlock b) {
+		p.setDragModeDragMove();
+		getModel().addBlock(b);
+		getModel().setChanged(true);
+		p.repaint();
+	}
+
+	public boolean isSimRunning() {
+		return simRunning;
+	}
+
+	public boolean setSimRunning(boolean simRunning) {
+		this.simRunning = simRunning;
+		return simRunning;
+	}
+
+	public SpinCADModel getModel() {
+		return model;
+	}
+
+	public static void setModelCurrentBlock(SpinCADModel model) {
+		SpinCADFrame.model = model;
+	}
+
+	// ======================================================================================================
+	class simControlToolBar extends JToolBar implements ActionListener,
+	ChangeListener {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4298199583629847984L;
+		final JButton btnStartSimulation = new JButton("Start Simulation");
+		final JButton btnSigGen = new JButton("Sig Gen Sim");
+
+		final JSlider pot0Slider = new JSlider(0, 100, 1);
+		final JSlider pot1Slider = new JSlider(0, 100, 1);
+		final JSlider pot2Slider = new JSlider(0, 100, 1);
+
+		public simControlToolBar() {
+			super();
+			this.add(btnStartSimulation);
+			btnStartSimulation.addActionListener(this);
+			// this.add(btnSigGen);
+			// btnSigGen.addActionListener(this);
+
+			this.add(pot0Slider);
+			pot0Slider.addChangeListener(this);
+			pot0Slider.setToolTipText("Pot 0");
+
+			this.add(pot1Slider);
+			pot1Slider.addChangeListener(this);
+			pot1Slider.setToolTipText("Pot 1");
+
+			this.add(pot2Slider);
+			pot2Slider.addChangeListener(this);
+			pot2Slider.setToolTipText("Pot 2");
+
+			// this.setVisible(true);
+			if (sim != null) {
+				pot0Slider.setValue((int) Math.round((sim.getPot(0) * 100.0)));
+				pot1Slider.setValue((int) Math.round((sim.getPot(1) * 100.0)));
+				pot2Slider.setValue((int) Math.round((sim.getPot(2) * 100.0)));
+			}
+		}
+
+		public void stateChanged(ChangeEvent e) {
+			if (e.getSource() == pot0Slider) {
+				pot0Level = (double) pot0Slider.getValue() / 100.0;
+				System.out.println("Pot 0: " + pot0Level);
+				if (sim != null)
+					sim.setPot(0, pot0Level);
+			} else if (e.getSource() == pot1Slider) {
+				pot1Level = (double) pot1Slider.getValue() / 100.0;
+				System.out.println("Pot 1: " + pot1Level);
+				if (sim != null)
+					sim.setPot(1, pot1Level);
+			} else if (e.getSource() == pot2Slider) {
+				pot2Level = (double) pot2Slider.getValue() / 100.0;
+				System.out.println("Pot 2: " + pot2Level);
+				if (sim != null)
+					sim.setPot(2, pot2Level);
+			}
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			if (arg0.getSource() == btnStartSimulation) {
+				if (isSimRunning() == true) {
+					setSimRunning(false);
+					loggerPanel.setVisible(false);
+					btnStartSimulation.setText("Start Simulator");
+					sim.stopSimulator();
+				} else {
+					setSimRunning(true);
+					btnStartSimulation.setText("Stop Simulator");
+					pb.update();
+					String testWavFileName = prefs.get("SIMULATOR_FILE", "");
+					sim = new SpinSimulator(SpinCADModel.getRenderBlock(),
+							testWavFileName, outputFile, pot0Level, pot1Level,
+							pot2Level);
+					// loggerPanel.setVisible(loggerIsVisible);
+					if(loggerIsVisible) {
+						sim.showLevelLogger(loggerPanel);
+					}
+					// sim.showLevelMeter();
+					sim.setLoopMode(true);
+					sim.start();
+				}
+			} else if (arg0.getSource() == btnSigGen) {
+				if (isSimRunning() == true) {
+					setSimRunning(false);
+					btnSigGen.setText("Start Signal");
+					sim.stopSimulator();
+				} else {
+//					String outputFile = null; // play out through the sound card
+					setSimRunning(true);
+					btnSigGen.setText("Stop Signal");
+//					SignalGenerator SigGen = new SignalGenerator();
+				}
+			}
+		}
+	}
+
+	public void fileSaveAs() {
+		// Create a file chooser
+		final JFileChooser fc = new JFileChooser("C:\\temp\\");
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Files", "spcd");
+		fc.setFileFilter(filter);
+		fc.showSaveDialog(SpinCADFrame.this);
+		File fileToBeSaved = fc.getSelectedFile();
+
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
+		}
+		int n = JOptionPane.YES_OPTION;
+		if (fileToBeSaved.exists()) {
+			JFrame frame = new JFrame();
+			n = JOptionPane.showConfirmDialog(frame,
+					"Would you like to overwrite it?", "File already exists!",
+					JOptionPane.YES_NO_OPTION);
+		}
+		if (n == JOptionPane.YES_OPTION) {
+			try {
+				SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
+				spcFileName = fileToBeSaved.getPath();
+				getModel().setChanged(false);
+			} finally {
+			}
+		}
+
+	}
+
+	public void fileSaveAsm() {
+		// Create a file chooser
+		final JFileChooser fc = new JFileChooser("C:\\temp\\");
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Spin ASM Files", "spn");
+		fc.setFileFilter(filter);
+		fc.showSaveDialog(SpinCADFrame.this);
+		File fileToBeSaved = fc.getSelectedFile();
+
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spn")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".spn");
+		}
+		int n = JOptionPane.YES_OPTION;
+		if (fileToBeSaved.exists()) {
+			JFrame frame = new JFrame();
+			n = JOptionPane.showConfirmDialog(frame,
+					"Would you like to overwrite it?", "File already exists!",
+					JOptionPane.YES_NO_OPTION);
+		}
+		if (n == JOptionPane.YES_OPTION) {
+			try {
+				String filePath = fileToBeSaved.getPath();
+				fileToBeSaved.delete();
+				getModel();
+				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
+						.getProgramListing(1), filePath);
+				getModel().setChanged(false);
+			} finally {
+			}
+		}
+
+	}
+
+	// ================= used for the status toolbar and simulator start/stop
+	// button
+	public class EditResourcesToolBar extends JToolBar implements
+	ActionListener {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8905757462245337214L;
+		/**
+		 * 
+		 */
+		final JLabel pinName = new JLabel("");
+
+		class Task extends SwingWorker<Void, Void> {
+			/*
+			 * Main task. Executed in background thread.
+			 */
+			@Override
+			public Void doInBackground() {
+				// Sleep for at least one second to simulate "startup".
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException ignore) {
+				}
+				done();
+				return null;
+			}
+
+			/*
+			 * Executed in event dispatch thread
+			 */
+			public void done() {
+			}
+		}
+
+		public EditResourcesToolBar() {
+			super();
+			add(pinName);
+			setVisible(true);
+		}
+
+		/**
+		 * Invoked when the user presses the start button.
+		 */
+		public void actionPerformed(ActionEvent evt) {
+			System.out.println("Print: ");
+
+		}
+
+		public void update() {
+			ActionEvent evt = null;
+			actionPerformed(evt);
+		}
+	}
+
+	// ================= used for the status toolbar and simulator start/stop
+	// button
+	public class ModelResourcesToolBar extends JToolBar implements
+	ActionListener {
+		private static final long serialVersionUID = -8905757462245337214L;
+		final JProgressBar progressBar_2 = new JProgressBar();
+		final JProgressBar progressBar_1 = new JProgressBar();
+		final JProgressBar progressBar = new JProgressBar();
+
+		class Task extends SwingWorker<Void, Void> {
+			/*
+			 * Main task. Executed in background thread.
+			 */
+			@Override
+			public Void doInBackground() {
+				// Sleep for at least one second to simulate "startup".
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException ignore) {
+				}
+				done();
+				return null;
+			}
+
+			/*
+			 * Executed in event dispatch thread
+			 */
+			public void done() {
+			}
+		}
+
+		// ==============================================================
+		// == Resources toolbar
+		public ModelResourcesToolBar() {
+			super();
+
+			// Call setStringPainted now so that the progress bar height
+			// stays the same whether or not the string is shown.
+
+			progressBar_2.setToolTipText("Code Length");
+			progressBar_2.setMaximum(128);
+			progressBar_2.setBackground(Color.CYAN);
+			progressBar_2.setString("Instructions Used");
+			progressBar_2.setStringPainted(true);
+			Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+			progressBar_2.setBorder(border);
+
+			progressBar.setToolTipText("Registers");
+			progressBar.setMaximum(32);
+			progressBar.setBackground(Color.CYAN);
+			progressBar.setString("Registers Used");
+			progressBar.setStringPainted(true);
+			progressBar.setBorder(border);
+
+			progressBar_1.setMaximum(32768);
+			progressBar_1.setToolTipText("Delay RAM");
+			progressBar_1.setBackground(Color.CYAN);
+			progressBar_1.setString("Delay RAM Used");
+			progressBar_1.setStringPainted(true);
+			progressBar_1.setBorder(border);
+
+			add(progressBar_2);
+			add(progressBar);
+			add(progressBar_1);
+		}
+
+		/**
+		 * Invoked when the user presses the start button.
+		 */
+		public void actionPerformed(ActionEvent evt) {
+			// progressBar.setIndeterminate(true);
+			int codeLength = getModel().sortAlignGen();
+			System.out.println("Code: " + codeLength);
+
+			if (codeLength < 80) {
+				progressBar_2.setForeground(Color.green);
+			} else if (codeLength < 105) {
+				progressBar_2.setForeground(Color.orange);
+			} else {
+				progressBar_2.setForeground(Color.red);
+			}
+
+			progressBar_2.setValue(codeLength);
+
+			// getModel();
+			SpinCADModel.getRenderBlock();
+			int nRegs = SpinFXBlock.getNumRegs() - 32;
+			if (nRegs < 20) {
+				progressBar.setForeground(Color.green);
+			} else if (nRegs < 26) {
+				progressBar.setForeground(Color.orange);
+			} else {
+				progressBar.setForeground(Color.red);
+			}
+			progressBar.setValue(nRegs);
+
+			// getModel();
+			int ramUsed = SpinCADModel.getRenderBlock().getDelayMemAllocated();
+			if (ramUsed < 20000) {
+				progressBar_1.setForeground(Color.green);
+			} else if (ramUsed < 26000) {
+				progressBar_1.setForeground(Color.orange);
+			} else {
+				progressBar_1.setForeground(Color.red);
+			}
+			progressBar_1.setValue(ramUsed);
+		}
+
+		public void update() {
+			ActionEvent evt = null;
+			actionPerformed(evt);
+		}
+	}
+
+	ModelResourcesToolBar getResourceToolbar() {
+		return pb;
+	}
+
+	// ===================================================
+	// == Sample rate combo box
+	public class SampleRateComboBox extends JFrame {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		JComboBox<Object> rateList = null;
+
+		public SampleRateComboBox() {
+			super("Sample Rate");
+			createAndShowGUI();
+		}
+
+		/** Listens to the combo box. */
+		class SampleRateListener implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				JComboBox cb = (JComboBox<Object>) e.getSource();
+				String rate = (String) cb.getSelectedItem();
+				if (rate == "32768") {
+					ElmProgram.SAMPLERATE = 32768;
+				} else if (rate == "44100") {
+					ElmProgram.SAMPLERATE = 44100;
+				} else if (rate == "48000") {
+					ElmProgram.SAMPLERATE = 48000;
+				}
+			}
+		}
+
+		/**
+		 * Create the GUI and show it. For thread safety, this method should be
+		 * invoked from the event-dispatching thread.
+		 */
+		private void createAndShowGUI() {
+			// Create and set up the window.
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+
+					// Create and set up the content pane.
+					JPanel newContentPane = new JPanel(new BorderLayout());
+					setContentPane(newContentPane);
+					newContentPane.setOpaque(true); // content panes must be
+					// opaque
+					String[] rateStrings = { "32768", "44100", "48000" };
+
+					// Create the combo box, select the item at index 4.
+					// Indices start at 0, so 4 specifies the pig.
+					rateList = new JComboBox<Object>(rateStrings);
+					if (ElmProgram.SAMPLERATE == 44100) {
+						rateList.setSelectedIndex(1);
+
+					} else if (ElmProgram.SAMPLERATE == 48000) {
+						rateList.setSelectedIndex(2);
+
+					} else
+						rateList.setSelectedIndex(0);
+					rateList.addActionListener(new SampleRateListener());
+
+					// Lay out the demo.
+					newContentPane.add(rateList, BorderLayout.PAGE_START);
+					newContentPane.setBorder(BorderFactory.createEmptyBorder(
+							20, 20, 20, 20));
+
+					// Display the window.
+					pack();
+					setVisible(true);
+					setResizable(false);
+				}
+			});
+		}
+	}
+
+	public static void openWebpage(URI uri) {
+		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+			try {
+				desktop.browse(uri);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void openWebpage(URL url) {
+		try {
+			openWebpage(url.toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+}
