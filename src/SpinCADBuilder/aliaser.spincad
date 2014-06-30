@@ -1,0 +1,42 @@
+@name Aliaser
+@audioInput input Audio_Input
+@audioOutput lastval Audio_Output  
+@controlInput crusher Crush
+
+equ inputGain 0.5
+@sliderLabel inputGain Input_Gain 0.0 1.0 1000.0 2
+
+equ ripLevel 0.5
+@sliderLabel ripLevel Rip_Level 0.0 0.6 1000.0 2
+
+@isPinConnected Input
+//Bit Crusher / aliaser
+;POT1 - crushing
+;POT, POT2 - not used
+;
+equ flopper reg0 
+equ lastval reg1
+;
+rdax flopper,1.0 ;read counter 
+sof 1.0,-0.015 ; subtract 1 (regulation steps, now 40)
+
+@isPinConnected Crush
+skp gez, outter ; if > 0 jump to output 
+rdax input,inputGain ; else get input 
+wrax lastval,0 ; write to out reg
+rdax crusher,0.6
+sof 1.0,0 ; reload counter 
+outter: 
+
+@else
+skp gez, outter2 ; if > 0 jump to output 
+rdax input, inputGain ; else get input 
+wrax lastval,0 ; write to out reg
+sof  0.0, ripLevel
+outter2: 
+
+@endif
+
+wrax flopper,0 ; save counter 
+@setOutputPin Audio_Output lastval
+@endif
