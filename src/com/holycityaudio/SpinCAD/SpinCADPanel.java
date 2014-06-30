@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * SpinCADPanel.java
- * Copyright (C)2013 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -27,11 +27,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
 import java.util.Iterator;
 
@@ -39,7 +45,7 @@ import java.util.Iterator;
 public class SpinCADPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private enum dragModes { NODRAG, DRAGMOVE, CONNECT, DELETE };
+	private enum dragModes { NODRAG, DRAGMOVE, CONNECT };
 
 	private SpinCADFrame f = null;
 	// following 4 variables are for pin to pin connections
@@ -91,7 +97,9 @@ public class SpinCADPanel extends JPanel {
 					repaint();
 				}
 				Point point = getNearbyPoint();
-				if(point != null) {
+				if(point != null) {		
+					// we're near a pin, so iterate through the model and see which one it is
+					// then show the pin name
 					SpinCADBlock b = null;	
 					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
 					while(itr.hasNext()) {
@@ -109,8 +117,41 @@ public class SpinCADPanel extends JPanel {
 						}
 					}
 				}
-				else
+				else {
+					// TODO this is supposed to allow deletion of a connection.
+					// start looking for lines, if in delete mode
+					// however for now, right-clicking on the destination pin is OK
+					SpinCADBlock b = null;	
+					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
+					while(itr.hasNext()) {
+						b = itr.next();
+						Iterator<SpinCADPin> itrPin = b.pinList.iterator();
+						SpinCADPin currentPin = null;
+						while(itrPin.hasNext()) {
+							currentPin = itrPin.next();
+							// we're now iterating through each pin on each block.
+							// see if a pin has a connector block (previous)
+							// if so, get the coordinates of the end points and
+							// distance of mouse point from the line.
+							SpinCADPin otherPin = currentPin.getPinConnection();
+							if(otherPin != null) {
+								// TODO use getPinXY() here
+								int x1 = currentPin.getX();
+								int y1 = currentPin.getY();
+								int x2 = otherPin.getX();
+								int y2 = otherPin.getY();
+								if(x2 != x1) {
+									double slope = (double) (y2 - y1)/(x2 - x1);
+									// System.out.println(slope);
+								} else {
+
+								}
+
+							}
+						}
+					}
 					f.etb.pinName.setText("");
+				}
 			}
 		});
 
@@ -157,18 +198,8 @@ public class SpinCADPanel extends JPanel {
 					b = itr.next();
 					// if we hit the block, we can either delete or drag it
 					if (hitTarget(arg0, b) == true) {
-						System.out.println("Direct hit!");
+						// System.out.println("Direct hit!");
 						switch(dm) {
-						case DELETE:
-							deleteBlockConnection(b);
-							spdFrame.getModel().blockList.remove(b);
-							spdFrame.getModel().setChanged(true);
-							dm = dragModes.NODRAG;
-							dragLine = null;
-							spdFrame.getResourceToolbar().update();
-							Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
-							setCursor(defaultCursor);
-							break;
 						case NODRAG:
 							if(arg0.getButton() == 1) {	// left button
 								spdFrame.getModel();
@@ -176,7 +207,7 @@ public class SpinCADPanel extends JPanel {
 								dm = dragModes.DRAGMOVE;
 							}
 							else if (arg0.getButton() == 3)	{	// right button
-								b.editBlock();
+								doPop(arg0, b);
 							}
 						default:
 							break;
@@ -203,7 +234,9 @@ public class SpinCADPanel extends JPanel {
 										stopBlock = b;
 										if(startBlock != stopBlock) {
 											stopPin = currentPin;
-											stopPin.setConnection(startBlock,  startPin);										
+											stopPin.setConnection(startBlock,  startPin);		
+											// XXX debug set pin connections in both directions don't think this works
+											// startPin.setConnection(stopBlock,  stopPin);
 											System.out.println("Connect stop!");
 											dm = dragModes.NODRAG;
 											dragLine = null;
@@ -217,7 +250,9 @@ public class SpinCADPanel extends JPanel {
 										stopBlock = b;
 										if(startBlock != stopBlock) {
 											stopPin = currentPin;
-											startPin.setConnection(stopBlock,  stopPin);										
+											// XXX debug set pin connections in both directions don't think this works
+											startPin.setConnection(stopBlock,  stopPin);	
+											// stopPin.setConnection(startBlock,  startPin);		
 											System.out.println("Connect stop!");
 											dm = dragModes.NODRAG;
 											dragLine = null;
@@ -234,7 +269,6 @@ public class SpinCADPanel extends JPanel {
 					}
 				}
 			}
-
 		});  
 	}
 	//=======================================================================================================
@@ -254,6 +288,9 @@ public class SpinCADPanel extends JPanel {
 			while(itrPin.hasNext()) {
 				currentPin = itrPin.next();
 				currentPin.setColor(Color.BLACK);
+				if(currentPin.isControlOutputPin()) {
+					currentPin.setX(block.width);		// deal with variable block width, only affects control outputs			
+				}
 				currentPin.paintComponent(g);								
 
 				if(currentPin.getPinConnection() != null && currentPin.getBlockConnection() != null) {
@@ -373,14 +410,58 @@ public class SpinCADPanel extends JPanel {
 		return dm;
 	}
 
-	public void setDragModeDelete() {
-		dm = dragModes.DELETE;	
-		Cursor deleteCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
-		setCursor(deleteCursor);
-	}
-
 	public void setDragModeDragMove() {
 		dm = dragModes.DRAGMOVE;
+	}
+
+	// popup menu handling
+	class PopUpDemo extends JPopupMenu {
+		JMenuItem cPanel;
+		JMenuItem del;
+		public PopUpDemo(SpinCADBlock b){
+			if(b.hasControlPanel()) {
+				cPanel = new JMenuItem("Control Panel");
+				add(cPanel);
+				cPanel.addActionListener(new MenuActionListener(b));				
+			}
+			del = new JMenuItem("Delete");
+			add(del);
+			del.addActionListener(new MenuActionListener(b));
+		}
+	}
+
+	private void doPop(MouseEvent e, SpinCADBlock b){
+		PopUpDemo menu = new PopUpDemo(b);
+		menu.show(e.getComponent(), e.getX(), e.getY());
+	}
+
+	class MenuActionListener implements ActionListener {
+		SpinCADBlock spcb = null;
+		JFrame frame = null;
+
+		public MenuActionListener(SpinCADBlock b) {
+			spcb = b;
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			switch(e.getActionCommand()) {
+			case "Control Panel":
+				spcb.editBlock();
+				break;
+			case "Delete":
+				// do a model save just before delete
+				f.saveModel();
+				deleteBlockConnection(spcb);
+				f.getModel().blockList.remove(spcb);
+				f.getModel().setChanged(true);
+				f.getResourceToolbar().update();
+				repaint();
+				break;
+			default: 
+				break;
+			}
+			//			System.out.println("Selected: " + e.getActionCommand());
+		}
 	}
 }
 

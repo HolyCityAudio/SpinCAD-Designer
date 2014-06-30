@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ public class ChorusReadValue extends Instruction {
 	 * 
 	 * @param lfo the LFO to use (0 = SIN0, 1 = SIN1, 2 = RMP0, 3 = RMP1, 8 = COS0, 9 = COS1)
 	 */
+	// GSW fixed some issues with the COS LFO values
 	public ChorusReadValue(int lfo) {
 		if(lfo < 0 || lfo > 9 || lfo == 4 || lfo == 5 ) {
 			throw new IllegalArgumentException("lfo out of range: " + lfo +
@@ -52,7 +53,7 @@ public class ChorusReadValue extends Instruction {
 	public String getInstructionString() {
 		return "ChorusReadValue(" + lfo + ")";
 	}
-
+	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if (mode ==1) {
 			return "CHO RDAL," + lfo;			
@@ -75,6 +76,7 @@ public class ChorusReadValue extends Instruction {
 		else if(lfo == 3) {  // ramp 1
 			state.setACCVal(state.getRampLFOVal(1));
 		}
+		// GSW needed to change values for COS0 and COS1, it was a bug
 		else if(lfo == 8) {  // cos 0
 			state.setACCVal(state.getSinLFOVal(2));
 		}

@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * ChorusCADBLock.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -128,11 +128,11 @@ public class ChorusCADBlock extends ModulationCADBlock {
 			// wra chordel, 0 ;write to delay input
 			sfxb.FXwriteDelay("chordel", 0, 0.0);
 			// cho RDA, sin1,0x06, chordel+1000 ;sweep about midpoint
-			sfxb.FXchorusReadDelay(SIN1, 0x06, "chordel",
+			sfxb.FXchorusReadDelay(SIN1, 0x06, "chordel+",
 					(chorusLength / 2));
 			// cho RDA, sin1,0, chordel+1001 ;interpolate between adjacent
 			// samples
-			sfxb.FXchorusReadDelay(SIN1, 0, "chordel",
+			sfxb.FXchorusReadDelay(SIN1, 0, "chordel+",
 					1 + (chorusLength / 2));
 			// mulx effmix ;multiply chorus delay output by effmix
 			sfxb.mulx(effmix);

@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -96,7 +96,7 @@ public class SinLFO {
 		}
 		return (int)(val & 0x7fffff);
 	}
-	
+// GSW added this for debugging of Sin LFO - not yet successful!	
 	public int getAmp() {
 		return amp;
 	}

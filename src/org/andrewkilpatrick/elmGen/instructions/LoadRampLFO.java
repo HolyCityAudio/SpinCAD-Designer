@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -30,18 +30,19 @@ public class LoadRampLFO extends Instruction {
 	final int lfo;
 	final int freq;
 	final int amp;
+	// GSW added for integration with SpinCAD Designer
 	final int spinASMAmp;
 	
 	/**
 	 * Loads a RAMP LFO frequency and amplitude values.
 	 * 
-	 * @param lfo the LFO to load (0 or 1) - // GSW actually this should be 2 or 3
+	 * @param lfo the LFO to load (0 or 1)
 	 * @param freq the frequency (-16384 - 32767)
 	 */
 	public LoadRampLFO(int lfo, int freq, int amp) {
-		if(lfo < 2 || lfo > 3) {
+		if(lfo < 0 || lfo > 1) {
 			throw new IllegalArgumentException("lfo out of range: " + lfo +
-					" - valid values: 2 or 3");
+					" - valid values: 0 or 1");
 		}
 		this.lfo = lfo;
 		if(freq < -16384 || freq > 32767) {
@@ -53,6 +54,7 @@ public class LoadRampLFO extends Instruction {
 			throw new IllegalArgumentException("amplitude invalid: " + amp +
 					" - must be: 512, 1024, 2048 or 4096");
 		}
+	// GSW added for integration with SpinCAD Designer
 		spinASMAmp = amp;
 		if(amp == 1024) {
 			this.amp = 0x02;
@@ -78,7 +80,7 @@ public class LoadRampLFO extends Instruction {
 	public String getInstructionString() {
 		return "LoadRampLFO(" + lfo + "," + freq + "," + amp + ")";
 	}
-
+	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
 			return "WLDR " + lfo + ", " + freq + ", " + spinASMAmp;
@@ -90,6 +92,7 @@ public class LoadRampLFO extends Instruction {
 	@Override
 	public void simulate(SimulatorState state) {
 		int regFreq = (freq & 0x7fff) << 8;
+		// if freq = 32767, then regFreq should be 0x7FFF00, but it seems to be something else
 		if(freq < 0) {
 			regFreq |= 0x800000l;
 		}

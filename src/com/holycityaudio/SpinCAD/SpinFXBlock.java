@@ -1,3 +1,27 @@
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * SpinCADFXBlock.java
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 	
+ */
+
+// SpinCADFXBlock.java is an important interface between SpinCAD and ElmGen
+// as it allocates unique names to memory blocks even if the same block is
+// used several times in a model.
+
 package com.holycityaudio.SpinCAD;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.MemSegment;
@@ -14,7 +38,7 @@ public class SpinFXBlock extends ElmProgram {
 		super(nameBlock);
 		setNumBlocks(getNumBlocks() + 1);
 		setNumRegs(REG0);
-		//			System.out.printf("SpinFXBlock - numBlocks = %d\n\n", numBlocks);	
+//		System.out.printf("SpinFXBlock - numBlocks = %d\n", numBlocks);	
 	}
 
 	public int allocateReg() {
@@ -25,10 +49,19 @@ public class SpinFXBlock extends ElmProgram {
 	}
 
 	public void FXallocDelayMem(String memName, int size) {
-		//		  System.out.println("SpinFXBlock FXallocDelayMem " + memName + numBlocks);
+//		System.out.println("SpinFXBlock FXallocDelayMem " + memName + numBlocks);
 		allocDelayMem(memName + getNumBlocks(), size);
 	}
 
+	// TODO this overloaded function allows use of a double as the size parameter, to deal with
+	// (temporary) shortcomings in the parsing of "equ" statements - can't make it create an int
+	// at this time
+	
+	public void FXallocDelayMem(String memName, double size) {
+//		System.out.println("SpinFXBlock FXallocDelayMem " + memName + numBlocks);
+		allocDelayMem(memName + getNumBlocks(), (int) size);
+	}
+	
 	public void FXreadDelay(String memName, int offset, double param) {
 		readDelay(getAddrFromSpinMem(memName, offset), param);
 	}  
@@ -55,16 +88,18 @@ public class SpinFXBlock extends ElmProgram {
 		return numRegs;
 	}
 
-	public static void setNumRegs(int numRegs) {
-		SpinFXBlock.numRegs = numRegs;
+	public static void setNumRegs(int nRegs) {
+		SpinFXBlock.numRegs = nRegs;
 	}
 
 	public static int getNumBlocks() {
+//		System.out.println("getNumblocks = " + numBlocks);
 		return numBlocks;
 	}
 
-	public static void setNumBlocks(int numBlocks) {
-		SpinFXBlock.numBlocks = numBlocks;
+	public static void setNumBlocks(int num) {
+		numBlocks = num;
+//		System.out.println("setNumblocks = " + numBlocks);
 	}
 
 	int getAddrFromSpinMem(String memName, int offset) {

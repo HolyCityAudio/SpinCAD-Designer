@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * ModDelayControlPanel.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -41,7 +41,7 @@ class ModDelayControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame();
-				frame.setTitle("Straight\nDelay");
+				frame.setTitle("Servo\nDelay");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				delaySlider = new JSlider(JSlider.HORIZONTAL, 4096, 16384, mD.getDelayLength());
 				delaySlider.addChangeListener(new bitSliderListener());

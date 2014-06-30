@@ -1,6 +1,7 @@
-/* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
- *
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -15,6 +16,8 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 	
  */
+
+
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.event.ActionEvent;
@@ -30,9 +33,12 @@ import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 class OverdriveControlPanel extends JFrame implements ChangeListener, ActionListener {
-	JSlider stagesSlider0;
-	JLabel stagesLabel0;
-
+	JSlider stagesSlider;
+	JLabel stagesLabel;
+	JSlider gainSlider;
+	JLabel gainLabel;
+	JSlider outputGainSlider;
+	JLabel outputGainLabel;
 
 	private OverdriveCADBlock oD;
 
@@ -42,17 +48,38 @@ class OverdriveControlPanel extends JFrame implements ChangeListener, ActionList
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 
-		stagesSlider0 = new JSlider(JSlider.HORIZONTAL, 1, 3, 2);
-		stagesSlider0.setMajorTickSpacing(1);
-		stagesSlider0.setPaintTicks(true);
-		stagesSlider0.addChangeListener(this);
-		stagesLabel0 = new JLabel();
+		stagesSlider = new JSlider(JSlider.HORIZONTAL, 1, 3, 2);
+		stagesSlider.setMajorTickSpacing(1);
+		stagesSlider.setPaintTicks(true);
+		stagesSlider.addChangeListener(this);
+		stagesLabel = new JLabel();
 
-		this.getContentPane().add(stagesLabel0);
-		this.getContentPane().add(stagesSlider0);
+		gainSlider = new JSlider(JSlider.HORIZONTAL, 20, 190, (int) (odCb.getGain() * 100));
+		gainSlider.addChangeListener(this);
+		
+		gainLabel = new JLabel();
+		
+		outputGainSlider = new JSlider(JSlider.HORIZONTAL, 2, 100, (int) (odCb.getOutputGain() * 100));
+		outputGainSlider.addChangeListener(this);
+		
+		outputGainLabel = new JLabel();
+		
+		this.getContentPane().add(stagesLabel);
+		this.getContentPane().add(stagesSlider);
 
-		stagesSlider0.setValue(odCb.getStages());
+		this.getContentPane().add(gainLabel);
+		this.getContentPane().add(gainSlider);
+
+		this.getContentPane().add(outputGainLabel);
+		this.getContentPane().add(outputGainSlider);
+
+		gainSlider.setValue((int)Math.round(100.0 * odCb.getGain()));
+		outputGainSlider.setValue((int)Math.round(100.0 * odCb.getOutputGain()));
+		stagesSlider.setValue(odCb.getStages());
+
 		updateStagesLabel();
+		updateGainLabel();
+		updateOutputGainLabel();
 
 		this.setVisible(true);
 		this.pack();
@@ -65,13 +92,29 @@ class OverdriveControlPanel extends JFrame implements ChangeListener, ActionList
 	}
 
 	public void stateChanged(ChangeEvent ce) {
-		if(ce.getSource() == stagesSlider0) {
-			oD.setStages(stagesSlider0.getValue());
+		if(ce.getSource() == stagesSlider) {
+			oD.setStages(stagesSlider.getValue());
 			updateStagesLabel();
+		}
+		else if(ce.getSource() == gainSlider) {
+			oD.setGain(gainSlider.getValue()/100.0);
+			updateGainLabel();
+		}
+		else if(ce.getSource() == outputGainSlider) {
+				oD.setOutputGain(outputGainSlider.getValue()/100.0);
+				updateOutputGainLabel();
 		}
 	}
 	
 	public void updateStagesLabel() {
-		stagesLabel0.setText("Stages: " + String.format("%d", oD.getStages()));		
+		stagesLabel.setText("Stages: " + String.format("%d", oD.getStages()));		
+	}	
+	
+	public void updateGainLabel() {
+		gainLabel.setText("Input Gain: " + String.format("%4.2f", oD.getGain()));		
+	}
+
+	public void updateOutputGainLabel() {
+		outputGainLabel.setText("Output Gain: " + String.format("%4.2f", oD.getOutputGain()));		
 	}
 }

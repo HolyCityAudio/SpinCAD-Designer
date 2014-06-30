@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ public class Util {
 			}
 		}
 	}
-	
+
 	/**
 	 * Converts a register value to a double. Valid range is -0x800000 to 0x7fffff.
 	 * 
@@ -43,7 +43,15 @@ public class Util {
 		}
 		return (double)value / 8388608.0;
 	}
-	
+
+	// GSW added for integration with SpinCAD Designer	
+	/**
+	 * Converts a register value to a double. Valid range is -0x800000 to 0x7fffff.
+	 * 
+	 * @param val the value from -0x800000 to 0x7fffff
+	 * @return the same value, however limited to the above range.
+	 */
+
 	public static int regToInt(int val) {
 		int value = val;
 		if(value > 0x7fffff) {
@@ -54,7 +62,7 @@ public class Util {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Converts a double to a 24 bit register value. Valid range is -2.0 to +1.999...
 	 * 
@@ -71,7 +79,7 @@ public class Util {
 		}
 		return temp;
 	}
-	
+
 	/**
 	 * Converts a double to a 24 bit register value. Valid range is -1.0 to +0.999...
 	 * 
@@ -87,5 +95,82 @@ public class Util {
 			temp = -0x800000;
 		}
 		return temp;
+	}
+
+	public static String getRegisterName(int addr) {
+		switch (addr) {
+		case 0:
+			return "SIN0_RATE";
+		case 1:
+			return "SIN0_RANGE";
+		case 2:
+			return "SIN1_RATE";
+		case 3:
+			return "SIN1_RANGE";
+		case 4:
+			return "RMP0_RATE";
+		case 5:
+			return "RMP0_RANGE";
+		case 6:
+			return "RMP1_RATE";
+		case 7:
+			return "RMP1_RANGE";
+		case 16:
+			return "POT0";
+		case 17:
+			return "POT1";
+		case 18:
+			return "POT2";
+		case 20:
+			return "ADCL";
+		case 21:
+			return "ADCR";
+		case 22:
+			return "DACL";
+		case 23:
+			return "DACR";
+		case 24:
+			return "ADDR_PTR";
+		case 32:
+			return "REG0";
+		case 33:
+			return "REG1";
+		case 34:
+			return "REG2";
+		case 35:
+			return "REG3";
+		case 36:
+			return "REG4";
+		case 37:
+			return "REG5";
+		case 38:
+			return "REG6";
+		case 39:
+			return "REG7";
+		case 40:
+			return "REG8";
+		case 41:
+			return "REG9";
+		case 42:
+			return "REG10";
+		case 43:
+			return "REG11";
+		case 44:
+			return "REG12";
+		case 45:
+			return "REG13";
+		case 46:
+			return "REG14";
+		case 47:
+			return "REG15";
+		case 48:
+			return "REG16";
+		case 49:
+			return "REG17";
+		case 50:
+			return "REG18";
+		default:
+			return String.valueOf(addr);
+		}
 	}
 }

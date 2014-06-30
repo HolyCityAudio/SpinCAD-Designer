@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * SpinCADModel.java
- * Copyright (C)2013 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@ import java.util.Iterator;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
+import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
+
 public class SpinCADModel implements Serializable {
 
 	/**
@@ -37,11 +40,10 @@ public class SpinCADModel implements Serializable {
 	private static SpinCADBlock currentBlock = null;
 	public static SpinFXBlock renderBlock = null;
 	boolean changed = false;
+	private int indexFB = 1;
 	static int nBlocks = 0;
 
 	public SpinCADModel() {
-		// TODO Auto-generated constructor stub
-		// super();
 		newModel();
 	}
 
@@ -50,6 +52,7 @@ public class SpinCADModel implements Serializable {
 		nBlocks = 0;
 		blockList = new ArrayList<SpinCADBlock>();
 		changed = false;
+		indexFB = 1;
 		setRenderBlock(new SpinFXBlock("Render Block"));
 }
 
@@ -162,7 +165,6 @@ public class SpinCADModel implements Serializable {
 
 	public int realign() {
 		ArrayList<SpinCADBlock> sortedList = new ArrayList<SpinCADBlock>();
-
 //		System.out.printf("Realign...\n", name);
 		SpinCADBlock block;
 		int blockNumMin = 32768;
@@ -195,7 +197,33 @@ public class SpinCADModel implements Serializable {
 		return 0;
 	}
 
-	public int forEachBlock() {
+	/*
+	 * presetIndexFB scans through the model immediately after file loading
+	 * to find the top assigned IndexFB.  It sets indexFB to one more the the highest one in
+	 * the model being loaded.
+	 * There could be holes in the list of feedback loop indices due to deletion.
+	 */
+	
+	public int presetIndexFB() {
+		ArrayList<SpinCADBlock> sortedList = new ArrayList<SpinCADBlock>();
+//		System.out.printf("Realign...\n", name);
+		SpinCADBlock block;
+		int index = 0;
+		
+		Iterator<SpinCADBlock> itr = blockList.iterator();
+		while (itr.hasNext()) {
+			block = itr.next();
+			int i = block.getIndex();
+			if(i > index) {
+				index = i + 1;
+			}
+		}
+		setIndexFB(index);
+		return index;
+	}
+
+/* nice dream, didn't work...
+	public int eforEachBlock() {
 		@SuppressWarnings("unused")
 		SpinCADBlock block = null;
 		Iterator<SpinCADBlock> itr = blockList.iterator();
@@ -206,7 +234,8 @@ public class SpinCADModel implements Serializable {
 		}
 		return 0;
 	}
-	
+*/
+
 	public int sortAlignGen() {
 		@SuppressWarnings("unused")
 		SpinCADBlock block = null;
@@ -226,14 +255,92 @@ public class SpinCADModel implements Serializable {
 		setRenderBlock(new SpinFXBlock("Render Block"));
 		SpinCADBlock block = null;
 		Iterator<SpinCADBlock> itr = blockList.iterator();
+		int i = 0;
+		
+		// have to initialize FeedBack block registers to -1 or the next part doesn't work the second time!
+		
 		while (itr.hasNext()) {
 			block = itr.next();
+			if(block instanceof FBInputCADBlock)
+			{
+				((FBInputCADBlock) block).setRegister(-1);
+			}
+			else if(block instanceof FBOutputCADBlock)
+			{
+				((FBOutputCADBlock) block).setRegister(-1);
+			}
+		}
+
+		itr = blockList.iterator();
+		i = 0;
+		
+		while (itr.hasNext()) {
+			block = itr.next();
+			block.setBlockNum(i);
+			if(block instanceof FBInputCADBlock)
+			{
+				// XXX under construction feedback block register resolution
+				//search list to find matching FBOutputCADBlock
+					// if it's not there, then allocateReg and set register to the returned value
+					// if it is there, then it's already been allocated, so get the register value and
+					// assign it here
+				SpinCADBlock blockSearch = null;
+				boolean found = false;
+				Iterator<SpinCADBlock> itrFB = blockList.iterator();
+					while (itrFB.hasNext()) {
+						blockSearch = itrFB.next();
+						if((blockSearch instanceof FBOutputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
+						{
+								int i2 = ((FBOutputCADBlock) blockSearch).getRegister();
+								if(i2 == -1) {
+									i2 = getRenderBlock().allocateReg();
+									((FBOutputCADBlock) blockSearch).setRegister(i2);
+								}						
+								((FBInputCADBlock) block).setRegister(i2);
+								found = true;
+						}
+					}
+					if(found == false) {
+						int i1 = getRenderBlock().allocateReg();
+						((FBInputCADBlock) block).setRegister(i1);
+					}
+			}
+			else if(block instanceof FBOutputCADBlock)
+			{
+					//search list to find matching FBInputCADBlock
+					// if it's not there, then allocateReg and set register to the returned value
+					// if it is there, then it's already been allocated, so get the register value and
+					// assign it here
+				SpinCADBlock blockSearch = null;
+				boolean found = false;
+				Iterator<SpinCADBlock> itrFB = blockList.iterator();
+					while (itrFB.hasNext()) {
+						blockSearch = itrFB.next();
+						if((blockSearch instanceof FBInputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
+						{
+								int i3 = ((FBInputCADBlock) blockSearch).getRegister();
+								if(i3 == -1) {
+									i3 = getRenderBlock().allocateReg();
+									((FBInputCADBlock) blockSearch).setRegister(i3);
+								}
+								((FBOutputCADBlock) block).setRegister(i3);
+								found = true;
+						}
+					}
+					if(found == false) {
+							int i4 = getRenderBlock().allocateReg();
+							((FBOutputCADBlock) block).setRegister(i4);
+					}
+			}
+			i++;
 			getRenderBlock();
+			// TODO debug this, some problem with triple delay buffer assignments
+			// no there is a problem here
 			SpinFXBlock.setNumBlocks(block.getBlockNum());	// this is for keeping delay segments unique
 			block.generateCode(getRenderBlock());
 			// now blockMin is the block with the lowest number
 		}
-		System.out.println("Program Listing");
+		// TODO here's where we could write something to the clipboard.
 		System.out.println(getRenderBlock().getProgramListing(1));
 		return getRenderBlock().getCodeLen() - getRenderBlock().getNumComments();
 	}
@@ -250,16 +357,22 @@ public class SpinCADModel implements Serializable {
 		return currentBlock;
 	}
 
-	public static void setCurrentBlock(SpinCADBlock currentBlock) {
-		SpinCADModel.currentBlock = currentBlock;
+	public static void setCurrentBlock(SpinCADBlock cB) {
+		SpinCADModel.currentBlock = cB;
 	}
 
 	public void setChanged(boolean b) {
-		// TODO Auto-generated method stub
 		changed = b;
 	}
 	public boolean getChanged() {
-		// TODO Auto-generated method stub
 		return changed;
+	}
+
+	public void setIndexFB(int ijk) {
+		indexFB = ijk;
+	}
+	
+	public int getIndexFB() {
+		return indexFB;
 	}
 }

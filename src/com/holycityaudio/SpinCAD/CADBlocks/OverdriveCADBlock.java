@@ -1,3 +1,22 @@
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 	
+ */
+
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
@@ -10,11 +29,11 @@ public class OverdriveCADBlock extends GainCADBlock{
 	private static final long serialVersionUID = 6410980346610553856L;
 	int stages = 2;
 	double outputGain = 0.3;
-	double defaultGain = 0.25;
+	double gain = 0.25;
 
 	public OverdriveCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		hasControlPanel = true;
 		addControlInputPin(this, "Drive");
 		setName("Overdrive");
 	}
@@ -26,8 +45,6 @@ public class OverdriveCADBlock extends GainCADBlock{
 			input = inputPin.getRegister();
 			if(input != -1) {
 				if(stages > 0) {
-					int filt = sfxb.allocateReg();
-					int filt2 = sfxb.allocateReg();
 					int filt3 = sfxb.allocateReg();
 					int filt4 = sfxb.allocateReg();
 					int output = sfxb.allocateReg();
@@ -36,7 +53,7 @@ public class OverdriveCADBlock extends GainCADBlock{
 
 					SpinCADPin p = this.getPin("Drive").getPinConnection();
 					if(p == null) {	// there's no pin attached!
-						sfxb.readRegister(input, defaultGain);
+						sfxb.readRegister(input, gain);
 					}
 					else {
 						int Control1 = p.getRegister();
@@ -46,11 +63,13 @@ public class OverdriveCADBlock extends GainCADBlock{
 
 					if (stages > 2) {
 						sfxb.scaleOffset(-2.0, 0.0);
+						int filt = sfxb.allocateReg();
 						sfxb.readRegister(filt, 0.9);
 						sfxb.writeRegister(filt, 1.0);
 					}
 					if (stages > 1) {
 						sfxb.scaleOffset(-2.0, 0.0);
+						int filt2 = sfxb.allocateReg();
 						sfxb.readRegister(filt2, 0.3);
 						sfxb.writeRegister(filt2, 1.0);
 					}
@@ -76,13 +95,26 @@ public class OverdriveCADBlock extends GainCADBlock{
 	}
 
 	public int getStages() {
-		// TODO Auto-generated method stub
 		return stages;
 	}
 
 	public void setStages(int value) {
-		// TODO Auto-generated method stub
 		stages = value;
 	}
+	
+	public double getGain() {
+		return gain;
+	}
 
+	public void setGain(double value) {
+		gain = value;
+	}
+
+	public double getOutputGain() {
+		return outputGain;
+	}
+
+	public void setOutputGain(double value) {
+		outputGain = value;
+	}
 }

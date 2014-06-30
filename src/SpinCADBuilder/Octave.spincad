@@ -9,5 +9,6 @@ equ   output1     reg0
 rdax    adcl,1    ;read input signal
 absa
 wrax    output1,0    ;output in ACC and lf1 
+@setOutputPin Audio_Output output1
 @endif
 

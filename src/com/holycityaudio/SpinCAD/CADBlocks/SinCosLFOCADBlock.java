@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -33,7 +33,9 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 
 	public SinCosLFOCADBlock(int x, int y) {
 		super(x, y);
+		hasControlPanel = true;
 		addControlInputPin(this, "Speed");	//	speed
+		addControlInputPin(this, "Width");	//	speed
 		addControlOutputPin(this, "Sine");	//	SIN
 		addControlOutputPin(this, "Cosine");	//	COS
 		setName();
@@ -51,16 +53,12 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 
 		sfxb.skip(RUN,1);
 		sfxb.loadSinLFO(lfoSel, lfoRate, lfoWidth);
-		//		sfxb.loadRampLFO(0, 2048, 4096);
-		//		sfxb.loadSinLFO(1, lfoRate/2, lfoWidth/3);
 
-		int lfoIn = -1;
+		int speedIn = -1;
 		SpinCADPin p = this.getPin("Speed").getPinConnection();
 		if (p != null) {
-			lfoIn = p.getRegister();			
-			//			rdax pot0,1 
-			sfxb.readRegister(lfoIn, 1.0);	// get left signal, add to register, scale by 1.0
-			//			wrax sin0_rate,0 
+			speedIn = p.getRegister();			
+			sfxb.readRegister(speedIn, lfoRate/511.0);	// get left signal, add to register, scale by current rate setting
 			if(lfoSel == 0) {
 				sfxb.writeRegister(SIN0_RATE, 0.0);
 			}
@@ -69,6 +67,19 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 			}
 		}
 
+		int widthIn = -1;
+		p = this.getPin("Width").getPinConnection();
+		if (p != null) {
+			widthIn = p.getRegister();			
+			sfxb.readRegister(widthIn, lfoWidth/32767.0);	// get left signal, add to register, scale by 1.0
+			if(lfoSel == 0) {
+				sfxb.writeRegister(SIN0_RANGE, 0.0);
+			}
+			else {
+				sfxb.writeRegister(SIN1_RANGE, 0.0);				
+			}
+		}
+		
 		sfxb.chorusReadValue(0 + lfoSel);
 		sfxb.writeRegister(sin, 0.0);
 		sfxb.chorusReadValue(8 + lfoSel);

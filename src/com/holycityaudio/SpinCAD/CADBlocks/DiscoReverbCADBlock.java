@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * DiscoReverbCADBlock.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -32,8 +32,9 @@ public class DiscoReverbCADBlock extends ReverbCADBlock{
 	public DiscoReverbCADBlock(int x, int y) {
 		super(x, y);
 		// add another input and output pin for stereo
-		addInputPin(this);
+		// TODO debug control inputs
 		addOutputPin(this);
+		addControlInputPin(this,"Reverb");
 		setName("Disco Reverb");
 	}
 
@@ -41,8 +42,8 @@ public class DiscoReverbCADBlock extends ReverbCADBlock{
 		//		;dance patchfor disco mixers: 
 		//			;pot1 = Reverb to infinite RT, scales in and out levels
 		// TODO clean up for proper behavior with no inputs etc
-		double inputGain = 0.25;
-		//			;reveb can capture tonality for filter manipulation.
+		double inputGain = 0.5;
+		//			;reverb can capture tonality for filter manipulation.
 		//			;beware, infinite reverb turns off input!
 
 		//			equ	krt	reg0
@@ -84,9 +85,9 @@ public class DiscoReverbCADBlock extends ReverbCADBlock{
 		double kap = 0.7;
 		sfxb.comment("Disco reverb");
 		
-		int revControl = this.getPin("Control Input 1").getPinConnection().getRegister();
+		int revControl = this.getPin("Reverb").getPinConnection().getRegister();
 		int inputL = this.getPin("Audio Input 1").getPinConnection().getRegister();
-		int inputR = this.getPin("Audio Input 2").getPinConnection().getRegister();
+
 		this.getPin("Audio Output 1").setRegister(rmixl);
 		this.getPin("Audio Output 2").setRegister(rmixr);
 		
@@ -129,10 +130,8 @@ public class DiscoReverbCADBlock extends ReverbCADBlock{
 
 //				;now do reverb, simple, twin loop, mono drive:
 
-//					rdax	adcl,0.25
+//					rdax	adcl,0.5
 		sfxb.readRegister(inputL, inputGain);
-//					rdax	adcr,0.25	;get inputs, leave headroom
-		sfxb.readRegister(inputR, inputGain);
 //					mulx	kin		;scale by input attenuator
 		sfxb.mulx(kin);
 //					rda	ap1#,kap	;4 all passes:
@@ -200,14 +199,12 @@ public class DiscoReverbCADBlock extends ReverbCADBlock{
 //							wrax	rmixl,0
 		sfxb.writeRegister(rmixl, 0);
 //							rdax	adcr,-1
-		sfxb.readRegister(inputR, -1.0);
-//							rda	del2,1.5
 		sfxb.FXreadDelay("del2", 0.0, 1.5);
 //							mulx	pot0
 		sfxb.mulx(revControl);
+		sfxb.readRegister(inputL, 1.0);
+//		wrax	rmixl,0
 //							rdax	adcr,1
-		sfxb.readRegister(inputR, 1.0);
-//							wrax	rmixr,0
 		sfxb.writeRegister(rmixr, 0);
 
 //							;Reverb outputs are at rmixl and rmixr.

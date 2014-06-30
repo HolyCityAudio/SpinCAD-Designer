@@ -1,4 +1,4 @@
-@name Active_Crossover  
+@name Active_Crossover
 @audioInput adcl Input_Left
 @audioInput adcr Input_Right
 @audioOutput output1 Output_L 
@@ -7,7 +7,7 @@
 ;XOVER and response compensation for powered loudspeaker
 ;Crossover for 2-way system
 ;Mono input, HF and LF outputs
-;24dB/oct crossover (Linkwitz-Riley)
+; 24dB/oct crossover (Linkwitz-Riley)
 ;Tweeter delay in ~1/4" increments (Fs=48KHz)  
 ;7 band parametric EQ for speaker matching
 ;Shelving low pass for bass boosting 
@@ -22,7 +22,7 @@
 ;where:
 ;kt=tan(pi*f/Fs) 
 ;kts=kt^2
-;f=center frequency
+;f=center frequency 
 ;Fs=sample rate
 ;q=Q of filter peak
 

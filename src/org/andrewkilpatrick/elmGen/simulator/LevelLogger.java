@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import org.andrewkilpatrick.elmGen.util.Util;
 
 public class LevelLogger implements AudioSink {
 	JFrame frame;
+// GSW changed from JPanel to LoggerPanel to integrate with SpinCAD Designer
 	public LoggerPanel panel;
 	int windowCount = 0;
 	double maxL = 0.0;
@@ -38,7 +39,9 @@ public class LevelLogger implements AudioSink {
 	int xPos = 0;
 	int oldL = -96;
 	int oldR = -96;
-	int logMode = 0;	// 0 for integer, 1 for log
+// GSW added options for linear or log display within SpinCAD
+// not exactly sure if linear works!
+	int logMode = 1;	// 0 for integer, 1 for log
 	double left = -1;
 	double right = -1;
 
@@ -80,7 +83,7 @@ public class LevelLogger implements AudioSink {
 
 	public void writeDac(int[] buf, int len) {
 		int dbuf[] = delay.process(buf, 50000);
-
+// GSW Added some logic to discern between linear and log mode.
 		for(int i = 0; i < len; i += 2) {	
 			if(logMode == 1) {
 				left = Math.abs(Util.regToDouble(dbuf[i]));
@@ -112,7 +115,7 @@ public class LevelLogger implements AudioSink {
 
 		}
 	}
-
+// GSW Added LoggerPanel as a class
 	public class LoggerPanel {
 
 		JPanel panel;
@@ -122,7 +125,6 @@ public class LevelLogger implements AudioSink {
 		}
 
 		public Component getPanel() {
-			// TODO Auto-generated method stub
 			return panel;
 		}
 
@@ -168,7 +170,8 @@ public class LevelLogger implements AudioSink {
 	private double sampleToDB(double sampleLevel) {
 		return 20 * Math.log10(sampleLevel);
 	}
-
+// GSW added SampleToInt for use with integer mode logger
+// as before, not sure if it works!
 	private int sampleToInt(double sampleLevel) {
 		return (int)(sampleLevel * 16384);
 	}

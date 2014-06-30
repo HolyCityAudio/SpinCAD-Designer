@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.instructions.Instruction;
 import org.andrewkilpatrick.elmGen.util.Util;
 
-
+// GSW added extension to thread class, not 100% certain it was needed
 public class SpinSimulator extends Thread {
 	enum Port { ADC, DAC };
 	ElmProgram prog = null;
@@ -38,7 +38,7 @@ public class SpinSimulator extends Thread {
 	int pot1 = 0;
 	int pot2 = 0;
 	boolean runSimulator = true;
-	boolean loopMode = false;
+	boolean loopMode = true;
 	String inputFilename = null;
 	String outputFilename = null;
 	LinkedList<AudioSink> audioSinks = null;
@@ -65,9 +65,9 @@ public class SpinSimulator extends Thread {
 		audioSinks = new LinkedList<AudioSink>();
 		System.out.println("SpinSimulator - starting up simulator for: " + prog.getName());
 	}
-	
+
+// GSW new class for integration into SpinCAD Designer	
 	public SpinSimulator() {
-		// TODO Auto-generated constructor stub
 		state = new SimulatorState();
 		
 	}
@@ -86,7 +86,9 @@ public class SpinSimulator extends Thread {
 			else {
 				audioSinks.add(new AudioFileWriter(outputFilename));
 			}
-			simulate(65536, input, audioSinks);
+// TODO debug GSW trying to limit data generation			
+			simulate(0, input, audioSinks);
+//			simulate(65536, input, audioSinks);
 		} catch (UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -105,7 +107,7 @@ public class SpinSimulator extends Thread {
 	 * @param sinks the audio sinks
 	 * @throws IOException if there is an I/O error
 	 */
-	
+// GSW added List, to help deal with comments	
 	private List<Instruction> simList = null;
 
 	public void simulate(int tailout, AudioSource input,
@@ -113,10 +115,11 @@ public class SpinSimulator extends Thread {
 
 		long time = System.currentTimeMillis();
 		int totalSamps = 0;
-		
+// GSW added this stuff to insert comments per SpinCADBlock into ASM		
 		// copy instList to simList, deleting comments
 		simList = new LinkedList<Instruction>();
 		for(int i = 0; i < prog.getCodeLen(); i++) {
+			// skip comments
 			if(prog.getInstruction(i).getInstructionString().startsWith(";-") == false) {
 				simList.add(prog.getInstruction(i));
 			}
@@ -203,8 +206,11 @@ public class SpinSimulator extends Thread {
 	 * Runs the program across one sample.
 	 */
 	public void processSample() {
+// GSW changed this line to integrate into SpinCAD Designer
 		int codeLen = simList.size();	// this includes comments
 //		System.out.println("processing sample with: " + codeLen + " instructions");
+		// XXX TODO remove this, for LFO debugging
+		// System.out.println(" ");
 		state.resetPC();
 		while(state.getPC() < codeLen) {
 			Instruction inst = null;
@@ -258,6 +264,7 @@ public class SpinSimulator extends Thread {
 	}
 
 	public void showInteractiveControls() {
+// GSW changed this part to integrate into SpinCAD Designer
 		new SimControls(this);		
 	}
 	
@@ -272,7 +279,7 @@ public class SpinSimulator extends Thread {
 	public void showLevelLogger() {
 		audioSinks.add(new LevelLogger());
 	}	
-
+// GSW added this part to integrate into SpinCAD Designer
 	public void showLevelLogger(JPanel p) {
 		LevelLogger lL = new LevelLogger(p);
 		audioSinks.add(lL);

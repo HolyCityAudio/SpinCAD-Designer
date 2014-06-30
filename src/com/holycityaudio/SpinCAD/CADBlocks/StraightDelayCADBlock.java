@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * ModDelayCADBLock.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * SpinCAD Designer is based on ElmGen by Andrew Kilpatrick.  
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -19,40 +19,46 @@
  */ 
 
 package com.holycityaudio.SpinCAD.CADBlocks;
+// this code was supplied by holycityaudio.com/forum member slacker.
+// http://holycityaudio.com/forum/viewtopic.php?f=31&t=1272
+// First a simple delay, this is just a delay line, any mixing 
+// and feedback to make an effect would be done with other blocks. 
+// The maximum length can be set anywhere up to 1 second. The control 
+// signal from a pot or whatever is then scaled accordingly so the range 0 - 1 
+// always sweeps the whole delay line irrespective of it's length. The control 
+// signal is smoothed to prevent zipper noise. 
+// GSW had to adjust this so that the offset of the statement prior to RMPA
+// corresponds to the delay buffer offset of this block within the model
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class StraightDelayCADBlock extends ModulationCADBlock {
+public class StraightDelayCADBlock extends SpinCADBlock {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 695539935034103396L;
-	int delayLength = -1;
-	int delayTime = 250;
+	int delayLength = 8192;	// default delay length = 25% of buffer
+	int delayOffset = -1;	// this is the offset due to allocations by other blocks
 
 	public StraightDelayCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
-		// editPanel.add();
-		addControlInputPin(this,"Modulation In");
+		hasControlPanel = true;
+		addInputPin(this, "Audio Input");
+		addOutputPin(this, "Audio Output");
+		addControlInputPin(this,"Delay Time");
 		setName("Straight Delay");
 	}
 	
 	private void modDelay(SpinFXBlock sfxb, int chorusLength) {
 		int input = -1;
-		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
+		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 		if (p != null) {
 			input = p.getRegister();
 			int out = sfxb.allocateReg();
 			
-			int Control1 = -1;
-
-			p = this.getPin("Modulation In").getPinConnection();
-			if (p != null) {
-				Control1 = p.getRegister();
-			}
 			sfxb.comment(getName());
 
 //			;Single delay line dry only
@@ -63,33 +69,48 @@ public class StraightDelayCADBlock extends ModulationCADBlock {
 //			mem delay 32767*maxlength/1000
 //			equ control pot0
 		
+			// delay offset is the starting location of the memory segment in this block
+			delayOffset = sfxb.getDelayMemAllocated() + 1;
 //			equ maxlength 1000; max length of delay in milli seconds 0 - 1000
-			delayLength = (int)((sfxb.getSamplerate() * delayTime)/1000.0);
 			sfxb.FXallocDelayMem("moddel", delayLength);
 
 //			rdax adcl,1
 			sfxb.readRegister(input,  1.0);
 //			wra delay,0
 			sfxb.FXwriteDelay("moddel", 0, 0);
-			//			clr
+//			clr
 			sfxb.clear();
 //			or 32767*256
 			sfxb.or(32767 * 256);
 //			mulx control
-			sfxb.mulx(Control1);
-//			sof maxlength/1000,0
-			sfxb.scaleOffset(delayTime/1000.0, 0);
-//			rdfx del_read, smooth
-			sfxb.readRegisterFilter(del_read, smooth);
-//			wrax del_read,1
-			sfxb.writeRegister(del_read, 1.0);
+			int Control1 = -1;
+
+			p = this.getPin("Delay Time").getPinConnection();
+			
+			if (p != null) {
+				Control1 = p.getRegister();
+				sfxb.mulx(Control1);
+				// only filter control input when the control input is connected!	
+//				rdfx del_read, smooth
+				sfxb.readRegisterFilter(del_read, smooth);
+//				wrax del_read,1
+				sfxb.writeRegister(del_read, 1.0);
+			} else {
+				// TODO add default time control input
+				// since default would be full delay length, no need to scale it
+				// haha but I just did anyway - or not
+//				sfxb.scaleOffset(1.0, 0);
+			}
+// 			XXX TODO this may require a sample rate conversion
+//			sof maxlength/1000, buffer
+			sfxb.scaleOffset((double)(delayLength/32768.0), (double) (delayOffset/32768.0));
 //			wrax addr_ptr,0
 			sfxb.writeRegister(ADDR_PTR, 0);
 //			rmpa 1
 			sfxb.readDelayPointer(1.0);
 //			wrax dacl,0
 			sfxb.writeRegister(out, 0);
-			this.getPin("Audio Output 1").setRegister(out);
+			this.getPin("Audio Output").setRegister(out);
 			System.out.println("Straight Delay code gen!");
 		}
 	}
@@ -107,14 +128,16 @@ public class StraightDelayCADBlock extends ModulationCADBlock {
 // control panel functions
 	
 	public void editBlock(){
-		new StraightDelayControlPanel(this);
+//		new StraightDelayControlPanel(this);
 	}
 
-	public int getDelayTime () {
-		return delayTime;
+	public int getDelayLength () {
+		return delayLength;
 	}
 
-	public void setDelayTime (int l) {
-		delayTime = l;
+	public void setDelayLength (int l) {
+		if(l <= 32767) {
+			delayLength = l;
+		}
 	}
 }

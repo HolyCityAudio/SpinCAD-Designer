@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+// Added by GSW to integrate into SpinCAD Designer
 import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
-
 
 @SuppressWarnings("serial")
 class ControlPanel extends JFrame implements ChangeListener, ActionListener {
@@ -90,7 +90,7 @@ class ControlPanel extends JFrame implements ChangeListener, ActionListener {
 		else if(ce.getSource() == potSlider2) {
 			sim.setPot(2, (double)potSlider2.getValue() / 100.0);
 			potLabel2.setText("Pot 2 - " + String.format("%2.2f", sim.getPot(2)));
-			System.out.println("pot2: " + String.format("%2.2f", sim.getPot(2)));
+			System.out.println(potLabel2.getText());
 		}
 	}
 
@@ -98,8 +98,6 @@ class ControlPanel extends JFrame implements ChangeListener, ActionListener {
 		if(al.getSource() == stopSimButton) {
 			sim.stopSimulator();
 			System.out.println("stopping simulator");
-	//		@TODO
- // SEND A MESSGE TO PARENT TO CLOSE THIS WINDOW
 		}
 	}
 }

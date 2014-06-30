@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -35,9 +35,10 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 
 	public EnvelopeControlCADBlock(int x, int y) {
 		super(x, y);
+		hasControlPanel = true;
+		setName("Envelope");
 		addInputPin(this);	//	delay time
 		addControlOutputPin(this);	//	feedback
-		setName("Envelope");
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {

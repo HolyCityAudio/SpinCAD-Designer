@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,11 +19,15 @@ package org.andrewkilpatrick.elmGen.simulator;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
+
+// GSW I am taking AK's ramp max values and shifting them 
+// left 4 places so that freq can be rendered in full resolution.
+
 public class RampLFO {
-	public static final int AMP_4096 = 0x3fffff;
-	public static final int AMP_2048 = 0x1fffff;
-	public static final int AMP_1024 = 0x0fffff;
-	public static final int AMP_512 = 0x07ffff;
+	public static final int AMP_4096 = 0x3ffffff;
+	public static final int AMP_2048 = 0x1ffffff;
+	public static final int AMP_1024 = 0x0ffffff;
+	public static final int AMP_512 =  0x07fffff;
 
 	final SimulatorState state;
 	final int unit;
@@ -31,6 +35,7 @@ public class RampLFO {
 	final int ampReg;
 	int pos = 0;
 	int amp = 0;
+	long xfade = 0;
 
 	public RampLFO(SimulatorState state, int unit) {
 		this.state = state;
@@ -44,20 +49,22 @@ public class RampLFO {
 			ampReg = ElmProgram.RMP1_RANGE;			
 		}
 		else {
-			throw new IllegalArgumentException("bad unit: " + unit);
+			throw new IllegalArgumentException("Ramp LFO: bad unit: " + unit);
 		}
 	}
-
+// GSW trying to debug Ramp LFO
+// up to now I can tell you I have not been successful!
 	public void increment() {
 		int sign = 1;
 		if(unit == 0) {
 //			System.out.printf("Ramp rate: %x\n", state.getRegVal(freqReg));
 		}
-		int freq = state.getRegVal(freqReg) >> 8;
+		int freq = state.getRegVal(freqReg);
+		freq = freq >> 8;
 
-		if((freq & 0x80) != 0) {
+		if((freq & 0x80000) != 0) {
 			sign = -1;
-			freq = ~((-1 ^ 0x7F) | freq) + 1;
+			freq = ~((-1 ^ 0x7FFFF) | freq) + 1;
 		}
 		int regAmp = state.getRegVal(ampReg);
 		amp = AMP_4096;
@@ -70,10 +77,27 @@ public class RampLFO {
 		else if(regAmp == 0x01) {
 			amp = AMP_2048;
 		}
-
-		pos = (pos - (freq >> 4)) & amp;
-//		if(unit == 1)
-//			System.out.printf("%8x\n", pos);
+// taking freq at full resolution for pointer increment
+		int increment = freq; 
+		pos = (pos - increment) & amp;
+		
+		// divide windows into eighths
+		int eighthAmp = amp >> 3;
+		// need to get the frequency setting
+		// int xfadeIncrement = frequency;
+		// LFO pos is low resolution counter
+		if(pos > eighthAmp * 7) {
+			xfade = 0;
+		}
+		else if (pos > eighthAmp * 5) {
+			xfade += 1;
+		}
+		else if (pos > eighthAmp * 3) {
+			 xfade = xfade;
+		}
+		else if ((pos > eighthAmp * 1) && (xfade > 0)) {
+			xfade -= 1;
+		}
 	}
 
 	public void jam() {
@@ -81,14 +105,25 @@ public class RampLFO {
 	}
 
 	public int getValue() {
-		return pos;
-	}
+		// shift right 4 places before returning value
+				return (pos >> 4);
+			}
+	
+	public int getXfade() {
+		// correction factor = (freq/RAMP_MAX) * some constant
+		// looks like xfade * freq might be too big for an int, hmmm trying a long
+		// yes a long for xfade internally does help.
+		// with RAMP_AMP = 4096, >> 18 gives xfade = 16384 max, which appears to give
+		// full amplitude output in the simulator window.
+				return (int) ((xfade * state.getRegVal(freqReg)) >> 18);
+			}
 
 	public int getRptr2Value() {
-		return (pos + (amp >> 1)) & amp;
+// shift right 4 places before returning value
+		return ((pos + (amp >> 1)) & amp) >> 4;
 	}
 
 	public int getAmp() {
-		return amp;
+		return (amp >> 4);
 	}
 }

@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * ModDelayCADBLock.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -33,8 +33,7 @@ public class ModDelayCADBlock extends ModulationCADBlock {
 
 	public ModDelayCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
-		// editPanel.add();
+		hasControlPanel = true;
 		addControlInputPin(this,"Modulation In");
 		setName("Mod Delay");
 	}
@@ -48,7 +47,7 @@ public class ModDelayCADBlock extends ModulationCADBlock {
 			
 			int Control1 = -1;
 
-			p = this.getPin("Control Input 1").getPinConnection();
+			p = this.getPin("Modulation In").getPinConnection();
 			if (p != null) {
 				Control1 = p.getRegister();
 			}
@@ -62,7 +61,7 @@ public class ModDelayCADBlock extends ModulationCADBlock {
 //			;set up LFOs, only at start up
 //			skp run, START
 			sfxb.skip(RUN, 1);
-//			wldr rmp0,0,4096      ;ramp0 used for modulation operations
+//			wldr 0,0,4096      ;ramp0 used for modulation operations
 			sfxb.loadRampLFO(0, 0, 4096);
 //			START:
 
@@ -79,7 +78,7 @@ public class ModDelayCADBlock extends ModulationCADBlock {
 //			cho rda,rmp0,reg|compc,moddel   ;read from delay
 			sfxb.FXchorusReadDelay(RMP0, REG | COMPC, "moddel", 0);
 //			cho rda,rmp0,0,moddel+1
-			sfxb.FXchorusReadDelay(RMP0, 0, "moddel", 1);
+			sfxb.FXchorusReadDelay(RMP0, 0, "moddel+", 1);
 //			wrax dacl,0
 			sfxb.writeRegister(chorout, 0);
 			this.getPin("Audio Output 1").setRegister(chorout);

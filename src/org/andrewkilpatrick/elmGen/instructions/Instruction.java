@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ public abstract class Instruction {
 //		return Math.round(num * 32768.0) & 0xffff;
 		return (int)(num * 32768.0) & 0x7fff;  // SpinASM compatibility
 	}
-
+	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int i) {
 		// TODO Auto-generated method stub
 		return null;

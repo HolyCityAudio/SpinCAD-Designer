@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -34,9 +34,9 @@ public class RampLFOCADBlock extends ControlCADBlock{
 
 	public RampLFOCADBlock(int x, int y) {
 		super(x, y);
-		addControlOutputPin(this);	//	SIN
-		addControlOutputPin(this);	//	COS
-		setName("LFO");
+		addControlOutputPin(this, "Ramp 1");	//	Ramp 1
+		addControlOutputPin(this, "Ramp 2");	//	Ramp 2
+		setName("Ramp LFO");
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -46,14 +46,14 @@ public class RampLFOCADBlock extends ControlCADBlock{
 		sfxb.comment(getName());
 
 		sfxb.skip(RUN,2);
-		sfxb.loadRampLFO(0, 0, 4096);
-		sfxb.loadRampLFO(1, 512, 512);
-		sfxb.chorusReadValue(4);
+		sfxb.loadRampLFO(0, 32000, 4096);
+		sfxb.loadRampLFO(1, -16000, 1024);
+		sfxb.chorusReadValue(RMP0);
 		sfxb.writeRegister(ramp0, 0.0);
-		sfxb.chorusReadValue(5);
+		sfxb.chorusReadValue(RMP1);
 		sfxb.writeRegister(ramp1, 0.0);
-		this.getPin("Control Output 1").setRegister(ramp0);
-		this.getPin("Control Output 2").setRegister(ramp1);
+		this.getPin("Ramp 1").setRegister(ramp0);
+		this.getPin("Ramp 2").setRegister(ramp1);
 		System.out.println("Ramp LFO code gen!");
 	}
 

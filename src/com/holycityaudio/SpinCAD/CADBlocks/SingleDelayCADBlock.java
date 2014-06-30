@@ -1,3 +1,22 @@
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 	
+ */
+
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
@@ -19,16 +38,18 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 	// readDelay
 	// equally spaced for 16th note resolution
 
-	private double length = 0.8;
 	private double fbLevel = 0.05;
 	private double defaultGain = 0.5;
 	private double defaultFeedback = 0.45;
 	private double delayFactor = 0.999;
 
+	int delayLength = -1;
+	int delayOffset = -1;	// this is the offset due to allocations by other blocks
+	int delayTime = 250;	// milliseconds
+
 	public SingleDelayCADBlock(int x, int y) {
-		// super("MultiTap");
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		hasControlPanel = true;
 		addControlInputPin(this, "Gain");	//	delay time
 		addControlInputPin(this, "Feedback");	//	feedback
 		setName("Single Delay");
@@ -40,8 +61,17 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 
 	public void generateCode(SpinFXBlock sfxb) {
 		// only mono input supported
-		// TODO Auto-generated constructor stub
 		int input;
+		
+		// Here we account for memory already allocated.  Since we are using RMPA
+		// we have to calculate the pointer explicitly rather than using buffer names and
+		// offsets, etc.
+		
+		delayOffset = sfxb.getDelayMemAllocated() + 1;
+//		equ maxlength 1000; max length of delay in milli seconds 0 - 1000
+		delayLength = (int)(((sfxb.getSamplerate() - 1) * delayTime)/1000.0);
+		sfxb.FXallocDelayMem("moddel", delayLength);
+
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
 		if (p != null) {
 			input = p.getRegister();
@@ -63,8 +93,6 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 			} else {
 				Control2 = p.getRegister();
 			}
-
-			sfxb.FXallocDelayMem("Delay", (int) (length * getSamplerate() + 1));
 			int output = sfxb.allocateReg();
 
 			// ; Guitar Echo
@@ -120,7 +148,10 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 			// and %01111110_00000000_00000000 ;don't make jumps too small
 //			sfxb.and(0b011111100000000000000000);
 			// sof 61/64,3/64 ;50 ms to 1 second
-			sfxb.scaleOffset(61 / 64.0, 3 / 64.0);
+			// this line was from original example
+//			sfxb.scaleOffset(61 / 64.0, 3 / 64.0);
+			// this compensates for the offset and length of the delay buffer
+			sfxb.scaleOffset(delayTime/1000.0, (double) (delayOffset/32768.0));
 			// wrax addr_ptr,0
 			sfxb.writeRegister(ADDR_PTR, 0);
 
@@ -128,8 +159,6 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 
 			// rmpa 1
 			sfxb.readDelayPointer(1);
-			// TODO debug remove the line bloew it doesn't belowng here
-			sfxb.FXreadDelay("delay^+", 25, 0.5);
 			// wrax dout,0
 			sfxb.writeRegister(dout, 1);
 
@@ -145,10 +174,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 			// wrax dry_in, 1
 			//		sfxb.writeRegister(input, 1);
 			// wra del,0
-			sfxb.FXwriteDelay("delay", 0, 0);
-
-			// ; mix dry and wet using pot2
-
+			sfxb.FXwriteDelay("moddel", 0, 0);
 			// rdax dout,1
 			sfxb.readRegister(dout, 1.0);
 			// write output
@@ -160,29 +186,24 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 
 	// ====================================================
 	public double getfbLevel() {
-		// TODO Auto-generated method stub
 		return fbLevel;
 	}
 
 	public void setfbLevel(double d) {
-		// TODO Auto-generated method stub
 		fbLevel = d;
 	}
 
 	// ====================================================
-	public void setLength(double d) {
-		// TODO Auto-generated method stub
-		length = d;
+	public void setDelayTime(int d) {
+		delayTime = d;
 	}
 
-	public double getLength() {
-		// TODO Auto-generated method stub
-		return length;
+	public int getDelayTime() {
+		return delayTime;
 	}
 
 	// ====================================================
 	public void setTapLevel(int i, double value) {
-		// TODO Auto-generated method stub
 		if (value < 0.0) {
 			value = 0.0;
 		}
@@ -197,7 +218,6 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 	}
 
 	public double getTapLevel(int i) {
-		// TODO Auto-generated method stub
 		if (i == 0) {
 			return tap0level;
 		} else if (i == 1) {

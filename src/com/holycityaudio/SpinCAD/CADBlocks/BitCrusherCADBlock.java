@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * BitCrusherCADBlock.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -33,7 +33,7 @@ public class BitCrusherCADBlock extends GainCADBlock{
 
 	public BitCrusherCADBlock(int x, int y) {
 		super(x, y);
-		//		editPanel.add();
+		hasControlPanel = true;
 		setName("Bit Crusher");
 	}
 

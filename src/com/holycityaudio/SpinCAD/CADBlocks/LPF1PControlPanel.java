@@ -1,6 +1,8 @@
-/* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
- *
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * LPF1PControlPanel.java
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -15,6 +17,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 	
  */
+
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Point;

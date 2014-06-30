@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ public class Jam extends Instruction {
 	 * @param lfo the LFO to reset (0 or 1)
 	 */
 	public Jam(int lfo) {
+		// GSW corrected LFO values, it was a bug, pretty sure
 		if(lfo < 2 || lfo > 3) {
 			throw new IllegalArgumentException("lfo out of range: " + lfo +
 					" - valid values: 2 or 3");
@@ -42,6 +43,7 @@ public class Jam extends Instruction {
 	
 	@Override
 	public int getHexWord() {
+		// GSW corrected LFO values, it was a bug, pretty sure
 		return 0x80 | (((lfo - 2) & 0x01) << 6) | 0x13;	// this may be incorrect if lfo needs to be 2 or 3
 	}
 
@@ -49,7 +51,7 @@ public class Jam extends Instruction {
 	public String getInstructionString() {
 		return "Jam(" + lfo + ")";
 	}
-	
+	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
 			return "JAM " + lfo;
@@ -60,6 +62,7 @@ public class Jam extends Instruction {
 	
 	@Override
 	public void simulate(SimulatorState state) {
+		// GSW corrected LFO values, it was a bug, pretty sure
 		state.jamRampLFO(lfo - 2);
 	}
 }

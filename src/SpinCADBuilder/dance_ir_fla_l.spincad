@@ -1,6 +1,5 @@
-@name Infinite_Rev_Flange 
+@name Infinite_Rev_Flange
 @audioInput adcl Input_L
-@audioInput adcr Input_R  
 @audioOutput dacl Audio_Output_1  
 @audioOutput dacr Audio_Output_2
 @controlInput input0 Reverb_Time
@@ -125,8 +124,7 @@ wrax	lbyp,0
 
 ;now do reverb, simple, twin loop, mono drive:
 
-rdax	adcl,0.25
-rdax	adcr,0.25	;get inputs, leave headroom
+rdax	adcl,0.5
 mulx	kin		;scale by input attenuator
 rda	ap1#,kap	;4 all passes:
 wrap	ap1,-kap
@@ -164,14 +162,14 @@ rda del1, 0.5
 rdax	adcl,1
 wra	fdell,0		;write temp reverb output
 
-rdax	adcr,-1
+rdax	adcl,-1
 @isPinConnected Reverb_Time
 rda	del2,1
 mulx	pot0
 @else
 rda del1, 0.5
 @endif
-rdax	adcr,1
+rdax	adcl,1
 wra	fdelr,0
 
 ;Reverb outputs are in flange delays.

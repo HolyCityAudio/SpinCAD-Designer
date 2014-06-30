@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
+import org.andrewkilpatrick.elmGen.util.Util;
 
 /**
  * This class represents the WRAX instruction.
@@ -30,7 +31,7 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 public class WriteRegister extends Instruction {
 	final int addr;
 	final double scale;
-
+	
 	/**
 	 * Writes ACC to a register file, then multiply ACC by scale.
 	 * 
@@ -40,6 +41,8 @@ public class WriteRegister extends Instruction {
 	public WriteRegister(int addr, double scale) {
 		if(addr < 0 || addr > 63) {
 //			throw new IllegalArgumentException("addr out of range: " + addr + " - valid range: 0 - 63");
+	// GSW added for integration with SpinCAD Designer
+	// there's probably a better way to handle it at a higher level
 			JFrame frame = new JFrame();
 			JOptionPane.showMessageDialog(
 					frame,
@@ -53,21 +56,21 @@ public class WriteRegister extends Instruction {
 		this.addr = addr;
 		this.scale = scale;
 	}
-
+	
 	@Override
 	public int getHexWord() {
 		return ((convS114(scale) & 0xffff) << 16) | 
-				((addr & 0x3f) << 5) | 0x06;
+			((addr & 0x3f) << 5) | 0x06;
 	}
 
 	@Override
 	public String getInstructionString() {
 		return "WriteRegister(" + addr + "," + scale + ")";
 	}
-
+	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "WRAX " + addr + "," + scale;
+			return "WRAX " + Util.getRegisterName(addr) + "," + String.format("%6.10f",scale);		
 		}
 		else
 			return 

@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ public class ChorusScaleOffset extends Instruction {
 	private boolean cos;
 	private boolean compc;
 	private boolean compa;
+	// GSW added for integration with SpinCAD Designer
+
 	String readMode = "";
 	
 	/**
@@ -49,6 +51,9 @@ public class ChorusScaleOffset extends Instruction {
 		}
 		this.lfo = lfo;
 		this.flags = (flags & 0x3f);	
+	// GSW changed the names of LFO constants to be consistent with
+	// Spin ASM, less confusing that way
+
 		if((flags & ElmProgram.COS) != 0) {
 			cos = true;
 			if(lfo == 2 || lfo == 2) {
@@ -61,7 +66,7 @@ public class ChorusScaleOffset extends Instruction {
 		if((flags & ElmProgram.COMPA) != 0) {
 			compa = true;
 		}
-		
+	// GSW added for integration with SpinCAD Designer
 		readMode = new ChorusModeFlags().readMode(flags);
 		checkS15(offset);
 		this.offset = offset;
@@ -81,7 +86,7 @@ public class ChorusScaleOffset extends Instruction {
 		return "ChorusScaleOffset(" + lfo + "," + 
 			String.format("%02X", flags) + "," + offset + ")";
 	}
-	
+	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
 			return "CHO SOF," + lfo + "," + 

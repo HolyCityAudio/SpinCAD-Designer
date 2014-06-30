@@ -13,6 +13,7 @@ public class HPFCADBlock extends FilterCADBlock{
 
 	public HPFCADBlock(int x, int y) {
 		super(x, y);
+		hasControlPanel = true;
 		addInputPin(this);
 		addOutputPin(this);
 		setName("High Pass");	

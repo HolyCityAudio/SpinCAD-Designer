@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * ModDelayControlPanel.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * SpinCAD Designer is based on ElmGenby Andrew Kilpatrick.  
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -28,27 +28,42 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-class StraightDelayControlPanel {
+class ServoDelayControlPanel {
 
-	private StraightDelayCADBlock mD;
-	private JSlider delaySlider;
-	private JLabel delayLabel;
+	private ServoDelayCADBlock mD;
+	private JSlider delaySliderCoarse;
+	private JSlider delaySliderFine;
+	private JLabel delayLabelCoarse;
+	private JLabel delayLabelFine;
 	private JFrame frame;
 
-	public StraightDelayControlPanel(StraightDelayCADBlock straightDelayCADBlock) {
-		this.mD = straightDelayCADBlock;
+	public ServoDelayControlPanel(ServoDelayCADBlock sDCB) {
+		this.mD = sDCB;
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame();
-				frame.setTitle("Straight Delay");
+				frame.setTitle("Servo Delay");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-				delaySlider = new JSlider(JSlider.HORIZONTAL, 50, 1000, mD.getDelayTime());
-				delaySlider.addChangeListener(new bitSliderListener());
-				delayLabel = new JLabel();
-				frame.add(delayLabel);
-				frame.add(delaySlider);
-				updateDelayLabel();
+				// XXX debug, this may not be correct
+				int timeCoarse = calcDelayTimeCoarse(mD.getDelayLength());
+				delaySliderCoarse = new JSlider(JSlider.HORIZONTAL, 0, calcDelayTimeCoarse(32767), timeCoarse);
+				
+				delaySliderCoarse.addChangeListener(new bitSliderListener());
+				delayLabelCoarse = new JLabel();
+				frame.add(delayLabelCoarse);
+				frame.add(delaySliderCoarse);
+				
+				updateDelayLabelCoarse();
+				
+				int timeFine = calcDelayTimeFine(mD.getDelayLength());
+				delaySliderFine = new JSlider(JSlider.HORIZONTAL, 0, 25, timeFine);
+				delaySliderFine.addChangeListener(new bitSliderListener());
+				delayLabelFine = new JLabel();
+				frame.add(delayLabelFine);
+				frame.add(delaySliderFine);
+				updateDelayLabelFine();
+				
 				frame.setVisible(true);
 				frame.pack();
 				frame.setLocation(mD.getX() + 200, mD.getY() + 150);
@@ -59,16 +74,38 @@ class StraightDelayControlPanel {
 	
 	class bitSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
-			if(ce.getSource() == delaySlider) {
-				mD.setDelayTime(delaySlider.getValue());
-				updateDelayLabel();
+// XXX this needs to be reworks, it is not accurate
+			int totalDelay = (int)(((delaySliderCoarse.getValue()+ delaySliderFine.getValue()) * mD.getSamplerate())/1000.0);
+			if(ce.getSource() == delaySliderCoarse) {
+				mD.setDelayLength(totalDelay);
+				updateDelayLabelCoarse();
+			}
+			if(ce.getSource() == delaySliderFine) {
+				mD.setDelayLength(totalDelay);
+				updateDelayLabelFine();
 			}
 		}
 	}
 
-	public void updateDelayLabel() {
+	public void updateDelayLabelCoarse() {
 		// TODO Auto-generated method stub
-		delayLabel.setText("Delay time: " + String.format("%d ms", mD.getDelayTime()));		
+		delayLabelCoarse.setText("Delay (coarse): " + String.format("%d ms", calcDelayTimeCoarse(mD.getDelayLength())));		
 
+	}
+	
+	public void updateDelayLabelFine() {
+		// TODO Auto-generated method stub
+		delayLabelFine.setText("Delay (fine): " + String.format("%d ms", calcDelayTimeFine(mD.getDelayLength())));		
+
+	}
+	
+	private int calcDelayTimeCoarse(int length) {
+		int l = (int) ((length * 1000)/mD.getSamplerate()/25) * 25;
+		return l;
+	}
+	
+	private int calcDelayTimeFine(int length) {
+		int l = (int) (((length * 1000)/mD.getSamplerate()) % 25);
+		return l;
 	}
 }

@@ -1,3 +1,22 @@
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 	
+ */
+
 /*
  * Gary Worsham attempt at a pitch up and down.	
  */
@@ -61,20 +80,20 @@ public class PitchUpCADBlock extends ModulationCADBlock {
 			//wra delayd,0
 			sfxb.FXwriteDelay("delayd", 0, 0.0);	
 			
-			//cho rda,RMP0,REG|CHO_COMPC,delayd 
+			//cho rda,RMP0,REG|COMPC,delayd 
 			sfxb.FXchorusReadDelay(RMP0, REG | COMPC, "delayd", 0);
 			//cho rda,RMP0,,delayd+1 
-			sfxb.FXchorusReadDelay(RMP0, 0, "delayd", 1);
+			sfxb.FXchorusReadDelay(RMP0, 0, "delayd+", 1);
 			// wra temp,0 
 //			sfxb.FXwriteDelay("temp", 0, 0.0);
 			// cho rda,RMP0,RPTR2|COMPC,delayd 
-//			sfxb.FXchorusReadDelay(CHO_LFO_RMP0, CHO_RPTR2 | CHO_COMPC, "delayd", 0);
+//			sfxb.FXchorusReadDelay(LFO_RMP0, RPTR2 | COMPC, "delayd", 0);
 			// cho rda,RMP0,RPTR2,delayd+1 
-//			sfxb.FXchorusReadDelay(CHO_LFO_RMP0, CHO_RPTR2, "delayd", 1);
+//			sfxb.FXchorusReadDelay(LFO_RMP0, RPTR2, "delayd", 1);
 			// cho sof,RMP0,NA|COMPC,0 
-//			sfxb.chorusScaleOffset(CHO_LFO_RMP0, CHO_NA | CHO_COMPC, 0);
+//			sfxb.chorusScaleOffset(LFO_RMP0, NA | COMPC, 0);
 			// cho rda,RMP0,NA,temp 
-//			sfxb.FXchorusReadDelay(CHO_LFO_RMP0, CHO_NA, "temp", 0);
+//			sfxb.FXchorusReadDelay(LFO_RMP0, NA, "temp", 0);
 			//wrax pitch1,0
 			sfxb.writeRegister(pitch1, 0);
 	

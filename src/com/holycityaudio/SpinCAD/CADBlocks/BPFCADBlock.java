@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * BPFCADBlock.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -20,9 +20,12 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class BPFCADBlock extends FilterCADBlock{
+public class BPFCADBlock extends SpinCADBlock{
 	/**
 	 * 
 	 */
@@ -31,9 +34,11 @@ public class BPFCADBlock extends FilterCADBlock{
 
 	public BPFCADBlock(int x, int y) {
 		super(x, y);
-		addInputPin(this);
-		addOutputPin(this);
+		hasControlPanel = true;
+		addInputPin(this, "Audio Input");
+		addOutputPin(this, "Audio Output");
 		setName("Band Pass");
+		setBorderColor(Color.PINK);
 	}
 	
 	public void editBlock(){
@@ -41,16 +46,16 @@ public class BPFCADBlock extends FilterCADBlock{
 	}
 	
 	public void generateCode(SpinFXBlock sfxb) {
-		
 		// at this moment, code implements a low pass.
 		// and not a very good one at that!
 		// coefficients
 		
 		// need to figure out how to map these coefficients to freq/resonance
+		sfxb.comment(sfxb.getName());
 		double kfl = 1.0 - Math.exp((-6.283 * f0)/getSamplerate());
 		double kql = -0.13;
 		
-		int input = this.getPin("Audio Input 1").getPinConnection().getRegister();
+		int input = this.getPin("Audio Input").getPinConnection().getRegister();
 		
 		int lpal = sfxb.allocateReg();
 		int lpbl = sfxb.allocateReg();
@@ -95,10 +100,8 @@ public class BPFCADBlock extends FilterCADBlock{
 		//		rdax	lpbl,1
 		sfxb.readRegister(lpbl, 1.0);
 		
-		this.getPin("Audio Output 1").setRegister(lpoutl);	
+		this.getPin("Audio Output").setRegister(lpoutl);	
 		System.out.println("BPF code gen!");
 
 	}
-
-
 }

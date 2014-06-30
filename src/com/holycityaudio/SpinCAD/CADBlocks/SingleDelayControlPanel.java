@@ -1,6 +1,7 @@
-/* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
- *
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -15,6 +16,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 	
  */
+
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Dimension;
@@ -63,7 +65,7 @@ class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 		this.getContentPane().add(lengthSlider);
 		
 		fbSlider.setValue((int)Math.round((singleDelayCADBlock.getfbLevel() * 100.0)));
-		lengthSlider.setValue((int)Math.round((singleDelayCADBlock.getLength() * 1000.0)));
+		lengthSlider.setValue(singleDelayCADBlock.getDelayTime());
 
 		this.setVisible(true);
 		this.setLocation(new Point(delay.getX() + 200, delay.getY() + 150));
@@ -82,8 +84,8 @@ class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 			fbLabel.setText("Feedback level " + String.format("%2.2f", delay.getfbLevel()));
 		}
 		else if(ce.getSource() == lengthSlider) {
-			delay.setLength((double)lengthSlider.getValue() / 1000.0);
-			lengthLabel.setText("Delay (sec) " + String.format("%1.3f", delay.getLength()));
+			delay.setDelayTime(lengthSlider.getValue());
+			lengthLabel.setText("Delay (msec) " + String.format("%3d", delay.getDelayTime()));
 		}
 	}
 }

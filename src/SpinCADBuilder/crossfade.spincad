@@ -4,20 +4,28 @@
 @audioOutput output1 Audio_Output  
 @controlInput input0 Fade
 
-@slider value doink 
-; @slider adjustment doink 
-
 ; from Spin Knowledge base
 ; http://www.spinsemi.com/knowledge_base/coding_examples.html#Cross_fading
 
 equ output1 REG07
-equ value 0.5
-equ adjustment 0.9
 
+@isPinConnected Input_2
 rdax	inp2,1
+@endif
+
+@isPinConnected Input_1
 rdax	inp1,-1
+@endif
+@isPinConnected Fade 
 mulx	pot0
+@else
+sof 0.5, 0.0
+@endif
+
+@isPinConnected Input_1
 rdax	inp1,1
+@endif
 
 wrax	output1,1
 
+@setOutputPin Audio_Output output1

@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -39,6 +39,7 @@ public class OutputCADBlock extends SpinCADBlock{
 
 	public OutputCADBlock(int x, int y) {
 		super(x, y);
+		hasControlPanel = true;
 		addInputPin(this);
 		addInputPin(this);
 		setName("Output");
@@ -59,7 +60,7 @@ public class OutputCADBlock extends SpinCADBlock{
 			// so that if gain == 1.0 then the output register of the previous block becomes e.g. DACL
 			if(lGain < 2.0) {
 				int i = pC.getRegister();
-				if( (i >= 32 && i <= 64) || i == ADCR || i == ADCL) {
+				if( (i >= 32 && i <= 64) || i == ADCR || i == ADCL || i == POT0 || i == POT1 || i == POT2) {
 					eP.readRegister(i,lGain);
 					eP.writeRegister(DACL, 0.0);
 				}			
@@ -73,7 +74,7 @@ public class OutputCADBlock extends SpinCADBlock{
 		if (p != null) {
 			if(rGain < 2.0) {
 				int i = p.getRegister();
-				if(( i >= 32 && i <= 64) || i == ADCR || i == ADCL) {
+				if(( i >= 32 && i <= 64) || i == ADCR || i == ADCL || i == POT0 || i == POT1 || i == POT2) {
 					eP.readRegister(i,rGain);
 					eP.writeRegister(DACR, 0.0);
 				}

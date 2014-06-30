@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ public class ChorusReadDelay extends Instruction {
 	final int lfo;
 	final int flags;
 	final int addr;
+	int xfade;
 	Reg tempReg;
 	// simulator stuff
 	boolean cos = false;
@@ -39,6 +40,9 @@ public class ChorusReadDelay extends Instruction {
 	boolean compa = false;
 	boolean rptr2 = false;
 	boolean na = false;
+	// GSW added for integration with SpinCAD Designer
+	// don't exactly remember why
+
 	String readMode = "";
 
 
@@ -56,6 +60,8 @@ public class ChorusReadDelay extends Instruction {
 		}
 		this.lfo = lfo;
 		this.flags = (flags & 0x3f);
+		// GSW I changed the names of the constants to be consistent
+		// with Spin ASM, too confusing otherwise
 		if((flags & ElmProgram.COS) != 0) {
 			cos = true;
 			if(lfo == 2 || lfo == 3) {
@@ -80,6 +86,9 @@ public class ChorusReadDelay extends Instruction {
 				throw new IllegalArgumentException("rptr2 cannot be used for SIN LFOs");
 			}
 		}
+	// GSW added for integration with SpinCAD Designer
+	// there was also an issue here somewhere with LFO value
+
 		readMode = new ChorusModeFlags().readMode(flags);
 		
 		if(addr < 0 || addr > 32767) {
@@ -90,7 +99,6 @@ public class ChorusReadDelay extends Instruction {
 		tempReg = new Reg();
 	}
 	
-
 	@Override
 	public int getHexWord() {
 		int ret = 0x14;
@@ -104,7 +112,7 @@ public class ChorusReadDelay extends Instruction {
 	public String getInstructionString() {
 		return "ChorusReadDelay(" + lfo + "," + String.format("%02X", flags) + "," + addr + ")";
 	}
-
+	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if(mode == 1) {
 			return "CHO RDA," + lfo + "," + readMode + "," + addr;			
@@ -115,7 +123,9 @@ public class ChorusReadDelay extends Instruction {
 
 	@Override
 	public void simulate(SimulatorState state) {
+		// XXX - finish/test ChorusReadDelay simulation
 		int lfoval = 0;
+		int lfoPos = 0;
 		// SIN LFOs
 		if(lfo == 0 || lfo == 1) {
 			if(cos) {
@@ -124,6 +134,8 @@ public class ChorusReadDelay extends Instruction {
 			else {
 				lfoval = state.getSinLFOVal(lfo);
 			}
+			// GSW attempting to debug SIN LFO
+			lfoPos = lfoval >> 8;
 		}
 		// RAMP LFOs
 		else if(lfo == 2 || lfo == 3) {
@@ -134,9 +146,10 @@ public class ChorusReadDelay extends Instruction {
 			else {
 				lfoval = state.getRampLFOVal(lfo - 2);
 			}
+			// GSW attempting to debug Ramp LFO
+			lfoPos = lfoval >> 10;
 		}
 
-		int lfoPos = lfoval >> 10;
 
 		// TODO debug!!!! GSW
 		//		if(lfo == 2 && !rptr2)
@@ -154,49 +167,43 @@ public class ChorusReadDelay extends Instruction {
 			}
 		}
 
-		// do crossfading only
+		// do crossfading only = GSW this is oversimplified but might work for simulation
 		if(na) {
-			int amp = state.getRampLFOAmp(lfo - 2);
-			int halfAmp = amp >> 1;
-		int xfade = lfoPos;
-		// if we're beyond the middle, fade down
-		if(lfoPos > halfAmp) {
-			xfade = halfAmp - xfade;
+			xfade = state.getRampXfadeVal(lfo - 2);
+			// do the crossfade
+			// GSW gonna try this, to get a value from delay RAM
+			int delayPos = addr + lfoPos;
+
+			tempReg.setValue(state.getDelayVal(delayPos));
+			int value = tempReg.getValue();
+			tempReg.mult(xfade);
+			// XXX TODO debug GSW
+//			System.out.printf("xfade %d ", xfade);
+			value = tempReg.getValue();
+			if(value != 0) {
+				@SuppressWarnings("unused")
+				int iopl = 345;
+			}
+			state.getACC().add(value);
 		}
-		// fix the xfade amplitude based on the ramp maxval
-		if(amp == 0x3fffff) {
-			xfade = xfade << 1;
-		}
-		else if(amp == 0x1fffff) {
-			xfade = xfade << 2;
-		}
-		// TODO hmmm this doesn't look quite right
-		else if(amp == 0x1fffff) {
-			xfade = xfade << 3;
-		}
-		else {
-			xfade = xfade << 4;
-		}
-		// do the crossfade
-		tempReg.setValue(addr);
-		tempReg.mult(xfade);
-		state.getACC().add(tempReg.getValue());
-		}
+		// GSW ok this part doesn't make much sense to me.  It is mutually exclusive with the "NA" parameter.
+		// however, how the heck do you expect to read anything in the "NA" mode unless you read something?
+		
 		// do delay offset lookup
 		else {
 			int delayPos = addr + lfoPos;
 			int inter = lfoval & 0xff;
 //TODO debug GSW
-//			System.out.printf("lfoPos: %x delayPos: %x inter: %x\n", lfoPos, delayPos, inter);
+//			System.out.printf("lfoPos: %d delayPos: %d inter: %d ", lfoPos, delayPos, inter);
 			// get the delay memory value and scale it by the interpolation amount
 			if(compc) {
 				tempReg.setValue(state.getDelayVal(delayPos));
-				tempReg.mult((255 - inter) << 7);
+				tempReg.mult((255 - inter) << 6);
 				state.getACC().add(tempReg.getValue());
 			}
 			else {
 				tempReg.setValue(state.getDelayVal(delayPos));
-				tempReg.mult(inter << 7);
+				tempReg.mult(inter << 6);
 				state.getACC().add(tempReg.getValue());
 			}			
 		}

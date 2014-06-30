@@ -1,3 +1,22 @@
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 	
+ */
+
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
@@ -37,7 +56,7 @@ public class MN3011CADBlock extends DelayCADBlock {
 	public MN3011CADBlock(int x, int y) {
 		//		super("MN3011");
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		hasControlPanel = true;
 		addControlInputPin(this);
 		setName("MN3011");
 	}
@@ -49,7 +68,6 @@ public class MN3011CADBlock extends DelayCADBlock {
 	public void generateCode(SpinFXBlock sfxb)
 	{
 		// only mono input supported
-		// TODO Auto-generated constructor stub
 		int input = -1;
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
 		if(p != null) {
@@ -113,17 +131,14 @@ public class MN3011CADBlock extends DelayCADBlock {
 	}
 
 	public double getfbLevel() {
-		// TODO Auto-generated method stub
 		return fbLevel;
 	}
 
 	public double getLength() {
-		// TODO Auto-generated method stub
 		return length;
 	}
 
 	public double getTapLevel(int i) {
-		// TODO Auto-generated method stub
 		if(i == 0) {
 			return tap1level;
 		}
@@ -149,27 +164,22 @@ public class MN3011CADBlock extends DelayCADBlock {
 	}
 
 	public void setfbLevel(double d) {
-		// TODO Auto-generated method stub
 		fbLevel = d;
 	}
 
 	public void setDelayGain(double d) {
-		// TODO Auto-generated method stub
 		delayLineGain = d;
 	}
 
 	public double getDelayGain() {
-		// TODO Auto-generated method stub
 		return delayLineGain;
 	}
 
 	public void setLength(double d) {
-		// TODO Auto-generated method stub
 		length = d;
 	}
 
 	public void setTapLevel(int i, double value) {
-		// TODO Auto-generated method stub
 		if(value < 0.0) {
 			value = 0.0;
 		}

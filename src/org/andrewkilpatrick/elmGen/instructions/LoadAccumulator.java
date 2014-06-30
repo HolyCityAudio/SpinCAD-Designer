@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ public class LoadAccumulator extends Instruction {
 	public String getInstructionString() {
 		return "LoadAccumulator(" + addr + ")";
 	}
-	
+	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
 			return "LDAX " + addr;

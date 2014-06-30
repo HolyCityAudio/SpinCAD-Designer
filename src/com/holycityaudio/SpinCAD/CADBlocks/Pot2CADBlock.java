@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -19,8 +19,6 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import com.holycityaudio.SpinCAD.SpinFXBlock;
-
 public class Pot2CADBlock extends PotCADBlock{
 
 	/**
@@ -30,13 +28,7 @@ public class Pot2CADBlock extends PotCADBlock{
 
 	public Pot2CADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		potRegister = POT2;
 		setName("Pot 2");
-	}
-	
-	public void generateCode(SpinFXBlock eP) {
-//		System.out.println("Pot 2 codegen!");
-		this.getPin("Control Output 1").setRegister(POT2);
-		eP.comment(getName());
 	}
 }

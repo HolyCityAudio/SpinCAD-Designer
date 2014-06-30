@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,7 +16,8 @@
  * 	
  */
 package org.andrewkilpatrick.elmGen.simulator;
-
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 public class SimulatorState {
 	private int pc = 0;
@@ -29,8 +30,19 @@ public class SimulatorState {
 	private SinLFO sinLFO[];
 	private RampLFO rampLFO[];
 	private boolean firstRun = true;
+	String debugFilename = "simulator-debug.txt";
+
+	
+	public SimulatorState(String Filename) {
+		debugFilename = Filename;
+		simulatorInit();
+	}
 	
 	public SimulatorState() {
+		simulatorInit();
+	}
+	
+	public void simulatorInit() {
 		acc = new Reg(0);
 		pacc = new Reg(0);
 		lr = new Reg(0);
@@ -38,6 +50,13 @@ public class SimulatorState {
 		delay = new int[32768];
 		sinLFO = new SinLFO[2];
 		rampLFO = new RampLFO[2];
+		
+		try {
+			FileOutputStream fos = new FileOutputStream(debugFilename);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 
+
 		
 		for(int i = 0; i < regs.length; i ++) {
 			regs[i] = new Reg(0);
@@ -54,6 +73,7 @@ public class SimulatorState {
 		for(int i = 0; i < rampLFO.length; i ++) {
 			rampLFO[i] = new RampLFO(this, i);
 		}
+		
 	}
 	
 	/**
@@ -62,8 +82,11 @@ public class SimulatorState {
 	 */
 	public void sampleIncrement() {
 		firstRun = false;
-		delayp --;
-		if(delayp == 32768) {
+		// GSW this looks a bit suspicious here,  
+		// changed wraparound point to -32768, doesn't seem to 
+		// change anything but I like it better.
+		delayp--;
+		if(delayp == -32768) {
 			delayp = 0;
 		}
 		pacc.setValue(acc.getValue());
@@ -131,7 +154,10 @@ public class SimulatorState {
 			throw new IllegalArgumentException("delay offset out of range: " + offset);
 		}
 //		int val = delay[(offset + delayp) & 0x7fff];  // use this line to bypass the compressor
-		int val = (int)DelayCompressor.decompress(delay[(offset + delayp) & 0x7fff]);
+		int index = (offset + delayp) & 0x7fff;
+		int val = (int)DelayCompressor.decompress(delay[index]);
+// XXX uncomment next line to generate RAM access debug at console
+//		System.out.printf("Get: %d ", index);
 		lr.setValue(val);
 		return val;
 	}
@@ -140,8 +166,11 @@ public class SimulatorState {
 		if(offset < 0 || offset > delay.length - 1) {
 			throw new IllegalArgumentException("delay offset out of range: " + offset);
 		}
-//		delay[(offset + delayp) & 0x7fff] = value;  // use this line to bypass the compressor		
-		delay[(offset + delayp) & 0x7fff] = (int)DelayCompressor.compress(value);		
+//		delay[(offset + delayp) & 0x7fff] = value;  // use this line to bypass the compressor	
+		int index = (offset + delayp) & 0x7fff;
+// XXX uncomment next line to generate RAM access debug at console
+//		System.out.printf("Set: %d ", index);
+		delay[index] = (int)DelayCompressor.compress(value);		
 	}
 
 	public int getLRVal() {
@@ -167,6 +196,13 @@ public class SimulatorState {
 			throw new IllegalArgumentException("ramp lfo is out of range: " + lfo);
 		}
 		return rampLFO[lfo].getValue();
+	}
+
+	public int getRampXfadeVal(int lfo) {
+		if(lfo < 0 || lfo > 1) {
+			throw new IllegalArgumentException("ramp lfo is out of range: " + lfo);
+		}
+		return rampLFO[lfo].getXfade();
 	}
 	
 	public int getRampLFORptr2Val(int lfo) {

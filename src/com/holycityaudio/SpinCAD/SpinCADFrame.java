@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * SpinCADFrame.java
- * Copyright (C)2013 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
@@ -52,7 +53,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -65,12 +70,31 @@ import org.andrewkilpatrick.elmGen.simulator.AudioSource;
 import org.andrewkilpatrick.elmGen.simulator.SignalGenerator;
 import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
-import com.holycityaudio.SpinCAD.CADBlocks.*;
-import com.holycityaudio.SpinCAD.ControlBlocks.*;
+//import com.holycityaudio.SpinCAD.CADBlocks.*;
+//import com.holycityaudio.SpinCAD.ControlBlocks.*;
+
+
+
+
+
+
+
+
+
+
+
+
+
+import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
 
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+//import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -80,12 +104,15 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.SystemColor;
+import java.awt.Toolkit;
 
 public class SpinCADFrame extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	// Swing things
 	private JPanel contentPane;
 	private boolean simRunning = false;
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
@@ -94,6 +121,7 @@ public class SpinCADFrame extends JFrame {
 	private final JPanel controlPanels = new JPanel();
 	private final JPanel simPanel = new JPanel();
 	private JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
+
 	private boolean loggerIsVisible = false;
 	// String outputFile = "C:\\temp\\output.wav"; // filter input WAV to output
 
@@ -109,6 +137,10 @@ public class SpinCADFrame extends JFrame {
 
 	// ========================================================
 	private static SpinCADModel model = new SpinCADModel();
+
+	// modelSave is used to undo deletes
+	ByteArrayOutputStream modelSave;
+	private int canUndo = 0;
 
 	private static double pot0Level = 0;
 	private static double pot1Level = 0;
@@ -189,6 +221,7 @@ public class SpinCADFrame extends JFrame {
 		// controlPanels.setFloatable(false);
 		contentPane.add(controlPanels, BorderLayout.EAST);
 		controlPanels.setLayout(new BoxLayout(controlPanels, BoxLayout.Y_AXIS));
+		// Then on your component(s)
 		// ======================================================
 		// ; ==================== menu bar and items ==========
 
@@ -197,9 +230,6 @@ public class SpinCADFrame extends JFrame {
 
 		JMenu mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
-
-		JMenu mnEdit = new JMenu("Edit");
-		menuBar.add(mnEdit);
 
 		JMenuItem mntmNew = new JMenuItem("New");
 		fileNew(panel, mntmNew);
@@ -224,27 +254,59 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveAsm = new JMenuItem("Save As Spin ASM");
 		mntmSaveAsm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// debug this!!!
 				getModel().sortAlignGen();
 				fileSaveAsm();
 			}
 		});
 		mnNewMenu.add(mntmSaveAsm);
 
+		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy to Clipboard");
+		mntmCopyToClipboard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				getModel().sortAlignGen();
+				StringSelection stringSelection = new StringSelection (SpinCADModel.getRenderBlock()
+						.getProgramListing(1));
+				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
+				clpbrd.setContents (stringSelection, null);
+				//				fileSaveAsm();
+			}
+		});
+		mnNewMenu.add(mntmCopyToClipboard);
+
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		fileSaveAs(panel, mntmExit);
 		mnNewMenu.add(mntmExit);
 
-		JMenuItem mntmDelete = new JMenuItem("Delete");
-		mntmDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				panel.setDragModeDelete(); // delete mode - this also changes
-				// the cursor
+		JMenu mn_edit = new JMenu("Edit");
+		menuBar.add(mn_edit);
+
+		final JMenuItem mntm_Undo = new JMenuItem("Undo");
+		mntm_Undo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				undo();
 			}
 		});
-		mnEdit.add(mntmDelete);
-// most of the menu is generated right here.
-// standardmenu is generated by the spincadmenu DSL
+		mn_edit.add(mntm_Undo);
+
+		JMenu mn_io_mix = new JMenu("Loop");
+		menuBar.add(mn_io_mix);
+
+		final JMenuItem mntm_AddFB = new JMenuItem("Add");
+		mntm_AddFB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i =  getModel().getIndexFB();
+				FBInputCADBlock pcB = new FBInputCADBlock(50, 100, i);
+				dropBlock(panel, pcB);
+
+				FBOutputCADBlock pcB1 = new FBOutputCADBlock(50, 300, i);
+				dropBlock(panel, pcB1);
+				getModel().setIndexFB(i + 1);
+			}
+		});
+		mn_io_mix.add(mntm_AddFB);
+
+		// most of the menu is generated right here.
+		// standardmenu is generated by the spincadmenu DSL
 		new standardMenu(this, panel, menuBar);
 
 		final JMenu mnSimulator = new JMenu("Simulator");
@@ -315,7 +377,7 @@ public class SpinCADFrame extends JFrame {
 		mntmHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					openWebpage(new URL("http://joefriday-lg.com/spincad-designer-2/spincad-designer-help-pages/"));
+					openWebpage(new URL("http://holycityaudio.com/spincad-designer-2/spincad-designer-help-pages/"));
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
@@ -330,8 +392,9 @@ public class SpinCADFrame extends JFrame {
 				JOptionPane
 				.showMessageDialog(
 						frame,
-						"Version 0.95\nBuild 495\nCopyright 2013\n"
-								+ "Gary Worsham, Holy City Audio\nElmGen Open Source Library\nCourtesy of Andrew Kilpatrick",
+						"Version 0.96 Build 710\n"
+								+ "Copyright 2014 Gary Worsham, Holy City Audio\n" + 
+								" This program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
 								"About SpinCAD Designer", JOptionPane.OK_OPTION);
 			}
 		});
@@ -420,7 +483,9 @@ public class SpinCADFrame extends JFrame {
 					try {
 						model = SpinCADFile.fileRead(getModel(), file.getPath());
 						spcFileName = file.getPath();
-						getModel().setChanged(false);
+						getModel().getIndexFB();
+						getModel().setChanged(false);						
+						getModel().presetIndexFB();
 					} catch (Exception e) {
 						spcFileName = null;
 						e.printStackTrace();
@@ -539,6 +604,39 @@ public class SpinCADFrame extends JFrame {
 		return model;
 	}
 
+	public void saveModel() {
+		try { 
+			modelSave = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(modelSave); 
+			oos.writeObject(model); 
+			oos.flush(); 
+			oos.close(); 
+		} 
+		catch(Exception e) { 
+			System.out.println("Exception during serialization: " + e); 
+		} 
+		canUndo = 1;
+	}
+
+	public void undo() {
+		if(canUndo == 1) {
+			try { 
+				ByteArrayInputStream bais = new ByteArrayInputStream(modelSave.toByteArray());
+				ObjectInputStream is = new ObjectInputStream(bais);
+				model = (SpinCADModel) is.readObject();
+				is.close(); 
+				contentPane.repaint();
+				// System.out.println("m: " + m); 
+			} 
+			catch(Exception e) { 
+				System.out.println("Exception during deserialization: " + 
+						e); 
+				System.exit(0); 
+			} 
+			canUndo = 0;		
+		}
+	}
+
 	public static void setModelCurrentBlock(SpinCADModel model) {
 		SpinCADFrame.model = model;
 	}
@@ -588,17 +686,17 @@ public class SpinCADFrame extends JFrame {
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == pot0Slider) {
 				pot0Level = (double) pot0Slider.getValue() / 100.0;
-				System.out.println("Pot 0: " + pot0Level);
+				//				System.out.println("Pot 0: " + pot0Level);
 				if (sim != null)
 					sim.setPot(0, pot0Level);
 			} else if (e.getSource() == pot1Slider) {
 				pot1Level = (double) pot1Slider.getValue() / 100.0;
-				System.out.println("Pot 1: " + pot1Level);
+				//				System.out.println("Pot 1: " + pot1Level);
 				if (sim != null)
 					sim.setPot(1, pot1Level);
 			} else if (e.getSource() == pot2Slider) {
 				pot2Level = (double) pot2Slider.getValue() / 100.0;
-				System.out.println("Pot 2: " + pot2Level);
+				//				System.out.println("Pot 2: " + pot2Level);
 				if (sim != null)
 					sim.setPot(2, pot2Level);
 			}
@@ -624,6 +722,8 @@ public class SpinCADFrame extends JFrame {
 						sim.showLevelLogger(loggerPanel);
 					}
 					// sim.showLevelMeter();
+					//					sim.setLoopMode(true);
+					// TODO debugging ramp LFO
 					sim.setLoopMode(true);
 					sim.start();
 				}
@@ -633,10 +733,10 @@ public class SpinCADFrame extends JFrame {
 					btnSigGen.setText("Start Signal");
 					sim.stopSimulator();
 				} else {
-//					String outputFile = null; // play out through the sound card
+					//					String outputFile = null; // play out through the sound card
 					setSimRunning(true);
 					btnSigGen.setText("Stop Signal");
-//					SignalGenerator SigGen = new SignalGenerator();
+					//					SignalGenerator SigGen = new SignalGenerator();
 				}
 			}
 		}
@@ -840,6 +940,8 @@ public class SpinCADFrame extends JFrame {
 			if (codeLength < 80) {
 				progressBar_2.setForeground(Color.green);
 			} else if (codeLength < 105) {
+				progressBar_2.setForeground(Color.yellow);
+			} else if (codeLength < 129) {
 				progressBar_2.setForeground(Color.orange);
 			} else {
 				progressBar_2.setForeground(Color.red);
@@ -853,6 +955,8 @@ public class SpinCADFrame extends JFrame {
 			if (nRegs < 20) {
 				progressBar.setForeground(Color.green);
 			} else if (nRegs < 26) {
+				progressBar.setForeground(Color.yellow);
+			} else if (nRegs < 32) {
 				progressBar.setForeground(Color.orange);
 			} else {
 				progressBar.setForeground(Color.red);
@@ -864,6 +968,8 @@ public class SpinCADFrame extends JFrame {
 			if (ramUsed < 20000) {
 				progressBar_1.setForeground(Color.green);
 			} else if (ramUsed < 26000) {
+				progressBar_1.setForeground(Color.yellow);
+			} else if (ramUsed < 32768) {
 				progressBar_1.setForeground(Color.orange);
 			} else {
 				progressBar_1.setForeground(Color.red);
@@ -971,4 +1077,6 @@ public class SpinCADFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
+
+
 }

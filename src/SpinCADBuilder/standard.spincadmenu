@@ -1,31 +1,36 @@
 // Standard Menu
 
-@menu "I/O - Mix" 
+@menu "I/O - Mix"
 @menuitem "Input" Input
-@menuitem "Output" Output
+@menuitem "Output" Output 
 @menuitem "Volume" Volume
-@menuitem "2 >1 Mixer" Mixer2_1
-@menuitem "3 >1 Mixer" Mixer3_1
+@menuitem "2:1 Mixer" Mixer2_1
+@menuitem "2:1 (x2) Mixer" Mixer2_1x2
+@menuitem "3:1 Mixer" Mixer3_1
+@menuitem "4:1 Mixer" Mixer4_1
 @menuitem "Crossfade" crossfade
 
 @menu "Wave Shaper" 
+@menuitem "Aliaser" aliaser 
 @menuitem "Bit Crusher" BitCrusher 
 @menuitem "Cube" CubeGain 
 @menuitem "Distortion" Distortion 
 @menuitem "Octave" Octave 
 @menuitem "Overdrive" Overdrive 
 @menuitem "T/X" ToverX 
-@menuitem "Test" InstructionTest 
+@menuitem "Noise" noise_block24 
+// @menuitem "Test" InstructionTest 
 
 @menu "Dynamics"
 @menuitem "RMS Lim/Exp" rms_lim_exp
 @menuitem "RMS Limiter" rms_limiter
 @menuitem "Soft Knee Limiter" soft_knee_limiter
-@menuitem "Slow Gear" slow_gear
+// @menuitem "Slow Gear" slow_gear
 
 @menu "Filters"
 //@menuitem "Bassman '59" BassmanEQ 
 @menuitem "1P Lowpass" LPF1P 
+@menuitem "1P Hipass" HPF1P 
 @menuitem "2P LPF Fixed" LPF 
 @menuitem "2P BPF Fixed" BPF 
 @menuitem "2P HPF Fixed" HPF 
@@ -38,52 +43,57 @@
 
 @menu "Delay" 
 @menuitem "Single Delay" SingleDelay
-@menuitem "Straight Delay" StraightDelay 
-@menuitem "Ping Pong" PingPong 
-@menuitem "8-Tap" MultiTap 
-@menuitem "MN3011" MN3011 
+@menuitem "Servo Delay" ServoDelay 
+@menuitem "Triple-tap" TripleTap 
+@menuitem "MN3011" MN3011a 
+@menuitem "8-Tap" eighttap 
+@menuitem "10-Tap Stereo" tentap 
+// @menuitem "RAM test" DelayRamTest
 
 @menu "Reverb" 
-@menuitem "Disco Reverb" DiscoReverb 
-@menuitem "Gated Reverb" gated_verb 
+// @menuitem "Disco Reverb" DiscoReverb 
+// @menuitem "Gated Reverb" gated_verb 
 @menuitem "Infinite Rev/Flange" dance_ir_fla_l 
-@menuitem "Plate Verb 3" very_tight_plate_verb 
-@menuitem "Reverb/Chorus" GtrReverbChorus 
-@menuitem "ROM Reverb 1" rom_rev1 
-@menuitem "Shimmer Reverb" shimmer_verb 
+// @menuitem "Plate Verb 3" very_tight_plate_verb 
+// @menuitem "Reverb/Chorus" GtrReverbChorus 
+// @menuitem "ROM Reverb 1" rom_rev1 
+// @menuitem "Shimmer Reverb" shimmer_verb 
 @menuitem "Small Reverb" MinReverb 
 
 @menu "Modulation" 
 @menuitem "Chorus" Chorus 
-@menuitem "Rich Chorus" RichChorus 
+// @menuitem "Rich Chorus" RichChorus 
 @menuitem "Preset Chorus" ChorusPreset 
-@menuitem "Flanger" Flanger 
+// @menuitem "Flanger" Flanger 
 @menuitem "Mod Delay" ModDelay 
 @menuitem "Phaser" Phaser 
-@menuitem "Test Chorus" Test_chorus 
+// @menuitem "Test Chorus" Test_chorus 
 @menuitem "Tremolo" Tremolo 
 @menuitem "Ring Modulator" RingMod 
 
 @menu "Pitch"
+// @menuitem "Pitch Test" PitchTest 
+@menuitem "Pitch Shift Fixed" PitchShiftFixed 
 @menuitem "Pitch Up" PitchUp 
 @menuitem "Pitch Up/Down" PitchUpDown 
 
-@menu "Guitar"
+/* @menu "Guitar"
 @menuitem "GA Chorus" ga_demo_chorus 
 @menuitem "GA Echo Repeat" ga_demo_echo_repeat 
 @menuitem "GA Flanger" ga_demo_flanger 
 @menuitem "GA Phaser" ga_demo_phaser 
 @menuitem "GA Vibrato" ga_demo_vibrato 
 @menuitem "GA Wah" ga_demo_wah 
+*/
 
-@menu "Pots"
+// @menu "Pots"
+
+@menu "Control"
 @menuitem "Pot 0" Pot0 
 @menuitem "Pot 1" Pot1 
 @menuitem "Pot 2" Pot2 
-
-@menu "Control"
 @menuitem "Sin/Cos LFO" SinCosLFO
-@menuitem "Ramp LFO" RampLFO
+// @menuitem "Ramp LFO" RampLFO
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl
@@ -91,4 +101,5 @@
 @menuitem "Scale/Offset" ScaleOffsetControl
 @menuitem "Log" ExponentialControl
 @menuitem "Control Mixer" ControlMixer
+@menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo

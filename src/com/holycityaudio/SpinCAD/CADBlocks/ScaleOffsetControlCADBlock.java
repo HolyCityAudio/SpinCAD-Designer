@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
+ * Copyright (C) 2013 - 2014 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -38,7 +38,7 @@ public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 	
 	public ScaleOffsetControlCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		hasControlPanel = true;
 		addControlInputPin(this);	//	delay time
 		addControlOutputPin(this);	//	feedback
 		outLow = 0.05;
@@ -73,39 +73,31 @@ public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 	}
 
 	public void setInLow(double d) {
-		// TODO Auto-generated method stub
 		inLow = d;
 	}
 
 	public double getInLow() {
-		// TODO Auto-generated method stub
 		return inLow;
 	}
 	public void setInHigh(double d) {
-		// TODO Auto-generated method stub
 		inHigh = d;
 	}
 
 	public double getOutHigh() {
-		// TODO Auto-generated method stub
 		return outHigh;
 	}
 	public void setOutLow(double d) {
-		// TODO Auto-generated method stub
 		outLow = d;
 	}
 
 	public double getOutLow() {
-		// TODO Auto-generated method stub
 		return outLow;
 	}
 	public void setOutHigh(double d) {
-		// TODO Auto-generated method stub
 		outHigh = d;
 	}
 
 	public double getInHigh() {
-		// TODO Auto-generated method stub
 		return inHigh;
 	}
 }

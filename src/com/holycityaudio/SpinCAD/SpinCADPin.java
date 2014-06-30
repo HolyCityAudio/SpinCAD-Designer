@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * SpinCADPin.java
- * Copyright (C)2013 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick
+ * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -76,14 +76,6 @@ public class SpinCADPin implements Serializable {
 		return connectorPin;
 	}
 
-	public void drawPinX(Graphics2D g2) {
-		int size = 8;
-		Ellipse2D boundingRect = new Ellipse2D.Double(block.getX() + x_pos - size/2, block.getY() + y_pos - size/2, size, size);
-		g2.setColor(pinColor);
-		g2.setStroke(new BasicStroke(2));
-		g2.draw(boundingRect);
-
-	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
@@ -96,6 +88,10 @@ public class SpinCADPin implements Serializable {
 
 	public int getX() {
 		return x_pos;
+	}
+	
+	public void setX(int val) {
+		x_pos = val;
 	}
 
 	public int getY() {

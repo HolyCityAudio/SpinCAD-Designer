@@ -1,5 +1,5 @@
 /* ElmGen - DSP Development Tool
- * Copyright (C)2011 - Andrew Kilpatrick
+ * Copyright (C)2011 - Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package org.andrewkilpatrick.elmGen.instructions;
 
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
+import org.andrewkilpatrick.elmGen.util.Util;
 
 /**
  * This class represents the WRHX instruction.
@@ -58,10 +59,10 @@ public class WriteRegisterHighshelf extends Instruction {
 	public String getInstructionString() {
 		return "WriteRegisterHighshelf(" + addr + "," + scale + ")";
 	}
-	
+	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "WRHX " + addr + "," + scale;
+			return "WRHX " + Util.getRegisterName(addr) + "," + String.format("%6.10f",scale);		
 		}
 		else
 			return "Error! Invalid mode.";
