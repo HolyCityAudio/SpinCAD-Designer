@@ -35,9 +35,6 @@ public class FilterCADBlock extends SpinCADBlock{
 
 	public FilterCADBlock(int x, int y) {
 		super(x, y);
-		addOutputPin(this);
-		addInputPin(this);
-		setName("Filter");
 		setBorderColor(Color.PINK);
 	}
 }

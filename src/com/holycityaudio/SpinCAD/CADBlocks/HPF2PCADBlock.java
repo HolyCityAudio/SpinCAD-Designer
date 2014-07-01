@@ -31,6 +31,8 @@ public class HPF2PCADBlock extends FilterCADBlock{
 	double f0 = 240;
 	public HPF2PCADBlock(int x, int y) {
 		super(x, y);
+		addInputPin(this, "Audio Input");
+		addOutputPin(this, "Audo Output");
 		addControlInputPin(this);
 		setName("High Pass 2P");	}
 

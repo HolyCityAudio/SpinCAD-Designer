@@ -31,6 +31,8 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	double f0 = 240;
 	public LPF4PCADBlock(int x, int y) {
 		super(x, y);
+		addInputPin(this, "Audio Input");
+		addOutputPin(this, "Audo Output");
 		addControlInputPin(this);
 		setName("Low Pass 4P");	}
 

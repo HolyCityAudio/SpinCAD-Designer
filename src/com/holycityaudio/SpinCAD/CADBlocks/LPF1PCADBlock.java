@@ -32,6 +32,8 @@ public class LPF1PCADBlock extends FilterCADBlock{
 	public LPF1PCADBlock(int x, int y) {
 		super(x, y);
 		hasControlPanel = true;
+		addInputPin(this, "Audio Input");
+		addOutputPin(this, "Audo Output");
 		setName("Low Pass 1P");	}
 
 	public void editBlock(){

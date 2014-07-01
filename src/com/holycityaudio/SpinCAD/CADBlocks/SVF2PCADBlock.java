@@ -35,9 +35,12 @@ public class SVF2PCADBlock extends FilterCADBlock{
 	public SVF2PCADBlock(int x, int y) {
 		super(x, y);
 		hasControlPanel = true;
-		addOutputPin(this);
-		addOutputPin(this);
-		setName("SVF 2P");	}
+		addInputPin(this, "Audio Input");
+		addOutputPin(this, "Lowpass Out");
+		addOutputPin(this, "Bandpass Out");
+		addOutputPin(this, "Hipass Out");
+		setName("SVF 2P");	
+	}
 
 	public void editBlock(){
 		new SVF2PControlPanel(this);
@@ -47,48 +50,32 @@ public class SVF2PCADBlock extends FilterCADBlock{
 		// coefficients
 		int input = -1;
 
-		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
+		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 
 		if(p != null) {
 			input = p.getRegister();
 
-//			equ HP reg0
 			int highPass = sfxb.allocateReg();
-//			equ BP reg1 
 			int bandPass = sfxb.allocateReg();
-//			equ LP reg2 
 			int lowPass = sfxb.allocateReg();
 			
 			sfxb.comment(getName());
 
-//			sof 0,0
 			sfxb.scaleOffset(0, 0);
 			
-//			ldax adcl ; read ADCL 
 			sfxb.readRegister(input, 1.0);
-			//			rdax LP, -1 ; -LP 
 			sfxb.readRegister(lowPass,  -1);
-			//			rdax BP, -1 ; -BP 
 			sfxb.readRegister(bandPass,  -q1);
-//			wrax HP, 0.1 ; Write high pass to HP, multiply acc by 0.1 
 			sfxb.writeRegister(highPass, fZ);
-			//			rdax BP, 1.0 ; add BP 
 			sfxb.readRegister(bandPass, 1.0);
-//			wrax BP, 0.1 ; Write band pass to ;BP, multiply acc by 0.1. 
 			sfxb.writeRegister(bandPass, fZ);
-//			rdax LP, 1.0 ; add LP 
 			sfxb.readRegister(lowPass,  1);
-//			wrax LP, 0 ; Write low pass to LP, acc x 0 
 			sfxb.writeRegister(lowPass, fZ);
-//			ldax HP ; read HP to ACC 
-//			wrax dacl, 0 ; write to left and clear ACC 
-//			ldax LP ; read LP to ACC 
-//			wrax dacr, 0 ; write ro right anc clear ACC 
-			this.getPin("Audio Output 1").setRegister(lowPass);	
-			this.getPin("Audio Output 2").setRegister(bandPass);	
-			this.getPin("Audio Output 3").setRegister(highPass);	
+			this.getPin("Lowpass Out").setRegister(lowPass);	
+			this.getPin("Bandpass Out").setRegister(bandPass);	
+			this.getPin("Hipass Out").setRegister(highPass);	
 		}
-		System.out.println("SVF code gen!");
+		System.out.println("SVF 2P code gen!");
 	}
 
 	public double getFreq() {

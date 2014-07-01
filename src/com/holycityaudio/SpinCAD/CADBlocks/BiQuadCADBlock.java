@@ -39,6 +39,8 @@ public class BiQuadCADBlock extends FilterCADBlock{
 	public BiQuadCADBlock(int x, int y) {
 		super(x, y);
 		setName("BiQuad");	
+		addInputPin(this, "Audio Input");
+		addOutputPin(this, "Audio Output");
 		hasControlPanel = true;
 	}
 
@@ -85,7 +87,7 @@ public class BiQuadCADBlock extends FilterCADBlock{
 
 		int input = -1;
 
-		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
+		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 
 		if(p != null) {
 			input = p.getRegister();
@@ -111,7 +113,7 @@ public class BiQuadCADBlock extends FilterCADBlock{
 			sfxb.readRegister(output, -a2/a0);
 			sfxb.writeRegister(d1,0);
 
-			this.getPin("Audio Output 1").setRegister(output);	
+			this.getPin("Audio Output").setRegister(output);	
 		}
 		System.out.println("BiQuad code gen!");
 	}
