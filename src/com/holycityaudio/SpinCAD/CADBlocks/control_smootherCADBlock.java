@@ -36,7 +36,7 @@ public class control_smootherCADBlock extends SpinCADBlock {
 		// Iterate through pin definitions and allocate or assign as needed
 		addControlInputPin(this, "Control_Input");
 		addControlOutputPin(this, "Control_Output");
-		// if any control panel elements decalred, set hasControlPanel to true
+		// if any control panel elements declared, set hasControlPanel to true
 		hasControlPanel = true;
 	}
 
