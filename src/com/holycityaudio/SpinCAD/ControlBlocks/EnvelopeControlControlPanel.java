@@ -53,8 +53,8 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 		this.pC = envelopeControlCADBlock;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Clip Control");
-				frame.setTitle("");
+				frame = new JFrame("Envelope");
+				frame.setTitle("Envelope");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -70,6 +70,7 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 				filterSlider.setValue((int) Math.round(pC.getFilter() * 1000000));
 				filterLabel.setText(String.format("Filter: %4.4f", pC.getFilter()));
 
+				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
 				frame.setVisible(true);
 				frame.pack();
 			}

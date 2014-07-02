@@ -59,7 +59,7 @@ public class PowerControlControlPanel extends JFrame {
 		this.pC = powerControlCADBlock;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				setTitle("");
+				setTitle("Power");
 				setResizable(false);
 
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -87,6 +87,7 @@ public class PowerControlControlPanel extends JFrame {
 				powerLabel.setText(String.format("%2.2f", pC.getPower()));
 				invert.setSelected(pC.getInvert());
 				flip.setSelected(pC.getFlip());
+				setLocation(pC.getX() + 200, pC.getY() + 150);
 				setVisible(true);
 				pack();
 //				graph.repaint();
