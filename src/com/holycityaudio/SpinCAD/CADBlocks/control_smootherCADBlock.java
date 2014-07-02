@@ -69,7 +69,7 @@ public class control_smootherCADBlock extends SpinCADBlock {
 		filtReg = sfxb.allocateReg();
 		if(this.getPin("Input").getPinConnection() != null) {
 			sfxb.readRegister(input, 1.0);
-			sfxb.readRegisterFilter(filtReg, 6.283 * Math.sin(filt/sfxb.getSamplerate()));
+			sfxb.readRegisterFilter(filtReg, Math.sin((2 * Math.PI * filt)/sfxb.getSamplerate()));
 			sfxb.writeRegister(filtReg, 0.0);
 			this.getPin("Control_Output").setRegister(filtReg);
 		}
