@@ -51,7 +51,7 @@ public class control_smootherControlPanel {
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				// filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(0),(int) (100), (int) (gCB.getfilt() * 100000.0));
-				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-100),(int) (100), (int) (0));
+				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-100),(int) (100), (int) (Math.log10(gCB.getfilt()) * 100));
 				filtSlider.addChangeListener(new control_smootherSliderListener());
 				filtLabel = new JLabel();
 				updatefiltLabel();
@@ -70,7 +70,7 @@ public class control_smootherControlPanel {
 	class control_smootherSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == filtSlider) {
-				gCB.setfilt((double) (Math.pow(10.0, (filtSlider.getValue() - 1.00)/101.0)));
+				gCB.setfilt((double) (Math.pow(10.0, (filtSlider.getValue())/100.0)));
 				updatefiltLabel();
 			}
 		}
