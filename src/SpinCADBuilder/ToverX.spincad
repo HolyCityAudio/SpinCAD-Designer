@@ -51,5 +51,7 @@ rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
 mulx    adcl    ;multiply by the input signal 
 rdax    lf4, filterFactor    ;restore gain and filter
 wrax    lf4,0    ;output in ACC and lf1 
+@setOutputPin Audio_Output lf4
+
 @endif
 
