@@ -392,7 +392,7 @@ public class SpinCADFrame extends JFrame {
 				JOptionPane
 				.showMessageDialog(
 						frame,
-						"Version 0.96 Build 710\n"
+						"Version 0.96 Build 752\n"
 								+ "Copyright 2014 Gary Worsham, Holy City Audio\n" + 
 								" This program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
 								"About SpinCAD Designer", JOptionPane.OK_OPTION);

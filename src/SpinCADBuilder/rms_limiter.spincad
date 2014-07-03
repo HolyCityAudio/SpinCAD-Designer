@@ -28,5 +28,6 @@ wrax	gain,1
 mulx	adcl
 sof	1.5,0		;restore gain, but avoid output clipping
 wrax	dacl,0
+@setOutputPin Audio_Output dacl
 @endif
 

@@ -1,6 +1,6 @@
 @name RMS_Lim_Exp 
 @audioInput adcl Input_Left
-@audioOutput dacl Audio_Output_1 
+@audioOutput dacl Audio_Output
 
 ;rms limiter, approx 10dB limiting range. 
 
@@ -45,5 +45,5 @@ wrax	gain,1
 mulx	adcl		;use final gain value to affect output
 sof	1.5,0		;restore gain, to avoid output clipping
 wrax	dacl,0
-
+@setOutputPin Audio_Output dacl
 @endif
