@@ -1,17 +1,17 @@
 @name RMS_Lim_Exp 
 @audioInput adcl Input_Left
-@audioOutput dacl Audio_Output
+@audioOutput output Audio_Output
 
 ;rms limiter, approx 10dB limiting range. 
 
 equ	sigin	reg0
 equ	avg	reg1
 equ	gain	reg2
-equ	expg	reg3
+// equ	expg	reg3
 equ	expavg	reg4
-equ	test	reg5
-equ dacl reg6
-equ dacr reg7
+// equ	test	reg5
+equ output reg6
+// equ dacr reg7
 @isPinConnected Input_Left
 
 rdax	adcl,1.0
@@ -44,6 +44,6 @@ wrax	gain,1
 
 mulx	adcl		;use final gain value to affect output
 sof	1.5,0		;restore gain, to avoid output clipping
-wrax	dacl,0
-@setOutputPin Audio_Output dacl
+wrax	output,0
+@setOutputPin Audio_Output output
 @endif

@@ -4,7 +4,7 @@
 
 ; rms limiter, approx 10dB limiting range.
 
-equ	sigin reg0
+equ	sigin reg0 
 equ	avg	reg1
 equ	gain	reg2  
 equ dacl reg3 

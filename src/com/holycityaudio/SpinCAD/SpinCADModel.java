@@ -340,7 +340,6 @@ public class SpinCADModel implements Serializable {
 			block.generateCode(getRenderBlock());
 			// now blockMin is the block with the lowest number
 		}
-		// TODO here's where we could write something to the clipboard.
 		System.out.println(getRenderBlock().getProgramListing(1));
 		return getRenderBlock().getCodeLen() - getRenderBlock().getNumComments();
 	}
