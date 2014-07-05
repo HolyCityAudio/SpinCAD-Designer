@@ -32,7 +32,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	public LPF4PCADBlock(int x, int y) {
 		super(x, y);
 		addInputPin(this, "Audio Input");
-		addOutputPin(this, "Audo Output");
+		addOutputPin(this, "Audio Output");
 		addControlInputPin(this);
 		setName("Low Pass 4P");	}
 
@@ -45,7 +45,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 
 		int input = -1;
 
-		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
+		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 
 		if(p != null) {
 			input = p.getRegister();
@@ -135,7 +135,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 //			wrax	lp2al,0
 			sfxb.writeRegister(lp2al, 0);
 
-			this.getPin("Audio Output 1").setRegister(lp2al);	
+			this.getPin("Audio Output").setRegister(lp2al);	
 //			this.getPin("Audio Output 1").setRegister(lp2bl);	
 		}
 		System.out.println("LPF 4 pole code gen!");

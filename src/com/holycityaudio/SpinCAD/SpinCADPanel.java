@@ -394,7 +394,7 @@ public class SpinCADPanel extends JPanel {
 		int deltaX = Math.abs(arg0.getX() - (int) pt.getX());
 		int deltaY = Math.abs(arg0.getY() - (int) pt.getY());
 		//		System.out.printf("deltaX = %d deltaY = %d\n", deltaX, deltaY);
-		if(deltaX < 3 && deltaY < 3 ) {
+		if(deltaX < RANGE && deltaY < RANGE ) {
 			return true;
 		}
 		else {
