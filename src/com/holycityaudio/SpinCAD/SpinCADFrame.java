@@ -22,8 +22,7 @@ package com.holycityaudio.SpinCAD;
 
 import java.awt.BorderLayout;
 
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+
 // import javax.sound.sampled.spi.AudioFileReader;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -39,14 +38,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
 import javax.swing.JProgressBar;
 import javax.swing.JMenu;
 import javax.swing.SwingUtilities;
@@ -56,34 +53,12 @@ import javax.swing.WindowConstants;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import org.andrewkilpatrick.elmGen.simulator.AudioCardOutput;
-import org.andrewkilpatrick.elmGen.simulator.AudioFileReader;
-import org.andrewkilpatrick.elmGen.simulator.AudioFileWriter;
-import org.andrewkilpatrick.elmGen.simulator.AudioSource;
-import org.andrewkilpatrick.elmGen.simulator.SignalGenerator;
 import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
-
-//import com.holycityaudio.SpinCAD.CADBlocks.*;
-//import com.holycityaudio.SpinCAD.ControlBlocks.*;
-
-
-
-
-
-
-
-
-
-
-
-
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
@@ -1004,7 +979,7 @@ public class SpinCADFrame extends JFrame {
 		/** Listens to the combo box. */
 		class SampleRateListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
-				JComboBox cb = (JComboBox<Object>) e.getSource();
+				JComboBox<Object> cb = (JComboBox<Object>) e.getSource();
 				String rate = (String) cb.getSelectedItem();
 				if (rate == "32768") {
 					ElmProgram.SAMPLERATE = 32768;

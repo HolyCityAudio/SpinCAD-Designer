@@ -205,8 +205,6 @@ public class SpinCADModel implements Serializable {
 	 */
 	
 	public int presetIndexFB() {
-		ArrayList<SpinCADBlock> sortedList = new ArrayList<SpinCADBlock>();
-//		System.out.printf("Realign...\n", name);
 		SpinCADBlock block;
 		int index = 0;
 		

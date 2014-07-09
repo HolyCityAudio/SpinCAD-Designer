@@ -1,6 +1,6 @@
 @name Active_Crossover
 @audioInput adcl Input_Left
-@audioInput adcr Input_Right
+@audioInput adcr Input_Right 
 @audioOutput output1 Output_L 
 @audioOutput output2 Output_R 
 

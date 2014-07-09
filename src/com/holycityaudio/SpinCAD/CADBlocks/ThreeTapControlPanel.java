@@ -20,6 +20,7 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,7 +34,7 @@ import javax.swing.event.ChangeListener;
 
 
 @SuppressWarnings("serial")
-class PingPongControlPanel extends JFrame implements ChangeListener, ActionListener {
+class ThreeTapControlPanel extends JFrame implements ChangeListener, ActionListener {
 	JSlider tapSlider0;
 	JSlider tapSlider1;
 
@@ -49,9 +50,9 @@ class PingPongControlPanel extends JFrame implements ChangeListener, ActionListe
 	JLabel delayGainLabel;
 	JLabel lengthLabel;
 	
-	private PingPongCADBlock pong;
+	private ThreeTapCADBlock pong;
 	
-	public PingPongControlPanel(PingPongCADBlock ppcb) {
+	public ThreeTapControlPanel(ThreeTapCADBlock ppcb) {
 		this.pong = ppcb;
 		this.setTitle("Ping Pong Delay");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));

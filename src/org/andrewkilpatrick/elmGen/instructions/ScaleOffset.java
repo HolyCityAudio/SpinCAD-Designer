@@ -18,7 +18,6 @@
 package org.andrewkilpatrick.elmGen.instructions;
 
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
-import java.text.DecimalFormat;
 
 /**
  * This class represents the SOF instruction.
