@@ -53,7 +53,7 @@
 @menu "Reverb" 
 // @menuitem "Disco Reverb" DiscoReverb 
 // @menuitem "Gated Reverb" gated_verb 
-@menuitem "Infinite Rev/Flange" dance_ir_fla_l 
+// @menuitem "Infinite Rev/Flange" dance_ir_fla_l 
 // @menuitem "Plate Verb 3" very_tight_plate_verb 
 // @menuitem "Reverb/Chorus" GtrReverbChorus 
 // @menuitem "ROM Reverb 1" rom_rev1 
@@ -61,7 +61,7 @@
 @menuitem "Small Reverb" MinReverb 
 
 @menu "Modulation" 
-@menuitem "Chorus" Chorus 
+// @menuitem "Chorus" Chorus 
 // @menuitem "Rich Chorus" RichChorus 
 @menuitem "Preset Chorus" ChorusPreset 
 // @menuitem "Flanger" Flanger 
