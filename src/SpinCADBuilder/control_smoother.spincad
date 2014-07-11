@@ -4,12 +4,12 @@
 
 equ	filtReg reg0
 
-equ filt 0.0001
-@sliderLabel filt Filter 0.00007 0.0002 100000.0 5
+equ filt 15.00 
+@sliderLabel filt Filter 0.51 100.0 100.0 5 LOGFREQ 
 
 @isPinConnected Input
 rdax input, 1.0
-rdfx filtReg, filt
+// rdfx filtReg, filt
 wrax filtReg, 0.0
 
 @setOutputPin Control_Output filtReg
