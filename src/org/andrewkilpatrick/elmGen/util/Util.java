@@ -169,6 +169,32 @@ public class Util {
 			return "REG17";
 		case 50:
 			return "REG18";
+		case 51:
+			return "REG19";
+		case 52:
+			return "REG20";
+		case 53:
+			return "REG21";
+		case 54:
+			return "REG22";
+		case 55:
+			return "REG23";
+		case 56:
+			return "REG24";
+		case 57:
+			return "REG25";
+		case 58:
+			return "REG26";
+		case 59:
+			return "REG27";
+		case 60:
+			return "REG28";
+		case 61:
+			return "REG29";
+		case 62:
+			return "REG30";
+		case 63:
+			return "REG31";
 		default:
 			return String.valueOf(addr);
 		}
