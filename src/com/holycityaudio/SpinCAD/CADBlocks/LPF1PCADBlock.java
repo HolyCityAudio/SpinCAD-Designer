@@ -48,7 +48,7 @@ public class LPF1PCADBlock extends FilterCADBlock{
 
 		int input = -1;
 
-		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
+		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 
 		if(p != null) {
 			input = p.getRegister();

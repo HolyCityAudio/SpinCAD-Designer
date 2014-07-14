@@ -2,7 +2,7 @@
 @audioInput adcl Input 
 @audioOutput output1 Tap1_Out
 @audioOutput output2 Tap2_Out  
-@audioOutput output3 Tap3_Out 
+@audioOutput output3 Tap3_Out  
 @audioOutput output4 Delay_Out_Center
 @audioOutput output5 Delay_Out_End
 @controlInput cIn1 Delay_Time_1 
@@ -10,24 +10,24 @@
 @controlInput cIn3 Delay_Time_3  
 
 equ inputGain 0.45
-@sliderLabel inputGain Input_Gain  0.0 1.0 1000.0 2
+@sliderLabel inputGain Input_Gain  0.0 1.0 0.5 1000.0 2
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
 equ delayLength 32767 
-@sliderLabel delayLength Delay_Time 0 32767 1 0 lengthToTime
+@sliderLabel delayLength Delay_Time 0 32767 16384 1 0 lengthToTime
 		
 // tap 1 length in % (control panel value) 
-// 	'equ' ename = ID value = SPINDOUBLE (controlType = ID controlName = ID max = SPINDOUBLE multiplier = SPINDOUBLE)?;
+//	'@sliderLabel' ename = ID controlName = ID (minVal = SPINDOUBLE maxVal = SPINDOUBLE initVal = SPINDOUBLE multiplier = SPINDOUBLE precision = INT (option = ID)?)?
 
 equ tap1Ratio 0.85 
-@sliderLabel tap1Ratio Tap_1_Time  0.0 1.0 1000.0 2  
+@sliderLabel tap1Ratio Tap_1_Time  0.0 1.0 0.85 1000.0 2  
 // tap 2 length in % (control panel value)
 equ tap2Ratio 0.60 
-@sliderLabel tap2Ratio Tap_2_Time 0.0 1.0 1000.0 2	
+@sliderLabel tap2Ratio Tap_2_Time 0.0 1.0 0.60 1000.0 2	
 // tap 3 length in % (control panel value)
 equ tap3Ratio 0.45 
-@sliderLabel tap3Ratio Tap_3_Time 0.0 1.0 1000.0 2
+@sliderLabel tap3Ratio Tap_3_Time 0.0 1.0 0.45 1000.0 2
 
 equ delayOffset -1
 

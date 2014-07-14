@@ -2,10 +2,11 @@
 @controlInput input Control_Input
 @controlOutput output Control_Output
 
-equ	filtReg reg0
+equ	filtReg reg0  
 
 equ filt 15.00 
-@sliderLabel filt Filter 0.51 100.0 100.0 5 LOGFREQ 
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel filt Filter 0.51 15.00 100.0 100.0 5 LOGFREQ 
 
 @isPinConnected Input
 rdax input, 1.0

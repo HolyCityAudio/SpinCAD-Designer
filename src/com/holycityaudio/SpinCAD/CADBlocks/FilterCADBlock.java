@@ -37,6 +37,14 @@ public class FilterCADBlock extends SpinCADBlock{
 		super(x, y);
 		setBorderColor(Color.PINK);
 	}
+	
+	public double freqToFilter(double freq) {
+		return (2 * Math.PI) * (freq/getSamplerate()); 
+	}
+
+	public double filterToFreq(double filt) {
+		return (filt * getSamplerate())/(2 * Math.PI); 
+	}
 }
 
 

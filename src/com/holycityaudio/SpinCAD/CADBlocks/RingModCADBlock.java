@@ -50,7 +50,7 @@ public class RingModCADBlock extends ModulationCADBlock{
 			input = p.getRegister();
 			int Control1 = -1;
 			
-			p = this.getPin("Control Input 1").getPinConnection();
+			p = this.getPin("Carrier Frequency").getPinConnection();
 			
 			if (p != null)
 				Control1 = p.getRegister();

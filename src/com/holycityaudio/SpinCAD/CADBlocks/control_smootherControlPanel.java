@@ -34,12 +34,12 @@ import javax.swing.JCheckBox;
 public class control_smootherControlPanel {
 	private JFrame frame;
 
-	private control_smootherCADBlock gCB;
+	private control_smootherCADBlockA gCB;
 	// declare the controls
 	JSlider filtSlider;
 	JLabel  filtLabel;	
 
-	public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
+	public control_smootherControlPanel(control_smootherCADBlockA genericCADBlock) {
 
 		gCB = genericCADBlock;
 

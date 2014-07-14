@@ -33,8 +33,6 @@ public class DelayCADBlock extends SpinCADBlock{
 
 	public DelayCADBlock(int x, int y) {
 		super(x, y);
-		addInputPin(this);
-		addOutputPin(this);
-		setBorderColor(Color.blue);
+		setBorderColor(Color.green);
 	}
 }

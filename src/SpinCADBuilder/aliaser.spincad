@@ -4,10 +4,10 @@
 @controlInput crusher Crush
 
 equ inputGain 0.5
-@sliderLabel inputGain Input_Gain 0.0 1.0 1000.0 2
+@sliderLabel inputGain Input_Gain 0.0 1.0 0.5 1000.0 2
 
 equ ripLevel 0.5
-@sliderLabel ripLevel Rip_Level 0.0 0.6 1000.0 2
+@sliderLabel ripLevel Rip_Level 0.0 0.6 0.5 1000.0 2
 
 @isPinConnected Input
 //Bit Crusher / aliaser

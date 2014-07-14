@@ -34,7 +34,7 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class StraightDelayCADBlock extends SpinCADBlock {
+public class StraightDelayCADBlock extends DelayCADBlock {
 
 	/**
 	 * 
