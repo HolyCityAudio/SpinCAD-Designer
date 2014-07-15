@@ -425,5 +425,22 @@ public class SpinCADBlock extends SpinFXBlock {
 	public boolean hasControlPanel() {
 		return hasControlPanel;
 	}
+	// below are functions to translate parameters between CADBlocks and control panels
+	
+	public double freqToFilt(double freq) {
+		return (2 * Math.PI * freq)/getSamplerate();
+	}
+	
+	public double filtToFreq(double filt) {
+		return (filt * getSamplerate())/(2 * Math.PI);
+	}
+	
+	public int logvalToSlider(double value, double multiplier) {
+		return (int) (multiplier * Math.log10(value));
+	}
+	
+	public double sliderToLogval(int pos, double multiplier) {
+		return Math.pow(10.0, pos/multiplier);
+	}
 }
 

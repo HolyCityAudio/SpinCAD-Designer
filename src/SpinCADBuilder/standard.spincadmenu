@@ -101,5 +101,6 @@
 @menuitem "Scale/Offset" ScaleOffsetControl
 @menuitem "Log" ExponentialControl
 @menuitem "Control Mixer" ControlMixer
+@menuitem "SmootherA" control_smootherA
 @menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo

@@ -51,7 +51,7 @@ public class control_smootherControlPanel {
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				// filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(0),(int) (100), (int) (gCB.getfilt() * 100000.0));
-				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), (int) (Math.log10(gCB.getfilt()) * 100));
+				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
 				filtSlider.addChangeListener(new control_smootherSliderListener());
 				filtLabel = new JLabel();
 				updatefiltLabel();
@@ -62,6 +62,7 @@ public class control_smootherControlPanel {
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setAlwaysOnTop(true);
 			}
 		});
 	}
@@ -70,7 +71,7 @@ public class control_smootherControlPanel {
 	class control_smootherSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == filtSlider) {
-				gCB.setfilt((double) (Math.pow(10.0, (filtSlider.getValue())/100.0)));
+				gCB.setfilt(gCB.freqToFilt(gCB.sliderToLogval(filtSlider.getValue(), 100.0)));
 				updatefiltLabel();
 			}
 		}
@@ -82,11 +83,10 @@ public class control_smootherControlPanel {
 		@Override
 		public void itemStateChanged(ItemEvent arg0) {
 			// TODO Auto-generated method stub
-
 		}
 	}
 
 	private void updatefiltLabel() {
-		filtLabel.setText(String.format("%3.2f", gCB.getfilt()) + " Hz");		
-	}		
+				filtLabel.setText(String.format("%3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
+			}
 }
