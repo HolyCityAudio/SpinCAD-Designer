@@ -24,6 +24,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.event.ItemEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JSlider;
@@ -34,12 +36,12 @@ import javax.swing.JCheckBox;
 public class control_smootherControlPanel {
 	private JFrame frame;
 
-	private control_smootherCADBlockA gCB;
+	private control_smootherACADBlock gCB;
 	// declare the controls
 	JSlider filtSlider;
 	JLabel  filtLabel;	
 
-	public control_smootherControlPanel(control_smootherCADBlockA genericCADBlock) {
+	public control_smootherControlPanel(control_smootherACADBlock genericCADBlock) {
 
 		gCB = genericCADBlock;
 
@@ -53,6 +55,7 @@ public class control_smootherControlPanel {
 				// filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(0),(int) (100), (int) (gCB.getfilt() * 100000.0));
 				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
 				filtSlider.addChangeListener(new control_smootherSliderListener());
+				frame.addWindowListener(new MyWindowListener());
 				filtLabel = new JLabel();
 				updatefiltLabel();
 				frame.getContentPane().add(filtLabel);
@@ -87,6 +90,44 @@ public class control_smootherControlPanel {
 	}
 
 	private void updatefiltLabel() {
-				filtLabel.setText(String.format("%3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
-			}
+		filtLabel.setText(String.format("%3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
+	}
+
+	class MyWindowListener implements WindowListener
+	{
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			gCB.clearCP();
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+	}
 }

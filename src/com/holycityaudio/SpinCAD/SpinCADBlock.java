@@ -428,11 +428,11 @@ public class SpinCADBlock extends SpinFXBlock {
 	// below are functions to translate parameters between CADBlocks and control panels
 	
 	public double freqToFilt(double freq) {
-		return (2 * Math.PI * freq)/getSamplerate();
+		return (Math.sin(2 * Math.PI * freq/getSamplerate()));
 	}
 	
 	public double filtToFreq(double filt) {
-		return (filt * getSamplerate())/(2 * Math.PI);
+		return getSamplerate() * Math.asin(filt/(2 * Math.PI));
 	}
 	
 	public int logvalToSlider(double value, double multiplier) {
