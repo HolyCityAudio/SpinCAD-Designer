@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -31,6 +32,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JSlider;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
+import javax.swing.JSpinner;
+import javax.swing.RootPaneContainer;
+import javax.swing.SpinnerNumberModel;
 
 
 public class control_smootherControlPanel {
@@ -40,7 +44,8 @@ public class control_smootherControlPanel {
 	// declare the controls
 	JSlider filtSlider;
 	JLabel  filtLabel;	
-
+	JSpinner filtSpinner;
+	
 	public control_smootherControlPanel(control_smootherACADBlock genericCADBlock) {
 
 		gCB = genericCADBlock;
@@ -52,12 +57,22 @@ public class control_smootherControlPanel {
 				frame.setTitle("Smoother");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
-				// filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(0),(int) (100), (int) (gCB.getfilt() * 100000.0));
+				
+				filtSpinner = new JSpinner();
+				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(gCB.filtToFreq(gCB.getfilt()), 0.51, 10.00, 0.01);
+				
+				updatefiltSpinner();
+
 				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
 				filtSlider.addChangeListener(new control_smootherSliderListener());
 				frame.addWindowListener(new MyWindowListener());
+				
 				filtLabel = new JLabel();
 				updatefiltLabel();
+				
+				JFrame topLine = new JFrame();
+				FlowLayout flow = new FlowLayout();
+	
 				frame.getContentPane().add(filtLabel);
 				frame.getContentPane().add(filtSlider);		
 
@@ -85,12 +100,15 @@ public class control_smootherControlPanel {
 		}
 		@Override
 		public void itemStateChanged(ItemEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 	}
 
 	private void updatefiltLabel() {
 		filtLabel.setText(String.format("%3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
+	}
+	
+	private void updatefiltSpinner() {
+
 	}
 
 	class MyWindowListener implements WindowListener
@@ -114,20 +132,15 @@ public class control_smootherControlPanel {
 
 		@Override
 		public void windowDeiconified(WindowEvent arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void windowIconified(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void windowOpened(WindowEvent arg0) {
-			// TODO Auto-generated method stub
-
 		}
 	}
 }
