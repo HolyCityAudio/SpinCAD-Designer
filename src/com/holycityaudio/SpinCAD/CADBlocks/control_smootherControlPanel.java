@@ -79,14 +79,14 @@ public class control_smootherControlPanel {
 
 				frame.add(Box.createRigidArea(new Dimension(5,5)));			
 
-/*		        
- * DecimalFormat format = editor.getFormat();  
-		        format.setMinimumFractionDigits(3);  
+               DecimalFormat format = editor.getFormat();  
+		        format.setMinimumFractionDigits(2);  
+		        format.setMaximumFractionDigits(2);  
 		        editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
 		        Dimension d = filtSpinner.getPreferredSize();  
-		        d.width = 85;  
+		        d.width = 75;  
 		        filtSpinner.setPreferredSize(d);  
-*/
+
 		        updatefiltSpinner();
 				topLine.add(filtSpinner);
 //		        frame.getContentPane().add(filtSpinner);
