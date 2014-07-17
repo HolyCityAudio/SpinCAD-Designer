@@ -65,7 +65,7 @@ public class control_smootherControlPanel {
 				JPanel topLine = new JPanel();
 				topLine.setLayout(new BoxLayout(topLine, BoxLayout.X_AXIS));
 			
-				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(gCB.filtToFreq(gCB.getfilt()), 0.51, 10.00, 0.01);
+				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(gCB.filtToFreq(gCB.getfilt()) * 100, 0.51, 10000.00, 0.01);
 
 				
 				filtSpinner = new JSpinner(filtSpinnerNumberModel);
@@ -129,13 +129,11 @@ public class control_smootherControlPanel {
 	}
 
 	private void updatefiltLabel() {
-		filtLabel.setText(String.format(" Frequency %3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz ");		
+		filtLabel.setText(String.format(" Frequency (Hz) "));		
 	}
 	
 	private void updatefiltSpinner() {
-		// XXX debug doesn't work
-		filtSpinner.setEditor(new JSpinner.NumberEditor(filtSpinner, "  "));
-		//setTextField(String.format("%3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
+		filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
 	}
 
 	class MyWindowListener implements WindowListener
