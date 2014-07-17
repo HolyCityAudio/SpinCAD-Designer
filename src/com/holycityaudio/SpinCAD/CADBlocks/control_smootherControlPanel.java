@@ -23,18 +23,23 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.text.DecimalFormat;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import javax.swing.RootPaneContainer;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 
 public class control_smootherControlPanel {
@@ -56,26 +61,45 @@ public class control_smootherControlPanel {
 				frame = new JFrame();
 				frame.setTitle("Smoother");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-
-				
-				filtSpinner = new JSpinner();
+			
+				JPanel topLine = new JPanel();
+				topLine.setLayout(new BoxLayout(topLine, BoxLayout.X_AXIS));
+			
 				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(gCB.filtToFreq(gCB.getfilt()), 0.51, 10.00, 0.01);
-				
-				updatefiltSpinner();
 
-				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
-				filtSlider.addChangeListener(new control_smootherSliderListener());
-				frame.addWindowListener(new MyWindowListener());
 				
+				filtSpinner = new JSpinner(filtSpinnerNumberModel);
+		        
+				JSpinner.NumberEditor editor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
 				filtLabel = new JLabel();
 				updatefiltLabel();
-				
-				JFrame topLine = new JFrame();
-				FlowLayout flow = new FlowLayout();
-	
-				frame.getContentPane().add(filtLabel);
-				frame.getContentPane().add(filtSlider);		
+				topLine.add(filtLabel);
+				topLine.setVisible(true);
+//				frame.getContentPane().add(filtLabel);
 
+				frame.add(Box.createRigidArea(new Dimension(5,5)));			
+
+/*		        
+ * DecimalFormat format = editor.getFormat();  
+		        format.setMinimumFractionDigits(3);  
+		        editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
+		        Dimension d = filtSpinner.getPreferredSize();  
+		        d.width = 85;  
+		        filtSpinner.setPreferredSize(d);  
+*/
+		        updatefiltSpinner();
+				topLine.add(filtSpinner);
+//		        frame.getContentPane().add(filtSpinner);
+
+				frame.getContentPane().add(topLine);
+				frame.add(Box.createRigidArea(new Dimension(5,10)));			
+				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
+				filtSlider.addChangeListener(new control_smootherSliderListener());
+				frame.getContentPane().add(filtSlider);		
+				frame.add(Box.createRigidArea(new Dimension(5,5)));			
+				
+				frame.addWindowListener(new MyWindowListener());
+				
 				frame.setVisible(true);		
 				frame.pack();
 				frame.setResizable(false);
@@ -91,6 +115,7 @@ public class control_smootherControlPanel {
 			if(ce.getSource() == filtSlider) {
 				gCB.setfilt(gCB.freqToFilt(gCB.sliderToLogval(filtSlider.getValue(), 100.0)));
 				updatefiltLabel();
+				updatefiltSpinner();
 			}
 		}
 	}
@@ -104,11 +129,13 @@ public class control_smootherControlPanel {
 	}
 
 	private void updatefiltLabel() {
-		filtLabel.setText(String.format("%3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
+		filtLabel.setText(String.format(" Frequency %3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz ");		
 	}
 	
 	private void updatefiltSpinner() {
-
+		// XXX debug doesn't work
+		filtSpinner.setEditor(new JSpinner.NumberEditor(filtSpinner, "  "));
+		//setTextField(String.format("%3.2f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
 	}
 
 	class MyWindowListener implements WindowListener

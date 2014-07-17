@@ -33,7 +33,7 @@ public class LPF1PCADBlock extends FilterCADBlock{
 		super(x, y);
 		hasControlPanel = true;
 		addInputPin(this, "Audio Input");
-		addOutputPin(this, "Audo Output");
+		addOutputPin(this, "Audio Output");
 		setName("Low Pass 1P");	}
 
 	public void editBlock(){
@@ -67,9 +67,9 @@ public class LPF1PCADBlock extends FilterCADBlock{
 			sfxb.readRegister(input, k2);
 			sfxb.writeRegister(filt, 0.0);
 
-			this.getPin("Audio Output 1").setRegister(filt);	
+			this.getPin("Audio Output").setRegister(filt);	
 		}
-		System.out.println("LPF code gen!");
+		System.out.println("LPF 1P code gen!");
 	}
 
 	public double getFreq() {
