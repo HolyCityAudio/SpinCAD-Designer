@@ -24,7 +24,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -35,9 +34,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JLabel;
-import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
-import javax.swing.RootPaneContainer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
@@ -90,10 +87,11 @@ public class control_smootherControlPanel {
 		        updatefiltSpinner();
 				topLine.add(filtSpinner);
 				filtSpinner.addChangeListener(new control_smootherSpinnerListener());
-//		        frame.getContentPane().add(filtSpinner);
 
 				frame.getContentPane().add(topLine);
+
 				frame.add(Box.createRigidArea(new Dimension(5,5)));			
+				
 				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
 				filtSlider.addChangeListener(new control_smootherSliderListener());
 				frame.getContentPane().add(filtSlider);		
