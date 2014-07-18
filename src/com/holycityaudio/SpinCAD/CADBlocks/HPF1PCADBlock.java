@@ -56,11 +56,6 @@ public class HPF1PCADBlock extends FilterCADBlock{
 			int output = sfxb.allocateReg();
 			
 			sfxb.comment("1 pole high pass");
-
-			sfxb.skip(RUN, 2);
-			sfxb.clear();
-			sfxb.writeRegister(filt,  0);
-
 			// ------------- start of filter code
 //			sfxb.loadAccumulator(input);
 			sfxb.readRegister(filt, k1);

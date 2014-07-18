@@ -56,11 +56,6 @@ public class LPF1PCADBlock extends FilterCADBlock{
 			int filt = sfxb.allocateReg();
 			
 			sfxb.comment("1 pole low pass");
-
-			sfxb.skip(RUN, 2);
-			sfxb.clear();
-			sfxb.writeRegister(filt,  0);
-
 			// ------------- start of filter code
 //			sfxb.loadAccumulator(input);
 			sfxb.readRegister(filt, k1);
