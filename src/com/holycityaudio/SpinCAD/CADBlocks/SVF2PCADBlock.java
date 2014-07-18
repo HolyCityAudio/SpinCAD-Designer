@@ -70,7 +70,7 @@ public class SVF2PCADBlock extends FilterCADBlock{
 			sfxb.readRegister(bandPass, 1.0);
 			sfxb.writeRegister(bandPass, fZ);
 			sfxb.readRegister(lowPass,  1);
-			sfxb.writeRegister(lowPass, fZ);
+			sfxb.writeRegister(lowPass, 0);
 			this.getPin("Lowpass Out").setRegister(lowPass);	
 			this.getPin("Bandpass Out").setRegister(bandPass);	
 			this.getPin("Hipass Out").setRegister(highPass);	
@@ -98,6 +98,6 @@ public class SVF2PCADBlock extends FilterCADBlock{
 	
 	public void setCoefficients() {
 		q1 = 1.0/q0;
-		fZ = 2 * Math.PI * Math.sin(f0/getSamplerate());
+		fZ = Math.sin(2 * Math.PI * f0/getSamplerate());
 	}
 }
