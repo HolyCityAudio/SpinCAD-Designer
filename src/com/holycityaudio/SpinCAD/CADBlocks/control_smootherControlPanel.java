@@ -77,26 +77,27 @@ public class control_smootherControlPanel {
 				topLine.setVisible(true);
 //				frame.getContentPane().add(filtLabel);
 
-				frame.add(Box.createRigidArea(new Dimension(5,5)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 
                DecimalFormat format = editor.getFormat();  
 		        format.setMinimumFractionDigits(2);  
 		        format.setMaximumFractionDigits(2);  
 		        editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
 		        Dimension d = filtSpinner.getPreferredSize();  
-		        d.width = 75;  
+		        d.width = 55;  
 		        filtSpinner.setPreferredSize(d);  
 
 		        updatefiltSpinner();
 				topLine.add(filtSpinner);
+				filtSpinner.addChangeListener(new control_smootherSpinnerListener());
 //		        frame.getContentPane().add(filtSpinner);
 
 				frame.getContentPane().add(topLine);
-				frame.add(Box.createRigidArea(new Dimension(5,10)));			
+				frame.add(Box.createRigidArea(new Dimension(5,5)));			
 				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
 				filtSlider.addChangeListener(new control_smootherSliderListener());
 				frame.getContentPane().add(filtSlider);		
-				frame.add(Box.createRigidArea(new Dimension(5,5)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				
 				frame.addWindowListener(new MyWindowListener());
 				
@@ -119,6 +120,18 @@ public class control_smootherControlPanel {
 			}
 		}
 	}
+	
+	// add change listener for Sliders 
+	class control_smootherSpinnerListener implements ChangeListener { 
+		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == filtSpinner) {
+				gCB.setfilt(gCB.freqToFilt((double) filtSpinner.getValue()));
+				updatefiltLabel();
+				updatefiltSlider();
+			}
+		}
+	}
+	
 	// add item listener for Bool (CheckbBox) 
 	class control_smootherItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
@@ -136,6 +149,10 @@ public class control_smootherControlPanel {
 		filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
 	}
 
+	private void updatefiltSlider() {
+		filtSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getfilt()))));
+	}
+	
 	class MyWindowListener implements WindowListener
 	{
 		@Override

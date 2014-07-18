@@ -432,7 +432,7 @@ public class SpinCADBlock extends SpinFXBlock {
 	}
 	
 	public double filtToFreq(double filt) {
-		return getSamplerate() * Math.asin(filt/(2 * Math.PI));
+		return getSamplerate() * Math.asin(filt)/(2 * Math.PI);
 	}
 	
 	public int logvalToSlider(double value, double multiplier) {
