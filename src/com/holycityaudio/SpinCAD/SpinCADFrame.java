@@ -148,7 +148,7 @@ public class SpinCADFrame extends JFrame {
 	 */
 	public SpinCADFrame() {
 		// panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
-		setTitle("SpinCAD Designer");
+		setTitle("SpinCAD Designer - Untitled");
 		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
@@ -372,7 +372,7 @@ public class SpinCADFrame extends JFrame {
 				JOptionPane
 				.showMessageDialog(
 						frame,
-						"Version 0.96 Build 759\n"
+						"Version 0.96 Build 778\n"
 								+ "Copyright 2014 Gary Worsham, Holy City Audio\n" + 
 								" This program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
 								"About SpinCAD Designer", JOptionPane.OK_OPTION);
@@ -385,6 +385,15 @@ public class SpinCADFrame extends JFrame {
 	 * @param panel
 	 * @param mntmExit
 	 */
+	
+	private void updateFrameTitle() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() { 				
+				setTitle("SpinCAD Designer - " + spcFileName + getModel().getChanged());
+			}
+		});
+
+	}
 	private void fileSaveAs(final SpinCADPanel panel, JMenuItem mntmExit) {
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -399,6 +408,7 @@ public class SpinCADFrame extends JFrame {
 							String filePath = fileToBeSaved.getPath();
 							SpinCADFile.fileSave(getModel(), filePath);
 							saveMRUFolder(fileToBeSaved.getPath());
+							updateFrameTitle();
 					} else
 						fileSaveAs();
 						saveMRUFolder(fileToBeSaved.getPath());
@@ -434,11 +444,13 @@ public class SpinCADFrame extends JFrame {
 						SpinCADFile.fileSave(getModel(), filePath);
 							prefs.put("MRUFolder", filePath);
 							saveMRUFolder(filePath);
+							updateFrameTitle();
 					} finally {
 					}
 
-				} else
+				} else {
 					fileSaveAs();
+				}
 			}
 		});
 	}
@@ -485,6 +497,7 @@ public class SpinCADFrame extends JFrame {
 						getModel().setChanged(false);						
 						getModel().presetIndexFB();
 						saveMRUFolder(filePath);
+						updateFrameTitle();
 					} catch (Exception e) {
 						spcFileName = null;
 						e.printStackTrace();
@@ -803,7 +816,7 @@ public class SpinCADFrame extends JFrame {
 				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
 						.getProgramListing(1), filePath);
 				getModel().setChanged(false);
-				saveMRUFolder(fileToBeSaved.getParent());
+				saveMRUFolder(filePath);
 			} finally {
 			}
 		}
