@@ -25,6 +25,7 @@ import java.awt.BorderLayout;
 
 
 
+
 // import javax.sound.sampled.spi.AudioFileReader;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -77,6 +78,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.prefs.Preferences;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -396,18 +398,27 @@ public class SpinCADFrame extends JFrame {
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
 							SpinCADFile.fileSave(getModel(), filePath);
-							prefs.put("MRUFolder", filePath);
-							System.out.println("MRUFolder: " + filePath); 
+							saveMRUFolder(fileToBeSaved.getPath());
 					} else
 						fileSaveAs();
-						String filePath = fileToBeSaved.getPath();
-						prefs.put("MRUFolder", filePath);
-						System.out.println("MRUFolder: " + filePath); 
+						saveMRUFolder(fileToBeSaved.getPath());
 					}
 					System.exit(0);
 				}
 			}
 		});
+	}
+	
+	private void saveMRUFolder(String path) {
+		Path pathE = Paths.get(path);
+
+		String pathS = pathE.getParent().toString();
+		String nameS = pathE.getFileName().toString();
+
+		prefs.put("MRUFolder", pathS);
+		prefs.put("MRUFileName", nameS);
+		System.out.println("MRUFolder: pathS " + pathS);
+		System.out.println(" nameS " + nameS);
 	}
 
 	/**
@@ -422,8 +433,7 @@ public class SpinCADFrame extends JFrame {
 					try {
 						SpinCADFile.fileSave(getModel(), filePath);
 							prefs.put("MRUFolder", filePath);
-							System.out.println("MRUFolder: " + filePath); 
-							getModel().setChanged(false);
+							saveMRUFolder(filePath);
 					} finally {
 					}
 
@@ -452,7 +462,9 @@ public class SpinCADFrame extends JFrame {
 						// System.out.println("Yes option");
 					}
 				}
-				final JFileChooser fc = new JFileChooser("c:\\temp\\");
+				String savedPath = prefs.get("MRUFolder", "");
+
+				final JFileChooser fc = new JFileChooser(savedPath);
 				final String newline = "\n";
 				// In response to a button click:
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -472,8 +484,7 @@ public class SpinCADFrame extends JFrame {
 						getModel().getIndexFB();
 						getModel().setChanged(false);						
 						getModel().presetIndexFB();
-						prefs.put("MRUFolder", filePath);
-						System.out.println("MRUFolder: " + filePath); 
+						saveMRUFolder(filePath);
 					} catch (Exception e) {
 						spcFileName = null;
 						e.printStackTrace();
@@ -485,7 +496,6 @@ public class SpinCADFrame extends JFrame {
 				pb.update();
 				panel.repaint();
 			}
-
 		});
 	}
 
@@ -509,7 +519,6 @@ public class SpinCADFrame extends JFrame {
 				spcFileName = null;
 				getModel().newModel();
 				repaint();
-				// System.out.println("Yes option");
 			}
 		});
 	}
@@ -732,7 +741,8 @@ public class SpinCADFrame extends JFrame {
 
 	public void fileSaveAs() {
 		// Create a file chooser
-		final JFileChooser fc = new JFileChooser("C:\\temp\\");
+		String savedPath = prefs.get("MRUFolder", "");
+		final JFileChooser fc = new JFileChooser(savedPath);
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"SpinCAD Files", "spcd");
@@ -755,15 +765,19 @@ public class SpinCADFrame extends JFrame {
 				SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
 				spcFileName = fileToBeSaved.getPath();
 				getModel().setChanged(false);
+				saveMRUFolder(spcFileName);
 			} finally {
 			}
 		}
 
 	}
 
+	
 	public void fileSaveAsm() {
 		// Create a file chooser
-		final JFileChooser fc = new JFileChooser("C:\\temp\\");
+		String savedPath = prefs.get("MRUFolder", "");
+
+		final JFileChooser fc = new JFileChooser(savedPath);
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Spin ASM Files", "spn");
@@ -789,6 +803,7 @@ public class SpinCADFrame extends JFrame {
 				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
 						.getProgramListing(1), filePath);
 				getModel().setChanged(false);
+				saveMRUFolder(fileToBeSaved.getParent());
 			} finally {
 			}
 		}
