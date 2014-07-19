@@ -23,6 +23,8 @@ package com.holycityaudio.SpinCAD;
 import java.awt.BorderLayout;
 
 
+
+
 // import javax.sound.sampled.spi.AudioFileReader;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -74,6 +76,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.prefs.Preferences;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -391,10 +394,15 @@ public class SpinCADFrame extends JFrame {
 					if (dialogResult == JOptionPane.YES_OPTION) {
 						File fileToBeSaved = new File(spcFileName);
 						if (fileToBeSaved.exists()) {
-							SpinCADFile.fileSave(getModel(),
-									fileToBeSaved.getPath());
-						} else
-							fileSaveAs();
+							String filePath = fileToBeSaved.getPath();
+							SpinCADFile.fileSave(getModel(), filePath);
+							prefs.put("MRUFolder", filePath);
+							System.out.println("MRUFolder: " + filePath); 
+					} else
+						fileSaveAs();
+						String filePath = fileToBeSaved.getPath();
+						prefs.put("MRUFolder", filePath);
+						System.out.println("MRUFolder: " + filePath); 
 					}
 					System.exit(0);
 				}
@@ -410,10 +418,12 @@ public class SpinCADFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if(spcFileName != null) {
 					File fileToBeSaved = new File(spcFileName);
+					String filePath = fileToBeSaved.getPath();
 					try {
-						SpinCADFile.fileSave(getModel(),
-								fileToBeSaved.getPath());
-						getModel().setChanged(false);
+						SpinCADFile.fileSave(getModel(), filePath);
+							prefs.put("MRUFolder", filePath);
+							System.out.println("MRUFolder: " + filePath); 
+							getModel().setChanged(false);
 					} finally {
 					}
 
@@ -456,11 +466,14 @@ public class SpinCADFrame extends JFrame {
 					System.out.println("Opening: " + file.getName() + "."
 							+ newline);
 					try {
-						model = SpinCADFile.fileRead(getModel(), file.getPath());
+						String filePath = file.getPath();
+						model = SpinCADFile.fileRead(getModel(), filePath );
 						spcFileName = file.getPath();
 						getModel().getIndexFB();
 						getModel().setChanged(false);						
 						getModel().presetIndexFB();
+						prefs.put("MRUFolder", filePath);
+						System.out.println("MRUFolder: " + filePath); 
 					} catch (Exception e) {
 						spcFileName = null;
 						e.printStackTrace();
