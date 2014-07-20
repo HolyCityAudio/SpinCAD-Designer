@@ -399,6 +399,7 @@ public class SpinCADFrame extends JFrame {
 		});
 
 	}
+	
 	private void fileSaveAs(final SpinCADPanel panel, JMenuItem mntmExit) {
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -417,7 +418,9 @@ public class SpinCADFrame extends JFrame {
 							updateFrameTitle();
 					} else
 						fileSaveAs();
+						spcFileName = fileToBeSaved.getName();
 						saveMRUFolder(fileToBeSaved.getPath());
+						updateFrameTitle();
 					}
 					System.exit(0);
 				}
@@ -444,7 +447,7 @@ public class SpinCADFrame extends JFrame {
 		mntmSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(spcFileName != null) {
-					File fileToBeSaved = new File(spcFileName);
+					File fileToBeSaved = new File(prefs.get("MRUFolder",  "") + "/" + spcFileName);
 					String filePath = fileToBeSaved.getPath();
 					try {
 						SpinCADFile.fileSave(getModel(), filePath);
@@ -516,6 +519,76 @@ public class SpinCADFrame extends JFrame {
 				panel.repaint();
 			}
 		});
+	}
+
+	public void fileSaveAs() {
+		// Create a file chooser
+		String savedPath = prefs.get("MRUFolder", "");
+		final JFileChooser fc = new JFileChooser(savedPath);
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Files", "spcd");
+		fc.setFileFilter(filter);
+		fc.showSaveDialog(SpinCADFrame.this);
+		File fileToBeSaved = fc.getSelectedFile();
+
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
+		}
+		int n = JOptionPane.YES_OPTION;
+		if (fileToBeSaved.exists()) {
+			JFrame frame = new JFrame();
+			n = JOptionPane.showConfirmDialog(frame,
+					"Would you like to overwrite it?", "File already exists!",
+					JOptionPane.YES_NO_OPTION);
+		}
+		if (n == JOptionPane.YES_OPTION) {
+			try {
+				SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
+				spcFileName = fileToBeSaved.getName();
+				getModel().setChanged(false);
+				saveMRUFolder(fileToBeSaved.getPath());
+				updateFrameTitle();
+			} finally {
+			}
+		}
+	}
+
+	
+	public void fileSaveAsm() {
+		// Create a file chooser
+		String savedPath = prefs.get("MRUFolder", "");
+
+		final JFileChooser fc = new JFileChooser(savedPath);
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Spin ASM Files", "spn");
+		fc.setFileFilter(filter);
+		fc.showSaveDialog(SpinCADFrame.this);
+		File fileToBeSaved = fc.getSelectedFile();
+
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spn")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".spn");
+		}
+		int n = JOptionPane.YES_OPTION;
+		if (fileToBeSaved.exists()) {
+			JFrame frame = new JFrame();
+			n = JOptionPane.showConfirmDialog(frame,
+					"Would you like to overwrite it?", "File already exists!",
+					JOptionPane.YES_NO_OPTION);
+		}
+		if (n == JOptionPane.YES_OPTION) {
+			try {
+				String filePath = fileToBeSaved.getPath();
+				fileToBeSaved.delete();
+				getModel();
+				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
+						.getProgramListing(1), filePath);
+				getModel().setChanged(false);
+				saveMRUFolder(filePath);
+			} finally {
+			}
+		}
 	}
 
 	/**
@@ -758,76 +831,6 @@ public class SpinCADFrame extends JFrame {
 		} 
 	}
 
-	public void fileSaveAs() {
-		// Create a file chooser
-		String savedPath = prefs.get("MRUFolder", "");
-		final JFileChooser fc = new JFileChooser(savedPath);
-		// In response to a button click:
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Files", "spcd");
-		fc.setFileFilter(filter);
-		fc.showSaveDialog(SpinCADFrame.this);
-		File fileToBeSaved = fc.getSelectedFile();
-
-		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {
-			fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
-		}
-		int n = JOptionPane.YES_OPTION;
-		if (fileToBeSaved.exists()) {
-			JFrame frame = new JFrame();
-			n = JOptionPane.showConfirmDialog(frame,
-					"Would you like to overwrite it?", "File already exists!",
-					JOptionPane.YES_NO_OPTION);
-		}
-		if (n == JOptionPane.YES_OPTION) {
-			try {
-				SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
-				spcFileName = fileToBeSaved.getPath();
-				getModel().setChanged(false);
-				saveMRUFolder(spcFileName);
-			} finally {
-			}
-		}
-
-	}
-
-	
-	public void fileSaveAsm() {
-		// Create a file chooser
-		String savedPath = prefs.get("MRUFolder", "");
-
-		final JFileChooser fc = new JFileChooser(savedPath);
-		// In response to a button click:
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Spin ASM Files", "spn");
-		fc.setFileFilter(filter);
-		fc.showSaveDialog(SpinCADFrame.this);
-		File fileToBeSaved = fc.getSelectedFile();
-
-		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spn")) {
-			fileToBeSaved = new File(fc.getSelectedFile() + ".spn");
-		}
-		int n = JOptionPane.YES_OPTION;
-		if (fileToBeSaved.exists()) {
-			JFrame frame = new JFrame();
-			n = JOptionPane.showConfirmDialog(frame,
-					"Would you like to overwrite it?", "File already exists!",
-					JOptionPane.YES_NO_OPTION);
-		}
-		if (n == JOptionPane.YES_OPTION) {
-			try {
-				String filePath = fileToBeSaved.getPath();
-				fileToBeSaved.delete();
-				getModel();
-				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
-						.getProgramListing(1), filePath);
-				getModel().setChanged(false);
-				saveMRUFolder(filePath);
-			} finally {
-			}
-		}
-
-	}
 
 	// ================= used for the status toolbar and simulator start/stop
 	// button
