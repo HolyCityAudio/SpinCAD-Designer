@@ -388,8 +388,13 @@ public class SpinCADFrame extends JFrame {
 	
 	private void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {
-			public void run() { 				
-				setTitle("SpinCAD Designer - " + spcFileName + getModel().getChanged());
+			public void run() { 	
+				if(spcFileName != null) {
+					setTitle("SpinCAD Designer - " + spcFileName);			
+				}
+				else {
+					setTitle("SpinCAD Designer - Untitled");
+				}
 			}
 		});
 
@@ -408,6 +413,7 @@ public class SpinCADFrame extends JFrame {
 							String filePath = fileToBeSaved.getPath();
 							SpinCADFile.fileSave(getModel(), filePath);
 							saveMRUFolder(fileToBeSaved.getPath());
+							spcFileName = fileToBeSaved.getName();
 							updateFrameTitle();
 					} else
 						fileSaveAs();
@@ -492,7 +498,7 @@ public class SpinCADFrame extends JFrame {
 					try {
 						String filePath = file.getPath();
 						model = SpinCADFile.fileRead(getModel(), filePath );
-						spcFileName = file.getPath();
+						spcFileName = file.getName();
 						getModel().getIndexFB();
 						getModel().setChanged(false);						
 						getModel().presetIndexFB();
@@ -749,7 +755,7 @@ public class SpinCADFrame extends JFrame {
 					//					SignalGenerator SigGen = new SignalGenerator();
 				}
 			}
-		}
+		} 
 	}
 
 	public void fileSaveAs() {
