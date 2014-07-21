@@ -20,6 +20,7 @@
 package com.holycityaudio.SpinCAD.ControlBlocks;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -27,10 +28,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -57,6 +61,9 @@ public class SinCosLFOControlPanel implements ChangeListener, ActionListener, It
 	private JLabel lfoRateLabel = new JLabel("LFO Rate");
 	
 	private LFORadioButtons rb;
+	
+	private JLabel outputRangeLabel = new JLabel("Output Range");
+	private JComboBox outputRange;
 
 	private JFrame frame;
 	private SinCosLFOCADBlock pC;
@@ -79,11 +86,27 @@ public class SinCosLFOControlPanel implements ChangeListener, ActionListener, It
 
 				lfoRateSlider.setMajorTickSpacing(25);
 
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.add(lfoRateLabel);
 				frame.add(lfoRateSlider);
+
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.add(lfoWidthLabel);
 				frame.add(lfoWidthSlider);
+				
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.add(rb);
+				
+				String listOptions[] = {
+						"-1.0 -> 1.0",
+						" 0.0 -> 1.0"
+				};
+				
+				outputRange = new JComboBox(listOptions);
+				
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.add(outputRangeLabel);
+				frame.add(outputRange);
 
 				lfoRateSlider.setValue(pC.getLFORate());
 				updateLfoRateLabel();

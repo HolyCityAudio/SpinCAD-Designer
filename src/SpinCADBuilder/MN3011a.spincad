@@ -55,11 +55,11 @@ mem mn3011delay delayLength
 // read the input and write to base of delay line
 rdax adcl, inputGain
 wra mn3011delay, 0.0
+equ   mix  reg0      
 
 // tap 1 -----------------------------------------------------------
 
 @isPinConnected Delay_Time_1
-equ   mix  reg0      
 equ max reg1
 
 clr

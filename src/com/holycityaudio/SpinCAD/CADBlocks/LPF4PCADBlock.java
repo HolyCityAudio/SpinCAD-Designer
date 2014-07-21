@@ -29,12 +29,19 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	 */
 	private static final long serialVersionUID = 5711126291575876825L;
 	double f0 = 240;
+	boolean is4Pole = false;
+
 	public LPF4PCADBlock(int x, int y) {
 		super(x, y);
 		addInputPin(this, "Audio Input");
 		addOutputPin(this, "Audio Output");
 		addControlInputPin(this);
-		setName("Low Pass 4P");	}
+		if(is4Pole == true) {
+			setName("Low Pass 4P");	
+		} else {
+			setName("Low Pass 2P");	
+		}
+	}
 
 	public void editBlock(){
 		//		new LPF1PControlPanel(this);
@@ -57,86 +64,58 @@ public class LPF4PCADBlock extends FilterCADBlock{
 			int lp2bl = sfxb.allocateReg();
 			int lp2al = sfxb.allocateReg();
 			double kql = -0.4;
-			
-			sfxb.comment("4 pole low pass");
 
-			sfxb.skip(RUN, 5);
-			sfxb.clear();
-			sfxb.writeRegister(lp1al,  0);
-			sfxb.writeRegister(lp1bl,  0);
-			sfxb.writeRegister(lp2al,  0);
-			sfxb.writeRegister(lp2bl,  0);
-
+			if(is4Pole == true) {
+				sfxb.comment("4 pole low pass");
+			} else {
+				sfxb.comment("2 pole low pass");
+			}
 			//			;prepare pot2 for low pass frequency control:
 			p = this.getPin("Control Input 1").getPinConnection();
 			int control1 = -1;
 			if(p != null) {
 				control1 = p.getRegister();
-				//				rdax	pot2,1		;get pot2
 				sfxb.readRegister(control1,1);
-				//				sof	0.25,-0.25	;ranges -0.3 to 0
 				sfxb.scaleOffset(0.35,  -0.35);
-				//				exp	1,0
 				sfxb.exp(1, 0);
-				//				wrax	kfl,0		;write to LP filter control
 				sfxb.writeRegister(kfl, 0);
 				//				;now derive filter bypass function (at open condition)
-
-				//				rdax	pot2,1		;read pot2 (LP) again
 				sfxb.readRegister(control1,1);
-				//				sof	1,-0.999
 				sfxb.scaleOffset(1,  -0.999);
-				//				exp	1,0
 				sfxb.exp(1, 0);
-				//				wrax	lbyp,0
 				sfxb.writeRegister(lbyp,  0);
 			} else {
 				sfxb.scaleOffset(0, 0.25);	// set dummy value
 				sfxb.writeRegister(kfl,  0);
 				sfxb.writeRegister(lbyp,  0);
 			}
-
 			// ------------- start of filter code
-//			rdax	lp1al,1
 			sfxb.readRegister(lp1al,1);
-//			mulx	kfl
 			sfxb.mulx(kfl);
-//			rdax	lp1bl,1
 			sfxb.readRegister(lp1bl,1);
-//			wrax	lp1bl,-1
 			sfxb.writeRegister(lp1bl, -1);
-//			rdax	lp1al,kql
 			sfxb.readRegister(lp1al,kql);
-//			rdax	fol,1
 			sfxb.readRegister(input,0.25);
-//			mulx	kfl
 			sfxb.mulx(kfl);
-//			rdax	lp1al,1
 			sfxb.readRegister(lp1al,1);
-//			wrax	lp1al,0
 			sfxb.writeRegister(lp1al, 0);
 
-//			rdax	lp2al,1
-			sfxb.readRegister(lp2al,1);
-//			mulx	kfl
-			sfxb.mulx(kfl);
-//			rdax	lp2bl,1
-			sfxb.readRegister(lp2bl,1);
-//			wrax	lp2bl,-1
-			sfxb.writeRegister(lp2bl, -1);
-//			rdax	lp2al,kql
-			sfxb.readRegister(lp2al,kql);
-//			rdax	lp1bl,1
-			sfxb.readRegister(lp1bl,1);
-//			mulx	kfl
-			sfxb.mulx(kfl);
-//;			rdax	lp2al,1
-			sfxb.readRegister(lp2al,1);
-//			wrax	lp2al,0
-			sfxb.writeRegister(lp2al, 0);
+			if(is4Pole) {
+				sfxb.readRegister(lp2al,1);
+				sfxb.mulx(kfl);
+				sfxb.readRegister(lp2bl,1);
+				sfxb.writeRegister(lp2bl, -1);
+				sfxb.readRegister(lp2al,kql);
+				sfxb.readRegister(lp1bl,1);
+				sfxb.mulx(kfl);
+				sfxb.readRegister(lp2al,1);
+				sfxb.writeRegister(lp2al, 0);
 
-			this.getPin("Audio Output").setRegister(lp2al);	
-//			this.getPin("Audio Output 1").setRegister(lp2bl);	
+				this.getPin("Audio Output").setRegister(lp2al);
+			}
+			else {
+				this.getPin("Audio Output").setRegister(lp1al);				
+			}
 		}
 		System.out.println("LPF 4 pole code gen!");
 	}
@@ -147,5 +126,13 @@ public class LPF4PCADBlock extends FilterCADBlock{
 
 	public void setFreq(double f) {
 		f0 = f;
+	}
+
+	public boolean getIs4Pole() {
+		return is4Pole;
+	}
+
+	public void setIs4Pole(boolean r) {
+		is4Pole = r;
 	}
 }
