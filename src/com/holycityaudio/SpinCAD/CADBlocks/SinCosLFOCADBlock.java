@@ -30,6 +30,7 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 	int lfoRate = 1;
 	int lfoWidth = 1;
 	int lfoSel = 0;		// 0 or 1
+	int outputRange = 0;	// if 1, add SOF 0.5, 0.5 at end to scale it to 0.0 to 1.0
 
 	public SinCosLFOCADBlock(int x, int y) {
 		super(x, y);
@@ -81,8 +82,14 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 		}
 		
 		sfxb.chorusReadValue(0 + lfoSel);
+		if(outputRange == 1) {
+			sfxb.scaleOffset(0.5,  0.5);
+		}
 		sfxb.writeRegister(sin, 0.0);
 		sfxb.chorusReadValue(8 + lfoSel);
+		if(outputRange == 1) {
+			sfxb.scaleOffset(0.5,  0.5);
+		}
 		sfxb.writeRegister(cos, 0.0);
 		this.getPin("Sine").setRegister(sin);
 		this.getPin("Cosine").setRegister(cos);
@@ -100,6 +107,14 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 
 	public void setLFORate(int r) {
 		lfoRate = r;
+	}
+
+	public int getRange() {
+		return outputRange;
+	}
+
+	public void setRange(int r) {
+		outputRange = r;
 	}
 
 	public int getLFOSel() {

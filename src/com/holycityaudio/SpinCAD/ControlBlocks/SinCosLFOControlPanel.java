@@ -68,12 +68,21 @@ public class SinCosLFOControlPanel implements ChangeListener, ActionListener, It
 	private JFrame frame;
 	private SinCosLFOCADBlock pC;
 
+	private String listOptions[] = {
+			"-1.0 -> 1.0",
+			" 0.0 -> 1.0"
+	};
+
 	public SinCosLFOControlPanel(SinCosLFOCADBlock sinCosLFOCADBlock) {
 		lfoWidthSlider.addChangeListener(this);
 		lfoRateSlider.addChangeListener(this);
 		pC = sinCosLFOCADBlock;
 		rb  = new LFORadioButtons();
 
+		
+		outputRange = new JComboBox(listOptions);
+		outputRange.addActionListener(this);
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("LFO");
@@ -96,16 +105,10 @@ public class SinCosLFOControlPanel implements ChangeListener, ActionListener, It
 				
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.add(rb);
-				
-				String listOptions[] = {
-						"-1.0 -> 1.0",
-						" 0.0 -> 1.0"
-				};
-				
-				outputRange = new JComboBox(listOptions);
-				
+								
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.add(outputRangeLabel);
+				outputRange.setSelectedIndex(pC.getRange());
 				frame.add(outputRange);
 
 				lfoRateSlider.setValue(pC.getLFORate());
@@ -117,6 +120,42 @@ public class SinCosLFOControlPanel implements ChangeListener, ActionListener, It
 				frame.pack();
 			}
 		});
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource() == outputRange) {
+	        JComboBox cb = (JComboBox)arg0.getSource();
+	        String range = (String)cb.getSelectedItem();
+	        if (range == listOptions[0]) {
+	        	pC.setRange(0);
+	        } else if (range == listOptions[1]) {
+	        	pC.setRange(1);
+	        }
+		}
+	}
+
+	public void itemStateChanged(ItemEvent arg0) {
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if (e.getSource() == lfoRateSlider) {
+			pC.setLFORate( lfoRateSlider.getValue());
+			updateLfoRateLabel();
+		}
+		else if (e.getSource() == lfoWidthSlider) {
+			pC.setLFOWidth(lfoWidthSlider.getValue());
+			updateLfoWidthLabel();
+		}
+	}	
+
+	private void updateLfoRateLabel() {
+		lfoRateLabel.setText(String.format("%2.1f Hz", (ElmProgram.getSamplerate() * pC.getLFORate()) / (2 * Math.PI * Math.pow(2.0 ,17))));
+	}
+
+	private void updateLfoWidthLabel() {
+		lfoWidthLabel.setText(String.format("%2d", pC.getLFOWidth()));	
 	}
 
 	class LFORadioButtons extends JPanel implements ActionListener {
@@ -160,34 +199,5 @@ public class SinCosLFOControlPanel implements ChangeListener, ActionListener, It
 			} 
 			pC.setName();
 		}
-	}
-
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-
-	}
-
-	public void itemStateChanged(ItemEvent arg0) {
-	}
-
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		if (e.getSource() == lfoRateSlider) {
-			pC.setLFORate( lfoRateSlider.getValue());
-			updateLfoRateLabel();
-		}
-		else if (e.getSource() == lfoWidthSlider) {
-			pC.setLFOWidth(lfoWidthSlider.getValue());
-			updateLfoWidthLabel();
-		}
-	}	
-
-	private void updateLfoRateLabel() {
-		lfoRateLabel.setText(String.format("%2.1f Hz", (ElmProgram.getSamplerate() * pC.getLFORate()) / (2 * Math.PI * Math.pow(2.0 ,17))));
-	}
-
-	private void updateLfoWidthLabel() {
-		lfoWidthLabel.setText(String.format("%2d", pC.getLFOWidth()));	
 	}
 }
