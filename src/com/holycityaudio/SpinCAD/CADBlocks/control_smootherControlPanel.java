@@ -38,6 +38,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
+import com.holycityaudio.SpinCAD.SpinSliderSpinner;
+
 
 public class control_smootherControlPanel {
 	private JFrame frame;
@@ -47,6 +49,7 @@ public class control_smootherControlPanel {
 	JSlider filtSlider;
 	JLabel  filtLabel;	
 	JSpinner filtSpinner;
+	SpinSliderSpinner goombah;
 	
 	public control_smootherControlPanel(control_smootherACADBlock genericCADBlock) {
 
@@ -57,14 +60,16 @@ public class control_smootherControlPanel {
 
 				frame = new JFrame();
 				frame.setTitle("Smoother");
+				
+				goombah = new SpinSliderSpinner(" Frekwencee (Hurts) ");
+				frame.add(goombah);
+				
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-			
 				JPanel topLine = new JPanel();
 				topLine.setLayout(new BoxLayout(topLine, BoxLayout.X_AXIS));
 			
 				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(gCB.filtToFreq(gCB.getfilt()) * 100, 0.51, 10000.00, 0.01);
 
-				
 				filtSpinner = new JSpinner(filtSpinnerNumberModel);
 		        
 				JSpinner.NumberEditor editor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
@@ -76,7 +81,7 @@ public class control_smootherControlPanel {
 
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 
-               DecimalFormat format = editor.getFormat();  
+                DecimalFormat format = editor.getFormat();  
 		        format.setMinimumFractionDigits(2);  
 		        format.setMaximumFractionDigits(2);  
 		        editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
@@ -100,8 +105,9 @@ public class control_smootherControlPanel {
 				frame.addWindowListener(new MyWindowListener());
 				
 				frame.setVisible(true);		
+				frame.setResizable(true);
 				frame.pack();
-				frame.setResizable(false);
+
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setAlwaysOnTop(true);
 			}
