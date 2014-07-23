@@ -75,7 +75,8 @@
 // @menuitem "Pitch Test" PitchTest 
 @menuitem "Pitch Shift Fixed" PitchShiftFixed 
 @menuitem "Pitch Up" PitchUp 
-@menuitem "Pitch Up/Down" PitchUpDown 
+@menuitem "Pitch Up/Down J" PitchUpDownJ 
+@menuitem "Pitch Up/Down" pitchupdown 
 
 /* @menu "Guitar"
 @menuitem "GA Chorus" ga_demo_chorus 

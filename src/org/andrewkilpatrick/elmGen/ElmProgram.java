@@ -139,6 +139,7 @@ public class ElmProgram implements Serializable {
 	// chorus flags
 	public static final int SIN0 = 0;
 	public static final int SIN1 = 1;
+	// these are correct sir!
 	public static final int RMP0 = 2;
 	public static final int RMP1 = 3;
 	public static final int COS0 = 4;

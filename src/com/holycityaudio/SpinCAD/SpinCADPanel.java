@@ -458,6 +458,7 @@ public class SpinCADPanel extends JPanel {
 				deleteBlockConnection(spcb);
 				f.getModel().blockList.remove(spcb);
 				f.getModel().setChanged(true);
+				f.updateFrameTitle();
 				f.getResourceToolbar().update();
 				repaint();
 				break;

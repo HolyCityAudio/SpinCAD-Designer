@@ -40,9 +40,9 @@ public class LoadRampLFO extends Instruction {
 	 * @param freq the frequency (-16384 - 32767)
 	 */
 	public LoadRampLFO(int lfo, int freq, int amp) {
-		if(lfo < 0 || lfo > 1) {
+		if(lfo < 2 || lfo > 3) {
 			throw new IllegalArgumentException("lfo out of range: " + lfo +
-					" - valid values: 0 or 1");
+					" - valid values: 2 or 3");
 		}
 		this.lfo = lfo;
 		if(freq < -16384 || freq > 32767) {
