@@ -185,6 +185,8 @@ public class SpinCADPanel extends JPanel {
 									// bug here somewhere
 									if(hitPin(arg0, b, currentPin)) {
 										currentPin.deletePinConnection();
+										f.getModel().setChanged(true);
+										f.updateFrameTitle();
 										return;
 									}
 								}
@@ -243,6 +245,7 @@ public class SpinCADPanel extends JPanel {
 											startBlock = null;
 											spdFrame.getModel().setChanged(true);
 											spdFrame.getResourceToolbar().update();	// recalculate model resources toolbar
+											f.updateFrameTitle();
 											repaint();
 										}
 									}
@@ -258,6 +261,7 @@ public class SpinCADPanel extends JPanel {
 											dragLine = null;
 											startBlock = null;
 											spdFrame.getModel().setChanged(true);
+											f.updateFrameTitle();
 											spdFrame.getResourceToolbar().update();	// recalculate model resources toolbar
 											repaint();
 										}

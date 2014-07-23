@@ -386,18 +386,17 @@ public class SpinCADFrame extends JFrame {
 	 * @param mntmExit
 	 */
 	
-	private void updateFrameTitle() {
+	void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
 				if(spcFileName != null) {
-					setTitle("SpinCAD Designer - " + spcFileName);			
+					setTitle("SpinCAD Designer - " + spcFileName + (getModel().changed ? " * " : ""));			
 				}
 				else {
 					setTitle("SpinCAD Designer - Untitled");
 				}
 			}
 		});
-
 	}
 	
 	private void fileSaveAs(final SpinCADPanel panel, JMenuItem mntmExit) {
@@ -415,11 +414,13 @@ public class SpinCADFrame extends JFrame {
 							SpinCADFile.fileSave(getModel(), filePath);
 							saveMRUFolder(fileToBeSaved.getPath());
 							spcFileName = fileToBeSaved.getName();
+							getModel().setChanged(false);
 							updateFrameTitle();
 					} else
 						fileSaveAs();
 						spcFileName = fileToBeSaved.getName();
 						saveMRUFolder(fileToBeSaved.getPath());
+						getModel().setChanged(false);
 						updateFrameTitle();
 					}
 					System.exit(0);
@@ -453,6 +454,7 @@ public class SpinCADFrame extends JFrame {
 						SpinCADFile.fileSave(getModel(), filePath);
 							prefs.put("MRUFolder", filePath);
 							saveMRUFolder(filePath);
+							getModel().setChanged(false);
 							updateFrameTitle();
 					} finally {
 					}

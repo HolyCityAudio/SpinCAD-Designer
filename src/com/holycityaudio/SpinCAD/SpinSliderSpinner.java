@@ -70,14 +70,13 @@ public class SpinSliderSpinner extends JPanel {
 				internal.setVisible(true);		
 			}
 		});
-		
 		this.add(internal);
 	}
 
 	private void updateLabel() {
 		filtLabel.setText(String.format(" Frequency (Hz) "));		
 	}
-	
+
 	private void updateSpinner() {
 		filtSpinner.setValue(25);
 	}
