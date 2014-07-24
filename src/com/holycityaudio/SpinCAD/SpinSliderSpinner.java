@@ -1,7 +1,9 @@
 package com.holycityaudio.SpinCAD;
 
 import java.awt.Dimension;
+import java.awt.List;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -15,10 +17,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+interface gwSliderSpinnerListener {
+	public void sliderChanged();
+	public void spinnerChanged();
+}
+
+// this is the initiating class
+
 public class SpinSliderSpinner extends JPanel {
 	/**
 	 * 
 	 */
+
 	private static final long serialVersionUID = 1L;
 	JSlider filtSlider;
 	JLabel  filtLabel;	
@@ -97,4 +107,20 @@ public class SpinSliderSpinner extends JPanel {
 			} 
 		}
 	}
+
+	ArrayList<gwSliderSpinnerListener> listeners = new ArrayList<gwSliderSpinnerListener>();
+
+    public void addListener(gwSliderSpinnerListener toAdd) {
+        listeners.add(toAdd);
+    }
+}
+
+class Responder implements gwSliderSpinnerListener {
+    @Override
+	public void sliderChanged() {
+    	System.out.println("Slider...");
+    }    	
+	public void spinnerChanged() {
+    	System.out.println("Spinner...");
+    }    	
 }

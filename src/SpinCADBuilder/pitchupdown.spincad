@@ -4,7 +4,7 @@
 @audioOutput pitch2 Pitch_Up_Out
 
 @isPinConnected Input
-equ pitch1 reg0
+equ pitch1 reg0 
 equ pitch2 reg1 
 // establish the base address for this module
 @getBaseAddress 
@@ -17,7 +17,7 @@ wldr RMP0,16384,4096
 // next line should really be -8192
 wldr RMP1, 8192,4096 
 START: 
-ldax ADCL
+ldax input
 wra delayd,0
 			
 cho rda,RMP0,REG|COMPC,delayd 
@@ -26,7 +26,7 @@ wra temp,0
 cho rda,RMP0,RPTR2|COMPC,delayd 
 cho rda,RMP0,RPTR2,delayd+ 1 
 cho sof,RMP0,NA|COMPC,0 
-cho rda,RMP0,NA,temp 
+cho rda,RMP0,NA,temp
 wrax pitch1,0
 
 @setOutputPin Pitch_Down_Out pitch1
