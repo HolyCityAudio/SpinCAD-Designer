@@ -23,10 +23,7 @@ package com.holycityaudio.SpinCAD;
 import java.awt.BorderLayout;
 
 
-
-
-
-
+import javax.sound.sampled.UnsupportedAudioFileException;
 // import javax.sound.sampled.spi.AudioFileReader;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -62,6 +59,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
+import org.andrewkilpatrick.elmGen.simulator.AudioFileReader;
 import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
@@ -347,7 +345,20 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSourceFile = new JMenuItem("Set Simulator Source file");
 		mntmSourceFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				getSimulatorFile();
+				try {
+					getSimulatorFile();
+				} catch (UnsupportedAudioFileException e) {
+					JFrame frame = new JFrame();
+					JOptionPane.showMessageDialog(
+							frame,
+							"Make sure that your simulator source\n"
+									+ "file is a stereo 16 bit WAV file sampled \nat 32768, 44100, or 48000 Hz.", 
+									"Simulator File Error", JOptionPane.OK_OPTION);
+				}
+				catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		mnSimulator.add(mntmSourceFile);
@@ -649,7 +660,7 @@ public class SpinCADFrame extends JFrame {
 		return exitListener;
 	}
 
-	public void getSimulatorFile() {
+	public void getSimulatorFile() throws UnsupportedAudioFileException, IOException {
 		String testWavFileName = prefs.get("SIMULATOR_FILE", "");
 		final JFileChooser fc = new JFileChooser(testWavFileName);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -664,6 +675,8 @@ public class SpinCADFrame extends JFrame {
 			testWavFileName = fc.getSelectedFile().getPath();
 			prefs.put("SIMULATOR_FILE", testWavFileName);
 			System.out.println("Opening: " + testWavFileName + "." + newline);
+			// do this just to check the file format, exceptions will be thrown if any
+			new AudioFileReader(testWavFileName, false);
 		} else {
 			System.out.println("Command cancelled by user." + newline);
 		}
