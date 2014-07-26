@@ -76,7 +76,7 @@ equ   klap   0.6
 
 ;PITCH SHIFTER RAMP0 INIT 
 skp   run,   START 
-wldr   rmp0,   16384,   4096   ;Init RAMP0 for +1 octave pitch shifting 
+wldr   0,   16384,   4096   ;Init RAMP0 for +1 octave pitch shifting 
 START:
 
 ;PreparePOT2 for Decay

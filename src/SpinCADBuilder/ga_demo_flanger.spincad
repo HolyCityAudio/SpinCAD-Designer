@@ -62,8 +62,8 @@ wrax	lp1,0
 wrax	lp2,0
 wrax	fhp,0
 wlds	sin0,12,100
-wldr	rmp0,0,4096	;for making triangle
-wldr	rmp1,0,512	;servo LFO
+wldr	0,0,4096	;for making triangle
+wldr	0,0,512	;servo LFO
 endclr:
 
 ;sum inputs to mono:

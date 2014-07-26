@@ -191,8 +191,8 @@ wlds sin0, 30, 50
 wlds sin1, 134, 4096
 
 ; wldr tests 
-wldr rmp0,   30,   512 
-wldr rmp1, 134, 4096
+wldr 0,   30,   512 
+wldr 1, 134, 4096
 
 
 ; register tests

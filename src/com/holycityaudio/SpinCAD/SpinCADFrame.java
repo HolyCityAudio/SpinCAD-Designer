@@ -26,6 +26,7 @@ import java.awt.BorderLayout;
 
 
 
+
 // import javax.sound.sampled.spi.AudioFileReader;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -70,6 +71,7 @@ import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 //import java.io.IOException;
@@ -385,7 +387,7 @@ public class SpinCADFrame extends JFrame {
 	 * @param panel
 	 * @param mntmExit
 	 */
-	
+
 	void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
@@ -398,7 +400,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 	}
-	
+
 	private void fileSaveAs(final SpinCADPanel panel, JMenuItem mntmExit) {
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -416,8 +418,8 @@ public class SpinCADFrame extends JFrame {
 							spcFileName = fileToBeSaved.getName();
 							getModel().setChanged(false);
 							updateFrameTitle();
-					} else
-						fileSaveAs();
+						} else
+							fileSaveAs();
 						spcFileName = fileToBeSaved.getName();
 						saveMRUFolder(fileToBeSaved.getPath());
 						getModel().setChanged(false);
@@ -428,7 +430,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 	}
-	
+
 	private void saveMRUFolder(String path) {
 		Path pathE = Paths.get(path);
 
@@ -452,10 +454,10 @@ public class SpinCADFrame extends JFrame {
 					String filePath = fileToBeSaved.getPath();
 					try {
 						SpinCADFile.fileSave(getModel(), filePath);
-							prefs.put("MRUFolder", filePath);
-							saveMRUFolder(filePath);
-							getModel().setChanged(false);
-							updateFrameTitle();
+						prefs.put("MRUFolder", filePath);
+						saveMRUFolder(filePath);
+						getModel().setChanged(false);
+						updateFrameTitle();
 					} finally {
 					}
 
@@ -509,9 +511,13 @@ public class SpinCADFrame extends JFrame {
 						getModel().presetIndexFB();
 						saveMRUFolder(filePath);
 						updateFrameTitle();
-					} catch (Exception e) {
+					} catch (Exception e) {	// thrown over in SpinCADFile.java
 						spcFileName = null;
-						e.printStackTrace();
+//						e.printStackTrace();
+						JFrame frame = new JFrame();
+						JOptionPane.showMessageDialog(frame,
+								"This spcd file may be from\nan incompatible version of \nSpinCAD Designer.", "File open failed!",
+								JOptionPane.DEFAULT_OPTION);
 					}
 				} else {
 					System.out.println("Open command cancelled by user."
@@ -556,7 +562,7 @@ public class SpinCADFrame extends JFrame {
 		}
 	}
 
-	
+
 	public void fileSaveAsm() {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUFolder", "");
@@ -580,16 +586,26 @@ public class SpinCADFrame extends JFrame {
 					JOptionPane.YES_NO_OPTION);
 		}
 		if (n == JOptionPane.YES_OPTION) {
+			String filePath;
 			try {
-				String filePath = fileToBeSaved.getPath();
+				filePath = fileToBeSaved.getPath();
 				fileToBeSaved.delete();
 				getModel();
-				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
-						.getProgramListing(1), filePath);
-				getModel().setChanged(false);
-				saveMRUFolder(filePath);
 			} finally {
 			}
+			try {
+				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
+						.getProgramListing(1), filePath);
+			} catch (IOException e) {
+				int confirm = JOptionPane.showOptionDialog(null,
+						"File save error!", "Error",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+				e.printStackTrace();
+			}
+			getModel().setChanged(false);
+			saveMRUFolder(filePath);
 		}
 	}
 

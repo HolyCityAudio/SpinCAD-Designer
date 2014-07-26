@@ -61,7 +61,7 @@ public class PitchUpCADBlock extends ModulationCADBlock {
 			
 			// skp run,START
 			sfxb.skip(RUN, 1);
-			// wldr RMP0, 0 ,4096 
+			// wldr 0, 0 ,4096 
 			sfxb.loadRampLFO(0, 0, 4096);
 			
 			p = this.getPin("Control Input 1").getPinConnection();
@@ -85,15 +85,15 @@ public class PitchUpCADBlock extends ModulationCADBlock {
 			//cho rda,RMP0,,delayd+1 
 			sfxb.FXchorusReadDelay(RMP0, 0, "delayd+", 1);
 			// wra temp,0 
-//			sfxb.FXwriteDelay("temp", 0, 0.0);
+			sfxb.FXwriteDelay("temp", 0, 0.0);
 			// cho rda,RMP0,RPTR2|COMPC,delayd 
-//			sfxb.FXchorusReadDelay(LFO_RMP0, RPTR2 | COMPC, "delayd", 0);
+			sfxb.FXchorusReadDelay(RMP0, RPTR2 | COMPC, "delayd", 0);
 			// cho rda,RMP0,RPTR2,delayd+1 
-//			sfxb.FXchorusReadDelay(LFO_RMP0, RPTR2, "delayd", 1);
+			sfxb.FXchorusReadDelay(RMP0, RPTR2, "delayd", 1);
 			// cho sof,RMP0,NA|COMPC,0 
-//			sfxb.chorusScaleOffset(LFO_RMP0, NA | COMPC, 0);
+			sfxb.chorusScaleOffset(RMP0, NA | COMPC, 0);
 			// cho rda,RMP0,NA,temp 
-//			sfxb.FXchorusReadDelay(LFO_RMP0, NA, "temp", 0);
+			sfxb.FXchorusReadDelay(RMP0, NA, "temp", 0);
 			//wrax pitch1,0
 			sfxb.writeRegister(pitch1, 0);
 	

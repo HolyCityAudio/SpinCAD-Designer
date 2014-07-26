@@ -74,8 +74,8 @@
 @menu "Pitch"
 // @menuitem "Pitch Test" PitchTest 
 @menuitem "Pitch Shift Fixed" PitchShiftFixed 
-@menuitem "Pitch Up" PitchUp 
-@menuitem "Pitch Up/Down J" PitchUpDownJ 
+// @menuitem "Pitch Up" PitchUp 
+// @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Pitch Up/Down" pitchupdown 
 
 /* @menu "Guitar"
@@ -102,6 +102,6 @@
 @menuitem "Scale/Offset" ScaleOffsetControl
 @menuitem "Log" ExponentialControl
 @menuitem "Control Mixer" ControlMixer
-@menuitem "SmootherA" control_smootherA
+// @menuitem "SmootherA" control_smootherA
 @menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo

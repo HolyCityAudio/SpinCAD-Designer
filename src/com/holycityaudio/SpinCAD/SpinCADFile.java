@@ -24,6 +24,7 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -47,37 +48,24 @@ public class SpinCADFile {
 		} 
 	}
 
-	public static void fileSaveAsm(String codeListing, String fileName) {
-		try { 
-		    BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+	public static void fileSaveAsm(String codeListing, String fileName) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
-		    String[] words = codeListing.split("\n");
-		    for (String word: words) {
-		        writer.write(word);
-		        writer.newLine();
-		    }
-		    writer.close();
-		} 
-		catch(Exception e) { 
-			System.out.println("Exception during file save as ASM: " + e); 
-			//		System.exit(0); 
-		} 
+		String[] words = codeListing.split("\n");
+		for (String word: words) {
+			writer.write(word);
+			writer.newLine();
+		}
+		writer.close();
 	}
 
-	public static SpinCADModel fileRead(SpinCADModel m, String fileName) {
+	public static SpinCADModel fileRead(SpinCADModel m, String fileName) throws IOException, ClassNotFoundException {
 		// Object deserialization 
-		try { 
-			FileInputStream fis = new FileInputStream(fileName); 
-			ObjectInputStream ois = new ObjectInputStream(fis); 
-			m = (SpinCADModel)ois.readObject(); 
-			ois.close(); 
-			// System.out.println("m: " + m); 
-		} 
-		catch(Exception e) { 
-			System.out.println("Exception during deserialization: " + 
-					e); 
-			System.exit(0); 
-		} 
+		FileInputStream fis = new FileInputStream(fileName); 
+		ObjectInputStream ois = new ObjectInputStream(fis); 
+		m = (SpinCADModel)ois.readObject(); 
+		ois.close(); 
+		// System.out.println("m: " + m); 
 		return m;
 	} 	
 }

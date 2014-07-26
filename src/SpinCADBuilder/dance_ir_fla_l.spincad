@@ -56,7 +56,7 @@ equ	kql	-0.4
 ;prepare flange delay pointer:
 
 skp	run, label1
-wldr	rmp0,0,512
+wldr	0,0,512
 
 ;prepare pots to affect control variables:
 ;pot0 controls reverb time, but also affects input drive level;
