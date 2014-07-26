@@ -32,7 +32,7 @@ public class HPF2PCADBlock extends FilterCADBlock{
 	public HPF2PCADBlock(int x, int y) {
 		super(x, y);
 		addInputPin(this, "Audio Input");
-		addOutputPin(this, "Audo Output");
+		addOutputPin(this, "Audio Output");
 		addControlInputPin(this);
 		setName("High Pass 2P");	}
 
@@ -45,7 +45,7 @@ public class HPF2PCADBlock extends FilterCADBlock{
 
 		int input = -1;
 
-		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
+		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 
 		if(p != null) {
 			input = p.getRegister();
@@ -114,9 +114,9 @@ public class HPF2PCADBlock extends FilterCADBlock{
 			sfxb.writeRegister(hp1al, 0);
 
 
-			this.getPin("Audio Output 1").setRegister(hpout);	
+			this.getPin("Audio Output").setRegister(hpout);	
 		}
-		System.out.println("LPF 4 pole code gen!");
+		System.out.println("HPF 4 pole code gen!");
 	}
 
 	public double getFreq() {

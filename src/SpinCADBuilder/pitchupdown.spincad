@@ -4,18 +4,17 @@
 @audioOutput pitch2 Pitch_Up_Out
 
 @isPinConnected Input
-equ pitch1 reg0 
+equ pitch1 reg0
 equ pitch2 reg1 
 // establish the base address for this module
-@getBaseAddress 
+@getBaseAddress
 // then allocate memory
 mem delayd 4096
 mem temp 1
 
-skp run, START
-wldr RMP0,16384,4096 
-// next line should really be -8192
-wldr RMP1, 8192,4096 
+skp run, START 
+wldr RMP1,16384,4096 
+wldr RMP0, -8192,4096 
 START: 
 ldax input
 wra delayd,0
