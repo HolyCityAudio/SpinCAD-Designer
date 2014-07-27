@@ -20,10 +20,12 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -62,7 +64,13 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 	private void createAndShowUI() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				setTitle("Low pass 4 pole");
+				if(LPF.getIs4Pole()) {
+					setTitle("Low pass 4 pole");
+					nPoles.setSelectedIndex(1);
+				} else {
+					setTitle("Low pass 2 pole");
+					nPoles.setSelectedIndex(0);
+				}	
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
 				freqSlider = new JSlider(JSlider.HORIZONTAL, 80, 2500, 1000);
@@ -70,12 +78,14 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 				freqLabel = new JLabel();
 
-				getContentPane().add(freqLabel);
-				getContentPane().add(freqSlider);
+//				getContentPane().add(freqLabel);
+//				getContentPane().add(freqSlider);
+				getContentPane().add(Box.createRigidArea(new Dimension(5,4)));			
 				getContentPane().add(nPoles);
+				getContentPane().add(Box.createRigidArea(new Dimension(5,4)));			
 
-				freqSlider.setValue((int)Math.round(LPF.getFreq()));
-				updateFreqLabel();
+//				freqSlider.setValue((int)Math.round(LPF.getFreq()));
+//				updateFreqLabel();
 				setVisible(true);
 				setLocation(new Point(LPF.getX() + 200, LPF.getY() + 150));
 				pack();
