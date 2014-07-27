@@ -35,6 +35,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 		super(x, y);
 		addInputPin(this, "Audio Input");
 		addOutputPin(this, "Audio Output");
+		hasControlPanel = true;
 		addControlInputPin(this);
 		if(is4Pole == true) {
 			setName("Low Pass 4P");	
@@ -44,7 +45,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	}
 
 	public void editBlock(){
-		//		new LPF1PControlPanel(this);
+				new LPF4PControlPanel(this);
 	}	
 
 	public void generateCode(SpinFXBlock sfxb) {

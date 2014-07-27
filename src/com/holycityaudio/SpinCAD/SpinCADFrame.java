@@ -348,12 +348,8 @@ public class SpinCADFrame extends JFrame {
 				try {
 					getSimulatorFile();
 				} catch (UnsupportedAudioFileException e) {
-					JFrame frame = new JFrame();
-					JOptionPane.showMessageDialog(
-							frame,
-							"Make sure that your simulator source\n"
-									+ "file is a stereo 16 bit WAV file sampled \nat 32768, 44100, or 48000 Hz.", 
-									"Simulator File Error", JOptionPane.OK_OPTION);
+						MessageBox("Simulator File Error", "Make sure that your simulator source\n"
+							+ "file is a stereo 16 bit WAV file sampled \nat 32768, 44100, or 48000 Hz.");
 				}
 				catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -381,14 +377,11 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFrame frame = new JFrame();
-				JOptionPane
-				.showMessageDialog(
-						frame,
-						"Version 0.96 Build 783\n"
+				MessageBox("About SpinCAD Designer", "Version 0.96 Build 783\n"
 								+ "Copyright 2014 Gary Worsham, Holy City Audio\n" + 
-								" This program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
-								"About SpinCAD Designer", JOptionPane.OK_OPTION);
+								" This program is distributed in the hope that it will be useful," +
+								"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
+								"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
 			}
 		});
 		mnHelp.add(mntmAbout);
@@ -416,10 +409,9 @@ public class SpinCADFrame extends JFrame {
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (getModel().getChanged() == true) {
-					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(panel,
-							"You have unsaved changes!  Save first?",
-							"Warning!", dialogButton);
+					int dialogResult = yesNoBox(panel, "Warning!", 
+							"You have unsaved changes!  Save first?");				
+					
 					if (dialogResult == JOptionPane.YES_OPTION) {
 						File fileToBeSaved = new File(spcFileName);
 						if (fileToBeSaved.exists()) {
@@ -488,10 +480,8 @@ public class SpinCADFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				// Create a file chooser
 				if (getModel().getChanged() == true) {
-					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(panel,
-							"You have unsaved changes!  Continue?", "Warning!",
-							dialogButton);
+					int dialogResult = yesNoBox(panel, "Warning!",
+							"You have unsaved changes!  Continue?");
 					if (dialogResult == 0) {
 						getModel().newModel();
 						repaint();
@@ -525,10 +515,7 @@ public class SpinCADFrame extends JFrame {
 					} catch (Exception e) {	// thrown over in SpinCADFile.java
 						spcFileName = null;
 //						e.printStackTrace();
-						JFrame frame = new JFrame();
-						JOptionPane.showMessageDialog(frame,
-								"This spcd file may be from\nan incompatible version of \nSpinCAD Designer.", "File open failed!",
-								JOptionPane.DEFAULT_OPTION);
+						MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
 					}
 				} else {
 					System.out.println("Open command cancelled by user."
@@ -761,6 +748,26 @@ public class SpinCADFrame extends JFrame {
 		SpinCADFrame.model = model;
 	}
 
+	// Swing dialog boxes.
+	
+	void MessageBox(String title, String message) {
+		JFrame frame = new JFrame();
+		JOptionPane.showMessageDialog(frame,
+				message, title,
+				JOptionPane.DEFAULT_OPTION);
+	
+	}
+	
+	int yesNoBox(JPanel panel, String title, String question) {
+		JFrame frame = new JFrame();
+
+		int dialogButton = JOptionPane.YES_NO_OPTION;
+		int dialogResult = JOptionPane.showConfirmDialog(panel,
+				question,
+				title, dialogButton);
+		return dialogResult;
+	}
+	
 	// ======================================================================================================
 	class simControlToolBar extends JToolBar implements ActionListener,
 	ChangeListener {
