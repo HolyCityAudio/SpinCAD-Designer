@@ -80,9 +80,9 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 //				getContentPane().add(freqLabel);
 //				getContentPane().add(freqSlider);
-				getContentPane().add(Box.createRigidArea(new Dimension(5,4)));			
+				getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
 				getContentPane().add(nPoles);
-				getContentPane().add(Box.createRigidArea(new Dimension(5,4)));			
+				getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
 
 //				freqSlider.setValue((int)Math.round(LPF.getFreq()));
 //				updateFreqLabel();

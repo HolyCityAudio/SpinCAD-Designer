@@ -21,11 +21,14 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
@@ -43,9 +46,9 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 	JSlider freqSlider = new JSlider(JSlider.HORIZONTAL, -12, 24, 0);
 	JSlider ampSlider = new JSlider(JSlider.HORIZONTAL, 0, 3, 2);
 
-	JLabel freqLabel = new JLabel();
-	JLabel ampLabel = new JLabel();
-	
+	JLabel freqLabel = new JLabel("Label", SwingConstants.CENTER);
+	JLabel ampLabel = new JLabel("Label", SwingConstants.CENTER);
+
 	private JFrame frame;
 
 	private PitchShiftFixedCADBlock pong;
@@ -58,7 +61,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 
 		pong = pitchShiftFixedCADBlock;
 		rb  = new LFORadioButtons();
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Ramp LFO");
@@ -69,14 +72,40 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 				freqSlider.setMajorTickSpacing(1);
 				freqSlider.setPaintTicks(true);
 
-				frame.add(ampLabel);
-				updateAmpLabel(2);
-				frame.add(ampSlider);
+				frame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
 
-				frame.add(freqLabel);
+				JPanel freqPanel = new JPanel();
+				int gap = 5;
+				freqPanel.setLayout(new BorderLayout(gap, gap));
+				freqPanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+				freqPanel.add(freqLabel, BorderLayout.CENTER);
+
+				frame.getContentPane().add(freqPanel);
 				updateFreqLabel();
+				frame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
 				frame.add(freqSlider);
-				frame.add(rb);
+				frame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+
+
+				JPanel ampPanel = new JPanel();
+				ampPanel.setLayout(new BorderLayout(gap, gap));
+				ampPanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+				ampPanel.add(ampLabel, BorderLayout.CENTER);
+
+				frame.add(ampPanel);
+				updateAmpLabel(2);
+				frame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+				frame.add(ampSlider);
+				frame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+
+				JPanel lfoPanel = new JPanel();
+				lfoPanel.setLayout(new BorderLayout(gap, gap));
+				lfoPanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+				lfoPanel.add(rb, BorderLayout.CENTER);
+
+				frame.add(lfoPanel);
+				frame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+
 				int i = pong.getAmp();
 				int j = 0;
 				if(i == 512) {
@@ -117,7 +146,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 		freqLabel.setText("Shift (semitones) " + String.format("%d", pong.getFreq()));
 
 	}
-	
+
 	public void updateAmpLabel(int i) {
 		String label = "";
 		if(i == 0) {
@@ -134,7 +163,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 		}
 		ampLabel.setText("Buffer depth " + label);
 	}	
-	
+
 	private class LFORadioButtons extends JPanel implements ActionListener {
 		JRadioButton lfo0 = new JRadioButton("LFO 0");
 		JRadioButton lfo1 = new JRadioButton("LFO 1");

@@ -29,6 +29,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	 */
 	private static final long serialVersionUID = 5711126291575876825L;
 	double f0 = 240;
+	double kql = -0.4;
 	boolean is4Pole = false;
 
 	public LPF4PCADBlock(int x, int y) {
@@ -49,7 +50,6 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	}	
 
 	public void generateCode(SpinFXBlock sfxb) {
-		// coefficients
 
 		int input = -1;
 
@@ -64,7 +64,6 @@ public class LPF4PCADBlock extends FilterCADBlock{
 			int lp1al = sfxb.allocateReg();
 			int lp2bl = sfxb.allocateReg();
 			int lp2al = sfxb.allocateReg();
-			double kql = -0.4;
 
 			if(is4Pole == true) {
 				sfxb.comment("4 pole low pass");
