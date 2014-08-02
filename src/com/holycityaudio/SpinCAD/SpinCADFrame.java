@@ -562,6 +562,7 @@ public class SpinCADFrame extends JFrame {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File files[] = fc.getSelectedFiles();
 					// This is where a real application would open the file.
+					saveMRUFolder(files[0].getPath());
 					while(index < files.length) {
 						System.out.println("Opening: " + files[index].getName() + "."
 								+ newline);
@@ -571,18 +572,14 @@ public class SpinCADFrame extends JFrame {
 							spcFileName = files[index].getName();
 							getModel().getIndexFB();
 							getModel().setChanged(false);						
-							getModel().presetIndexFB();
-							saveMRUFolder(filePath);
 							updateFrameTitle();
 							String asmFile = files[index].getName();
 	//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
 	//							spcFileName = fileToBeSaved.getName();
-	//							saveMRUFolder(fileToBeSaved.getPath());
-							updateFrameTitle();
 						} catch (Exception e) {	// thrown over in SpinCADFile.java
 							spcFileName = null;
 							//						e.printStackTrace();
-							MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+							MessageBox("File open failed! " + spcFileName, spcFileName + " may be from\nan incompatible version of \nSpinCAD Designer.");
 						}
 						index++;
 					}

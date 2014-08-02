@@ -17,10 +17,10 @@
  */
 package org.andrewkilpatrick.elmGen.instructions;
 
+import org.andrewkilpatrick.elmGen.Debug;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.simulator.Reg;
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
-
 
 
 /**
@@ -178,7 +178,9 @@ public class ChorusReadDelay extends Instruction {
 			int value = tempReg.getValue();
 			tempReg.mult(xfade);
 			// XXX TODO debug GSW
-//			System.out.printf("xfade %d ", xfade);
+			if(Debug.DEBUG == true) {
+				System.out.printf("xfade %d ", xfade);
+			}
 			value = tempReg.getValue();
 			if(value != 0) {
 				@SuppressWarnings("unused")

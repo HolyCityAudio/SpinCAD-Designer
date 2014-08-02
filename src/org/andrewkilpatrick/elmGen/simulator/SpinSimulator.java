@@ -25,6 +25,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 
+import org.andrewkilpatrick.elmGen.Debug;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.instructions.Instruction;
 import org.andrewkilpatrick.elmGen.util.Util;
@@ -209,8 +210,9 @@ public class SpinSimulator extends Thread {
 // GSW changed this line to integrate into SpinCAD Designer
 		int codeLen = simList.size();	// this includes comments
 //		System.out.println("processing sample with: " + codeLen + " instructions");
-		// XXX TODO remove this, for LFO debugging
-		// System.out.println(" ");
+		if(Debug.DEBUG == true) {
+			System.out.println(" ");
+		}
 		state.resetPC();
 		while(state.getPC() < codeLen) {
 			Instruction inst = null;

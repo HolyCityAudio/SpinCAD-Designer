@@ -19,6 +19,8 @@ package org.andrewkilpatrick.elmGen.simulator;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import org.andrewkilpatrick.elmGen.Debug;
+
 public class SimulatorState {
 	private int pc = 0;
 	private Reg acc;
@@ -156,8 +158,10 @@ public class SimulatorState {
 //		int val = delay[(offset + delayp) & 0x7fff];  // use this line to bypass the compressor
 		int index = (offset + delayp) & 0x7fff;
 		int val = (int)DelayCompressor.decompress(delay[index]);
-// XXX uncomment next line to generate RAM access debug at console
-//		System.out.printf("Get: %d ", index);
+
+		if(Debug.DEBUG == true) {
+			System.out.printf("Get: %d ", index);
+		}
 		lr.setValue(val);
 		return val;
 	}
@@ -168,8 +172,10 @@ public class SimulatorState {
 		}
 //		delay[(offset + delayp) & 0x7fff] = value;  // use this line to bypass the compressor	
 		int index = (offset + delayp) & 0x7fff;
-// XXX uncomment next line to generate RAM access debug at console
-//		System.out.printf("Set: %d ", index);
+
+		if(Debug.DEBUG == true) {
+			System.out.printf("Set: %d ", index);
+		}
 		delay[index] = (int)DelayCompressor.compress(value);		
 	}
 

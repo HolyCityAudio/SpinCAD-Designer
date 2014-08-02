@@ -19,7 +19,6 @@ package org.andrewkilpatrick.elmGen.simulator;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
-
 // GSW I am taking AK's ramp max values and shifting them 
 // left 4 places so that freq can be rendered in full resolution.
 
