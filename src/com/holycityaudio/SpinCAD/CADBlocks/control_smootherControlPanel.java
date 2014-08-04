@@ -62,7 +62,7 @@ public class control_smootherControlPanel {
 				frame.setTitle("Smoother");
 				
 				goombah = new SpinSliderSpinner(" Frekwencee (Hurts) ");
-				frame.add(goombah);
+//				frame.add(goombah);
 				
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				JPanel topLine = new JPanel();
@@ -77,9 +77,7 @@ public class control_smootherControlPanel {
 				updatefiltLabel();
 				topLine.add(filtLabel);
 				topLine.setVisible(true);
-//				frame.getContentPane().add(filtLabel);
-
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(filtLabel);
 
                 DecimalFormat format = editor.getFormat();  
 		        format.setMinimumFractionDigits(2);  
@@ -93,6 +91,7 @@ public class control_smootherControlPanel {
 				topLine.add(filtSpinner);
 				filtSpinner.addChangeListener(new control_smootherSpinnerListener());
 
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(topLine);
 
 				frame.add(Box.createRigidArea(new Dimension(5,5)));			
@@ -105,8 +104,8 @@ public class control_smootherControlPanel {
 				frame.addWindowListener(new MyWindowListener());
 				
 				frame.setVisible(true);		
-				frame.setResizable(true);
 				frame.pack();
+				frame.setResizable(false);
 
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setAlwaysOnTop(true);

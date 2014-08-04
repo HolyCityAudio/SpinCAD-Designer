@@ -24,6 +24,12 @@ import java.awt.BorderLayout;
 
 
 
+
+
+
+
+
+
 import javax.sound.sampled.UnsupportedAudioFileException;
 // import javax.sound.sampled.spi.AudioFileReader;
 import javax.swing.JFrame;
@@ -59,6 +65,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import org.andrewkilpatrick.elmGen.Debug;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.simulator.AudioFileReader;
 import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
@@ -70,9 +77,14 @@ import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 //import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -91,7 +103,7 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -123123512351241L;
 	int buildNam = 804;
 
 	// Swing things
@@ -363,7 +375,21 @@ public class SpinCADFrame extends JFrame {
 				}
 			}
 		});
-		mnSimulator.add(mntmSourceFile);
+		mnSimulator.add(mntmSourceFile);		
+
+		if(Debug.DEBUG == true) {
+			JMenuItem mntmDebugFile = new JMenuItem("Set Simulator Debug file");
+			mntmDebugFile.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						setSimulatorDebugFile();
+					} catch (IOException e) {
+						MessageBox("Simulator Debug File Error", "Uhmmmm....");
+					}
+				}
+			});
+			mnSimulator.add(mntmDebugFile);
+		}
 
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -448,8 +474,8 @@ public class SpinCADFrame extends JFrame {
 
 		prefs.put("MRUFolder", pathS);
 		prefs.put("MRUFileName", nameS);
-//		System.out.println("MRUFolder: pathS " + pathS);
-//		System.out.println(" nameS " + nameS);
+		//		System.out.println("MRUFolder: pathS " + pathS);
+		//		System.out.println(" nameS " + nameS);
 	}
 
 	/**
@@ -574,8 +600,8 @@ public class SpinCADFrame extends JFrame {
 							getModel().setChanged(false);						
 							updateFrameTitle();
 							String asmFile = files[index].getName();
-	//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
-	//							spcFileName = fileToBeSaved.getName();
+							//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
+							//							spcFileName = fileToBeSaved.getName();
 						} catch (Exception e) {	// thrown over in SpinCADFile.java
 							spcFileName = null;
 							//						e.printStackTrace();
@@ -735,6 +761,25 @@ public class SpinCADFrame extends JFrame {
 		}
 	}
 
+	public void setSimulatorDebugFile() throws IOException {
+		String debugFileName = prefs.get("SIMULATOR_DEBUG_FILE", "");
+		final JFileChooser fc = new JFileChooser(debugFileName);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"txt files", "txt");
+		fc.setSelectedFile(new File(debugFileName));
+		fc.setFileFilter(filter);
+
+		final String newline = "\n";
+
+		int returnVal = fc.showSaveDialog(SpinCADFrame.this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			debugFileName = fc.getSelectedFile().getPath();
+			prefs.put("SIMULATOR_DEBUG_FILE", debugFileName);
+		} else {
+			System.out.println("Command cancelled by user." + newline);
+		}
+	}
+
 	public void setSimulatorOutputFile() {
 		String simWavOutFileName = prefs.get("SIMULATOR_OUT_FILE", "");
 		final JFileChooser fc = new JFileChooser(simWavOutFileName);
@@ -746,7 +791,7 @@ public class SpinCADFrame extends JFrame {
 
 		final String newline = "\n";
 
-		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+		int returnVal = fc.showSaveDialog(SpinCADFrame.this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			simWavOutFileName = fc.getSelectedFile().getPath();
 			prefs.put("SIMULATOR_OUT_FILE", simWavOutFileName);
@@ -902,8 +947,22 @@ public class SpinCADFrame extends JFrame {
 					loggerPanel.setVisible(false);
 					btnStartSimulation.setText("Start Simulator");
 					sim.stopSimulator();
+					if(Debug.DEBUG == true) {
+						PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out));
+						System.setOut(ps);
+					}
 				} else {
 					setSimRunning(true);
+					// create file
+					if(Debug.DEBUG == true) {
+						try {
+							System.setOut(new PrintStream("simulator-debug.txt"));
+						} catch (FileNotFoundException e) {
+							System.out.println("Error setting debug output PrintStream!"); 
+							e.printStackTrace();
+						}
+					}
+
 					btnStartSimulation.setText("Stop Simulator");
 					pb.update();
 					String testWavFileName = prefs.get("SIMULATOR_FILE", "");
@@ -917,7 +976,13 @@ public class SpinCADFrame extends JFrame {
 					// sim.showLevelMeter();
 					//					sim.setLoopMode(true);
 					// TODO debugging ramp LFO
-					sim.setLoopMode(true);
+					if(Debug.DEBUG == true) {
+						String simDebugFileName = prefs.get("SIMULATOR_DEBUG_FILE", "");
+						sim.setLoopMode(false);
+					} else {
+						sim.setLoopMode(true);					
+					}
+					
 					sim.start();
 				}
 			} else if (arg0.getSource() == btnSigGen) {

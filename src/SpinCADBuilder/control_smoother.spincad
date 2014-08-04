@@ -4,13 +4,13 @@
 
 equ	filtReg reg0  
 
-equ filt 15.00 
+equ filt 0.15 
 // variable - Name - low - high - multiplier - precision - option 
 @sliderLabel filt Filter 0.51 15.00 100.0 100.0 5 LOGFREQ 
 
 @isPinConnected Input
 rdax input, 1.0
-// rdfx filtReg, filt
+rdfx filtReg, filt
 wrax filtReg, 0.0
 
 @setOutputPin Control_Output filtReg
