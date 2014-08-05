@@ -586,14 +586,19 @@ public class SpinCADFrame extends JFrame {
 
 				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
 
-				fc.setDialogTitle("Choose destination...");
-				fc.setMultiSelectionEnabled(false);
+				// now ask user to enter converted file destination
+				final JFileChooser fc2 = new JFileChooser(savedPath); 
+				fc2.setDialogTitle("Choose destination...");
+				fc2.setMultiSelectionEnabled(false);
+				fc2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fc2.setAcceptAllFileFilterUsed(false);
 				// In response to a button click:
-				filter = new FileNameExtensionFilter(
-						"Spin ASM Files", "spn");
-				fc.setFileFilter(filter);
+				filter = new FileNameExtensionFilter("Spin ASM Files", "spn");
+				fc2.setFileFilter(filter);
 
-				returnVal = fc.showSaveDialog(SpinCADFrame.this);
+				fc2.showSaveDialog(SpinCADFrame.this);
+				
+				File destination = fc2.getCurrentDirectory();
 				
 				int index = 0;
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
