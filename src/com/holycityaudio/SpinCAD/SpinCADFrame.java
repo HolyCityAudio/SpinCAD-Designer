@@ -478,6 +478,14 @@ public class SpinCADFrame extends JFrame {
 		//		System.out.println(" nameS " + nameS);
 	}
 
+	private void saveMRUSpnFolder(String path) {
+		Path pathE = Paths.get(path);
+		prefs.put("MRUSpnFolder", pathE.toString());
+//		prefs.put("MRUFileName", nameS);
+		//		System.out.println("MRUFolder: pathS " + pathS);
+		//		System.out.println(" nameS " + nameS);
+	}
+
 	/**
 	 * @param mntmSave
 	 */
@@ -564,7 +572,7 @@ public class SpinCADFrame extends JFrame {
 		mntmFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Create a file chooser
-				if (getModel().getChanged() == true) {
+			if (getModel().getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == 0) {
@@ -599,7 +607,8 @@ public class SpinCADFrame extends JFrame {
 				fc2.showSaveDialog(SpinCADFrame.this);
 				
 				File destination = fc2.getCurrentDirectory();
-				
+				saveMRUSpnFolder(fc2.getCurrentDirectory().getPath());
+						
 				int index = 0;
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File files[] = fc.getSelectedFiles();
@@ -616,17 +625,16 @@ public class SpinCADFrame extends JFrame {
 							getModel().setChanged(false);						
 							updateFrameTitle();
 							String asmFile = files[index].getName();
-							asmFile = files[index].getAbsolutePath();
-							asmFile = files[index].getCanonicalPath();
-							asmFile = files[index].getParent();
-							asmFile = files[index].getPath();
-							
+							String path = files[index].getParent();
+
+							SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock().getProgramListing(1), path + asmFile);
+					
 							//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
 							//							spcFileName = fileToBeSaved.getName();
 						} catch (Exception e) {	// thrown over in SpinCADFile.java
 							spcFileName = null;
 							//						e.printStackTrace();
-							MessageBox("File open failed! " + spcFileName, spcFileName + " may be from\nan incompatible version of \nSpinCAD Designer.");
+							MessageBox("File convert failed! " + spcFileName, spcFileName + " may be from\nan incompatible version of \nSpinCAD Designer.");
 						}
 						index++;
 					}
