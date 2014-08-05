@@ -576,6 +576,7 @@ public class SpinCADFrame extends JFrame {
 				String savedPath = prefs.get("MRUFolder", "");
 
 				final JFileChooser fc = new JFileChooser(savedPath);
+				fc.setDialogTitle("Choose files to convert...");
 				fc.setMultiSelectionEnabled(true);
 				final String newline = "\n";
 				// In response to a button click:
@@ -584,6 +585,16 @@ public class SpinCADFrame extends JFrame {
 				fc.setFileFilter(filter);
 
 				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+
+				fc.setDialogTitle("Choose destination...");
+				fc.setMultiSelectionEnabled(false);
+				// In response to a button click:
+				filter = new FileNameExtensionFilter(
+						"Spin ASM Files", "spn");
+				fc.setFileFilter(filter);
+
+				returnVal = fc.showSaveDialog(SpinCADFrame.this);
+				
 				int index = 0;
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File files[] = fc.getSelectedFiles();
@@ -600,6 +611,11 @@ public class SpinCADFrame extends JFrame {
 							getModel().setChanged(false);						
 							updateFrameTitle();
 							String asmFile = files[index].getName();
+							asmFile = files[index].getAbsolutePath();
+							asmFile = files[index].getCanonicalPath();
+							asmFile = files[index].getParent();
+							asmFile = files[index].getPath();
+							
 							//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
 							//							spcFileName = fileToBeSaved.getName();
 						} catch (Exception e) {	// thrown over in SpinCADFile.java
@@ -609,12 +625,13 @@ public class SpinCADFrame extends JFrame {
 						}
 						index++;
 					}
+					getModel().newModel();
+					repaint();
+					MessageBox("Conversion completed", index + " files were converted.");
 				} else {
 					System.out.println("Open command cancelled by user."
 							+ newline);
 				}
-				pb.update();
-				panel.repaint();
 			}
 		});
 	}
@@ -1003,16 +1020,11 @@ public class SpinCADFrame extends JFrame {
 
 	// ================= used for the status toolbar and simulator start/stop
 	// button
-	public class EditResourcesToolBar extends JToolBar implements
-	ActionListener {
-
+	public class EditResourcesToolBar extends JToolBar implements ActionListener {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -8905757462245337214L;
-		/**
-		 * 
-		 */
 		final JLabel pinName = new JLabel("");
 
 		class Task extends SwingWorker<Void, Void> {
@@ -1029,7 +1041,6 @@ public class SpinCADFrame extends JFrame {
 				done();
 				return null;
 			}
-
 			/*
 			 * Executed in event dispatch thread
 			 */
