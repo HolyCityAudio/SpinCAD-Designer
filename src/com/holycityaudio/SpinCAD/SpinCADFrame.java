@@ -481,7 +481,7 @@ public class SpinCADFrame extends JFrame {
 	private void saveMRUSpnFolder(String path) {
 		Path pathE = Paths.get(path);
 		prefs.put("MRUSpnFolder", pathE.toString());
-//		prefs.put("MRUFileName", nameS);
+		//		prefs.put("MRUFileName", nameS);
 		//		System.out.println("MRUFolder: pathS " + pathS);
 		//		System.out.println(" nameS " + nameS);
 	}
@@ -572,7 +572,7 @@ public class SpinCADFrame extends JFrame {
 		mntmFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Create a file chooser
-			if (getModel().getChanged() == true) {
+				if (getModel().getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == 0) {
@@ -586,6 +586,7 @@ public class SpinCADFrame extends JFrame {
 				final JFileChooser fc = new JFileChooser(savedPath);
 				fc.setDialogTitle("Choose files to convert...");
 				fc.setMultiSelectionEnabled(true);
+
 				final String newline = "\n";
 				// In response to a button click:
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -605,10 +606,10 @@ public class SpinCADFrame extends JFrame {
 				fc2.setFileFilter(filter);
 
 				fc2.showSaveDialog(SpinCADFrame.this);
-				
+
 				File destination = fc2.getCurrentDirectory();
 				saveMRUSpnFolder(fc2.getCurrentDirectory().getPath());
-						
+
 				int index = 0;
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File files[] = fc.getSelectedFiles();
@@ -620,15 +621,24 @@ public class SpinCADFrame extends JFrame {
 						try {
 							String filePath = files[index].getPath();
 							model = SpinCADFile.fileRead(getModel(), filePath );
-							spcFileName = files[index].getName();
 							getModel().getIndexFB();
 							getModel().setChanged(false);						
-							updateFrameTitle();
-							String asmFile = files[index].getName();
-							String path = files[index].getParent();
+							getModel().sortAlignGen();
 
-							SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock().getProgramListing(1), path + asmFile);
-					
+							spcFileName = files[index].getName();
+							String asmFile = files[index].getName();
+							String path = files[index].getParent() + "/../Spin ASM";
+
+							int ind = asmFile.indexOf(".");
+							//print filename
+							//System.out.println(file.getName().substring(0, index));
+							//print extension
+							//System.out.println(file.getName().substring(index));
+							String ext = asmFile.substring(index - 1);
+
+							SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock().getProgramListing(1), path + "/" + ext + ".spn");
+
+							updateFrameTitle();
 							//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
 							//							spcFileName = fileToBeSaved.getName();
 						} catch (Exception e) {	// thrown over in SpinCADFile.java
@@ -1012,7 +1022,7 @@ public class SpinCADFrame extends JFrame {
 					} else {
 						sim.setLoopMode(true);					
 					}
-					
+
 					sim.start();
 				}
 			} else if (arg0.getSource() == btnSigGen) {
