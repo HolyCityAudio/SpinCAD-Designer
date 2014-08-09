@@ -636,7 +636,7 @@ public class SpinCADFrame extends JFrame {
 								// XXX debug
 								String spnPath  = prefs.get("MRUSpnFolder", "") + "/" + spcFileName + ".spn";
 
-								SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock().getProgramListing(1), spnPath );
+								SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock().getProgramListing(1), spnPath.replace(".spcd.spn",  ".spn"));
 
 								updateFrameTitle();
 								//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
@@ -649,7 +649,9 @@ public class SpinCADFrame extends JFrame {
 							index++;
 						}
 						getModel().newModel();
+						spcFileName = "Untitled";
 						repaint();
+						updateFrameTitle();
 						MessageBox("Conversion completed", index + " files were converted.");
 					} else {
 						System.out.println("Open command cancelled by user."
