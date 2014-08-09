@@ -595,65 +595,66 @@ public class SpinCADFrame extends JFrame {
 
 				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
 
-				// now ask user to enter converted file destination
-				final JFileChooser fc2 = new JFileChooser(savedPath); 
-				fc2.setDialogTitle("Choose destination...");
-				fc2.setMultiSelectionEnabled(false);
-				fc2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				fc2.setAcceptAllFileFilterUsed(false);
-				// In response to a button click:
-				filter = new FileNameExtensionFilter("Spin ASM Files", "spn");
-				fc2.setFileFilter(filter);
-
-				fc2.showSaveDialog(SpinCADFrame.this);
-
-				File destination = fc2.getCurrentDirectory();
-				saveMRUSpnFolder(fc2.getCurrentDirectory().getPath());
-
-				int index = 0;
+				// returnVal is from the first file open dialog
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File files[] = fc.getSelectedFiles();
-					// This is where a real application would open the file.
-					saveMRUFolder(files[0].getPath());
-					while(index < files.length) {
-						System.out.println("Opening: " + files[index].getName() + "."
-								+ newline);
-						try {
-							String filePath = files[index].getPath();
-							model = SpinCADFile.fileRead(getModel(), filePath );
-							getModel().getIndexFB();
-							getModel().setChanged(false);						
-							getModel().sortAlignGen();
+					// now ask user to enter converted file destination
+					savedPath = prefs.get("MRUSpnFolder", "");
 
-							spcFileName = files[index].getName();
-							String asmFile = files[index].getName();
-							String path = files[index].getParent() + "/../Spin ASM";
+					final JFileChooser fc2 = new JFileChooser(savedPath); 
+					fc2.setDialogTitle("Choose destination...");
+					fc2.setMultiSelectionEnabled(false);
+					fc2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					fc2.setAcceptAllFileFilterUsed(false);
+					// In response to a button click:
+					filter = new FileNameExtensionFilter("Spin ASM Files", "spn");
+					fc2.setFileFilter(filter);
 
-							int ind = asmFile.indexOf(".");
-							//print filename
-							//System.out.println(file.getName().substring(0, index));
-							//print extension
-							//System.out.println(file.getName().substring(index));
-							String ext = asmFile.substring(index - 1);
+					int retVal2 = fc2.showSaveDialog(SpinCADFrame.this);
 
-							SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock().getProgramListing(1), path + "/" + ext + ".spn");
-
-							updateFrameTitle();
-							//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
-							//							spcFileName = fileToBeSaved.getName();
-						} catch (Exception e) {	// thrown over in SpinCADFile.java
-							spcFileName = null;
-							//						e.printStackTrace();
-							MessageBox("File convert failed! " + spcFileName, spcFileName + " may be from\nan incompatible version of \nSpinCAD Designer.");
+					if(retVal2 == JFileChooser.APPROVE_OPTION) {
+						File myFile = fc2.getSelectedFile();
+						if(myFile.isDirectory() == true) {
+							saveMRUSpnFolder(myFile.getAbsolutePath());
 						}
-						index++;
+
+						int index = 0;
+
+						File files[] = fc.getSelectedFiles();
+						// This is where a real application would open the file.
+						saveMRUFolder(files[0].getPath());
+						while(index < files.length) {
+							System.out.println("Opening: " + files[index].getName() + "."
+									+ newline);
+							try {
+								String filePath = files[index].getPath();
+								model = SpinCADFile.fileRead(getModel(), filePath );
+								getModel().getIndexFB();
+								getModel().setChanged(false);						
+								getModel().sortAlignGen();
+
+								spcFileName = files[index].getName();
+								// XXX debug
+								String spnPath  = prefs.get("MRUSpnFolder", "") + "/" + spcFileName + ".spn";
+
+								SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock().getProgramListing(1), spnPath );
+
+								updateFrameTitle();
+								//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
+								//							spcFileName = fileToBeSaved.getName();
+							} catch (Exception e) {	// thrown over in SpinCADFile.java
+								spcFileName = null;
+								//						e.printStackTrace();
+								MessageBox("File convert failed! " + spcFileName, spcFileName + " may be from\nan incompatible version of \nSpinCAD Designer.");
+							}
+							index++;
+						}
+						getModel().newModel();
+						repaint();
+						MessageBox("Conversion completed", index + " files were converted.");
+					} else {
+						System.out.println("Open command cancelled by user."
+								+ newline);
 					}
-					getModel().newModel();
-					repaint();
-					MessageBox("Conversion completed", index + " files were converted.");
-				} else {
-					System.out.println("Open command cancelled by user."
-							+ newline);
 				}
 			}
 		});
@@ -1220,8 +1221,8 @@ public class SpinCADFrame extends JFrame {
 	public class SampleRateComboBox extends JFrame {
 		/**
 		 * 
-		 */
 		private static final long serialVersionUID = 1L;
+		 */
 		JComboBox<Object> rateList = null;
 
 		public SampleRateComboBox() {
