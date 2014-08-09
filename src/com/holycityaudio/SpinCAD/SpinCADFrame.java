@@ -409,7 +409,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MessageBox("About SpinCAD Designer", "Version 0.96 Build " + 804 + "\n"
+				MessageBox("About SpinCAD Designer", "Version 0.96 Build " + 815 + "\n"
 						+ "Copyright 2014 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
