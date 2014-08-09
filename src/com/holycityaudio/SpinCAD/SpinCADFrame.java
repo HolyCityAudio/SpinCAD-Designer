@@ -125,7 +125,7 @@ public class SpinCADFrame extends JFrame {
 	private Preferences prefs;
 
 	// simulator input file
-	private static String spcFileName = null;
+	private static String spcFileName = "Untitled";
 	// simulator output file
 	private String outputFile = null; // play out through the sound card
 
@@ -427,12 +427,7 @@ public class SpinCADFrame extends JFrame {
 	void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
-				if(spcFileName != null) {
-					setTitle("SpinCAD Designer - " + spcFileName + (getModel().changed ? " * " : ""));			
-				}
-				else {
-					setTitle("SpinCAD Designer - Untitled");
-				}
+				setTitle("SpinCAD Designer - " + spcFileName + (getModel().changed ? " * " : ""));			
 			}
 		});
 	}
@@ -492,7 +487,7 @@ public class SpinCADFrame extends JFrame {
 	private void fileSave(JMenuItem mntmSave) {
 		mntmSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(spcFileName != null) {
+				if(spcFileName != "Untitled") {
 					File fileToBeSaved = new File(prefs.get("MRUFolder",  "") + "/" + spcFileName);
 					String filePath = fileToBeSaved.getPath();
 					try {
@@ -553,7 +548,7 @@ public class SpinCADFrame extends JFrame {
 						saveMRUFolder(filePath);
 						updateFrameTitle();
 					} catch (Exception e) {	// thrown over in SpinCADFile.java
-						spcFileName = null;
+						spcFileName = "Untitled";
 						//						e.printStackTrace();
 						MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
 					}
@@ -642,7 +637,7 @@ public class SpinCADFrame extends JFrame {
 								//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
 								//							spcFileName = fileToBeSaved.getName();
 							} catch (Exception e) {	// thrown over in SpinCADFile.java
-								spcFileName = null;
+								spcFileName = "Untitled";
 								//						e.printStackTrace();
 								MessageBox("File convert failed! " + spcFileName, spcFileName + " may be from\nan incompatible version of \nSpinCAD Designer.");
 							}
@@ -759,7 +754,7 @@ public class SpinCADFrame extends JFrame {
 						return;
 					}
 				}
-				spcFileName = null;
+				spcFileName = "Untitled";
 				getModel().newModel();
 				repaint();
 			}
