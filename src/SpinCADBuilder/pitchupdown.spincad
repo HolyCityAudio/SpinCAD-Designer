@@ -10,7 +10,7 @@ equ pitch2 reg1
 @getBaseAddress
 // then allocate memory
 mem delayd 4096
-mem temp 1
+mem temp 1 
 
 skp run, START 
 wldr 1,16384,4096 

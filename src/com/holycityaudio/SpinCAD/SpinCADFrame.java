@@ -21,15 +21,6 @@
 package com.holycityaudio.SpinCAD;
 
 import java.awt.BorderLayout;
-
-
-
-
-
-
-
-
-
 import javax.sound.sampled.UnsupportedAudioFileException;
 // import javax.sound.sampled.spi.AudioFileReader;
 import javax.swing.JFrame;
@@ -80,7 +71,6 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -104,12 +94,15 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -123123512351241L;
-	int buildNam = 804;
+	int buildNam = 816;
 
 	// Swing things
 	private JPanel contentPane;
 	private boolean simRunning = false;
+	// pb shows instructions, registers, and RAM used.
+	// I should add LFOs to it also
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
+	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
 	private final simControlToolBar sctb = new simControlToolBar();
 	private final JPanel controlPanels = new JPanel();
@@ -340,6 +333,7 @@ public class SpinCADFrame extends JFrame {
 		mntmSimSendToFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				outputFile = prefs.get("SIMULATOR_OUT_FILE", "");
+				sim.setLoopMode(false);
 			}
 		});
 		mnSimulator.add(mntmSimSendToFile);
@@ -348,6 +342,7 @@ public class SpinCADFrame extends JFrame {
 		mntmSimSendToSound.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				outputFile = null;
+				sim.setLoopMode(true);
 			}
 		});
 		mnSimulator.add(mntmSimSendToSound);
@@ -409,7 +404,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MessageBox("About SpinCAD Designer", "Version 0.96 Build " + 815 + "\n"
+				MessageBox("About SpinCAD Designer", "Version 0.96 Build " + buildNam + "\n"
 						+ "Copyright 2014 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
@@ -613,7 +608,8 @@ public class SpinCADFrame extends JFrame {
 						}
 
 						int index = 0;
-
+						int failed = 0;
+						
 						File files[] = fc.getSelectedFiles();
 						// This is where a real application would open the file.
 						saveMRUFolder(files[0].getPath());
@@ -639,15 +635,17 @@ public class SpinCADFrame extends JFrame {
 							} catch (Exception e) {	// thrown over in SpinCADFile.java
 								spcFileName = "Untitled";
 								//						e.printStackTrace();
+								failed++;
 								MessageBox("File convert failed! " + spcFileName, spcFileName + " may be from\nan incompatible version of \nSpinCAD Designer.");
 							}
 							index++;
 						}
 						getModel().newModel();
 						spcFileName = "Untitled";
+						pb.update();
 						repaint();
 						updateFrameTitle();
-						MessageBox("Conversion completed", index + " files were converted.");
+						MessageBox("Conversion completed", (index - failed) + " files were converted.\n" + failed + " files failed.");
 					} else {
 						System.out.println("Open command cancelled by user."
 								+ newline);
@@ -693,7 +691,7 @@ public class SpinCADFrame extends JFrame {
 
 	public void fileSaveAsm() {
 		// Create a file chooser
-		String savedPath = prefs.get("MRUFolder", "");
+		String savedPath = prefs.get("MRUSpnFolder", "");
 
 		final JFileChooser fc = new JFileChooser(savedPath);
 		// In response to a button click:
@@ -733,7 +731,7 @@ public class SpinCADFrame extends JFrame {
 				e.printStackTrace();
 			}
 			getModel().setChanged(false);
-			saveMRUFolder(filePath);
+			saveMRUSpnFolder(filePath);
 		}
 	}
 
@@ -908,8 +906,6 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	int yesNoBox(JPanel panel, String title, String question) {
-		JFrame frame = new JFrame();
-
 		int dialogButton = JOptionPane.YES_NO_OPTION;
 		int dialogResult = JOptionPane.showConfirmDialog(panel,
 				question,
@@ -1012,15 +1008,11 @@ public class SpinCADFrame extends JFrame {
 						sim.showLevelLogger(loggerPanel);
 					}
 					// sim.showLevelMeter();
-					//					sim.setLoopMode(true);
 					// TODO debugging ramp LFO
 					if(Debug.DEBUG == true) {
 						String simDebugFileName = prefs.get("SIMULATOR_DEBUG_FILE", "");
 						sim.setLoopMode(false);
-					} else {
-						sim.setLoopMode(true);					
 					}
-
 					sim.start();
 				}
 			} else if (arg0.getSource() == btnSigGen) {
@@ -1216,6 +1208,10 @@ public class SpinCADFrame extends JFrame {
 	// ===================================================
 	// == Sample rate combo box
 	public class SampleRateComboBox extends JFrame {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		/**
 		 * 
 		private static final long serialVersionUID = 1L;

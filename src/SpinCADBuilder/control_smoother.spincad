@@ -2,7 +2,7 @@
 @controlInput input Control_Input
 @controlOutput output Control_Output
 
-equ	filtReg reg0  
+equ	filtReg reg0 
 
 equ filt 0.15 
 // variable - Name - low - high - multiplier - precision - option 
