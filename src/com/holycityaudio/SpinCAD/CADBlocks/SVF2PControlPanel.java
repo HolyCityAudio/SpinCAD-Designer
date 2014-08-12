@@ -73,6 +73,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 
 		this.setVisible(true);
 		this.pack();
+		this.setAlwaysOnTop(true);
 	}
 
 	@Override

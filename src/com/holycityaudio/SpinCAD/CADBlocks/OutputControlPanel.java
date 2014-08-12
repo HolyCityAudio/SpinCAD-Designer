@@ -67,6 +67,7 @@ class OutputControlPanel extends JFrame implements ChangeListener, ActionListene
 		this.pack();
 		this.setVisible(true);
 		this.setLocation(new Point(outBlock.getX() + 200, outBlock.getY() + 150));
+		this.setAlwaysOnTop(true);
 		this.setResizable(false);
 	}
 

@@ -90,6 +90,7 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener, A
 		this.pack();
 		this.setLocation(new Point(scaleOffsetControlCADBlock.getX() + 200, scaleOffsetControlCADBlock.getY() + 150));
 		this.setResizable(false);
+		this.setAlwaysOnTop(true);
 	}
 
 	@Override

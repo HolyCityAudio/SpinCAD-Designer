@@ -118,6 +118,7 @@ public class SinCosLFOControlPanel implements ChangeListener, ActionListener, It
 
 				frame.setVisible(true);
 				frame.pack();
+				frame.setAlwaysOnTop(true);
 			}
 		});
 	}

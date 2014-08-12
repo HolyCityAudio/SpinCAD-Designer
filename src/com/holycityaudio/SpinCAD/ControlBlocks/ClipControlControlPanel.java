@@ -88,6 +88,7 @@ public class ClipControlControlPanel implements ChangeListener, ActionListener, 
 				flip.setSelected(pC.getFlip());
 				frame.setVisible(true);
 				frame.pack();
+				frame.setAlwaysOnTop(true);
 				graph.repaint();
 			}
 		});

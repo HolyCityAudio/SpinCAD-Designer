@@ -69,6 +69,7 @@ class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 
 		this.setVisible(true);
 		this.setLocation(new Point(delay.getX() + 200, delay.getY() + 150));
+		this.setAlwaysOnTop(true);
 		this.pack();
 	}
 

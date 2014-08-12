@@ -60,6 +60,7 @@ class VolumeControlPanel {
 				frame.setLocation(new Point(spbVol.getX() + 200, spbVol.getY() + 150));
 				frame.pack();
 				frame.setResizable(false);
+				frame.setAlwaysOnTop(true);
 			}
 		});
 	}

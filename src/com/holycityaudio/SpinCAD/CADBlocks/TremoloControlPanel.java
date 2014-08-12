@@ -54,6 +54,7 @@ class TremoloControlPanel extends JFrame implements ChangeListener, ActionListen
 		
 		this.setVisible(true);
 		this.pack();
+		this.setAlwaysOnTop(true);
 	}
 
 	@Override

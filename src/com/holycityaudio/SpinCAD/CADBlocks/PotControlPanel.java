@@ -69,6 +69,8 @@ public class PotControlPanel implements ItemListener {
 				frame.setVisible(true);
 				frame.setSize(180, 50);
 				frame.setLocation(new Point(pCB.getX() + 200, pCB.getY() + 150));
+				frame.setAlwaysOnTop(true);
+
 			}
 		});
 	}

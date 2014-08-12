@@ -73,6 +73,7 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
 				frame.setVisible(true);
 				frame.pack();
+				frame.setAlwaysOnTop(true);
 			}
 		});
 	}

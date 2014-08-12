@@ -84,6 +84,7 @@ class OverdriveControlPanel extends JFrame implements ChangeListener, ActionList
 		this.setVisible(true);
 		this.pack();
 		this.setLocation(oD.getX() + 200, oD.getY() + 150);
+		this.setAlwaysOnTop(true);
 	}
 
 	@Override

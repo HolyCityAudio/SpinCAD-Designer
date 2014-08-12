@@ -126,6 +126,7 @@ public class SixBandEQControlPanel extends JFrame {
 				setLocation(new Point(filter.getX() + 200, filter.getY() + 150));
 				pack();
 				setResizable(false);
+				setAlwaysOnTop(true);
 			}
 		});
 	}
