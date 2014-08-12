@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -123123512351241L;
-	int buildNam = 816;
+	int buildNam = 818;
 
 	// Swing things
 	private JPanel contentPane;
@@ -153,20 +153,19 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
 	public SpinCADFrame() {
-		// panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 		setTitle("SpinCAD Designer - Untitled");
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 
 		final SpinCADPanel panel = new SpinCADPanel(this);
 		panel.setBackground(SystemColor.inactiveCaption);
+
 		// create a Preferences instance (somewhere later in the code)
 		prefs = Preferences.userNodeForPackage(this.getClass());
 
 		WindowListener exitListener = window();
-
 		addWindowListener(exitListener);
 
 		// ==========================================================================================

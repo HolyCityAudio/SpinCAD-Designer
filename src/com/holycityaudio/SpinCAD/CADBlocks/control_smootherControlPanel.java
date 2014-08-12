@@ -118,7 +118,7 @@ public class control_smootherControlPanel {
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == filtSlider) {
 				gCB.setfilt(gCB.freqToFilt(gCB.sliderToLogval(filtSlider.getValue(), 100.0)));
-				updatefiltLabel();
+//				updatefiltLabel();
 				updatefiltSpinner();
 			}
 		}
@@ -129,7 +129,7 @@ public class control_smootherControlPanel {
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == filtSpinner) {
 				gCB.setfilt(gCB.freqToFilt((double) filtSpinner.getValue()));
-				updatefiltLabel();
+//				updatefiltLabel();
 				updatefiltSlider();
 			}
 		}

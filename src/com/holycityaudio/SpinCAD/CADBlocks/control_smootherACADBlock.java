@@ -28,7 +28,7 @@ public class control_smootherACADBlock extends SpinCADBlock {
 	private static final long serialVersionUID = 1L;
 
 	private int filtReg;
-	private double filt = 1.0;	// default value is 1.0 Hz
+	private double filt = 0.00015;	// default value is 1.0 Hz
 
 	public control_smootherACADBlock(int x, int y) {
 		super(x, y);
@@ -64,17 +64,15 @@ public class control_smootherACADBlock extends SpinCADBlock {
 			input = sp.getRegister();
 		}
 
-
 		// finally, generate the instructions
 		filtReg = sfxb.allocateReg();
 		if(this.getPin("Input").getPinConnection() != null) {
 			sfxb.readRegister(input, 1.0);
-			sfxb.readRegisterFilter(filtReg, Math.sin((2 * Math.PI * filt)/sfxb.getSamplerate()));
+//			sfxb.readRegisterFilter(filtReg, Math.sin((2 * Math.PI * filt)/sfxb.getSamplerate()));
+			sfxb.readRegisterFilter(filtReg, filt);
 			sfxb.writeRegister(filtReg, 0.0);
 			this.getPin("Control_Output").setRegister(filtReg);
 		}
-
-
 	}
 
 	// create setters and getter for control panel variables

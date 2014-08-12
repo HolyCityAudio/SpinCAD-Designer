@@ -97,7 +97,7 @@ public class SpinSimulator extends Thread {
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
 		}
-		System.out.println("done.");
+		System.out.println("Simulation ended.");
 	}
 	
 	/**
@@ -283,8 +283,8 @@ public class SpinSimulator extends Thread {
 	}	
 // GSW added this part to integrate into SpinCAD Designer
 	public void showLevelLogger(JPanel p) {
-		LevelLogger lL = new LevelLogger(p);
-		audioSinks.add(lL);
+		LevelLogger levelL = new LevelLogger(p);
+		audioSinks.add(levelL);
 	}	
 	
 	public void showLevelMeter() {
