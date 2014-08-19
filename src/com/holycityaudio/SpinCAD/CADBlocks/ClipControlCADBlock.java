@@ -20,7 +20,6 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
-import com.holycityaudio.SpinCAD.ControlBlocks.ClipControlControlPanel;
 
 public class ClipControlCADBlock extends ControlCADBlock{
 	/**
@@ -89,7 +88,7 @@ public class ClipControlCADBlock extends ControlCADBlock{
 	}
 
 	public void editBlock(){
-		ClipControlControlPanel cp = new ClipControlControlPanel(this);
+		new ClipControlControlPanel(this);
 	}
 	//====================================================
 	public double getGain() {

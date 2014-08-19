@@ -81,6 +81,7 @@ class BiQuadControlPanel {
 				updateResLabel();
 				frame.getContentPane().add(resSlider);
 
+				frame.setAlwaysOnTop(true);	
 				frame.setVisible(true);		
 				frame.pack();
 				frame.setResizable(false);

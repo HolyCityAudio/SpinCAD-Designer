@@ -44,7 +44,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 	JSlider freqSlider;
 	JLabel freqLabel;
-	private JComboBox nPoles;
+	private JComboBox<Object> nPoles;
 
 	private LPF4PCADBlock LPF;
 	
@@ -56,7 +56,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 	public LPF4PControlPanel(LPF4PCADBlock lpf1pcadBlock) {
 		this.LPF = lpf1pcadBlock;
-		nPoles = new JComboBox(listOptions);
+		nPoles = new JComboBox<Object>(listOptions);
 		nPoles.addActionListener(this);
 		createAndShowUI();
 	}
@@ -86,6 +86,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 //				freqSlider.setValue((int)Math.round(LPF.getFreq()));
 //				updateFreqLabel();
+				setAlwaysOnTop(true);
 				setVisible(true);
 				setLocation(new Point(LPF.getX() + 200, LPF.getY() + 150));
 				pack();

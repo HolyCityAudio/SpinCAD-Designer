@@ -27,8 +27,8 @@ public class SVF2PCADBlock extends FilterCADBlock{
 	 * 
 	 */
 	private static final long serialVersionUID = 5711126291575876825L;
-	double f0 = 240;
-	double q0 = 2;
+	double f0 = 740;
+	double q0 = 1;
 	double fZ;
 	double q1;
 	

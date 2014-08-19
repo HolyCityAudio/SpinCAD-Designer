@@ -53,7 +53,6 @@ public class OutputCADBlock extends SpinCADBlock{
 		
 		SpinCADPin p = getPin("Audio Input 1");
 		SpinCADPin pC = p.getPinConnection();
-		SpinCADBlock b = p.getBlockConnection();
 		
 		if (pC != null) {
 			// TODO debug this!

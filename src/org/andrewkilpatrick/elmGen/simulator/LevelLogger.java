@@ -36,6 +36,7 @@ public class LevelLogger implements AudioSink {
 	int windowCount = 0;
 	double maxL = 0.0;
 	double maxR = 0.0;
+	double decayval = 0.999;
 	int xPos = 0;
 	int oldL = -96;
 	int oldR = -96;
@@ -96,8 +97,8 @@ public class LevelLogger implements AudioSink {
 					maxR = right;
 				}
 				// envelope decay parameter
-				maxL *= 0.99;
-				maxR *= 0.99;
+				maxL *= decayval;
+				maxR *= decayval;
 			}
 			else if(logMode == 0)	// integer
 			{
@@ -112,7 +113,6 @@ public class LevelLogger implements AudioSink {
 				//				maxL = 0.0;
 				//				maxR = 0.0;
 			}
-
 		}
 	}
 // GSW Added LoggerPanel as a class

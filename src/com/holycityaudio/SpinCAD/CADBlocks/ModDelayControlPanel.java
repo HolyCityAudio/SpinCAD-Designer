@@ -50,6 +50,7 @@ class ModDelayControlPanel {
 				frame.add(delaySlider);
 				updateDelayLabel();
 				frame.setVisible(true);
+				frame.setAlwaysOnTop(true);
 				frame.pack();
 				frame.setLocation(mD.getX() + 200, mD.getY() + 150);
 			}

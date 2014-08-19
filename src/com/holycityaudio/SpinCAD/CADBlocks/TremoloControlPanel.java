@@ -41,7 +41,7 @@ class TremoloControlPanel extends JFrame implements ChangeListener, ActionListen
 		this.setTitle("Tremolo");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
-		lfoSlider = new JSlider(JSlider.HORIZONTAL, 0, 50, 0);
+		lfoSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
 		lfoSlider.addChangeListener(this);
 		
 		lfoLabel = new JLabel();
@@ -49,11 +49,11 @@ class TremoloControlPanel extends JFrame implements ChangeListener, ActionListen
 		this.getContentPane().add(lfoLabel);
 		this.getContentPane().add(lfoSlider);
 		
-		lfoSlider.setValue((int)Math.round(10000.0 * outBlock.getLFO()));
-		lfoLabel.setText("LFO "	+ String.format("%2.4f", outBlock.getLFO()));
-		
+		lfoSlider.setValue((int)Math.round(30000.0 * outBlock.getLFO()));
+		updateLFOLabel();		
 		this.setVisible(true);
 		this.pack();
+		this.setLocation(outBlock.getX() + 100, outBlock.getY() + 100);
 		this.setAlwaysOnTop(true);
 	}
 
@@ -65,9 +65,13 @@ class TremoloControlPanel extends JFrame implements ChangeListener, ActionListen
 
 	public void stateChanged(ChangeEvent ce) {
 		if(ce.getSource() == lfoSlider) {
-			outBlock.setLFO((double) lfoSlider.getValue()/10000.0);
-			lfoLabel.setText("LFO "
-					+ String.format("%2.4f", outBlock.getLFO()));
+			outBlock.setLFO((double) lfoSlider.getValue()/30000.0);
+			updateLFOLabel();
 		}
 	}
+	
+	private void updateLFOLabel() {
+		lfoLabel.setText("LFO "	+ String.format("%2.2f Hz", this.outBlock.filtToFreq(outBlock.getLFO())));		
+	}
+
 }

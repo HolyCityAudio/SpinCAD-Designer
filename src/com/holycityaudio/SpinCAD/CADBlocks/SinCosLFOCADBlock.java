@@ -20,7 +20,6 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
-import com.holycityaudio.SpinCAD.ControlBlocks.SinCosLFOControlPanel;
 
 public class SinCosLFOCADBlock extends ControlCADBlock{
 	/**
@@ -97,7 +96,8 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 	}
 
 	public void editBlock(){
-		SinCosLFOControlPanel cp = new SinCosLFOControlPanel(this);
+//		SinCosLFOControlPanel cp = new SinCosLFOControlPanel(this);
+		new SinCosLFOControlPanel(this);
 	}
 	//====================================================
 

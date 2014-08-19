@@ -81,6 +81,7 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 		freqSlider.setValue((ppcb.getFreq()));
 
 		this.setVisible(true);
+		this.setAlwaysOnTop(true);
 		this.pack();
 		this.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));
 	}

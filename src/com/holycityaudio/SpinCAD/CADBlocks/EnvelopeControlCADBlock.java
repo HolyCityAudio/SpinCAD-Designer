@@ -21,7 +21,6 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
-import com.holycityaudio.SpinCAD.ControlBlocks.EnvelopeControlControlPanel;
 
 public class EnvelopeControlCADBlock extends ControlCADBlock{
 
@@ -47,9 +46,7 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 
 		if(p != null) {
 			input = p.getRegister();
-			int TEMP = sfxb.allocateReg();			//
 			int AVG = sfxb.allocateReg();			//
-			int LAVG = sfxb.allocateReg();			//
 			sfxb.comment(getName());
 
 			//				rdax	mono,1		;get input
@@ -101,7 +98,7 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 	}
 	
 	public void editBlock(){
-		EnvelopeControlControlPanel cp = new EnvelopeControlControlPanel(this);
+		new EnvelopeControlControlPanel(this);
 	}
 	//====================================================
 	public double getGain() {

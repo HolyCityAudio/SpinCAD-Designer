@@ -63,6 +63,7 @@ class HPF1PControlPanel extends JFrame {
 
 				freqSlider.setValue((int)Math.round(HPF.getFreq()));
 				updateFreqLabel();
+				setAlwaysOnTop(true);
 				setVisible(true);
 				setLocation(new Point(HPF.getX() + 200, HPF.getY() + 150));
 				pack();

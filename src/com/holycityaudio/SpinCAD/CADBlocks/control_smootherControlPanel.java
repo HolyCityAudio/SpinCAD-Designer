@@ -168,7 +168,7 @@ public class control_smootherControlPanel {
 
 		@Override
 		public void windowClosing(WindowEvent arg0) {
-//			gCB.clearCP();
+			gCB.clearCP();
 		}
 
 		@Override

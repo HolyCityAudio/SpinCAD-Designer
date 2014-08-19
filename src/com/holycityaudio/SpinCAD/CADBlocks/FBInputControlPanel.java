@@ -55,6 +55,7 @@ class FBInputControlPanel extends JFrame implements ChangeListener, ActionListen
 
 		lGainSlider.setValue((int)Math.round(100.0 * inBlock.getLGain()));
 		this.pack();
+		this.setAlwaysOnTop(true);	
 		this.setVisible(true);
 		this.setLocation(new Point(inBlock.getX() + 200, inBlock.getY() + 150));
 		this.setResizable(false);

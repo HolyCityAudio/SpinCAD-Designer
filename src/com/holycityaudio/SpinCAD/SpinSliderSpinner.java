@@ -1,7 +1,6 @@
 package com.holycityaudio.SpinCAD;
 
 import java.awt.Dimension;
-import java.awt.List;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 

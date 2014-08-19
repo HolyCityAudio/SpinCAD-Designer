@@ -49,6 +49,7 @@ class BitCrusherControlPanel {
 				frame.add(bitLabel);
 				frame.add(bitSlider);
 				updateBitLabel();
+				frame.setAlwaysOnTop(true);	
 				frame.setVisible(true);
 				frame.pack();
 				frame.setLocation(BC.getX() + 200, BC.getY() + 150);

@@ -22,7 +22,6 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.ControlCADBlock;
-import com.holycityaudio.SpinCAD.ControlBlocks.ScaleOffsetControlPanel;
 
 public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 

@@ -21,6 +21,7 @@
 package com.holycityaudio.SpinCAD;
 
 import java.awt.BorderLayout;
+
 import javax.sound.sampled.UnsupportedAudioFileException;
 // import javax.sound.sampled.spi.AudioFileReader;
 import javax.swing.JFrame;
@@ -94,7 +95,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -123123512351241L;
-	int buildNam = 821;
+	int buildNam = 825;
 
 	// Swing things
 	private JPanel contentPane;
@@ -110,7 +111,6 @@ public class SpinCADFrame extends JFrame {
 	private JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
 
 	private boolean loggerIsVisible = false;
-	// String outputFile = "C:\\temp\\output.wav"; // filter input WAV to output
 
 	SpinSimulator sim;
 
@@ -154,6 +154,7 @@ public class SpinCADFrame extends JFrame {
 	 * Create the frame.
 	 */
 	
+	@SuppressWarnings("unused")
 	public SpinCADFrame() {
 		setTitle("SpinCAD Designer - Untitled");
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -722,7 +723,7 @@ public class SpinCADFrame extends JFrame {
 				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
 						.getProgramListing(1), filePath);
 			} catch (IOException e) {
-				int confirm = JOptionPane.showOptionDialog(null,
+				JOptionPane.showOptionDialog(null,
 						"File save error!", "Error",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, null, null);
@@ -973,6 +974,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		}
 
+		@SuppressWarnings("unused")
 		public void actionPerformed(ActionEvent arg0) {
 			if (arg0.getSource() == btnStartSimulation) {
 				if (isSimRunning() == true) {
@@ -1225,7 +1227,7 @@ public class SpinCADFrame extends JFrame {
 		/** Listens to the combo box. */
 		class SampleRateListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
-				JComboBox<Object> cb = (JComboBox<Object>) e.getSource();
+				JComboBox<String> cb = (JComboBox<String>) e.getSource();
 				String rate = (String) cb.getSelectedItem();
 				if (rate == "32768") {
 					ElmProgram.SAMPLERATE = 32768;

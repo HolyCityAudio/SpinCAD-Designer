@@ -19,9 +19,6 @@
 
 package com.holycityaudio.SpinCAD.ControlBlocks;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,10 +26,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -42,11 +37,6 @@ import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 
 public class RampLFOControlPanel implements ChangeListener, ActionListener, ItemListener {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4717076120154216169L;
-	
 	private JSlider lfoWidthSlider = new JSlider(JSlider.HORIZONTAL, 0, 32767, 8192);
 	private JLabel lfoWidthLabel = new JLabel("LFO Rate");
 	

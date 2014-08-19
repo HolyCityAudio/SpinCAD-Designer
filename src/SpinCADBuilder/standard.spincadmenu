@@ -67,6 +67,7 @@
 // @menuitem "Flanger" Flanger 
 @menuitem "Mod Delay" ModDelay 
 @menuitem "Phaser" Phaser 
+@menuitem "Allpass" allpass 
 // @menuitem "Test Chorus" Test_chorus 
 @menuitem "Tremolo" Tremolo 
 @menuitem "Ring Modulator" RingMod 
@@ -77,6 +78,7 @@
 // @menuitem "Pitch Up" PitchUp 
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Pitch Up/Down" pitchupdown 
+@menuitem "Pitch Offset" pitchoffset 
 
 /* @menu "Guitar"
 @menuitem "GA Chorus" ga_demo_chorus 

@@ -80,6 +80,7 @@ class BassmanEQControlPanel {
 				frame.getContentPane().add(tSlider);
 
 				frame.setVisible(true);		
+				frame.setAlwaysOnTop(true);	
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(spbBMEQ.getX() + 100, spbBMEQ.getY() + 100);

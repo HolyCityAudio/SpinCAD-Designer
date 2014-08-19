@@ -19,6 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import org.andrewkilpatrick.elmGen.ElmProgram;
+
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
@@ -71,7 +73,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 		
 		delayOffset = sfxb.getDelayMemAllocated() + 1;
 //		equ maxlength 1000; max length of delay in milli seconds 0 - 1000
-		delayLength = (int)(((sfxb.getSamplerate() - 1) * delayTime)/1000.0);
+		delayLength = (int)(((ElmProgram.getSamplerate() - 1) * delayTime)/1000.0);
 		sfxb.FXallocDelayMem("moddel", delayLength);
 
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
@@ -95,7 +97,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 			} else {
 				Control2 = p.getRegister();
 			}
-			int output = sfxb.allocateReg();
+// output = sfxb.allocateReg();
 
 			// ; Guitar Echo
 			// ; HK July 2009
@@ -120,7 +122,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 
 			// equ kfbk reg1
 			int feedback = sfxb.allocateReg();
-			int dry_in = sfxb.allocateReg();
+//			int dry_in = sfxb.allocateReg();
 
 			// equ dry_in reg2
 

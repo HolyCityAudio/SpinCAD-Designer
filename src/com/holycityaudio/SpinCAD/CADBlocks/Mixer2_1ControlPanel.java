@@ -65,6 +65,7 @@ class Mixer2_1ControlPanel {
 				
 				updateGainLabels();
 				frame.setVisible(true);	
+				frame.setAlwaysOnTop(true);	
 				frame.pack();
 				frame.setLocation(new Point(spbMix.getX() + 200, spbMix.getY() + 150));
 				frame.setResizable(false);

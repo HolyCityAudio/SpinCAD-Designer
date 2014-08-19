@@ -96,6 +96,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 				freqSlider.setValue((pong.getFreq()));
 
 				frame.setVisible(true);
+				frame.setAlwaysOnTop(true);
 				frame.pack();
 				frame.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));			}
 		});

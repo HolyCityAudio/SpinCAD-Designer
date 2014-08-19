@@ -54,7 +54,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 		freqSlider = new JSlider(JSlider.HORIZONTAL, 80, 2500, 1000);
 		freqSlider.addChangeListener(this);
 		
-		qSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 2);
+		qSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
 		qSlider.addChangeListener(this);
 
 		freqLabel = new JLabel();

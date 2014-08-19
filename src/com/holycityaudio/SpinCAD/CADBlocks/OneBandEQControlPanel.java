@@ -19,7 +19,6 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import java.awt.Dimension;
 import java.awt.Point;
 
 import javax.swing.BoxLayout;
@@ -84,6 +83,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 				
 		qSlider.setValue((int) Math.round((b.getQLevel() * 100.0)));
 		qLabel.setText("Resonance "	+ String.format("%2.2f", b.getQLevel()));
+		this.setAlwaysOnTop(true);
 		this.setLocation(new Point(filter.getX() + 200, filter.getY() + 150));
 		this.pack();
 	}

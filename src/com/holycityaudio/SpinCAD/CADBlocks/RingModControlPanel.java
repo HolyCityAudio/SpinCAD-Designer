@@ -49,10 +49,10 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 		this.getContentPane().add(lfoLabel);
 		this.getContentPane().add(lfoSlider);
 		
-		lfoSlider.setValue((int)Math.round(100.0 * outBlock.getLFO()));
-		lfoLabel.setText("LFO "	+ String.format("%2.2f", outBlock.getLFO()));
-		
+		lfoSlider.setValue((int)Math.round(500.0 * outBlock.getLFO()));
+		updateLFOLabel();		
 		this.setVisible(true);
+		this.setAlwaysOnTop(true);
 		this.pack();
 		this.setLocation(outBlock.getX() + 200, outBlock.getY() + 150);
 	}
@@ -65,9 +65,13 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 
 	public void stateChanged(ChangeEvent ce) {
 		if(ce.getSource() == lfoSlider) {
-			outBlock.setLFO((double) lfoSlider.getValue()/100.0);
-			lfoLabel.setText("LFO "
-					+ String.format("%2.2f", outBlock.getLFO()));
+			outBlock.setLFO((double) lfoSlider.getValue()/500.0);
+			updateLFOLabel();
 		}
 	}
+	
+	private void updateLFOLabel() {
+		lfoLabel.setText("LFO "	+ String.format("%2.2f Hz", this.outBlock.filtToFreq(outBlock.getLFO())));		
+	}
+
 }
