@@ -26,15 +26,24 @@ public class PhaserCADBlock extends ModulationCADBlock{
 	 * 
 	 */
 	private static final long serialVersionUID = 343880108475812086L;
-	int TEMP, TEMP1, PHASE;
+	int temp, temp1, phase, stages;
 
 
 	public PhaserCADBlock(int x, int y) {
 		super(x, y);
+		stages = 4;
 		addControlInputPin(this, "LFO Speed");
 		addControlInputPin(this, "LFO Width");
 		// TODO Auto-generated constructor stub
 		setName("Phaser");
+	}
+
+	public int getStages() {
+		return stages;
+	}
+
+	public void setStages(int stages) {
+		this.stages = stages;
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -45,120 +54,103 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
 		sfxb.comment(getName());
 
+
 		if(p != null) {
 			MONO = p.getRegister();
 			//				equ	phase	reg5
-			PHASE = sfxb.allocateReg();
+			phase = sfxb.allocateReg();
 			//				equ	pout	reg6
 			int POUT = sfxb.allocateReg();
 			//				equ	p1	reg7
-			int P1 = sfxb.allocateReg();
+
+			int p1 = sfxb.allocateReg();
 			//				equ	p2	reg8
-			int P2 = sfxb.allocateReg();
-			//				equ	p3	reg9
-			int P3 = sfxb.allocateReg();
-			//				equ	p4	reg10
-			int P4 = sfxb.allocateReg();
-			//				equ	p5	reg11
-			int P5 = sfxb.allocateReg();
-			//				equ	p6	reg12
-			int P6 = sfxb.allocateReg();
-			//				equ	p7	reg13
-			int P7 = sfxb.allocateReg();
-			//				equ	p8	reg14
-			int P8 = sfxb.allocateReg();
-			//				equ	temp	reg15
-			TEMP = sfxb.allocateReg();
-			//				equ	temp1	reg16
-			TEMP1 = sfxb.allocateReg();
-			//				equ	bypass	reg17
+			int p2 = sfxb.allocateReg();
+
+			int p3 = 0;
+			int p4 = 0;
+			if(stages > 2) {
+				p3 = sfxb.allocateReg();
+				p4 = sfxb.allocateReg();
+			}
+
+			int p5 = sfxb.allocateReg();
+			int p6 = sfxb.allocateReg();
+			if(stages > 4) {
+				p5 = sfxb.allocateReg();
+				p6 = sfxb.allocateReg();
+			}
+
+			int p7 = 0;
+			int p8 = 0;
+			if(stages > 6) {
+				p7 = sfxb.allocateReg();
+				p8 = sfxb.allocateReg();
+			}
+
+			temp = sfxb.allocateReg();
+			temp1 = sfxb.allocateReg();
+
 			int BYPASS = sfxb.allocateReg();
 
-			//		skp	run,endclr
 			sfxb.skip(RUN, 1);
-			//		wlds	sin1,0,32767
 			sfxb.loadSinLFO(1, 0, 32767);
-			// 		endclr:
 
-			//					;GA_DEMO	Phase shifter
-
-			//					;Pot0 = Reverb level
-			//					;Pot1 = Phase rate
-			//					;pot2 = Sweep width
-
-
-
-
-			//					;Do phase shifter from sin1:
-
-			//					rdax	pot2,1
-			p = this.getPin("LFO Speed").getPinConnection();
+			p = this.getPin("LFO Width").getPinConnection();
 			int depth = -1;
 			if(p != null) {
 				depth = p.getRegister();
 			}
-				
+
 			sfxb.readRegister(depth, 1.0);
-			//					rdax	bypass,0.9
 			sfxb.readRegister(BYPASS, 0.9);
-			//					wrax	bypass,0
 			sfxb.writeRegister(BYPASS, 0);
 
-			p = this.getPin("LFO Width").getPinConnection();
+			p = this.getPin("LFO Speed").getPinConnection();
 			int speed = -1;
 			if(p != null) {
 				speed = p.getRegister();
 			}
-			//					rdax	pot1,1
+
 			sfxb.readRegister(speed, 1.0);
-			//					mulx	pot1
 			sfxb.mulx(speed);
-			//					sof	0.2,0.02
 			sfxb.scaleOffset(0.2, 0.02);
-			//					wrax	sin1_rate,0
 			sfxb.writeRegister(SIN1_RATE, 0);
 
-			//					cho	rdal,sin1		;read sin1 as +/-1
 			sfxb.chorusReadValue(SIN1);
-			//					sof	0.5,0.5		;make positive only sin ranges 0 to 1
 			sfxb.scaleOffset(0.5, 0.5);
-			//					log	0.5,0
 			sfxb.log(0.5, 0);
-			//					exp	1,0		;square root function
 			sfxb.exp(1,0);
-			//					sof	1,-0.5		;make +/-0.5
 			sfxb.scaleOffset(1.0, -0.5);
-			//					sof	1.999,0		;make +/-1 again
 			sfxb.scaleOffset(1.999, 0);
-			//					mulx	pot2		;pot2 controls width and mix
 			sfxb.mulx(depth);
 			//					sof	0.1,0.85
 			sfxb.scaleOffset(0.1 , 0.85);
 			//					wrax	phase,0		;phase variable ranges 0.8 to 0.95
-			sfxb.writeRegister(PHASE, 0);
+			sfxb.writeRegister(phase, 0);
 
-			//					rdax	p1,1
-			sfxb.readRegister(P1, 1);
-			//					wrax	temp,1
-			sfxb.writeRegister(TEMP, 1);
-			//					mulx	phase
-			sfxb.mulx(PHASE);
-			//					rdax	mono,1/64	;input to phase shift network
+// beginning of phase shifter proper
+			sfxb.readRegister(p1, 1);
+			sfxb.writeRegister(temp, 1);
+			sfxb.mulx(phase);
 			sfxb.readRegister(MONO, 1.0/64);
-			//					wrax	p1,-1
-			sfxb.writeRegister(P1, -1);
-			//					mulx	phase
-			sfxb.mulx(PHASE);
+			sfxb.writeRegister(p1, -1);
+			sfxb.mulx(phase);
 
-			PhaseShiftStage(sfxb ,P2);
-			PhaseShiftStage(sfxb ,P3);
-			PhaseShiftStage(sfxb ,P4);
-			PhaseShiftStage(sfxb ,P5);
-			PhaseShiftStage(sfxb ,P6);
-			PhaseShiftStage(sfxb ,P7);
-			PhaseShiftStage(sfxb ,P8);
-
-			sfxb.readRegister(TEMP, 1);
+			PhaseShiftStage(sfxb ,p2);
+			if(stages > 2) {
+				PhaseShiftStage(sfxb ,p3);
+				PhaseShiftStage(sfxb ,p4);
+			}
+			if (stages > 4) {
+				PhaseShiftStage(sfxb ,p5);
+				PhaseShiftStage(sfxb ,p6);
+			}
+			if(stages > 6) {
+				PhaseShiftStage(sfxb ,p7);
+				PhaseShiftStage(sfxb ,p8);
+			}
+			sfxb.readRegister(temp, 1);
 
 			//					sof	-2,0
 			sfxb.scaleOffset(-2.0, 0.0);
@@ -189,21 +181,21 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 	private void PhaseShiftStage(SpinFXBlock sfxb, int register) {
 		//					rdax	temp,1
-		sfxb.readRegister(TEMP, 1);
+		sfxb.readRegister(temp, 1);
 		//					wrax	temp1,0
-		sfxb.writeRegister(TEMP1, 0);
+		sfxb.writeRegister(temp1, 0);
 		//					rdax	p6,1
 		sfxb.readRegister(register, 1);
 		//					wrax	temp,1
-		sfxb.writeRegister(TEMP, 1);
+		sfxb.writeRegister(temp, 1);
 		//					mulx	phase
-		sfxb.mulx(PHASE);
+		sfxb.mulx(phase);
 		//					rdax	temp1,1
-		sfxb.readRegister(TEMP1, 1);
+		sfxb.readRegister(temp1, 1);
 		//					wrax	p6,-1
 		sfxb.writeRegister(register, -1);
 		//					mulx	phase
-		sfxb.mulx(PHASE);
+		sfxb.mulx(phase);
 	}
 
 }

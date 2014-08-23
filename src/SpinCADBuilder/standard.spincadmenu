@@ -4,6 +4,7 @@
 @menuitem "Input" Input
 @menuitem "Output" Output 
 @menuitem "Volume" Volume
+@menuitem "Gain Boost" GainBoost
 @menuitem "2:1 Mixer" Mixer2_1
 @menuitem "2:1 (x2) Mixer" Mixer2_1x2
 @menuitem "3:1 Mixer" Mixer3_1
