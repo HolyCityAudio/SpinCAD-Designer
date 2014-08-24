@@ -18,10 +18,11 @@
  */
 
 package com.holycityaudio.SpinCAD.CADBlocks;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class SquareRootCADBlock extends ModulationCADBlock{
+public class SquareRootCADBlock extends SpinCADBlock{
 	/**
 	 * 
 	 */
@@ -31,7 +32,6 @@ public class SquareRootCADBlock extends ModulationCADBlock{
 		super(x, y);
 		addControlInputPin(this);
 		addControlOutputPin(this);
-		// TODO Auto-generated constructor stub
 		setName("Square Root");
 	}
 

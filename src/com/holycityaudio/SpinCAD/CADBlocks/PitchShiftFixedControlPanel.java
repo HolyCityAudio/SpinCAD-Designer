@@ -40,7 +40,7 @@ import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 class PitchShiftFixedControlPanel implements ChangeListener {
-	JSlider freqSlider = new JSlider(JSlider.HORIZONTAL, -12, 24, 0);
+	JSlider freqSlider = new JSlider(JSlider.HORIZONTAL, -12, 19, 0);
 	JSlider ampSlider = new JSlider(JSlider.HORIZONTAL, 0, 3, 2);
 
 	JLabel freqLabel = new JLabel();

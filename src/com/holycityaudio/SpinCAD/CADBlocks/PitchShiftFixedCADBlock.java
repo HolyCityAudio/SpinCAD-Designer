@@ -124,8 +124,7 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 //				;S is the number of semitones
 
 			if(freq > 0) {
-				double n = Math.pow(2.0, freq/12.0) - 1;
-//				coefficient = (int) (16384 * (Math.pow(2.0, n) - 1));
+				coefficient = (int)(16384 * (Math.pow(2.0, freq/12.0) - 1));
 			} else if (freq < 0) {
 				// TODO put in stuff for negative pitch shift
 			} else {
