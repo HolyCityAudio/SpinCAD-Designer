@@ -104,7 +104,7 @@
 @menuitem "Clip" ClipControl
 @menuitem "Invert" InvertControl
 @menuitem "Scale/Offset" ScaleOffsetControl
-@menuitem "Log" ExponentialControl
+@menuitem "Square Root" SquareRoot
 @menuitem "Control Mixer" ControlMixer
 @menuitem "Smoother" control_smootherA
 // @menuitem "Smoother" control_smoother
