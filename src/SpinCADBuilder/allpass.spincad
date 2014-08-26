@@ -1,0 +1,23 @@
+@name Allpass
+@audioInput input Input
+@audioOutput output1 Output
+@controlInput phase Phase
+
+mem delay 1
+equ temp reg0
+equ output1 reg2
+
+rdax input, 1.0
+wrax temp, 0 
+rda delay#, 1 ; allpass with WRAP replaced to use variable coefficient 
+mulx phase 
+rdax temp,1 ; add input *NEW* 
+wra delay, -1 ; store to delay and then negate ACC 
+mulx phase ; apply 'negative' coefficient 
+rda delay#, 1 ; add in the end entry in the delay
+wrax output1, 0.0
+
+@setOutputPin Output output1
+
+
+
