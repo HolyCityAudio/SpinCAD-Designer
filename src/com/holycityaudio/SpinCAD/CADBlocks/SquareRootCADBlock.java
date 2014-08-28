@@ -47,6 +47,8 @@ public class SquareRootCADBlock extends SpinCADBlock{
 			sfxb.readRegister(control1, 1.0);
 			sfxb.log(0.5, 0);
 			sfxb.exp(1,0);
+			sfxb.scaleOffset(1.0, -0.5);
+			sfxb.scaleOffset(1.9990, 0);
 			sfxb.writeRegister(output, 0);
 
 			// last instruction clears accumulator
