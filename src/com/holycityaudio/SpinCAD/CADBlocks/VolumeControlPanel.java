@@ -49,7 +49,7 @@ class VolumeControlPanel {
 				frame.setTitle("Volume");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
-				gainSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, (int) (spbVol.getGain() * 100));
+				gainSlider = new JSlider(JSlider.HORIZONTAL, -48, 0, spbVol.getGain());
 				gainSlider.addChangeListener(new volumeSliderListener());
 
 				gainLabel = new JLabel();
@@ -68,13 +68,13 @@ class VolumeControlPanel {
 	class volumeSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-				spbVol.setGain((double) gainSlider.getValue()/100.0);
+				spbVol.setGain(gainSlider.getValue());
 				updateGainLabel();
 			}
 		}
 	}
 
 	public void updateGainLabel() {
-		gainLabel.setText("Gain " + String.format("%4.2f", spbVol.getGain()));		
+		gainLabel.setText("Gain " + String.format("%d dB", spbVol.getGain()));		
 	}
 }

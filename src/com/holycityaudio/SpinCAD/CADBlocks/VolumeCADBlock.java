@@ -75,12 +75,13 @@ public class VolumeCADBlock extends MixCADBlock{
 		System.out.println("Volume code gen!");
 	}
 
-	public void setGain(double d) {
-		defaultGain = d;		
+	public void setGain(int d) {
+		defaultGain = Math.pow(10, (double) d/20);
+						
 	}
 
-	public double getGain() {
-		return defaultGain;
+	public int getGain() {
+		return (int) (20 * Math.log10((double)defaultGain));
 	}
 	
 	public void editBlock(){
