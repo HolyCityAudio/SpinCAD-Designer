@@ -18,6 +18,7 @@
 package org.andrewkilpatrick.elmGen.instructions;
 
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
+import org.andrewkilpatrick.elmGen.util.Util;
 
 /**
  * This class represents the WRAP instruction.
@@ -61,7 +62,7 @@ public class WriteAllpass extends Instruction {
 	// this function call added by Gary Worsham for compatibility with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "WRAP " + addr + "," + scale;
+			return "WRAP " + addr + "," + Util.removeComma(scale);
 		}
 		else
 			return "Error! Invalid mode.";

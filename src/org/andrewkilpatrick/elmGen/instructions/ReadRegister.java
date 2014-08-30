@@ -60,7 +60,7 @@ public class ReadRegister extends Instruction {
 	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "RDAX " + Util.getRegisterName(addr) + "," + String.format("%6.10f",scale);		
+			return "RDAX " + Util.getRegisterName(addr) + "," + Util.removeComma(String.format("%6.10f",scale));		
 		}
 		else
 			return 

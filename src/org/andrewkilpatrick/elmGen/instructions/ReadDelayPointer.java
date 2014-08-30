@@ -20,6 +20,7 @@ package org.andrewkilpatrick.elmGen.instructions;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.simulator.Reg;
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
+import org.andrewkilpatrick.elmGen.util.Util;
 
 
 /**
@@ -55,7 +56,7 @@ public class ReadDelayPointer extends Instruction {
 	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "RMPA " + scale;
+			return "RMPA " + Util.removeComma(scale);
 		}
 		else
 			return "Error! Invalid mode.";

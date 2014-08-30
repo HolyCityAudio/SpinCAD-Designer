@@ -70,7 +70,7 @@ public class WriteRegister extends Instruction {
 	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "WRAX " + Util.getRegisterName(addr) + "," + String.format("%6.10f",scale);		
+			return "WRAX " + Util.getRegisterName(addr) + "," + Util.removeComma(String.format("%6.10f",scale));		
 		}
 		else
 			return 

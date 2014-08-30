@@ -62,7 +62,7 @@ public class WriteRegisterHighshelf extends Instruction {
 	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "WRHX " + Util.getRegisterName(addr) + "," + String.format("%6.10f",scale);		
+			return "WRHX " + Util.getRegisterName(addr) + "," + Util.removeComma(String.format("%6.10f",scale));		
 		}
 		else
 			return "Error! Invalid mode.";

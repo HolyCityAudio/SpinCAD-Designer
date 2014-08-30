@@ -199,4 +199,13 @@ public class Util {
 			return String.valueOf(addr);
 		}
 	}
+	
+	public static String removeComma(double number) {
+		String s = Double.toString(number);
+		return s.replace(",", ".");
+	}
+	
+	public static String removeComma(String s) {
+		return s.replace(",", ".");
+	}
 }

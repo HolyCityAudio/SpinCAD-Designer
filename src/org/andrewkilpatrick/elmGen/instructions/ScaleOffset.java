@@ -18,6 +18,7 @@
 package org.andrewkilpatrick.elmGen.instructions;
 
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
+import org.andrewkilpatrick.elmGen.util.Util;
 
 /**
  * This class represents the SOF instruction.
@@ -54,7 +55,7 @@ public class ScaleOffset extends Instruction {
 	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int mode) {
 		if(mode == 1) {
-			return "SOF " + String.format("%6.10f",scale) + "," + String.format("%6.10f",offset);		
+			return "SOF " + Util.removeComma(String.format("%6.10f",scale)) + "," + Util.removeComma(String.format("%6.10f",offset));		
 		}
 		else
 			return "Error! Invalid mode.";

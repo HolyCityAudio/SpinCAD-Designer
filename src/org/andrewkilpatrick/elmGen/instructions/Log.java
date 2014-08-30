@@ -59,7 +59,7 @@ public class Log extends Instruction {
 	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "LOG " + scale + "," + offset;
+			return "LOG " + Util.removeComma(scale) + "," + Util.removeComma(offset);
 		}
 		else
 			return "Error! Invalid mode.";

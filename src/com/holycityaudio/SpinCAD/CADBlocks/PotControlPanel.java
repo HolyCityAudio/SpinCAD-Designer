@@ -62,10 +62,10 @@ public class PotControlPanel implements ItemListener {
 				frame.setResizable(false);
 
 				speedupCB.setText("Speed Up");
+				speedupCB.setSelected(pCB.getSpeedup());
 
 				frame.add(speedupCB);
 
-				speedupCB.setSelected(pCB.getSpeedup());
 				frame.setVisible(true);
 				frame.setSize(180, 50);
 				frame.setLocation(new Point(pCB.getX() + 200, pCB.getY() + 150));
