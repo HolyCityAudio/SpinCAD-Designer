@@ -67,6 +67,7 @@
 @menuitem "Preset Chorus" ChorusPreset 
 // @menuitem "Flanger" Flanger 
 @menuitem "Mod Delay" ModDelay 
+@menuitem "New Phaser" NewPhaser 
 @menuitem "Phaser" Phaser 
 @menuitem "Allpass" allpass 
 // @menuitem "Test Chorus" Test_chorus 

@@ -52,7 +52,6 @@ public class PotControlPanel implements ItemListener {
 	private PotCADBlock pC;
 
 	public PotControlPanel(final PotCADBlock pCB) {
-		speedupCB.addItemListener(this);
 		pC = pCB;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -73,6 +72,7 @@ public class PotControlPanel implements ItemListener {
 
 			}
 		});
+		speedupCB.addItemListener(this);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class PotControlPanel implements ItemListener {
 		Object source = arg0.getItemSelectable();
 
 		if (source == speedupCB) {
-			if(pC.getSpeedup() == true) {
+	        if (arg0.getStateChange() == ItemEvent.DESELECTED) {
 				pC.setSpeedup(false);
 			}
 			else

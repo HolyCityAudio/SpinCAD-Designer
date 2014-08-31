@@ -31,19 +31,12 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 	public PhaserCADBlock(int x, int y) {
 		super(x, y);
-		stages = 4;
+		stages = 8;
 		addControlInputPin(this, "LFO Speed");
 		addControlInputPin(this, "LFO Width");
-		// TODO Auto-generated constructor stub
+		addControlInputPin(this, "Phase");
+		addOutputPin(this, "Dry");
 		setName("Phaser");
-	}
-
-	public int getStages() {
-		return stages;
-	}
-
-	public void setStages(int stages) {
-		this.stages = stages;
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -51,6 +44,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		//				equ	mono	reg0
 		int MONO = -1;
 		int Control1 = -1;
+		int dry = -1;
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
 		sfxb.comment(getName());
 
@@ -90,46 +84,53 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 			temp = sfxb.allocateReg();
 			temp1 = sfxb.allocateReg();
+			dry = sfxb.allocateReg();
 
 			int BYPASS = sfxb.allocateReg();
 
-			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO(1, 0, 32767);
-
-			p = this.getPin("LFO Width").getPinConnection();
-			int depth = -1;
+			p = this.getPin("Phase").getPinConnection();
 			if(p != null) {
-				depth = p.getRegister();
+				phase = p.getRegister();
 			}
+			else
+			{			
+				sfxb.skip(RUN, 1);
+				sfxb.loadSinLFO(1, 0, 32767);
 
-			sfxb.readRegister(depth, 1.0);
-			sfxb.readRegister(BYPASS, 0.9);
-			sfxb.writeRegister(BYPASS, 0);
+				p = this.getPin("LFO Width").getPinConnection();
+				int depth = -1;
+				if(p != null) {
+					depth = p.getRegister();
+				}
 
-			p = this.getPin("LFO Speed").getPinConnection();
-			int speed = -1;
-			if(p != null) {
-				speed = p.getRegister();
+				sfxb.readRegister(depth, 1.0);
+				sfxb.readRegister(BYPASS, 0.9);
+				sfxb.writeRegister(BYPASS, 0);
+
+				p = this.getPin("LFO Speed").getPinConnection();
+				int speed = -1;
+				if(p != null) {
+					speed = p.getRegister();
+				}
+
+				sfxb.readRegister(speed, 1.0);
+				sfxb.mulx(speed);
+				sfxb.scaleOffset(0.2, 0.02);
+				sfxb.writeRegister(SIN1_RATE, 0);
+
+				sfxb.chorusReadValue(SIN1);
+				sfxb.scaleOffset(0.5, 0.5);
+				sfxb.log(0.5, 0);
+				sfxb.exp(1,0);
+				sfxb.scaleOffset(1.0, -0.5);
+				sfxb.scaleOffset(1.999, 0);
+				sfxb.mulx(depth);
+				//					sof	0.1,0.85
+				sfxb.scaleOffset(0.1 , 0.85);
+				//					wrax	phase,0		;phase variable ranges 0.8 to 0.95
+				sfxb.writeRegister(phase, 0);
 			}
-
-			sfxb.readRegister(speed, 1.0);
-			sfxb.mulx(speed);
-			sfxb.scaleOffset(0.2, 0.02);
-			sfxb.writeRegister(SIN1_RATE, 0);
-
-			sfxb.chorusReadValue(SIN1);
-			sfxb.scaleOffset(0.5, 0.5);
-			sfxb.log(0.5, 0);
-			sfxb.exp(1,0);
-			sfxb.scaleOffset(1.0, -0.5);
-			sfxb.scaleOffset(1.999, 0);
-			sfxb.mulx(depth);
-			//					sof	0.1,0.85
-			sfxb.scaleOffset(0.1 , 0.85);
-			//					wrax	phase,0		;phase variable ranges 0.8 to 0.95
-			sfxb.writeRegister(phase, 0);
-
-// beginning of phase shifter proper
+			// beginning of phase shifter proper
 			sfxb.readRegister(p1, 1);
 			sfxb.writeRegister(temp, 1);
 			sfxb.mulx(phase);
@@ -166,7 +167,8 @@ public class PhaserCADBlock extends ModulationCADBlock{
 			sfxb.scaleOffset(-2.0, 0.0);
 
 			//					mulx	bypass
-			sfxb.mulx(BYPASS);
+//			sfxb.mulx(BYPASS);
+			sfxb.writeRegister(dry, 1.0);
 			//					rdax	mono,1
 			sfxb.readRegister(MONO, 1);
 			//					wrax	pout,1
@@ -175,6 +177,8 @@ public class PhaserCADBlock extends ModulationCADBlock{
 			// last instruction clears accumulator
 			p = this.getPin("Audio Output 1");
 			p.setRegister(POUT);
+			p = this.getPin("Dry");
+			p.setRegister(dry);
 		}
 		System.out.println("Phaser code gen!");
 	}
@@ -198,4 +202,11 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		sfxb.mulx(phase);
 	}
 
+	public int getStages() {
+		return stages;
+	}
+
+	public void setStages(int stages) {
+		this.stages = stages;
+	}
 }
