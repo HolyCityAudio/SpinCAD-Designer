@@ -50,7 +50,7 @@ public class PowerControlCADBlock extends ControlCADBlock{
 			//			rdax	pot2,-1
 			sfxb.readRegister(control, 1.0);
 			if(invert == true) {
-				sfxb.scaleOffset(-0.999, 0.999);
+				sfxb.scaleOffset(-0.9990234375, 0.9990234375);
 			}
 			for(int i = 0; i < (int) power - 1; i++) {
 				//				mulx	pot2
@@ -58,7 +58,7 @@ public class PowerControlCADBlock extends ControlCADBlock{
 			}
 			//			wrax	lbyp,0
 			if(flip == true) {
-				sfxb.scaleOffset(-0.999, 0.999);
+				sfxb.scaleOffset(-0.9990234375, 0.9990234375);
 			}
 			sfxb.writeRegister(lbyp, 0);
 			this.getPin("Control Output 1").setRegister(lbyp);

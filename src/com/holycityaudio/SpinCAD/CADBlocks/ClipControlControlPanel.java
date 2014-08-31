@@ -101,13 +101,13 @@ public class ClipControlControlPanel implements ChangeListener, ActionListener, 
 		Object source = arg0.getItemSelectable();
 
 		if (source == flip) {
-			if(pC.getFlip() == true) {
+	        if (arg0.getStateChange() == ItemEvent.DESELECTED) {
 				pC.setFlip(false);
 			}
 			else
 				pC.setFlip(true);	    		
 		} else if (source == invert) {
-			if(pC.getInvert() == true) {
+	        if (arg0.getStateChange() == ItemEvent.DESELECTED) {
 				pC.setInvert(false);
 			}
 			else
