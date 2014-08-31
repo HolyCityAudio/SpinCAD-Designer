@@ -82,19 +82,28 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				p7 = sfxb.allocateReg();
 				p8 = sfxb.allocateReg();
 			}
+			
+			int p9 = 0;
+			int p10 = 0;
+			if(stages > 4) {
+				p9 = sfxb.allocateReg();
+				p10 = sfxb.allocateReg();
+			}
 
 			temp = sfxb.allocateReg();
 			temp1 = sfxb.allocateReg();
 			dry = sfxb.allocateReg();
 
-			int BYPASS = sfxb.allocateReg();
+			int BYPASS = -1;
 
-			p = this.getPin("Phase").getPinConnection();
-			if(p != null) {
-				phase = p.getRegister();
+			SpinCADPin phaseConnected = this.getPin("Phase").getPinConnection();
+			if(phaseConnected != null) {
+				phase = phaseConnected.getRegister();
 			}
 			else
 			{			
+				BYPASS = sfxb.allocateReg();
+
 				sfxb.skip(RUN, 1);
 				sfxb.loadSinLFO(1, 0, 32767);
 
@@ -152,8 +161,12 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				PhaseShiftStage(sfxb ,p7);
 				PhaseShiftStage(sfxb ,p8);
 			}
+			if(stages > 4) {
+				PhaseShiftStage(sfxb ,p9);
+				PhaseShiftStage(sfxb ,p10);
+			}
 			sfxb.readRegister(temp, 1);
-
+			
 			//					sof	-2,0
 			sfxb.scaleOffset(-2.0, 0.0);
 			//					sof	-2,0
@@ -167,13 +180,15 @@ public class PhaserCADBlock extends ModulationCADBlock{
 			//					sof	-2,0	;output of phase shifter in acc
 			sfxb.scaleOffset(-2.0, 0.0);
 
-			//					mulx	bypass
-//			sfxb.mulx(BYPASS);
 			sfxb.writeRegister(dry, 1.0);
+			//					mulx	bypass
+			if(phaseConnected == null) {
+				sfxb.mulx(BYPASS);
+			}
 			//					rdax	mono,1
 			sfxb.readRegister(MONO, 1);
 			//					wrax	pout,1
-			sfxb.writeRegister(POUT, 1);
+			sfxb.writeRegister(POUT, 0);
 
 			// last instruction clears accumulator
 			p = this.getPin("Audio Output 1");
@@ -181,7 +196,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 			p = this.getPin("Dry");
 			p.setRegister(dry);
 		}
-		System.out.println("Phaser code gen!");
+		System.out.println("Phaser code gen!"); 
 	}
 
 	private void PhaseShiftStage(SpinFXBlock sfxb, int register) {

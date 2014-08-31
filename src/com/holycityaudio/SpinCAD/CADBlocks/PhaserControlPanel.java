@@ -40,7 +40,7 @@ import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 class PhaserControlPanel implements ChangeListener {
-	JSlider stagesSlider = new JSlider(JSlider.HORIZONTAL, 1, 4, 4);
+	JSlider stagesSlider = new JSlider(JSlider.HORIZONTAL, 1, 5, 4);
 
 	JLabel stagesLabel = new JLabel();
 	
