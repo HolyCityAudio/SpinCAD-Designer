@@ -31,7 +31,8 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 	public PhaserCADBlock(int x, int y) {
 		super(x, y);
-		stages = 8;
+		stages = 4;
+		hasControlPanel = true;
 		addControlInputPin(this, "LFO Speed");
 		addControlInputPin(this, "LFO Width");
 		addControlInputPin(this, "Phase");
@@ -63,21 +64,21 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 			int p3 = 0;
 			int p4 = 0;
-			if(stages > 2) {
+			if(stages > 1) {
 				p3 = sfxb.allocateReg();
 				p4 = sfxb.allocateReg();
 			}
 
-			int p5 = sfxb.allocateReg();
-			int p6 = sfxb.allocateReg();
-			if(stages > 4) {
+			int p5 = 0;
+			int p6 = 0;
+			if(stages > 2) {
 				p5 = sfxb.allocateReg();
 				p6 = sfxb.allocateReg();
 			}
 
 			int p7 = 0;
 			int p8 = 0;
-			if(stages > 6) {
+			if(stages > 3) {
 				p7 = sfxb.allocateReg();
 				p8 = sfxb.allocateReg();
 			}
@@ -139,15 +140,15 @@ public class PhaserCADBlock extends ModulationCADBlock{
 			sfxb.mulx(phase);
 
 			PhaseShiftStage(sfxb ,p2);
-			if(stages > 2) {
+			if(stages > 1) {
 				PhaseShiftStage(sfxb ,p3);
 				PhaseShiftStage(sfxb ,p4);
 			}
-			if (stages > 4) {
+			if (stages > 2) {
 				PhaseShiftStage(sfxb ,p5);
 				PhaseShiftStage(sfxb ,p6);
 			}
-			if(stages > 6) {
+			if(stages > 3) {
 				PhaseShiftStage(sfxb ,p7);
 				PhaseShiftStage(sfxb ,p8);
 			}
@@ -200,6 +201,10 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		sfxb.writeRegister(register, -1);
 		//					mulx	phase
 		sfxb.mulx(phase);
+	}
+	
+	public void editBlock(){
+		new PhaserControlPanel(this);
 	}
 
 	public int getStages() {
