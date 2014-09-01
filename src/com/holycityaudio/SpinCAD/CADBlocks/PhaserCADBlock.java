@@ -125,18 +125,18 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 				sfxb.readRegister(speed, 1.0);
 				sfxb.mulx(speed);
-				sfxb.scaleOffset(0.2, 0.02);
+				sfxb.scaleOffset(0.3, 0.02);
 				sfxb.writeRegister(SIN1_RATE, 0);
 
 				sfxb.chorusReadValue(SIN1);
 				sfxb.scaleOffset(0.5, 0.5);
-				sfxb.log(0.5, 0);
+				sfxb.log(0.4, 0);
 				sfxb.exp(1,0);
 				sfxb.scaleOffset(1.0, -0.5);
 				sfxb.scaleOffset(1.999, 0);
 				sfxb.mulx(depth);
 				//					sof	0.1,0.85
-				sfxb.scaleOffset(0.1 , 0.85);
+				sfxb.scaleOffset(0.15 , 0.83);
 				//					wrax	phase,0		;phase variable ranges 0.8 to 0.95
 				sfxb.writeRegister(phase, 0);
 			}
