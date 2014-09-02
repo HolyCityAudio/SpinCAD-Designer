@@ -45,23 +45,28 @@ public class PowerControlCADBlock extends ControlCADBlock{
 		SpinCADPin p = this.getPin("Control Input 1").getPinConnection();
 		if (p != null ) {
 			control = p.getRegister();
-			int lbyp = sfxb.allocateReg();
+			int value = sfxb.allocateReg();
+			int output = sfxb.allocateReg();
+			
 			sfxb.comment(getName());
 			//			rdax	pot2,-1
 			sfxb.readRegister(control, 1.0);
 			if(invert == true) {
+				sfxb.comment("---Invert");
 				sfxb.scaleOffset(-0.9990234375, 0.9990234375);
 			}
+			sfxb.writeRegister(value, 1.0);
 			for(int i = 0; i < (int) power - 1; i++) {
 				//				mulx	pot2
-				sfxb.mulx(control);		
+				sfxb.mulx(value);		
 			}
 			//			wrax	lbyp,0
 			if(flip == true) {
+				sfxb.comment("---Flip");
 				sfxb.scaleOffset(-0.9990234375, 0.9990234375);
 			}
-			sfxb.writeRegister(lbyp, 0);
-			this.getPin("Control Output 1").setRegister(lbyp);
+			sfxb.writeRegister(output, 0);
+			this.getPin("Control Output 1").setRegister(output);
 		}
 		System.out.println("Power control code gen! Power:" + power);
 	}
