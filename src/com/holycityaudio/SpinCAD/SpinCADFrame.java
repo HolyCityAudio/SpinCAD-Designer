@@ -94,12 +94,12 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -123123512351241L;
 	int buildNam = 837;
+
+	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
 	private JPanel contentPane;
-	private boolean simRunning = false;
 	// pb shows instructions, registers, and RAM used.
 	// I should add LFOs to it also
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
@@ -110,9 +110,12 @@ public class SpinCADFrame extends JFrame {
 	private final JPanel simPanel = new JPanel();
 	private JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
 
-	private boolean loggerIsVisible = false;
-
 	SpinSimulator sim;
+	private boolean simRunning = false;
+	private boolean loggerIsVisible = false;
+	private static double pot0Level = 0;
+	private static double pot1Level = 0;
+	private static double pot2Level = 0;
 
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
@@ -129,9 +132,6 @@ public class SpinCADFrame extends JFrame {
 	ByteArrayOutputStream modelSave;
 	private int canUndo = 0;
 
-	private static double pot0Level = 0;
-	private static double pot1Level = 0;
-	private static double pot2Level = 0;
 
 	// ------------------------------------------------------------
 	/**
@@ -996,6 +996,8 @@ public class SpinCADFrame extends JFrame {
 							System.out.println("Error setting debug output PrintStream!"); 
 							e.printStackTrace();
 						}
+						String simDebugFileName = prefs.get("SIMULATOR_DEBUG_FILE", "");
+						sim.setLoopMode(false);
 					}
 
 					btnStartSimulation.setText("Stop Simulator");
@@ -1008,12 +1010,8 @@ public class SpinCADFrame extends JFrame {
 					if(loggerIsVisible) {
 						sim.showLevelLogger(loggerPanel);
 					}
-					// sim.showLevelMeter();
+//					sim.showLevelMeter();
 					// TODO debugging ramp LFO
-					if(Debug.DEBUG == true) {
-						String simDebugFileName = prefs.get("SIMULATOR_DEBUG_FILE", "");
-						sim.setLoopMode(false);
-					}
 					sim.start();
 				}
 			} else if (arg0.getSource() == btnSigGen) {

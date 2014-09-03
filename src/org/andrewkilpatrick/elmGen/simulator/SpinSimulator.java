@@ -290,4 +290,8 @@ public class SpinSimulator extends Thread {
 	public void showLevelMeter() {
 		audioSinks.add(new LevelMeter());
 	}	
+
+	public void showLevelMeter(JPanel p) {
+		audioSinks.add(new LevelLogger(p));
+	}	
 }

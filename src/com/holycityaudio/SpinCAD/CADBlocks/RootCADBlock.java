@@ -53,7 +53,7 @@ public class RootCADBlock extends SpinCADBlock{
 			if(invert == true) {
 				sfxb.scaleOffset(-0.9990234375, 0.9990234375);
 			}
-			sfxb.log(0.5, 0);
+			sfxb.log(1.0/root, 0);
 			sfxb.exp(1,0);
 			sfxb.scaleOffset(1.0, -0.5);
 			sfxb.scaleOffset(1.9990, 0);
