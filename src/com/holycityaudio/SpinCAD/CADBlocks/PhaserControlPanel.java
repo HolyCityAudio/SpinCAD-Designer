@@ -45,7 +45,7 @@ import javax.swing.event.ChangeListener;
 class PhaserControlPanel implements ChangeListener, ActionListener {
 	JSlider stagesSlider = new JSlider(JSlider.HORIZONTAL, 1, 5, 4);
 	JLabel stagesLabel = new JLabel();
-	
+
 	private JLabel controlTypeLabel = new JLabel("Control Type");
 	private JComboBox<String> controlType;
 	private String listOptions[] = {
@@ -66,7 +66,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 		controlType.addActionListener(this);
 
 		pong = swoosh;
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Ramp LFO");
@@ -82,7 +82,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				updateFreqLabel();
 				frame.add(stagesSlider);
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-			
+
 				frame.add(controlTypeLabel);
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.add(controlType);
@@ -110,7 +110,17 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		if (arg0.getSource() == controlType) {
+			JComboBox cb = (JComboBox)arg0.getSource();
+			String range = (String)cb.getSelectedItem();
+			if (range == listOptions[0]) {
+				pong.setControlMode(0);
+			} else if (range == listOptions[1]) {
+				pong.setControlMode(1);
+			} else if (range == listOptions[1]) {
+				pong.setControlMode(1);
+			}
+		}
+
 	}	
 }

@@ -229,4 +229,9 @@ public class PhaserCADBlock extends ModulationCADBlock{
 	public void setStages(int stages) {
 		this.stages = stages;
 	}
+
+	public void setControlMode(int i) {
+		// TODO Auto-generated method stub
+		
+	}
 }
