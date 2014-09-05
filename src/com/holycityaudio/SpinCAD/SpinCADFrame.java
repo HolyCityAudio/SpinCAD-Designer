@@ -1012,6 +1012,7 @@ public class SpinCADFrame extends JFrame {
 					}
 //					sim.showLevelMeter();
 					// TODO debugging ramp LFO
+					// start() is a Thread method...
 					sim.start();
 				}
 			} else if (arg0.getSource() == btnSigGen) {

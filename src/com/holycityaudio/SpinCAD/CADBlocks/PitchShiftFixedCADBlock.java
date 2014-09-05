@@ -60,26 +60,6 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 		new PitchShiftFixedControlPanel(this);
 	}
 
-	//====================================================
-	// freq parameter is the shift in semitones,  This needs to get converted to 
-	// the proper pitch shift coefficient inline during code generation
-	public int getFreq() {
-		return freq;
-	}
-
-	public void setFreq(int d) {
-		freq = d;
-	}
-	//====================================================
-	public void setAmp(int d) {
-		int LFO_Freqs[] = {512, 1024, 2048, 4096};
-		amp = LFO_Freqs[d];
-	}
-
-	public int getAmp() {
-		return amp;
-	}
-
 	@SuppressWarnings("unused")
 	public void generateCode(SpinFXBlock sfxb) {
 		int input = -1;
@@ -126,7 +106,7 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 			if(freq > 0) {
 				coefficient = (int)(16384 * (Math.pow(2.0, freq/12.0) - 1));
 			} else if (freq < 0) {
-				// TODO put in stuff for negative pitch shift
+				coefficient = (int)(-16384 * (1 - (Math.pow(2.0, freq/12.0))));
 			} else {
 				coefficient = 0;
 			}
@@ -177,6 +157,27 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 			this.getPin("Pitch Out").setRegister(pitch1);	
 		}
 	}
+	//====================================================
+	// freq parameter is the shift in semitones,  This needs to get converted to 
+	// the proper pitch shift coefficient inline during code generation
+	public int getFreq() {
+		return freq;
+	}
+
+	public void setFreq(int d) {
+		freq = d;
+	}
+	
+	//====================================================
+	public void setAmp(int d) {
+		int LFO_Freqs[] = {512, 1024, 2048, 4096};
+		amp = LFO_Freqs[d];
+	}
+
+	public int getAmp() {
+		return amp;
+	}
+
 
 	public int getLFOSel() {
 		return lfoSel;
