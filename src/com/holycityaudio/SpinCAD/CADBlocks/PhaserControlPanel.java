@@ -117,8 +117,8 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				pong.setControlMode(0);
 			} else if (range == listOptions[1]) {
 				pong.setControlMode(1);
-			} else if (range == listOptions[1]) {
-				pong.setControlMode(1);
+			} else if (range == listOptions[2]) {
+				pong.setControlMode(2);
 			}
 		}
 

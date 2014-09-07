@@ -26,18 +26,29 @@ public class PhaserCADBlock extends ModulationCADBlock{
 	 * 
 	 */
 	private static final long serialVersionUID = 343880108475812086L;
-	int temp, temp1, phase, stages;
+	int temp, temp1, phase, stages, controlMode;
 
 
 	public PhaserCADBlock(int x, int y) {
 		super(x, y);
-		stages = 4;
 		hasControlPanel = true;
-		addControlInputPin(this, "LFO Speed");
-		addControlInputPin(this, "LFO Width");
-		addControlInputPin(this, "Phase");
+		stages = 4;
+		controlMode = 0; 	// default to LFO mode
+		setupControls();
 		addOutputPin(this, "Dry");
 		setName("Phaser");
+	}
+	
+	private void setupControls() {
+		if(controlMode == 0) {
+			addControlInputPin(this, "LFO Speed");
+			addControlInputPin(this, "LFO Width");			
+		} else if (controlMode == 1) {
+			addControlInputPin(this, "Phase");
+		}  else if (controlMode == 2) {
+			for (int i = 0; i < stages; i++)
+				addControlInputPin(this, "Phase " + (i + 1));
+		}
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -231,7 +242,6 @@ public class PhaserCADBlock extends ModulationCADBlock{
 	}
 
 	public void setControlMode(int i) {
-		// TODO Auto-generated method stub
-		
+		controlMode = i;		
 	}
 }
