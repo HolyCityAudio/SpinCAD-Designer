@@ -38,7 +38,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		addOutputPin(this, "Dry");
 		setName("Phaser");
 	}
-	
+
 	private void setupControls() {
 		if(controlMode == 0) {
 			addControlInputPin(this, "LFO Speed");
@@ -93,7 +93,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				p7 = sfxb.allocateReg();
 				p8 = sfxb.allocateReg();
 			}
-			
+
 			int p9 = 0;
 			int p10 = 0;
 			if(stages > 4) {
@@ -107,12 +107,13 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 			int BYPASS = -1;
 
-			SpinCADPin phaseConnected = this.getPin("Phase").getPinConnection();
-			if(phaseConnected != null) {
-				phase = phaseConnected.getRegister();
+			if(controlMode == 1) {
+				SpinCADPin phaseConnected = this.getPin("Phase").getPinConnection();
+				if(phaseConnected != null) {
+					phase = phaseConnected.getRegister();
+				}
 			}
-			else
-			{			
+			else if (controlMode == 0) {			{			
 				BYPASS = sfxb.allocateReg();
 
 				sfxb.skip(RUN, 1);
@@ -151,6 +152,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				//					wrax	phase,0		;phase variable ranges 0.8 to 0.95
 				sfxb.writeRegister(phase, 0);
 			}
+			}
 			// beginning of phase shifter proper
 			sfxb.readRegister(p1, 1);
 			sfxb.writeRegister(temp, 1);
@@ -177,7 +179,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				PhaseShiftStage(sfxb ,p10);
 			}
 			sfxb.readRegister(temp, 1);
-			
+
 			//					sof	-2,0
 			sfxb.scaleOffset(-2.0, 0.0);
 			//					sof	-2,0
@@ -193,7 +195,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 			sfxb.writeRegister(dry, 1.0);
 			//					mulx	bypass
-			if(phaseConnected == null) {
+			if(controlMode == 0) {
 				sfxb.mulx(BYPASS);
 			}
 			//					rdax	mono,1
@@ -228,7 +230,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		//					mulx	phase
 		sfxb.mulx(phase);
 	}
-	
+
 	public void editBlock(){
 		new PhaserControlPanel(this);
 	}
@@ -243,5 +245,9 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 	public void setControlMode(int i) {
 		controlMode = i;		
+	}
+
+	public int getControlMode() {
+		return controlMode;
 	}
 }

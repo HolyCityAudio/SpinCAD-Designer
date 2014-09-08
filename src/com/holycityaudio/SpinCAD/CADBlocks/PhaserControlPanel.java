@@ -87,6 +87,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.add(controlType);
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				controlType.setSelectedIndex(pong.getControlMode());
 
 				stagesSlider.setValue((pong.getStages()));
 

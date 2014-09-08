@@ -46,7 +46,6 @@ public class ConstantControlPanel extends JFrame implements ChangeListener {
 				setTitle("Constant");
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-
 				constantLabel = new JLabel();
 
 				getContentPane().add(constantLabel);

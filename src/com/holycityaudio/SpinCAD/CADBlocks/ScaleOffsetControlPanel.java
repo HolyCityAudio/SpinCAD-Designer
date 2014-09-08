@@ -27,13 +27,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 
 
 @SuppressWarnings("serial")
-public class ScaleOffsetControlPanel extends JFrame implements ChangeListener, ActionListener {
+public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 	JSlider inLowSlider;
 	JSlider inHighSlider;
 	JSlider outLowSlider;
@@ -50,6 +51,16 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener, A
 	public ScaleOffsetControlPanel(ScaleOffsetControlCADBlock scaleOffsetControlCADBlock) {
 		this.sof = scaleOffsetControlCADBlock;
 		this.setTitle("Scale Offset");
+
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				createAndShowGUI();
+			}
+		});
+		
+	}
+
+	private void createAndShowGUI() {
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
 		inLowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
@@ -75,10 +86,10 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener, A
 		this.getContentPane().add(outHighLabel);
 		this.getContentPane().add(outHighSlider);		
 		
-		inLowSlider.setValue((int)Math.round((scaleOffsetControlCADBlock.getInLow() * 100.0)));
-		inHighSlider.setValue((int)Math.round((scaleOffsetControlCADBlock.getInHigh() * 100.0)));
-		outLowSlider.setValue((int)Math.round((scaleOffsetControlCADBlock.getOutLow() * 100.0)));
-		outHighSlider.setValue((int)Math.round((scaleOffsetControlCADBlock.getOutHigh() * 100.0)));
+		inLowSlider.setValue((int)Math.round((sof.getInLow() * 100.0)));
+		inHighSlider.setValue((int)Math.round((sof.getInHigh() * 100.0)));
+		outLowSlider.setValue((int)Math.round((sof.getOutLow() * 100.0)));
+		outHighSlider.setValue((int)Math.round((sof.getOutHigh() * 100.0)));
 		inLowLabel.setText("Input Low " + String.format("%2.2f", sof.getInLow()));
 		inHighLabel.setText("Input High " + String.format("%2.2f", sof.getInHigh()));
 		outLowLabel.setText("Output Low " + String.format("%2.2f", sof.getOutLow()));
@@ -86,17 +97,12 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener, A
 
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(new Point(scaleOffsetControlCADBlock.getX() + 200, scaleOffsetControlCADBlock.getY() + 150));
+		this.setLocation(new Point(sof.getX() + 200, sof.getY() + 150));
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
-
+	
 	public void stateChanged(ChangeEvent ce) {
 		if(ce.getSource() == inLowSlider) {
 			sof.setInLow((double)inLowSlider.getValue() / 100.0);
