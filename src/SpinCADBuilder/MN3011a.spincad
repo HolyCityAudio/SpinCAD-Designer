@@ -65,8 +65,8 @@ equ max reg1
 clr
 or $7FFF00
 mulx cIn1
-// max now holds the value of the POT sacled by max ADDR_PTR
-wrax max,0.0
+// max now holds the value of the POT scaled by max ADDR_PTR
+wrax max,1.0
 
 @getDelayScaleControl tap1Ratio delayLength delayOffset 
 wrax ADDR_PTR, 0

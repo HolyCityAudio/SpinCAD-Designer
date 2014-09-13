@@ -194,6 +194,10 @@ public class SpinCADBlock extends SpinFXBlock {
 		SpinCADPin pin = new SpinCADPin(b, s, pinType.CONTROL_IN, 0, nControlInputs * 10);
 		pinList.add(pin);
 	}
+	
+	public void removeAllControlInputs() {
+		nControlInputs = 0;
+	}
 
 	/**
 	 * Add a control output pin with an auto-generated name

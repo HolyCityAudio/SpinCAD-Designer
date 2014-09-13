@@ -27,7 +27,8 @@ public class PhaserCADBlock extends ModulationCADBlock{
 	 */
 	private static final long serialVersionUID = 343880108475812086L;
 	int temp, temp1, phase, stages, controlMode;
-
+	int phase0, phase1, phase2, phase3, phase4;
+	PhaserControlPanel cP = null; 
 
 	public PhaserCADBlock(int x, int y) {
 		super(x, y);
@@ -37,34 +38,34 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		setupControls();
 		addOutputPin(this, "Dry");
 		setName("Phaser");
+		// add a listener up to the JPanel to redraw this block when the control mode is changed.
 	}
 
-	private void setupControls() {
+	public void setupControls() {
+		removeAllControlInputs();
+		addControlInputPin(this, "LFO Speed");
+		addControlInputPin(this, "LFO Width");			
+		addControlInputPin(this, "Phase");
+		for (int i = 0; i < 5; i++)
+			addControlInputPin(this, "Phase " + (i + 1));
+
 		if(controlMode == 0) {
-			addControlInputPin(this, "LFO Speed");
-			addControlInputPin(this, "LFO Width");			
 		} else if (controlMode == 1) {
-			addControlInputPin(this, "Phase");
 		}  else if (controlMode == 2) {
-			for (int i = 0; i < stages; i++)
-				addControlInputPin(this, "Phase " + (i + 1));
 		}
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
-
 		//				equ	mono	reg0
-		int MONO = -1;
-		int Control1 = -1;
+		int input = -1;
 		int dry = -1;
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
 		sfxb.comment(getName());
 
 
 		if(p != null) {
-			MONO = p.getRegister();
+			input = p.getRegister();
 			//				equ	phase	reg5
-			phase = sfxb.allocateReg();
 			//				equ	pout	reg6
 			int POUT = sfxb.allocateReg();
 			//				equ	p1	reg7
@@ -107,14 +108,9 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 			int BYPASS = -1;
 
-			if(controlMode == 1) {
-				SpinCADPin phaseConnected = this.getPin("Phase").getPinConnection();
-				if(phaseConnected != null) {
-					phase = phaseConnected.getRegister();
-				}
-			}
-			else if (controlMode == 0) {			{			
+			if (controlMode == 0) {			
 				BYPASS = sfxb.allocateReg();
+				phase = sfxb.allocateReg();
 
 				sfxb.skip(RUN, 1);
 				sfxb.loadSinLFO(1, 0, 32767);
@@ -137,12 +133,12 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 				sfxb.readRegister(speed, 1.0);
 				sfxb.mulx(speed);
-				sfxb.scaleOffset(0.3, 0.02);
+				sfxb.scaleOffset(0.83, 0.002);
 				sfxb.writeRegister(SIN1_RATE, 0);
 
 				sfxb.chorusReadValue(SIN1);
 				sfxb.scaleOffset(0.5, 0.5);
-				sfxb.log(0.4, 0);
+				sfxb.log(0.5, 0);
 				sfxb.exp(1,0);
 				sfxb.scaleOffset(1.0, -0.5);
 				sfxb.scaleOffset(1.999, 0);
@@ -152,31 +148,32 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				//					wrax	phase,0		;phase variable ranges 0.8 to 0.95
 				sfxb.writeRegister(phase, 0);
 			}
-			}
+
 			// beginning of phase shifter proper
 			sfxb.readRegister(p1, 1);
 			sfxb.writeRegister(temp, 1);
-			sfxb.mulx(phase);
-			sfxb.readRegister(MONO, 1.0/64);
+			sfxb.mulx(getControlReg(1));
+			sfxb.readRegister(input, 1.0/64);
 			sfxb.writeRegister(p1, -1);
-			sfxb.mulx(phase);
+			sfxb.mulx(getControlReg(1));
 
-			PhaseShiftStage(sfxb ,p2);
+			PhaseShiftStage(sfxb ,p2, 1);
+
 			if(stages > 1) {
-				PhaseShiftStage(sfxb ,p3);
-				PhaseShiftStage(sfxb ,p4);
+				PhaseShiftStage(sfxb ,p3, 2);
+				PhaseShiftStage(sfxb ,p4, 2);
 			}
 			if (stages > 2) {
-				PhaseShiftStage(sfxb ,p5);
-				PhaseShiftStage(sfxb ,p6);
+				PhaseShiftStage(sfxb, p5, 3);
+				PhaseShiftStage(sfxb, p6, 3);
 			}
 			if(stages > 3) {
-				PhaseShiftStage(sfxb ,p7);
-				PhaseShiftStage(sfxb ,p8);
+				PhaseShiftStage(sfxb, p7, 4);
+				PhaseShiftStage(sfxb, p8, 5);
 			}
 			if(stages > 4) {
-				PhaseShiftStage(sfxb ,p9);
-				PhaseShiftStage(sfxb ,p10);
+				PhaseShiftStage(sfxb, p9, 5);
+				PhaseShiftStage(sfxb, p10, 5);
 			}
 			sfxb.readRegister(temp, 1);
 
@@ -199,7 +196,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				sfxb.mulx(BYPASS);
 			}
 			//					rdax	mono,1
-			sfxb.readRegister(MONO, 1);
+			sfxb.readRegister(input, 1);
 			//					wrax	pout,1
 			sfxb.writeRegister(POUT, 0);
 
@@ -212,27 +209,47 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		System.out.println("Phaser code gen!"); 
 	}
 
-	private void PhaseShiftStage(SpinFXBlock sfxb, int register) {
+	private void PhaseShiftStage(SpinFXBlock sfxb, int delay, int control) {
+		int controlNum = getControlReg(control);
 		//					rdax	temp,1
 		sfxb.readRegister(temp, 1);
 		//					wrax	temp1,0
 		sfxb.writeRegister(temp1, 0);
 		//					rdax	p6,1
-		sfxb.readRegister(register, 1);
+		sfxb.readRegister(delay, 1);
 		//					wrax	temp,1
 		sfxb.writeRegister(temp, 1);
 		//					mulx	phase
-		sfxb.mulx(phase);
+		sfxb.mulx(controlNum);
 		//					rdax	temp1,1
 		sfxb.readRegister(temp1, 1);
 		//					wrax	p6,-1
-		sfxb.writeRegister(register, -1);
+		sfxb.writeRegister(delay, -1);
 		//					mulx	phase
-		sfxb.mulx(phase);
+		sfxb.mulx(controlNum);
+	}
+
+	private int getControlReg(int stg) {
+		if(controlMode == 0) {	// LFO
+			return phase;
+		} else if (controlMode == 1) {
+			SpinCADPin p = this.getPin("Phase").getPinConnection();
+			if(p != null) {
+				return p.getRegister();
+			}
+		} else if (controlMode == 2) {
+			SpinCADPin p = this.getPin("Phase " + stg).getPinConnection();
+			if(p != null) {
+				return p.getRegister();
+			}
+		}
+		return -1;
 	}
 
 	public void editBlock(){
-		new PhaserControlPanel(this);
+		if(cP == null) {
+			cP = new PhaserControlPanel(this);
+		}
 	}
 
 	public int getStages() {
