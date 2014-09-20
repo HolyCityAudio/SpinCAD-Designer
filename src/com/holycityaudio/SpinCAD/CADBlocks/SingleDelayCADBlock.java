@@ -53,7 +53,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 		super(x, y);
 		hasControlPanel = true;
 		addInputPin(this);
-		addControlInputPin(this, "Gain");	//	delay time
+		addControlInputPin(this, "Time");	//	delay time
 		addControlInputPin(this, "Feedback");	//	feedback
 		addOutputPin(this);
 		setName("Single Delay");
