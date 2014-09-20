@@ -67,9 +67,9 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 		inLowSlider.addChangeListener(this);
 		inHighSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
 		inHighSlider.addChangeListener(this);
-		outLowSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+		outLowSlider = new JSlider(JSlider.HORIZONTAL, -200, 100, 0);
 		outLowSlider.addChangeListener(this);
-		outHighSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+		outHighSlider = new JSlider(JSlider.HORIZONTAL, -200, 100, 0);
 		outHighSlider.addChangeListener(this);
 		
 		inLowLabel = new JLabel();

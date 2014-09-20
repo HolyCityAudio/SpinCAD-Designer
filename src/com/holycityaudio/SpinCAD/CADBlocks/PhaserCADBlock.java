@@ -119,9 +119,14 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				int depth = -1;
 				if(p != null) {
 					depth = p.getRegister();
+					sfxb.readRegister(depth, 1.0);
+				}
+				else {
+					depth = sfxb.allocateReg();		// shortcut, could optimize later
+					sfxb.scaleOffset(0.0,  0.5);	// default width in case no pin connected
+					sfxb.writeAllpass(depth, 0.0);
 				}
 
-				sfxb.readRegister(depth, 1.0);
 				sfxb.readRegister(BYPASS, 0.9);
 				sfxb.writeRegister(BYPASS, 0);
 
@@ -129,11 +134,14 @@ public class PhaserCADBlock extends ModulationCADBlock{
 				int speed = -1;
 				if(p != null) {
 					speed = p.getRegister();
+					sfxb.readRegister(speed, 1.0);
+					sfxb.mulx(speed);
+					sfxb.scaleOffset(0.83, 0.002);
+				}
+				else {
+					sfxb.scaleOffset(0.0,  0.5);	// default speed in case no pin connected
 				}
 
-				sfxb.readRegister(speed, 1.0);
-				sfxb.mulx(speed);
-				sfxb.scaleOffset(0.83, 0.002);
 				sfxb.writeRegister(SIN1_RATE, 0);
 
 				sfxb.chorusReadValue(SIN1);

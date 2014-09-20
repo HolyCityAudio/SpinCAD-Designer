@@ -40,8 +40,8 @@ public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 		hasControlPanel = true;
 		addControlInputPin(this);	//	delay time
 		addControlOutputPin(this);	//	feedback
-		outLow = 0.05;
-		outHigh = 0.25;
+		outLow = 0.00;
+		outHigh = 0.75;
 		setName("Scale/Offset");
 	}
 
@@ -58,8 +58,13 @@ public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 			sfxb.comment(getName());
 			
 			sfxb.readRegister(controlInput, 1.0);
+
 			double scale = (outHigh - outLow)/(inHigh - inLow);
-			sfxb.scaleOffset(scale, outLow);
+			double offset = outLow - (inLow * scale);
+			if(offset > 0.999) {
+				offset = 0.999;
+			}
+			sfxb.scaleOffset(scale, offset);
 			sfxb.writeRegister(controlOutput,  0);
 			p = this.getPin("Control Output 1");
 			p.setRegister(controlOutput);
