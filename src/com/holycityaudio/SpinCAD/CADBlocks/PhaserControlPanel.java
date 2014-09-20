@@ -24,6 +24,8 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -86,6 +88,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 
 				stagesSlider.setValue((pong.getStages()));
 
+				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.pack();
@@ -119,4 +122,38 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 		}
 		pong.setupControls();
 	}	
+	
+	class MyWindowListener implements WindowListener
+	{
+	@Override
+		public void windowActivated(WindowEvent arg0) {
+		}
+
+	@Override
+		public void windowClosed(WindowEvent arg0) {
+		}
+
+	@Override
+		public void windowClosing(WindowEvent arg0) {
+			pong.clearCP();
+		}
+
+	@Override
+		public void windowDeactivated(WindowEvent arg0) {
+		}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+	}
+}
+
 }

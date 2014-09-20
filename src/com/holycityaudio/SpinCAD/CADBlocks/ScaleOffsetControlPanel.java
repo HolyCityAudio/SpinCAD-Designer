@@ -19,10 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -106,24 +104,60 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 	public void stateChanged(ChangeEvent ce) {
 		if(ce.getSource() == inLowSlider) {
 			sof.setInLow((double)inLowSlider.getValue() / 100.0);
+			if(checkValuesInRange()) {
+				inLowLabel.setForeground(Color.BLACK);
+				inLowLabel.setOpaque(false);		
+			} else  {
+				inLowLabel.setBackground(Color.RED);
+				inLowLabel.setForeground(Color.WHITE);
+				inLowLabel.setOpaque(true);		
+			} 
 			inLowLabel.setText("Input Low " + String.format("%2.2f", sof.getInLow()));
-			System.out.println("Input Low " + String.format("%2.2f", sof.getInLow()));
 		}
 		else if(ce.getSource() == inHighSlider) {
 			sof.setInHigh((double)inHighSlider.getValue() / 100.0);
+			if(checkValuesInRange()) {
+				inHighLabel.setForeground(Color.BLACK);
+				inHighLabel.setOpaque(false);		
+			} else  {
+				inHighLabel.setBackground(Color.RED);
+				inHighLabel.setForeground(Color.WHITE);
+				inHighLabel.setOpaque(true);		
+			} 
 			inHighLabel.setText("Input High " + String.format("%2.2f", sof.getInHigh()));
-			System.out.println("Input High " + String.format("%2.2f", sof.getInHigh()));
 		}
 		else if(ce.getSource() == outLowSlider) {
 			sof.setOutLow((double)outLowSlider.getValue() / 100.0);
+			if(checkValuesInRange()) {
+				outLowLabel.setForeground(Color.BLACK);
+				outLowLabel.setOpaque(false);		
+			} else  {
+				outLowLabel.setBackground(Color.RED);
+				outLowLabel.setForeground(Color.WHITE);
+				outLowLabel.setOpaque(true);		
+			} 
 			outLowLabel.setText("Output Low " + String.format("%2.2f", sof.getOutLow()));
-			System.out.println("Output Low " + String.format("%2.2f", sof.getOutLow()));
 		}
 		else if(ce.getSource() == outHighSlider) {
 			sof.setOutHigh((double)outHighSlider.getValue() / 100.0);
+			if(checkValuesInRange()) {
+				outHighLabel.setForeground(Color.BLACK);
+				outHighLabel.setOpaque(false);		
+			} else  {
+				outHighLabel.setBackground(Color.RED);
+				outHighLabel.setForeground(Color.WHITE);
+				outHighLabel.setOpaque(true);		
+			} 
 			outHighLabel.setText("Output High " + String.format("%2.2f", sof.getOutHigh()));
-			System.out.println("Output High " + String.format("%2.2f", sof.getOutHigh()));
 		}
+	}
 
+	public boolean checkValuesInRange() {
+		double scale = (sof.getOutHigh() - sof.getOutLow())/(sof.getInHigh() - sof.getInLow());
+		double offset = sof.getOutLow() - (sof.getInLow() * scale);
+		if((scale < -2.0) || (scale > 1.99993896484) || (offset < -1.0) || (offset > 1.0)) {
+			return false;			
+		}
+		return true;
 	}
 }

@@ -275,4 +275,8 @@ public class PhaserCADBlock extends ModulationCADBlock{
 	public int getControlMode() {
 		return controlMode;
 	}
+
+	public void clearCP() {
+		cP = null;		
+	}
 }
