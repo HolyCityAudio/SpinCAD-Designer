@@ -29,7 +29,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	 */
 	private static final long serialVersionUID = 5711126291575876825L;
 	double f0 = 240;
-	double kql = -0.4;
+	double kql = 0.4;
 	boolean is4Pole = false;
 
 	public LPF4PCADBlock(int x, int y) {
@@ -94,7 +94,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 			sfxb.mulx(kfl);
 			sfxb.readRegister(lp1bl,1);
 			sfxb.writeRegister(lp1bl, -1);
-			sfxb.readRegister(lp1al,kql);
+			sfxb.readRegister(lp1al,-kql);
 			sfxb.readRegister(input,0.25);
 			sfxb.mulx(kfl);
 			sfxb.readRegister(lp1al,1);
@@ -105,7 +105,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 				sfxb.mulx(kfl);
 				sfxb.readRegister(lp2bl,1);
 				sfxb.writeRegister(lp2bl, -1);
-				sfxb.readRegister(lp2al,kql);
+				sfxb.readRegister(lp2al,-kql);
 				sfxb.readRegister(lp1bl,1);
 				sfxb.mulx(kfl);
 				sfxb.readRegister(lp2al,1);
@@ -134,5 +134,14 @@ public class LPF4PCADBlock extends FilterCADBlock{
 
 	public void setIs4Pole(boolean r) {
 		is4Pole = r;
+	}
+
+	public void setQ(double value) {
+		kql = 10/(value); // TODO Auto-generated method stub
+	}
+
+	public double getQ() {
+		// TODO Auto-generated method stub
+		return kql/10.0;
 	}
 }

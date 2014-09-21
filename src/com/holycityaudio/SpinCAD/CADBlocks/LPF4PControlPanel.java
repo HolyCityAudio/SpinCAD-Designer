@@ -31,6 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -44,6 +45,10 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 	JSlider freqSlider;
 	JLabel freqLabel;
+	
+	JSlider qSlider;
+	JLabel qLabel;
+
 	private JComboBox<Object> nPoles;
 
 	private LPF4PCADBlock LPF;
@@ -78,9 +83,22 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 				freqLabel = new JLabel();
 
+				int qSliderPosition = (int)(1/LPF.getQ());
+				qSlider = new JSlider(JSlider.HORIZONTAL, 10, 200, qSliderPosition);
+				qSlider.addChangeListener(new LPF1PChangeListener());
+
+				qLabel = new JLabel();
+				qLabel.setAlignmentX(SwingConstants.LEFT);
+
+				updateQLabel();
+
 //				getContentPane().add(freqLabel);
 //				getContentPane().add(freqSlider);
 				getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+				getContentPane().add(qLabel);
+				getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+				getContentPane().add(qSlider);
+				getContentPane().add(Box.createRigidArea(new Dimension(205,7)));			
 				getContentPane().add(nPoles);
 				getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
 
@@ -101,6 +119,10 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 				LPF.setFreq((double) freqSlider.getValue());
 				updateFreqLabel();
 			}
+			else if(ce.getSource() == qSlider) {
+				LPF.setQ((double) qSlider.getValue());
+				updateQLabel();
+			}
 		}
 	}
 	
@@ -117,6 +139,10 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 		}
 	}
 	
+	public void updateQLabel() {
+		qLabel.setText(" Resonance " + String.format("%.2f", 0.1/LPF.getQ()));		
+	}
+
 	private void updateFreqLabel() {
 		freqLabel.setText("Frequency " + String.format("%2.2f", LPF.getFreq()));		
 	}
