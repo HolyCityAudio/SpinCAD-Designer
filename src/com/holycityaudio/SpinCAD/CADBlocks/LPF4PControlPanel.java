@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -140,7 +141,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 	}
 	
 	public void updateQLabel() {
-		qLabel.setText(" Resonance " + String.format("%.2f", 0.1/LPF.getQ()));		
+		qLabel.setText(" Resonance " + String.format(new DecimalFormat("#.##").format(0.1/LPF.getQ())));		
 	}
 
 	private void updateFreqLabel() {

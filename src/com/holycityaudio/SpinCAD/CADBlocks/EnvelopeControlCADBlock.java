@@ -28,7 +28,7 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 	 * 
 	 */
 	double filterCoeff = 0.001;
-	double gain = 2.0;
+	int gain = 2;
 	
 	private static final long serialVersionUID = -125887536230107216L;
 
@@ -48,29 +48,15 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 			input = p.getRegister();
 			int AVG = sfxb.allocateReg();			//
 			sfxb.comment(getName());
-
-			//				rdax	mono,1		;get input
 			sfxb.readRegister(input, 1);
-			//				absa			;absolute value
 			sfxb.absa();
 			
-			if(gain > 1.0) {
-				if(gain <= 1.999) {
-					sfxb.scaleOffset(gain, 0);
-					sfxb.scaleOffset(-(gain/1.999), 0);				
-				}
-				else if(gain <= 4.0) {
-					sfxb.scaleOffset(-2.0, 0);
-					sfxb.scaleOffset(gain/(-2.0), 0);				
-				}
-				else if(gain <= 8.0) {
-					sfxb.scaleOffset(-2.0, 0);
-					sfxb.scaleOffset(-2.0, 0);
-					sfxb.scaleOffset(gain/(-4.0), 0);				
-					sfxb.scaleOffset(-1.0, 0);				
-				}
+			for(int i = 0; i < gain; i++) {
+				sfxb.scaleOffset(-2.0,  0.0);
 			}
-				
+			if((gain & 1) == 1) {
+				sfxb.scaleOffset(-1.0,  0.0);				
+			}
 
 			//				rdfx	avg,0.01		;average input level
 			sfxb.readRegisterFilter(AVG, filterCoeff);
@@ -101,11 +87,11 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 		new EnvelopeControlControlPanel(this);
 	}
 	//====================================================
-	public double getGain() {
+	public int getGain() {
 		return gain;
 	}
 
-	public void setGain(double d) {
+	public void setGain(int d) {
 		gain = d;
 	}
 

@@ -29,15 +29,18 @@ public class HPF2PCADBlock extends FilterCADBlock{
 	 */
 	private static final long serialVersionUID = 5711126291575876825L;
 	double f0 = 240;
+	double kqh = 0.2;
+
 	public HPF2PCADBlock(int x, int y) {
 		super(x, y);
 		addInputPin(this, "Audio Input");
 		addOutputPin(this, "Audio Output");
+		hasControlPanel = true;
 		addControlInputPin(this);
 		setName("High Pass 2P");	}
 
 	public void editBlock(){
-		//		new LPF1PControlPanel(this);
+		new HPF2PControlPanel(this);
 	}	
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -55,7 +58,6 @@ public class HPF2PCADBlock extends FilterCADBlock{
 			int hp1al = sfxb.allocateReg();
 			int hp1bl = sfxb.allocateReg();
 			int hpout = sfxb.allocateReg();
-			double kqh = -0.2;
 			sfxb.comment("2 pole high pass");
 
 			sfxb.skip(RUN, 3);
@@ -102,7 +104,7 @@ public class HPF2PCADBlock extends FilterCADBlock{
 //			wrax	lp1bl,-1
 			sfxb.writeRegister(hp1bl, -1);
 //			rdax	lp1al,kql
-			sfxb.readRegister(hp1al,kqh);
+			sfxb.readRegister(hp1al,-kqh);
 //			rdax	fol,1
 			sfxb.readRegister(input,1);
 			sfxb.writeRegister(hpout, 1);
@@ -126,4 +128,23 @@ public class HPF2PCADBlock extends FilterCADBlock{
 	public void setFreq(double f) {
 		f0 = f;
 	}
+
+	public void setIs4Pole(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean getIs4Pole() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public double getQ() {
+		return kqh/10.0;
+	}
+
+	public void setQ(double value) {
+		kqh = 10/(value); 
+	}
+
 }
