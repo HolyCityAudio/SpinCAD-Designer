@@ -62,8 +62,8 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 				gainSlider.setValue((int) Math.round(pC.getGain()));
 				updateGainLabel();
 
-				filterSlider.setValue((int) Math.round(pC.getFilter() * 10000));
-				filterLabel.setText(String.format("Filter: %4.4f", pC.getFilter()));
+				filterSlider.setValue((int) Math.round(pC.getFilter() * 100000));
+				updateFilterLabel();
 
 				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
 				frame.setVisible(true);
@@ -85,12 +85,16 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 			updateGainLabel();
 		}
 		else if (e.getSource() == filterSlider) {
-			pC.setFilter((double) filterSlider.getValue()/10000.0);
-			filterLabel.setText(String.format("Filter: %4.4f", pC.getFilter()));
+			pC.setFilter((double) filterSlider.getValue()/100000.0);
+			updateFilterLabel();
 		}
 	}	
 	
 	private void updateGainLabel() {
 		gainLabel.setText(String.format("Gain: %2d dB", pC.getGain() * 6));				
+	}
+	
+	private void updateFilterLabel() {
+		filterLabel.setText(String.format("Filter: %4.2f", pC.filtToFreq(pC.getFilter())));		
 	}
 }

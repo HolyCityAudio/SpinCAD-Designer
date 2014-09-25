@@ -82,7 +82,7 @@ class HPF1PControlPanel extends JFrame {
 	}
 	
 	private void updateFreqLabel() {
-		freqLabel.setText("Frequency " + String.format("%2.2f", HPF.getFreq()));		
+		freqLabel.setText("Frequency " + String.format("%4.2f", HPF.getFreq()));		
 	}
 
 }

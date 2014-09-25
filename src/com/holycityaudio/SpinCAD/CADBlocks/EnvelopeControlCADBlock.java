@@ -37,6 +37,7 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 		hasControlPanel = true;
 		setName("Envelope");
 		addInputPin(this);	//	delay time
+		addControlInputPin(this, "Sensitivity");
 		addControlOutputPin(this);	//	feedback
 	}
 
@@ -49,6 +50,11 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 			int AVG = sfxb.allocateReg();			//
 			sfxb.comment(getName());
 			sfxb.readRegister(input, 1);
+			p = this.getPin("Sensitivity").getPinConnection();
+			if(p != null) {
+				int sens = p.getRegister();
+				sfxb.mulx(sens);
+			}
 			sfxb.absa();
 			
 			for(int i = 0; i < gain; i++) {
