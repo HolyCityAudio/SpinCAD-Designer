@@ -34,15 +34,21 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 
 	private JSlider gainSlider = new JSlider(JSlider.HORIZONTAL, 1, 8, 2);
 	private JLabel gainLabel = new JLabel("Hi");
-	private JSlider filterSlider = new JSlider(JSlider.HORIZONTAL, 10, 100, 20);
-	private JLabel filterLabel = new JLabel("Hi");
+	
+	private JSlider attackSlider = new JSlider(JSlider.HORIZONTAL, 10, 100, 20);
+	private JLabel attackLabel = new JLabel("Hi");
+	
+	private JSlider decaySlider = new JSlider(JSlider.HORIZONTAL, 10, 100, 20);
+	private JLabel decayLabel = new JLabel("Hi");
+	
 	private JFrame frame;
 
 	private EnvelopeControlCADBlock pC;
 
 	public EnvelopeControlControlPanel(EnvelopeControlCADBlock envelopeControlCADBlock) {
 		gainSlider.addChangeListener(this);
-		filterSlider.addChangeListener(this);
+		attackSlider.addChangeListener(this);
+		decaySlider.addChangeListener(this);
 		
 		this.pC = envelopeControlCADBlock;
 		SwingUtilities.invokeLater(new Runnable() {
@@ -56,14 +62,20 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 
 				frame.add(gainLabel);
 				frame.add(gainSlider);
-				frame.add(filterLabel);
-				frame.add(filterSlider);
+				frame.add(attackLabel);
+				frame.add(attackSlider);
+
+				frame.add(decayLabel);
+				frame.add(decaySlider);
 
 				gainSlider.setValue((int) Math.round(pC.getGain()));
 				updateGainLabel();
 
-				filterSlider.setValue((int) Math.round(pC.getFilter() * 100000));
-				updateFilterLabel();
+				attackSlider.setValue((int) Math.round(pC.getAttack() * 100000));
+				updateAttackLabel();
+
+				decaySlider.setValue((int) Math.round(pC.getDecay() * 1000000));
+				updateDecayLabel();
 
 				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
 				frame.setVisible(true);
@@ -84,9 +96,13 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 			pC.setGain(gainSlider.getValue());
 			updateGainLabel();
 		}
-		else if (e.getSource() == filterSlider) {
-			pC.setFilter((double) filterSlider.getValue()/100000.0);
-			updateFilterLabel();
+		else if (e.getSource() == attackSlider) {
+			pC.setAttack((double) attackSlider.getValue()/100000.0);
+			updateAttackLabel();
+		}
+		else if (e.getSource() == decaySlider) {
+			pC.setDecay((double) decaySlider.getValue()/1000000.0);
+			updateDecayLabel();
 		}
 	}	
 	
@@ -94,7 +110,11 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 		gainLabel.setText(String.format("Gain: %2d dB", pC.getGain() * 6));				
 	}
 	
-	private void updateFilterLabel() {
-		filterLabel.setText(String.format("Filter: %4.2f", pC.filtToFreq(pC.getFilter())));		
+	private void updateAttackLabel() {
+		attackLabel.setText(String.format("Attack: %4.2f", pC.filtToFreq(pC.getAttack())));		
+	}
+
+	private void updateDecayLabel() {
+		decayLabel.setText(String.format("Decay: %4.2f", pC.filtToFreq(pC.getDecay())));		
 	}
 }

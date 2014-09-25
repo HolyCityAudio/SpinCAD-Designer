@@ -27,8 +27,9 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 	/**
 	 * 
 	 */
-	double filterCoeff = 0.001;
-	int gain = 2;
+	private double attackCoeff = 0.001;
+	private int gain = 2;
+	private double decayCoeff = 0.01;
 	
 	private static final long serialVersionUID = -125887536230107216L;
 
@@ -48,6 +49,8 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 		if(p != null) {
 			input = p.getRegister();
 			int AVG = sfxb.allocateReg();			//
+			int LAVG = sfxb.allocateReg();			//
+			int TEMP = sfxb.allocateReg();			//
 			sfxb.comment(getName());
 			sfxb.readRegister(input, 1);
 			p = this.getPin("Sensitivity").getPinConnection();
@@ -65,24 +68,24 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 			}
 
 			//				rdfx	avg,0.01		;average input level
-			sfxb.readRegisterFilter(AVG, filterCoeff);
+			sfxb.readRegisterFilter(AVG, attackCoeff);
 			//				wrax	avg,0		;write avg level, pass on
 			sfxb.writeRegister(AVG, 0);
 			//				rdax	lavg,0
-//			sfxb.readRegister(LAVG,1);
+			sfxb.readRegister(LAVG,1);
 			//				sof	-0.01,0	
-//			sfxb.scaleOffset(-0.01, 0);
+			sfxb.scaleOffset(-decayCoeff, 0);
 			//				rdax	lavg,1	
-//			sfxb.readRegister(LAVG,1);
+			sfxb.readRegister(LAVG,1);
 			//				wrax	temp,0
-//			sfxb.writeRegister(TEMP, 0);
+			sfxb.writeRegister(TEMP, 0);
 			//				rdax	avg,1
-//			sfxb.readRegister(AVG,1);
+			sfxb.readRegister(AVG,1);
 			//				maxx	temp,1		;filter a long average
-//			sfxb.maxx(TEMP,1);
+			sfxb.maxx(TEMP,1);
 			//				wrax	lavg,0
-//			sfxb.writeRegister(LAVG,0);
-			this.getPin("Control Output 1").setRegister(AVG);
+			sfxb.writeRegister(LAVG,0);
+			this.getPin("Control Output 1").setRegister(LAVG);
 		}
 
 		System.out.println("Envelope control code gen!");
@@ -101,12 +104,20 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 		gain = d;
 	}
 
-	public double getFilter() {
-		return filterCoeff;
+	public double getAttack() {
+		return attackCoeff;
 		}
 
-	public void setFilter(double b) {
-		filterCoeff = b;
+	public void setAttack(double b) {
+		attackCoeff = b;
+	}
+
+	public double getDecay() {
+		return decayCoeff;
+	}
+
+	public void setDecay(double d) {
+		decayCoeff = d;
 	}
 
 }
