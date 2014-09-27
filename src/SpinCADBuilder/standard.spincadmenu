@@ -35,10 +35,10 @@
 // @menuitem "2P LPF Fixed" LPF 
 // @menuitem "2P BPF Fixed" BPF 
 // @menuitem "2P HPF Fixed" HPF 
-@menuitem "2P Highpass" HPF2P 
+@menuitem "2P/4P Highpass" HPF2P 
 @menuitem "2P State Variable" SVF2P 
 // @menuitem "Biquad" BiQuad 
-@menuitem "4P Lowpass" LPF4P 
+@menuitem "2P/4P Lowpass" LPF4P 
 @menuitem "1-Band EQ" OneBandEQ 
 @menuitem "6-Band EQ" SixBandEQ 
 

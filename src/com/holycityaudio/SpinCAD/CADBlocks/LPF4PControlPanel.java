@@ -95,13 +95,13 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 //				getContentPane().add(freqLabel);
 //				getContentPane().add(freqSlider);
-				getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+				getContentPane().add(Box.createRigidArea(new Dimension(250,4)));			
 				getContentPane().add(qLabel);
-				getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+				getContentPane().add(Box.createRigidArea(new Dimension(250,4)));			
 				getContentPane().add(qSlider);
-				getContentPane().add(Box.createRigidArea(new Dimension(205,7)));			
+				getContentPane().add(Box.createRigidArea(new Dimension(250,7)));			
 				getContentPane().add(nPoles);
-				getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+				getContentPane().add(Box.createRigidArea(new Dimension(250,4)));			
 
 //				freqSlider.setValue((int)Math.round(LPF.getFreq()));
 //				updateFreqLabel();
@@ -109,7 +109,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 				setVisible(true);
 				setLocation(new Point(LPF.getX() + 200, LPF.getY() + 150));
 				pack();
-				setResizable(false);
+				setResizable(true);
 			}
 		});		
 	}
@@ -141,7 +141,8 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 	}
 	
 	public void updateQLabel() {
-		qLabel.setText(" Resonance " + String.format(new DecimalFormat("#.##").format(0.1/LPF.getQ())));		
+//		qLabel.setText(" Resonance " + String.format(new DecimalFormat("#.##").format(0.1/LPF.getQ())));		
+		qLabel.setText(" Resonance " + String.format("%3.2f",(0.1/LPF.getQ())));		
 	}
 
 	private void updateFreqLabel() {

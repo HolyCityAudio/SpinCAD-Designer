@@ -39,7 +39,8 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 		setName("Envelope");
 		addInputPin(this);	//	delay time
 		addControlInputPin(this, "Sensitivity");
-		addControlOutputPin(this);	//	feedback
+		addControlOutputPin(this, "Single Slope");	//
+		addControlOutputPin(this, "Dual Slope");	//
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -85,7 +86,8 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 			sfxb.maxx(TEMP,1);
 			//				wrax	lavg,0
 			sfxb.writeRegister(LAVG,0);
-			this.getPin("Control Output 1").setRegister(LAVG);
+			this.getPin("Single Slope").setRegister(AVG);
+			this.getPin("Dual Slope").setRegister(LAVG);
 		}
 
 		System.out.println("Envelope control code gen!");
