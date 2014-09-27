@@ -27,9 +27,9 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 	/**
 	 * 
 	 */
-	private double attackCoeff = 0.001;
+	private double attackCoeff = 0.00015;
 	private int gain = 2;
-	private double decayCoeff = 0.01;
+	private double decayCoeff = 0.0001;
 	
 	private static final long serialVersionUID = -125887536230107216L;
 

@@ -35,10 +35,10 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 	private JSlider gainSlider = new JSlider(JSlider.HORIZONTAL, 1, 8, 2);
 	private JLabel gainLabel = new JLabel("Hi");
 	
-	private JSlider attackSlider = new JSlider(JSlider.HORIZONTAL, 10, 100, 20);
+	private JSlider attackSlider = null;
 	private JLabel attackLabel = new JLabel("Hi");
 	
-	private JSlider decaySlider = new JSlider(JSlider.HORIZONTAL, 10, 100, 20);
+	private JSlider decaySlider = null;
 	private JLabel decayLabel = new JLabel("Hi");
 	
 	private JFrame frame;
@@ -47,10 +47,18 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 
 	public EnvelopeControlControlPanel(EnvelopeControlCADBlock envelopeControlCADBlock) {
 		gainSlider.addChangeListener(this);
-		attackSlider.addChangeListener(this);
-		decaySlider.addChangeListener(this);
 		
 		this.pC = envelopeControlCADBlock;
+		// JSlider value is converted to an exponent representing filter frequency, so 
+		// -29 => 10^(-29/100) = 0.5129 Hz which determined is the lowest practical frequency possible
+		// with the FV-1's coefficient resolution.
+		// 100 => 10^(100/100) = 10 Hz.
+		attackSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (125), pC.logvalToSlider(pC.filtToFreq(pC.getAttack()), 100.0));
+		decaySlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (50), pC.logvalToSlider(pC.filtToFreq(pC.getDecay()), 100.0));
+		
+		attackSlider.addChangeListener(this);
+		decaySlider.addChangeListener(this);
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Envelope");
@@ -71,10 +79,10 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 				gainSlider.setValue((int) Math.round(pC.getGain()));
 				updateGainLabel();
 
-				attackSlider.setValue((int) Math.round(pC.getAttack() * 100000));
+				attackSlider.setValue((int) pC.logvalToSlider(pC.filtToFreq(pC.getAttack()), 100.0));
 				updateAttackLabel();
 
-				decaySlider.setValue((int) Math.round(pC.getDecay() * 1000000));
+				decaySlider.setValue((int) pC.logvalToSlider(pC.filtToFreq(pC.getDecay()), 100.0));
 				updateDecayLabel();
 
 				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
@@ -97,11 +105,13 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 			updateGainLabel();
 		}
 		else if (e.getSource() == attackSlider) {
-			pC.setAttack((double) attackSlider.getValue()/100000.0);
+			pC.setAttack(pC.freqToFilt(pC.sliderToLogval(attackSlider.getValue(), 100.0)));
+//			pC.setAttack((double) attackSlider.getValue()/100000.0);
 			updateAttackLabel();
 		}
 		else if (e.getSource() == decaySlider) {
-			pC.setDecay((double) decaySlider.getValue()/1000000.0);
+			pC.setDecay(pC.freqToFilt(pC.sliderToLogval(decaySlider.getValue(), 100.0)));
+//			pC.setDecay((double) decaySlider.getValue()/1000000.0);
 			updateDecayLabel();
 		}
 	}	

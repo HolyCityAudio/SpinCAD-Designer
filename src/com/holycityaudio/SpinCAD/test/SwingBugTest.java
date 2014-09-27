@@ -46,9 +46,8 @@ public class SwingBugTest {
 
 				updateQLabel(40);
 
-//				dspFrame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
 				dspFrame.getContentPane().add(qLabel);
-//				dspFrame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
+				dspFrame.getContentPane().add(Box.createRigidArea(new Dimension(205,4)));			
 				dspFrame.getContentPane().add(qSlider);
 
 				dspFrame.setAlwaysOnTop(true);
@@ -71,7 +70,6 @@ public class SwingBugTest {
 		}
 
 		public static void updateQLabel(int value) {
-//			qLabel.setText(" Resonance " + String.format(new DecimalFormat("#.##").format(100.0/value)));		
 			qLabel.setText(" Resonance " + String.format("%4.1f",(100.0/value)));		
 		}
 	}

@@ -96,6 +96,11 @@ public class control_smootherControlPanel {
 
 				frame.add(Box.createRigidArea(new Dimension(5,5)));			
 				
+				// JSlider value is converted to an exponent representing filter frequency, so 
+				// -29 => 10^(-29/100) = 0.5129 Hz which determined is the lowest practical frequency possible
+				// with the FV-1's coefficient resolution.
+				// 100 => 10^(100/100) = 10 Hz.
+			
 				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
 				filtSlider.addChangeListener(new control_smootherSliderListener());
 				frame.getContentPane().add(filtSlider);		
