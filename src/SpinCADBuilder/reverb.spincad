@@ -1,0 +1,203 @@
+@name Reverb  
+@audioInput input Input 
+@audioOutput output Output 
+@controlInput input0 Pot0
+@controlInput input1 Pot1
+@controlInput input2 Pot2
+
+mem   pdel   4600  ; pre-delay, 1l00mS at a 46khz clock freq.a
+mem   iap1   156  ; all-pass filters
+mem   iap2   223
+mem   iap3   332
+mem   iap4   448
+;
+mem   ap1   1251  ; more all-passes
+mem   ap1b   1751
+mem   ap2   1443
+mem   ap2b   1343
+mem   ap3   1582
+mem   ap3b   1981
+mem   ap4   1274
+mem   ap4b   1382
+;
+mem   del1   3559  ; actual reverb delay blocks
+mem   del2   2945
+mem   del3   3976
+mem   del4   4445
+
+equ    temp   reg0  ; locations for filtering
+equ   hpf1   reg1
+equ   hpf2   reg2
+equ   hpf3   reg3
+equ   hpf4   reg4
+equ   lpf1   reg5
+equ   lpf2   reg6
+equ   lpf3   reg7
+equ   lpf4   reg8
+equ   rt   reg9  ; reverb time  --- this needs a control input
+equ   iapout   reg10 ; holding register for all pass output
+equ   pdelo   reg11 ; holding register for output of pre-delay
+equ output reg12
+
+;constants:  ---- these should have control panel sliders
+
+equ   kfh   0.01  ; high pass filter
+equ   kfl   0.4  ; low pass filter
+equ   kiap   0.5  ; all pass filter
+equ   klap   0.6  ;  all pass filter
+
+;prepare decay time pot:
+
+rdax   pot0,1
+sof   0.55,0.3
+wrax   rt,0         ;rt ranges 0.3 to 0.85
+
+;do variable predelay:
+
+skp   run,label
+wldr   0,0,4096      ;initialize predelay
+
+label:
+rdax   input,1.0      ;put inputs into predelay
+; rdax   adcr,0.5
+wra   pdel,0
+
+cho rda,rmp0,reg|compc,pdel   ;get outputs from predelay, interpolated
+cho rda,rmp0,0,pdel+1
+wrax   pdelo,0         ;write predelay output to register
+
+cho rdal,rmp0      ;read current predelay pointer
+rdax   pot1,-0.5      ;subtract pot for servo control of pointer
+wrax   rmp0_rate,0      ;maintain predelay pointer
+
+;now run predelayed signal into 4 all passes:
+
+rdax   pdelo,0.25      ;attenuate signal to avoid clipping   
+rda   iap1#,kiap   
+wrap   iap1,-kiap      
+rda   iap2#,kiap   
+wrap   iap2,-kiap      
+rda   iap3#,kiap   
+wrap   iap3,-kiap      
+rda   iap4#,kiap   
+wrap   iap4,-kiap      
+wrax   iapout,0      ;write to register for ring injection
+
+;now do reverb ring, use temp as reg for filtering:
+
+;aps into delay1:
+
+rda   del4#,1      ;read previous delay   
+mulx   rt      ;multiply by reverb time coefficient
+rdax   iapout,1   ;read left input from input allpass filter bank
+rda   ap1#,klap   ;do an allpass filter
+wrap   ap1,-klap
+rda   ap1b#,klap   ;do second all pass filter
+wrap   ap1b,-klap   
+wrax   temp,1      ;write to temp, keep in acc
+rdfx   lpf1,kfl   ;low pass filter
+wrlx   lpf1,-1
+rdfx   hpf1,kfh   ;high pass filter
+wrhx   hpf1,-1
+rdax   temp,-1
+mulx   pot2      ;crossfade between filter and no filter
+rdax   temp,1
+wra   del1,0      ;write to next delay, clear accumulator
+
+;aps into delay2:
+
+rda   del1#,1      
+mulx   rt
+rdax   iapout,1
+rda   ap2#,klap   
+wrap   ap2,-klap      
+rda   ap2b#,klap   
+wrap   ap2b,-klap      
+wrax   temp,1      
+rdfx   lpf2,kfl
+wrlx   lpf2,-1
+rdfx   hpf2,kfh
+wrhx   hpf2,-1
+rdax   temp,-1
+mulx   pot2
+rdax   temp,1
+wra   del2,0      
+
+;aps into delay3:
+
+rda   del2#,1      
+mulx   rt
+rdax   iapout,1      
+rda   ap3#,klap   
+wrap   ap3,-klap      
+rda   ap3b#,klap   
+wrap   ap3b,-klap      
+wrax   temp,1      
+rdfx   lpf3,kfl
+wrlx   lpf3,-1
+rdfx   hpf3,kfh
+wrhx   hpf3,-1
+rdax   temp,-1
+mulx   pot2
+rdax   temp,1   
+wra   del3,0
+
+;aps into delay4:
+
+rda   del3#,1.0      
+mulx   rt
+rdax   iapout,1
+rda   ap4#,klap   
+wrap   ap4,-klap      
+rda   ap4b#,klap   
+wrap   ap4b,-klap      
+wrax   temp,1      
+rdfx   lpf4,kfl
+wrlx   lpf4,-1
+rdfx   hpf4,kfh
+wrhx   hpf4,-1
+rdax   temp,-1
+mulx   pot2
+rdax   temp,1   
+wra   del4,0      
+
+;take outputs as taps from reverb ring:
+
+rda   del1,0.8
+rda   del2+1876,1.5
+rda   del3+2093,1.1
+rda   del4+2793,1         
+wrax   output,0      ;write output, clear accumulator
+   
+rda   del1,0.8   
+rda   del2+923,1.5
+rda   del3+1234,1.1
+rda   del4+2267,1
+wrax   output,0   
+
+;set up lfo, 1Hz to 2Hz, +/-100 samples, for smearing loop all passes:
+
+skp   run,smear
+wlds   sin0,45,50
+wlds   sin1,53,50
+
+smear:
+;smear 4 allpass filters in reverb ring:
+
+; this is a chorus on the all pass stages, to simulate how echoes get bounced around in the real world by air currents and to reduce the repetitive "echo" sound.  Probably needs a checkbox in the control panel and / or an input for an LFO.  Maybe if no LFO is connected, skip these lines.
+
+cho rda,sin0,reg|compc,ap1+50   ;sin0
+cho rda,sin0,0,ap1+51
+wra   ap1+100,0
+
+cho rda,sin0,cos|compc,ap2+50   ;cos0
+cho rda,sin0,cos,ap2+51   
+wra   ap2+100,0
+
+cho rda,sin1,reg|compc,ap3+50   ;sin1
+cho rda,sin1,0,ap3+51
+wra   ap3+100,0
+
+cho rda,sin1,cos|compc,ap4+50   ;cos1
+cho rda,sin1,cos,ap4+51   
+wra   ap4+100,0
