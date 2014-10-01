@@ -109,6 +109,6 @@
 @menuitem "Scale/Offset" ScaleOffsetControl
 @menuitem "Root" Root
 @menuitem "Control Mixer" ControlMixer
-@menuitem "Smoother" control_smootherA
-// @menuitem "Smoother" control_smoother
+@menuitem "Smoother-A" control_smootherA
+@menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo

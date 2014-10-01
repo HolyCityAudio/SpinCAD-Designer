@@ -62,11 +62,13 @@ public class LPF4PCADBlock extends FilterCADBlock{
 			int lbyp = sfxb.allocateReg();
 			int lp1bl = sfxb.allocateReg();
 			int lp1al = sfxb.allocateReg();
-			int lp2bl = sfxb.allocateReg();
-			int lp2al = sfxb.allocateReg();
+			int lp2bl = -1;
+			int lp2al = -1;
 
 			if(is4Pole == true) {
 				sfxb.comment("4 pole low pass");
+				lp2bl = sfxb.allocateReg();
+				lp2al = sfxb.allocateReg();
 			} else {
 				sfxb.comment("2 pole low pass");
 			}

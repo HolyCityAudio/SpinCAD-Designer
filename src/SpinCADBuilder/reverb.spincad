@@ -4,8 +4,13 @@
 @controlInput input0 Pot0
 @controlInput input1 Pot1
 @controlInput input2 Pot2
+@sliderLabel kiap Input_All_Pass 0.25 0.95 100.0 100.0 2 
+@sliderLabel klap Loop_All_Pass 0.25 0.95 100.0 100.0 2 
+@sliderLabel kfl Low_Pass 100 5000 40.0 100.0 2 LOGFREQ
+;@sliderLabel kfh High_Pass 40 1000 100.0 100.0 2 LOGFREQ
 
-mem   pdel   4600  ; pre-delay, 1l00mS at a 46khz clock freq.a
+
+mem   pdel   4600  ; pre-delay, 100mS at a 46khz clock freq.
 mem   iap1   156  ; all-pass filters
 mem   iap2   223
 mem   iap3   332
