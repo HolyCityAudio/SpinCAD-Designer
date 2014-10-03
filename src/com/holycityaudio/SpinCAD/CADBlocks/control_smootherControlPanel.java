@@ -38,6 +38,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinSliderSpinner;
 
 
@@ -101,7 +102,9 @@ public class control_smootherControlPanel {
 				// with the FV-1's coefficient resolution.
 				// 100 => 10^(100/100) = 10 Hz.
 			
-				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
+//				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
+				filtSlider = gCB.LogFilterSlider(0.5129,10.0,gCB.getfilt());
+
 				filtSlider.addChangeListener(new control_smootherSliderListener());
 				frame.getContentPane().add(filtSlider);		
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			

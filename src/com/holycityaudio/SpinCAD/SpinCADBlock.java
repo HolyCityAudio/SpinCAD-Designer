@@ -31,9 +31,15 @@ import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.swing.JSlider;
+
 import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
 public class SpinCADBlock extends SpinFXBlock {
+
+	public class LogFilterSlider extends JSlider {
+
+	}
 
 	/**
 	 * SpinCADBlock class extends the idea of a functional block
@@ -435,16 +441,24 @@ public class SpinCADBlock extends SpinFXBlock {
 		return (Math.sin(2 * Math.PI * freq/getSamplerate()));
 	}
 	
-	public double filtToFreq(double filt) {
+	public static double filtToFreq(double filt) {
 		return getSamplerate() * Math.asin(filt)/(2 * Math.PI);
 	}
 	
-	public int logvalToSlider(double value, double multiplier) {
+	public static int logvalToSlider(double value, double multiplier) {
 		return (int) (multiplier * Math.log10(value));
 	}
 	
 	public double sliderToLogval(int pos, double multiplier) {
 		return Math.pow(10.0, pos/multiplier);
 	}
+	
+	public static JSlider LogFilterSlider(double fLow, double fHigh, double initVal) {
+		 int leftLimit = logvalToSlider(fLow, 100.0);
+		 int rightLimit = logvalToSlider(fHigh, 100.0);
+		 int initial = logvalToSlider(filtToFreq(initVal), 100.0);
+		 return new JSlider(JSlider.HORIZONTAL, leftLimit, rightLimit, initial);
+	}
+
 }
 

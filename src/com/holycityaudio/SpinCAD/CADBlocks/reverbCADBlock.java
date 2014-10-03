@@ -43,8 +43,8 @@ public class reverbCADBlock extends SpinCADBlock {
 	private int iapout;
 	private int pdelo;
 	private int output;
-	private double kfh = 0.01;
-	private double kfl = 0.4;
+	private double kfh = freqToFilt(450);
+	private double kfl = freqToFilt(1250);
 	private double kiap = 0.5;
 	private double klap = 0.6;
 

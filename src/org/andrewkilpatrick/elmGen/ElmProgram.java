@@ -166,7 +166,7 @@ public class ElmProgram implements Serializable {
 		nComments = 0;
 	}
 
-	public void setSamplerate(int samplerate) {
+	public static void setSamplerate(int samplerate) {
 		if (samplerate < 32000 || samplerate > 48000) {
 			throw new ElmProgramException(
 					"samplerate must be: 32000 to 48000Hz");

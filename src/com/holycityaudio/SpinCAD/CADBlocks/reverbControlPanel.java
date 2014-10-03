@@ -90,14 +90,16 @@ public class reverbControlPanel {
 				frame.getContentPane().add(klapLabel);
 				frame.getContentPane().add(klapSlider);		
 
-				kflSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(100) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.filtToFreq(gCB.getkfl())) * 100));
+//				kflSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(100) * 100.0),(int) (Math.log10(5000) * 100.0), gCB.logvalToSlider(gCB.filtToFreq(gCB.getkfl()), 100));
+				kflSlider = gCB.LogFilterSlider(440,5000,gCB.getkfl());
 				kflSlider.addChangeListener(new reverbSliderListener());
 				kflLabel = new JLabel();
 				updatekflLabel();
 				frame.getContentPane().add(kflLabel);
 				frame.getContentPane().add(kflSlider);		
 
-				kfhSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(100) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.filtToFreq(gCB.getkfl())) * 100));
+//				kfhSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(100) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.filtToFreq(gCB.getkfl())) * 100));
+				kfhSlider = gCB.LogFilterSlider(80,1500,gCB.getkfh());
 				kfhSlider.addChangeListener(new reverbSliderListener());
 				kfhLabel = new JLabel();
 				updatekfhLabel();
@@ -127,11 +129,11 @@ public class reverbControlPanel {
 				updateklapLabel();
 			}
 			if(ce.getSource() == kflSlider) {
-				gCB.setkfl((double) (kflSlider.getValue()/100.0));
+				gCB.setkfl((double) gCB.freqToFilt(gCB.sliderToLogval((int)(kflSlider.getValue()), 100.0)));
 				updatekflLabel();
 			}
 			if(ce.getSource() == kfhSlider) {
-				gCB.setkfh((double) (kfhSlider.getValue()/100.0));
+				gCB.setkfh((double) gCB.freqToFilt(gCB.sliderToLogval((int)(kfhSlider.getValue()), 100.0)));
 				updatekfhLabel();
 			}
 			if(ce.getSource() == knAPSlider) {
@@ -161,10 +163,10 @@ public class reverbControlPanel {
 		klapLabel.setText("Loop_All_Pass " + String.format("%4.2f", gCB.getklap()));		
 	}		
 	private void updatekflLabel() {
-		kflLabel.setText("Low_Pass " + String.format("%4.1f", Math.pow(10.0, gCB.getkfl())) + " Hz");		
+		kflLabel.setText("Low_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
 	}		
 	private void updatekfhLabel() {
-		kfhLabel.setText("High_Pass " + String.format("%4.1f", Math.pow(10.0, gCB.getkfh())) + " Hz");		
+		kfhLabel.setText("High_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfh())) + " Hz");		
 	}		
 
 	private void updatenDLLabel() {

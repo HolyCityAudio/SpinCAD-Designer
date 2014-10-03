@@ -1229,11 +1229,11 @@ public class SpinCADFrame extends JFrame {
 				JComboBox<String> cb = (JComboBox<String>) e.getSource();
 				String rate = (String) cb.getSelectedItem();
 				if (rate == "32768") {
-					ElmProgram.SAMPLERATE = 32768;
+					ElmProgram.setSamplerate(32768);
 				} else if (rate == "44100") {
-					ElmProgram.SAMPLERATE = 44100;
+					ElmProgram.setSamplerate(44100);
 				} else if (rate == "48000") {
-					ElmProgram.SAMPLERATE = 48000;
+					ElmProgram.setSamplerate(48000);
 				}
 			}
 		}
