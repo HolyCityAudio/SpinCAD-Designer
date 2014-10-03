@@ -60,7 +60,7 @@
 // @menuitem "ROM Reverb 1" rom_rev1 
 // @menuitem "Shimmer Reverb" shimmer_verb 
 @menuitem "Small Reverb" MinReverb 
-@menuitem "Reverb" reverb 
+@menuitem "ReverbA" reverbA 
 
 @menu "Modulation" 
 // @menuitem "Chorus" Chorus 

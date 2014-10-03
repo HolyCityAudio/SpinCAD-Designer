@@ -11,34 +11,15 @@
 
 
 mem   pdel   4600  ; pre-delay, 100mS at a 46khz clock freq.
-mem   iap1   156  ; all-pass filters
-mem   iap2   223
-mem   iap3   332
-mem   iap4   448
 ;
-mem   ap1   1251  ; more all-passes
-mem   ap1b   1751
-mem   ap2   1443
-mem   ap2b   1343
-mem   ap3   1582
-mem   ap3b   1981
 mem   ap4   1274
 mem   ap4b   1382
-;
-mem   del1   3559  ; actual reverb delay blocks
-mem   del2   2945
-mem   del3   3976
 mem   del4   4445
+equ   hpf4   reg4
+equ   lpf4   reg8
 
 equ    temp   reg0  ; locations for filtering
-equ   hpf1   reg1
-equ   hpf2   reg2
-equ   hpf3   reg3
-equ   hpf4   reg4
-equ   lpf1   reg5
-equ   lpf2   reg6
-equ   lpf3   reg7
-equ   lpf4   reg8
+
 equ   rt   reg9  ; reverb time  --- this needs a control input
 equ   iapout   reg10 ; holding register for all pass output
 equ   pdelo   reg11 ; holding register for output of pre-delay
@@ -50,6 +31,43 @@ equ   kfh   0.01  ; high pass filter
 equ   kfl   0.4  ; low pass filter
 equ   kiap   0.5  ; all pass filter
 equ   klap   0.6  ;  all pass filter
+
+; block control parameters from control panel
+equ nAPs 2
+equ nDLs 3 
+
+@isGreaterThan nAPs 3
+mem   iap1   156  ; all-pass filters
+@endif
+@isGreaterThan nAPs 2 
+mem   iap2   223
+@endif
+@isGreaterThan nAPs 1 
+mem   iap3   332
+@endif
+mem   iap4   448
+
+@isGreaterThan nDLs 3
+mem   del1   3559  ; actual reverb delay blocks
+mem   ap1   1251  ; more all-passes
+mem   ap1b   1751
+equ   hpf1   reg1
+equ   lpf1   reg5
+@endif
+@isGreaterThan nDLs 2 
+mem   del2   2945
+mem   ap2   1443
+mem   ap2b   1343
+equ   hpf2   reg2
+equ   lpf2   reg6
+@endif
+@isGreaterThan nDLs 1 
+mem   del3   3976
+mem   ap3   1582
+mem   ap3b   1981
+equ   hpf3   reg3
+equ   lpf3   reg7
+@endif
 
 ;prepare decay time pot:
 
