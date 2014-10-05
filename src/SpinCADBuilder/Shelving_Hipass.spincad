@@ -1,0 +1,31 @@
+@name Shelving_Hipass
+@audioInput input Input
+@audioOutput output Output  
+@controlInput freqIn Frequency
+@controlInput shelfIn Shelf
+
+equ freq 0.15
+@sliderLabel freq Frequency 0.001 0.350 0.15 1000.0 3
+
+equ shelf 0.5
+@sliderLabel shelf Shelf 0.0 1.0 0.5 1000.0 2
+
+equ output Reg0
+equ lpf1 Reg1
+
+@isPinConnected Input
+
+rdax input, 1.0
+rdfx lpf1, freq
+wrhx lpf1, -shelf
+rdax input, 1.0
+wrax output, 0
+
+@isPinConnected Frequency
+
+@else
+
+@endif
+
+@setOutputPin Output output
+@endif
