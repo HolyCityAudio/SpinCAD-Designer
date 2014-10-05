@@ -17,15 +17,18 @@ equ lpf1 Reg1
 
 rdax input, 1.0
 rdfx lpf1, freq
+
+@isPinConnected Frequency
+mulx freqIn
+@endif
 wrhx lpf1, -shelf
+@isPinConnected Shelf
+mulx shelfIn
+@endif
+
 rdax input, 1.0
 wrax output, 0
 
-@isPinConnected Frequency
-
-@else
-
-@endif
 
 @setOutputPin Output output
 @endif
