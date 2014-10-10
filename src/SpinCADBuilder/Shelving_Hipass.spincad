@@ -1,6 +1,7 @@
 @name Shelving_Hipass
 @audioInput input Input
 @audioOutput output Output  
+@audioOutput filtReg Filter  
 @controlInput freqIn Frequency
 @controlInput shelfIn Shelf
 
@@ -11,24 +12,26 @@ equ shelf 0.5
 @sliderLabel shelf Shelf 0.0 1.0 0.5 1000.0 2
 
 equ output Reg0
-equ lpf1 Reg1
+equ hpf1 Reg1 
+equ filtReg Reg2
 
 @isPinConnected Input
 
 rdax input, 1.0
-rdfx lpf1, freq
+rdfx hpf1, freq
 
 @isPinConnected Frequency
 mulx freqIn
 @endif
-wrhx lpf1, -shelf
+wrhx hpf1, -shelf
 @isPinConnected Shelf
 mulx shelfIn
 @endif
+wrax filtReg, 1.0
 
 rdax input, 1.0
 wrax output, 0
 
-
 @setOutputPin Output output
+@setOutputPin Filter filtReg
 @endif

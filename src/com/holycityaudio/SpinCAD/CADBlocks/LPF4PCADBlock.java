@@ -35,9 +35,11 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	public LPF4PCADBlock(int x, int y) {
 		super(x, y);
 		addInputPin(this, "Audio Input");
-		addOutputPin(this, "Audio Output");
+		addOutputPin(this, "Output 1");
+		addOutputPin(this, "Output 2");
 		hasControlPanel = true;
-		addControlInputPin(this);
+		addControlInputPin(this, "Frequency");
+		addControlInputPin(this, "Resonance");
 		if(is4Pole == true) {
 			setName("Low Pass 4P");	
 		} else {
@@ -46,7 +48,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	}
 
 	public void editBlock(){
-				new LPF4PControlPanel(this);
+		new LPF4PControlPanel(this);
 	}	
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -73,7 +75,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 				sfxb.comment("2 pole low pass");
 			}
 			//			;prepare pot2 for low pass frequency control:
-			p = this.getPin("Control Input 1").getPinConnection();
+			p = this.getPin("Frequency").getPinConnection();
 			int control1 = -1;
 			if(p != null) {
 				control1 = p.getRegister();
@@ -96,8 +98,26 @@ public class LPF4PCADBlock extends FilterCADBlock{
 			sfxb.mulx(kfl);
 			sfxb.readRegister(lp1bl,1);
 			sfxb.writeRegister(lp1bl, -1);
-			sfxb.readRegister(lp1al,-kql);
-			sfxb.readRegister(input,0.25);
+			p = this.getPin("Resonance").getPinConnection();
+			int control2 = -1;
+			int temp = -1;
+
+			if(p != null) {
+				control2 = p.getRegister();
+				temp = sfxb.allocateReg();
+				// we need to save this so we can multiply the next result by the control input
+				// to get adjustable resonance
+				sfxb.writeRegister(temp, 0);
+				sfxb.readRegister(lp1al,-kql);
+				mulx(control2);
+				// then we add it back in later and everything's fine.
+				sfxb.readRegister(temp,1.0);
+			}
+			else {
+				sfxb.readRegister(lp1al,-kql);				
+			}
+
+			sfxb.readRegister(input,0.5);
 			sfxb.mulx(kfl);
 			sfxb.readRegister(lp1al,1);
 			sfxb.writeRegister(lp1al, 0);
@@ -108,18 +128,32 @@ public class LPF4PCADBlock extends FilterCADBlock{
 				sfxb.readRegister(lp2bl,1);
 				sfxb.writeRegister(lp2bl, -1);
 				sfxb.readRegister(lp2al,-kql);
+				if(control2 != -1) {
+					// we need to save this so we can multiply the next result by the control input
+					// to get adjustable resonance
+					sfxb.writeRegister(temp, 0);
+					sfxb.readRegister(lp2al,-kql);
+					mulx(control2);
+					// then we add it back in later and everything's fine.
+					sfxb.readRegister(temp,1.0);
+				}
+				else {
+					sfxb.readRegister(lp2al,-kql);				
+				}
 				sfxb.readRegister(lp1bl,1);
 				sfxb.mulx(kfl);
 				sfxb.readRegister(lp2al,1);
 				sfxb.writeRegister(lp2al, 0);
 
-				this.getPin("Audio Output").setRegister(lp2al);
+				this.getPin("Output 1").setRegister(lp2al);
+				this.getPin("Output 2").setRegister(lp2bl);				
 			}
 			else {
-				this.getPin("Audio Output").setRegister(lp1al);				
+				this.getPin("Output 1").setRegister(lp1al);				
+				this.getPin("Output 2").setRegister(lp1bl);				
 			}
 		}
-		System.out.println("LPF 4 pole code gen!");
+		System.out.println("LPF 2/4 pole code gen!");
 	}
 
 	public double getFreq() {

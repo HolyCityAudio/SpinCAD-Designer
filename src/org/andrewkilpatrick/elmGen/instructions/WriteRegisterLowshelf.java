@@ -70,12 +70,29 @@ public class WriteRegisterLowshelf extends Instruction {
 
 
 	@Override
+	//Description 
+	//First the current ACC value is stored into the register pointed to by ADDR, then ACC is 
+	//subtracted from the previous content of ACC (PACC). The difference is then multiplied 
+	// by C and finally PACC is added to the result. 
 	public void simulate(SimulatorState state) {
 		state.setRegVal(addr, state.getACCVal());
+		System.out.println("WRLX 1:" + state.getRegVal(addr));
 		Reg reg = new Reg(state.getPACCVal());
+		System.out.println("WRLX 2:" + reg.getValue());
 		reg.subtract(state.getACCVal());
+		System.out.println("WRLX 3:" + reg.getValue());
 		reg.scale(scale);
+		System.out.println("WRLX 4:" + reg.getValue());
 		reg.add(state.getPACCVal());
+		System.out.println("WRLX 5:" + reg.getValue());
 		state.setACCVal(reg.getValue());
 	}
+	
+	public void simulateX(SimulatorState state) {
+		state.setRegVal(addr, state.getACCVal());
+		state.getACC().scale(scale);		
+		state.getACC().add(state.getPACCVal());
+	}
+
+
 }

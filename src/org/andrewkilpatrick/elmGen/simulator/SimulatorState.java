@@ -92,7 +92,12 @@ public class SimulatorState {
 			delayp = 0;
 		}
 		pacc.setValue(acc.getValue());
+		// XXX debug GSW, trying to figure out WRLX and WRHX
+		// System.out.println("PACC = " + pacc.getValue());
+		// System.out.println("ACC = " + acc.getValue());
+		// hum is it this?  ACC doesn't automatically clear...
 		acc.clear();
+//		System.out.println("ACC = " + acc.getValue());
 		for(int i = 0; i < sinLFO.length; i ++) {
 			sinLFO[i].increment();
 		}

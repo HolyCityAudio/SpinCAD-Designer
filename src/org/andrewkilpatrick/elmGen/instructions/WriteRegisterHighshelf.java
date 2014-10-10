@@ -68,10 +68,17 @@ public class WriteRegisterHighshelf extends Instruction {
 			return "Error! Invalid mode.";
 	}
 	
-	@Override
+	//Description 
+	//The current ACC value is stored in the register pointed to by ADDR, then ACC is 
+	//multiplied by C. Finally the previous content of ACC (PACC) is added to the product. 
+
+	@Override   
 	public void simulate(SimulatorState state) {
 		state.setRegVal(addr, state.getACCVal());
+//		System.out.println("WRHX 1:" + state.getRegVal(addr));
 		state.getACC().scale(scale);		
+//		System.out.println("WRHX 2:" + state.getACC().getValue());
 		state.getACC().add(state.getPACCVal());
+//		System.out.println("WRHX 3:" + state.getACC().getValue());
 	}
 }
