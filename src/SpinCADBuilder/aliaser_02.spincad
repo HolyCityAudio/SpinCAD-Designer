@@ -1,0 +1,83 @@
+@name Aliaser_2
+@audioInput input Input
+@audioOutput output Output  
+@controlInput crusher Crush
+
+equ ripLevel 0.5
+@sliderLabel ripLevel Rip_Level 0.0 0.6 0.5 1000.0 2
+
+equ old reg0 
+equ new_val reg1 
+equ fptr reg2 
+equ temp reg3 
+equ temp2 reg4 
+equ output reg5
+
+equ ptrmax 0.3 
+;  High sample rate, need to be just over 1.0 if we want no aliasing at high setting. 
+equ ptrmin 0.001 
+; Low sample rate 
+equ delta 0.299
+
+@isPinConnected Input
+; aliaser.spn 
+; Frank Thomson 
+; OCT Distribution
+; (c) 2010 OCT Distribution 
+; 
+; Input: Left 
+; Output: Left 
+; POT0 : set "sample" rate 
+; POT 1 and POT2 not used 
+; 
+
+skp   run, start 
+clr 
+wrax   old,0 
+wrax   new_val,0 
+wrax   fptr,0 
+
+start: 
+clr 
+rdax   crusher,0.5 
+sof   delta, ptrmin 
+rdax   fptr,1 
+wrax   fptr,1 
+sof   1,-0.5 
+skp   neg,interp 
+wrax   fptr,0 
+rdax   new_val,1 
+wrax   old,0 
+rdax   input,1.0 
+wrax   new_val,0 
+interp: 
+clr 
+rdax   new_val,1.0  
+mulx   fptr 
+wrax   temp,1 
+rdax   temp,1 
+wrax   temp,0 
+rdax   fptr,-1.0    
+sof   1.0,0.5 
+wrax   temp2,0 
+rdax   old,1 
+mulx   temp2 
+wrax   temp2,1 
+rdax   temp2,1 
+rdax   temp,1.0    
+wrax   temp2,1 
+absa 
+wrax   temp,0 
+; 
+rdax   temp2,1.0 
+skp   gez, gogo 
+clr 
+rdax   temp,1.0 
+sof   -1.0,0 
+wrax   temp,0 
+gogo: 
+clr 
+rdax   temp,1.0 
+wrax   output,0.0 
+@setOutputPin Output output
+@endif
