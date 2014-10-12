@@ -28,15 +28,17 @@ public class HPF2PCADBlock extends FilterCADBlock{
 	 * 
 	 */
 	private static final long serialVersionUID = 5711126291575876825L;
-	double f0 = 240;
-	double kqh = 0.2;
+	private double f0 = 880;
+	private double kqh = 0.2;
+	private boolean is4Pole = false;
 
 	public HPF2PCADBlock(int x, int y) {
 		super(x, y);
 		addInputPin(this, "Audio Input");
-		addOutputPin(this, "Audio Output");
+		addOutputPin(this, "High Pass");
 		hasControlPanel = true;
-		addControlInputPin(this);
+		addControlInputPin(this, "Frequency");
+		addControlInputPin(this, "Resonance");
 		setName("High Pass 2P");	}
 
 	public void editBlock(){
@@ -66,14 +68,14 @@ public class HPF2PCADBlock extends FilterCADBlock{
 			sfxb.writeRegister(hp1bl,  0);
 
 			//			;prepare pot2 for low pass frequency control:
-			p = this.getPin("Control Input 1").getPinConnection();
+			p = this.getPin("Frequency").getPinConnection();
 			int control1 = -1;
 			if(p != null) {
 				control1 = p.getRegister();
 				//				rdax	pot2,1		;get pot2
 				sfxb.readRegister(control1,1);
 				//				sof	0.5,-0.5	;ranges -0.5 to 0
-				sfxb.scaleOffset(0.5,  -0.5);
+				sfxb.scaleOffset(0.35,  -0.35);
 				//				exp	1,0
 				sfxb.exp(1, 0);
 				//				wrax	kfl,0		;write to LP filter control
@@ -116,9 +118,9 @@ public class HPF2PCADBlock extends FilterCADBlock{
 			sfxb.writeRegister(hp1al, 0);
 
 
-			this.getPin("Audio Output").setRegister(hpout);	
+			this.getPin("High Pass").setRegister(hpout);	
 		}
-		System.out.println("HPF 4 pole code gen!");
+		System.out.println("HPF 2/4 pole code gen!");
 	}
 
 	public double getFreq() {
@@ -130,13 +132,11 @@ public class HPF2PCADBlock extends FilterCADBlock{
 	}
 
 	public void setIs4Pole(boolean b) {
-		// TODO Auto-generated method stub
-		
+		is4Pole = b;
 	}
 
 	public boolean getIs4Pole() {
-		// TODO Auto-generated method stub
-		return false;
+		return is4Pole;
 	}
 
 	public double getQ() {

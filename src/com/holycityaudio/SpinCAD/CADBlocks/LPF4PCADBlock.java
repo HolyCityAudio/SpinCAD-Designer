@@ -28,15 +28,14 @@ public class LPF4PCADBlock extends FilterCADBlock{
 	 * 
 	 */
 	private static final long serialVersionUID = 5711126291575876825L;
-	double f0 = 240;
-	double kql = 0.4;
+	double f0 = 880;
+	double kql = 0.2;
 	boolean is4Pole = false;
 
 	public LPF4PCADBlock(int x, int y) {
 		super(x, y);
 		addInputPin(this, "Audio Input");
-		addOutputPin(this, "Output 1");
-		addOutputPin(this, "Output 2");
+		addOutputPin(this, "Low Pass");
 		hasControlPanel = true;
 		addControlInputPin(this, "Frequency");
 		addControlInputPin(this, "Resonance");
@@ -64,6 +63,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 			int lbyp = sfxb.allocateReg();
 			int lp1bl = sfxb.allocateReg();
 			int lp1al = sfxb.allocateReg();
+			int hipass = sfxb.allocateReg();
 			int lp2bl = -1;
 			int lp2al = -1;
 
@@ -118,6 +118,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 			}
 
 			sfxb.readRegister(input,0.5);
+			sfxb.writeRegister(hipass, 1.0);
 			sfxb.mulx(kfl);
 			sfxb.readRegister(lp1al,1);
 			sfxb.writeRegister(lp1al, 0);
@@ -145,12 +146,10 @@ public class LPF4PCADBlock extends FilterCADBlock{
 				sfxb.readRegister(lp2al,1);
 				sfxb.writeRegister(lp2al, 0);
 
-				this.getPin("Output 1").setRegister(lp2al);
-				this.getPin("Output 2").setRegister(lp2bl);				
+				this.getPin("Low Pass").setRegister(lp2bl);				
 			}
 			else {
-				this.getPin("Output 1").setRegister(lp1al);				
-				this.getPin("Output 2").setRegister(lp1bl);				
+				this.getPin("Low Pass").setRegister(lp1bl);				
 			}
 		}
 		System.out.println("LPF 2/4 pole code gen!");

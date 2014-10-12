@@ -13,6 +13,7 @@
 
 @menu "Wave Shaper" 
 @menuitem "Aliaser" aliaser 
+@menuitem "Aliaser-2" aliaser_02 
 @menuitem "Bit Crusher" BitCrusher 
 @menuitem "Cube" CubeGain 
 @menuitem "Distortion" Distortion 
@@ -55,7 +56,7 @@
 
 @menu "Reverb" 
 // @menuitem "Disco Reverb" DiscoReverb 
-// @menuitem "Gated Reverb" gated_verb 
+@menuitem "Gated Reverb" gated_verb 
 // @menuitem "Infinite Rev/Flange" dance_ir_fla_l 
 // @menuitem "Plate Verb 3" very_tight_plate_verb 
 // @menuitem "Reverb/Chorus" GtrReverbChorus 

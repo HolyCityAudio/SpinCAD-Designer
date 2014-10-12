@@ -220,6 +220,8 @@ wrap	ap4,0.5
 wra	rdel,1
 wrax	output2,0
 
+@setOutputPin Audio_Output_1 output1
+@setOutputPin Audio_Output_2 output2
 @endif
 
 

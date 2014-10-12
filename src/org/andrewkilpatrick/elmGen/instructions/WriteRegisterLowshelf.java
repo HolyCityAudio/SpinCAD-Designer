@@ -76,15 +76,15 @@ public class WriteRegisterLowshelf extends Instruction {
 	// by C and finally PACC is added to the result. 
 	public void simulate(SimulatorState state) {
 		state.setRegVal(addr, state.getACCVal());
-		System.out.println("WRLX 1:" + state.getRegVal(addr));
+//		System.out.println("WRLX 1:" + state.getRegVal(addr));
 		Reg reg = new Reg(state.getPACCVal());
-		System.out.println("WRLX 2:" + reg.getValue());
+//		System.out.println("WRLX 2:" + reg.getValue());
 		reg.subtract(state.getACCVal());
-		System.out.println("WRLX 3:" + reg.getValue());
+//		System.out.println("WRLX 3:" + reg.getValue());
 		reg.scale(scale);
-		System.out.println("WRLX 4:" + reg.getValue());
+//		System.out.println("WRLX 4:" + reg.getValue());
 		reg.add(state.getPACCVal());
-		System.out.println("WRLX 5:" + reg.getValue());
+//		System.out.println("WRLX 5:" + reg.getValue());
 		state.setACCVal(reg.getValue());
 	}
 	

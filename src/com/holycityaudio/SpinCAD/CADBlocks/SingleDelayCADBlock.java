@@ -91,7 +91,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 			int Control2 = -1;
 			sfxb.comment(getName());
 			
-			p = this.getPin("Gain").getPinConnection();
+			p = this.getPin("Time").getPinConnection();
 			if (p == null) { // there's no pin attached!
 				sfxb.readRegister(input, defaultGain);
 			} else {
@@ -136,7 +136,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 				sfxb.scaleOffset(0, defaultFeedback);
 			}
 			else
-				sfxb.readRegister(Control1, 1);
+				sfxb.readRegister(Control1, defaultFeedback);
 			// wrax kfbk,0
 			sfxb.writeRegister(feedback, 0);
 
@@ -147,7 +147,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 				sfxb.scaleOffset(0, delayFactor);
 			}
 			else {
-				sfxb.readRegister(Control2, 1);
+				sfxb.readRegister(Control2, delayFactor);
 			}
 			// and %01111110_00000000_00000000 ;don't make jumps too small
 //			sfxb.and(0b011111100000000000000000);
