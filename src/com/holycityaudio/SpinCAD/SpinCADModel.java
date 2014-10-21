@@ -104,6 +104,7 @@ public class SpinCADModel implements Serializable {
 		return nSwaps;
 	}
 
+	// TODO this function setConnection appears to not be used anywhere
 	public int setConnection(int sink, String sinkPinName, int source,
 			String sourcePinName) {
 		Iterator<SpinCADBlock> itr = blockList.iterator();
@@ -183,9 +184,7 @@ public class SpinCADModel implements Serializable {
 				// now blockMin is the block with the lowest number
 			}
 			sortedList.add(blockMin);
-			// System.out.println(sortedList);
 			blockList.remove(blockMin);
-			// System.out.println(blockList);
 
 			// adjust iterator and blockNumMin after removing lowest numbered
 			// block
@@ -202,6 +201,7 @@ public class SpinCADModel implements Serializable {
 	 * to find the top assigned IndexFB.  It sets indexFB to one more the the highest one in
 	 * the model being loaded.
 	 * There could be holes in the list of feedback loop indices due to deletion.
+	 * It doesn't really matter as long as they are unique.
 	 */
 	
 	public int presetIndexFB() {
@@ -219,20 +219,6 @@ public class SpinCADModel implements Serializable {
 		setIndexFB(index);
 		return index;
 	}
-
-/* nice dream, didn't work...
-	public int eforEachBlock() {
-		@SuppressWarnings("unused")
-		SpinCADBlock block = null;
-		Iterator<SpinCADBlock> itr = blockList.iterator();
-		while (itr.hasNext()) {
-			block = itr.next();
-
-			// now blockMin is the block with the lowest number
-		}
-		return 0;
-	}
-*/
 
 	public int sortAlignGen() {
 		@SuppressWarnings("unused")

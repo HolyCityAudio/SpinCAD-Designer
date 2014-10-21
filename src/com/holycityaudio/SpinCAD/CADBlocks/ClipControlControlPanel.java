@@ -41,7 +41,7 @@ import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
 
 public class ClipControlControlPanel implements ChangeListener, ActionListener, ItemListener {
 
-	private JSlider gainSlider = new JSlider(JSlider.HORIZONTAL, 100, 500, 200);
+	private JSlider gainSlider = new JSlider(JSlider.HORIZONTAL, 100, 1000, 200);
 	private JLabel gainLabel = new JLabel("Hi");
 	private JCheckBox invert = new JCheckBox();
 	private JCheckBox flip = new JCheckBox();

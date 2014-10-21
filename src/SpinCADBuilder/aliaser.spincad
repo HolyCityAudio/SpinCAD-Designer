@@ -1,4 +1,4 @@
-@name Aliaser
+@name Aliaser_Zipper
 @audioInput input Audio_Input
 @audioOutput lastval Audio_Output  
 @controlInput crusher Crush

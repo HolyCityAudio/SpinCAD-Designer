@@ -22,7 +22,6 @@ package com.holycityaudio.SpinCAD;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -37,7 +36,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
+
+import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
 import java.util.Iterator;
 
@@ -113,40 +113,6 @@ public class SpinCADPanel extends JPanel {
 							if(hitPin(e, b, currentPin)) {
 								f.etb.pinName.setText(currentPin.getName());
 								return;
-							}
-						}
-					}
-				}
-				else {
-					// TODO this is supposed to allow deletion of a connection.
-					// start looking for lines, if in delete mode
-					// however for now, right-clicking on the destination pin is OK
-					SpinCADBlock b = null;	
-					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
-					while(itr.hasNext()) {
-						b = itr.next();
-						Iterator<SpinCADPin> itrPin = b.pinList.iterator();
-						SpinCADPin currentPin = null;
-						while(itrPin.hasNext()) {
-							currentPin = itrPin.next();
-							// we're now iterating through each pin on each block.
-							// see if a pin has a connector block (previous)
-							// if so, get the coordinates of the end points and
-							// distance of mouse point from the line.
-							SpinCADPin otherPin = currentPin.getPinConnection();
-							if(otherPin != null) {
-								// TODO use getPinXY() here
-								int x1 = currentPin.getX();
-								int y1 = currentPin.getY();
-								int x2 = otherPin.getX();
-								int y2 = otherPin.getY();
-								if(x2 != x1) {
-									double slope = (double) (y2 - y1)/(x2 - x1);
-									// System.out.println(slope);
-								} else {
-
-								}
-
 							}
 						}
 					}
@@ -417,6 +383,29 @@ public class SpinCADPanel extends JPanel {
 	public void setDragModeDragMove() {
 		dm = dragModes.DRAGMOVE;
 	}
+
+	public boolean isPinConnected(SpinCADPin p) {
+		if(p.getPinConnection() != null & (p.getType() == pinType.AUDIO_IN)) {
+			return true;
+		} else if (p.getType() == pinType.AUDIO_OUT) {
+			// look at all pins on all blocks and see if one connects back here
+			SpinCADBlock b = null;	
+			Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+			while(itr.hasNext()) {
+				b = itr.next();				
+				Iterator<SpinCADPin> itrPin = b.pinList.iterator();
+				SpinCADPin currentPin = null;
+				while(itrPin.hasNext()) {
+					currentPin = itrPin.next();
+					if(currentPin.getPinConnection() == p) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 
 	// popup menu handling
 	class PopUpDemo extends JPopupMenu {

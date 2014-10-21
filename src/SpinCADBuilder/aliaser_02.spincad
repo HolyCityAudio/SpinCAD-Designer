@@ -1,6 +1,7 @@
-@name Aliaser_2
+@name Aliaser
 @audioInput input Input
-@audioOutput output Output  
+@audioOutput output Smooth  
+@audioOutput old Raw  
 @controlInput crusher Crush
 
 equ ripLevel 0.5
@@ -40,7 +41,7 @@ wrax   fptr,0
 start: 
 clr 
 rdax   crusher,0.5 
-sof   delta, ptrmin 
+sof   ripLevel, ptrmin 
 rdax   fptr,1 
 wrax   fptr,1 
 sof   1,-0.5 
@@ -79,5 +80,6 @@ gogo:
 clr 
 rdax   temp,1.0 
 wrax   output,0.0 
-@setOutputPin Output output
+@setOutputPin Smooth output
+@setOutputPin Raw old
 @endif

@@ -43,7 +43,7 @@ class BitCrusherControlPanel {
 				frame = new JFrame();
 				frame.setTitle("Bit Crusher");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-				bitSlider = new JSlider(JSlider.HORIZONTAL, 3, 6, BC.getBits());
+				bitSlider = new JSlider(JSlider.HORIZONTAL, 1, 12, BC.getBits());
 				bitSlider.addChangeListener(new bitSliderListener());
 				bitLabel = new JLabel();
 				frame.add(bitLabel);

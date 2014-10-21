@@ -37,10 +37,10 @@ import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 
 public class RampLFOControlPanel implements ChangeListener, ActionListener, ItemListener {
 
-	private JSlider lfoWidthSlider = new JSlider(JSlider.HORIZONTAL, 0, 32767, 8192);
-	private JLabel lfoWidthLabel = new JLabel("LFO Rate");
+	private JSlider lfoWidthSlider = new JSlider(JSlider.HORIZONTAL, 0, 3, 3);
+	private JLabel lfoWidthLabel = new JLabel("LFO Width");
 	
-	private JSlider lfoRateSlider = new JSlider(JSlider.HORIZONTAL, 0, 511, 200);
+	private JSlider lfoRateSlider = new JSlider(JSlider.HORIZONTAL, 0, 32767, 3200);
 	private JLabel lfoRateLabel = new JLabel("LFO Rate");
 	
 	private JFrame frame;

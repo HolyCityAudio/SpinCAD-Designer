@@ -34,26 +34,21 @@ public class RampLFOCADBlock extends ControlCADBlock{
 
 	public RampLFOCADBlock(int x, int y) {
 		super(x, y);
-		addControlOutputPin(this, "Ramp 1");	//	Ramp 1
-		addControlOutputPin(this, "Ramp 2");	//	Ramp 2
+		addControlOutputPin(this, "Ramp LFO");	//	Ramp 1
+		hasControlPanel = true;
 		setName("Ramp LFO");
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
 		
 		int ramp0 = sfxb.allocateReg();
-		int ramp1 = sfxb.allocateReg();	
 		sfxb.comment(getName());
 
-		sfxb.skip(RUN,2);
-		sfxb.loadRampLFO(0, 32000, 4096);
-		sfxb.loadRampLFO(1, -16000, 1024);
+		sfxb.skip(RUN,1);
+		sfxb.loadRampLFO(0, lfoRate, 4096);
 		sfxb.chorusReadValue(RMP0);
 		sfxb.writeRegister(ramp0, 0.0);
-		sfxb.chorusReadValue(RMP1);
-		sfxb.writeRegister(ramp1, 0.0);
-		this.getPin("Ramp 1").setRegister(ramp0);
-		this.getPin("Ramp 2").setRegister(ramp1);
+		this.getPin("Ramp LFO").setRegister(ramp0);
 		System.out.println("Ramp LFO code gen!");
 	}
 
@@ -63,21 +58,17 @@ public class RampLFOCADBlock extends ControlCADBlock{
 	//====================================================
 
 	public int getLFORate() {
-		// TODO Auto-generated method stub
 		return lfoRate;
 	}
 
 	public void setLFORate(int r) {
-		// TODO Auto-generated method stub
 		lfoRate = r;
 	}
 
 	public void setLFOWidth(int value) {
-		// TODO Auto-generated method stub
 		lfoWidth = value;
 	}
 	public int getLFOWidth() {
-		// TODO Auto-generated method stub
 		return lfoWidth;
 	}
 

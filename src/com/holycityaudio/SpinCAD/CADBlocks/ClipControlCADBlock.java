@@ -52,11 +52,20 @@ public class ClipControlCADBlock extends ControlCADBlock{
 			if(invert == true) {
 				sfxb.scaleOffset(-0.999, 0.999);
 			}
-			if(scaledGain > 4.0)	// 5.0 is the max
+			if(scaledGain > 8.0)	// 10.0 is the max
 			{
 				sfxb.scaleOffset(-2.0,  0);
 				scaledGain = scaledGain/2.0;
 				flipped = true;
+			}
+			if(scaledGain > 4.0)	// 10.0 is the max
+			{
+				sfxb.scaleOffset(-2.0,  0);
+				scaledGain = scaledGain/2.0;
+				if(flipped == true)	// it was flipped in the previous stage
+					flipped = false;
+				else
+					flipped = true;	// it wasn't flipped previously
 			}
 			if(scaledGain > 2.0)	// 4.0 would be the max here
 			{

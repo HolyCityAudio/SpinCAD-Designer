@@ -60,6 +60,7 @@ public class HPF2PCADBlock extends FilterCADBlock{
 			int hp1al = sfxb.allocateReg();
 			int hp1bl = sfxb.allocateReg();
 			int hpout = sfxb.allocateReg();
+			int temp = -1;
 			sfxb.comment("2 pole high pass");
 
 			sfxb.skip(RUN, 3);
@@ -97,24 +98,36 @@ public class HPF2PCADBlock extends FilterCADBlock{
 			}
 
 			// ------------- start of filter code
-//			rdax	lp1al,1
+			//			rdax	lp1al,1
 			sfxb.readRegister(hp1al,1);
-//			mulx	kfl
+			//			mulx	kfl
 			sfxb.mulx(kfh);
-//			rdax	lp1bl,1
+			//			rdax	lp1bl,1
 			sfxb.readRegister(hp1bl,1);
-//			wrax	lp1bl,-1
+			//			wrax	lp1bl,-1
 			sfxb.writeRegister(hp1bl, -1);
-//			rdax	lp1al,kql
-			sfxb.readRegister(hp1al,-kqh);
-//			rdax	fol,1
+			//			rdax	lp1al,kql
+			p = this.getPin("Resonance").getPinConnection();
+			int control2 = -1;
+			if(p != null) {
+				control2 = p.getRegister();
+				temp = sfxb.allocateReg();
+				sfxb.writeRegister(temp, 0.0);
+				sfxb.readRegister(hp1al,-kqh);
+				sfxb.mulx(control2);
+				sfxb.readRegister(temp, 1.0);
+			}
+			else {	
+				sfxb.readRegister(hp1al,-kqh);
+			}	
+			//			rdax	fol,1
 			sfxb.readRegister(input,1);
 			sfxb.writeRegister(hpout, 1);
-//			mulx	kfl
+			//			mulx	kfl
 			sfxb.mulx(kfh);
-//			rdax	lp1al,1
+			//			rdax	lp1al,1
 			sfxb.readRegister(hp1al,1);
-//			wrax	lp1al,0
+			//			wrax	lp1al,0
 			sfxb.writeRegister(hp1al, 0);
 
 
