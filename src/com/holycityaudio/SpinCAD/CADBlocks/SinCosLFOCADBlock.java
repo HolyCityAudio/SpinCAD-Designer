@@ -47,8 +47,6 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 
 	public void generateCode(SpinFXBlock sfxb) {
 
-		int sin = sfxb.allocateReg();
-		int cos = sfxb.allocateReg();	
 		sfxb.comment(getName());
 
 		sfxb.skip(RUN,1);
@@ -79,24 +77,33 @@ public class SinCosLFOCADBlock extends ControlCADBlock{
 				sfxb.writeRegister(SIN1_RANGE, 0.0);				
 			}
 		}
-		
-		sfxb.chorusReadValue(0 + lfoSel);
-		if(outputRange == 1) {
-			sfxb.scaleOffset(0.5,  0.5);
+
+		p = this.getPin("Sine"); 
+		if(p.isConnected()) {
+			int sin = sfxb.allocateReg();
+			sfxb.chorusReadValue(0 + lfoSel);
+			if(outputRange == 1) {
+				sfxb.scaleOffset(0.5,  0.5);
+			}
+			sfxb.writeRegister(sin, 0.0);
+			p.setRegister(sin);
 		}
-		sfxb.writeRegister(sin, 0.0);
-		sfxb.chorusReadValue(8 + lfoSel);
-		if(outputRange == 1) {
-			sfxb.scaleOffset(0.5,  0.5);
+
+		p = this.getPin("Cosine"); 
+		if(p.isConnected()) {
+			int cos = sfxb.allocateReg();	
+			sfxb.chorusReadValue(8 + lfoSel);
+			if(outputRange == 1) {
+				sfxb.scaleOffset(0.5,  0.5);
+			}
+			sfxb.writeRegister(cos, 0.0);
+			p.setRegister(cos);
 		}
-		sfxb.writeRegister(cos, 0.0);
-		this.getPin("Sine").setRegister(sin);
-		this.getPin("Cosine").setRegister(cos);
 		System.out.println("LFO code gen! Rate/width:" + lfoRate + " /" + lfoWidth);
 	}
 
 	public void editBlock(){
-//		SinCosLFOControlPanel cp = new SinCosLFOControlPanel(this);
+		//		SinCosLFOControlPanel cp = new SinCosLFOControlPanel(this);
 		new SinCosLFOControlPanel(this);
 	}
 	//====================================================

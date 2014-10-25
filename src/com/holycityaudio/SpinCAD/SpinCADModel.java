@@ -28,6 +28,7 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
 public class SpinCADModel implements Serializable {
 
@@ -54,7 +55,7 @@ public class SpinCADModel implements Serializable {
 		changed = false;
 		indexFB = 1;
 		setRenderBlock(new SpinFXBlock("Render Block"));
-}
+	}
 
 	public int addBlock(SpinCADBlock pCB) {
 		nBlocks++;
@@ -67,14 +68,14 @@ public class SpinCADModel implements Serializable {
 
 	public int modelSort() {
 		Iterator<SpinCADBlock> itr = blockList.iterator();
-//		System.out.printf("Model sort...\n", name);
+		//		System.out.printf("Model sort...\n", name);
 		SpinCADBlock block;
 		int b = -1;
 		int nSwaps = 0;
 
 		while (itr.hasNext()) {
 			block = itr.next();
-//			System.out.printf("Block %s [%d]\n", block.getName(), b);
+			//			System.out.printf("Block %s [%d]\n", block.getName(), b);
 			Iterator<SpinCADPin> itrPin = block.pinList.iterator();
 			SpinCADPin currentPin;
 
@@ -93,11 +94,11 @@ public class SpinCADModel implements Serializable {
 						block.setBlockNum(c);
 						cB.setBlockNum(b);
 						nSwaps++;
-/*						System.out.printf("Swapped [%s][%d] pin:[%s] ==> [%s] [%d] pin:[%s]\n\n",
+						/*						System.out.printf("Swapped [%s][%d] pin:[%s] ==> [%s] [%d] pin:[%s]\n\n",
 										block.getName(), block.getBlockNum(),
 										currentPin.getName(), cB.getName(),
 										cB.getBlockNum(), cP.getName());
-*/					}
+						 */					}
 				}
 			}
 		}
@@ -118,20 +119,20 @@ public class SpinCADModel implements Serializable {
 			block = itr.next();
 			b = block.getBlockNum();
 			if (b == sink) {
-//				System.out.printf("Sink %s [%d]\n", block.getName(), b);
+				//				System.out.printf("Sink %s [%d]\n", block.getName(), b);
 				Iterator<SpinCADPin> itrPin = block.pinList.iterator();
 				SpinCADPin currentPin;
 
 				while (itrPin.hasNext()) {
 					currentPin = itrPin.next();
 					if (currentPin.getName() == sinkPinName) {
-//						System.out.printf("Sink pin %s\n", sinkPinName);
+						//						System.out.printf("Sink pin %s\n", sinkPinName);
 						currentPin.setConnection(sourceBlock, sourcePin);
 					}
 				}
 			}
 			if (b == source) {
-//				System.out.printf("Source %s [%d]\n", block.getName(), b);
+				//				System.out.printf("Source %s [%d]\n", block.getName(), b);
 				Iterator<SpinCADPin> itrPin = block.pinList.iterator();
 				SpinCADPin currentPin;
 
@@ -139,7 +140,7 @@ public class SpinCADModel implements Serializable {
 					currentPin = itrPin.next();
 					if (currentPin.getName() == sourcePinName) {
 						sourcePin = currentPin;
-//						System.out.printf("Source pin %s\n", sinkPinName);
+						//						System.out.printf("Source pin %s\n", sinkPinName);
 					}
 				}
 			}
@@ -166,7 +167,7 @@ public class SpinCADModel implements Serializable {
 
 	public int realign() {
 		ArrayList<SpinCADBlock> sortedList = new ArrayList<SpinCADBlock>();
-//		System.out.printf("Realign...\n", name);
+		//		System.out.printf("Realign...\n", name);
 		SpinCADBlock block;
 		int blockNumMin = 32768;
 		SpinCADBlock blockMin = null;
@@ -203,11 +204,11 @@ public class SpinCADModel implements Serializable {
 	 * There could be holes in the list of feedback loop indices due to deletion.
 	 * It doesn't really matter as long as they are unique.
 	 */
-	
+
 	public int presetIndexFB() {
 		SpinCADBlock block;
 		int index = 0;
-		
+
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		while (itr.hasNext()) {
 			block = itr.next();
@@ -221,7 +222,6 @@ public class SpinCADModel implements Serializable {
 	}
 
 	public int sortAlignGen() {
-		@SuppressWarnings("unused")
 		SpinCADBlock block = null;
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		while (itr.hasNext()) {
@@ -240,9 +240,9 @@ public class SpinCADModel implements Serializable {
 		SpinCADBlock block = null;
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		int i = 0;
-		
+
 		// have to initialize FeedBack block registers to -1 or the next part doesn't work the second time!
-		
+
 		while (itr.hasNext()) {
 			block = itr.next();
 			if(block instanceof FBInputCADBlock)
@@ -257,7 +257,7 @@ public class SpinCADModel implements Serializable {
 
 		itr = blockList.iterator();
 		i = 0;
-		
+
 		while (itr.hasNext()) {
 			block = itr.next();
 			block.setBlockNum(i);
@@ -265,56 +265,56 @@ public class SpinCADModel implements Serializable {
 			{
 				// XXX under construction feedback block register resolution
 				//search list to find matching FBOutputCADBlock
-					// if it's not there, then allocateReg and set register to the returned value
-					// if it is there, then it's already been allocated, so get the register value and
-					// assign it here
+				// if it's not there, then allocateReg and set register to the returned value
+				// if it is there, then it's already been allocated, so get the register value and
+				// assign it here
 				SpinCADBlock blockSearch = null;
 				boolean found = false;
 				Iterator<SpinCADBlock> itrFB = blockList.iterator();
-					while (itrFB.hasNext()) {
-						blockSearch = itrFB.next();
-						if((blockSearch instanceof FBOutputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
-						{
-								int i2 = ((FBOutputCADBlock) blockSearch).getRegister();
-								if(i2 == -1) {
-									i2 = getRenderBlock().allocateReg();
-									((FBOutputCADBlock) blockSearch).setRegister(i2);
-								}						
-								((FBInputCADBlock) block).setRegister(i2);
-								found = true;
-						}
+				while (itrFB.hasNext()) {
+					blockSearch = itrFB.next();
+					if((blockSearch instanceof FBOutputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
+					{
+						int i2 = ((FBOutputCADBlock) blockSearch).getRegister();
+						if(i2 == -1) {
+							i2 = getRenderBlock().allocateReg();
+							((FBOutputCADBlock) blockSearch).setRegister(i2);
+						}						
+						((FBInputCADBlock) block).setRegister(i2);
+						found = true;
 					}
-					if(found == false) {
-						int i1 = getRenderBlock().allocateReg();
-						((FBInputCADBlock) block).setRegister(i1);
-					}
+				}
+				if(found == false) {
+					int i1 = getRenderBlock().allocateReg();
+					((FBInputCADBlock) block).setRegister(i1);
+				}
 			}
 			else if(block instanceof FBOutputCADBlock)
 			{
-					//search list to find matching FBInputCADBlock
-					// if it's not there, then allocateReg and set register to the returned value
-					// if it is there, then it's already been allocated, so get the register value and
-					// assign it here
+				//search list to find matching FBInputCADBlock
+				// if it's not there, then allocateReg and set register to the returned value
+				// if it is there, then it's already been allocated, so get the register value and
+				// assign it here
 				SpinCADBlock blockSearch = null;
 				boolean found = false;
 				Iterator<SpinCADBlock> itrFB = blockList.iterator();
-					while (itrFB.hasNext()) {
-						blockSearch = itrFB.next();
-						if((blockSearch instanceof FBInputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
-						{
-								int i3 = ((FBInputCADBlock) blockSearch).getRegister();
-								if(i3 == -1) {
-									i3 = getRenderBlock().allocateReg();
-									((FBInputCADBlock) blockSearch).setRegister(i3);
-								}
-								((FBOutputCADBlock) block).setRegister(i3);
-								found = true;
+				while (itrFB.hasNext()) {
+					blockSearch = itrFB.next();
+					if((blockSearch instanceof FBInputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
+					{
+						int i3 = ((FBInputCADBlock) blockSearch).getRegister();
+						if(i3 == -1) {
+							i3 = getRenderBlock().allocateReg();
+							((FBInputCADBlock) blockSearch).setRegister(i3);
 						}
+						((FBOutputCADBlock) block).setRegister(i3);
+						found = true;
 					}
-					if(found == false) {
-							int i4 = getRenderBlock().allocateReg();
-							((FBOutputCADBlock) block).setRegister(i4);
-					}
+				}
+				if(found == false) {
+					int i4 = getRenderBlock().allocateReg();
+					((FBOutputCADBlock) block).setRegister(i4);
+				}
 			}
 			i++;
 			getRenderBlock();
@@ -354,7 +354,7 @@ public class SpinCADModel implements Serializable {
 	public void setIndexFB(int ijk) {
 		indexFB = ijk;
 	}
-	
+
 	public int getIndexFB() {
 		return indexFB;
 	}

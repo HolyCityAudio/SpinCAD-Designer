@@ -39,7 +39,7 @@ public class SpinCADPin implements Serializable {
 	private SpinCADBlock connectorBlock = null;
 	private SpinCADPin connectorPin = null;	
 	public enum pinType {AUDIO_IN, AUDIO_OUT, CONTROL_IN, CONTROL_OUT };
-	public boolean isConnected = true;
+	public int numConnections = 0;
 
 	// the register value is assigned during code generation
 	private int Register = -1;
@@ -67,7 +67,8 @@ public class SpinCADPin implements Serializable {
 	public void setConnection(SpinCADBlock b, SpinCADPin p) {
 		connectorBlock = b;
 		connectorPin = p;
-		isConnected = true;
+		numConnections++;
+		p.numConnections++;
 	}
 
 	public SpinCADBlock getBlockConnection() {
@@ -163,8 +164,16 @@ public class SpinCADPin implements Serializable {
 	}
 	
 	public void deletePinConnection() {
+		numConnections--;
+		connectorPin.numConnections--;
 		connectorPin = null;
-		isConnected = false;
+	}
+	
+	public boolean isConnected() {
+		if (numConnections > 0) {
+			return true;
+		} else
+			return false;
 	}
 }
 

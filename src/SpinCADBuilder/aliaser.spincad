@@ -9,7 +9,7 @@ equ inputGain 0.5
 equ ripLevel 0.5
 @sliderLabel ripLevel Rip_Level 0.0 0.6 0.5 1000.0 2
 
-@isPinConnected Input
+@isPinConnected Input 
 //Bit Crusher / aliaser
 ;POT1 - crushing
 ;POT, POT2 - not used

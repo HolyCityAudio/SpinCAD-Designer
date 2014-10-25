@@ -40,7 +40,9 @@ wrax   fptr,0
 
 start: 
 clr 
+@isPinConnected Crush
 rdax   crusher,0.5 
+@endif
 sof   ripLevel, ptrmin 
 rdax   fptr,1 
 wrax   fptr,1 
@@ -52,6 +54,8 @@ wrax   old,0
 rdax   input,1.0 
 wrax   new_val,0 
 interp: 
+
+@isPinConnected Smooth
 clr 
 rdax   new_val,1.0  
 mulx   fptr 
@@ -81,5 +85,7 @@ clr
 rdax   temp,1.0 
 wrax   output,0.0 
 @setOutputPin Smooth output
+@endif
+
 @setOutputPin Raw old
 @endif

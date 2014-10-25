@@ -62,11 +62,7 @@ public class SpinCADPanel extends JPanel {
 	public dragModes dm = dragModes.NODRAG;
 
 	private Line2D dragLine = null;
-	/*	
-	public SpinCADPanel () {
 
-	}
-	 */
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
 
@@ -323,7 +319,7 @@ public class SpinCADPanel extends JPanel {
 			while(itrPin.hasNext()) {
 				currentPin = itrPin.next();
 				if(currentPin.getBlockConnection() == b) {
-					currentPin.setConnection(null, null);
+					currentPin.deletePinConnection();
 				}
 			}
 		}
@@ -383,29 +379,6 @@ public class SpinCADPanel extends JPanel {
 	public void setDragModeDragMove() {
 		dm = dragModes.DRAGMOVE;
 	}
-
-	public boolean isPinConnected(SpinCADPin p) {
-		if(p.getPinConnection() != null & (p.getType() == pinType.AUDIO_IN)) {
-			return true;
-		} else if (p.getType() == pinType.AUDIO_OUT) {
-			// look at all pins on all blocks and see if one connects back here
-			SpinCADBlock b = null;	
-			Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
-			while(itr.hasNext()) {
-				b = itr.next();				
-				Iterator<SpinCADPin> itrPin = b.pinList.iterator();
-				SpinCADPin currentPin = null;
-				while(itrPin.hasNext()) {
-					currentPin = itrPin.next();
-					if(currentPin.getPinConnection() == p) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
 
 	// popup menu handling
 	class PopUpDemo extends JPopupMenu {
