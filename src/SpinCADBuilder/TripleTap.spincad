@@ -44,7 +44,7 @@ wra threeTap, 0.0
 
 // tap 1 -----------------------------------------------------------
 
-// @isPinConnected Tap1_Out
+@isPinConnected Tap1_Out
 equ   output1     reg0      
 clr
 or $7FFF00
@@ -56,10 +56,10 @@ wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output1, 0.0 
 @setOutputPin Tap1_Out output1
-// @endif
+@endif
 
 // tap 2 -----------------------------------------------------------
-// @isPinConnected Tap2_Out
+@isPinConnected Tap2_Out
 equ   output2     reg1       
 clr
 or $7FFF00
@@ -71,10 +71,10 @@ wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output2, 0.0
 @setOutputPin Tap2_Out output2
-// @endif
+@endif
 
 // tap 3 -----------------------------------------------------------
-// @isPinConnected Tap3_Out
+@isPinConnected Tap3_Out
 equ   output3     reg2  
 clr
 or $7FFF00  
@@ -86,17 +86,21 @@ wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output3, 0.0
 @setOutputPin Tap3_Out output3
-// @endif
+@endif
 
+@isPinConnected Delay_Out_Center 
 equ output4 reg4
 rda threeTap^, 1.0
 wrax output4, 0.0
 @setOutputPin Delay_Out_Center output4
+@endif
 
+@isPinConnected Delay_Out_End 
 equ output5 reg5
 rda threeTap#, 1.0
 wrax output5, 0.0
 @setOutputPin Delay_Out_End output5
+@endif
 
 @endif
 
