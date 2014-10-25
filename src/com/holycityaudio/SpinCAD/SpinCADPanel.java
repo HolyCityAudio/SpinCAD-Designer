@@ -104,8 +104,6 @@ public class SpinCADPanel extends JPanel {
 						SpinCADPin currentPin = null;
 						while(itrPin.hasNext()) {
 							currentPin = itrPin.next();
-							// hit a block pin, so connect it
-							// bug here somewhere
 							if(hitPin(e, b, currentPin)) {
 								f.etb.pinName.setText(currentPin.getName());
 								return;
@@ -127,12 +125,13 @@ public class SpinCADPanel extends JPanel {
 					dragLine = null;
 					return;
 				}
-				if(arg0.getButton() == 3) {
+				if(arg0.getButton() == 3) {		// right mouse button
 					if(dm == dragModes.CONNECT) {
 						dm = dragModes.NODRAG;
 						dragLine = null;
 					}
 					else {
+						// right clicked on pin, look to see if hit on/near pin and if so, delete connection.
 						Point point = getNearbyPoint();
 						if(point != null) {
 							SpinCADBlock b = null;	
@@ -197,6 +196,11 @@ public class SpinCADPanel extends JPanel {
 									if(startPin.isOutputPin() && currentPin.isInputPin()) {
 										stopBlock = b;
 										if(startBlock != stopBlock) {
+											// decrement count of pin which was connected
+											SpinCADPin p = currentPin.getPinConnection();
+											if(p != null) {
+												currentPin.deletePinConnection();
+											}
 											stopPin = currentPin;
 											stopPin.setConnection(startBlock,  startPin);		
 											// XXX debug set pin connections in both directions don't think this works
