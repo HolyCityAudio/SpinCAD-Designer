@@ -29,25 +29,57 @@ public class RampLFOCADBlock extends ControlCADBlock{
 	private static final long serialVersionUID = 7025985649946130854L;
 	int lfoRate = 1;
 	int lfoWidth = 1;
+	int whichLFO = 0;		// 0 or 1
 	boolean invert = false;
 	boolean flip = false;
+	int lfoWidths[] = { 512, 1024, 2048, 4096 };
 
 	public RampLFOCADBlock(int x, int y) {
 		super(x, y);
-		addControlOutputPin(this, "Ramp LFO");	//	Ramp 1
+		addControlInputPin(this, "Rate");			//	
+		addControlOutputPin(this, "Ramp LFO");		//	Ramp 1
+		addControlOutputPin(this, "Triangle LFO");	//	
 		hasControlPanel = true;
-		setName("Ramp LFO");
+		setName("Ramp LFO " + whichLFO);
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
-		
+
 		int ramp0 = sfxb.allocateReg();
+		int triangle = -1;
 		sfxb.comment(getName());
 
 		sfxb.skip(RUN,1);
-		sfxb.loadRampLFO(0, lfoRate, 4096);
-		sfxb.chorusReadValue(RMP0);
-		sfxb.writeRegister(ramp0, 0.0);
+		sfxb.loadRampLFO(whichLFO, lfoRate, lfoWidths[lfoWidth]);
+		
+		SpinCADPin p = this.getPin("Rate");
+
+		if(p.isConnected()) {
+			int speedIn = p.getPinConnection().getRegister();			
+			sfxb.readRegister(speedIn, lfoRate/32767.0);	// scale pot by control panel rate setting
+			if(whichLFO == 0) {
+				sfxb.writeRegister(RMP0_RATE, 0.0);
+			}
+			else {
+				sfxb.writeRegister(RMP1_RATE, 0.0);				
+			}
+		}
+
+		if(whichLFO == 0) {
+			sfxb.chorusReadValue(RMP0);
+		} else {
+			sfxb.chorusReadValue(RMP1);
+		}
+		if(this.getPin("Triangle LFO").isConnected()) {
+			triangle = sfxb.allocateReg();
+			sfxb.writeRegister(ramp0, 1.0);	
+			sfxb.scaleOffset(1.999, -0.5 * lfoWidths[lfoWidth]/4096);
+			sfxb.absa();
+			sfxb.writeRegister(triangle, 0.0);	
+			this.getPin("Triangle LFO").setRegister(triangle);
+		} else {
+			sfxb.writeRegister(ramp0, 0.0);	
+		}
 		this.getPin("Ramp LFO").setRegister(ramp0);
 		System.out.println("Ramp LFO code gen!");
 	}
@@ -72,4 +104,11 @@ public class RampLFOCADBlock extends ControlCADBlock{
 		return lfoWidth;
 	}
 
+	public int getLFOSel() {
+		return whichLFO;
+	}
+
+	public void setLFOSel(int i) {
+		whichLFO = i;
+	}
 }
