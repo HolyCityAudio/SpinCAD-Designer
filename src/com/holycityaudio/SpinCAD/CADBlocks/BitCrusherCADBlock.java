@@ -51,7 +51,7 @@ public class BitCrusherCADBlock extends GainCADBlock{
 			p = this.getPin("Control Input 1").getPinConnection();
 			if(p != null) {
 				int depth = p.getRegister();
-				crush = getCrush(nBits + 4);
+				crush = getCrush(nBits + divisions);
 				sfxb.readRegister(depth, 1.0);
 				for(int i = 0; i < (divisions - 1); i++) {
 					sfxb.scaleOffset(1.0, (-1.0/divisions));
@@ -142,6 +142,31 @@ public class BitCrusherCADBlock extends GainCADBlock{
 		case 12:
 			crush = 0xFFFFF000;
 			break;
+		case 13:
+			crush = 0xFFFFF800;
+			break;
+		case 14:
+			crush = 0xFFFFFC00;
+			break;
+		case 15:
+			crush = 0xFFFFFE00;
+			break;
+		case 16:
+			crush = 0xFFFFFF00;
+			break;
+		case 17:
+			crush = 0xFFFFFF80;
+			break;
+		case 18:
+			crush = 0xFFFFFFC0;
+			break;
+		case 19:
+			crush = 0xFFFFFFE0;
+			break;
+		case 20:
+			crush = 0xFFFFFFF0;
+			break;
+
 		default:
 			break;		
 		}
