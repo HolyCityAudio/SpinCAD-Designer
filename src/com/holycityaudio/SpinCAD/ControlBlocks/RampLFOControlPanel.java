@@ -109,6 +109,7 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 		}
 		else if (e.getSource() == lfoWidthSlider) {
 			updateLFOWidthLabel();
+			updateLFORateLabel();	// since the rate depends on the width...
 		}
 	}	
 	

@@ -4,8 +4,11 @@
 @audioOutput old Raw  
 @controlInput crusher Crush
 
-equ ripLevel 0.5
-@sliderLabel ripLevel Rip_Level 0.0 0.6 0.5 1000.0 2
+equ ripLow 0.002
+@sliderLabel ripLow Rip_Low 0.001 0.015 0.01 1000.0 3
+
+equ ripHigh 0.1
+@sliderLabel ripHigh Rip_High 0.02 0.2 0.1 1000.0 3
 
 equ old reg0 
 equ new_val reg1 
@@ -13,12 +16,6 @@ equ fptr reg2
 equ temp reg3 
 equ temp2 reg4 
 equ output reg5
-
-equ ptrmax 0.3 
-;  High sample rate, need to be just over 1.0 if we want no aliasing at high setting. 
-equ ptrmin 0.001 
-; Low sample rate 
-equ delta 0.299
 
 @isPinConnected Input
 ; aliaser.spn 
@@ -41,11 +38,12 @@ wrax   fptr,0
 start: 
 clr 
 @isPinConnected Crush
-rdax   crusher,0.5 
+rdax   crusher, 1.0 
+@minusDouble ripScale ripHigh ripLow 
+sof   ripScale, ripLow 
 @else
-sof	0.0, 0.3
+sof	0.0, ripHigh
 @endif
-sof   ripLevel, ptrmin 
 rdax   fptr,1 
 wrax   fptr,1 
 sof   1,-0.5 
