@@ -13,7 +13,6 @@
 
 @menu "Wave Shaper" 
 @menuitem "Aliaser" aliaser_02 
-// @menuitem "Aliaser-2" aliaser_02 
 @menuitem "Bit Crusher" BitCrusher 
 @menuitem "Cube" CubeGain 
 @menuitem "Distortion" Distortion 
@@ -105,6 +104,7 @@
 @menuitem "Sin/Cos LFO" SinCosLFO
 @menuitem "Oscillator" Oscillator
 @menuitem "Ramp LFO" RampLFO
+@menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl
