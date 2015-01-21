@@ -63,7 +63,7 @@
 // @menuitem "Shimmer Reverb" shimmer_verb 
 @menuitem "Small Reverb" MinReverb 
 @menuitem "ReverbA" reverbA 
-@menuitem "Reverb Filter" reverbFilter 
+// @menuitem "Reverb Filter" reverbFilter 
 
 @menu "Modulation" 
 // @menuitem "Chorus" Chorus 
