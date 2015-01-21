@@ -22,10 +22,11 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class MinReverbCADBlock extends ReverbCADBlock{
+public class MinReverbCADBlock extends SpinCADBlock{
 	/**
 	 * 
 	 */
