@@ -62,7 +62,7 @@
 // @menuitem "ROM Reverb 1" rom_rev1 
 // @menuitem "Shimmer Reverb" shimmer_verb 
 @menuitem "Small Reverb" MinReverb 
-@menuitem "ReverbA" reverbA 
+@menuitem "Adjustable Reverb" reverbA 
 // @menuitem "Reverb Filter" reverbFilter 
 
 @menu "Modulation" 
@@ -74,7 +74,7 @@
 @menuitem "Phaser" Phaser 
 // @menuitem "Allpass" allpass 
 // @menuitem "Test Chorus" Test_chorus 
-@menuitem "Tremolo" Tremolo 
+@menuitem "Tremolizer" tremolizer
 @menuitem "Ring Modulator" RingMod 
 
 @menu "Pitch"
@@ -104,7 +104,6 @@
 @menuitem "Sin/Cos LFO" SinCosLFO
 @menuitem "Oscillator" Oscillator
 @menuitem "Ramp LFO" RampLFO
-@menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl
@@ -112,6 +111,6 @@
 @menuitem "Scale/Offset" ScaleOffsetControl
 @menuitem "Root" Root
 @menuitem "Control Mixer" ControlMixer
-@menuitem "Smoother-A" control_smootherA
-@menuitem "Smoother" control_smoother
+@menuitem "Smoother" control_smootherA
+// @menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo

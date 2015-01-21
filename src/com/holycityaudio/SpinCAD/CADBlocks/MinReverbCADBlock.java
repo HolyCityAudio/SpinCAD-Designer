@@ -69,8 +69,7 @@ public class MinReverbCADBlock extends SpinCADBlock{
 				
 				sfxb.comment("Minimum reverb");
 				
-				sfxb.readRegister(input, 0.25);	// dry signal, for later, scale down
-				//		sfxb.writeRegister(dry,  1.0);
+				sfxb.readRegister(input, 0.25);	
 
 				sfxb.FXreadDelay("api1", 1.0, kap);  // read from the end of api1
 				sfxb.FXwriteAllpass("api1", 0, -1.0);  // write back in inverted
