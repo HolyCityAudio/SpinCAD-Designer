@@ -49,7 +49,7 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 	private JSlider lfoWidthSlider = new JSlider(JSlider.HORIZONTAL, 0, 3, 3);
 	private JLabel lfoWidthLabel = new JLabel("LFO Width");
 	
-	private JSlider lfoRateSlider = new JSlider(JSlider.HORIZONTAL, 0, 32767, 3200);
+	private JSlider lfoRateSlider = new JSlider(JSlider.HORIZONTAL, -16384, 32767, 3200);
 	private JLabel lfoRateLabel = new JLabel("LFO Rate");
 
 	private LFORadioButtons rb;
