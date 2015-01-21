@@ -40,6 +40,8 @@ public class MinReverbCADBlock extends SpinCADBlock{
 	public MinReverbCADBlock(int x, int y) {
 		super(x, y);
 		// TODO Auto-generated constructor stub
+		addInputPin(this);
+		addOutputPin(this);
 		addControlInputPin(this, "Reverb Time");
 		setName("Min Reverb");
 	}
