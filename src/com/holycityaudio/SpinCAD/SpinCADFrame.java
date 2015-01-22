@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * 
 	 */
-	int buildNam = 880;
+	int buildNam = 881;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -405,7 +405,7 @@ public class SpinCADFrame extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				MessageBox("About SpinCAD Designer", "Version 0.96 Build " + buildNam + "\n"
-						+ "Copyright 2014 Gary Worsham, Holy City Audio\n" + 
+						+ "Copyright 2015 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");

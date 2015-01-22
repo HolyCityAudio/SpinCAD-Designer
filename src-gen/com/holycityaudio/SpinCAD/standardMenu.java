@@ -41,7 +41,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusPresetCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ModDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PhaserCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RingModCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
@@ -51,14 +50,15 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
@@ -172,7 +172,7 @@
 	});
 	mn_waveshaper.add(mntm_aliaser_02);
 		
-	final JMenuItem mntm_BitCrusher = new JMenuItem("Bit Crusher");
+	final JMenuItem mntm_BitCrusher = new JMenuItem("Quantizer");
 	mntm_BitCrusher.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new BitCrusherCADBlock(50, 100);
@@ -466,15 +466,6 @@
 	});
 	mn_modulation.add(mntm_Phaser);
 		
-	final JMenuItem mntm_tremolizer = new JMenuItem("Tremolizer");
-	mntm_tremolizer.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new tremolizerCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_modulation.add(mntm_tremolizer);
-		
 	final JMenuItem mntm_RingMod = new JMenuItem("Ring Modulator");
 	mntm_RingMod.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -562,6 +553,15 @@
 	});
 	mn_control.add(mntm_SinCosLFO);
 		
+	final JMenuItem mntm_RampLFO = new JMenuItem("Ramp LFO");
+	mntm_RampLFO.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new RampLFOCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_RampLFO);
+		
 	final JMenuItem mntm_Oscillator = new JMenuItem("Oscillator");
 	mntm_Oscillator.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -571,14 +571,14 @@
 	});
 	mn_control.add(mntm_Oscillator);
 		
-	final JMenuItem mntm_RampLFO = new JMenuItem("Ramp LFO");
-	mntm_RampLFO.addActionListener(new ActionListener() {
+	final JMenuItem mntm_tremolizer = new JMenuItem("Tremolizer");
+	mntm_tremolizer.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new RampLFOCADBlock(50, 100);
+			SpinCADBlock pcB = new tremolizerCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_control.add(mntm_RampLFO);
+	mn_control.add(mntm_tremolizer);
 		
 	final JMenuItem mntm_EnvelopeControl = new JMenuItem("Envelope");
 	mntm_EnvelopeControl.addActionListener(new ActionListener() {
@@ -597,6 +597,15 @@
 		}
 	});
 	mn_control.add(mntm_PowerControl);
+		
+	final JMenuItem mntm_Root = new JMenuItem("Root");
+	mntm_Root.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new RootCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Root);
 		
 	final JMenuItem mntm_ClipControl = new JMenuItem("Clip");
 	mntm_ClipControl.addActionListener(new ActionListener() {
@@ -624,15 +633,6 @@
 		}
 	});
 	mn_control.add(mntm_ScaleOffsetControl);
-		
-	final JMenuItem mntm_Root = new JMenuItem("Root");
-	mntm_Root.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new RootCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_Root);
 		
 	final JMenuItem mntm_ControlMixer = new JMenuItem("Control Mixer");
 	mntm_ControlMixer.addActionListener(new ActionListener() {

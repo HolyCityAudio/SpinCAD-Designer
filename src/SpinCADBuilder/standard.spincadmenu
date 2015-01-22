@@ -13,7 +13,7 @@
 
 @menu "Wave Shaper" 
 @menuitem "Aliaser" aliaser_02 
-@menuitem "Bit Crusher" BitCrusher 
+@menuitem "Quantizer" BitCrusher 
 @menuitem "Cube" CubeGain 
 @menuitem "Distortion" Distortion 
 @menuitem "Octave" Octave 
@@ -74,7 +74,6 @@
 @menuitem "Phaser" Phaser 
 // @menuitem "Allpass" allpass 
 // @menuitem "Test Chorus" Test_chorus 
-@menuitem "Tremolizer" tremolizer
 @menuitem "Ring Modulator" RingMod 
 
 @menu "Pitch"
@@ -102,14 +101,15 @@
 @menuitem "Pot 2" Pot2 
 @menuitem "Constant" Constant 
 @menuitem "Sin/Cos LFO" SinCosLFO
-@menuitem "Oscillator" Oscillator
 @menuitem "Ramp LFO" RampLFO
+@menuitem "Oscillator" Oscillator
+@menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Power" PowerControl
+@menuitem "Root" Root
 @menuitem "Clip" ClipControl
 @menuitem "Invert" InvertControl
 @menuitem "Scale/Offset" ScaleOffsetControl
-@menuitem "Root" Root
 @menuitem "Control Mixer" ControlMixer
 @menuitem "Smoother" control_smootherA
 // @menuitem "Smoother" control_smoother
