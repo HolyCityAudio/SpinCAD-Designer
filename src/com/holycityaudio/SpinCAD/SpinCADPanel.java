@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -45,7 +46,7 @@ import java.util.Iterator;
 public class SpinCADPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private enum dragModes { NODRAG, DRAGMOVE, CONNECT };
+	private enum dragModes { NODRAG, DRAGMOVE, CONNECT, DRAGBOX };
 
 	private SpinCADFrame f = null;
 	// following 4 variables are for pin to pin connections
@@ -62,6 +63,7 @@ public class SpinCADPanel extends JPanel {
 	public dragModes dm = dragModes.NODRAG;
 
 	private Line2D dragLine = null;
+	private Rectangle2D dragRect = null;
 
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
@@ -92,6 +94,11 @@ public class SpinCADPanel extends JPanel {
 					startPoint = getNearbyPoint();
 					repaint();
 				}
+				else if(dm == dragModes.DRAGBOX) {
+					// draw a rectangle
+					dragRect = new Rectangle2D.Double(startPoint.getX(), startPoint.getY(), mouseAt.getX() - startPoint.getX(), mouseAt.getY() - startPoint.getY());
+					repaint();
+				}
 				Point point = getNearbyPoint();
 				if(point != null) {		
 					// we're near a pin, so iterate through the model and see which one it is
@@ -118,11 +125,18 @@ public class SpinCADPanel extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+				boolean hitSomething = false;
 				// drop a line or block if you were dragging it
 				if(dm == dragModes.DRAGMOVE) {
 					spdFrame.getModel().setChanged(true);
 					dm = dragModes.NODRAG;
 					dragLine = null;
+					return;
+				}
+				else if (dm == dragModes.DRAGBOX) {
+					dm = dragModes.NODRAG;
+					dragRect = null;
+					repaint();
 					return;
 				}
 				if(arg0.getButton() == 3) {		// right mouse button
@@ -162,6 +176,7 @@ public class SpinCADPanel extends JPanel {
 					// if we hit the block, we can either delete or drag it
 					if (hitTarget(arg0, b) == true) {
 						// System.out.println("Direct hit!");
+						hitSomething = true;
 						switch(dm) {
 						case NODRAG:
 							if(arg0.getButton() == 1) {	// left button
@@ -186,6 +201,7 @@ public class SpinCADPanel extends JPanel {
 							// hit a block pin, so connect it
 							// bug here somewhere
 							if(hitPin(arg0, b, currentPin)) {
+								hitSomething = true;
 								if(dm != dragModes.CONNECT) {
 									System.out.println("Connect start!");
 									dm = dragModes.CONNECT;	// now we're going to connect a wire
@@ -233,10 +249,13 @@ public class SpinCADPanel extends JPanel {
 										}
 									}
 								}
-								return;
 							}
 						}
 					}
+				}
+				if(hitSomething == false) {
+					dm = dragModes.DRAGBOX;	
+					startPoint = mouseAt;
 				}
 			}
 		});  
@@ -287,6 +306,11 @@ public class SpinCADPanel extends JPanel {
 			g2.setStroke(new BasicStroke(3));
 			g2.setColor(Color.CYAN);
 			g2.draw(dragLine);
+		}
+		if(dragRect != null) {
+			g2.setStroke(new BasicStroke(1));
+			g2.setColor(Color.BLUE);
+			g2.draw(dragRect);
 		}
 	}
 
