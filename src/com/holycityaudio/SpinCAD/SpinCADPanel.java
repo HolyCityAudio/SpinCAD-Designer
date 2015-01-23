@@ -46,7 +46,7 @@ import java.util.Iterator;
 public class SpinCADPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private enum dragModes { NODRAG, DRAGMOVE, CONNECT, DRAGBOX };
+	private enum dragModes { NODRAG, DRAGMOVE, CONNECT, DRAGBOX, SELECTED };
 
 	private SpinCADFrame f = null;
 	// following 4 variables are for pin to pin connections
@@ -96,7 +96,11 @@ public class SpinCADPanel extends JPanel {
 				}
 				else if(dm == dragModes.DRAGBOX) {
 					// draw a rectangle
-					dragRect = new Rectangle2D.Double(startPoint.getX(), startPoint.getY(), mouseAt.getX() - startPoint.getX(), mouseAt.getY() - startPoint.getY());
+					double ulhx = Math.min(startPoint.getX(), mouseAt.getX());
+					double ulhy = Math.min(startPoint.getY(), mouseAt.getY());
+					double widthX = Math.abs(mouseAt.getX() - startPoint.getX());
+					double widthY = Math.abs(mouseAt.getY() - startPoint.getY());
+					dragRect = new Rectangle2D.Double(ulhx, ulhy, widthX, widthY);
 					repaint();
 				}
 				Point point = getNearbyPoint();
@@ -134,7 +138,13 @@ public class SpinCADPanel extends JPanel {
 					return;
 				}
 				else if (dm == dragModes.DRAGBOX) {
-					dm = dragModes.NODRAG;
+					if(arg0.getButton() == 1) {
+						dm = dragModes.SELECTED;
+						selectGroup(spdFrame, startPoint, mouseAt);
+					} 
+					else if (arg0.getButton() == 3) {
+						dm = dragModes.NODRAG;
+					}
 					dragRect = null;
 					repaint();
 					return;
@@ -254,8 +264,13 @@ public class SpinCADPanel extends JPanel {
 					}
 				}
 				if(hitSomething == false) {
-					dm = dragModes.DRAGBOX;	
-					startPoint = mouseAt;
+					if(arg0.getButton() == 1) {
+						dm = dragModes.DRAGBOX;	
+						startPoint = mouseAt;
+					}
+					else if (arg0.getButton() == 3) {
+						dm = dragModes.NODRAG;	
+					}
 				}
 			}
 		});  
@@ -406,6 +421,32 @@ public class SpinCADPanel extends JPanel {
 
 	public void setDragModeDragMove() {
 		dm = dragModes.DRAGMOVE;
+	}
+	
+	public boolean selectGroup(SpinCADFrame f, Point start, Point end) {
+		SpinCADBlock block;
+		boolean retval = false;
+		double x1 = Math.min(start.getX(), end.getX());
+		double x2 = Math.max(start.getX(), end.getX());
+		double y1 = Math.min(start.getY(), end.getY());
+		double y2 = Math.max(start.getY(), end.getY());
+		double targetX, targetY;
+		
+		Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+		while(itr.hasNext()) {
+			block = itr.next();
+			targetX = block.x_pos + block.width/2;
+			targetY = block.y_pos + block.height/2;
+
+			if(targetX >= x1 && targetX <= x2 && targetY >= y1 && targetY <= y2) {
+				block.selected = true;
+				retval = true;
+			}
+			else {
+				block.selected = false;				
+			}
+		}
+		return retval;
 	}
 
 	// popup menu handling
