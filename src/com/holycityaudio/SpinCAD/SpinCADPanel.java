@@ -56,6 +56,7 @@ public class SpinCADPanel extends JPanel {
 	private Point startPoint;
 	private Point stopPoint;
 	private Point mouseAt;
+	private static Point lastMouse = null;
 
 	private SpinCADPin startPin;
 	private SpinCADPin stopPin;
@@ -67,7 +68,7 @@ public class SpinCADPanel extends JPanel {
 
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
-
+		
 		addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -75,7 +76,18 @@ public class SpinCADPanel extends JPanel {
 				if(dm == dragModes.DRAGMOVE) {
 					spdFrame.getModel();
 					//					System.out.printf("Edit mode 3, drag mode 1, X: %d Y: %d\n", e.getX(), e.getY());
-					moveBlock(SpinCADModel.getCurrentBlock(), (int) mouseAt.getX(), (int) mouseAt.getY());
+					SpinCADBlock b = null;	
+					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
+					if(lastMouse == null)
+					{
+						lastMouse = mouseAt;
+					}
+					while(itr.hasNext()) {
+						b = itr.next();
+						if(b.selected == true)
+							moveBlock(b, b.getX() + (int) (mouseAt.getX() - lastMouse.getX()), b.getY() + (int) (mouseAt.getY() - lastMouse.getY()));
+					}
+					lastMouse = mouseAt;
 					repaint();
 				}
 				else if(dm == dragModes.CONNECT) {
@@ -371,13 +383,12 @@ public class SpinCADPanel extends JPanel {
 	public void moveBlock(SpinCADBlock block, int x, int y) {
 		int OFFSET = 1;
 		if ((block.x_pos !=x) || (block.y_pos !=y)) {
-			repaint(block.x_pos,block.y_pos,block.width+OFFSET,block.height+OFFSET);
-			block.x_pos=x - block.width/2;
-			block.y_pos=y - block.height/2;
+//			repaint(block.x_pos,block.y_pos,block.width+OFFSET,block.height+OFFSET);
+			block.x_pos=x;
+			block.y_pos=y;
 			repaint(block.x_pos,block.y_pos,block.width+OFFSET,block.height+OFFSET);
 		} 
 	}
-
 
 	private boolean hitTarget(MouseEvent arg0, SpinCADBlock block) {
 
@@ -452,13 +463,19 @@ public class SpinCADPanel extends JPanel {
 	// popup menu handling
 	class PopUpDemo extends JPopupMenu {
 		JMenuItem cPanel;
+		JMenuItem mov;
 		JMenuItem del;
+		
 		public PopUpDemo(SpinCADBlock b){
 			if(b.hasControlPanel()) {
 				cPanel = new JMenuItem("Control Panel");
 				add(cPanel);
 				cPanel.addActionListener(new MenuActionListener(b));				
 			}
+			mov = new JMenuItem("Move");
+			add(mov);
+			mov.addActionListener(new MenuActionListener(b));
+			
 			del = new JMenuItem("Delete");
 			add(del);
 			del.addActionListener(new MenuActionListener(b));
@@ -482,6 +499,9 @@ public class SpinCADPanel extends JPanel {
 			switch(e.getActionCommand()) {
 			case "Control Panel":
 				spcb.editBlock();
+				break;
+			case "Move":
+				setDragMode(dragModes.DRAGMOVE);
 				break;
 			case "Delete":
 				// do a model save just before delete
