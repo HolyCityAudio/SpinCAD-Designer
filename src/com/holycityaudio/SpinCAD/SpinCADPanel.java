@@ -434,7 +434,7 @@ public class SpinCADPanel extends JPanel {
 		dm = dragModes.DRAGMOVE;
 	}
 	
-	public boolean selectGroup(SpinCADFrame f, Point start, Point end) {
+	public boolean selectGroup(SpinCADFrame fr, Point start, Point end) {
 		SpinCADBlock block;
 		boolean retval = false;
 		double x1 = Math.min(start.getX(), end.getX());
@@ -443,7 +443,7 @@ public class SpinCADPanel extends JPanel {
 		double y2 = Math.max(start.getY(), end.getY());
 		double targetX, targetY;
 		
-		Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
 			targetX = block.x_pos + block.width/2;
@@ -460,10 +460,10 @@ public class SpinCADPanel extends JPanel {
 		return retval;
 	}
 	
-	public void unselectAll(SpinCADFrame f) {
+	public void unselectAll(SpinCADFrame fr) {
 		SpinCADBlock block;
 		
-		Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
 				block.selected = false;				
