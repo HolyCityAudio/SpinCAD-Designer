@@ -145,13 +145,15 @@ public class SpinCADPanel extends JPanel {
 				// drop a line or block if you were dragging it
 				if(dm == dragModes.DRAGMOVE) {
 					spdFrame.getModel().setChanged(true);
+					unselectAll(spdFrame);
 					dm = dragModes.NODRAG;
 					dragLine = null;
+					repaint();
 					return;
 				}
 				else if (dm == dragModes.DRAGBOX) {
 					if(arg0.getButton() == 1) {
-						dm = dragModes.SELECTED;
+						dm = dragModes.NODRAG;
 						selectGroup(spdFrame, startPoint, mouseAt);
 					} 
 					else if (arg0.getButton() == 3) {
@@ -383,7 +385,6 @@ public class SpinCADPanel extends JPanel {
 	public void moveBlock(SpinCADBlock block, int x, int y) {
 		int OFFSET = 1;
 		if ((block.x_pos !=x) || (block.y_pos !=y)) {
-//			repaint(block.x_pos,block.y_pos,block.width+OFFSET,block.height+OFFSET);
 			block.x_pos=x;
 			block.y_pos=y;
 			repaint(block.x_pos,block.y_pos,block.width+OFFSET,block.height+OFFSET);
@@ -392,7 +393,6 @@ public class SpinCADPanel extends JPanel {
 
 	private boolean hitTarget(MouseEvent arg0, SpinCADBlock block) {
 
-		//		System.out.printf("arg0.getX()= %d block.getX() = %d block.getWidth() = %d\n", arg0.getX(), block.getX(), block.getWidth());
 		int blockCenterX = block.getX() + block.width/2;
 		int blockCenterY = block.getY() + block.height/2;
 
@@ -458,6 +458,16 @@ public class SpinCADPanel extends JPanel {
 			}
 		}
 		return retval;
+	}
+	
+	public void unselectAll(SpinCADFrame f) {
+		SpinCADBlock block;
+		
+		Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+		while(itr.hasNext()) {
+			block = itr.next();
+				block.selected = false;				
+		}
 	}
 
 	// popup menu handling
