@@ -1,0 +1,87 @@
+@name SampleHold
+@audioInput adcl Input_Left
+@audioInput adcr Input_Right 
+@audioOutput output1 Output_L 
+@audioOutput output2 Output_R 
+@controlInput rate Rate
+
+
+; Sample and Hold Demo
+; Random Tone Generator
+
+; holding registers for LFSR noise generator
+equ temp reg0
+equ lfsr reg1
+equ lfsr2 reg2
+
+; registers for DIY LFO
+equ   s1   reg3
+equ   c1   reg4
+equ   k1   reg5
+
+skp    run, start
+wldr    rmp0,20,4096
+
+; set up noise gen
+ldax    adcl 
+or       %001000 ; just to ensure it is really non-zero 
+wrax    lfsr,0
+
+; set up oscillator
+sof      0,0.5
+wrax   c1,1
+wrax   k1, 0
+
+start:
+
+; run noise generator - stolen from Frank T.
+ldax   lfsr ; get lfsr reg 
+and    %00ffff ; get rid of upper bits to avoid saturating 
+wrax    lfsr2,1.0 ; save the result and keep in acc 
+rdax    lfsr2,0.5 ; get lfsr shifted 1 bit and add it 
+rdax    lfsr2,0.25 ; get lfsr shifted 2 bits and add 
+rdax    lfsr2,0.0078125 ; get lfsr shifted 7 bits and add 
+and    %000001 ; only care about lsb of result 
+wrax    temp,0 ; save result 
+rdax    lfsr,0.5 ; get lfsr reg shifted right 
+and    %7fffff ; clear msb 
+wrax    lfsr,0 ; save result 
+ldax    temp ; get the result back 
+skp    zro,shftzro ; if 0 jump 
+; if here the bit was a 1 
+sof    0,0 ; clear acc 
+rdax    lfsr,1.0 ; get the low 
+or       %800000 ; set the bit 
+wrax    lfsr,1 ; save it
+
+samplehold:
+ldax    rate   ;sets sample and hold speed
+mulx    rate   ;make the taper a bit nicer 
+mulx    rate
+sof    0.5, 0.1 ; limit the pot to get a nice range of speeds
+wrax    rmp0_rate,0   ;write to ramp 1 rate to set speed 
+cho rdal, rmp0   ;get current value of rmp0
+sof    -1, 0.001 ; make ramp go from -0.5 to 0.001
+
+skp    neg, shftzro  ; if the ramp is less than 0, skip past this part
+ldax   lfsr ; read the last noise value
+absa        ; make sure it's positive
+sof    0.2, 0.05 ; scale to a value we can use for the oscillator, 0.05 to 0.25
+wrax   k1, 0 ; set lfo speed and clear
+
+shftzro:
+
+; generate wave
+; k1 is the triangle wave rate, which we get from the sample and hold.
+ldax   c1
+mulx   k1
+rdax   s1,1
+wrax   s1,-1
+mulx   k1
+rdax   c1,1
+wrax   c1,0
+
+rdax   c1, 0.1 ; oscillator is loud.  let's make it quieter.
+mulx   pot1   ; use POT1 for volume of generated wave
+wrax   dacr, 1 ; ACC to ADC
+wrax   dacl, 0 ; ACC to ADC and clear
