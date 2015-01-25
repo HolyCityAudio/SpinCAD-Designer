@@ -68,7 +68,7 @@ public class SpinCADPanel extends JPanel {
 
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
-		
+
 		addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -209,6 +209,15 @@ public class SpinCADPanel extends JPanel {
 								dm = dragModes.DRAGMOVE;
 							}
 							else if (arg0.getButton() == 3)	{	// right button
+								if(areAnySelected(spdFrame) == true) {
+									if (b.selected == false) {
+										unselectAll(spdFrame);
+										b.selected = true;
+									}
+								}
+								else {
+									b.selected = true;
+								}
 								doPop(arg0, b);
 							}
 						default:
@@ -410,10 +419,8 @@ public class SpinCADPanel extends JPanel {
 	private boolean hitPin(MouseEvent arg0, SpinCADBlock b, SpinCADPin p) {
 
 		Point pt = b.getPinXY(p);
-		//		System.out.printf("arg0.getX()= %d block.getX() = %d block.getWidth() = %d\n", arg0.getX(), block.getX(), block.getWidth());
 		int deltaX = Math.abs(arg0.getX() - (int) pt.getX());
 		int deltaY = Math.abs(arg0.getY() - (int) pt.getY());
-		//		System.out.printf("deltaX = %d deltaY = %d\n", deltaX, deltaY);
 		if(deltaX < RANGE && deltaY < RANGE ) {
 			return true;
 		}
@@ -433,7 +440,7 @@ public class SpinCADPanel extends JPanel {
 	public void setDragModeDragMove() {
 		dm = dragModes.DRAGMOVE;
 	}
-	
+
 	public boolean selectGroup(SpinCADFrame fr, Point start, Point end) {
 		SpinCADBlock block;
 		boolean retval = false;
@@ -442,7 +449,7 @@ public class SpinCADPanel extends JPanel {
 		double y1 = Math.min(start.getY(), end.getY());
 		double y2 = Math.max(start.getY(), end.getY());
 		double targetX, targetY;
-		
+
 		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
@@ -459,14 +466,28 @@ public class SpinCADPanel extends JPanel {
 		}
 		return retval;
 	}
-	
-	public void unselectAll(SpinCADFrame fr) {
+
+	public boolean areAnySelected(SpinCADFrame fr) {
 		SpinCADBlock block;
-		
+		boolean retval = false;
+
 		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
-				block.selected = false;				
+			if(block.selected == true) {
+				retval = true;				
+			}
+		}
+		return retval;
+	}
+
+	public void unselectAll(SpinCADFrame fr) {
+		SpinCADBlock block;
+
+		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
+		while(itr.hasNext()) {
+			block = itr.next();
+			block.selected = false;				
 		}
 	}
 
@@ -475,7 +496,7 @@ public class SpinCADPanel extends JPanel {
 		JMenuItem cPanel;
 		JMenuItem mov;
 		JMenuItem del;
-		
+
 		public PopUpDemo(SpinCADBlock b){
 			if(b.hasControlPanel()) {
 				cPanel = new JMenuItem("Control Panel");
@@ -485,7 +506,7 @@ public class SpinCADPanel extends JPanel {
 			mov = new JMenuItem("Move");
 			add(mov);
 			mov.addActionListener(new MenuActionListener(b));
-			
+
 			del = new JMenuItem("Delete");
 			add(del);
 			del.addActionListener(new MenuActionListener(b));
@@ -508,16 +529,29 @@ public class SpinCADPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			switch(e.getActionCommand()) {
 			case "Control Panel":
+				unselectAll(f);
 				spcb.editBlock();
 				break;
 			case "Move":
+				lastMouse = mouseAt;
 				setDragMode(dragModes.DRAGMOVE);
 				break;
 			case "Delete":
 				// do a model save just before delete
 				f.saveModel();
-				deleteBlockConnection(spcb);
-				f.getModel().blockList.remove(spcb);
+				SpinCADBlock block;
+
+				Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+				while(itr.hasNext()) {
+					block = itr.next();
+					if(block.selected == true) {
+						deleteBlockConnection(block);
+//
+//						f.getModel().blockList.remove(block);
+						itr.remove();
+					}
+				}
+
 				f.getModel().setChanged(true);
 				f.updateFrameTitle();
 				f.getResourceToolbar().update();
