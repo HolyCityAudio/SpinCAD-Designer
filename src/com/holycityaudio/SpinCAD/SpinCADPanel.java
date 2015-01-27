@@ -20,17 +20,25 @@
 
 package com.holycityaudio.SpinCAD;
 
+import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -45,7 +53,7 @@ import java.util.Iterator;
 public class SpinCADPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private enum dragModes { NODRAG, DRAGMOVE, CONNECT };
+	private enum dragModes { NODRAG, DRAGMOVE, CONNECT, DRAGBOX, SELECTED };
 
 	private SpinCADFrame f = null;
 	// following 4 variables are for pin to pin connections
@@ -55,6 +63,7 @@ public class SpinCADPanel extends JPanel {
 	private Point startPoint;
 	private Point stopPoint;
 	private Point mouseAt;
+	private static Point lastMouse = null;
 
 	private SpinCADPin startPin;
 	private SpinCADPin stopPin;
@@ -62,6 +71,8 @@ public class SpinCADPanel extends JPanel {
 	public dragModes dm = dragModes.NODRAG;
 
 	private Line2D dragLine = null;
+	private Rectangle2D dragRect = null;
+	private static String keys = null;
 
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
@@ -72,8 +83,18 @@ public class SpinCADPanel extends JPanel {
 				mouseAt = e.getPoint();
 				if(dm == dragModes.DRAGMOVE) {
 					spdFrame.getModel();
-					//					System.out.printf("Edit mode 3, drag mode 1, X: %d Y: %d\n", e.getX(), e.getY());
-					moveBlock(SpinCADModel.getCurrentBlock(), (int) mouseAt.getX(), (int) mouseAt.getY());
+					SpinCADBlock b = null;	
+					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
+					if(lastMouse == null)
+					{
+						lastMouse = mouseAt;
+					}
+					while(itr.hasNext()) {
+						b = itr.next();
+						if(b.selected == true)
+							moveBlock(b, b.getX() + (int) (mouseAt.getX() - lastMouse.getX()), b.getY() + (int) (mouseAt.getY() - lastMouse.getY()));
+					}
+					lastMouse = mouseAt;
 					repaint();
 				}
 				else if(dm == dragModes.CONNECT) {
@@ -90,6 +111,15 @@ public class SpinCADPanel extends JPanel {
 				else if(dm == dragModes.NODRAG) {
 					//					System.out.printf("Edit mode 4, drag mode 2, X: %d y: %d\n", e.getX(), e.getY());
 					startPoint = getNearbyPoint();
+					repaint();
+				}
+				else if(dm == dragModes.DRAGBOX) {
+					// draw a rectangle
+					double ulhx = Math.min(startPoint.getX(), mouseAt.getX());
+					double ulhy = Math.min(startPoint.getY(), mouseAt.getY());
+					double widthX = Math.abs(mouseAt.getX() - startPoint.getX());
+					double widthY = Math.abs(mouseAt.getY() - startPoint.getY());
+					dragRect = new Rectangle2D.Double(ulhx, ulhy, widthX, widthY);
 					repaint();
 				}
 				Point point = getNearbyPoint();
@@ -118,11 +148,26 @@ public class SpinCADPanel extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+				boolean hitSomething = false;
 				// drop a line or block if you were dragging it
 				if(dm == dragModes.DRAGMOVE) {
 					spdFrame.getModel().setChanged(true);
+					unselectAll(spdFrame);
 					dm = dragModes.NODRAG;
 					dragLine = null;
+					repaint();
+					return;
+				}
+				else if (dm == dragModes.DRAGBOX) {
+					if(arg0.getButton() == 1) {
+						dm = dragModes.NODRAG;
+						selectGroup(spdFrame, startPoint, mouseAt);
+					} 
+					else if (arg0.getButton() == 3) {
+						dm = dragModes.NODRAG;
+					}
+					dragRect = null;
+					repaint();
 					return;
 				}
 				if(arg0.getButton() == 3) {		// right mouse button
@@ -162,14 +207,37 @@ public class SpinCADPanel extends JPanel {
 					// if we hit the block, we can either delete or drag it
 					if (hitTarget(arg0, b) == true) {
 						// System.out.println("Direct hit!");
+						hitSomething = true;
 						switch(dm) {
 						case NODRAG:
 							if(arg0.getButton() == 1) {	// left button
-								spdFrame.getModel();
-								SpinCADModel.setCurrentBlock(b);
-								dm = dragModes.DRAGMOVE;
+								int mode = arg0.getModifiers();
+								if((mode & InputEvent.CTRL_DOWN_MASK) == InputEvent.CTRL_DOWN_MASK) {
+									if(b.selected == false) {
+										b.selected = true;
+									}
+									else {
+										b.selected = false;
+									}
+									repaint();
+								}
+								else {
+									spdFrame.getModel();
+									SpinCADModel.setCurrentBlock(b);
+									b.selected = true;
+									dm = dragModes.DRAGMOVE;							
+								}
 							}
 							else if (arg0.getButton() == 3)	{	// right button
+								if(areAnySelected(spdFrame) == true) {
+									if (b.selected == false) {
+										unselectAll(spdFrame);
+										b.selected = true;
+									}
+								}
+								else {
+									b.selected = true;
+								}
 								doPop(arg0, b);
 							}
 						default:
@@ -186,6 +254,7 @@ public class SpinCADPanel extends JPanel {
 							// hit a block pin, so connect it
 							// bug here somewhere
 							if(hitPin(arg0, b, currentPin)) {
+								hitSomething = true;
 								if(dm != dragModes.CONNECT) {
 									System.out.println("Connect start!");
 									dm = dragModes.CONNECT;	// now we're going to connect a wire
@@ -233,14 +302,73 @@ public class SpinCADPanel extends JPanel {
 										}
 									}
 								}
-								return;
 							}
 						}
+					}
+				}
+				if(hitSomething == false) {
+					if(arg0.getButton() == 1) {
+						dm = dragModes.DRAGBOX;	
+						startPoint = mouseAt;
+					}
+					else if (arg0.getButton() == 3) {
+						dm = dragModes.NODRAG;	
 					}
 				}
 			}
 		});  
 	}
+	
+	//=======================================================================================================
+	public void syncMouse() {
+		lastMouse = mouseAt;
+	}
+	
+	int getMouseX() {
+		return (int) mouseAt.getX();
+	}
+	
+	int getMouseY() {
+		return (int) mouseAt.getY();
+	}
+	public void putMouseOnBlock(SpinCADBlock b) {
+		Point p = new Point();
+		Rectangle rv = this.getBounds();
+		p.setLocation(b.getX() + b.width/2 + rv.getMinX(), b.getY() + b.height/2 + rv.getMinY());
+		moveMouse(p);
+	}
+	
+	public void moveMouse(Point p) {
+	    GraphicsEnvironment ge = 
+	        GraphicsEnvironment.getLocalGraphicsEnvironment();
+	    GraphicsDevice[] gs = ge.getScreenDevices();
+
+	    // Search the devices for the one that draws the specified point.
+	    for (GraphicsDevice device: gs) { 
+	        GraphicsConfiguration[] configurations =
+	            device.getConfigurations();
+	        for (GraphicsConfiguration config: configurations) {
+	            Rectangle bounds = config.getBounds();
+	            if(bounds.contains(p)) {
+	                // Set point to screen coordinates.
+	                Point b = bounds.getLocation(); 
+	                Point s = new Point(p.x - b.x, p.y - b.y);
+
+	                try {
+	                    Robot r = new Robot(device);
+	                    r.mouseMove(s.x, s.y);
+	                } catch (AWTException e) {
+	                    e.printStackTrace();
+	                }
+
+	                return;
+	            }
+	        }
+	    }
+	    // Couldn't move to the point, it may be off screen.
+	    return;
+	}
+	
 	//=======================================================================================================
 	public void paintComponent( Graphics g ) {
 		super.paintComponent(g);
@@ -288,6 +416,11 @@ public class SpinCADPanel extends JPanel {
 			g2.setColor(Color.CYAN);
 			g2.draw(dragLine);
 		}
+		if(dragRect != null) {
+			g2.setStroke(new BasicStroke(1));
+			g2.setColor(Color.BLUE);
+			g2.draw(dragRect);
+		}
 	}
 
 	private static int RANGE = 5;
@@ -332,17 +465,14 @@ public class SpinCADPanel extends JPanel {
 	public void moveBlock(SpinCADBlock block, int x, int y) {
 		int OFFSET = 1;
 		if ((block.x_pos !=x) || (block.y_pos !=y)) {
-			repaint(block.x_pos,block.y_pos,block.width+OFFSET,block.height+OFFSET);
-			block.x_pos=x - block.width/2;
-			block.y_pos=y - block.height/2;
+			block.x_pos=x;
+			block.y_pos=y;
 			repaint(block.x_pos,block.y_pos,block.width+OFFSET,block.height+OFFSET);
 		} 
 	}
 
-
 	private boolean hitTarget(MouseEvent arg0, SpinCADBlock block) {
 
-		//		System.out.printf("arg0.getX()= %d block.getX() = %d block.getWidth() = %d\n", arg0.getX(), block.getX(), block.getWidth());
 		int blockCenterX = block.getX() + block.width/2;
 		int blockCenterY = block.getY() + block.height/2;
 
@@ -360,10 +490,8 @@ public class SpinCADPanel extends JPanel {
 	private boolean hitPin(MouseEvent arg0, SpinCADBlock b, SpinCADPin p) {
 
 		Point pt = b.getPinXY(p);
-		//		System.out.printf("arg0.getX()= %d block.getX() = %d block.getWidth() = %d\n", arg0.getX(), block.getX(), block.getWidth());
 		int deltaX = Math.abs(arg0.getX() - (int) pt.getX());
 		int deltaY = Math.abs(arg0.getY() - (int) pt.getY());
-		//		System.out.printf("deltaX = %d deltaY = %d\n", deltaX, deltaY);
 		if(deltaX < RANGE && deltaY < RANGE ) {
 			return true;
 		}
@@ -384,16 +512,72 @@ public class SpinCADPanel extends JPanel {
 		dm = dragModes.DRAGMOVE;
 	}
 
+	public boolean selectGroup(SpinCADFrame fr, Point start, Point end) {
+		SpinCADBlock block;
+		boolean retval = false;
+		double x1 = Math.min(start.getX(), end.getX());
+		double x2 = Math.max(start.getX(), end.getX());
+		double y1 = Math.min(start.getY(), end.getY());
+		double y2 = Math.max(start.getY(), end.getY());
+		double targetX, targetY;
+
+		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
+		while(itr.hasNext()) {
+			block = itr.next();
+			targetX = block.x_pos + block.width/2;
+			targetY = block.y_pos + block.height/2;
+
+			if(targetX >= x1 && targetX <= x2 && targetY >= y1 && targetY <= y2) {
+				block.selected = true;
+				retval = true;
+			}
+			else {
+				block.selected = false;				
+			}
+		}
+		return retval;
+	}
+
+	public boolean areAnySelected(SpinCADFrame fr) {
+		SpinCADBlock block;
+		boolean retval = false;
+
+		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
+		while(itr.hasNext()) {
+			block = itr.next();
+			if(block.selected == true) {
+				retval = true;				
+			}
+		}
+		return retval;
+	}
+
+	public void unselectAll(SpinCADFrame fr) {
+		SpinCADBlock block;
+
+		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
+		while(itr.hasNext()) {
+			block = itr.next();
+			block.selected = false;				
+		}
+	}
+
 	// popup menu handling
 	class PopUpDemo extends JPopupMenu {
 		JMenuItem cPanel;
+		JMenuItem mov;
 		JMenuItem del;
+
 		public PopUpDemo(SpinCADBlock b){
 			if(b.hasControlPanel()) {
 				cPanel = new JMenuItem("Control Panel");
 				add(cPanel);
 				cPanel.addActionListener(new MenuActionListener(b));				
 			}
+			mov = new JMenuItem("Move");
+			add(mov);
+			mov.addActionListener(new MenuActionListener(b));
+
 			del = new JMenuItem("Delete");
 			add(del);
 			del.addActionListener(new MenuActionListener(b));
@@ -416,13 +600,29 @@ public class SpinCADPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			switch(e.getActionCommand()) {
 			case "Control Panel":
+				unselectAll(f);
 				spcb.editBlock();
+				break;
+			case "Move":
+				syncMouse();
+				setDragMode(dragModes.DRAGMOVE);
 				break;
 			case "Delete":
 				// do a model save just before delete
 				f.saveModel();
-				deleteBlockConnection(spcb);
-				f.getModel().blockList.remove(spcb);
+				SpinCADBlock block;
+
+				Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+				while(itr.hasNext()) {
+					block = itr.next();
+					if(block.selected == true) {
+						deleteBlockConnection(block);
+//
+//						f.getModel().blockList.remove(block);
+						itr.remove();
+					}
+				}
+
 				f.getModel().setChanged(true);
 				f.updateFrameTitle();
 				f.getResourceToolbar().update();

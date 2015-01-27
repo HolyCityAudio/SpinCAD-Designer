@@ -37,10 +37,6 @@ import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
 public class SpinCADBlock extends SpinFXBlock {
 
-	public class LogFilterSlider extends JSlider {
-
-	}
-
 	/**
 	 * SpinCADBlock class extends the idea of a functional block
 	 * to a graphical idea with inputs and outputs
@@ -70,7 +66,7 @@ public class SpinCADBlock extends SpinFXBlock {
 	int y_pos = 0;
 	int width;
 	int height = 40;
-
+	boolean selected = false;	// for multi-select in panel
 	private String name = null;
 	spinCADControlPanel scCP = null;
 	protected boolean hasControlPanel = false;	// used to determine whether to offer a control panel
@@ -291,10 +287,14 @@ public class SpinCADBlock extends SpinFXBlock {
 		//		g2.draw(rectHandle);
 
 		RoundRectangle2D rect = new RoundRectangle2D.Double(x_pos + 3, y_pos + 5, width - 6, height - 10, 5, 5);
-		if (hasControlPanel == true) {
+		if (selected == true) {
+			g2.setColor(Color.CYAN);
+			g2.setStroke(new BasicStroke(8));				
+		} else if (hasControlPanel == true) {
 			g2.setColor(Color.WHITE);
 			g2.setStroke(new BasicStroke(6));
-		} else {
+		} 
+		else {
 			g2.setColor(borderColor);
 			g2.setStroke(new BasicStroke(4));			
 		}
