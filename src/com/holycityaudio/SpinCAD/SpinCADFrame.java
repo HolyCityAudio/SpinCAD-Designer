@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * 
 	 */
-	int buildNam = 882;
+	int buildNam = 883;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -842,6 +842,9 @@ public class SpinCADFrame extends JFrame {
 		p.setDragModeDragMove();
 		getModel().addBlock(b);
 		getModel().setChanged(true);
+		b.selected = true;
+		b.x_pos = p.getMouseX();
+		b.y_pos = p.getMouseY();
 		p.repaint();
 	}
 

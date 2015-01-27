@@ -1,9 +1,9 @@
 @name SampleHold
-@audioInput adcl Input_Left
-@audioInput adcr Input_Right 
-@audioOutput output1 Output_L 
-@audioOutput output2 Output_R 
+@audioInput input Input
+@audioOutput output Output 
+@controlInput input1 Volume
 @controlInput rate Rate
+@controlOutput sample Sample_Hold
 
 
 ; Sample and Hold Demo
@@ -18,12 +18,13 @@ equ lfsr2 reg2
 equ   s1   reg3
 equ   c1   reg4
 equ   k1   reg5
+equ   output reg6
 
 skp    run, start
-wldr    rmp0,20,4096
+wldr    0,20,4096
 
 ; set up noise gen
-ldax    adcl 
+ldax    input 
 or       %001000 ; just to ensure it is really non-zero 
 wrax    lfsr,0
 
@@ -36,7 +37,7 @@ start:
 
 ; run noise generator - stolen from Frank T.
 ldax   lfsr ; get lfsr reg 
-and    %00ffff ; get rid of upper bits to avoid saturating 
+and    $00ffff ; get rid of upper bits to avoid saturating 
 wrax    lfsr2,1.0 ; save the result and keep in acc 
 rdax    lfsr2,0.5 ; get lfsr shifted 1 bit and add it 
 rdax    lfsr2,0.25 ; get lfsr shifted 2 bits and add 
@@ -44,14 +45,14 @@ rdax    lfsr2,0.0078125 ; get lfsr shifted 7 bits and add
 and    %000001 ; only care about lsb of result 
 wrax    temp,0 ; save result 
 rdax    lfsr,0.5 ; get lfsr reg shifted right 
-and    %7fffff ; clear msb 
+and    $7fffff ; clear msb 
 wrax    lfsr,0 ; save result 
 ldax    temp ; get the result back 
 skp    zro,shftzro ; if 0 jump 
 ; if here the bit was a 1 
 sof    0,0 ; clear acc 
 rdax    lfsr,1.0 ; get the low 
-or       %800000 ; set the bit 
+or       $800000 ; set the bit 
 wrax    lfsr,1 ; save it
 
 samplehold:
@@ -82,6 +83,6 @@ rdax   c1,1
 wrax   c1,0
 
 rdax   c1, 0.1 ; oscillator is loud.  let's make it quieter.
-mulx   pot1   ; use POT1 for volume of generated wave
-wrax   dacr, 1 ; ACC to ADC
-wrax   dacl, 0 ; ACC to ADC and clear
+mulx   input1   ; use POT1 for volume of generated wave
+wrax   output, 0 ; ACC to ADC
+

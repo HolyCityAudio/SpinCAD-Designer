@@ -103,6 +103,7 @@
 @menuitem "Sin/Cos LFO" SinCosLFO
 @menuitem "Ramp LFO" RampLFO
 @menuitem "Oscillator" Oscillator
+@menuitem "Sample/Hold" SampleHold
 @menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Power" PowerControl

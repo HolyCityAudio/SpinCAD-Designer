@@ -20,14 +20,21 @@
 
 package com.holycityaudio.SpinCAD;
 
+import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
@@ -65,6 +72,7 @@ public class SpinCADPanel extends JPanel {
 
 	private Line2D dragLine = null;
 	private Rectangle2D dragRect = null;
+	private static String keys = null;
 
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
@@ -75,7 +83,6 @@ public class SpinCADPanel extends JPanel {
 				mouseAt = e.getPoint();
 				if(dm == dragModes.DRAGMOVE) {
 					spdFrame.getModel();
-					//					System.out.printf("Edit mode 3, drag mode 1, X: %d Y: %d\n", e.getX(), e.getY());
 					SpinCADBlock b = null;	
 					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
 					if(lastMouse == null)
@@ -204,9 +211,22 @@ public class SpinCADPanel extends JPanel {
 						switch(dm) {
 						case NODRAG:
 							if(arg0.getButton() == 1) {	// left button
-								spdFrame.getModel();
-								SpinCADModel.setCurrentBlock(b);
-								dm = dragModes.DRAGMOVE;
+								int mode = arg0.getModifiers();
+								if((mode & InputEvent.CTRL_DOWN_MASK) == InputEvent.CTRL_DOWN_MASK) {
+									if(b.selected == false) {
+										b.selected = true;
+									}
+									else {
+										b.selected = false;
+									}
+									repaint();
+								}
+								else {
+									spdFrame.getModel();
+									SpinCADModel.setCurrentBlock(b);
+									b.selected = true;
+									dm = dragModes.DRAGMOVE;							
+								}
 							}
 							else if (arg0.getButton() == 3)	{	// right button
 								if(areAnySelected(spdFrame) == true) {
@@ -298,6 +318,57 @@ public class SpinCADPanel extends JPanel {
 			}
 		});  
 	}
+	
+	//=======================================================================================================
+	public void syncMouse() {
+		lastMouse = mouseAt;
+	}
+	
+	int getMouseX() {
+		return (int) mouseAt.getX();
+	}
+	
+	int getMouseY() {
+		return (int) mouseAt.getY();
+	}
+	public void putMouseOnBlock(SpinCADBlock b) {
+		Point p = new Point();
+		Rectangle rv = this.getBounds();
+		p.setLocation(b.getX() + b.width/2 + rv.getMinX(), b.getY() + b.height/2 + rv.getMinY());
+		moveMouse(p);
+	}
+	
+	public void moveMouse(Point p) {
+	    GraphicsEnvironment ge = 
+	        GraphicsEnvironment.getLocalGraphicsEnvironment();
+	    GraphicsDevice[] gs = ge.getScreenDevices();
+
+	    // Search the devices for the one that draws the specified point.
+	    for (GraphicsDevice device: gs) { 
+	        GraphicsConfiguration[] configurations =
+	            device.getConfigurations();
+	        for (GraphicsConfiguration config: configurations) {
+	            Rectangle bounds = config.getBounds();
+	            if(bounds.contains(p)) {
+	                // Set point to screen coordinates.
+	                Point b = bounds.getLocation(); 
+	                Point s = new Point(p.x - b.x, p.y - b.y);
+
+	                try {
+	                    Robot r = new Robot(device);
+	                    r.mouseMove(s.x, s.y);
+	                } catch (AWTException e) {
+	                    e.printStackTrace();
+	                }
+
+	                return;
+	            }
+	        }
+	    }
+	    // Couldn't move to the point, it may be off screen.
+	    return;
+	}
+	
 	//=======================================================================================================
 	public void paintComponent( Graphics g ) {
 		super.paintComponent(g);
@@ -533,7 +604,7 @@ public class SpinCADPanel extends JPanel {
 				spcb.editBlock();
 				break;
 			case "Move":
-				lastMouse = mouseAt;
+				syncMouse();
 				setDragMode(dragModes.DRAGMOVE);
 				break;
 			case "Delete":

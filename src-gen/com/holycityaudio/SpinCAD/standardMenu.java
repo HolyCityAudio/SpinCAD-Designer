@@ -52,6 +52,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
@@ -570,6 +571,15 @@
 		}
 	});
 	mn_control.add(mntm_Oscillator);
+		
+	final JMenuItem mntm_SampleHold = new JMenuItem("Sample/Hold");
+	mntm_SampleHold.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new SampleHoldCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_SampleHold);
 		
 	final JMenuItem mntm_tremolizer = new JMenuItem("Tremolizer");
 	mntm_tremolizer.addActionListener(new ActionListener() {
