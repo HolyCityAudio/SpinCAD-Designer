@@ -839,13 +839,10 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	public void dropBlock(SpinCADPanel p, SpinCADBlock b) {
-		p.setDragModeDragMove();
 		getModel().addBlock(b);
 		getModel().setChanged(true);
-		b.selected = true;
-		b.x_pos = p.getMouseX();
-		b.y_pos = p.getMouseY();
-		p.repaint();
+		p.dropBlockPanel(b);
+
 	}
 
 	public boolean isSimRunning() {

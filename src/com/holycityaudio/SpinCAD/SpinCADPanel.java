@@ -63,8 +63,7 @@ public class SpinCADPanel extends JPanel {
 	private Point startPoint;
 	private Point stopPoint;
 	private Point mouseAt;
-	private Point dragStart;
-	private static Point lastMouse = null;
+	private Point lastMouse = null;
 
 	private SpinCADPin startPin;
 	private SpinCADPin stopPin;
@@ -87,6 +86,10 @@ public class SpinCADPanel extends JPanel {
 					spdFrame.getModel();
 					SpinCADBlock b = null;	
 					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
+					
+					if(lastMouse == null) {
+						lastMouse = mouseAt;
+					}
 
 					while(itr.hasNext()) {
 						b = itr.next();
@@ -331,10 +334,13 @@ public class SpinCADPanel extends JPanel {
 	int getMouseY() {
 		return (int) mouseAt.getY();
 	}
+	
 	public void putMouseOnBlock(SpinCADBlock b) {
 		Point p = new Point();
-		Rectangle rv = this.getBounds();
-		p.setLocation(b.getX() + b.width/2 + rv.getMinX(), b.getY() + b.height/2 + rv.getMinY());
+		Point q = new Point();
+//		Rectangle rv = this.getBounds();
+		q = this.getLocation();
+		p.setLocation(b.getX() + b.width/2 + q.getX(), b.getY() + b.height/2 + q.getY());
 		moveMouse(p);
 	}
 
@@ -560,6 +566,15 @@ public class SpinCADPanel extends JPanel {
 			block = itr.next();
 			block.selected = false;				
 		}
+	}
+	
+	public void dropBlockPanel(SpinCADBlock b) {
+//		setDragModeDragMove();
+		b.selected = true;
+		b.x_pos = 100;
+		b.y_pos = 100;
+		putMouseOnBlock(b);
+		repaint();
 	}
 
 	// popup menu handling
