@@ -17,12 +17,9 @@ rdax	inp2,1
 rdax	inp1,-1
 @endif
 @isPinConnected Fade 
-mulx	pot0
+mulx	input0
 @else
 sof 0.5, 0.0
-@endif
-
-@isPinConnected Input_1
 rdax	inp1,1
 @endif
 

@@ -123,14 +123,14 @@ public class ElmProgram implements Serializable {
 	public static final int REG29 = 0x3d;
 	public static final int REG30 = 0x3e;
 	public static final int REG31 = 0x3f;
-	
+
 	// GSW - I am adding code to track allocation of the SIN and RAMP LFOs
 	// Otherwise it can be hard to tell which block is using what
 	// counter needs to be cleared prior to a generateCode() and will increment
 	// every time a WLDR or WLDS is called (once per block, since with conditional
 	// paths it's conceivable that more than one reference might exist in one block
 	// and still be OK
-	
+
 	public int usedSINLFO0 = 0;
 	public int usedSINLFO1 = 0;
 	public int usedRMPLFO0 = 0;
@@ -141,7 +141,7 @@ public class ElmProgram implements Serializable {
 	// although upper case.  This allows direct use of the parsed string
 	// from a Spin ASM file, after conversion to upper case.
 	// It's also less confusing as all documentation uses Spin names.
-	
+
 	public static final int NEG = 0x01;
 	public static final int GEZ = 0x02;
 	public static final int ZRO = 0x04;
@@ -322,8 +322,8 @@ public class ElmProgram implements Serializable {
 	}
 
 
-	
-	
+
+
 	/**
 	 * Gets the maximum number of instructions supported.
 	 * 
@@ -821,7 +821,7 @@ public class ElmProgram implements Serializable {
 		nComments = nComments + 1;
 		instList.add(new Comment(s));
 	}
-	
+
 	/**
 	 * Reads from the delay memory with the read pointer value modulated by the
 	 * selected LFO.
@@ -908,18 +908,18 @@ public class ElmProgram implements Serializable {
 		checkCodeLen();
 		instList.add(new LoadAccumulator(addr));
 	}
-	
+
 	// GSW - added to keep track of LFO reference/allocation so that we can be aware
 	// when multiple blocks reference the same LFO, which is usually not what we are looking
 	// for
-	
+
 	public void clearLFOUsedCounts() {
 		usedSINLFO0 = 0;
 		usedSINLFO1 = 0;
 		usedRMPLFO0 = 0;
 		usedRMPLFO1 = 0;	
 	}
-	
+
 	public void incrementLFOUsed(int LFO) {
 		if(LFO == SIN0) {
 			usedSINLFO0 ++;
@@ -931,7 +931,7 @@ public class ElmProgram implements Serializable {
 			usedRMPLFO1 ++;
 		}
 	}
-	
+
 	public int getLFOUsed(int LFO) {
 		int result = 0;
 		if(LFO == SIN0) {

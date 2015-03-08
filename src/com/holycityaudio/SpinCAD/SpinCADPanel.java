@@ -455,12 +455,17 @@ public class SpinCADPanel extends JPanel {
 	public void deleteBlockConnection(SpinCADBlock b) {
 		SpinCADBlock block;
 		Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+		// b is the block to delete
+		// iterate through each block in the model
 		while(itr.hasNext()) {
 			block = itr.next();
 			Iterator<SpinCADPin> itrPin = block.pinList.iterator();
 			SpinCADPin currentPin;
+			// iterate through each pin in each block
 			while(itrPin.hasNext()) {
 				currentPin = itrPin.next();
+				// if the current pin's block connection is this block
+				// then we should delete it
 				if(currentPin.getBlockConnection() == b) {
 					currentPin.deletePinConnection();
 				}

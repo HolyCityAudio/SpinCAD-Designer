@@ -42,7 +42,6 @@ equ tap6Ratio 1.0
 equ tap6Gain 0.5
 @sliderLabel tap6Gain Tap_6_Gain  0.0 1.0 0.5 1000.0 2
   
-
 equ delayOffset -1
 
 // establish the base address for this module

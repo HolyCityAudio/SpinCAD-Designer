@@ -39,8 +39,8 @@
 // @menuitem "2P HPF Fixed" HPF 
 @menuitem "2P/4P Highpass" HPF2P 
 @menuitem "2P State Variable" SVF2P 
-// @menuitem "Biquad" BiQuad 
 @menuitem "2P/4P Lowpass" LPF4P 
+@menuitem "Notch" Notch 
 @menuitem "1-Band EQ" OneBandEQ 
 @menuitem "6-Band EQ" SixBandEQ 
 
@@ -60,20 +60,21 @@
 // @menuitem "Plate Verb 3" very_tight_plate_verb 
 // @menuitem "Reverb/Chorus" GtrReverbChorus 
 // @menuitem "ROM Reverb 1" rom_rev1 
+@menuitem "ROM Reverb 2" rom_rev2 
+@menuitem "Plate Reverb" reverb_plate 
 // @menuitem "Shimmer Reverb" shimmer_verb 
 @menuitem "Small Reverb" MinReverb 
 @menuitem "Adjustable Reverb" reverbA 
 // @menuitem "Reverb Filter" reverbFilter 
 
-@menu "Modulation" 
-// @menuitem "Chorus" Chorus 
-// @menuitem "Rich Chorus" RichChorus 
-@menuitem "Preset Chorus" ChorusPreset 
-// @menuitem "Flanger" Flanger 
+@menu "Modulation"  
+@menuitem "Chorus" Chorus 
+//@menuitem "Quad Chorus" ChorusQuad 
+//@menuitem "Preset Chorus" ChorusPreset 
+@menuitem "Flanger" Flanger 
 @menuitem "Mod Delay" ModDelay 
 @menuitem "Phaser" Phaser 
 // @menuitem "Allpass" allpass 
-// @menuitem "Test Chorus" Test_chorus 
 @menuitem "Ring Modulator" RingMod 
 
 @menu "Pitch"
@@ -82,6 +83,7 @@
 // @menuitem "Pitch Up" PitchUp 
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Pitch Up/Down" pitchupdown 
+@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 
 
 /* @menu "Guitar"
@@ -104,14 +106,18 @@
 @menuitem "Ramp LFO" RampLFO
 @menuitem "Oscillator" Oscillator
 @menuitem "Sample/Hold" SampleHold
+@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Power" PowerControl
 @menuitem "Root" Root
-@menuitem "Clip" ClipControl
-@menuitem "Invert" InvertControl
+@menuitem "Absolute Value" Absa
+@menuitem "Exp" Exp
+@menuitem "Log" Log
 @menuitem "Scale/Offset" ScaleOffsetControl
 @menuitem "Control Mixer" ControlMixer
 @menuitem "Smoother" control_smootherA
+@menuitem "Clip" ClipControl
+@menuitem "Invert" InvertControl
 // @menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo

@@ -31,9 +31,10 @@
 			
 			private int sigin;
 			private int avg;
-			private int gain;
-			private int dacl;
-			private int dacr;
+			private int rms;
+			private int output;
+			private int square;
+			private int logPin;
 			private double inGain = 0.1;
 			private double filt = 0.001;
 
@@ -42,7 +43,11 @@
 				setName("RMS_Limiter");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addOutputPin(this, "Audio_Output");
+				addOutputPin(this, "Output");
+				addControlOutputPin(this, "RMS");
+				addControlOutputPin(this, "Square");
+				addControlOutputPin(this, "Log");
+				addControlOutputPin(this, "Avg");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -80,22 +85,29 @@
 			// finally, generate the instructions
 			sigin = sfxb.allocateReg();
 			avg = sfxb.allocateReg();
-			gain = sfxb.allocateReg();
-			dacl = sfxb.allocateReg();
-			dacr = sfxb.allocateReg();
+			rms = sfxb.allocateReg();
+			output = sfxb.allocateReg();
+			square = sfxb.allocateReg();
+			logPin = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(adcl, inGain);
 			sfxb.writeRegister(sigin, 1);
 			sfxb.mulx(sigin);
+			sfxb.writeRegister(square, 1.0);
 			sfxb.readRegisterFilter(avg, filt);
 			sfxb.writeRegister(avg, 1);
 			sfxb.log(-0.5, -0.125);
+			sfxb.writeRegister(logPin, 1.0);
 			sfxb.exp(1, 0);
-			sfxb.writeRegister(gain, 1);
+			sfxb.writeRegister(rms, 1);
 			sfxb.mulx(adcl);
 			sfxb.scaleOffset(1.5, 0);
-			sfxb.writeRegister(dacl, 0);
-			this.getPin("Audio_Output").setRegister(dacl);
+			sfxb.writeRegister(output, 0);
+			this.getPin("Output").setRegister(output);
+			this.getPin("RMS").setRegister(rms);
+			this.getPin("Square").setRegister(square);
+			this.getPin("Log").setRegister(logPin);
+			this.getPin("Avg").setRegister(avg);
 			}
 			
 

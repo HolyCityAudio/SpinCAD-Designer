@@ -105,49 +105,6 @@ public class SpinCADModel implements Serializable {
 		return nSwaps;
 	}
 
-	// TODO this function setConnection appears to not be used anywhere
-	public int setConnection(int sink, String sinkPinName, int source,
-			String sourcePinName) {
-		Iterator<SpinCADBlock> itr = blockList.iterator();
-		System.out.printf("Set connection...\n", name);
-		SpinCADBlock block;
-		SpinCADBlock sourceBlock = null;
-		SpinCADPin sourcePin = null;
-		int b = -1;
-
-		while (itr.hasNext()) {
-			block = itr.next();
-			b = block.getBlockNum();
-			if (b == sink) {
-				//				System.out.printf("Sink %s [%d]\n", block.getName(), b);
-				Iterator<SpinCADPin> itrPin = block.pinList.iterator();
-				SpinCADPin currentPin;
-
-				while (itrPin.hasNext()) {
-					currentPin = itrPin.next();
-					if (currentPin.getName() == sinkPinName) {
-						//						System.out.printf("Sink pin %s\n", sinkPinName);
-						currentPin.setConnection(sourceBlock, sourcePin);
-					}
-				}
-			}
-			if (b == source) {
-				//				System.out.printf("Source %s [%d]\n", block.getName(), b);
-				Iterator<SpinCADPin> itrPin = block.pinList.iterator();
-				SpinCADPin currentPin;
-
-				while (itrPin.hasNext()) {
-					currentPin = itrPin.next();
-					if (currentPin.getName() == sourcePinName) {
-						sourcePin = currentPin;
-						//						System.out.printf("Source pin %s\n", sinkPinName);
-					}
-				}
-			}
-		}
-		return 0;
-	}
-
 	public SpinCADBlock getBlock(int blockNum) {
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		// System.out.printf("get Block...\n", name);
@@ -328,6 +285,23 @@ public class SpinCADModel implements Serializable {
 		return getRenderBlock().getCodeLen() - getRenderBlock().getNumComments();
 	}
 
+	public static int countLFOReferences(String matchString) {
+		String list = getRenderBlock().getProgramListing();
+		int lastIndex = 0;
+		int count =0;
+
+		while(lastIndex != -1){
+
+			lastIndex = list.indexOf(matchString,lastIndex);
+
+			if( lastIndex != -1){
+				count ++;
+				lastIndex+=matchString.length();
+			}
+		}
+		return count;
+	}
+	
 	public static SpinFXBlock getRenderBlock() {
 		return renderBlock;
 	}

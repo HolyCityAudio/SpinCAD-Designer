@@ -95,9 +95,6 @@
 			sfxb.mulx(input0);
 			} else {
 			sfxb.scaleOffset(0.5, 0.0);
-			}
-			
-			if(this.getPin("Input_1").isConnected() == true) {
 			sfxb.readRegister(inp1, 1);
 			}
 			

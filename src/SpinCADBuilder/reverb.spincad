@@ -4,10 +4,10 @@
 @controlInput input0 Pot0
 @controlInput input1 Pot1
 @controlInput input2 Pot2
-@sliderLabel kiap Input_All_Pass 0.25 0.95 100.0 100.0 2 
-@sliderLabel klap Loop_All_Pass 0.25 0.95 100.0 100.0 2 
-@sliderLabel kfl Low_Pass 100 5000 40.0 100.0 2 LOGFREQ
 ;@sliderLabel kfh High_Pass 40 1000 100.0 100.0 2 LOGFREQ
+
+equ gain 0.5 
+@sliderLabel gain Input_Gain 0.01 1.0 0.5 10000.0 2 
 
 
 mem   pdel   4600  ; pre-delay, 100mS at a 46khz clock freq.
@@ -27,10 +27,16 @@ equ output reg12
 
 ;constants:  ---- these should have control panel sliders
 
+equ   kiap   0.5  ; all pass filter
+@sliderLabel kiap Input_All_Pass 0.25 0.95 100.0 100.0 2 
+
+equ   klap   0.6  ;  all pass filter
+@sliderLabel klap Loop_All_Pass 0.25 0.95 100.0 100.0 2 
+
 equ   kfh   0.01  ; high pass filter
 equ   kfl   0.4  ; low pass filter
-equ   kiap   0.5  ; all pass filter
-equ   klap   0.6  ;  all pass filter
+@sliderLabel kfl Low_Pass 100 5000 40.0 100.0 2 LOGFREQ
+
 
 ; block control parameters from control panel
 equ nAPs 2
@@ -81,7 +87,7 @@ skp   run,label
 wldr   0,0,4096      ;initialize predelay
 
 label:
-rdax   input,1.0      ;put inputs into predelay
+rdax   input,gain      ;put inputs into predelay
 ; rdax   adcr,0.5
 wra   pdel,0
 

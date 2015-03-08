@@ -90,6 +90,9 @@ public class Skip extends Instruction {
 
 	// GSW in this section I changed all constants to be consistent
 	// with Spin ASM, less confusing that way
+	// GSW 02/01/2015, looks like Skip instruction only handles one flag at a time!
+	// Suggested remedy will be:
+	// match flags with current bit. if true, clear that bit and continue.
 	@Override
 	public void simulate(SimulatorState state) {
 		boolean skip = false;

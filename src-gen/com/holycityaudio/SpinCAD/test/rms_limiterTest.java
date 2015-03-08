@@ -49,7 +49,7 @@ f.dropBlock(p, o);
 }
 {
 	SpinCADPin p1 = o.getPin("Input 1");
-	SpinCADPin p2 = m.getPin("Audio_Output");
+	SpinCADPin p2 = m.getPin("Output");
 	p2.setConnection(o, p1);
 }
 f.getModel().sortAlignGen();

@@ -41,6 +41,8 @@
 
 		private reverbCADBlock gCB;
 		// declare the controls
+			JSlider gainSlider;
+			JLabel  gainLabel;	
 			JSlider kiapSlider;
 			JLabel  kiapLabel;	
 			JSlider klapSlider;
@@ -59,6 +61,15 @@
 				frame.setTitle("Reverb");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+			gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.01 * 10000.0),(int) (1.0 * 10000.0), (int) (gCB.getgain() * 10000.0));
+				gainSlider.addChangeListener(new reverbSliderListener());
+				gainLabel = new JLabel();
+				updategainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(gainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(gainSlider);		
 			
 			kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkiap() * 100.0));
 				kiapSlider.addChangeListener(new reverbSliderListener());
@@ -99,6 +110,10 @@
 		// add change listener for Sliders 
 		class reverbSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == gainSlider) {
+				gCB.setgain((double) (gainSlider.getValue()/10000.0));
+				updategainLabel();
+			}
 			if(ce.getSource() == kiapSlider) {
 				gCB.setkiap((double) (kiapSlider.getValue()/100.0));
 				updatekiapLabel();
@@ -131,6 +146,9 @@
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updategainLabel() {
+		gainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getgain()));		
+		}		
 		private void updatekiapLabel() {
 		kiapLabel.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		
 		}		

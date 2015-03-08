@@ -1,88 +1,62 @@
 @name SampleHold
-@audioInput input Input
-@audioOutput output Output 
-@controlInput input1 Volume
+
+@controlInput input1 Control_In
 @controlInput rate Rate
-@controlOutput sample Sample_Hold
+@controlOutput output Sample_Hold
+;@controlOutput ramp Ramp_LFO
 
 
 ; Sample and Hold Demo
-; Random Tone Generator
+; Samples the control input and puts the sampled/held signal
+; at the output
+equ output reg0
+equ hold reg1
+;equ ramp reg2
+equ symmetry 0.25
 
-; holding registers for LFSR noise generator
-equ temp reg0
-equ lfsr reg1
-equ lfsr2 reg2
+equ lfoSel 0
+@comboBox lfoSel 'Ramp 0' 'Ramp 1'
 
-; registers for DIY LFO
-equ   s1   reg3
-equ   c1   reg4
-equ   k1   reg5
-equ   output reg6
+// variable - Name - low - high - multiplier - precision - option 
+//@sliderLabel symmetry Symmetry 10.0 50.0 200.0 1.0 1 LINEAR 
+
+@isPinConnected Control_In
+@isPinConnected Rate
 
 skp    run, start
-wldr    0,20,4096
-
-; set up noise gen
-ldax    input 
-or       %001000 ; just to ensure it is really non-zero 
-wrax    lfsr,0
-
-; set up oscillator
-sof      0,0.5
-wrax   c1,1
-wrax   k1, 0
+wldr    lfoSel,20,4096
 
 start:
-
-; run noise generator - stolen from Frank T.
-ldax   lfsr ; get lfsr reg 
-and    $00ffff ; get rid of upper bits to avoid saturating 
-wrax    lfsr2,1.0 ; save the result and keep in acc 
-rdax    lfsr2,0.5 ; get lfsr shifted 1 bit and add it 
-rdax    lfsr2,0.25 ; get lfsr shifted 2 bits and add 
-rdax    lfsr2,0.0078125 ; get lfsr shifted 7 bits and add 
-and    %000001 ; only care about lsb of result 
-wrax    temp,0 ; save result 
-rdax    lfsr,0.5 ; get lfsr reg shifted right 
-and    $7fffff ; clear msb 
-wrax    lfsr,0 ; save result 
-ldax    temp ; get the result back 
-skp    zro,shftzro ; if 0 jump 
-; if here the bit was a 1 
-sof    0,0 ; clear acc 
-rdax    lfsr,1.0 ; get the low 
-or       $800000 ; set the bit 
-wrax    lfsr,1 ; save it
 
 samplehold:
 ldax    rate   ;sets sample and hold speed
 mulx    rate   ;make the taper a bit nicer 
 mulx    rate
 sof    0.5, 0.1 ; limit the pot to get a nice range of speeds
+@isEqualTo lfoSel 0
 wrax    rmp0_rate,0   ;write to ramp 1 rate to set speed 
 cho rdal, rmp0   ;get current value of rmp0
-sof    -1, 0.001 ; make ramp go from -0.5 to 0.001
+@else
+wrax    rmp1_rate,0   ;write to ramp 1 rate to set speed 
+cho rdal, rmp1   ;get current value of rmp0
+@endif
 
-skp    neg, shftzro  ; if the ramp is less than 0, skip past this part
-ldax   lfsr ; read the last noise value
-absa        ; make sure it's positive
-sof    0.2, 0.05 ; scale to a value we can use for the oscillator, 0.05 to 0.25
-wrax   k1, 0 ; set lfo speed and clear
+;wrax ramp, 1
+sof    1.0, -symmetry ; make ramp go from -0.25 to 0.25
 
-shftzro:
-
-; generate wave
-; k1 is the triangle wave rate, which we get from the sample and hold.
-ldax   c1
-mulx   k1
-rdax   s1,1
-wrax   s1,-1
-mulx   k1
-rdax   c1,1
-wrax   c1,0
-
-rdax   c1, 0.1 ; oscillator is loud.  let's make it quieter.
-mulx   input1   ; use POT1 for volume of generated wave
+skp    ZRC, shftzrc  ; if the ramp is less than 0, skip past this part
+clr
+rdax hold, 1
 wrax   output, 0 ; ACC to ADC
+skp zro, holding
+
+shftzrc:
+ldax   input1 ; read the last control input value
+; absa        ; make sure it's positive
+wrax hold, 0
+
+holding:
+@setOutputPin Sample_Hold output
+@endif
+@endif
 

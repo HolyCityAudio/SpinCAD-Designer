@@ -68,7 +68,7 @@ public class OneBandEQCADBlock extends SpinCADBlock{
 			//		;sum inputs to temp register:
 
 			//			rdax	adcr,0.5
-			sfxb.readRegister(input, 0.5);
+			sfxb.readRegister(input, 1.0);
 			//			rdax	adcl,0.5
 			//			wrax	eqin,0
 

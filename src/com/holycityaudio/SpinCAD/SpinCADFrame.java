@@ -40,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
@@ -94,7 +95,9 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * 
 	 */
-	int buildNam = 8831;
+
+	int buildNum = 896;
+
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -153,7 +156,7 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	
+
 	@SuppressWarnings("unused")
 	public SpinCADFrame() {
 		setTitle("SpinCAD Designer - Untitled");
@@ -404,7 +407,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MessageBox("About SpinCAD Designer", "Version 0.96 Build " + buildNam + "\n"
+				MessageBox("About SpinCAD Designer", "Version 0.96 Build " + buildNum + "\n"
 						+ "Copyright 2015 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
@@ -609,7 +612,7 @@ public class SpinCADFrame extends JFrame {
 
 						int index = 0;
 						int failed = 0;
-						
+
 						File files[] = fc.getSelectedFiles();
 						// This is where a real application would open the file.
 						saveMRUFolder(files[0].getPath());
@@ -1010,7 +1013,7 @@ public class SpinCADFrame extends JFrame {
 					if(loggerIsVisible) {
 						sim.showLevelLogger(loggerPanel);
 					}
-//					sim.showLevelMeter();
+					//					sim.showLevelMeter();
 					// TODO debugging ramp LFO
 					// start() is a Thread method...
 					sim.start();
@@ -1089,6 +1092,12 @@ public class SpinCADFrame extends JFrame {
 		final JProgressBar progressBar_2 = new JProgressBar();
 		final JProgressBar progressBar_1 = new JProgressBar();
 		final JProgressBar progressBar = new JProgressBar();
+		final JTextField ramp0Bar = new JTextField("RMP 0", 6);
+		final JTextField ramp1Bar = new JTextField("RMP 1", 6);
+		final JTextField sine0Bar = new JTextField("SIN 0", 6);
+		final JTextField sine1Bar = new JTextField("SIN 1", 6);
+		
+		
 
 		class Task extends SwingWorker<Void, Void> {
 			/*
@@ -1142,14 +1151,43 @@ public class SpinCADFrame extends JFrame {
 			progressBar_1.setStringPainted(true);
 			progressBar_1.setBorder(border);
 
+			ramp0Bar.setHorizontalAlignment(JTextField.CENTER);
+			ramp0Bar.setBackground(Color.GREEN);
+			ramp0Bar.setForeground(Color.BLUE);
+
+			ramp1Bar.setHorizontalAlignment(JTextField.CENTER);
+			ramp1Bar.setBackground(Color.GREEN);
+			ramp1Bar.setForeground(Color.BLUE);
+
+			sine0Bar.setHorizontalAlignment(JTextField.CENTER);
+			sine0Bar.setBackground(Color.GREEN);
+			sine0Bar.setForeground(Color.BLUE);
+
+			sine1Bar.setHorizontalAlignment(JTextField.CENTER);
+			sine1Bar.setBackground(Color.GREEN);
+			sine1Bar.setForeground(Color.BLUE);
+			
+			Dimension lfoBarDim = sine1Bar.getPreferredSize();
+	
+			ramp0Bar.setMaximumSize(lfoBarDim);
+			ramp1Bar.setMaximumSize(lfoBarDim);
+			sine0Bar.setMaximumSize(lfoBarDim);
+			sine1Bar.setMaximumSize(lfoBarDim);
+
 			add(progressBar_2);
 			add(progressBar);
 			add(progressBar_1);
+
+			add(sine0Bar);
+			add(sine1Bar);
+			add(ramp0Bar);
+			add(ramp1Bar);
 		}
 
 		/**
 		 * Invoked when the user presses the start button.
 		 */
+		
 		public void actionPerformed(ActionEvent evt) {
 			// progressBar.setIndeterminate(true);
 			int codeLength = getModel().sortAlignGen();
@@ -1193,6 +1231,54 @@ public class SpinCADFrame extends JFrame {
 				progressBar_1.setForeground(Color.red);
 			}
 			progressBar_1.setValue(ramUsed);
+
+			int rampLFO_0 = SpinCADModel.countLFOReferences("LoadRampLFO(0");
+			if(rampLFO_0 == 0) {
+				ramp0Bar.setBackground(Color.GREEN);
+				ramp0Bar.setForeground(Color.black);
+			} else if(rampLFO_0 == 1) {
+				ramp0Bar.setBackground(Color.YELLOW);
+				ramp0Bar.setForeground(Color.black);
+			} else { 
+				ramp0Bar.setBackground(Color.RED);
+				ramp0Bar.setForeground(Color.white);
+			}
+
+			int rampLFO_1 = SpinCADModel.countLFOReferences("LoadRampLFO(1");
+			if(rampLFO_1 == 0) {
+				ramp1Bar.setBackground(Color.GREEN);
+				ramp1Bar.setForeground(Color.black);
+			} else if(rampLFO_1 == 1) {
+				ramp1Bar.setBackground(Color.YELLOW);
+				ramp1Bar.setForeground(Color.black);
+			} else { 
+				ramp1Bar.setBackground(Color.RED);
+				ramp1Bar.setForeground(Color.white);
+			}
+			
+			int sineLFO_0 = SpinCADModel.countLFOReferences("LoadSinLFO(0");
+			if(sineLFO_0 == 0) {
+				sine0Bar.setBackground(Color.GREEN);
+				sine0Bar.setForeground(Color.black);
+			} else if(sineLFO_0 == 1) {
+				sine0Bar.setBackground(Color.YELLOW);
+				sine0Bar.setForeground(Color.black);
+			} else { 
+				sine0Bar.setBackground(Color.RED);
+				sine0Bar.setForeground(Color.white);
+			}
+			
+			int sineLFO_1 = SpinCADModel.countLFOReferences("LoadSinLFO(1");
+			if(sineLFO_1 == 0) {
+				sine1Bar.setBackground(Color.GREEN);
+				sine1Bar.setForeground(Color.black);
+			} else if(sineLFO_1 == 1) {
+				sine1Bar.setBackground(Color.YELLOW);
+				sine1Bar.setForeground(Color.black);
+			} else { 
+				sine1Bar.setBackground(Color.RED);
+				sine1Bar.setForeground(Color.white);
+			}
 		}
 
 		public void update() {

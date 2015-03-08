@@ -44,7 +44,9 @@ import javax.swing.event.ChangeListener;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
-public class SinCosLFOControlPanel implements ChangeListener, ActionListener, ItemListener {
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+
+public class SinCosLFOControlPanel extends spinCADControlPanel implements ChangeListener, ActionListener, ItemListener {
 
 	private JSlider lfoWidthSlider = new JSlider(JSlider.HORIZONTAL, 0, 32767, 8192);
 	private JLabel lfoWidthLabel = new JLabel("LFO Rate");
@@ -144,7 +146,7 @@ public class SinCosLFOControlPanel implements ChangeListener, ActionListener, It
 	}	
 
 	private void updateLfoRateLabel() {
-		lfoRateLabel.setText(String.format("%2.1f Hz", (ElmProgram.getSamplerate() * pC.getLFORate()) / (2 * Math.PI * Math.pow(2.0 ,17))));
+		lfoRateLabel.setText(String.format("%2.1f Hz", coeffToLFORate(pC.getLFORate())));
 	}
 
 	private void updateLfoWidthLabel() {

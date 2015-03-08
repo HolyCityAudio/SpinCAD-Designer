@@ -29,6 +29,8 @@
 			private static final long serialVersionUID = 1L;
 			private rom_rev1ControlPanel cp = null;
 			
+			private double gain = 0.5;
+			private double kiap = 0.5;
 			private int temp;
 			private int lpf1;
 			private int lpf2;
@@ -42,8 +44,8 @@
 			private int hf;
 			private int lf;
 			private int lapout;
-			private int rapout;
 			private int dacl;
+			private int rapout;
 			private int dacr;
 
 			public rom_rev1CADBlock(int x, int y) {
@@ -52,12 +54,14 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addInputPin(this, "Input_Right");
-				addOutputPin(this, "Audio_Output_1");
-				addOutputPin(this, "Audio_Output_2");
-				addControlInputPin(this, "Reverb");
+				addOutputPin(this, "Output_Left");
+				addOutputPin(this, "Output_Right");
+				addControlInputPin(this, "Reverb_Time");
 				addControlInputPin(this, "Low_Freq");
 				addControlInputPin(this, "High_Freq");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -93,7 +97,7 @@
 			if(sp != null) {
 				adcr = sp.getRegister();
 			}
-			sp = this.getPin("Reverb").getPinConnection();
+			sp = this.getPin("Reverb_Time").getPinConnection();
 			int input0 = -1;
 			if(sp != null) {
 				input0 = sp.getRegister();
@@ -110,15 +114,18 @@
 			}
 			
 			// finally, generate the instructions
+			if(this.getPin("Input_Right").isConnected() == true) {
+			sfxb.FXallocDelayMem("rap1", 186); 
+			sfxb.FXallocDelayMem("rap2", 253); 
+			sfxb.FXallocDelayMem("rap3", 302); 
+			sfxb.FXallocDelayMem("rap4", 498); 
+			}
+			
 			if(this.getPin("Input_Left").isConnected() == true) {
 			sfxb.FXallocDelayMem("lap1", 156); 
 			sfxb.FXallocDelayMem("lap2", 223); 
 			sfxb.FXallocDelayMem("lap3", 332); 
 			sfxb.FXallocDelayMem("lap4", 548); 
-			sfxb.FXallocDelayMem("rap1", 186); 
-			sfxb.FXallocDelayMem("rap2", 253); 
-			sfxb.FXallocDelayMem("rap3", 302); 
-			sfxb.FXallocDelayMem("rap4", 498); 
 			sfxb.FXallocDelayMem("ap1", 1251); 
 			sfxb.FXallocDelayMem("ap1b", 1751); 
 			sfxb.FXallocDelayMem("ap2", 1443); 
@@ -144,9 +151,12 @@
 			hf = sfxb.allocateReg();
 			lf = sfxb.allocateReg();
 			lapout = sfxb.allocateReg();
-			rapout = sfxb.allocateReg();
 			dacl = sfxb.allocateReg();
+			if(this.getPin("Output_Right").isConnected() == true) {
+			rapout = sfxb.allocateReg();
 			dacr = sfxb.allocateReg();
+			}
+			
 			sfxb.skip(RUN, 1);
 			sfxb.loadSinLFO((int) SIN0,(int) 12, (int) 160);
 			sfxb.FXchorusReadDelay(SIN0, 6, "ap1+", 50);
@@ -164,26 +174,29 @@
 			sfxb.readRegister(POT2, 1.0);
 			sfxb.scaleOffset(0.8, -0.8);
 			sfxb.writeRegister(lf, 0);
-			sfxb.readRegister(adcl, 0.5);
-			sfxb.FXreadDelay("lap1#", 0, -0.5);
-			sfxb.FXwriteAllpass("lap1", 0, 0.5);
-			sfxb.FXreadDelay("lap2#", 0, -0.5);
-			sfxb.FXwriteAllpass("lap2", 0, 0.5);
-			sfxb.FXreadDelay("lap3#", 0, -0.5);
-			sfxb.FXwriteAllpass("lap3", 0, 0.5);
-			sfxb.FXreadDelay("lap4#", 0, -0.5);
-			sfxb.FXwriteAllpass("lap4", 0, 0.5);
+			sfxb.readRegister(adcl, gain);
+			sfxb.FXreadDelay("lap1#", 0, -kiap);
+			sfxb.FXwriteAllpass("lap1", 0, kiap);
+			sfxb.FXreadDelay("lap2#", 0, -kiap);
+			sfxb.FXwriteAllpass("lap2", 0, kiap);
+			sfxb.FXreadDelay("lap3#", 0, -kiap);
+			sfxb.FXwriteAllpass("lap3", 0, kiap);
+			sfxb.FXreadDelay("lap4#", 0, -kiap);
+			sfxb.FXwriteAllpass("lap4", 0, kiap);
 			sfxb.writeRegister(lapout, 0);
-			sfxb.readRegister(adcr, 0.5);
-			sfxb.FXreadDelay("rap1#", 0, -0.5);
-			sfxb.FXwriteAllpass("rap1", 0, 0.5);
-			sfxb.FXreadDelay("rap2#", 0, -0.5);
-			sfxb.FXwriteAllpass("rap2", 0, 0.5);
-			sfxb.FXreadDelay("rap3#", 0, -0.5);
-			sfxb.FXwriteAllpass("rap3", 0, 0.5);
-			sfxb.FXreadDelay("rap4#", 0, -0.5);
-			sfxb.FXwriteAllpass("rap4", 0, 0.5);
+			if(this.getPin("Input_Right").isConnected() == true) {
+			sfxb.readRegister(adcr, gain);
+			sfxb.FXreadDelay("rap1#", 0, -kiap);
+			sfxb.FXwriteAllpass("rap1", 0, kiap);
+			sfxb.FXreadDelay("rap2#", 0, -kiap);
+			sfxb.FXwriteAllpass("rap2", 0, kiap);
+			sfxb.FXreadDelay("rap3#", 0, -kiap);
+			sfxb.FXwriteAllpass("rap3", 0, kiap);
+			sfxb.FXreadDelay("rap4#", 0, -kiap);
+			sfxb.FXwriteAllpass("rap4", 0, kiap);
 			sfxb.writeRegister(rapout, 0);
+			}
+			
 			sfxb.FXreadDelay("del4#", 0, 1.0);
 			sfxb.mulx(rt);
 			sfxb.readRegister(lapout, 1.0);
@@ -259,6 +272,9 @@
 			sfxb.FXreadDelay("del3+", 3200, 1.0);
 			sfxb.FXreadDelay("del4+", 4016, 0.8);
 			sfxb.writeRegister(dacl, 0.0);
+			}
+			
+			if(this.getPin("Output_Right").isConnected() == true) {
 			sfxb.FXreadDelay("del3+", 1163, 1.5);
 			sfxb.FXreadDelay("del4+", 3330, 1.2);
 			sfxb.FXreadDelay("del1+", 2420, 1.0);
@@ -270,4 +286,18 @@
 			}
 			
 			// create setters and getter for control panel variables
+			public void setgain(double __param) {
+				gain = __param;	
+			}
+			
+			public double getgain() {
+				return gain;
+			}
+			public void setkiap(double __param) {
+				kiap = __param;	
+			}
+			
+			public double getkiap() {
+				return kiap;
+			}
 		}	
