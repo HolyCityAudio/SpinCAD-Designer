@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -88,31 +88,26 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			
 			sp = this.getPin("Input_Right").getPinConnection();
 			int adcr = -1;
 			if(sp != null) {
 				adcr = sp.getRegister();
 			}
-			
 			sp = this.getPin("Reverb").getPinConnection();
 			int input0 = -1;
 			if(sp != null) {
 				input0 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Low_Freq").getPinConnection();
 			int input1 = -1;
 			if(sp != null) {
 				input1 = sp.getRegister();
 			}
-			
 			sp = this.getPin("High_Freq").getPinConnection();
 			int input2 = -1;
 			if(sp != null) {
 				input2 = sp.getRegister();
 			}
-			
 			
 			// finally, generate the instructions
 			if(this.getPin("Input_Left").isConnected() == true) {
@@ -153,7 +148,7 @@
 			dacl = sfxb.allocateReg();
 			dacr = sfxb.allocateReg();
 			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO(SIN0, 12, 160);
+			sfxb.loadSinLFO((int) SIN0,(int) 12, (int) 160);
 			sfxb.FXchorusReadDelay(SIN0, 6, "ap1+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 0, "ap1+", 51);
 			sfxb.FXwriteDelay("ap1+", 100, 0);

@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -82,31 +82,26 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			
 			sp = this.getPin("Input_Right").getPinConnection();
 			int adcr = -1;
 			if(sp != null) {
 				adcr = sp.getRegister();
 			}
-			
 			sp = this.getPin("Reverb").getPinConnection();
 			int pot0 = -1;
 			if(sp != null) {
 				pot0 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Phase_Rate").getPinConnection();
 			int pot1 = -1;
 			if(sp != null) {
 				pot1 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Phase_Width").getPinConnection();
 			int pot2 = -1;
 			if(sp != null) {
 				pot2 = sp.getRegister();
 			}
-			
 			
 			// finally, generate the instructions
 			sfxb.FXallocDelayMem("buffer", 1000); 
@@ -225,10 +220,10 @@
 			sfxb.exp(1.0, s_dot_ten);
 			sfxb.chorusReadValue(RMP0);
 			sfxb.chorusReadValue(RMP1);
-			sfxb.loadSinLFO(SIN0, 30, 50);
-			sfxb.loadSinLFO(SIN1, 134, 4096);
-			sfxb.loadRampLFO(0, 30, 512);
-			sfxb.loadRampLFO(1, 134, 4096);
+			sfxb.loadSinLFO((int) SIN0,(int) 30, (int) 50);
+			sfxb.loadSinLFO((int) SIN1,(int) 134, (int) 4096);
+			sfxb.loadRampLFO((int) 0, (int) 30, (int) 512);
+			sfxb.loadRampLFO((int) 1, (int) 134, (int) 4096);
 			sfxb.readRegister(input, kq0);
 			sfxb.readRegister(input, -kq0);
 			sfxb.readRegister(input, 0.45);

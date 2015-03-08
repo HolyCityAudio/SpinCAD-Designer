@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -70,19 +70,16 @@
 			if(sp != null) {
 				inp1 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Input_2").getPinConnection();
 			int inp2 = -1;
 			if(sp != null) {
 				inp2 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Fade").getPinConnection();
 			int input0 = -1;
 			if(sp != null) {
 				input0 = sp.getRegister();
 			}
-			
 			
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();

@@ -22,6 +22,7 @@
 		import javax.swing.SwingUtilities;
 		import javax.swing.event.ChangeEvent;
 		import javax.swing.event.ChangeListener;
+		import java.awt.event.ActionEvent;
 		import java.awt.event.WindowEvent;
 		import java.awt.event.WindowListener;
 		import java.awt.event.ItemEvent;
@@ -29,10 +30,13 @@
 		import javax.swing.JSlider;
 		import javax.swing.JLabel;
 		import javax.swing.JCheckBox;
-		
+		import javax.swing.JComboBox;
+		import javax.swing.Box;
+		import java.awt.Dimension;
+		import com.holycityaudio.SpinCAD.spinCADControlPanel;
 		import com.holycityaudio.SpinCAD.CADBlocks.Shelving_HipassCADBlock;
 
-		public class Shelving_HipassControlPanel {
+		public class Shelving_HipassControlPanel extends spinCADControlPanel {
 		private JFrame frame;
 
 		private Shelving_HipassCADBlock gCB;
@@ -55,19 +59,22 @@
 
 			
 			freqSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.350 * 1000.0), (int) (gCB.getfreq() * 1000.0));
-			freqSlider.addChangeListener(new Shelving_HipassSliderListener());
-			freqLabel = new JLabel();
-			updatefreqLabel();
-			frame.getContentPane().add(freqLabel);
-			frame.getContentPane().add(freqSlider);		
+				freqSlider.addChangeListener(new Shelving_HipassSliderListener());
+				freqLabel = new JLabel();
+				updatefreqLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(freqLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(freqSlider);		
 			
 			shelfSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getshelf() * 1000.0));
-			shelfSlider.addChangeListener(new Shelving_HipassSliderListener());
-			shelfLabel = new JLabel();
-			updateshelfLabel();
-			frame.getContentPane().add(shelfLabel);
-			frame.getContentPane().add(shelfSlider);		
-				
+				shelfSlider.addChangeListener(new Shelving_HipassSliderListener());
+				shelfLabel = new JLabel();
+				updateshelfLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(shelfLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(shelfSlider);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -91,16 +98,24 @@
 			}
 			}
 		}
-		// add item listener for Bool (CheckbBox) 
+
+		// add item listener 
 		class Shelving_HipassItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
-		@Override
-		public void itemStateChanged(ItemEvent arg0) {
 			
+		@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				// TODO Auto-generated method stub
+			}
 		}
-	}
-
+		
+		// add action listener 
+		class Shelving_HipassActionListener implements java.awt.event.ActionListener { 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		}
 		private void updatefreqLabel() {
 		freqLabel.setText("Frequency " + String.format("%4.3f", gCB.getfreq()));		
 		}		
@@ -136,9 +151,9 @@
 
 		}
 
-		@Override
-		public void windowOpened(WindowEvent arg0) {
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+			}
 		}
-	}
 		
 	}

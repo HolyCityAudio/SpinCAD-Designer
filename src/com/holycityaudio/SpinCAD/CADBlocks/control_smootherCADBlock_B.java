@@ -23,14 +23,14 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class control_smootherCADBlock extends SpinCADBlock {
+public class control_smootherCADBlock_B extends SpinCADBlock {
 
 	private static final long serialVersionUID = 1L;
 
 	private int filtReg;
 	private double filt = 1.0;	// default value is 1.0 Hz
 
-	public control_smootherCADBlock(int x, int y) {
+	public control_smootherCADBlock_B(int x, int y) {
 		super(x, y);
 		setName("Smoother");	
 		// Iterate through pin definitions and allocate or assign as needed
@@ -43,7 +43,7 @@ public class control_smootherCADBlock extends SpinCADBlock {
 	// In the event there are parameters editable by control panel
 	public void editBlock(){ 
 		if(hasControlPanel == true) {
-			new control_smootherControlPanel(this);
+//			new control_smootherControlPanel(this);
 		}
 	}	
 

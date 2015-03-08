@@ -22,6 +22,7 @@
 		import javax.swing.SwingUtilities;
 		import javax.swing.event.ChangeEvent;
 		import javax.swing.event.ChangeListener;
+		import java.awt.event.ActionEvent;
 		import java.awt.event.WindowEvent;
 		import java.awt.event.WindowListener;
 		import java.awt.event.ItemEvent;
@@ -29,10 +30,13 @@
 		import javax.swing.JSlider;
 		import javax.swing.JLabel;
 		import javax.swing.JCheckBox;
-		
+		import javax.swing.JComboBox;
+		import javax.swing.Box;
+		import java.awt.Dimension;
+		import com.holycityaudio.SpinCAD.spinCADControlPanel;
 		import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
 
-		public class TripleTapControlPanel {
+		public class TripleTapControlPanel extends spinCADControlPanel {
 		private JFrame frame;
 
 		private TripleTapCADBlock gCB;
@@ -61,40 +65,49 @@
 
 			
 			inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getinputGain() * 1000.0));
-			inputGainSlider.addChangeListener(new TripleTapSliderListener());
-			inputGainLabel = new JLabel();
-			updateinputGainLabel();
-			frame.getContentPane().add(inputGainLabel);
-			frame.getContentPane().add(inputGainSlider);		
+				inputGainSlider.addChangeListener(new TripleTapSliderListener());
+				inputGainLabel = new JLabel();
+				updateinputGainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(inputGainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(inputGainSlider);		
 			
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
-			delayLengthSlider.addChangeListener(new TripleTapSliderListener());
-			delayLengthLabel = new JLabel();
-			updatedelayLengthLabel();
-			frame.getContentPane().add(delayLengthLabel);
-			frame.getContentPane().add(delayLengthSlider);		
+				delayLengthSlider.addChangeListener(new TripleTapSliderListener());
+				delayLengthLabel = new JLabel();
+				updatedelayLengthLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(delayLengthLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(delayLengthSlider);		
 			
 			tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
-			tap1RatioSlider.addChangeListener(new TripleTapSliderListener());
-			tap1RatioLabel = new JLabel();
-			updatetap1RatioLabel();
-			frame.getContentPane().add(tap1RatioLabel);
-			frame.getContentPane().add(tap1RatioSlider);		
+				tap1RatioSlider.addChangeListener(new TripleTapSliderListener());
+				tap1RatioLabel = new JLabel();
+				updatetap1RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap1RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap1RatioSlider);		
 			
 			tap2RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
-			tap2RatioSlider.addChangeListener(new TripleTapSliderListener());
-			tap2RatioLabel = new JLabel();
-			updatetap2RatioLabel();
-			frame.getContentPane().add(tap2RatioLabel);
-			frame.getContentPane().add(tap2RatioSlider);		
+				tap2RatioSlider.addChangeListener(new TripleTapSliderListener());
+				tap2RatioLabel = new JLabel();
+				updatetap2RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap2RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap2RatioSlider);		
 			
 			tap3RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
-			tap3RatioSlider.addChangeListener(new TripleTapSliderListener());
-			tap3RatioLabel = new JLabel();
-			updatetap3RatioLabel();
-			frame.getContentPane().add(tap3RatioLabel);
-			frame.getContentPane().add(tap3RatioSlider);		
-				
+				tap3RatioSlider.addChangeListener(new TripleTapSliderListener());
+				tap3RatioLabel = new JLabel();
+				updatetap3RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap3RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap3RatioSlider);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -130,16 +143,24 @@
 			}
 			}
 		}
-		// add item listener for Bool (CheckbBox) 
+
+		// add item listener 
 		class TripleTapItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
-		@Override
-		public void itemStateChanged(ItemEvent arg0) {
 			
+		@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				// TODO Auto-generated method stub
+			}
 		}
-	}
-
+		
+		// add action listener 
+		class TripleTapActionListener implements java.awt.event.ActionListener { 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		}
 		private void updateinputGainLabel() {
 		inputGainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getinputGain()));		
 		}		
@@ -184,9 +205,9 @@
 
 		}
 
-		@Override
-		public void windowOpened(WindowEvent arg0) {
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+			}
 		}
-	}
 		
 	}

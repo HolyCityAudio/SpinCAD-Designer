@@ -22,6 +22,7 @@
 		import javax.swing.SwingUtilities;
 		import javax.swing.event.ChangeEvent;
 		import javax.swing.event.ChangeListener;
+		import java.awt.event.ActionEvent;
 		import java.awt.event.WindowEvent;
 		import java.awt.event.WindowListener;
 		import java.awt.event.ItemEvent;
@@ -29,10 +30,13 @@
 		import javax.swing.JSlider;
 		import javax.swing.JLabel;
 		import javax.swing.JCheckBox;
-		
+		import javax.swing.JComboBox;
+		import javax.swing.Box;
+		import java.awt.Dimension;
+		import com.holycityaudio.SpinCAD.spinCADControlPanel;
 		import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
 
-		public class MN3011aControlPanel {
+		public class MN3011aControlPanel extends spinCADControlPanel {
 		private JFrame frame;
 
 		private MN3011aCADBlock gCB;
@@ -67,61 +71,76 @@
 
 			
 			inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getinputGain() * 1000.0));
-			inputGainSlider.addChangeListener(new MN3011aSliderListener());
-			inputGainLabel = new JLabel();
-			updateinputGainLabel();
-			frame.getContentPane().add(inputGainLabel);
-			frame.getContentPane().add(inputGainSlider);		
+				inputGainSlider.addChangeListener(new MN3011aSliderListener());
+				inputGainLabel = new JLabel();
+				updateinputGainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(inputGainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(inputGainSlider);		
 			
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
-			delayLengthSlider.addChangeListener(new MN3011aSliderListener());
-			delayLengthLabel = new JLabel();
-			updatedelayLengthLabel();
-			frame.getContentPane().add(delayLengthLabel);
-			frame.getContentPane().add(delayLengthSlider);		
+				delayLengthSlider.addChangeListener(new MN3011aSliderListener());
+				delayLengthLabel = new JLabel();
+				updatedelayLengthLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(delayLengthLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(delayLengthSlider);		
 			
 			tap1GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Gain() * 1000.0));
-			tap1GainSlider.addChangeListener(new MN3011aSliderListener());
-			tap1GainLabel = new JLabel();
-			updatetap1GainLabel();
-			frame.getContentPane().add(tap1GainLabel);
-			frame.getContentPane().add(tap1GainSlider);		
+				tap1GainSlider.addChangeListener(new MN3011aSliderListener());
+				tap1GainLabel = new JLabel();
+				updatetap1GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap1GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap1GainSlider);		
 			
 			tap2GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Gain() * 1000.0));
-			tap2GainSlider.addChangeListener(new MN3011aSliderListener());
-			tap2GainLabel = new JLabel();
-			updatetap2GainLabel();
-			frame.getContentPane().add(tap2GainLabel);
-			frame.getContentPane().add(tap2GainSlider);		
+				tap2GainSlider.addChangeListener(new MN3011aSliderListener());
+				tap2GainLabel = new JLabel();
+				updatetap2GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap2GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap2GainSlider);		
 			
 			tap3GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Gain() * 1000.0));
-			tap3GainSlider.addChangeListener(new MN3011aSliderListener());
-			tap3GainLabel = new JLabel();
-			updatetap3GainLabel();
-			frame.getContentPane().add(tap3GainLabel);
-			frame.getContentPane().add(tap3GainSlider);		
+				tap3GainSlider.addChangeListener(new MN3011aSliderListener());
+				tap3GainLabel = new JLabel();
+				updatetap3GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap3GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap3GainSlider);		
 			
 			tap4GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Gain() * 1000.0));
-			tap4GainSlider.addChangeListener(new MN3011aSliderListener());
-			tap4GainLabel = new JLabel();
-			updatetap4GainLabel();
-			frame.getContentPane().add(tap4GainLabel);
-			frame.getContentPane().add(tap4GainSlider);		
+				tap4GainSlider.addChangeListener(new MN3011aSliderListener());
+				tap4GainLabel = new JLabel();
+				updatetap4GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap4GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap4GainSlider);		
 			
 			tap5GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap5Gain() * 1000.0));
-			tap5GainSlider.addChangeListener(new MN3011aSliderListener());
-			tap5GainLabel = new JLabel();
-			updatetap5GainLabel();
-			frame.getContentPane().add(tap5GainLabel);
-			frame.getContentPane().add(tap5GainSlider);		
+				tap5GainSlider.addChangeListener(new MN3011aSliderListener());
+				tap5GainLabel = new JLabel();
+				updatetap5GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap5GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap5GainSlider);		
 			
 			tap6GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap6Gain() * 1000.0));
-			tap6GainSlider.addChangeListener(new MN3011aSliderListener());
-			tap6GainLabel = new JLabel();
-			updatetap6GainLabel();
-			frame.getContentPane().add(tap6GainLabel);
-			frame.getContentPane().add(tap6GainSlider);		
-				
+				tap6GainSlider.addChangeListener(new MN3011aSliderListener());
+				tap6GainLabel = new JLabel();
+				updatetap6GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap6GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap6GainSlider);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -169,16 +188,24 @@
 			}
 			}
 		}
-		// add item listener for Bool (CheckbBox) 
+
+		// add item listener 
 		class MN3011aItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
-		@Override
-		public void itemStateChanged(ItemEvent arg0) {
 			
+		@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				// TODO Auto-generated method stub
+			}
 		}
-	}
-
+		
+		// add action listener 
+		class MN3011aActionListener implements java.awt.event.ActionListener { 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		}
 		private void updateinputGainLabel() {
 		inputGainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getinputGain()));		
 		}		
@@ -232,9 +259,9 @@
 
 		}
 
-		@Override
-		public void windowOpened(WindowEvent arg0) {
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+			}
 		}
-	}
 		
 	}

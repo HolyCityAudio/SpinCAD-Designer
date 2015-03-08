@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -93,31 +93,26 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			
 			sp = this.getPin("Input_Right").getPinConnection();
 			int adcr = -1;
 			if(sp != null) {
 				adcr = sp.getRegister();
 			}
-			
 			sp = this.getPin("Reverb_Level").getPinConnection();
 			int input0 = -1;
 			if(sp != null) {
 				input0 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Wah_Sens").getPinConnection();
 			int input1 = -1;
 			if(sp != null) {
 				input1 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Wah_Level_Q").getPinConnection();
 			int input2 = -1;
 			if(sp != null) {
 				input2 = sp.getRegister();
 			}
-			
 			
 			// finally, generate the instructions
 			sfxb.FXallocDelayMem("ap1", 334); 
@@ -152,7 +147,7 @@
 			sfxb.writeRegister(lp2, 0);
 			sfxb.writeRegister(wf1, 0);
 			sfxb.writeRegister(wf2, 0);
-			sfxb.loadSinLFO(SIN0, 12, 100);
+			sfxb.loadSinLFO((int) SIN0,(int) 12, (int) 100);
 			sfxb.readRegister(adcl, 0.5);
 			sfxb.readRegister(adcr, 0.5);
 			sfxb.writeRegister(mono, 0);

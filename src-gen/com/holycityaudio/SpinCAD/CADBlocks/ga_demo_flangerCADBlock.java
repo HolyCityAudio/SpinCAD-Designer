@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -89,31 +89,26 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			
 			sp = this.getPin("Input_Right").getPinConnection();
 			int adcr = -1;
 			if(sp != null) {
 				adcr = sp.getRegister();
 			}
-			
 			sp = this.getPin("Reverb_Level").getPinConnection();
 			int input0 = -1;
 			if(sp != null) {
 				input0 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Flange_Rate").getPinConnection();
 			int input1 = -1;
 			if(sp != null) {
 				input1 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Effect_Level_Feedback").getPinConnection();
 			int input2 = -1;
 			if(sp != null) {
 				input2 = sp.getRegister();
 			}
-			
 			
 			// finally, generate the instructions
 			if(this.getPin("Input_Left").isConnected() == true) {
@@ -143,9 +138,9 @@
 			sfxb.writeRegister(lp1, 0);
 			sfxb.writeRegister(lp2, 0);
 			sfxb.writeRegister(fhp, 0);
-			sfxb.loadSinLFO(SIN0, 12, 100);
-			sfxb.loadRampLFO(0, 0, 4096);
-			sfxb.loadRampLFO(0, 0, 512);
+			sfxb.loadSinLFO((int) SIN0,(int) 12, (int) 100);
+			sfxb.loadRampLFO((int) 0, (int) 0, (int) 4096);
+			sfxb.loadRampLFO((int) 0, (int) 0, (int) 512);
 			sfxb.readRegister(adcl, 0.5);
 			sfxb.readRegister(adcr, 0.5);
 			sfxb.writeRegister(mono, 0.5);

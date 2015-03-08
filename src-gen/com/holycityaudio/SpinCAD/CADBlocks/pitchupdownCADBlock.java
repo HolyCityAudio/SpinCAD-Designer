@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -71,7 +71,6 @@
 				input = sp.getRegister();
 			}
 			
-			
 			// finally, generate the instructions
 			if(this.getPin("Input").isConnected() == true) {
 			pitch1 = sfxb.allocateReg();
@@ -80,8 +79,8 @@
 			sfxb.FXallocDelayMem("delayd", 4096); 
 			sfxb.FXallocDelayMem("temp", 1); 
 			sfxb.skip(RUN, 2);
-			sfxb.loadRampLFO(1, 16384, 4096);
-			sfxb.loadRampLFO(0, -8192, 4096);
+			sfxb.loadRampLFO((int) 1, (int) 16384, (int) 4096);
+			sfxb.loadRampLFO((int) 0, (int) -8192, (int) 4096);
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayd", 0, 0);
 			sfxb.FXchorusReadDelay(RMP0, REG|COMPC, "delayd", 0);

@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -71,13 +71,12 @@
 				adcl = sp.getRegister();
 			}
 			
-			
 			// finally, generate the instructions
 			sfxb.FXallocDelayMem("delayl", 512); 
 			dacl = sfxb.allocateReg();
 			dacr = sfxb.allocateReg();
 			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO(SIN0, 5, 1024);
+			sfxb.loadSinLFO((int) SIN0,(int) 5, (int) 1024);
 			sfxb.loadAccumulator(adcl);
 			sfxb.FXwriteDelay("delayl", 0, 0);
 			sfxb.FXchorusReadDelay(SIN0, SIN|REG|COMPC, "delayl^", 0);

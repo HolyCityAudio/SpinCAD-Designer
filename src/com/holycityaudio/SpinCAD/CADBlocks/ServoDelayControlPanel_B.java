@@ -30,7 +30,7 @@ import javax.swing.event.ChangeListener;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
-class ServoDelayControlPanel {
+class ServoDelayControlPanel_B {
 
 	private ServoDelayCADBlock mD;
 	private JSlider delaySliderCoarse;
@@ -39,7 +39,7 @@ class ServoDelayControlPanel {
 	private JLabel delayLabelFine;
 	private JFrame frame;
 
-	public ServoDelayControlPanel(ServoDelayCADBlock sDCB) {
+	public ServoDelayControlPanel_B(ServoDelayCADBlock sDCB) {
 		this.mD = sDCB;
 
 		SwingUtilities.invokeLater(new Runnable() {

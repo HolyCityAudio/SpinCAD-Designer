@@ -22,6 +22,7 @@
 		import javax.swing.SwingUtilities;
 		import javax.swing.event.ChangeEvent;
 		import javax.swing.event.ChangeListener;
+		import java.awt.event.ActionEvent;
 		import java.awt.event.WindowEvent;
 		import java.awt.event.WindowListener;
 		import java.awt.event.ItemEvent;
@@ -29,10 +30,13 @@
 		import javax.swing.JSlider;
 		import javax.swing.JLabel;
 		import javax.swing.JCheckBox;
-		
+		import javax.swing.JComboBox;
+		import javax.swing.Box;
+		import java.awt.Dimension;
+		import com.holycityaudio.SpinCAD.spinCADControlPanel;
 		import com.holycityaudio.SpinCAD.CADBlocks.tentapCADBlock;
 
-		public class tentapControlPanel {
+		public class tentapControlPanel extends spinCADControlPanel {
 		private JFrame frame;
 
 		private tentapCADBlock gCB;
@@ -95,159 +99,202 @@
 
 			
 			inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getinputGain() * 1000.0));
-			inputGainSlider.addChangeListener(new tentapSliderListener());
-			inputGainLabel = new JLabel();
-			updateinputGainLabel();
-			frame.getContentPane().add(inputGainLabel);
-			frame.getContentPane().add(inputGainSlider);		
+				inputGainSlider.addChangeListener(new tentapSliderListener());
+				inputGainLabel = new JLabel();
+				updateinputGainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(inputGainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(inputGainSlider);		
 			
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
-			delayLengthSlider.addChangeListener(new tentapSliderListener());
-			delayLengthLabel = new JLabel();
-			updatedelayLengthLabel();
-			frame.getContentPane().add(delayLengthLabel);
-			frame.getContentPane().add(delayLengthSlider);		
+				delayLengthSlider.addChangeListener(new tentapSliderListener());
+				delayLengthLabel = new JLabel();
+				updatedelayLengthLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(delayLengthLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(delayLengthSlider);		
 			
 			tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
-			tap1RatioSlider.addChangeListener(new tentapSliderListener());
-			tap1RatioLabel = new JLabel();
-			updatetap1RatioLabel();
-			frame.getContentPane().add(tap1RatioLabel);
-			frame.getContentPane().add(tap1RatioSlider);		
+				tap1RatioSlider.addChangeListener(new tentapSliderListener());
+				tap1RatioLabel = new JLabel();
+				updatetap1RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap1RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap1RatioSlider);		
 			
 			tap1GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Gain() * 1000.0));
-			tap1GainSlider.addChangeListener(new tentapSliderListener());
-			tap1GainLabel = new JLabel();
-			updatetap1GainLabel();
-			frame.getContentPane().add(tap1GainLabel);
-			frame.getContentPane().add(tap1GainSlider);		
+				tap1GainSlider.addChangeListener(new tentapSliderListener());
+				tap1GainLabel = new JLabel();
+				updatetap1GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap1GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap1GainSlider);		
 			
 			tap2RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
-			tap2RatioSlider.addChangeListener(new tentapSliderListener());
-			tap2RatioLabel = new JLabel();
-			updatetap2RatioLabel();
-			frame.getContentPane().add(tap2RatioLabel);
-			frame.getContentPane().add(tap2RatioSlider);		
+				tap2RatioSlider.addChangeListener(new tentapSliderListener());
+				tap2RatioLabel = new JLabel();
+				updatetap2RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap2RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap2RatioSlider);		
 			
 			tap2GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Gain() * 1000.0));
-			tap2GainSlider.addChangeListener(new tentapSliderListener());
-			tap2GainLabel = new JLabel();
-			updatetap2GainLabel();
-			frame.getContentPane().add(tap2GainLabel);
-			frame.getContentPane().add(tap2GainSlider);		
+				tap2GainSlider.addChangeListener(new tentapSliderListener());
+				tap2GainLabel = new JLabel();
+				updatetap2GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap2GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap2GainSlider);		
 			
 			tap3RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
-			tap3RatioSlider.addChangeListener(new tentapSliderListener());
-			tap3RatioLabel = new JLabel();
-			updatetap3RatioLabel();
-			frame.getContentPane().add(tap3RatioLabel);
-			frame.getContentPane().add(tap3RatioSlider);		
+				tap3RatioSlider.addChangeListener(new tentapSliderListener());
+				tap3RatioLabel = new JLabel();
+				updatetap3RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap3RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap3RatioSlider);		
 			
 			tap3GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Gain() * 1000.0));
-			tap3GainSlider.addChangeListener(new tentapSliderListener());
-			tap3GainLabel = new JLabel();
-			updatetap3GainLabel();
-			frame.getContentPane().add(tap3GainLabel);
-			frame.getContentPane().add(tap3GainSlider);		
+				tap3GainSlider.addChangeListener(new tentapSliderListener());
+				tap3GainLabel = new JLabel();
+				updatetap3GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap3GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap3GainSlider);		
 			
 			tap4RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Ratio() * 1000.0));
-			tap4RatioSlider.addChangeListener(new tentapSliderListener());
-			tap4RatioLabel = new JLabel();
-			updatetap4RatioLabel();
-			frame.getContentPane().add(tap4RatioLabel);
-			frame.getContentPane().add(tap4RatioSlider);		
+				tap4RatioSlider.addChangeListener(new tentapSliderListener());
+				tap4RatioLabel = new JLabel();
+				updatetap4RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap4RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap4RatioSlider);		
 			
 			tap4GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Gain() * 1000.0));
-			tap4GainSlider.addChangeListener(new tentapSliderListener());
-			tap4GainLabel = new JLabel();
-			updatetap4GainLabel();
-			frame.getContentPane().add(tap4GainLabel);
-			frame.getContentPane().add(tap4GainSlider);		
+				tap4GainSlider.addChangeListener(new tentapSliderListener());
+				tap4GainLabel = new JLabel();
+				updatetap4GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap4GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap4GainSlider);		
 			
 			tap5RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap5Ratio() * 1000.0));
-			tap5RatioSlider.addChangeListener(new tentapSliderListener());
-			tap5RatioLabel = new JLabel();
-			updatetap5RatioLabel();
-			frame.getContentPane().add(tap5RatioLabel);
-			frame.getContentPane().add(tap5RatioSlider);		
+				tap5RatioSlider.addChangeListener(new tentapSliderListener());
+				tap5RatioLabel = new JLabel();
+				updatetap5RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap5RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap5RatioSlider);		
 			
 			tap5GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap5Gain() * 1000.0));
-			tap5GainSlider.addChangeListener(new tentapSliderListener());
-			tap5GainLabel = new JLabel();
-			updatetap5GainLabel();
-			frame.getContentPane().add(tap5GainLabel);
-			frame.getContentPane().add(tap5GainSlider);		
+				tap5GainSlider.addChangeListener(new tentapSliderListener());
+				tap5GainLabel = new JLabel();
+				updatetap5GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap5GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap5GainSlider);		
 			
 			tap6RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap6Ratio() * 1000.0));
-			tap6RatioSlider.addChangeListener(new tentapSliderListener());
-			tap6RatioLabel = new JLabel();
-			updatetap6RatioLabel();
-			frame.getContentPane().add(tap6RatioLabel);
-			frame.getContentPane().add(tap6RatioSlider);		
+				tap6RatioSlider.addChangeListener(new tentapSliderListener());
+				tap6RatioLabel = new JLabel();
+				updatetap6RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap6RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap6RatioSlider);		
 			
 			tap6GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap6Gain() * 1000.0));
-			tap6GainSlider.addChangeListener(new tentapSliderListener());
-			tap6GainLabel = new JLabel();
-			updatetap6GainLabel();
-			frame.getContentPane().add(tap6GainLabel);
-			frame.getContentPane().add(tap6GainSlider);		
+				tap6GainSlider.addChangeListener(new tentapSliderListener());
+				tap6GainLabel = new JLabel();
+				updatetap6GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap6GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap6GainSlider);		
 			
 			tap7RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap7Ratio() * 1000.0));
-			tap7RatioSlider.addChangeListener(new tentapSliderListener());
-			tap7RatioLabel = new JLabel();
-			updatetap7RatioLabel();
-			frame.getContentPane().add(tap7RatioLabel);
-			frame.getContentPane().add(tap7RatioSlider);		
+				tap7RatioSlider.addChangeListener(new tentapSliderListener());
+				tap7RatioLabel = new JLabel();
+				updatetap7RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap7RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap7RatioSlider);		
 			
 			tap7GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap7Gain() * 1000.0));
-			tap7GainSlider.addChangeListener(new tentapSliderListener());
-			tap7GainLabel = new JLabel();
-			updatetap7GainLabel();
-			frame.getContentPane().add(tap7GainLabel);
-			frame.getContentPane().add(tap7GainSlider);		
+				tap7GainSlider.addChangeListener(new tentapSliderListener());
+				tap7GainLabel = new JLabel();
+				updatetap7GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap7GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap7GainSlider);		
 			
 			tap8RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap8Ratio() * 1000.0));
-			tap8RatioSlider.addChangeListener(new tentapSliderListener());
-			tap8RatioLabel = new JLabel();
-			updatetap8RatioLabel();
-			frame.getContentPane().add(tap8RatioLabel);
-			frame.getContentPane().add(tap8RatioSlider);		
+				tap8RatioSlider.addChangeListener(new tentapSliderListener());
+				tap8RatioLabel = new JLabel();
+				updatetap8RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap8RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap8RatioSlider);		
 			
 			tap8GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap8Gain() * 1000.0));
-			tap8GainSlider.addChangeListener(new tentapSliderListener());
-			tap8GainLabel = new JLabel();
-			updatetap8GainLabel();
-			frame.getContentPane().add(tap8GainLabel);
-			frame.getContentPane().add(tap8GainSlider);		
+				tap8GainSlider.addChangeListener(new tentapSliderListener());
+				tap8GainLabel = new JLabel();
+				updatetap8GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap8GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap8GainSlider);		
 			
 			tap9RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap9Ratio() * 1000.0));
-			tap9RatioSlider.addChangeListener(new tentapSliderListener());
-			tap9RatioLabel = new JLabel();
-			updatetap9RatioLabel();
-			frame.getContentPane().add(tap9RatioLabel);
-			frame.getContentPane().add(tap9RatioSlider);		
+				tap9RatioSlider.addChangeListener(new tentapSliderListener());
+				tap9RatioLabel = new JLabel();
+				updatetap9RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap9RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap9RatioSlider);		
 			
 			tap9GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap9Gain() * 1000.0));
-			tap9GainSlider.addChangeListener(new tentapSliderListener());
-			tap9GainLabel = new JLabel();
-			updatetap9GainLabel();
-			frame.getContentPane().add(tap9GainLabel);
-			frame.getContentPane().add(tap9GainSlider);		
+				tap9GainSlider.addChangeListener(new tentapSliderListener());
+				tap9GainLabel = new JLabel();
+				updatetap9GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap9GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap9GainSlider);		
 			
 			tap10RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap10Ratio() * 1000.0));
-			tap10RatioSlider.addChangeListener(new tentapSliderListener());
-			tap10RatioLabel = new JLabel();
-			updatetap10RatioLabel();
-			frame.getContentPane().add(tap10RatioLabel);
-			frame.getContentPane().add(tap10RatioSlider);		
+				tap10RatioSlider.addChangeListener(new tentapSliderListener());
+				tap10RatioLabel = new JLabel();
+				updatetap10RatioLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap10RatioLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap10RatioSlider);		
 			
 			tap10GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap10Gain() * 1000.0));
-			tap10GainSlider.addChangeListener(new tentapSliderListener());
-			tap10GainLabel = new JLabel();
-			updatetap10GainLabel();
-			frame.getContentPane().add(tap10GainLabel);
-			frame.getContentPane().add(tap10GainSlider);		
-				
+				tap10GainSlider.addChangeListener(new tentapSliderListener());
+				tap10GainLabel = new JLabel();
+				updatetap10GainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap10GainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(tap10GainSlider);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -351,16 +398,24 @@
 			}
 			}
 		}
-		// add item listener for Bool (CheckbBox) 
+
+		// add item listener 
 		class tentapItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
-		@Override
-		public void itemStateChanged(ItemEvent arg0) {
 			
+		@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				// TODO Auto-generated method stub
+			}
 		}
-	}
-
+		
+		// add action listener 
+		class tentapActionListener implements java.awt.event.ActionListener { 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		}
 		private void updateinputGainLabel() {
 		inputGainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getinputGain()));		
 		}		
@@ -456,9 +511,9 @@
 
 		}
 
-		@Override
-		public void windowOpened(WindowEvent arg0) {
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+			}
 		}
-	}
 		
 	}

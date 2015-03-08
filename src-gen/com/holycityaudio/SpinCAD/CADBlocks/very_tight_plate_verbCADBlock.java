@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -93,31 +93,26 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			
 			sp = this.getPin("Input_Right").getPinConnection();
 			int adcr = -1;
 			if(sp != null) {
 				adcr = sp.getRegister();
 			}
-			
 			sp = this.getPin("Reverb_Time").getPinConnection();
 			int input0 = -1;
 			if(sp != null) {
 				input0 = sp.getRegister();
 			}
-			
 			sp = this.getPin("LF_Loss").getPinConnection();
 			int input1 = -1;
 			if(sp != null) {
 				input1 = sp.getRegister();
 			}
-			
 			sp = this.getPin("HF_Loss").getPinConnection();
 			int input2 = -1;
 			if(sp != null) {
 				input2 = sp.getRegister();
 			}
-			
 			
 			// finally, generate the instructions
 			sfxb.FXallocDelayMem("api1l", 123); 
@@ -285,8 +280,8 @@
 			sfxb.FXreadDelay("del4+", 780, 0.5);
 			sfxb.writeRegister(dacr, 0);
 			sfxb.skip(RUN, 2);
-			sfxb.loadSinLFO(0, 12, 37);
-			sfxb.loadSinLFO(1, 15, 33);
+			sfxb.loadSinLFO((int) 0,(int) 12, (int) 37);
+			sfxb.loadSinLFO((int) 1,(int) 15, (int) 33);
 			sfxb.FXchorusReadDelay(SIN0, REG|SIN|COMPC, "apd1+", 40);
 			sfxb.FXchorusReadDelay(SIN0, SIN, "apd1+", 41);
 			sfxb.FXwriteDelay("apd1+", 80, 0);

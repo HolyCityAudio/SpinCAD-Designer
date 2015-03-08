@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -95,31 +95,26 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			
 			sp = this.getPin("Input_Right").getPinConnection();
 			int adcr = -1;
 			if(sp != null) {
 				adcr = sp.getRegister();
 			}
-			
 			sp = this.getPin("Damping").getPinConnection();
 			int input0 = -1;
 			if(sp != null) {
 				input0 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Feedback").getPinConnection();
 			int input1 = -1;
 			if(sp != null) {
 				input1 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Decay").getPinConnection();
 			int input2 = -1;
 			if(sp != null) {
 				input2 = sp.getRegister();
 			}
-			
 			
 			// finally, generate the instructions
 			if(this.getPin("Input_Left").isConnected() == true) {
@@ -159,7 +154,7 @@
 			output1 = sfxb.allocateReg();
 			output2 = sfxb.allocateReg();
 			sfxb.skip(RUN, 1);
-			sfxb.loadRampLFO(0, 16384, 4096);
+			sfxb.loadRampLFO((int) 0, (int) 16384, (int) 4096);
 			if(this.getPin("Decay").isConnected() == true) {
 			sfxb.readRegister(input2, 1);
 			sfxb.scaleOffset(0.65, 0.3);
@@ -289,8 +284,8 @@
 			sfxb.writeRegister(output1, 1);
 			sfxb.writeRegister(output2, 0);
 			sfxb.skip(RUN, 2);
-			sfxb.loadSinLFO(SIN0, 30, 50);
-			sfxb.loadSinLFO(SIN1, 41, 50);
+			sfxb.loadSinLFO((int) SIN0,(int) 30, (int) 50);
+			sfxb.loadSinLFO((int) SIN1,(int) 41, (int) 50);
 			sfxb.FXchorusReadDelay(SIN0, REG|COMPC, "ap1+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 0, "ap1+", 51);
 			sfxb.FXwriteDelay("ap1+", 100, 0);

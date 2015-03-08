@@ -10,7 +10,7 @@
  * 
  *   This program is distributed in the hope that it will be useful, 
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
  *   GNU General Public License for more details. 
  * 
  *   You should have received a copy of the GNU General Public License 
@@ -97,25 +97,21 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			
 			sp = this.getPin("Reverb_Time").getPinConnection();
 			int input0 = -1;
 			if(sp != null) {
 				input0 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Flange").getPinConnection();
 			int input1 = -1;
 			if(sp != null) {
 				input1 = sp.getRegister();
 			}
-			
 			sp = this.getPin("Low_Pass").getPinConnection();
 			int input2 = -1;
 			if(sp != null) {
 				input2 = sp.getRegister();
 			}
-			
 			
 			// finally, generate the instructions
 			krt = sfxb.allocateReg();
@@ -154,7 +150,7 @@
 			sfxb.FXallocDelayMem("fdelr", 512); 
 			if(this.getPin("Input_L").isConnected() == true) {
 			sfxb.skip(RUN, 1);
-			sfxb.loadRampLFO(0, 0, 512);
+			sfxb.loadRampLFO((int) 0, (int) 0, (int) 512);
 			if(this.getPin("Reverb_Time").isConnected() == true) {
 			sfxb.readRegister(input0, 1.999);
 			} else {

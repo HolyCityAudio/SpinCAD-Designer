@@ -22,6 +22,7 @@
 		import javax.swing.SwingUtilities;
 		import javax.swing.event.ChangeEvent;
 		import javax.swing.event.ChangeListener;
+		import java.awt.event.ActionEvent;
 		import java.awt.event.WindowEvent;
 		import java.awt.event.WindowListener;
 		import java.awt.event.ItemEvent;
@@ -29,10 +30,13 @@
 		import javax.swing.JSlider;
 		import javax.swing.JLabel;
 		import javax.swing.JCheckBox;
-		
+		import javax.swing.JComboBox;
+		import javax.swing.Box;
+		import java.awt.Dimension;
+		import com.holycityaudio.SpinCAD.spinCADControlPanel;
 		import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 
-		public class tremolizerControlPanel {
+		public class tremolizerControlPanel extends spinCADControlPanel {
 		private JFrame frame;
 
 		private tremolizerCADBlock gCB;
@@ -53,12 +57,13 @@
 
 			
 			depthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.5 * 100.0),(int) (0.999 * 100.0), (int) (gCB.getdepth() * 100.0));
-			depthSlider.addChangeListener(new tremolizerSliderListener());
-			depthLabel = new JLabel();
-			updatedepthLabel();
-			frame.getContentPane().add(depthLabel);
-			frame.getContentPane().add(depthSlider);		
-				
+				depthSlider.addChangeListener(new tremolizerSliderListener());
+				depthLabel = new JLabel();
+				updatedepthLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(depthLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(depthSlider);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -78,16 +83,24 @@
 			}
 			}
 		}
-		// add item listener for Bool (CheckbBox) 
+
+		// add item listener 
 		class tremolizerItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
-		@Override
-		public void itemStateChanged(ItemEvent arg0) {
 			
+		@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				// TODO Auto-generated method stub
+			}
 		}
-	}
-
+		
+		// add action listener 
+		class tremolizerActionListener implements java.awt.event.ActionListener { 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		}
 		private void updatedepthLabel() {
 		depthLabel.setText("Depth " + String.format("%4.2f", gCB.getdepth()));		
 		}		
@@ -120,9 +133,9 @@
 
 		}
 
-		@Override
-		public void windowOpened(WindowEvent arg0) {
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+			}
 		}
-	}
 		
 	}
