@@ -63,6 +63,7 @@ public class SpinCADPanel extends JPanel {
 	private Point startPoint;
 	private Point stopPoint;
 	private Point mouseAt;
+	private Point dragStart;
 	private static Point lastMouse = null;
 
 	private SpinCADPin startPin;
@@ -81,14 +82,12 @@ public class SpinCADPanel extends JPanel {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				mouseAt = e.getPoint();
+				// in mode DRAGMOVE, we have selected one or more blocks and are dragging them to a new location.
 				if(dm == dragModes.DRAGMOVE) {
 					spdFrame.getModel();
 					SpinCADBlock b = null;	
 					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
-					if(lastMouse == null)
-					{
-						lastMouse = mouseAt;
-					}
+
 					while(itr.hasNext()) {
 						b = itr.next();
 						if(b.selected == true)
@@ -225,7 +224,8 @@ public class SpinCADPanel extends JPanel {
 									spdFrame.getModel();
 									SpinCADModel.setCurrentBlock(b);
 									b.selected = true;
-									dm = dragModes.DRAGMOVE;							
+									dm = dragModes.DRAGMOVE;	
+									lastMouse = mouseAt;
 								}
 							}
 							else if (arg0.getButton() == 3)	{	// right button
@@ -318,16 +318,16 @@ public class SpinCADPanel extends JPanel {
 			}
 		});  
 	}
-	
+
 	//=======================================================================================================
 	public void syncMouse() {
 		lastMouse = mouseAt;
 	}
-	
+
 	int getMouseX() {
 		return (int) mouseAt.getX();
 	}
-	
+
 	int getMouseY() {
 		return (int) mouseAt.getY();
 	}
@@ -337,38 +337,38 @@ public class SpinCADPanel extends JPanel {
 		p.setLocation(b.getX() + b.width/2 + rv.getMinX(), b.getY() + b.height/2 + rv.getMinY());
 		moveMouse(p);
 	}
-	
+
 	public void moveMouse(Point p) {
-	    GraphicsEnvironment ge = 
-	        GraphicsEnvironment.getLocalGraphicsEnvironment();
-	    GraphicsDevice[] gs = ge.getScreenDevices();
+		GraphicsEnvironment ge = 
+				GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] gs = ge.getScreenDevices();
 
-	    // Search the devices for the one that draws the specified point.
-	    for (GraphicsDevice device: gs) { 
-	        GraphicsConfiguration[] configurations =
-	            device.getConfigurations();
-	        for (GraphicsConfiguration config: configurations) {
-	            Rectangle bounds = config.getBounds();
-	            if(bounds.contains(p)) {
-	                // Set point to screen coordinates.
-	                Point b = bounds.getLocation(); 
-	                Point s = new Point(p.x - b.x, p.y - b.y);
+		// Search the devices for the one that draws the specified point.
+		for (GraphicsDevice device: gs) { 
+			GraphicsConfiguration[] configurations =
+					device.getConfigurations();
+			for (GraphicsConfiguration config: configurations) {
+				Rectangle bounds = config.getBounds();
+				if(bounds.contains(p)) {
+					// Set point to screen coordinates.
+					Point b = bounds.getLocation(); 
+					Point s = new Point(p.x - b.x, p.y - b.y);
 
-	                try {
-	                    Robot r = new Robot(device);
-	                    r.mouseMove(s.x, s.y);
-	                } catch (AWTException e) {
-	                    e.printStackTrace();
-	                }
+					try {
+						Robot r = new Robot(device);
+						r.mouseMove(s.x, s.y);
+					} catch (AWTException e) {
+						e.printStackTrace();
+					}
 
-	                return;
-	            }
-	        }
-	    }
-	    // Couldn't move to the point, it may be off screen.
-	    return;
+					return;
+				}
+			}
+		}
+		// Couldn't move to the point, it may be off screen.
+		return;
 	}
-	
+
 	//=======================================================================================================
 	public void paintComponent( Graphics g ) {
 		super.paintComponent(g);
@@ -617,8 +617,8 @@ public class SpinCADPanel extends JPanel {
 					block = itr.next();
 					if(block.selected == true) {
 						deleteBlockConnection(block);
-//
-//						f.getModel().blockList.remove(block);
+						//
+						//						f.getModel().blockList.remove(block);
 						itr.remove();
 					}
 				}
