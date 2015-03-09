@@ -44,6 +44,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
 import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
@@ -335,16 +336,14 @@ public class SpinCADPanel extends JPanel {
 		return (int) mouseAt.getY();
 	}
 	
-	public void putMouseOnBlock(SpinCADBlock b) {
+	private void putMouseOnBlock(SpinCADBlock b) {
 		Point p = new Point();
-		Point q = new Point();
-//		Rectangle rv = this.getBounds();
-		q = this.getLocation();
-		p.setLocation(b.getX() + b.width/2 + q.getX(), b.getY() + b.height/2 + q.getY());
+		p.setLocation(b.getX() + b.width/2, b.getY() + b.height/2);
+		SwingUtilities.convertPointToScreen(p, this);
 		moveMouse(p);
 	}
 
-	public void moveMouse(Point p) {
+	private void moveMouse(Point p) {
 		GraphicsEnvironment ge = 
 				GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] gs = ge.getScreenDevices();
@@ -574,11 +573,12 @@ public class SpinCADPanel extends JPanel {
 	}
 	
 	public void dropBlockPanel(SpinCADBlock b) {
-//		setDragModeDragMove();
 		b.selected = true;
 		b.x_pos = 100;
 		b.y_pos = 100;
 		putMouseOnBlock(b);
+		lastMouse = new Point(100 + b.width/2,100 + b.height/2);
+		setDragModeDragMove();
 		repaint();
 	}
 

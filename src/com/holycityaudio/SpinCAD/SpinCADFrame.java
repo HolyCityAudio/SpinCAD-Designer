@@ -845,7 +845,6 @@ public class SpinCADFrame extends JFrame {
 		getModel().addBlock(b);
 		getModel().setChanged(true);
 		p.dropBlockPanel(b);
-
 	}
 
 	public boolean isSimRunning() {
