@@ -1,0 +1,18 @@
+@name Log
+@controlInput input Control_Input
+@controlOutput output1 Control_Output  
+
+equ multiplier 0.5 
+@sliderLabel multiplier Log_Multiplier 0.001 0.99999 0.5 1000.0 3 
+
+
+;REGISTERS 
+equ   output1     reg0       
+
+@isPinConnected Input
+rdax    input,1    ;read input signal
+log multiplier, 0
+wrax    output1,0    ;output  
+@setOutputPin Control_Output output1
+@endif
+

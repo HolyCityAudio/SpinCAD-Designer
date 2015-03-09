@@ -20,6 +20,7 @@
 @menuitem "Overdrive" Overdrive 
 @menuitem "T/X" ToverX 
 @menuitem "Noise" noise_block24 
+@menuitem "Noise AMZ" noise_amz 
 // @menuitem "Test" InstructionTest 
 
 @menu "Dynamics"

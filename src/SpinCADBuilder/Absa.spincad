@@ -1,0 +1,14 @@
+@name AbsoluteValue 
+@controlInput input Control_Input
+@controlOutput output1 Control_Output  
+
+;REGISTERS 
+equ   output1     reg0       
+
+@isPinConnected Input
+rdax    input,1    ;read input signal
+absa
+wrax    output1,0    ;output in ACC and lf1 
+@setOutputPin Control_Output output1
+@endif
+
