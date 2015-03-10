@@ -95,18 +95,18 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 			// temp mem 1 ; Temp location for partial calculations 
 			sfxb.FXallocDelayMem("temp", 1); 
 
-			octaves = (double) freq/12.0;
 //			;For pitch shifting up: 
 //				;C = 2^14 * (2^N-1) 
 //				;where 
-//				;N=((2^(1/12))^S) - 1 
+//				; (2^(1/12))^S) - 1 
 //				;N = Desired amount of pitch shift in octaves 
 //				;S is the number of semitones
 
+			octaves = (double) freq/12.0;
 			if(freq > 0) {
-				coefficient = (int)(16384 * (Math.pow(2.0, freq/12.0) - 1));
+				coefficient = (int)(16384 * (Math.pow(2.0, octaves) - 1));
 			} else if (freq < 0) {
-				coefficient = (int)(-16384 * (1 - (Math.pow(2.0, freq/12.0))));
+				coefficient = (int)(-16384 * (1 - (Math.pow(2.0, octaves))));
 			} else {
 				coefficient = 0;
 			}

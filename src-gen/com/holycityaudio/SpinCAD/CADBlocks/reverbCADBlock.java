@@ -276,7 +276,7 @@
 			
 			// create setters and getter for control panel variables
 			public void setgain(double __param) {
-				gain = __param;	
+				gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double getgain() {

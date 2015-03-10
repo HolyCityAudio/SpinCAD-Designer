@@ -193,7 +193,7 @@ public class SpinCADModel implements Serializable {
 	}
 
 	public int generateCode() {
-		setRenderBlock(new SpinFXBlock("Render Block"));
+		setRenderBlock(new SpinFXBlock("Put file name here"));
 		SpinCADBlock block = null;
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		int i = 0;

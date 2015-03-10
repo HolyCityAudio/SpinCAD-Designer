@@ -17,6 +17,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.OverdriveCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ToverXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.noise_block24CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
@@ -244,6 +245,15 @@
 		}
 	});
 	mn_waveshaper.add(mntm_noise_block24);
+		
+	final JMenuItem mntm_noise_amz = new JMenuItem("Noise AMZ");
+	mntm_noise_amz.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new noise_amzCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_waveshaper.add(mntm_noise_amz);
 		
 	JMenu mn_dynamics = new JMenu("Dynamics");
 	menuBar.add(mn_dynamics);

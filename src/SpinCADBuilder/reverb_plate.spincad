@@ -6,7 +6,7 @@
 @controlInput input2 HF_Loss
 
 equ gain 0.5 
-@sliderLabel gain Input_Gain 0.01 1.0 0.5 10000.0 2 
+@sliderLabel gain Input_Gain -24 0 -6 1.0 1 DBLEVEL 
 
 ;plate reverb, lush (large), stereo
 ;characterized by very high density,

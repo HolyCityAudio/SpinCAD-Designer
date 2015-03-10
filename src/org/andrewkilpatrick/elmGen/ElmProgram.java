@@ -66,7 +66,7 @@ public class ElmProgram implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 3718907348318020286L;
-	private final String name;
+	protected String name;
 	private List<MemSegment> memoryMap;
 	private static List<Instruction> instList;
 	private static int nComments = 0;

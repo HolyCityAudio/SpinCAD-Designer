@@ -9,8 +9,8 @@
 @controlInput cIn2 Delay_Time_2  
 @controlInput cIn3 Delay_Time_3  
 
-equ inputGain 0.45
-@sliderLabel inputGain Input_Gain  0.0 1.0 0.5 1000.0 2
+equ inputGain 0.5
+@sliderLabel inputGain Input_Gain  -24 0 -6 1.0 1 DBLEVEL
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label

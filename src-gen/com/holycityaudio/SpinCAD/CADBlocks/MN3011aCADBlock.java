@@ -29,7 +29,7 @@
 			private static final long serialVersionUID = 1L;
 			private MN3011aControlPanel cp = null;
 			
-			private double inputGain = 0.45;
+			private double inputGain = 0.5;
 			private double delayLength = 32767;
 			private double tap1Ratio = 0.118990385;
 			private double tap1Gain = 0.5;
@@ -176,7 +176,7 @@
 			
 			// create setters and getter for control panel variables
 			public void setinputGain(double __param) {
-				inputGain = __param;	
+				inputGain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double getinputGain() {
@@ -190,42 +190,42 @@
 				return delayLength;
 			}
 			public void settap1Gain(double __param) {
-				tap1Gain = __param;	
+				tap1Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap1Gain() {
 				return tap1Gain;
 			}
 			public void settap2Gain(double __param) {
-				tap2Gain = __param;	
+				tap2Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap2Gain() {
 				return tap2Gain;
 			}
 			public void settap3Gain(double __param) {
-				tap3Gain = __param;	
+				tap3Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap3Gain() {
 				return tap3Gain;
 			}
 			public void settap4Gain(double __param) {
-				tap4Gain = __param;	
+				tap4Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap4Gain() {
 				return tap4Gain;
 			}
 			public void settap5Gain(double __param) {
-				tap5Gain = __param;	
+				tap5Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap5Gain() {
 				return tap5Gain;
 			}
 			public void settap6Gain(double __param) {
-				tap6Gain = __param;	
+				tap6Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap6Gain() {

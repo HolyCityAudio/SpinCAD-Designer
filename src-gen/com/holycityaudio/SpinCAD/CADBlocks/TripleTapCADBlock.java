@@ -29,7 +29,7 @@
 			private static final long serialVersionUID = 1L;
 			private TripleTapControlPanel cp = null;
 			
-			private double inputGain = 0.45;
+			private double inputGain = 0.5;
 			private double delayLength = 32767;
 			private double tap1Ratio = 0.85;
 			private double tap2Ratio = 0.60;
@@ -178,7 +178,7 @@
 			
 			// create setters and getter for control panel variables
 			public void setinputGain(double __param) {
-				inputGain = __param;	
+				inputGain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double getinputGain() {

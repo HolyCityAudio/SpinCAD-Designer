@@ -64,7 +64,8 @@
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getinputGain() * 1000.0));
+			// dB level slider goes in steps of 1 dB
+				inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 				inputGainSlider.addChangeListener(new TripleTapSliderListener());
 				inputGainLabel = new JLabel();
 				updateinputGainLabel();
@@ -122,7 +123,7 @@
 		class TripleTapSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-				gCB.setinputGain((double) (inputGainSlider.getValue()/1000.0));
+				gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
@@ -162,7 +163,7 @@
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getinputGain()));		
+		inputGainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
 		}		
 		private void updatedelayLengthLabel() {
 		delayLengthLabel.setText("Delay_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		

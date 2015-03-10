@@ -62,7 +62,8 @@
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.01 * 10000.0),(int) (1.0 * 10000.0), (int) (gCB.getgain() * 10000.0));
+			// dB level slider goes in steps of 1 dB
+				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 				gainSlider.addChangeListener(new reverbSliderListener());
 				gainLabel = new JLabel();
 				updategainLabel();
@@ -111,7 +112,7 @@
 		class reverbSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-				gCB.setgain((double) (gainSlider.getValue()/10000.0));
+				gCB.setgain((double) (gainSlider.getValue()/1.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == kiapSlider) {
@@ -147,7 +148,7 @@
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getgain()));		
+		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		private void updatekiapLabel() {
 		kiapLabel.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		

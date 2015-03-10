@@ -4,8 +4,8 @@
 @audioOutput output1 Delay_Out_End 
 @controlInput cIn1 Delay_Time_1 
 
-equ inputGain 0.45
-@sliderLabel inputGain Input_Gain  0.0 1.0 0.5 1000.0 2
+equ inputGain 0.5
+@sliderLabel inputGain Input_Gain  -24 0 -6 1.0 1 DBLEVEL
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
@@ -18,29 +18,29 @@ equ delayLength 32767
 // tap1 = 396/3328
 equ tap1Ratio 0.118990385 
 equ tap1Gain 0.5
-@sliderLabel tap1Gain Tap_1_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap1Gain Tap_1_Gain  -24 0 -6 1.0 1 DBLEVEL
   
 // tap 2 = 662/3328
 equ tap2Ratio 0.198918269 
 equ tap2Gain 0.5
-@sliderLabel tap2Gain Tap_2_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap2Gain Tap_2_Gain  -24 0 -6 1.0 1 DBLEVEL
 
 // tap 3 
 equ tap3Ratio 0.358774038 
 equ tap3Gain 0.5
-@sliderLabel tap3Gain Tap_3_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap3Gain Tap_3_Gain  -24 0 -6 1.0 1 DBLEVEL
 
 equ tap4Ratio 0.518629808
 equ tap4Gain 0.5
-@sliderLabel tap4Gain Tap_4_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap4Gain Tap_4_Gain  -24 0 -6 1.0 1 DBLEVEL
   
 equ tap5Ratio 0.838341346 
 equ tap5Gain 0.5
-@sliderLabel tap5Gain Tap_5_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap5Gain Tap_5_Gain  -24 0 -6 1.0 1 DBLEVEL
   
 equ tap6Ratio 1.0 
 equ tap6Gain 0.5
-@sliderLabel tap6Gain Tap_6_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap6Gain Tap_6_Gain  -24 0 -6 1.0 1 DBLEVEL
   
 equ delayOffset -1
 

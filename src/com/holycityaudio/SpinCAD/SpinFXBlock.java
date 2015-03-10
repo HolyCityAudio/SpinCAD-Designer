@@ -41,6 +41,10 @@ public class SpinFXBlock extends ElmProgram {
 //		System.out.printf("SpinFXBlock - numBlocks = %d\n", numBlocks);	
 	}
 
+	public void setName(String newName) {
+		name = newName;
+	}
+	
 	public int allocateReg() {
 		//		  System.out.println("SpinFXBlock allocateReg");
 		int retval = getNumRegs();
