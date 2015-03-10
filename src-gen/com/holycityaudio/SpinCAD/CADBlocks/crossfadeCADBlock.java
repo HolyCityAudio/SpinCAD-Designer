@@ -95,9 +95,9 @@
 			sfxb.mulx(input0);
 			} else {
 			sfxb.scaleOffset(0.5, 0.0);
-			sfxb.readRegister(inp1, 1);
 			}
 			
+			sfxb.readRegister(inp1, 1);
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Audio_Output").setRegister(output1);
 

@@ -20,8 +20,8 @@ rdax	inp1,-1
 mulx	input0
 @else
 sof 0.5, 0.0
-rdax	inp1,1
 @endif
+rdax	inp1,1
 
 wrax	output1,0
 
