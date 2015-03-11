@@ -13,8 +13,25 @@
 ;pot2=high freq response
 ;
 
+
 equ gain 0.5 
-@sliderLabel gain Input_Gain -24 0 0 1.0 1 DBLEVEL 
+@sliderLabel gain Input_Gain -18 0.0 -6 1.0 1 DBLEVEL 
+
+equ revTimeMax 0.6 
+@sliderLabel revTimeMax Reverb_Time 0.0 0.8 0.6 100.0 2 
+ 
+equ kapi 0.6 
+@sliderLabel kapi Input_All_Pass_Gain 0.3 0.8 0.6 100.0 2 
+
+equ kapd1 0.6 
+@sliderLabel kapd1 Delay_All_Pass_1_Gain 0.3 0.8 0.6 100.0 2 
+
+equ kapd2 0.5 
+@sliderLabel kapd2 Delay_All_Pass_2_Gain 0.3 0.8 0.5 100.0 2 
+
+equ memscale 0.8 
+@sliderLabel memscale Delay_Scale 0.5 1.0 0.8 10.0 1 
+
 @isPinConnected Input
 
 @getBaseAddress 
@@ -23,21 +40,58 @@ mem	lap2	223
 mem	lap3	332
 mem	lap4	548
 ;
-mem	ap1	1251
-mem	ap1b	1551
-mem	ap2	943
-mem	ap2b	1343
-mem	ap3	1282
-mem	ap3b	1381
-mem	ap4	1174
-mem	ap4b	1382
+equ ap1length 1251
+@multiplyDouble ap1scaled memscale ap1length 
+mem	ap1	ap1scaled
+
+equ ap1blength 1551
+@multiplyDouble ap1bscaled memscale ap1blength 
+mem	ap1b ap1bscaled	
+
+equ ap2length 943
+@multiplyDouble ap2scaled memscale ap2length 
+mem	ap2	ap2scaled
+
+equ ap2blength 1343
+@multiplyDouble ap2bscaled memscale ap2blength 
+mem	ap2b ap2bscaled	
+
+equ ap3length 1282
+@multiplyDouble ap3scaled memscale ap3length 
+mem	ap3	ap2scaled
+
+equ ap3blength 1381
+@multiplyDouble ap3bscaled memscale ap3blength 
+mem	ap3b ap3bscaled	
+
+equ ap4length 1174
+@multiplyDouble ap4scaled memscale ap4length 
+mem	ap4	ap4scaled
+
+equ ap4blength 1382
+@multiplyDouble ap4bscaled memscale ap4blength 
+mem	ap4b ap4bscaled	
 ;
-mem	del1	2859
-mem	del2	3145
-mem	del3	2476
-mem	del4	3568
+
+equ delay1length 2859
+@multiplyDouble delay1scaled memscale delay1length 
+mem	del1	delay1scaled
+
+equ delay2length 3145
+@multiplyDouble delay2scaled memscale delay2length 
+mem	del2	delay2scaled
+
+equ delay3length 2476
+@multiplyDouble delay3scaled memscale delay3length 
+mem	del3	delay3scaled
+
+equ delay4length 3568
+@multiplyDouble delay4scaled memscale delay4length 
+mem	del4	delay3scaled
 ;
-mem	ldel	3000
+equ ldellength 3000
+@multiplyDouble ldelcaled memscale ldellength 
+mem	ldel ldelcaled	
 
 equ output reg21
 ;
@@ -67,7 +121,7 @@ wra	ap3+100,	0
 rdax	POT0,	1.0
 sof 	0.6, 	0.2
 @else
-sof 	0.0, 	0.5
+sof 	0.0, 	0.8
 @endif
 wrax	REG0,	0
 ;
@@ -91,15 +145,15 @@ wrax 	REG2,0
 ;get inputs and process with three APs each
 ;
 rdax	input,	gain 		
-rda	lap1#,	-0.6	
-wrap	lap1,	0.6		
-rda	lap2#,	-0.6	
-wrap	lap2,	0.6		
+rda	lap1#,	-kapi	
+wrap	lap1,	kapi		
+rda	lap2#,	-kapi	
+wrap	lap2,	kapi		
 wra	ldel,	1.0		
-rda	lap3#,	-0.6	
-wrap	lap3,	0.6		
-rda	lap4#,	-0.6	
-wrap	lap4,	0.6		
+rda	lap3#,	-kapi	
+wrap	lap3,	kapi		
+rda	lap4#,	-kapi	
+wrap	lap4,	kapi		
 wrax	REG10,	0		
 ;
 //rdax	adcr,	0.6		
@@ -121,10 +175,10 @@ wrax	REG10,	0
 rda	del4#,	1.0		
 mulx	REG0		
 rdax	REG10,	1.0		
-rda	ap1#,	-0.6	
-wrap	ap1,	0.6		
-rda	ap1b#,	-0.5	
-wrap	ap1b,	0.5		
+rda	ap1#,	-kapd1	
+wrap	ap1,	kapd1		
+rda	ap1b#,	-kapd2	
+wrap	ap1b,	kapd2		
 wrax	REG9,	1.0		
 rdfx	REG12,	0.5		
 wrhx	REG12,	-1.0	
@@ -141,10 +195,10 @@ wra	del1,	0.0
 rda	del1#,	1.0		
 mulx	REG0		
 rdax	REG11,	1.0		
-rda	ap2#,	-0.6	
-wrap	ap2,	0.6		
-rda	ap2b#,	-0.5	
-wrap	ap2b,	0.5		
+rda	ap2#,	-kapd1	
+wrap	ap2,	kapd1		
+rda	ap2b#,	-kapd2	
+wrap	ap2b,	kapd2		
 wrax	REG9,	1.0		
 rdfx	REG14,	0.5		
 wrhx	REG14,	-1.0	
@@ -161,10 +215,10 @@ wra	del2,	0.0
 rda	del2#,	1.0		
 mulx	REG0		
 rdax	REG10,	1.0		
-rda	ap3#,	-0.6	
-wrap	ap3,	0.6		
-rda	ap3b#,	-0.5	
-wrap	ap3b,	0.5		
+rda	ap3#,	-kapd1	
+wrap	ap3,	kapd1		
+rda	ap3b#,	-kapd2	
+wrap	ap3b,	kapd2		
 wrax	REG9,	1.0		
 rdfx	REG16,	0.5		
 wrhx	REG16,	-1.0	
@@ -181,10 +235,10 @@ wra	del3,	0.0
 rda	del3#,	1.0		
 mulx	REG0		
 rdax	REG11,	1.0		
-rda	ap4#,	-0.6	
-wrap	ap4,	0.6		
-rda	ap4b#,	-0.5	
-wrap	ap4b,	0.5		
+rda	ap4#,	-kapd1	
+wrap	ap4,	kapd1		
+rda	ap4b#,	-kapd2	
+wrap	ap4b,	kapd2		
 wrax	REG9,	1.0		
 rdfx	REG18,	0.5		
 wrhx	REG18,	-1.0	

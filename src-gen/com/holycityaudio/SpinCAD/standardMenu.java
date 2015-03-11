@@ -5,6 +5,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.VolumeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1x2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer3_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer4_1CADBlock;
@@ -134,6 +135,15 @@
 		}
 	});
 	mn_io_mix.add(mntm_Mixer2_1);
+		
+	final JMenuItem mntm_Mixer_2_to_1 = new JMenuItem("2:1 Mixer test");
+	mntm_Mixer_2_to_1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Mixer_2_to_1CADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_io_mix.add(mntm_Mixer_2_to_1);
 		
 	final JMenuItem mntm_Mixer2_1x2 = new JMenuItem("2:1 (x2) Mixer");
 	mntm_Mixer2_1x2.addActionListener(new ActionListener() {
