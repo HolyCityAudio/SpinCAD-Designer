@@ -38,7 +38,7 @@ public class RingModCADBlock extends ModulationCADBlock{
 	}
 	
 	public void editBlock(){
-		new RingModControlPanel(this);
+//		new RingModControlPanel(this);
 	}
 
 

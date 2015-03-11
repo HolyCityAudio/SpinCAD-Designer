@@ -22,7 +22,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class VolumeCADBlock extends MixCADBlock{
+public class VolumeCADBlock_A extends MixCADBlock{
 
 	/**
 	 * 
@@ -30,7 +30,7 @@ public class VolumeCADBlock extends MixCADBlock{
 	private static final long serialVersionUID = 4676526418848384621L;
 	private double defaultGain = 1.0;
 
-	public VolumeCADBlock(int x, int y) {
+	public VolumeCADBlock_A(int x, int y) {
 		super(x, y);
 		hasControlPanel = true;
 		addControlInputPin(this);
@@ -85,7 +85,7 @@ public class VolumeCADBlock extends MixCADBlock{
 	}
 	
 	public void editBlock(){
-		new VolumeControlPanel(this);
+		new VolumeControlPanel_A(this);
 	}
 
 }

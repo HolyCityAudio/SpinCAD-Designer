@@ -31,14 +31,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-class VolumeControlPanel {
+class VolumeControlPanel_A {
 	private JFrame frame;
 	JSlider gainSlider;
 	JLabel gainLabel;
 
-	private VolumeCADBlock spbVol;
+	private VolumeCADBlock_A spbVol;
 
-	public VolumeControlPanel(VolumeCADBlock b) {
+	public VolumeControlPanel_A(VolumeCADBlock_A b) {
 
 		spbVol = b;
 
