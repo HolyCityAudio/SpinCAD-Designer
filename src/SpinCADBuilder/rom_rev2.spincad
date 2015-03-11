@@ -1,0 +1,240 @@
+@name rom_rev2
+@audioInput input Input
+@audioOutput output Output
+@controlInput revTime Reverb_Time
+@controlInput lfResp LF_Response
+@controlInput hfResp HF_Response
+
+;reverb program
+;moderate sized reverb, stereo in and out
+;for mixers
+;pot0=reverb time
+;pot1=low freq response
+;pot2=high freq response
+;
+
+equ gain 0.5 
+@sliderLabel gain Input_Gain -24 0 0 1.0 1 DBLEVEL 
+@isPinConnected Input
+
+@getBaseAddress 
+mem	lap1	156
+mem	lap2	223
+mem	lap3	332
+mem	lap4	548
+;
+mem	ap1	1251
+mem	ap1b	1551
+mem	ap2	943
+mem	ap2b	1343
+mem	ap3	1282
+mem	ap3b	1381
+mem	ap4	1174
+mem	ap4b	1382
+;
+mem	del1	2859
+mem	del2	3145
+mem	del3	2476
+mem	del4	3568
+;
+mem	ldel	3000
+
+equ output reg21
+;
+// these equ structures not supported in SpinCAD, substitutions made in 
+// rda statements below
+// equ	lout1	del1 + 2630
+// equ	lout2	del2 + 1943
+// equ	lout3	del3 //+1200
+// equ	lout4	del4 // +2016
+;
+;set up lfo, ~0.5Hz:
+skp	run,start
+wlds	sin0,12,	160
+
+start:
+;do ap smearing to ap1 and ap3:
+
+cho rda, 0,	6,	ap1+50
+cho rda,	sin0,	0,	ap1+51
+wra	ap1+100,	0
+cho rda,	sin0,	7,	ap3+50
+cho rda,	sin0,	01,	ap3+51
+wra	ap3+100,	0
+
+;prepare pots for control:
+@isPinConnected Reverb_Time
+rdax	POT0,	1.0
+sof 	0.6, 	0.2
+@else
+sof 	0.0, 	0.5
+@endif
+wrax	REG0,	0
+;
+;shelving controls are negative:
+@isPinConnected LF_Response
+rdax	POT1,	1.0
+sof	0.8, 	-0.8
+@else
+sof	0.0, 	-0.6
+@endif
+wrax 	REG1,	0
+;
+@isPinConnected HF_Response
+rdax	POT2,	1.0
+sof 	0.8,	-0.8
+@else
+sof	0.0, 	-0.6
+@endif
+wrax 	REG2,0
+;
+;get inputs and process with three APs each
+;
+rdax	input,	gain 		
+rda	lap1#,	-0.6	
+wrap	lap1,	0.6		
+rda	lap2#,	-0.6	
+wrap	lap2,	0.6		
+wra	ldel,	1.0		
+rda	lap3#,	-0.6	
+wrap	lap3,	0.6		
+rda	lap4#,	-0.6	
+wrap	lap4,	0.6		
+wrax	REG10,	0		
+;
+//rdax	adcr,	0.6		
+//rda	rap1#,	-0.6	
+//wrap	rap1,	0.6		
+//rda	rap2#,	-0.6	
+//wrap	rap2,	0.6		
+//wra	rdel,	1.0		
+//rda	rap3#,	-0.6	
+//wrap	rap3,	0.6		
+//rda	rap4#,	-0.6	
+//wrap	rap4,	0.6		
+//wrax	REG11,	0		
+;
+;now do loop, use reg9 as temp reg for filtering:
+;
+;delay ap into 1:
+
+rda	del4#,	1.0		
+mulx	REG0		
+rdax	REG10,	1.0		
+rda	ap1#,	-0.6	
+wrap	ap1,	0.6		
+rda	ap1b#,	-0.5	
+wrap	ap1b,	0.5		
+wrax	REG9,	1.0		
+rdfx	REG12,	0.5		
+wrhx	REG12,	-1.0	
+mulx	REG1		
+rdax	REG9,	1.0		
+wrax	REG9,	1.0		
+rdfx	REG13,	0.05	
+wrlx	REG13,	-1.0	
+mulx	REG2		
+rdax	REG9,	1.0		
+wra	del1,	0.0		
+;
+;delay ap into 2:
+rda	del1#,	1.0		
+mulx	REG0		
+rdax	REG11,	1.0		
+rda	ap2#,	-0.6	
+wrap	ap2,	0.6		
+rda	ap2b#,	-0.5	
+wrap	ap2b,	0.5		
+wrax	REG9,	1.0		
+rdfx	REG14,	0.5		
+wrhx	REG14,	-1.0	
+mulx	REG1		
+rdax	REG9,	1.0		
+wrax	REG9,	1.0		
+rdfx	REG15,	0.05	
+wrlx	REG15,	-1.0	
+mulx	REG2		
+rdax	REG9,	1.0		
+wra	del2,	0.0		
+;
+;delay ap into 3:
+rda	del2#,	1.0		
+mulx	REG0		
+rdax	REG10,	1.0		
+rda	ap3#,	-0.6	
+wrap	ap3,	0.6		
+rda	ap3b#,	-0.5	
+wrap	ap3b,	0.5		
+wrax	REG9,	1.0		
+rdfx	REG16,	0.5		
+wrhx	REG16,	-1.0	
+mulx	REG1		
+rdax	REG9,	1.0		
+wrax	REG9,	1.0		
+rdfx	REG17,	0.05	
+wrlx	REG17,	-1.0	
+mulx	REG2		
+rdax	REG9,	1.0		
+wra	del3,	0.0		
+;
+;delay ap into 4:
+rda	del3#,	1.0		
+mulx	REG0		
+rdax	REG11,	1.0		
+rda	ap4#,	-0.6	
+wrap	ap4,	0.6		
+rda	ap4b#,	-0.5	
+wrap	ap4b,	0.5		
+wrax	REG9,	1.0		
+rdfx	REG18,	0.5		
+wrhx	REG18,	-1.0	
+mulx	REG1		
+rdax	REG9,	1.0		
+wrax	REG9,	1.0		
+rdfx	REG19,	0.05	
+wrlx	REG19,	-1.0	
+mulx	REG2		
+rdax	REG9,	1.0		
+wra	del4,	0.0		
+;
+rda	del1+2630,	0.8	
+rda	del2+1943,	0.7	
+rda	del3+1200,	0.6	
+rda	del4+2106,	0.5	
+rda	ldel+180,	0.8	
+rda	ldel+1194,	0.7	
+rda	ldel+2567,	0.6	
+rda	ldel+2945,	0.5	
+wrax	output, 0.0
+
+@setOutputPin Output output
+@endif
+
+;		
+//rda	rout3,	0.8	
+//rda	rout4,	0.7	
+//rda	rout1,	0.6	
+//rda	rout2,	0.5	
+//rda	rdel+265,	0.8	
+//rda	rdel+1265,	0.7	
+//rda	rdel+2265,	0.6	
+//wrax	dacr, 0.0
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
