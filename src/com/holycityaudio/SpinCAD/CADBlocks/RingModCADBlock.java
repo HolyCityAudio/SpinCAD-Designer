@@ -38,7 +38,7 @@ public class RingModCADBlock extends ModulationCADBlock{
 	}
 	
 	public void editBlock(){
-//		new RingModControlPanel(this);
+		new RingModControlPanel(this);
 	}
 
 
@@ -109,12 +109,10 @@ public class RingModCADBlock extends ModulationCADBlock{
 	}
 	//====================================================
 	public double getLFO() {
-		// TODO Auto-generated method stub
 		return lfo;
 	}
 
 	public void setLFO(double d) {
-		// TODO Auto-generated method stub
 		lfo = d;
 	}
 }
