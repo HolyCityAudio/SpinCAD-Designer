@@ -30,7 +30,7 @@ equ kapd2 0.5
 @sliderLabel kapd2 Delay_All_Pass_2_Gain 0.3 0.8 0.5 100.0 2 
 
 equ memscale 0.98 
-// @sliderLabel memscale Delay_Scale 0.5 1.0 0.8 10.0 1 
+@sliderLabel memscale Delay_Scale 0.5 1.0 0.8 10.0 1 
 
 @isPinConnected Input
 
@@ -90,8 +90,8 @@ equ delay4length 3568
 mem	del4	delay3scaled
 ;
 equ ldellength 3000
-@multiplyDouble ldelcaled memscale ldellength 
-mem	ldel ldelcaled	
+@multiplyDouble ldelscaled memscale ldellength 
+mem	ldel ldelscaled	
 
 equ output reg21
 ;
@@ -244,7 +244,7 @@ rdfx	REG18,	0.5
 wrhx	REG18,	-1.0	
 mulx	REG1		
 rdax	REG9,	1.0		
-wrax	REG9,	1.0		
+wrax	REG9,	1.0
 rdfx	REG19,	0.05	
 wrlx	REG19,	-1.0	
 mulx	REG2		
@@ -253,16 +253,17 @@ wra	del4,	0.0
 ;
 
 // should probably scale the readout points also
+// this is a total hack
 
-rda	del1+2630,	0.8	
-rda	del2+1943,	0.7	
-rda	del3+1200,	0.6	
-rda	del4+2106,	0.5	
+rda	del1+2630 * memscale,	0.8	
+rda	del2+1943 * memscale,	0.7	
+rda	del3+1200 * memscale,	0.6	
+rda	del4+2106 * memscale,	0.5	
 
-rda	ldel+180,	0.8	
-rda	ldel+1194,	0.7	
-rda	ldel+2567,	0.6	
-rda	ldel+2945,	0.5	
+rda	ldel+180 * memscale,	0.8	
+rda	ldel+1194 * memscale,	0.7	
+rda	ldel+2567 * memscale,	0.6	
+rda	ldel+2945 * memscale,	0.5	
 wrax	output, 0.0
 
 @setOutputPin Output output

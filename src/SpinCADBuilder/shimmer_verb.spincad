@@ -1,12 +1,14 @@
 @name Shimmer_reverb
-@audioInput adcl Input_Left
-@audioInput adcr Input_Right
-@audioOutput output1 Audio_Output_1  
-@audioOutput output2 Audio_Output_2
+@audioInput revin Input
+@audioOutput output1 Output  
 
 @controlInput input0 Damping
 @controlInput input1 Feedback
 @controlInput input2 Decay
+
+equ gain 0.5 
+@sliderLabel gain Input_Gain -18 0.0 -6 1.0 1 DBLEVEL 
+
 
 ; Hall reverb w/shimmer 
 ; Jan 2012 
@@ -19,7 +21,7 @@
 ; by Sweetalk 
 
 ;MEMORY 
-@isPinConnected Input_Left
+@isPinConnected Input
 
 mem   delayl   4096      ; Pitch Shift mem 
 mem   iap2   223 
@@ -91,8 +93,7 @@ sof 0.0, 0.65
 wrax   rt, 0          ;rt ranges 0.3 to 0.95 
 
 ;REVERB 
-rdax   revin,   1   ;Read reverb in   
-sof   0.25,   0   ;  
+rdax   revin,   gain   ;Read reverb in   
 rda   iap1#,   kiap 
 wrap   iap1,   -kiap      
 rda   iap2#,   kiap    
@@ -126,8 +127,8 @@ mulx   pot0      ;crossfade between filter and no filter
 @else
 rdax temp, -0.5
 @endif
-
 rdax   temp,   1.0 
+
 wra   del1,   0.0   ;write to next delay, clear accumulator 
 
 ;aps into delay2: 
@@ -211,7 +212,6 @@ rda   del1+2093,   1.1
 rda   del4+1234,   1.1 
 wrax   revout,      1   ;Write to revout register, keep in ACC for pitch shifting 
 
-
 ;PITCH SHIFT +1 OCTAVE 
 
 cho rda,   RMP0,   REG|COMPC,   delayl 
@@ -233,13 +233,9 @@ mulx   pot1         ;Multily by Feedback pot (POT2). ACC = (Pitch + Reverb) * PO
 wrax   pitchout,   0.5   ;Write the pitch + reverb out on pitchout and keep it in acc. ACC = Pitch + Reverb 
 @endif
 
-rdax   adcl,   1      ;Read ADCL and add to ACC. ACC = ((Pitch + Reverb) * POT2) + Clean 
-wrax   revin,   0      ;Write the mix from the ACC (feedback and clean signal) on the revin and clear the ACC. 
-
 ;Making mono output 
 rdax   revout,   1      ;Read output from Reverb (revout) and write it to ACC. 
 wrax   output1,1         ;Write the ACC on DACL and keep it.    
-wrax   output2,0          ;Write the Acc on DACR and clear it. 
 
 ;set up lfo, 1Hz to 2Hz, +/-100 samples, for smearing loop all passes: 
  
@@ -265,4 +261,7 @@ wra   ap3+100,   0
 cho rda,   sin1,   cos|compc,   ap4+50   ;cos1 
 cho rda,   sin1,   cos,   ap4+51    
 wra   ap4+100,   0.0
+
+@setOutputPin Output output1  
+
 @endif

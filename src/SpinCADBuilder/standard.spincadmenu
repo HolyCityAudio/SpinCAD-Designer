@@ -53,30 +53,24 @@
 @menuitem "MN3011" MN3011a 
 @menuitem "8-Tap" eighttap 
 @menuitem "10-Tap Stereo" tentap 
-// @menuitem "RAM test" DelayRamTest
 
 @menu "Reverb" 
-// @menuitem "Disco Reverb" DiscoReverb 
+//@menuitem "Allpass" allpass 
 @menuitem "Gated Reverb" gated_verb 
-// @menuitem "Infinite Rev/Flange" dance_ir_fla_l 
-// @menuitem "Plate Verb 3" very_tight_plate_verb 
-// @menuitem "Reverb/Chorus" GtrReverbChorus 
-// @menuitem "ROM Reverb 1" rom_rev1 
+@menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
 @menuitem "Plate Reverb" reverb_plate 
-// @menuitem "Shimmer Reverb" shimmer_verb 
 @menuitem "Small Reverb" MinReverb 
 @menuitem "Adjustable Reverb" reverbA 
+@menuitem "Shimmer Reverb" shimmer_verb 
 // @menuitem "Reverb Filter" reverbFilter 
 
 @menu "Modulation"  
 @menuitem "Chorus" Chorus 
 //@menuitem "Quad Chorus" ChorusQuad 
-//@menuitem "Preset Chorus" ChorusPreset 
 @menuitem "Flanger" Flanger 
 @menuitem "Mod Delay" ModDelay 
 @menuitem "Phaser" Phaser 
-// @menuitem "Allpass" allpass 
 @menuitem "Ring Modulator" RingMod 
 
 @menu "Pitch"

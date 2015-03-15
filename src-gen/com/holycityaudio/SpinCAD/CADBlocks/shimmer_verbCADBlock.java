@@ -29,6 +29,7 @@
 			private static final long serialVersionUID = 1L;
 			private shimmer_verbControlPanel cp = null;
 			
+			private double gain = 0.5;
 			private int revin;
 			private int revout;
 			private int pitchout;
@@ -57,14 +58,13 @@
 				super(x, y);
 				setName("Shimmer_reverb");	
 				// Iterate through pin definitions and allocate or assign as needed
-				addInputPin(this, "Input_Left");
-				addInputPin(this, "Input_Right");
-				addOutputPin(this, "Audio_Output_1");
-				addOutputPin(this, "Audio_Output_2");
+				addInputPin(this, "Input");
+				addOutputPin(this, "Output");
 				addControlInputPin(this, "Damping");
 				addControlInputPin(this, "Feedback");
 				addControlInputPin(this, "Decay");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -90,15 +90,10 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("Input_Left").getPinConnection();
-			int adcl = -1;
+			sp = this.getPin("Input").getPinConnection();
+			int revin = -1;
 			if(sp != null) {
-				adcl = sp.getRegister();
-			}
-			sp = this.getPin("Input_Right").getPinConnection();
-			int adcr = -1;
-			if(sp != null) {
-				adcr = sp.getRegister();
+				revin = sp.getRegister();
 			}
 			sp = this.getPin("Damping").getPinConnection();
 			int input0 = -1;
@@ -117,7 +112,7 @@
 			}
 			
 			// finally, generate the instructions
-			if(this.getPin("Input_Left").isConnected() == true) {
+			if(this.getPin("Input").isConnected() == true) {
 			sfxb.FXallocDelayMem("delayl", 4096); 
 			sfxb.FXallocDelayMem("iap2", 223); 
 			sfxb.FXallocDelayMem("iap3", 332); 
@@ -163,8 +158,7 @@
 			}
 			
 			sfxb.writeRegister(rt, 0);
-			sfxb.readRegister(revin, 1);
-			sfxb.scaleOffset(0.25, 0);
+			sfxb.readRegister(revin, gain);
 			sfxb.FXreadDelay("iap1#", 0, kiap);
 			sfxb.FXwriteAllpass("iap1", 0, -kiap);
 			sfxb.FXreadDelay("iap2#", 0, kiap);
@@ -258,9 +252,9 @@
 			sfxb.FXwriteDelay("del4", 0, 0);
 			sfxb.FXreadDelay("del1", 0, 0.8);
 			sfxb.FXreadDelay("del2", 0, 0.8);
-			sfxb.FXreadDelay("del3+", 2876, 1.5);
-			sfxb.FXreadDelay("del1+", 2093, 1.1);
-			sfxb.FXreadDelay("del4+", 1234, 1.1);
+			sfxb.FXreadDelay("del3+", (int)(2876 * 1.0), 1.5);
+			sfxb.FXreadDelay("del1+", (int)(2093 * 1.0), 1.1);
+			sfxb.FXreadDelay("del4+", (int)(1234 * 1.0), 1.1);
 			sfxb.writeRegister(revout, 1);
 			sfxb.FXchorusReadDelay(RMP0, REG|COMPC, "delayl", 0);
 			sfxb.FXchorusReadDelay(RMP0, 0, "delayl+", 1);
@@ -278,30 +272,35 @@
 			sfxb.writeRegister(pitchout, 0.5);
 			}
 			
-			sfxb.readRegister(adcl, 1);
-			sfxb.writeRegister(revin, 0);
 			sfxb.readRegister(revout, 1);
 			sfxb.writeRegister(output1, 1);
-			sfxb.writeRegister(output2, 0);
 			sfxb.skip(RUN, 2);
 			sfxb.loadSinLFO((int) SIN0,(int) 30, (int) 50);
 			sfxb.loadSinLFO((int) SIN1,(int) 41, (int) 50);
 			sfxb.FXchorusReadDelay(SIN0, REG|COMPC, "ap1+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 0, "ap1+", 51);
-			sfxb.FXwriteDelay("ap1+", 100, 0);
+			sfxb.FXwriteDelay("ap1+", (int)(100 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN0, COS|COMPC, "ap2+", 50);
 			sfxb.FXchorusReadDelay(SIN0, COS, "ap2+", 51);
-			sfxb.FXwriteDelay("ap2+", 100, 0);
+			sfxb.FXwriteDelay("ap2+", (int)(100 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN1, REG|COMPC, "ap3+", 50);
 			sfxb.FXchorusReadDelay(SIN1, 0, "ap3+", 51);
-			sfxb.FXwriteDelay("ap3+", 100, 0);
+			sfxb.FXwriteDelay("ap3+", (int)(100 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN1, COS|COMPC, "ap4+", 50);
 			sfxb.FXchorusReadDelay(SIN1, COS, "ap4+", 51);
-			sfxb.FXwriteDelay("ap4+", 100, 0.0);
+			sfxb.FXwriteDelay("ap4+", (int)(100 * 1.0), 0.0);
+			this.getPin("Output").setRegister(output1);
 			}
 			
 
 			}
 			
 			// create setters and getter for control panel variables
+			public void setgain(double __param) {
+				gain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getgain() {
+				return gain;
+			}
 		}	

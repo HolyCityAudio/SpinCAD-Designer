@@ -41,6 +41,8 @@
 
 		private shimmer_verbCADBlock gCB;
 		// declare the controls
+			JSlider gainSlider;
+			JLabel  gainLabel;	
 
 		public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 		
@@ -53,6 +55,16 @@
 				frame.setTitle("Shimmer_reverb");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+			// dB level slider goes in steps of 1 dB
+				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
+				gainSlider.addChangeListener(new shimmer_verbSliderListener());
+				gainLabel = new JLabel();
+				updategainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(gainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(gainSlider);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -66,6 +78,10 @@
 		// add change listener for Sliders 
 		class shimmer_verbSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == gainSlider) {
+				gCB.setgain((double) (gainSlider.getValue()/1.0));
+				updategainLabel();
+			}
 			}
 		}
 
@@ -86,6 +102,9 @@
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updategainLabel() {
+		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

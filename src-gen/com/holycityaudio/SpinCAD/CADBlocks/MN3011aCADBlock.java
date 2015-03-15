@@ -43,6 +43,7 @@
 			private double tap5Gain = 0.5;
 			private double tap6Ratio = 1.0;
 			private double tap6Gain = 0.5;
+			private int tap6reg;
 			private double delayOffset = -1;
 			private int mix;
 			private int max;
@@ -54,6 +55,7 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Mix_Out");
+				addOutputPin(this, "Tap_6_Out");
 				addOutputPin(this, "Delay_Out_End");
 				addControlInputPin(this, "Delay_Time_1");
 			// if any control panel elements declared, set hasControlPanel to true
@@ -103,21 +105,36 @@
 			}
 			
 			// finally, generate the instructions
+			if(this.getPin("Tap_6_Out").isConnected() == true) {
+			tap6reg = sfxb.allocateReg();
+			}
+			
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("mn3011delay", delayLength); 
 			if(this.getPin("Input").isConnected() == true) {
+			mix = sfxb.allocateReg();
 			sfxb.readRegister(adcl, inputGain);
 			sfxb.FXwriteDelay("mn3011delay", 0, 0.0);
-			mix = sfxb.allocateReg();
 			if(this.getPin("Delay_Time_1").isConnected() == true) {
 			max = sfxb.allocateReg();
 			sfxb.clear();
 			sfxb.or(0x7FFF00);
 			sfxb.mulx(cIn1);
 			sfxb.writeRegister(max, 1.0);
+			sfxb.scaleOffset((0.95 * tap6Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap6Ratio * delayLength))/32768.0);
+			sfxb.writeRegister(ADDR_PTR, 0);
+			sfxb.readDelayPointer(tap6Gain);
+			sfxb.writeRegister(mix, 0.0);
+			if(this.getPin("Tap_6_Out").isConnected() == true) {
+			sfxb.readDelayPointer(1.0);
+			sfxb.writeRegister(tap6reg, 0.0);
+			}
+			
+			sfxb.readRegister(max, 1.0);
 			sfxb.scaleOffset((0.95 * tap1Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap1Ratio * delayLength))/32768.0);
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readDelayPointer(tap1Gain);
+			sfxb.readRegister(mix, 1.0);
 			sfxb.writeRegister(mix, 0.0);
 			sfxb.readRegister(max, 1.0);
 			sfxb.scaleOffset((0.95 * tap2Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap2Ratio * delayLength))/32768.0);
@@ -142,13 +159,14 @@
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readDelayPointer(tap5Gain);
 			sfxb.readRegister(mix, 1.0);
-			sfxb.writeRegister(mix, 0.0);
-			sfxb.readRegister(max, 1.0);
-			sfxb.scaleOffset((0.95 * tap6Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap6Ratio * delayLength))/32768.0);
-			sfxb.writeRegister(ADDR_PTR, 0);
-			sfxb.readDelayPointer(tap6Gain);
-			sfxb.readRegister(mix, 1.0);
 			} else {
+			ratio = (int) (tap6Ratio * delayLength);
+			if(this.getPin("Tap_6_Out").isConnected() == true) {
+			sfxb.FXreadDelay("mn3011delay+", ratio, 1.0);
+			sfxb.writeRegister(tap6reg, 0.0);
+			}
+			
+			sfxb.FXreadDelay("mn3011delay+", ratio, tap6Gain);
 			ratio = (int) (tap1Ratio * delayLength);
 			sfxb.FXreadDelay("mn3011delay+", ratio, tap1Gain);
 			ratio = (int) (tap2Ratio * delayLength);
@@ -159,16 +177,18 @@
 			sfxb.FXreadDelay("mn3011delay+", ratio, tap4Gain);
 			ratio = (int) (tap5Ratio * delayLength);
 			sfxb.FXreadDelay("mn3011delay+", ratio, tap5Gain);
-			ratio = (int) (tap6Ratio * delayLength);
-			sfxb.FXreadDelay("mn3011delay+", ratio, tap6Gain);
 			}
 			
 			sfxb.writeRegister(mix, 0.0);
 			this.getPin("Mix_Out").setRegister(mix);
+			if(this.getPin("Delay_Out_End").isConnected() == true) {
 			output5 = sfxb.allocateReg();
 			sfxb.FXreadDelay("mn3011delay#", 0, 1.0);
 			sfxb.writeRegister(output5, 0.0);
+			}
+			
 			this.getPin("Delay_Out_End").setRegister(output5);
+			this.getPin("Tap_6_Out").setRegister(tap6reg);
 			}
 			
 

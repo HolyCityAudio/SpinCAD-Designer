@@ -54,6 +54,11 @@ f.dropBlock(p, o);
 }
 {
 	SpinCADPin p1 = o.getPin("Input 2");
+	SpinCADPin p2 = m.getPin("Tap_6_Out");
+	p2.setConnection(o, p1);
+}
+{
+	SpinCADPin p1 = o.getPin("Input 3");
 	SpinCADPin p2 = m.getPin("Delay_Out_End");
 	p2.setConnection(o, p1);
 }
