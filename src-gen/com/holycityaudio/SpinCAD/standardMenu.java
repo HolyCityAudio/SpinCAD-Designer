@@ -38,11 +38,12 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tentapCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.gated_verbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_plateCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.shimmer_verbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
@@ -450,6 +451,15 @@
 	JMenu mn_reverb = new JMenu("Reverb");
 	menuBar.add(mn_reverb);
 	
+	final JMenuItem mntm_MinReverb = new JMenuItem("Small Reverb");
+	mntm_MinReverb.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new MinReverbCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_MinReverb);
+		
 	final JMenuItem mntm_gated_verb = new JMenuItem("Gated Reverb");
 	mntm_gated_verb.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -486,16 +496,16 @@
 	});
 	mn_reverb.add(mntm_reverb_plate);
 		
-	final JMenuItem mntm_MinReverb = new JMenuItem("Small Reverb");
-	mntm_MinReverb.addActionListener(new ActionListener() {
+	final JMenuItem mntm_reverb = new JMenuItem("Adjustable Reverb");
+	mntm_reverb.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new MinReverbCADBlock(50, 100);
+			SpinCADBlock pcB = new reverbCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_reverb.add(mntm_MinReverb);
+	mn_reverb.add(mntm_reverb);
 		
-	final JMenuItem mntm_reverbA = new JMenuItem("Adjustable Reverb");
+	final JMenuItem mntm_reverbA = new JMenuItem("Adjustable ReverbA");
 	mntm_reverbA.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new reverbACADBlock(50, 100);

@@ -314,7 +314,7 @@ public class reverbACADBlock extends SpinCADBlock {
 	public void setklap(double __param) {
 		klap = __param;	
 	}
-
+	
 	public double getklap() {
 		return klap;
 	}

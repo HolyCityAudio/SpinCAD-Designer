@@ -30,6 +30,7 @@
 			private reverbControlPanel cp = null;
 			
 			private double gain = 0.5;
+			private double predel = 50;
 			private int hpf4;
 			private int lpf4;
 			private int temp;
@@ -37,11 +38,11 @@
 			private int iapout;
 			private int pdelo;
 			private int output;
+			private double nAPs = 4;
 			private double kiap = 0.5;
 			private double klap = 0.6;
 			private double kfh = 0.01;
 			private double kfl = 0.4;
-			private double nAPs = 2;
 			private double nDLs = 3;
 			private int hpf1;
 			private int lpf1;
@@ -60,6 +61,9 @@
 				addControlInputPin(this, "Pot1");
 				addControlInputPin(this, "Pot2");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -247,30 +251,30 @@
 			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("del4", 0, 0);
 			sfxb.FXreadDelay("del1", 0, 0.8);
-			sfxb.FXreadDelay("del2+", 1876, 1.5);
-			sfxb.FXreadDelay("del3+", 2093, 1.1);
-			sfxb.FXreadDelay("del4+", 2793, 1);
+			sfxb.FXreadDelay("del2+", (int)(1876 * 1.0), 1.5);
+			sfxb.FXreadDelay("del3+", (int)(2093 * 1.0), 1.1);
+			sfxb.FXreadDelay("del4+", (int)(2793 * 1.0), 1);
 			sfxb.writeRegister(output, 0);
 			sfxb.FXreadDelay("del1", 0, 0.8);
-			sfxb.FXreadDelay("del2+", 923, 1.5);
-			sfxb.FXreadDelay("del3+", 1234, 1.1);
-			sfxb.FXreadDelay("del4+", 2267, 1);
+			sfxb.FXreadDelay("del2+", (int)(923 * 1.0), 1.5);
+			sfxb.FXreadDelay("del3+", (int)(1234 * 1.0), 1.1);
+			sfxb.FXreadDelay("del4+", (int)(2267 * 1.0), 1);
 			sfxb.writeRegister(output, 0);
 			sfxb.skip(RUN, 2);
 			sfxb.loadSinLFO((int) SIN0,(int) 45, (int) 50);
 			sfxb.loadSinLFO((int) SIN1,(int) 53, (int) 50);
 			sfxb.FXchorusReadDelay(SIN0, REG|COMPC, "ap1+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 0, "ap1+", 51);
-			sfxb.FXwriteDelay("ap1+", 100, 0);
+			sfxb.FXwriteDelay("ap1+", (int)(100 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN0, COS|COMPC, "ap2+", 50);
 			sfxb.FXchorusReadDelay(SIN0, COS, "ap2+", 51);
-			sfxb.FXwriteDelay("ap2+", 100, 0);
+			sfxb.FXwriteDelay("ap2+", (int)(100 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN1, REG|COMPC, "ap3+", 50);
 			sfxb.FXchorusReadDelay(SIN1, 0, "ap3+", 51);
-			sfxb.FXwriteDelay("ap3+", 100, 0);
+			sfxb.FXwriteDelay("ap3+", (int)(100 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN1, COS|COMPC, "ap4+", 50);
 			sfxb.FXchorusReadDelay(SIN1, COS, "ap4+", 51);
-			sfxb.FXwriteDelay("ap4+", 100, 0);
+			sfxb.FXwriteDelay("ap4+", (int)(100 * 1.0), 0);
 
 			}
 			
@@ -281,6 +285,20 @@
 			
 			public double getgain() {
 				return gain;
+			}
+			public void setpredel(double __param) {
+				predel = __param;	
+			}
+			
+			public double getpredel() {
+				return predel;
+			}
+			public void setnAPs(double __param) {
+				nAPs = __param;	
+			}
+			
+			public double getnAPs() {
+				return nAPs;
 			}
 			public void setkiap(double __param) {
 				kiap = __param;	
@@ -302,5 +320,12 @@
 			
 			public double getkfl() {
 				return kfl;
+			}
+			public void setkfh(double __param) {
+				kfh = __param;	
+			}
+			
+			public double getkfh() {
+				return kfh;
 			}
 		}	

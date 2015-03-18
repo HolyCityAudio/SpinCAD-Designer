@@ -43,12 +43,18 @@
 		// declare the controls
 			JSlider gainSlider;
 			JLabel  gainLabel;	
+			JSlider predelSlider;
+			JLabel  predelLabel;	
+			JSlider nAPsSlider;
+			JLabel  nAPsLabel;	
 			JSlider kiapSlider;
 			JLabel  kiapLabel;	
 			JSlider klapSlider;
 			JLabel  klapLabel;	
 			JSlider kflSlider;
 			JLabel  kflLabel;	
+			JSlider kfhSlider;
+			JLabel  kfhLabel;	
 
 		public reverbControlPanel(reverbCADBlock genericCADBlock) {
 		
@@ -63,7 +69,7 @@
 
 			
 			// dB level slider goes in steps of 1 dB
-				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
+				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 				gainSlider.addChangeListener(new reverbSliderListener());
 				gainLabel = new JLabel();
 				updategainLabel();
@@ -71,6 +77,24 @@
 				frame.getContentPane().add(gainLabel);
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(gainSlider);		
+			
+			predelSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (100 * 1.0), (int) (gCB.getpredel() * 1.0));
+				predelSlider.addChangeListener(new reverbSliderListener());
+				predelLabel = new JLabel();
+				updatepredelLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(predelLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(predelSlider);		
+			
+			nAPsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (4 * 1.0), (int) (gCB.getnAPs() * 1.0));
+				nAPsSlider.addChangeListener(new reverbSliderListener());
+				nAPsLabel = new JLabel();
+				updatenAPsLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(nAPsLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(nAPsSlider);		
 			
 			kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkiap() * 100.0));
 				kiapSlider.addChangeListener(new reverbSliderListener());
@@ -90,7 +114,8 @@
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(klapSlider);		
 			
-			kflSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(100) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.getkfl()) * 100));
+			//				kflSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(800) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.getkfl()) * 100));
+							kflSlider = gCB.LogFilterSlider(800,5000,gCB.getkfl());
 				kflSlider.addChangeListener(new reverbSliderListener());
 				kflLabel = new JLabel();
 				updatekflLabel();
@@ -98,6 +123,16 @@
 				frame.getContentPane().add(kflLabel);
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(kflSlider);		
+			
+			//				kfhSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(40) * 100.0),(int) (Math.log10(750) * 100.0), (int) (Math.log10(gCB.getkfh()) * 100));
+							kfhSlider = gCB.LogFilterSlider(40,750,gCB.getkfh());
+				kfhSlider.addChangeListener(new reverbSliderListener());
+				kfhLabel = new JLabel();
+				updatekfhLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(kfhLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(kfhSlider);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -112,20 +147,32 @@
 		class reverbSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-				gCB.setgain((double) (gainSlider.getValue()/1.0));
+			gCB.setgain((double) (gainSlider.getValue()/1.0));
 				updategainLabel();
 			}
+			if(ce.getSource() == predelSlider) {
+			gCB.setpredel((double) (predelSlider.getValue()/1.0));
+				updatepredelLabel();
+			}
+			if(ce.getSource() == nAPsSlider) {
+			gCB.setnAPs((double) (nAPsSlider.getValue()/1.0));
+				updatenAPsLabel();
+			}
 			if(ce.getSource() == kiapSlider) {
-				gCB.setkiap((double) (kiapSlider.getValue()/100.0));
+			gCB.setkiap((double) (kiapSlider.getValue()/100.0));
 				updatekiapLabel();
 			}
 			if(ce.getSource() == klapSlider) {
-				gCB.setklap((double) (klapSlider.getValue()/100.0));
+			gCB.setklap((double) (klapSlider.getValue()/100.0));
 				updateklapLabel();
 			}
 			if(ce.getSource() == kflSlider) {
-				gCB.setkfl((double) (kflSlider.getValue()/100.0));
+			gCB.setkfl((double) gCB.freqToFilt(gCB.sliderToLogval((int)(kflSlider.getValue()), 100.0)));
 				updatekflLabel();
+			}
+			if(ce.getSource() == kfhSlider) {
+			gCB.setkfh((double) gCB.freqToFilt(gCB.sliderToLogval((int)(kfhSlider.getValue()), 100.0)));
+				updatekfhLabel();
 			}
 			}
 		}
@@ -150,6 +197,12 @@
 		private void updategainLabel() {
 		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
+		private void updatepredelLabel() {
+		predelLabel.setText("Pre_Delay " + String.format("%4.1f", gCB.getpredel()));		
+		}		
+		private void updatenAPsLabel() {
+		nAPsLabel.setText("All_Pass_Stages " + String.format("%4.1f", gCB.getnAPs()));		
+		}		
 		private void updatekiapLabel() {
 		kiapLabel.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		
 		}		
@@ -157,7 +210,12 @@
 		klapLabel.setText("Loop_All_Pass " + String.format("%4.2f", gCB.getklap()));		
 		}		
 		private void updatekflLabel() {
-		kflLabel.setText("Low_Pass " + String.format("%4.2f", Math.pow(10.0, gCB.getkfl())) + " Hz");		
+		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
+						kflLabel.setText("Low_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
+		}		
+		private void updatekfhLabel() {
+		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
+						kfhLabel.setText("High_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfh())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

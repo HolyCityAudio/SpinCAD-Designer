@@ -56,12 +56,13 @@
 
 @menu "Reverb" 
 //@menuitem "Allpass" allpass 
+@menuitem "Small Reverb" MinReverb 
 @menuitem "Gated Reverb" gated_verb 
 @menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
 @menuitem "Plate Reverb" reverb_plate 
-@menuitem "Small Reverb" MinReverb 
-@menuitem "Adjustable Reverb" reverbA 
+@menuitem "Adjustable Reverb" reverb 
+@menuitem "Adjustable ReverbA" reverbA 
 @menuitem "Shimmer Reverb" shimmer_verb 
 // @menuitem "Reverb Filter" reverbFilter 
 
