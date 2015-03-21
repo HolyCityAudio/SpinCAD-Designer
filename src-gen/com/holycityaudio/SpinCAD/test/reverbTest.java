@@ -49,28 +49,33 @@ f.dropBlock(p, o);
 }
 {
 	SpinCADPin p1 = o.getPin("Input 1");
-	SpinCADPin p2 = m.getPin("Output");
+	SpinCADPin p2 = m.getPin("Output_Left");
+	p2.setConnection(o, p1);
+}
+{
+	SpinCADPin p1 = o.getPin("Input 2");
+	SpinCADPin p2 = m.getPin("Output_Right");
 	p2.setConnection(o, p1);
 }
 {
 	Pot0CADBlock pot0 = new Pot0CADBlock(25, 150 + 40 * 1);
 	f.dropBlock(p, pot0);
 	SpinCADPin p1 = pot0.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Pot0");
+	SpinCADPin p2 = m.getPin("Reverb_Time");
 	p2.setConnection(pot0, p1);
 }
 {
 	Pot1CADBlock pot1 = new Pot1CADBlock(25, 150 + 40 * 2);
 	f.dropBlock(p, pot1);
 	SpinCADPin p1 = pot1.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Pot1");
+	SpinCADPin p2 = m.getPin("Pre_Delay");
 	p2.setConnection(pot1, p1);
 }
 {
 	Pot2CADBlock pot2 = new Pot2CADBlock(25, 150 + 40 * 3);
 	f.dropBlock(p, pot2);
 	SpinCADPin p1 = pot2.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Pot2");
+	SpinCADPin p2 = m.getPin("Filter");
 	p2.setConnection(pot2, p1);
 }
 f.getModel().sortAlignGen();

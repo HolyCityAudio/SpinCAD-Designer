@@ -30,37 +30,40 @@
 			private reverbControlPanel cp = null;
 			
 			private double gain = 0.5;
-			private double predel = 50;
+			private double predel = 4600;
 			private int hpf4;
 			private int lpf4;
 			private int temp;
 			private int rt;
 			private int iapout;
 			private int pdelo;
-			private int output;
+			private int outputL;
 			private double nAPs = 4;
 			private double kiap = 0.5;
-			private double klap = 0.6;
-			private double kfh = 0.01;
-			private double kfl = 0.4;
 			private double nDLs = 3;
+			private double klap = 0.6;
+			private double kfl = 0.4;
+			private double kfh = 0.01;
 			private int hpf1;
 			private int lpf1;
 			private int hpf2;
 			private int lpf2;
 			private int hpf3;
 			private int lpf3;
+			private int outputR;
 
 			public reverbCADBlock(int x, int y) {
 				super(x, y);
 				setName("Reverb");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addOutputPin(this, "Output");
-				addControlInputPin(this, "Pot0");
-				addControlInputPin(this, "Pot1");
-				addControlInputPin(this, "Pot2");
+				addOutputPin(this, "Output_Left");
+				addOutputPin(this, "Output_Right");
+				addControlInputPin(this, "Reverb_Time");
+				addControlInputPin(this, "Pre_Delay");
+				addControlInputPin(this, "Filter");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -98,24 +101,24 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Pot0").getPinConnection();
-			int input0 = -1;
+			sp = this.getPin("Reverb_Time").getPinConnection();
+			int revTime = -1;
 			if(sp != null) {
-				input0 = sp.getRegister();
+				revTime = sp.getRegister();
 			}
-			sp = this.getPin("Pot1").getPinConnection();
-			int input1 = -1;
+			sp = this.getPin("Pre_Delay").getPinConnection();
+			int preDel = -1;
 			if(sp != null) {
-				input1 = sp.getRegister();
+				preDel = sp.getRegister();
 			}
-			sp = this.getPin("Pot2").getPinConnection();
-			int input2 = -1;
+			sp = this.getPin("Filter").getPinConnection();
+			int filter = -1;
 			if(sp != null) {
-				input2 = sp.getRegister();
+				filter = sp.getRegister();
 			}
 			
 			// finally, generate the instructions
-			sfxb.FXallocDelayMem("pdel", 4600); 
+			sfxb.FXallocDelayMem("pdel", predel); 
 			sfxb.FXallocDelayMem("ap4", 1274); 
 			sfxb.FXallocDelayMem("ap4b", 1382); 
 			sfxb.FXallocDelayMem("del4", 4445); 
@@ -125,7 +128,7 @@
 			rt = sfxb.allocateReg();
 			iapout = sfxb.allocateReg();
 			pdelo = sfxb.allocateReg();
-			output = sfxb.allocateReg();
+			outputL = sfxb.allocateReg();
 			if(nAPs > 3) {
 			sfxb.FXallocDelayMem("iap1", 156); 
 			}
@@ -163,30 +166,55 @@
 			lpf3 = sfxb.allocateReg();
 			}
 			
-			sfxb.readRegister(input0, 1);
+			if(this.getPin("Reverb_Time").isConnected() == true) {
+			sfxb.readRegister(revTime, 1);
 			sfxb.scaleOffset(0.55, 0.3);
+			} else {
+			sfxb.scaleOffset(0, 0.5);
+			}
+			
 			sfxb.writeRegister(rt, 0);
+			if(this.getPin("Pre_Delay").isConnected() == true) {
 			sfxb.skip(RUN, 1);
 			sfxb.loadRampLFO((int) 0, (int) 0, (int) 4096);
+			}
+			
 			sfxb.readRegister(input, gain);
 			sfxb.FXwriteDelay("pdel", 0, 0);
+			if(this.getPin("Pre_Delay").isConnected() == true) {
 			sfxb.FXchorusReadDelay(RMP0, REG|COMPC, "pdel", 0);
 			sfxb.FXchorusReadDelay(RMP0, 0, "pdel+", 1);
+			}
+			
 			sfxb.writeRegister(pdelo, 0);
+			if(this.getPin("Pre_Delay").isConnected() == true) {
 			sfxb.chorusReadValue(RMP0);
-			sfxb.readRegister(input1, -0.5);
+			sfxb.mulx(preDel);
+			sfxb.scaleOffset(0.5, 0);
 			sfxb.writeRegister(RMP0_RATE, 0);
-			sfxb.readRegister(pdelo, 0.25);
+			}
+			
+			sfxb.readRegister(pdelo, 0.5);
+			if(nAPs > 3) {
 			sfxb.FXreadDelay("iap1#", 0, kiap);
 			sfxb.FXwriteAllpass("iap1", 0, -kiap);
+			}
+			
+			if(nAPs > 2) {
 			sfxb.FXreadDelay("iap2#", 0, kiap);
 			sfxb.FXwriteAllpass("iap2", 0, -kiap);
+			}
+			
+			if(nAPs > 1) {
 			sfxb.FXreadDelay("iap3#", 0, kiap);
 			sfxb.FXwriteAllpass("iap3", 0, -kiap);
+			}
+			
 			sfxb.FXreadDelay("iap4#", 0, kiap);
 			sfxb.FXwriteAllpass("iap4", 0, -kiap);
 			sfxb.writeRegister(iapout, 0);
 			sfxb.FXreadDelay("del4#", 0, 1);
+			if(nDLs > 3) {
 			sfxb.mulx(rt);
 			sfxb.readRegister(iapout, 1);
 			sfxb.FXreadDelay("ap1#", 0, klap);
@@ -199,10 +227,18 @@
 			sfxb.readRegisterFilter(hpf1, kfh);
 			sfxb.writeRegisterHighshelf(hpf1, -1);
 			sfxb.readRegister(temp, -1);
-			sfxb.mulx(input2);
+			if(this.getPin("Filter").isConnected() == true) {
+			sfxb.mulx(filter);
 			sfxb.readRegister(temp, 1);
+			} else {
+			sfxb.readRegister(temp, 0.5);
+			}
+			
 			sfxb.FXwriteDelay("del1", 0, 0);
 			sfxb.FXreadDelay("del1#", 0, 1);
+			}
+			
+			if(nDLs > 2) {
 			sfxb.mulx(rt);
 			sfxb.readRegister(iapout, 1);
 			sfxb.FXreadDelay("ap2#", 0, klap);
@@ -215,10 +251,18 @@
 			sfxb.readRegisterFilter(hpf2, kfh);
 			sfxb.writeRegisterHighshelf(hpf2, -1);
 			sfxb.readRegister(temp, -1);
-			sfxb.mulx(input2);
+			if(this.getPin("Filter").isConnected() == true) {
+			sfxb.mulx(filter);
 			sfxb.readRegister(temp, 1);
+			} else {
+			sfxb.readRegister(temp, 0.5);
+			}
+			
 			sfxb.FXwriteDelay("del2", 0, 0);
 			sfxb.FXreadDelay("del2#", 0, 1);
+			}
+			
+			if(nDLs > 1) {
 			sfxb.mulx(rt);
 			sfxb.readRegister(iapout, 1);
 			sfxb.FXreadDelay("ap3#", 0, klap);
@@ -231,10 +275,17 @@
 			sfxb.readRegisterFilter(hpf3, kfh);
 			sfxb.writeRegisterHighshelf(hpf3, -1);
 			sfxb.readRegister(temp, -1);
-			sfxb.mulx(input2);
+			if(this.getPin("Filter").isConnected() == true) {
+			sfxb.mulx(filter);
 			sfxb.readRegister(temp, 1);
+			} else {
+			sfxb.readRegister(temp, 0.5);
+			}
+			
 			sfxb.FXwriteDelay("del3", 0, 0);
 			sfxb.FXreadDelay("del3#", 0, 1.0);
+			}
+			
 			sfxb.mulx(rt);
 			sfxb.readRegister(iapout, 1);
 			sfxb.FXreadDelay("ap4#", 0, klap);
@@ -247,31 +298,69 @@
 			sfxb.readRegisterFilter(hpf4, kfh);
 			sfxb.writeRegisterHighshelf(hpf4, -1);
 			sfxb.readRegister(temp, -1);
-			sfxb.mulx(input2);
+			if(this.getPin("Filter").isConnected() == true) {
+			sfxb.mulx(filter);
 			sfxb.readRegister(temp, 1);
+			} else {
+			sfxb.readRegister(temp, 0.5);
+			}
+			
 			sfxb.FXwriteDelay("del4", 0, 0);
+			if(nDLs > 3) {
 			sfxb.FXreadDelay("del1", 0, 0.8);
+			}
+			
+			if(nDLs > 2) {
 			sfxb.FXreadDelay("del2+", (int)(1876 * 1.0), 1.5);
+			}
+			
+			if(nDLs > 1) {
 			sfxb.FXreadDelay("del3+", (int)(2093 * 1.0), 1.1);
+			}
+			
 			sfxb.FXreadDelay("del4+", (int)(2793 * 1.0), 1);
-			sfxb.writeRegister(output, 0);
+			sfxb.writeRegister(outputL, 0);
+			this.getPin("Output_Left").setRegister(outputL);
+			if(this.getPin("Output_Right").isConnected() == true) {
+			outputR = sfxb.allocateReg();
+			if(nDLs > 3) {
 			sfxb.FXreadDelay("del1", 0, 0.8);
+			}
+			
+			if(nDLs > 2) {
 			sfxb.FXreadDelay("del2+", (int)(923 * 1.0), 1.5);
+			}
+			
+			if(nDLs > 1) {
 			sfxb.FXreadDelay("del3+", (int)(1234 * 1.0), 1.1);
+			}
+			
 			sfxb.FXreadDelay("del4+", (int)(2267 * 1.0), 1);
-			sfxb.writeRegister(output, 0);
+			sfxb.writeRegister(outputR, 0);
+			this.getPin("Output_Right").setRegister(outputR);
+			}
+			
 			sfxb.skip(RUN, 2);
 			sfxb.loadSinLFO((int) SIN0,(int) 45, (int) 50);
 			sfxb.loadSinLFO((int) SIN1,(int) 53, (int) 50);
+			if(nDLs > 3) {
 			sfxb.FXchorusReadDelay(SIN0, REG|COMPC, "ap1+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 0, "ap1+", 51);
 			sfxb.FXwriteDelay("ap1+", (int)(100 * 1.0), 0);
+			}
+			
+			if(nDLs > 2) {
 			sfxb.FXchorusReadDelay(SIN0, COS|COMPC, "ap2+", 50);
 			sfxb.FXchorusReadDelay(SIN0, COS, "ap2+", 51);
 			sfxb.FXwriteDelay("ap2+", (int)(100 * 1.0), 0);
+			}
+			
+			if(nDLs > 1) {
 			sfxb.FXchorusReadDelay(SIN1, REG|COMPC, "ap3+", 50);
 			sfxb.FXchorusReadDelay(SIN1, 0, "ap3+", 51);
 			sfxb.FXwriteDelay("ap3+", (int)(100 * 1.0), 0);
+			}
+			
 			sfxb.FXchorusReadDelay(SIN1, COS|COMPC, "ap4+", 50);
 			sfxb.FXchorusReadDelay(SIN1, COS, "ap4+", 51);
 			sfxb.FXwriteDelay("ap4+", (int)(100 * 1.0), 0);
@@ -306,6 +395,13 @@
 			
 			public double getkiap() {
 				return kiap;
+			}
+			public void setnDLs(double __param) {
+				nDLs = __param;	
+			}
+			
+			public double getnDLs() {
+				return nDLs;
 			}
 			public void setklap(double __param) {
 				klap = __param;	

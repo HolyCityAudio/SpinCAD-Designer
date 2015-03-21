@@ -33,6 +33,7 @@
 @menu "Filters"
 //@menuitem "Bassman '59" BassmanEQ 
 @menuitem "1P Lowpass" LPF1P 
+@menuitem "RDFX Lowpass" LPF_RDFX
 @menuitem "Shelving Lowpass" Shelving_lowpass 
 @menuitem "1P Hipass" HPF1P 
 @menuitem "Shelving Hipass" Shelving_Hipass 

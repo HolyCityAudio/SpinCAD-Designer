@@ -1,0 +1,21 @@
+@name LPF_RDFX
+@audioInput input Input
+@audioOutput output Output  
+@controlInput shelfIn Shelf
+
+equ freq 0.15
+@sliderLabel freq Frequency 0.001 0.250 0.15 1000.0 3
+
+equ output Reg0
+equ lpf1 Reg1
+;equ filtReg Reg2
+
+@isPinConnected Input
+
+rdax input, 1.0
+rdfx lpf1, freq
+wrax lpf1, 1.0
+wrax output, 0
+
+@setOutputPin Output output
+@endif

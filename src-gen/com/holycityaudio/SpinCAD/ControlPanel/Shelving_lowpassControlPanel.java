@@ -89,11 +89,11 @@
 		class Shelving_lowpassSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-				gCB.setfreq((double) (freqSlider.getValue()/1000.0));
+			gCB.setfreq((double) (freqSlider.getValue()/1000.0));
 				updatefreqLabel();
 			}
 			if(ce.getSource() == shelfSlider) {
-				gCB.setshelf((double) (shelfSlider.getValue()/1000.0));
+			gCB.setshelf((double) (shelfSlider.getValue()/1000.0));
 				updateshelfLabel();
 			}
 			}

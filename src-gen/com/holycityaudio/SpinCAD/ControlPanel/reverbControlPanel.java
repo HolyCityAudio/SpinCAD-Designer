@@ -49,6 +49,8 @@
 			JLabel  nAPsLabel;	
 			JSlider kiapSlider;
 			JLabel  kiapLabel;	
+			JSlider nDLsSlider;
+			JLabel  nDLsLabel;	
 			JSlider klapSlider;
 			JLabel  klapLabel;	
 			JSlider kflSlider;
@@ -78,7 +80,7 @@
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(gainSlider);		
 			
-			predelSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (100 * 1.0), (int) (gCB.getpredel() * 1.0));
+			predelSlider = new JSlider(JSlider.HORIZONTAL, (int)(1 * 1),(int) (4600 * 1), (int) (gCB.getpredel() * 1));
 				predelSlider.addChangeListener(new reverbSliderListener());
 				predelLabel = new JLabel();
 				updatepredelLabel();
@@ -105,6 +107,15 @@
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(kiapSlider);		
 			
+			nDLsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (4 * 1.0), (int) (gCB.getnDLs() * 1.0));
+				nDLsSlider.addChangeListener(new reverbSliderListener());
+				nDLsLabel = new JLabel();
+				updatenDLsLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(nDLsLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(nDLsSlider);		
+			
 			klapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getklap() * 100.0));
 				klapSlider.addChangeListener(new reverbSliderListener());
 				klapLabel = new JLabel();
@@ -114,8 +125,8 @@
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(klapSlider);		
 			
-			//				kflSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(800) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.getkfl()) * 100));
-							kflSlider = gCB.LogFilterSlider(800,5000,gCB.getkfl());
+			//				kflSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(80) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.getkfl()) * 100));
+							kflSlider = gCB.LogFilterSlider(80,5000,gCB.getkfl());
 				kflSlider.addChangeListener(new reverbSliderListener());
 				kflLabel = new JLabel();
 				updatekflLabel();
@@ -124,8 +135,8 @@
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(kflSlider);		
 			
-			//				kfhSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(40) * 100.0),(int) (Math.log10(750) * 100.0), (int) (Math.log10(gCB.getkfh()) * 100));
-							kfhSlider = gCB.LogFilterSlider(40,750,gCB.getkfh());
+			//				kfhSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(40) * 100.0),(int) (Math.log10(7500) * 100.0), (int) (Math.log10(gCB.getkfh()) * 100));
+							kfhSlider = gCB.LogFilterSlider(40,7500,gCB.getkfh());
 				kfhSlider.addChangeListener(new reverbSliderListener());
 				kfhLabel = new JLabel();
 				updatekfhLabel();
@@ -151,7 +162,7 @@
 				updategainLabel();
 			}
 			if(ce.getSource() == predelSlider) {
-			gCB.setpredel((double) (predelSlider.getValue()/1.0));
+			gCB.setpredel((double) (predelSlider.getValue()/1));
 				updatepredelLabel();
 			}
 			if(ce.getSource() == nAPsSlider) {
@@ -161,6 +172,10 @@
 			if(ce.getSource() == kiapSlider) {
 			gCB.setkiap((double) (kiapSlider.getValue()/100.0));
 				updatekiapLabel();
+			}
+			if(ce.getSource() == nDLsSlider) {
+			gCB.setnDLs((double) (nDLsSlider.getValue()/1.0));
+				updatenDLsLabel();
 			}
 			if(ce.getSource() == klapSlider) {
 			gCB.setklap((double) (klapSlider.getValue()/100.0));
@@ -198,13 +213,16 @@
 		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		private void updatepredelLabel() {
-		predelLabel.setText("Pre_Delay " + String.format("%4.1f", gCB.getpredel()));		
+		predelLabel.setText("Pre_Delay " + String.format("%4.0f", (1000 * gCB.getpredel())/gCB.getSamplerate()));		
 		}		
 		private void updatenAPsLabel() {
 		nAPsLabel.setText("All_Pass_Stages " + String.format("%4.1f", gCB.getnAPs()));		
 		}		
 		private void updatekiapLabel() {
 		kiapLabel.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		
+		}		
+		private void updatenDLsLabel() {
+		nDLsLabel.setText("Delay_Stages " + String.format("%4.1f", gCB.getnDLs()));		
 		}		
 		private void updateklapLabel() {
 		klapLabel.setText("Loop_All_Pass " + String.format("%4.2f", gCB.getklap()));		

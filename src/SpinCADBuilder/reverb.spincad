@@ -1,18 +1,18 @@
 @name Reverb  
 @audioInput input Input 
-@audioOutput output Output 
-@controlInput input0 Pot0
-@controlInput input1 Pot1
-@controlInput input2 Pot2
-;@sliderLabel kfh High_Pass 40 1000 100.0 100.0 2 LOGFREQ
+@audioOutput outputL Output_Left
+@audioOutput outputR Output_Right 
+@controlInput revTime Reverb_Time
+@controlInput preDel Pre_Delay
+@controlInput filter Filter
 
 equ gain 0.5 
 @sliderLabel gain Input_Gain -18 0 -6 1.0 1 DBLEVEL 
 
-equ predel 50 
-@sliderLabel predel Pre_Delay 0 100 50 1.0 1 
+equ predel 4600 
+@sliderLabel predel Pre_Delay 1 4600 460 1 0 lengthToTime 
+mem   pdel   predel  ; pre-delay, 100mS at a 46khz clock freq.
 
-mem   pdel   4600  ; pre-delay, 100mS at a 46khz clock freq.
 ;
 mem   ap4   1274
 mem   ap4b   1382
@@ -25,27 +25,28 @@ equ    temp   reg0  ; locations for filtering
 equ   rt   reg9  ; reverb time  --- this needs a control input
 equ   iapout   reg10 ; holding register for all pass output
 equ   pdelo   reg11 ; holding register for output of pre-delay
-equ output reg12
+equ outputL reg12
 
 ;constants:  ---- these should have control panel sliders
 
 equ nAPs 4
 @sliderLabel nAPs All_Pass_Stages 2 4 4 1.0 1 
 
-equ   kiap   0.5  ; all pass filter
+equ   kiap   0.5  ; input all pass filter
 @sliderLabel kiap Input_All_Pass 0.25 0.95 0.5 100.0 2 
-
-equ   klap   0.6  ;  all pass filter
-@sliderLabel klap Loop_All_Pass 0.25 0.95 0.6 100.0 2 
-
-equ   kfh   0.01  ; high pass filter
-equ   kfl   0.4  ; low pass filter
-@sliderLabel kfl Low_Pass 800 5000 400.0 100.0 1 LOGFREQ
-@sliderLabel kfh High_Pass 40 750 400.0 100.0 1 LOGFREQ
-
 
 ; block control parameters from control panel
 equ nDLs 3 
+@sliderLabel nDLs Delay_Stages 2 4 4 1.0 1 
+
+equ   klap   0.6  ;  delay ring all pass filter
+@sliderLabel klap Loop_All_Pass 0.25 0.95 0.6 100.0 2 
+
+equ   kfl   0.4  ; low pass filter
+@sliderLabel kfl Low_Pass 80 5000 400.0 100.0 1 LOGFREQ
+
+equ   kfh   0.01  ; high pass filter
+@sliderLabel kfh High_Pass 40 7500 400.0 100.0 1 LOGFREQ
 
 @isGreaterThan nAPs 3
 mem   iap1   156  ; all-pass filters
@@ -82,37 +83,55 @@ equ   lpf3   reg7
 
 ;prepare decay time pot:
 
-rdax   pot0,1
+@isPinConnected Reverb_Time
+rdax   revTime,1
 sof   0.55,0.3
+@else
+sof   0,0.5
+@endif
+
 wrax   rt,0         ;rt ranges 0.3 to 0.85
 
-;do variable predelay:
 
+@isPinConnected Pre_Delay
+;do variable predelay:
 skp   run,label
 wldr   0,0,4096      ;initialize predelay
-
 label:
+@endif
+
 rdax   input,gain      ;put inputs into predelay
-; rdax   adcr,0.5
 wra   pdel,0
 
+@isPinConnected Pre_Delay
 cho rda,rmp0,reg|compc,pdel   ;get outputs from predelay, interpolated
 cho rda,rmp0,0,pdel+1
+@endif
 wrax   pdelo,0         ;write predelay output to register
 
+@isPinConnected Pre_Delay
 cho rdal,rmp0      ;read current predelay pointer
-rdax   pot1,-0.5      ;subtract pot for servo control of pointer
+mulx preDel
+sof 0.5, 0
 wrax   rmp0_rate,0      ;maintain predelay pointer
+@endif
 
 ;now run predelayed signal into 4 all passes:
 
-rdax   pdelo,0.25      ;attenuate signal to avoid clipping   
+rdax   pdelo,0.5      ;attenuate signal to avoid clipping   
+@isGreaterThan nAPs 3
 rda   iap1#,kiap   
 wrap   iap1,-kiap      
+@endif
+@isGreaterThan nAPs 2
 rda   iap2#,kiap   
 wrap   iap2,-kiap      
+@endif
+@isGreaterThan nAPs 1
 rda   iap3#,kiap   
-wrap   iap3,-kiap      
+wrap   iap3,-kiap    
+@endif
+  
 rda   iap4#,kiap   
 wrap   iap4,-kiap      
 wrax   iapout,0      ;write to register for ring injection
@@ -122,6 +141,7 @@ wrax   iapout,0      ;write to register for ring injection
 ;aps into delay1:
 
 rda   del4#,1      ;read previous delay   
+@isGreaterThan nDLs 3 
 mulx   rt      ;multiply by reverb time coefficient
 rdax   iapout,1   ;read left input from input allpass filter bank
 rda   ap1#,klap   ;do an allpass filter
@@ -134,13 +154,18 @@ wrlx   lpf1,-1
 rdfx   hpf1,kfh   ;high pass filter
 wrhx   hpf1,-1
 rdax   temp,-1
-mulx   pot2      ;crossfade between filter and no filter
-rdax   temp,1
+@isPinConnected Filter
+mulx   filter
+rdax   temp,1   
+@else
+rdax temp, 0.5
+@endif
 wra   del1,0      ;write to next delay, clear accumulator
+rda   del1#,1      
+@endif
 
 ;aps into delay2:
-
-rda   del1#,1      
+@isGreaterThan nDLs 2 
 mulx   rt
 rdax   iapout,1
 rda   ap2#,klap   
@@ -153,13 +178,19 @@ wrlx   lpf2,-1
 rdfx   hpf2,kfh
 wrhx   hpf2,-1
 rdax   temp,-1
-mulx   pot2
-rdax   temp,1
+@isPinConnected Filter
+mulx   filter
+rdax   temp,1   
+@else
+rdax temp, 0.5
+@endif
+
 wra   del2,0      
+rda   del2#,1      
+@endif
 
 ;aps into delay3:
-
-rda   del2#,1      
+@isGreaterThan nDLs 1 
 mulx   rt
 rdax   iapout,1      
 rda   ap3#,klap   
@@ -172,13 +203,18 @@ wrlx   lpf3,-1
 rdfx   hpf3,kfh
 wrhx   hpf3,-1
 rdax   temp,-1
-mulx   pot2
+@isPinConnected Filter
+mulx   filter
 rdax   temp,1   
-wra   del3,0
+@else
+rdax temp, 0.5
+@endif
 
 ;aps into delay4:
-
+wra   del3,0
 rda   del3#,1.0      
+@endif
+
 mulx   rt
 rdax   iapout,1
 rda   ap4#,klap   
@@ -191,23 +227,45 @@ wrlx   lpf4,-1
 rdfx   hpf4,kfh
 wrhx   hpf4,-1
 rdax   temp,-1
-mulx   pot2
+@isPinConnected Filter
+mulx   filter
 rdax   temp,1   
+@else
+rdax temp, 0.5
+@endif
+
 wra   del4,0      
 
 ;take outputs as taps from reverb ring:
 
+@isGreaterThan nDLs 3
 rda   del1,0.8
+@endif
+@isGreaterThan nDLs 2 
 rda   del2+1876,1.5
+@endif
+@isGreaterThan nDLs 1 
 rda   del3+2093,1.1
+@endif
 rda   del4+2793,1         
-wrax   output,0      ;write output, clear accumulator
-   
+wrax   outputL,0      ;write output, clear accumulator
+@setOutputPin Output_Left outputL
+
+@isPinConnected Output_Right
+equ outputR reg12
+@isGreaterThan nDLs 3
 rda   del1,0.8   
+@endif
+@isGreaterThan nDLs 2 
 rda   del2+923,1.5
+@endif
+@isGreaterThan nDLs 1 
 rda   del3+1234,1.1
+@endif
 rda   del4+2267,1
-wrax   output,0   
+wrax   outputR,0   
+@setOutputPin Output_Right outputR
+@endif
 
 ;set up lfo, 1Hz to 2Hz, +/-100 samples, for smearing loop all passes:
 
@@ -218,19 +276,25 @@ wlds   sin1,53,50
 smear:
 ;smear 4 allpass filters in reverb ring:
 
-; this is a chorus on the all pass stages, to simulate how echoes get bounced around in the real world by air currents and to reduce the repetitive "echo" sound.  Probably needs a checkbox in the control panel and / or an input for an LFO.  Maybe if no LFO is connected, skip these lines.
+; this is a chorus on the all pass stages, to simulate how echoes get bounced around in the real world by air 
+; currents and to reduce the repetitive "echo" sound.  Probably needs a checkbox in the control panel and / 
+; or an input for an LFO.  Maybe if no LFO is connected, skip these lines.
 
+@isGreaterThan nDLs 3 
 cho rda,sin0,reg|compc,ap1+50   ;sin0
 cho rda,sin0,0,ap1+51
 wra   ap1+100,0
-
+@endif
+@isGreaterThan nDLs 2 
 cho rda,sin0,cos|compc,ap2+50   ;cos0
 cho rda,sin0,cos,ap2+51   
 wra   ap2+100,0
-
+@endif
+@isGreaterThan nDLs 1 
 cho rda,sin1,reg|compc,ap3+50   ;sin1
 cho rda,sin1,0,ap3+51
 wra   ap3+100,0
+@endif
 
 cho rda,sin1,cos|compc,ap4+50   ;cos1
 cho rda,sin1,cos,ap4+51   

@@ -20,16 +20,16 @@ equ filtReg Reg2
 rdax input, 1.0
 rdfx lpf1, freq
 
-@isPinConnected Frequency
-mulx freqIn
-@endif
+//@isPinConnected Frequency
+//mulx freqIn
+//@endif
 wrlx lpf1, -shelf
-@isPinConnected Shelf
-mulx shelfIn
-@endif
+//@isPinConnected Shelf
+//mulx shelfIn
+//@endif
 
 wrax filtReg, 1.0
-rdax input, 1.0
+;rdax input, 1.0
 wrax output, 0
 
 @setOutputPin Output output

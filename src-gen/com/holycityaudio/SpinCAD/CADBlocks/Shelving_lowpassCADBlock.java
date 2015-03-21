@@ -95,17 +95,8 @@
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, 1.0);
 			sfxb.readRegisterFilter(lpf1, freq);
-			if(this.getPin("Frequency").isConnected() == true) {
-			sfxb.mulx(freqIn);
-			}
-			
 			sfxb.writeRegisterLowshelf(lpf1, -shelf);
-			if(this.getPin("Shelf").isConnected() == true) {
-			sfxb.mulx(shelfIn);
-			}
-			
 			sfxb.writeRegister(filtReg, 1.0);
-			sfxb.readRegister(input, 1.0);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Output").setRegister(output);
 			this.getPin("Filter").setRegister(filtReg);
