@@ -5,7 +5,8 @@
 @controlInput shelfIn Shelf
 
 equ freq 0.15
-@sliderLabel freq Frequency 0.001 0.250 0.15 1000.0 3
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq Frequency 80 2500 100.0 100.0 2 LOGFREQ 
 
 equ shelf 0.5
 @sliderLabel shelf Shelf 0.0 1.0 0.5 1000.0 2

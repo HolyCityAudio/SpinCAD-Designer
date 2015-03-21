@@ -71,24 +71,20 @@ public class WriteRegisterLowshelf extends Instruction {
 	}
 
 	//Description 
-	//The current ACC value is stored in the register pointed to by ADDR, then ACC is 
-	//multiplied by C. Finally the previous content of ACC (PACC) is added to the product. 
-
-	@Override   
+	//First the current ACC value is stored into the register pointed to by ADDR, then ACC is 
+	//subtracted from the previous content of ACC (PACC). The difference is then multiplied 
+	// by C and finally PACC is added to the result. 
 	public void simulate(SimulatorState state) {
 		state.setRegVal(addr, state.getACCVal());
 //		System.out.println("WRHX 1:" + state.getRegVal(addr));
-		state.getACC().scale(scale);		
-//		System.out.println("WRHX 2:" + state.getACC().getValue());
-		state.getACC().add(state.getPACCVal());
-//		System.out.println("WRHX 3:" + state.getACC().getValue());
+		Reg reg = new Reg(state.getPACCVal());
+//		System.out.println("WRHX 2:" + reg.getValue());
+		reg.subtract(state.getACCVal());
+//		System.out.println("WRHX 3:" + reg.getValue());
+		reg.scale(scale);
+//		System.out.println("WRHX 4:" + reg.getValue());
+		reg.add(state.getPACCVal());
+//		System.out.println("WRHX 5:" + reg.getValue());
+		state.setACCVal(reg.getValue());
 	}
-	
-	public void simulateX(SimulatorState state) {
-		state.setRegVal(addr, state.getACCVal());
-		state.getACC().scale(scale);		
-		state.getACC().add(state.getPACCVal());
-	}
-
-
 }

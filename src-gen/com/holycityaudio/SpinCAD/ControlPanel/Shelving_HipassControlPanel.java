@@ -58,7 +58,8 @@
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			freqSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.350 * 1000.0), (int) (gCB.getfreq() * 1000.0));
+			//				freqSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(80) * 100.0),(int) (Math.log10(2500) * 100.0), (int) (Math.log10(gCB.getfreq()) * 100));
+							freqSlider = gCB.LogFilterSlider(80,2500,gCB.getfreq());
 				freqSlider.addChangeListener(new Shelving_HipassSliderListener());
 				freqLabel = new JLabel();
 				updatefreqLabel();
@@ -89,11 +90,11 @@
 		class Shelving_HipassSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-				gCB.setfreq((double) (freqSlider.getValue()/1000.0));
+			gCB.setfreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
 				updatefreqLabel();
 			}
 			if(ce.getSource() == shelfSlider) {
-				gCB.setshelf((double) (shelfSlider.getValue()/1000.0));
+			gCB.setshelf((double) (shelfSlider.getValue()/1000.0));
 				updateshelfLabel();
 			}
 			}
@@ -117,7 +118,8 @@
 			}
 		}
 		private void updatefreqLabel() {
-		freqLabel.setText("Frequency " + String.format("%4.3f", gCB.getfreq()));		
+		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
+						freqLabel.setText("Frequency " + String.format("%4.2f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		private void updateshelfLabel() {
 		shelfLabel.setText("Shelf " + String.format("%4.2f", gCB.getshelf()));		

@@ -33,7 +33,6 @@
 			private double shelf = 0.5;
 			private int output;
 			private int hpf1;
-			private int filtReg;
 
 			public Shelving_HipassCADBlock(int x, int y) {
 				super(x, y);
@@ -41,7 +40,6 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
-				addOutputPin(this, "Filter");
 				addControlInputPin(this, "Frequency");
 				addControlInputPin(this, "Shelf");
 			// if any control panel elements declared, set hasControlPanel to true
@@ -91,7 +89,6 @@
 			// finally, generate the instructions
 			output = sfxb.allocateReg();
 			hpf1 = sfxb.allocateReg();
-			filtReg = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, 1.0);
 			sfxb.readRegisterFilter(hpf1, freq);
@@ -104,11 +101,8 @@
 			sfxb.mulx(shelfIn);
 			}
 			
-			sfxb.writeRegister(filtReg, 1.0);
-			sfxb.readRegister(input, 1.0);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Output").setRegister(output);
-			this.getPin("Filter").setRegister(filtReg);
 			}
 			
 

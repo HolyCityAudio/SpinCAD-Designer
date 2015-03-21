@@ -70,20 +70,17 @@ public class WriteRegisterHighshelf extends Instruction {
 	}
 	
 	//Description 
-	//First the current ACC value is stored into the register pointed to by ADDR, then ACC is 
-	//subtracted from the previous content of ACC (PACC). The difference is then multiplied 
-	// by C and finally PACC is added to the result. 
+	//The current ACC value is stored in the register pointed to by ADDR, then ACC is 
+	//multiplied by C. Finally the previous content of ACC (PACC) is added to the product. 
+
+	@Override   
 	public void simulate(SimulatorState state) {
 		state.setRegVal(addr, state.getACCVal());
 //		System.out.println("WRLX 1:" + state.getRegVal(addr));
-		Reg reg = new Reg(state.getPACCVal());
-//		System.out.println("WRLX 2:" + reg.getValue());
-		reg.subtract(state.getACCVal());
-//		System.out.println("WRLX 3:" + reg.getValue());
-		reg.scale(scale);
-//		System.out.println("WRLX 4:" + reg.getValue());
-		reg.add(state.getPACCVal());
-//		System.out.println("WRLX 5:" + reg.getValue());
-		state.setACCVal(reg.getValue());
+		state.getACC().scale(scale);		
+//		System.out.println("WRLX 2:" + state.getACC().getValue());
+		state.getACC().add(state.getPACCVal());
+//		System.out.println("WRLX 3:" + state.getACC().getValue());
 	}
+
 }
