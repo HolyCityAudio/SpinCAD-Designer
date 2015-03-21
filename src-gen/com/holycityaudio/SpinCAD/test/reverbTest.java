@@ -68,15 +68,8 @@ f.dropBlock(p, o);
 	Pot1CADBlock pot1 = new Pot1CADBlock(25, 150 + 40 * 2);
 	f.dropBlock(p, pot1);
 	SpinCADPin p1 = pot1.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Pre_Delay");
-	p2.setConnection(pot1, p1);
-}
-{
-	Pot2CADBlock pot2 = new Pot2CADBlock(25, 150 + 40 * 3);
-	f.dropBlock(p, pot2);
-	SpinCADPin p1 = pot2.getPin("Output 1");
 	SpinCADPin p2 = m.getPin("Filter");
-	p2.setConnection(pot2, p1);
+	p2.setConnection(pot1, p1);
 }
 f.getModel().sortAlignGen();
 System.out.println("reverbCADBlock test passed with all control connections!");

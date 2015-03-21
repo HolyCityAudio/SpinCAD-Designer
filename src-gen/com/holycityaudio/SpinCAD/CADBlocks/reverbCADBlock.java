@@ -30,13 +30,11 @@
 			private reverbControlPanel cp = null;
 			
 			private double gain = 0.5;
-			private double predel = 4600;
 			private int hpf4;
 			private int lpf4;
 			private int temp;
 			private int rt;
 			private int iapout;
-			private int pdelo;
 			private int outputL;
 			private double nAPs = 4;
 			private double kiap = 0.5;
@@ -60,11 +58,8 @@
 				addOutputPin(this, "Output_Left");
 				addOutputPin(this, "Output_Right");
 				addControlInputPin(this, "Reverb_Time");
-				addControlInputPin(this, "Pre_Delay");
 				addControlInputPin(this, "Filter");
 			// if any control panel elements declared, set hasControlPanel to true
-						hasControlPanel = true;
-						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -106,11 +101,6 @@
 			if(sp != null) {
 				revTime = sp.getRegister();
 			}
-			sp = this.getPin("Pre_Delay").getPinConnection();
-			int preDel = -1;
-			if(sp != null) {
-				preDel = sp.getRegister();
-			}
 			sp = this.getPin("Filter").getPinConnection();
 			int filter = -1;
 			if(sp != null) {
@@ -118,7 +108,6 @@
 			}
 			
 			// finally, generate the instructions
-			sfxb.FXallocDelayMem("pdel", predel); 
 			sfxb.FXallocDelayMem("ap4", 1274); 
 			sfxb.FXallocDelayMem("ap4b", 1382); 
 			sfxb.FXallocDelayMem("del4", 4445); 
@@ -127,7 +116,6 @@
 			temp = sfxb.allocateReg();
 			rt = sfxb.allocateReg();
 			iapout = sfxb.allocateReg();
-			pdelo = sfxb.allocateReg();
 			outputL = sfxb.allocateReg();
 			if(nAPs > 3) {
 			sfxb.FXallocDelayMem("iap1", 156); 
@@ -170,31 +158,11 @@
 			sfxb.readRegister(revTime, 1);
 			sfxb.scaleOffset(0.55, 0.3);
 			} else {
-			sfxb.scaleOffset(0, 0.5);
+			sfxb.scaleOffset(0, 0.85);
 			}
 			
 			sfxb.writeRegister(rt, 0);
-			if(this.getPin("Pre_Delay").isConnected() == true) {
-			sfxb.skip(RUN, 1);
-			sfxb.loadRampLFO((int) 0, (int) 0, (int) 4096);
-			}
-			
 			sfxb.readRegister(input, gain);
-			sfxb.FXwriteDelay("pdel", 0, 0);
-			if(this.getPin("Pre_Delay").isConnected() == true) {
-			sfxb.FXchorusReadDelay(RMP0, REG|COMPC, "pdel", 0);
-			sfxb.FXchorusReadDelay(RMP0, 0, "pdel+", 1);
-			}
-			
-			sfxb.writeRegister(pdelo, 0);
-			if(this.getPin("Pre_Delay").isConnected() == true) {
-			sfxb.chorusReadValue(RMP0);
-			sfxb.mulx(preDel);
-			sfxb.scaleOffset(0.5, 0);
-			sfxb.writeRegister(RMP0_RATE, 0);
-			}
-			
-			sfxb.readRegister(pdelo, 0.5);
 			if(nAPs > 3) {
 			sfxb.FXreadDelay("iap1#", 0, kiap);
 			sfxb.FXwriteAllpass("iap1", 0, -kiap);
@@ -229,11 +197,9 @@
 			sfxb.readRegister(temp, -1);
 			if(this.getPin("Filter").isConnected() == true) {
 			sfxb.mulx(filter);
-			sfxb.readRegister(temp, 1);
-			} else {
-			sfxb.readRegister(temp, 0.5);
 			}
 			
+			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("del1", 0, 0);
 			sfxb.FXreadDelay("del1#", 0, 1);
 			}
@@ -253,11 +219,9 @@
 			sfxb.readRegister(temp, -1);
 			if(this.getPin("Filter").isConnected() == true) {
 			sfxb.mulx(filter);
-			sfxb.readRegister(temp, 1);
-			} else {
-			sfxb.readRegister(temp, 0.5);
 			}
 			
+			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("del2", 0, 0);
 			sfxb.FXreadDelay("del2#", 0, 1);
 			}
@@ -277,11 +241,9 @@
 			sfxb.readRegister(temp, -1);
 			if(this.getPin("Filter").isConnected() == true) {
 			sfxb.mulx(filter);
-			sfxb.readRegister(temp, 1);
-			} else {
-			sfxb.readRegister(temp, 0.5);
 			}
 			
+			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("del3", 0, 0);
 			sfxb.FXreadDelay("del3#", 0, 1.0);
 			}
@@ -300,11 +262,9 @@
 			sfxb.readRegister(temp, -1);
 			if(this.getPin("Filter").isConnected() == true) {
 			sfxb.mulx(filter);
-			sfxb.readRegister(temp, 1);
-			} else {
-			sfxb.readRegister(temp, 0.5);
 			}
 			
+			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("del4", 0, 0);
 			if(nDLs > 3) {
 			sfxb.FXreadDelay("del1", 0, 0.8);
@@ -374,20 +334,6 @@
 			
 			public double getgain() {
 				return gain;
-			}
-			public void setpredel(double __param) {
-				predel = __param;	
-			}
-			
-			public double getpredel() {
-				return predel;
-			}
-			public void setnAPs(double __param) {
-				nAPs = __param;	
-			}
-			
-			public double getnAPs() {
-				return nAPs;
 			}
 			public void setkiap(double __param) {
 				kiap = __param;	
