@@ -1,7 +1,6 @@
 @name Shelving_Lowpass
 @audioInput input Input
 @audioOutput output Output  
-@audioOutput filtReg Filter  
 @controlInput freqIn Frequency
 @controlInput shelfIn Shelf
 
@@ -13,7 +12,6 @@ equ shelf 0.5
 
 equ output Reg0
 equ lpf1 Reg1
-equ filtReg Reg2
 
 @isPinConnected Input
 
@@ -28,10 +26,8 @@ wrlx lpf1, -shelf
 //mulx shelfIn
 //@endif
 
-wrax filtReg, 1.0
-;rdax input, 1.0
 wrax output, 0
 
 @setOutputPin Output output
-@setOutputPin Filter filtReg
+;@setOutputPin Filter filtReg
 @endif

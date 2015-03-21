@@ -17,6 +17,7 @@
  */
 package org.andrewkilpatrick.elmGen.instructions;
 
+import org.andrewkilpatrick.elmGen.simulator.Reg;
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 import org.andrewkilpatrick.elmGen.util.Util;
 
@@ -30,15 +31,15 @@ public class WriteRegisterHighshelf extends Instruction {
 	final double scale;
 	
 	/**
-	 * Stores ACC into register at add. Then subtracts ACC from PACC.
-	 * The difference is then multiplied by scale and finally PACC is 
-	 * added to the result. WRLX is an extremely powerful instruction
-	 * in that when combined with RDFX, it forms a single order low
-	 * pass shelving filter.
+	 * Stores ACC in register at addr. Multiplies ACC by scale. 
+	 * Finally PACC to result. WRHX is an extremely powerful instruction
+	 * in that when combined with RDFX, it forms a single order high pass
+	 * shelving filter.
 	 * 
 	 * @param addr the register address to compare
 	 * @param scale the amount to scale the reg value before the comparison
 	 */
+
 	public WriteRegisterHighshelf(int addr, double scale) {
 		if(addr < 0 || addr > 63) {
 			throw new IllegalArgumentException("addr out of range: " + addr +
@@ -69,16 +70,20 @@ public class WriteRegisterHighshelf extends Instruction {
 	}
 	
 	//Description 
-	//The current ACC value is stored in the register pointed to by ADDR, then ACC is 
-	//multiplied by C. Finally the previous content of ACC (PACC) is added to the product. 
-
-	@Override   
+	//First the current ACC value is stored into the register pointed to by ADDR, then ACC is 
+	//subtracted from the previous content of ACC (PACC). The difference is then multiplied 
+	// by C and finally PACC is added to the result. 
 	public void simulate(SimulatorState state) {
 		state.setRegVal(addr, state.getACCVal());
-//		System.out.println("WRHX 1:" + state.getRegVal(addr));
-		state.getACC().scale(scale);		
-//		System.out.println("WRHX 2:" + state.getACC().getValue());
-		state.getACC().add(state.getPACCVal());
-//		System.out.println("WRHX 3:" + state.getACC().getValue());
+//		System.out.println("WRLX 1:" + state.getRegVal(addr));
+		Reg reg = new Reg(state.getPACCVal());
+//		System.out.println("WRLX 2:" + reg.getValue());
+		reg.subtract(state.getACCVal());
+//		System.out.println("WRLX 3:" + reg.getValue());
+		reg.scale(scale);
+//		System.out.println("WRLX 4:" + reg.getValue());
+		reg.add(state.getPACCVal());
+//		System.out.println("WRLX 5:" + reg.getValue());
+		state.setACCVal(reg.getValue());
 	}
 }

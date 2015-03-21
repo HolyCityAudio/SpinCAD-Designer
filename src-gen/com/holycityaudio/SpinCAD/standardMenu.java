@@ -22,10 +22,9 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.LPF1PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.HPF1PCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_HipassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF2PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SVF2PCADBlock;
@@ -302,15 +301,6 @@
 	JMenu mn_filters = new JMenu("Filters");
 	menuBar.add(mn_filters);
 	
-	final JMenuItem mntm_LPF1P = new JMenuItem("1P Lowpass");
-	mntm_LPF1P.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new LPF1PCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_filters.add(mntm_LPF1P);
-		
 	final JMenuItem mntm_LPF_RDFX = new JMenuItem("RDFX Lowpass");
 	mntm_LPF_RDFX.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -329,14 +319,14 @@
 	});
 	mn_filters.add(mntm_Shelving_lowpass);
 		
-	final JMenuItem mntm_HPF1P = new JMenuItem("1P Hipass");
-	mntm_HPF1P.addActionListener(new ActionListener() {
+	final JMenuItem mntm_HPF_RDFX = new JMenuItem("RDFX Hipass");
+	mntm_HPF_RDFX.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new HPF1PCADBlock(50, 100);
+			SpinCADBlock pcB = new HPF_RDFXCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_filters.add(mntm_HPF1P);
+	mn_filters.add(mntm_HPF_RDFX);
 		
 	final JMenuItem mntm_Shelving_Hipass = new JMenuItem("Shelving Hipass");
 	mntm_Shelving_Hipass.addActionListener(new ActionListener() {

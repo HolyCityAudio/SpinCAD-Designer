@@ -32,10 +32,11 @@
 
 @menu "Filters"
 //@menuitem "Bassman '59" BassmanEQ 
-@menuitem "1P Lowpass" LPF1P 
+//@menuitem "1P Lowpass" LPF1P 
 @menuitem "RDFX Lowpass" LPF_RDFX
 @menuitem "Shelving Lowpass" Shelving_lowpass 
-@menuitem "1P Hipass" HPF1P 
+//@menuitem "1P Hipass" HPF1P 
+@menuitem "RDFX Hipass" HPF_RDFX
 @menuitem "Shelving Hipass" Shelving_Hipass 
 // @menuitem "2P LPF Fixed" LPF 
 // @menuitem "2P BPF Fixed" BPF 
