@@ -31,7 +31,7 @@ equ   kiap   0.5  ; input all pass filter
 
 ; block control parameters from control panel
 equ nDLs 3 
-@sliderLabel nDLs Delay_Stages 2 4 4 1.0 1 
+@sliderLabel nDLs Delay_Stages 2 4 4 1.0 0 
 
 equ   klap   0.6  ;  delay ring all pass filter
 @sliderLabel klap Loop_All_Pass 0.25 0.95 0.6 100.0 2 

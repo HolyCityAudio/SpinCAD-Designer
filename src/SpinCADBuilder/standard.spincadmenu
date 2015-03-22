@@ -5,8 +5,7 @@
 @menuitem "Output" Output 
 @menuitem "Volume" Volume
 @menuitem "Gain Boost" GainBoost
-@menuitem "2:1 Mixer" Mixer2_1
-@menuitem "2:1 Mixer test" Mixer_2_to_1
+@menuitem "2:1 Mixer" Mixer_2_to_1
 @menuitem "2:1 (x2) Mixer" Mixer2_1x2
 @menuitem "3:1 Mixer" Mixer3_1
 @menuitem "4:1 Mixer" Mixer4_1
@@ -14,14 +13,14 @@
 
 @menu "Wave Shaper" 
 @menuitem "Aliaser" aliaser_02 
-@menuitem "Quantizer" BitCrusher 
 @menuitem "Cube" CubeGain 
 @menuitem "Distortion" Distortion 
-@menuitem "Octave" Octave 
-@menuitem "Overdrive" Overdrive 
-@menuitem "T/X" ToverX 
 @menuitem "Noise" noise_block24 
 @menuitem "Noise AMZ" noise_amz 
+@menuitem "Octave" Octave 
+@menuitem "Overdrive" Overdrive 
+@menuitem "Quantizer" BitCrusher 
+@menuitem "T/X" ToverX 
 // @menuitem "Test" InstructionTest 
 
 @menu "Dynamics"
@@ -32,18 +31,13 @@
 
 @menu "Filters"
 //@menuitem "Bassman '59" BassmanEQ 
-//@menuitem "1P Lowpass" LPF1P 
-@menuitem "RDFX Lowpass" LPF_RDFX
+@menuitem "1P Lowpass" LPF_RDFX
 @menuitem "Shelving Lowpass" Shelving_lowpass 
-//@menuitem "1P Hipass" HPF1P 
-@menuitem "RDFX Hipass" HPF_RDFX
+@menuitem "1P Hipass" HPF_RDFX
 @menuitem "Shelving Hipass" Shelving_Hipass 
-// @menuitem "2P LPF Fixed" LPF 
-// @menuitem "2P BPF Fixed" BPF 
-// @menuitem "2P HPF Fixed" HPF 
-@menuitem "2P/4P Highpass" HPF2P 
-@menuitem "2P State Variable" SVF2P 
+@menuitem "2P SVF Fixed" SVF2P 
 @menuitem "2P/4P Lowpass" LPF4P 
+@menuitem "2P/4P Highpass" HPF2P 
 @menuitem "Notch" Notch 
 @menuitem "1-Band EQ" OneBandEQ 
 @menuitem "6-Band EQ" SixBandEQ 
@@ -60,12 +54,11 @@
 //@menuitem "Allpass" allpass 
 @menuitem "Small Reverb" MinReverb 
 @menuitem "Gated Reverb" gated_verb 
-@menuitem "ROM Reverb 1" rom_rev1 
+//@menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
 @menuitem "Plate Reverb" reverb_plate 
 @menuitem "Adjustable Reverb" reverb 
-@menuitem "Adjustable ReverbA" reverbA 
-@menuitem "Shimmer Reverb" shimmer_verb 
+// @menuitem "Shimmer Reverb" shimmer_verb 
 // @menuitem "Reverb Filter" reverbFilter 
 
 @menu "Modulation"  
@@ -77,7 +70,7 @@
 @menuitem "Ring Modulator" RingMod 
 
 @menu "Pitch"
-// @menuitem "Pitch Test" PitchTest 
+@menuitem "Pitch Test" PitchTest 
 @menuitem "Pitch Shift Fixed" PitchShiftFixed 
 // @menuitem "Pitch Up" PitchUp 
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 

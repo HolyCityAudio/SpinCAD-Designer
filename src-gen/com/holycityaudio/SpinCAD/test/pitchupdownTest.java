@@ -57,6 +57,16 @@ f.dropBlock(p, o);
 	SpinCADPin p2 = m.getPin("Pitch_Up_Out");
 	p2.setConnection(o, p1);
 }
+{
+	SpinCADPin p1 = o.getPin("Input 3");
+	SpinCADPin p2 = m.getPin("Phase_1_Out");
+	p2.setConnection(o, p1);
+}
+{
+	SpinCADPin p1 = o.getPin("Input 4");
+	SpinCADPin p2 = m.getPin("Phase_2_Out");
+	p2.setConnection(o, p1);
+}
 f.getModel().sortAlignGen();
 System.out.println("pitchupdownCADBlock test passed with all control connections!");
 

@@ -96,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 899;
+	int buildNum = 900;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -998,7 +998,7 @@ public class SpinCADFrame extends JFrame {
 							e.printStackTrace();
 						}
 						String simDebugFileName = prefs.get("SIMULATOR_DEBUG_FILE", "");
-						sim.setLoopMode(false);
+//						sim.setLoopMode(false);
 					}
 
 					btnStartSimulation.setText("Stop Simulator");

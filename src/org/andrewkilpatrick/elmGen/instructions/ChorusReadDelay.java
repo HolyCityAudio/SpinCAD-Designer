@@ -156,10 +156,10 @@ public class ChorusReadDelay extends Instruction {
 		//			System.out.println("LFOPos " + lfo + " = " + lfoPos);
 
 		// possibly invert the waveform
-		if(compa) {
+		if(compa) { 
 			// for SIN LFOs, just flip the wave over
 			if(lfo == 0 || lfo == 1) {
-				lfoPos = -lfoPos;
+				lfoPos = -lfoPos; 
 			}
 			// for RAMP LFOs, i think we need to do maxval - offset
 			else {

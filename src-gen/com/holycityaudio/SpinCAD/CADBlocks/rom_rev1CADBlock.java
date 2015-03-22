@@ -31,15 +31,20 @@
 			
 			private double gain = 0.5;
 			private double kiap = 0.5;
-			private int temp;
+			private double nDLs = 3;
+			private double kapd1 = 0.6;
+			private double kapd2 = 0.5;
+			private double kfl = 0.4;
+			private double kfh = 0.01;
 			private int lpf1;
-			private int lpf2;
-			private int lpf3;
-			private int lpf4;
 			private int hpf1;
+			private int lpf2;
 			private int hpf2;
+			private int lpf3;
 			private int hpf3;
+			private int lpf4;
 			private int hpf4;
+			private int temp;
 			private int rt;
 			private int hf;
 			private int lf;
@@ -60,6 +65,10 @@
 				addControlInputPin(this, "Low_Freq");
 				addControlInputPin(this, "High_Freq");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						}
@@ -134,19 +143,28 @@
 			sfxb.FXallocDelayMem("ap3b", 1981); 
 			sfxb.FXallocDelayMem("ap4", 1274); 
 			sfxb.FXallocDelayMem("ap4b", 1382); 
+			if(nDLs > 3) {
 			sfxb.FXallocDelayMem("del1", 5859); 
-			sfxb.FXallocDelayMem("del2", 4145); 
-			sfxb.FXallocDelayMem("del3", 3476); 
-			sfxb.FXallocDelayMem("del4", 4568); 
-			temp = sfxb.allocateReg();
 			lpf1 = sfxb.allocateReg();
-			lpf2 = sfxb.allocateReg();
-			lpf3 = sfxb.allocateReg();
-			lpf4 = sfxb.allocateReg();
 			hpf1 = sfxb.allocateReg();
+			}
+			
+			if(nDLs > 2) {
+			lpf2 = sfxb.allocateReg();
 			hpf2 = sfxb.allocateReg();
+			sfxb.FXallocDelayMem("del2", 4145); 
+			}
+			
+			if(nDLs > 1) {
+			sfxb.FXallocDelayMem("del3", 3476); 
+			lpf3 = sfxb.allocateReg();
 			hpf3 = sfxb.allocateReg();
+			}
+			
+			sfxb.FXallocDelayMem("del4", 4568); 
+			lpf4 = sfxb.allocateReg();
 			hpf4 = sfxb.allocateReg();
+			temp = sfxb.allocateReg();
 			rt = sfxb.allocateReg();
 			hf = sfxb.allocateReg();
 			lf = sfxb.allocateReg();
@@ -161,12 +179,17 @@
 			sfxb.loadSinLFO((int) SIN0,(int) 12, (int) 160);
 			sfxb.FXchorusReadDelay(SIN0, 6, "ap1+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 0, "ap1+", 51);
-			sfxb.FXwriteDelay("ap1+", 100, 0);
+			sfxb.FXwriteDelay("ap1+", (int)(100 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN0, 7, "ap3+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 1, "ap3+", 51);
-			sfxb.FXwriteDelay("ap3+", 100, 0);
-			sfxb.readRegister(POT0, 1.0);
+			sfxb.FXwriteDelay("ap3+", (int)(100 * 1.0), 0);
+			if(this.getPin("Reverb_Time").isConnected() == true) {
+			sfxb.readRegister(input0, 1.0);
 			sfxb.scaleOffset(0.8, 0.1);
+			} else {
+			sfxb.scaleOffset(0.0, 0.76);
+			}
+			
 			sfxb.writeRegister(rt, 0);
 			sfxb.readRegister(POT1, 1.0);
 			sfxb.scaleOffset(0.8, -0.8);
@@ -198,96 +221,125 @@
 			}
 			
 			sfxb.FXreadDelay("del4#", 0, 1.0);
+			if(nDLs > 3) {
 			sfxb.mulx(rt);
 			sfxb.readRegister(lapout, 1.0);
-			sfxb.FXreadDelay("ap1#", 0, -0.6);
-			sfxb.FXwriteAllpass("ap1", 0, 0.6);
-			sfxb.FXreadDelay("ap1b#", 0, -0.6);
-			sfxb.FXwriteAllpass("ap1b", 0, 0.6);
+			sfxb.FXreadDelay("ap1#", 0, -kapd1);
+			sfxb.FXwriteAllpass("ap1", 0, kapd1);
+			sfxb.FXreadDelay("ap1b#", 0, -kapd1);
+			sfxb.FXwriteAllpass("ap1b", 0, kapd1);
 			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(lpf1, 0.5);
+			sfxb.readRegisterFilter(lpf1, kfl);
 			sfxb.writeRegisterHighshelf(lpf1, -1.0);
 			sfxb.mulx(lf);
 			sfxb.readRegister(temp, 1.0);
 			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(hpf1, 0.05);
+			sfxb.readRegisterFilter(hpf1, kfh);
 			sfxb.writeRegisterLowshelf(hpf1, -1.0);
 			sfxb.mulx(hf);
 			sfxb.readRegister(temp, 1.0);
 			sfxb.FXwriteDelay("del1", 0, 0.0);
 			sfxb.FXreadDelay("del1#", 0, 1.0);
+			}
+			
+			if(nDLs > 2) {
 			sfxb.mulx(rt);
-			sfxb.FXreadDelay("ap2#", 0, -0.6);
-			sfxb.FXwriteAllpass("ap2", 0, 0.6);
-			sfxb.FXreadDelay("ap2b#", 0, -0.6);
-			sfxb.FXwriteAllpass("ap2b", 0, 0.6);
+			sfxb.FXreadDelay("ap2#", 0, -kapd1);
+			sfxb.FXwriteAllpass("ap2", 0, kapd1);
+			sfxb.FXreadDelay("ap2b#", 0, -kapd1);
+			sfxb.FXwriteAllpass("ap2b", 0, kapd1);
 			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(lpf2, 0.5);
+			sfxb.readRegisterFilter(lpf2, kfl);
 			sfxb.writeRegisterHighshelf(lpf2, -1.0);
 			sfxb.mulx(hf);
 			sfxb.readRegister(temp, 1.0);
 			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(hpf2, 0.05);
+			sfxb.readRegisterFilter(hpf2, kfh);
 			sfxb.writeRegisterLowshelf(hpf2, -1.0);
 			sfxb.mulx(lf);
 			sfxb.readRegister(temp, 1.0);
 			sfxb.FXwriteDelay("del2", 0, 0.0);
 			sfxb.FXreadDelay("del2#", 0, 1.0);
+			}
+			
+			if(nDLs > 1) {
 			sfxb.mulx(rt);
-			sfxb.readRegister(rapout, 1.0);
-			sfxb.FXreadDelay("ap3#", 0, -0.6);
-			sfxb.FXwriteAllpass("ap3", 0, 0.6);
-			sfxb.FXreadDelay("ap3b#", 0, -0.6);
-			sfxb.FXwriteAllpass("ap3b", 0, 0.6);
+			sfxb.readRegister(lapout, 1.0);
+			sfxb.FXreadDelay("ap3#", 0, -kapd1);
+			sfxb.FXwriteAllpass("ap3", 0, kapd1);
+			sfxb.FXreadDelay("ap3b#", 0, -kapd1);
+			sfxb.FXwriteAllpass("ap3b", 0, kapd1);
 			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(lpf3, 0.5);
+			sfxb.readRegisterFilter(lpf3, kfl);
 			sfxb.writeRegisterHighshelf(lpf3, -1.0);
 			sfxb.mulx(hf);
 			sfxb.readRegister(temp, 1.0);
 			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(hpf3, 0.05);
+			sfxb.readRegisterFilter(hpf3, kfh);
 			sfxb.writeRegisterLowshelf(hpf3, -1.0);
 			sfxb.mulx(lf);
 			sfxb.readRegister(temp, 1.0);
 			sfxb.FXwriteDelay("del3", 0, 0.0);
 			sfxb.FXreadDelay("del3#", 0, 1.0);
+			}
+			
 			sfxb.mulx(rt);
-			sfxb.FXreadDelay("ap4#", 0, -0.6);
-			sfxb.FXwriteAllpass("ap4", 0, 0.6);
-			sfxb.FXreadDelay("ap4b#", 0, -0.6);
-			sfxb.FXwriteAllpass("ap4b", 0, 0.6);
+			sfxb.FXreadDelay("ap4#", 0, -kapd1);
+			sfxb.FXwriteAllpass("ap4", 0, kapd1);
+			sfxb.FXreadDelay("ap4b#", 0, -kapd1);
+			sfxb.FXwriteAllpass("ap4b", 0, kapd1);
 			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(lpf4, 0.5);
+			sfxb.readRegisterFilter(lpf4, kfl);
 			sfxb.writeRegisterHighshelf(lpf4, -1.0);
 			sfxb.mulx(hf);
 			sfxb.readRegister(temp, 1.0);
 			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(hpf4, 0.05);
+			sfxb.readRegisterFilter(hpf4, kfh);
 			sfxb.writeRegisterLowshelf(hpf4, -1.0);
 			sfxb.mulx(lf);
 			sfxb.readRegister(temp, 1.0);
 			sfxb.FXwriteDelay("del4", 0, 0.0);
-			sfxb.FXreadDelay("del1+", 2630, 1.5);
-			sfxb.FXreadDelay("del2+", 1943, 1.2);
-			sfxb.FXreadDelay("del3+", 3200, 1.0);
-			sfxb.FXreadDelay("del4+", 4016, 0.8);
+			if(nDLs > 3) {
+			sfxb.FXreadDelay("del1+", (int)(2630 * 1.0), 1.5);
+			}
+			
+			if(nDLs > 2) {
+			sfxb.FXreadDelay("del2+", (int)(1943 * 1.0), 1.2);
+			}
+			
+			if(nDLs > 1) {
+			sfxb.FXreadDelay("del3+", (int)(3200 * 1.0), 1.0);
+			}
+			
+			sfxb.FXreadDelay("del4+", (int)(4016 * 1.0), 0.8);
 			sfxb.writeRegister(dacl, 0.0);
 			}
 			
 			if(this.getPin("Output_Right").isConnected() == true) {
-			sfxb.FXreadDelay("del3+", 1163, 1.5);
-			sfxb.FXreadDelay("del4+", 3330, 1.2);
-			sfxb.FXreadDelay("del1+", 2420, 1.0);
-			sfxb.FXreadDelay("del2+", 2631, 0.8);
+			if(nDLs > 3) {
+			sfxb.FXreadDelay("del1+", (int)(2420 * 1.0), 1.0);
+			}
+			
+			if(nDLs > 2) {
+			sfxb.FXreadDelay("del2+", (int)(2631 * 1.0), 0.8);
+			}
+			
+			if(nDLs > 1) {
+			sfxb.FXreadDelay("del3+", (int)(1163 * 1.0), 1.5);
+			}
+			
+			sfxb.FXreadDelay("del4+", (int)(3330 * 1.0), 1.2);
 			sfxb.writeRegister(dacr, 0.0);
 			}
 			
+			this.getPin("Output_Left").setRegister(dacl);
+			this.getPin("Output_Right").setRegister(dacr);
 
 			}
 			
 			// create setters and getter for control panel variables
 			public void setgain(double __param) {
-				gain = __param;	
+				gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double getgain() {
@@ -299,5 +351,33 @@
 			
 			public double getkiap() {
 				return kiap;
+			}
+			public void setnDLs(double __param) {
+				nDLs = __param;	
+			}
+			
+			public double getnDLs() {
+				return nDLs;
+			}
+			public void setkapd1(double __param) {
+				kapd1 = __param;	
+			}
+			
+			public double getkapd1() {
+				return kapd1;
+			}
+			public void setkfl(double __param) {
+				kfl = __param;	
+			}
+			
+			public double getkfl() {
+				return kfl;
+			}
+			public void setkfh(double __param) {
+				kfh = __param;	
+			}
+			
+			public double getkfh() {
+				return kfh;
 			}
 		}	

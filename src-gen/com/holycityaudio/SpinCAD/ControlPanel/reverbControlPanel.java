@@ -186,7 +186,7 @@
 		kiapLabel.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		
 		}		
 		private void updatenDLsLabel() {
-		nDLsLabel.setText("Delay_Stages " + String.format("%4.1f", gCB.getnDLs()));		
+		nDLsLabel.setText("Delay_Stages " + String.format("%4.0f", gCB.getnDLs()));		
 		}		
 		private void updateklapLabel() {
 		klapLabel.setText("Loop_All_Pass " + String.format("%4.2f", gCB.getklap()));		
