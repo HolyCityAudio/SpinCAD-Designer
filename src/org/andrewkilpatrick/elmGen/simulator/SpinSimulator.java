@@ -217,6 +217,8 @@ public class SpinSimulator extends Thread {
 		while(state.getPC() < codeLen) {
 			Instruction inst = null;
 			inst = simList.get(state.getPC());
+			// GSW we're gonna update PACC right here
+//			state.getPACC().setValue(state.getACC().getValue());
 			inst.simulate(state);
 			state.incrementPC();
 		}

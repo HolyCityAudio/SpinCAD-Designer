@@ -205,28 +205,47 @@ wra   del4,0
 
 @isGreaterThan nDLs 3
 rda   del1,0.8
+@else
+rda   del4,0.8
 @endif
+
 @isGreaterThan nDLs 2 
 rda   del2+1876,1.5
+@else
+rda   del4+1876,1.5
 @endif
+
 @isGreaterThan nDLs 1 
 rda   del3+2093,1.1
+@else
+rda   del4+2093,1.1
 @endif
+
 rda   del4+2793,1         
 wrax   outputL,0      ;write output, clear accumulator
 @setOutputPin Output_Left outputL
 
 @isPinConnected Output_Right
 equ outputR reg12
+
 @isGreaterThan nDLs 3
 rda   del1,0.8   
+@else
+rda   del4,0.8   
 @endif
+
 @isGreaterThan nDLs 2 
 rda   del2+923,1.5
+@else
+rda   del4+923,1.5
 @endif
+
 @isGreaterThan nDLs 1 
 rda   del3+1234,1.1
+@else
+rda   del4+1234,1.1
 @endif
+
 rda   del4+2267,1
 wrax   outputR,0   
 @setOutputPin Output_Right outputR
@@ -235,8 +254,8 @@ wrax   outputR,0
 ;set up lfo, 1Hz to 2Hz, +/-100 samples, for smearing loop all passes:
 
 skp   run,smear
-wlds   sin0,45,50
-wlds   sin1,53,50
+wlds   sin0,35,50
+wlds   sin1,23,50
 
 smear:
 ;smear 4 allpass filters in reverb ring:

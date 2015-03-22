@@ -17,7 +17,7 @@
 @menuitem "Distortion" Distortion 
 @menuitem "Noise" noise_block24 
 @menuitem "Noise AMZ" noise_amz 
-@menuitem "Octave" Octave 
+@menuitem "Octave Fuzz" Octave 
 @menuitem "Overdrive" Overdrive 
 @menuitem "Quantizer" BitCrusher 
 @menuitem "T/X" ToverX 
@@ -38,7 +38,7 @@
 @menuitem "2P SVF Fixed" SVF2P 
 @menuitem "2P/4P Lowpass" LPF4P 
 @menuitem "2P/4P Highpass" HPF2P 
-@menuitem "Notch" Notch 
+//@menuitem "Notch" Notch 
 @menuitem "1-Band EQ" OneBandEQ 
 @menuitem "6-Band EQ" SixBandEQ 
 
@@ -53,10 +53,10 @@
 @menu "Reverb" 
 //@menuitem "Allpass" allpass 
 @menuitem "Small Reverb" MinReverb 
-@menuitem "Gated Reverb" gated_verb 
+// @menuitem "Gated Reverb" gated_verb 
 //@menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
-@menuitem "Plate Reverb" reverb_plate 
+//@menuitem "Plate Reverb" reverb_plate 
 @menuitem "Adjustable Reverb" reverb 
 // @menuitem "Shimmer Reverb" shimmer_verb 
 // @menuitem "Reverb Filter" reverbFilter 
@@ -70,12 +70,12 @@
 @menuitem "Ring Modulator" RingMod 
 
 @menu "Pitch"
-@menuitem "Pitch Test" PitchTest 
+//@menuitem "Pitch Test" PitchTest 
 @menuitem "Pitch Shift Fixed" PitchShiftFixed 
 // @menuitem "Pitch Up" PitchUp 
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Pitch Up/Down" pitchupdown 
-@menuitem "Pitch Four" pitch_four 
+//@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 
 
 /* @menu "Guitar"

@@ -31,7 +31,7 @@ import java.io.ObjectOutputStream;
 public class SpinCADFile {
 
 	public SpinCADFile() {
-		// TODO Auto-generated constructor stub
+		// Auto-generated constructor stub
 	}
 
 	public static void fileSave(SpinCADModel m, String fileName) {

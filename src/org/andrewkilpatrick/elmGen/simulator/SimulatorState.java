@@ -91,6 +91,8 @@ public class SimulatorState {
 		if(delayp == -32768) {
 			delayp = 0;
 		}
+		// I don't think the following statement belongs here.  It belongs
+		// before each instruction getting executed.
 		pacc.setValue(acc.getValue());
 		// XXX debug GSW, trying to figure out WRLX and WRHX
 //		System.out.println("PACC = " + pacc.getValue());

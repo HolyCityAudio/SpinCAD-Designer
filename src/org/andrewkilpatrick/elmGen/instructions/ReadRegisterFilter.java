@@ -70,7 +70,7 @@ public class ReadRegisterFilter extends Instruction {
 
 	@Override
 	public void simulate(SimulatorState state) {
-		// XXX debug GSW trying to fix WRHX, WRLX behavior
+// debug GSW 
 		state.getPACC().setValue(state.getACC().getValue());
 		state.getACC().subtract(state.getRegVal(addr));
 		state.getACC().scale(scale);
