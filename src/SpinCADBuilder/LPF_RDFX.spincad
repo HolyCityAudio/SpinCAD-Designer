@@ -1,10 +1,10 @@
-@name LPF_RDFX
+@name LPF_1P
 @audioInput input Input
-@audioOutput output Output  
+@audioOutput lpf1 Output  
 
 equ freq 0.15
 // variable - Name - low - high - multiplier - precision - option 
-@sliderLabel freq Frequency 80 2500 100.0 100.0 2 LOGFREQ 
+@sliderLabel freq Frequency 80 2500 100.0 100.0 1 LOGFREQ 
 
 equ output Reg0
 equ lpf1 Reg1
@@ -13,8 +13,7 @@ equ lpf1 Reg1
 
 rdax input, 1.0
 rdfx lpf1, freq
-wrax lpf1, 1.0
-wrax output, 0
+wrax lpf1, 0
 
-@setOutputPin Output output
+@setOutputPin Output lpf1
 @endif

@@ -1,9 +1,10 @@
-@name HPF_RDFX
+@name HPF_1P
 @audioInput input Input
 @audioOutput output Output  
 
-equ freq 0.15
-@sliderLabel freq Frequency 0.001 0.250 0.15 1000.0 3
+equ freq 0.015
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq Frequency 40 1500 100.0 100.0 1 LOGFREQ 
 
 equ output Reg0
 equ lpf1 Reg1
@@ -13,6 +14,8 @@ equ lpf1 Reg1
 rdax input, 1.0
 rdfx lpf1, freq
 wrax lpf1, -1.0
+// do a lowpass filter then subtract that from the input.
+// voila high pass filter!
 rdax input, 1.0
 wrax output, 0
 
