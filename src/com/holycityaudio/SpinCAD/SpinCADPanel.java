@@ -312,6 +312,7 @@ public class SpinCADPanel extends JPanel {
 				}
 				if(hitSomething == false) {
 					if(arg0.getButton() == 1) {
+						dragLine = null;  // in case you were dragging a line at the time.
 						dm = dragModes.DRAGBOX;	
 						startPoint = mouseAt;
 					}

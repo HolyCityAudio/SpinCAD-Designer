@@ -41,6 +41,8 @@
 
 		private slow_gearCADBlock gCB;
 		// declare the controls
+			JSlider threshSlider;
+			JLabel  threshLabel;	
 
 		public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 		
@@ -53,6 +55,16 @@
 				frame.setTitle("Slow_gear");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+			// dB level slider goes in steps of 1 dB
+				threshSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getthresh())));
+				threshSlider.addChangeListener(new slow_gearSliderListener());
+				threshLabel = new JLabel();
+				updatethreshLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(threshLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(threshSlider);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -66,6 +78,10 @@
 		// add change listener for Sliders 
 		class slow_gearSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == threshSlider) {
+			gCB.setthresh((double) (threshSlider.getValue()/1.0));
+				updatethreshLabel();
+			}
 			}
 		}
 
@@ -86,6 +102,9 @@
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updatethreshLabel() {
+		threshLabel.setText("Threshold " + String.format("%4.1f dB", (20 * Math.log10(gCB.getthresh()))));		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

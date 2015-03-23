@@ -58,6 +58,16 @@ f.dropBlock(p, o);
 	p2.setConnection(o, p1);
 }
 {
+	SpinCADPin p1 = o.getPin("Input 3");
+	SpinCADPin p2 = m.getPin("Debug");
+	p2.setConnection(o, p1);
+}
+{
+	SpinCADPin p1 = o.getPin("Input 4");
+	SpinCADPin p2 = m.getPin("Debug2");
+	p2.setConnection(o, p1);
+}
+{
 	Pot0CADBlock pot0 = new Pot0CADBlock(25, 150 + 40 * 1);
 	f.dropBlock(p, pot0);
 	SpinCADPin p1 = pot0.getPin("Output 1");

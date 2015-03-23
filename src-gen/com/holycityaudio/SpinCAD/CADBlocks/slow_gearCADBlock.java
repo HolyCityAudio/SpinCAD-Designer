@@ -37,6 +37,9 @@
 			private int attack;
 			private int slope;
 			private int dacl;
+			private int debug;
+			private int debug2;
+			private double thresh = 0.4;
 
 			public slow_gearCADBlock(int x, int y) {
 				super(x, y);
@@ -45,8 +48,11 @@
 				addInputPin(this, "Input_Left");
 				addOutputPin(this, "Audio_Output_1");
 				addOutputPin(this, "Ramp");
+				addOutputPin(this, "Debug");
+				addOutputPin(this, "Debug2");
 				addControlInputPin(this, "Attack");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -92,21 +98,24 @@
 			attack = sfxb.allocateReg();
 			slope = sfxb.allocateReg();
 			dacl = sfxb.allocateReg();
+			debug = sfxb.allocateReg();
+			debug2 = sfxb.allocateReg();
 			if(this.getPin("Input_Left").isConnected() == true) {
 			sfxb.FXallocDelayMem("delay", 256); 
 			sfxb.readRegister(adcl, 1);
 			sfxb.FXwriteDelay("delay", 0, 1);
-			sfxb.writeRegister(in, 1);
-			sfxb.maxx(envlop, 0.9999);
+			sfxb.maxx(envlop, 0.99999);
 			sfxb.writeRegister(envlop, 1);
 			sfxb.readRegisterFilter(peak, 0.0001);
 			sfxb.writeRegisterHighshelf(peak, -1);
 			sfxb.skip(GEZ, 1);
 			sfxb.clear();
 			sfxb.log(1.999, 0.5);
+			sfxb.writeRegister(debug, 1.0);
 			sfxb.writeRegister(trig, 0);
-			sfxb.scaleOffset(0, 0.4);
+			sfxb.scaleOffset(0, thresh);
 			sfxb.readRegister(trig, 1);
+			sfxb.writeRegister(debug2, 1.0);
 			sfxb.skip(NEG, 6);
 			sfxb.clear();
 			sfxb.writeRegister(ramp, 0);
@@ -130,14 +139,25 @@
 			sfxb.skip(GEZ, 1);
 			sfxb.clear();
 			sfxb.writeRegister(ramp, 0);
-			sfxb.FXreadDelay("delay+", 20, 1);
+			sfxb.FXreadDelay("delay+", (int)(20 * 1.0), 1);
 			sfxb.mulx(ramp);
 			sfxb.mulx(ramp);
 			sfxb.writeRegister(dacl, 0);
 			}
 			
+			this.getPin("Audio_Output_1").setRegister(dacl);
+			this.getPin("Debug").setRegister(debug);
+			this.getPin("Debug2").setRegister(debug2);
+			this.getPin("Ramp").setRegister(ramp);
 
 			}
 			
 			// create setters and getter for control panel variables
+			public void setthresh(double __param) {
+				thresh = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getthresh() {
+				return thresh;
+			}
 		}	

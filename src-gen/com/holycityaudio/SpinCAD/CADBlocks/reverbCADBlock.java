@@ -268,14 +268,20 @@
 			sfxb.FXwriteDelay("del4", 0, 0);
 			if(nDLs > 3) {
 			sfxb.FXreadDelay("del1", 0, 0.8);
+			} else {
+			sfxb.FXreadDelay("del4", 0, 0.8);
 			}
 			
 			if(nDLs > 2) {
 			sfxb.FXreadDelay("del2+", (int)(1876 * 1.0), 1.5);
+			} else {
+			sfxb.FXreadDelay("del4+", (int)(1876 * 1.0), 1.5);
 			}
 			
 			if(nDLs > 1) {
 			sfxb.FXreadDelay("del3+", (int)(2093 * 1.0), 1.1);
+			} else {
+			sfxb.FXreadDelay("del4+", (int)(2093 * 1.0), 1.1);
 			}
 			
 			sfxb.FXreadDelay("del4+", (int)(2793 * 1.0), 1);
@@ -285,14 +291,20 @@
 			outputR = sfxb.allocateReg();
 			if(nDLs > 3) {
 			sfxb.FXreadDelay("del1", 0, 0.8);
+			} else {
+			sfxb.FXreadDelay("del4", 0, 0.8);
 			}
 			
 			if(nDLs > 2) {
 			sfxb.FXreadDelay("del2+", (int)(923 * 1.0), 1.5);
+			} else {
+			sfxb.FXreadDelay("del4+", (int)(923 * 1.0), 1.5);
 			}
 			
 			if(nDLs > 1) {
 			sfxb.FXreadDelay("del3+", (int)(1234 * 1.0), 1.1);
+			} else {
+			sfxb.FXreadDelay("del4+", (int)(1234 * 1.0), 1.1);
 			}
 			
 			sfxb.FXreadDelay("del4+", (int)(2267 * 1.0), 1);
@@ -301,8 +313,8 @@
 			}
 			
 			sfxb.skip(RUN, 2);
-			sfxb.loadSinLFO((int) SIN0,(int) 45, (int) 50);
-			sfxb.loadSinLFO((int) SIN1,(int) 53, (int) 50);
+			sfxb.loadSinLFO((int) SIN0,(int) 35, (int) 50);
+			sfxb.loadSinLFO((int) SIN1,(int) 23, (int) 50);
 			if(nDLs > 3) {
 			sfxb.FXchorusReadDelay(SIN0, REG|COMPC, "ap1+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 0, "ap1+", 51);

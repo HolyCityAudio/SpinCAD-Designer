@@ -33,6 +33,7 @@
 			private double shelf = 0.5;
 			private int output;
 			private int lpf1;
+			private int temp;
 
 			public Shelving_lowpassCADBlock(int x, int y) {
 				super(x, y);
@@ -40,7 +41,6 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
-				addControlInputPin(this, "Frequency");
 				addControlInputPin(this, "Shelf");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
@@ -75,11 +75,6 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Frequency").getPinConnection();
-			int freqIn = -1;
-			if(sp != null) {
-				freqIn = sp.getRegister();
-			}
 			sp = this.getPin("Shelf").getPinConnection();
 			int shelfIn = -1;
 			if(sp != null) {
@@ -89,14 +84,24 @@
 			// finally, generate the instructions
 			output = sfxb.allocateReg();
 			lpf1 = sfxb.allocateReg();
+			temp = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, 1.0);
+			if(this.getPin("Shelf").isConnected() == true) {
+			sfxb.writeRegister(temp, -shelf);
+			sfxb.readRegisterFilter(lpf1, freq);
+			sfxb.writeRegisterHighshelf(lpf1, -1);
+			sfxb.mulx(shelfIn);
+			sfxb.readRegister(temp, 1);
+			} else {
 			sfxb.readRegisterFilter(lpf1, freq);
 			sfxb.writeRegisterLowshelf(lpf1, -shelf);
-			sfxb.writeRegister(output, 0);
-			this.getPin("Output").setRegister(output);
 			}
 			
+			sfxb.writeRegister(output, 0);
+			}
+			
+			this.getPin("Output").setRegister(output);
 
 			}
 			

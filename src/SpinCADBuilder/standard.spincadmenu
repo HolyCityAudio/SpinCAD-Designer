@@ -27,7 +27,7 @@
 @menuitem "RMS Lim/Exp" rms_lim_exp
 @menuitem "RMS Limiter" rms_limiter
 @menuitem "Soft Knee Limiter" soft_knee_limiter
-// @menuitem "Slow Gear" slow_gear
+@menuitem "Slow Gear" slow_gear
 
 @menu "Filters"
 //@menuitem "Bassman '59" BassmanEQ 
