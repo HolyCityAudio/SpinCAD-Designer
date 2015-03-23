@@ -68,7 +68,8 @@
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(freqSlider);		
 			
-			shelfSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getshelf() * 1000.0));
+			// dB level slider goes in steps of 1 dB
+				shelfSlider = new JSlider(JSlider.HORIZONTAL, (int)(-40),(int) (-3), (int) (20 * Math.log10(gCB.getshelf())));
 				shelfSlider.addChangeListener(new Shelving_lowpassSliderListener());
 				shelfLabel = new JLabel();
 				updateshelfLabel();
@@ -94,7 +95,7 @@
 				updatefreqLabel();
 			}
 			if(ce.getSource() == shelfSlider) {
-			gCB.setshelf((double) (shelfSlider.getValue()/1000.0));
+			gCB.setshelf((double) (shelfSlider.getValue()/1.0));
 				updateshelfLabel();
 			}
 			}
@@ -122,7 +123,7 @@
 						freqLabel.setText("Frequency " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		private void updateshelfLabel() {
-		shelfLabel.setText("Shelf " + String.format("%4.2f", gCB.getshelf()));		
+		shelfLabel.setText("Shelf " + String.format("%4.1f dB", (20 * Math.log10(gCB.getshelf()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

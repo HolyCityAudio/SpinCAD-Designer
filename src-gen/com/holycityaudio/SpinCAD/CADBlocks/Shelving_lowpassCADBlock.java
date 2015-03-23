@@ -34,6 +34,7 @@
 			private int output;
 			private int lpf1;
 			private int temp;
+			private double one = 1.0;
 
 			public Shelving_lowpassCADBlock(int x, int y) {
 				super(x, y);
@@ -87,15 +88,16 @@
 			temp = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, 1.0);
+			double oneMinusShelf = one - shelf;
 			if(this.getPin("Shelf").isConnected() == true) {
-			sfxb.writeRegister(temp, -shelf);
+			sfxb.writeRegister(temp, -oneMinusShelf);
 			sfxb.readRegisterFilter(lpf1, freq);
 			sfxb.writeRegisterHighshelf(lpf1, -1);
 			sfxb.mulx(shelfIn);
 			sfxb.readRegister(temp, 1);
 			} else {
 			sfxb.readRegisterFilter(lpf1, freq);
-			sfxb.writeRegisterLowshelf(lpf1, -shelf);
+			sfxb.writeRegisterLowshelf(lpf1, -oneMinusShelf);
 			}
 			
 			sfxb.writeRegister(output, 0);
@@ -114,7 +116,7 @@
 				return freq;
 			}
 			public void setshelf(double __param) {
-				shelf = __param;	
+				shelf = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double getshelf() {
