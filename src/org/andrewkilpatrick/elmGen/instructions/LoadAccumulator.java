@@ -18,6 +18,7 @@
 package org.andrewkilpatrick.elmGen.instructions;
 
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
+import org.andrewkilpatrick.elmGen.util.Util;
 
 /**
  * This class represents the LDAX instruction.
@@ -52,7 +53,7 @@ public class LoadAccumulator extends Instruction {
 	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "LDAX " + addr;
+			return "LDAX " + Util.getRegisterName(addr);
 		}
 		else
 			return "Error! Invalid mode.";

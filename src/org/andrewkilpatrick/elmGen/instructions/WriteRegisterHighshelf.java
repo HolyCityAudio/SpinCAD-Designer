@@ -76,11 +76,8 @@ public class WriteRegisterHighshelf extends Instruction {
 	@Override   
 	public void simulate(SimulatorState state) {
 		state.setRegVal(addr, state.getACCVal());
-//		System.out.println("WRLX 1:" + state.getRegVal(addr));
 		state.getACC().scale(scale);		
-//		System.out.println("WRLX 2:" + state.getACC().getValue());
 		state.getACC().add(state.getPACCVal());
-//		System.out.println("WRLX 3:" + state.getACC().getValue());
 	}
 
 }

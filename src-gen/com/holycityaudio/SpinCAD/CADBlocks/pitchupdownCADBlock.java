@@ -100,14 +100,6 @@
 			sfxb.FXchorusReadDelay(RMP0, NA, "temp", 0);
 			sfxb.writeRegister(pitch1, 0);
 			this.getPin("Pitch_Down_Out").setRegister(pitch1);
-			sfxb.FXchorusReadDelay(RMP1, REG|COMPC, "delayd", 0);
-			sfxb.FXchorusReadDelay(RMP1, 0, "delayd+", 1);
-			sfxb.FXwriteDelay("temp", 0, 0);
-			sfxb.FXchorusReadDelay(RMP1, RPTR2|COMPC, "delayd", 0);
-			sfxb.FXchorusReadDelay(RMP1, RPTR2, "delayd+", 1);
-			sfxb.chorusScaleOffset(RMP1, NA|COMPC, 0);
-			sfxb.FXchorusReadDelay(RMP1, NA, "temp", 0);
-			sfxb.writeRegister(pitch2, 0);
 			this.getPin("Pitch_Up_Out").setRegister(pitch2);
 			this.getPin("Phase_1_Out").setRegister(phase1);
 			this.getPin("Phase_2_Out").setRegister(phase2);

@@ -38,14 +38,14 @@ wrax pitch1,0
 @setOutputPin Pitch_Down_Out pitch1
 	
 // second pitch shift
-cho rda,RMP1,REG|COMPC,delayd 
-cho rda,RMP1,0,delayd+ 1 
-wra temp,0 
-cho rda,RMP1,RPTR2|COMPC,delayd 
-cho rda,RMP1,RPTR2,delayd+ 1 
-cho sof,RMP1,NA|COMPC,0 
-cho rda,RMP1,NA,temp
-wrax pitch2,0 
+//cho rda,RMP1,REG|COMPC,delayd 
+//cho rda,RMP1,0,delayd+ 1 
+//wra temp,0 
+//cho rda,RMP1,RPTR2|COMPC,delayd 
+//cho rda,RMP1,RPTR2,delayd+ 1 
+//cho sof,RMP1,NA|COMPC,0 
+//cho rda,RMP1,NA,temp
+//wrax pitch2,0 
 
 @setOutputPin Pitch_Up_Out pitch2
 @setOutputPin Phase_1_Out phase1

@@ -147,7 +147,7 @@ public class ChorusReadDelay extends Instruction {
 				lfoval = state.getRampLFOVal(lfo - 2);
 			}
 			// GSW attempting to debug Ramp LFO
-			lfoPos = lfoval >> 10;
+			lfoPos = lfoval >> 9;
 		}
 
 
@@ -179,7 +179,7 @@ public class ChorusReadDelay extends Instruction {
 			tempReg.mult(xfade);
 			// XXX TODO debug GSW
 			if(Debug.DEBUG == true) {
-				System.out.printf("xfade %d ", xfade);
+//				System.out.printf("xfade %d ", xfade);
 			}
 			value = tempReg.getValue();
 			if(value != 0) {
@@ -196,7 +196,9 @@ public class ChorusReadDelay extends Instruction {
 			int delayPos = addr + lfoPos;
 			int inter = lfoval & 0xff;
 //TODO debug GSW
-//			System.out.printf("lfoPos: %d delayPos: %d inter: %d ", lfoPos, delayPos, inter);
+			if(Debug.DEBUG == true) {
+				System.out.printf("lfoVal: %d lfoPos: %d delayPos: %d inter: %d ", lfoval, lfoPos, delayPos, inter);
+			}
 			// get the delay memory value and scale it by the interpolation amount
 			if(compc) {
 				tempReg.setValue(state.getDelayVal(delayPos));

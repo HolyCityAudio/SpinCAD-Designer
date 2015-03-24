@@ -19,6 +19,7 @@ package org.andrewkilpatrick.elmGen.instructions;
 
 import org.andrewkilpatrick.elmGen.simulator.Reg;
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
+import org.andrewkilpatrick.elmGen.util.Util;
 
 /**
  * This class represents the MAXX instruction.
@@ -59,7 +60,7 @@ public class Maxx extends Instruction {
 	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
-			return "MAXX " + addr + "," + scale;
+			return "MAXX " + Util.getRegisterName(addr) + "," + Util.removeComma(String.format("%6.10f",scale));
 		}
 		else
 			return "Error! Invalid mode.";
