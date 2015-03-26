@@ -227,11 +227,12 @@ public class ElmProgram implements Serializable {
 			// +
 			// "of size: " + size + " space available: " +
 			// (MAX_DELAY_MEM - getDelayMemAllocated()));
-			// DEBUG should actually throw exceptin and catch it farther up
-			JFrame frame = new JFrame();
-			JOptionPane.showMessageDialog(frame, "Not enough memory!\n"
-					+ "Adjust delays and chorus blocks to reduce memory.",
-					"Out of Memory", JOptionPane.OK_OPTION);
+			// DEBUG should actually throw exception and catch it farther up
+// yeah that would be great actually since it throws this error for every memory block!
+			//			JFrame frame = new JFrame();
+//			JOptionPane.showMessageDialog(frame, "Not enough memory!\n"
+//					+ "Adjust delays and chorus blocks to reduce memory.",
+//					"Out of Memory", JOptionPane.OK_OPTION);
 
 		}
 		memoryMap.add(new MemSegment(name2, size, offset));

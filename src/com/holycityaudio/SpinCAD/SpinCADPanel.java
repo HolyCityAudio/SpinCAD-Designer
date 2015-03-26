@@ -286,6 +286,7 @@ public class SpinCADPanel extends JPanel {
 											spdFrame.getResourceToolbar().update();	// recalculate model resources toolbar
 											f.updateFrameTitle();
 											repaint();
+											return;
 										}
 									}
 									else if (startPin.isInputPin() && currentPin.isOutputPin()) {
@@ -303,6 +304,7 @@ public class SpinCADPanel extends JPanel {
 											f.updateFrameTitle();
 											spdFrame.getResourceToolbar().update();	// recalculate model resources toolbar
 											repaint();
+											return;
 										}
 									}
 								}

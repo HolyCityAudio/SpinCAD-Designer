@@ -44,6 +44,9 @@ equ delayOffset -1
 @getBaseAddress 
 mem delayl delayLength ; delay should actually be delay * 2 as panel setting is sweep center
 
+@multiplyDouble x1 delayLength width
+@divideDouble x3 x1 number6554000
+
 @isEqualTo lfoSel 0
 skp run,START 
 wlds SIN0, 50, 64
@@ -74,8 +77,6 @@ START1:
 //@divideDouble temp delayLength width  
 // @setChorusWidth temp delayLength width  
 
-@multiplyDouble x1 delayLength width
-@divideDouble x3 x1 number6554000
 
 rdax	widthIn, x3
 @isEqualTo lfoSel 0 
