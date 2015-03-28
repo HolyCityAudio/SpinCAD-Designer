@@ -74,9 +74,6 @@ START1:
 // double x3 = x2 / 16385
 
 @isPinConnected LFO_Width
-//@divideDouble temp delayLength width  
-// @setChorusWidth temp delayLength width  
-
 
 rdax	widthIn, x3
 @isEqualTo lfoSel 0 

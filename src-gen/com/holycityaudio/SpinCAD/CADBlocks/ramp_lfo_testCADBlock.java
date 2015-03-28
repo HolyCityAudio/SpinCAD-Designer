@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * ga_demo_flangerCADBlock.java
+ * ramp_lfo_testCADBlock.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -22,12 +22,12 @@
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
- 		import com.holycityaudio.SpinCAD.ControlPanel.ga_demo_flangerControlPanel;
+ 		import com.holycityaudio.SpinCAD.ControlPanel.ramp_lfo_testControlPanel;
 		
-		public class ga_demo_flangerCADBlock extends SpinCADBlock {
+		public class ramp_lfo_testCADBlock extends SpinCADBlock {
 
 			private static final long serialVersionUID = 1L;
-			private ga_demo_flangerControlPanel cp = null;
+			private ramp_lfo_testControlPanel cp = null;
 			
 			private int mono;
 			private int apout;
@@ -46,7 +46,7 @@
 			private double krs = -0.6;
 			private double fbkmax = 0.9;
 
-			public ga_demo_flangerCADBlock(int x, int y) {
+			public ramp_lfo_testCADBlock(int x, int y) {
 				super(x, y);
 				setName("Flanger");	
 				// Iterate through pin definitions and allocate or assign as needed
@@ -63,7 +63,7 @@
 			public void editBlock(){ 
 				if(cp == null) {
 					if(hasControlPanel == true) {
-						cp = new ga_demo_flangerControlPanel(this);
+						cp = new ramp_lfo_testControlPanel(this);
 					}
 				}
 			}

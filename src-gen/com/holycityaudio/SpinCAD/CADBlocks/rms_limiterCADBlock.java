@@ -36,7 +36,7 @@
 			private int square;
 			private int logPin;
 			private double inGain = 0.1;
-			private double filt = 0.001;
+			private double filt = 0.1;
 
 			public rms_limiterCADBlock(int x, int y) {
 				super(x, y);

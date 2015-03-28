@@ -48,6 +48,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_flangerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
@@ -539,6 +540,18 @@
 		}
 	});
 	mn_pitch.add(mntm_pitchoffset);
+		
+	JMenu mn_guitar = new JMenu("Guitar");
+	menuBar.add(mn_guitar);
+	
+	final JMenuItem mntm_ga_demo_flanger = new JMenuItem("GA Flanger");
+	mntm_ga_demo_flanger.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ga_demo_flangerCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ga_demo_flanger);
 		
 	JMenu mn_control = new JMenu("Control");
 	menuBar.add(mn_control);

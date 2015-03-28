@@ -67,7 +67,8 @@
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(inGainSlider);		
 			
-			filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0001 * 10000.0),(int) (0.01 * 10000.0), (int) (gCB.getfilt() * 10000.0));
+			//				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(10) * 100.0),(int) (Math.log10(100) * 100.0), (int) (Math.log10(gCB.getfilt()) * 100));
+							filtSlider = gCB.LogFilterSlider(10,100,gCB.getfilt());
 				filtSlider.addChangeListener(new rms_limiterSliderListener());
 				filtLabel = new JLabel();
 				updatefiltLabel();
@@ -89,11 +90,11 @@
 		class rms_limiterSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inGainSlider) {
-				gCB.setinGain((double) (inGainSlider.getValue()/100.0));
+			gCB.setinGain((double) (inGainSlider.getValue()/100.0));
 				updateinGainLabel();
 			}
 			if(ce.getSource() == filtSlider) {
-				gCB.setfilt((double) (filtSlider.getValue()/10000.0));
+			gCB.setfilt((double) gCB.freqToFilt(gCB.sliderToLogval((int)(filtSlider.getValue()), 10.0)));
 				updatefiltLabel();
 			}
 			}
@@ -120,7 +121,8 @@
 		inGainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));		
 		}		
 		private void updatefiltLabel() {
-		filtLabel.setText("Filter " + String.format("%4.4f", gCB.getfilt()));		
+		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
+						filtLabel.setText("Filter " + String.format("%4.1f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

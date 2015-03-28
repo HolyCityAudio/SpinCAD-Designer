@@ -1,8 +1,7 @@
 @name Flanger
 @audioInput adcl Input_Left 
-@audioInput adcr Input_Right
 @audioOutput dacl Audio_Output_1 
-@audioOutput dacr Audio_Output_2
+@controlOutput tri Triangle_LFO
 
 @controlInput input0 Reverb_Level
 @controlInput input1 Flange_Rate
@@ -44,8 +43,6 @@ equ	flamix	reg7
 equ	tri	reg8
 equ	fhp	reg9
 equ dacl reg10
-equ dacr reg11
-
 
 ;declare constants:
 
@@ -63,13 +60,12 @@ wrax	lp2,0
 wrax	fhp,0
 wlds	sin0,12,100
 wldr	0,0,4096	;for making triangle
-wldr	0,0,512	;servo LFO
+wldr	0,1,512	;servo LFO
 endclr:
 
 ;sum inputs to mono:
 
-rdax	adcl,0.5
-rdax	adcr,0.5
+rdax	adcl,1.0
 wrax	mono,0.5	;attenuate into reverb
 
 ;do reverb and put result in revout (after pot0 control):
@@ -188,10 +184,10 @@ rdax	flaout,1
 mulx	flamix
 rdax	mono,1
 rdax	revout,1
-sof	1,0.02
-wrax	dacl,1
-sof	1,-0.04
-wrax	dacr,0
+wrax	dacl,0
+
+@setOutputPin Audio_Output_1 dacl
+@setOutputPin Triangle_LFO tri
 @endif
 
 
