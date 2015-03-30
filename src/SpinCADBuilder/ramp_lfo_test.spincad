@@ -1,0 +1,45 @@
+@name Ramp_LFO_Test
+@controlOutput ramp0 Ramp0
+@controlOutput ramp1 Ramp1
+
+@controlInput input0 Ramp_0_Rate
+@controlInput input1 Ramp_1_Rate
+
+;GA_DEMO	Flanger
+equ ramp0 reg0
+equ ramp1 reg1
+
+;clear registers and initialize LFOs:
+
+skp	run,endclr
+wldr	0,141,4096	;for making triangle
+wldr	1,221,4096	;servo LFO
+endclr:
+
+@isPinConnected Ramp_0_Rate
+rdax	input0,1
+wrax	rmp0_rate,0	;control rmp0 rate
+@endif
+
+@isPinConnected Ramp_1_Rate
+rdax	input1,1
+wrax	rmp1_rate,0	;control rmp0 rate
+@endif
+
+;sum inputs to mono:
+
+cho rdal, rmp0
+wrax	ramp0,0
+
+cho rdal, rmp1
+wrax	ramp1,0
+
+@setOutputPin Ramp0 ramp0
+@setOutputPin Ramp1 ramp1
+
+
+
+
+
+
+

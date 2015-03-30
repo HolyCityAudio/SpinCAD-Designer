@@ -286,6 +286,7 @@ public class SpinCADPanel extends JPanel {
 											spdFrame.getResourceToolbar().update();	// recalculate model resources toolbar
 											f.updateFrameTitle();
 											repaint();
+											// made the connection, we can stop now
 											return;
 										}
 									}
@@ -304,6 +305,7 @@ public class SpinCADPanel extends JPanel {
 											f.updateFrameTitle();
 											spdFrame.getResourceToolbar().update();	// recalculate model resources toolbar
 											repaint();
+											// made the connection, we can stop now
 											return;
 										}
 									}

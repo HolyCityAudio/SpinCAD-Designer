@@ -2,6 +2,7 @@
 @audioInput adcl Input_Left 
 @audioOutput dacl Audio_Output_1 
 @controlOutput tri Triangle_LFO
+@controlOutput servo Servo
 
 @controlInput input0 Reverb_Level
 @controlInput input1 Flange_Rate
@@ -10,112 +11,40 @@
 ;GA_DEMO	Flanger
 
 ;Pot0 = Reverb level
-;Pot1 = Flange rate
-;pot2 = Effect level w/ feedback
+;input1 = Flange rate
+;input2 = Effect level w/ feedback
 
 ;memory declarations:
 @isPinConnected Input_Left
-
-mem	ap1	334
-mem	ap2	556
-mem	ap3	871
-
-mem	lap1a	808
-mem	lap1b	1934
-mem	d1	2489
-
-mem	lap2a	1016
-mem	lap2b	1787
-mem	d2	2287
 
 mem	fladel	1000
 
 ;register equates:
 
 equ	mono	reg0
-equ	apout	reg1
-equ	lp1	reg2
-equ	lp2	reg3
-equ	revout	reg4
 equ	flaout	reg5
 equ	fbk	reg6
 equ	flamix	reg7
 equ	tri	reg8
 equ	fhp	reg9
 equ dacl reg10
+equ servo reg1
 
 ;declare constants:
 
-equ	kap	0.6	;all pass coefficient
-equ	krt	0.55	;reverb time
-equ	krf	0.5	;reverb lpf freq
-equ	krs	-0.6	;reverb lpf shelf
 equ	fbkmax	0.9	;maximum flange feedback
 
 ;clear registers and initialize LFOs:
 
 skp	run,endclr
-wrax	lp1,0
-wrax	lp2,0
-wrax	fhp,0
-wlds	sin0,12,100
-wldr	0,0,4096	;for making triangle
-wldr	0,1,512	;servo LFO
+wldr	0,10,4096	;for making triangle
+wldr	1,0,512	;servo LFO
 endclr:
 
 ;sum inputs to mono:
 
 rdax	adcl,1.0
 wrax	mono,0.5	;attenuate into reverb
-
-;do reverb and put result in revout (after pot0 control):
-
-rda	ap1#,kap
-wrap	ap1,-kap
-rda	ap2#,kap
-wrap	ap2,-kap
-rda	ap3#,kap
-wrap	ap3,-kap
-wrax	apout,0
-
-rda	d2#,krt
-rdax	apout,1
-rda	lap1a#,kap
-wrap	lap1a,-kap
-rda	lap1b#,kap
-wrap	lap1b,-kap
-rdfx	lp1,krf
-wrlx	lp1,krs
-wra	d1,0
-
-rda	d1#,krt
-rdax	apout,1
-rda	lap2a#,kap
-wrap	lap2a,-kap
-rda	lap2b#,kap
-wrap	lap2b,-kap
-rdfx	lp2,krf
-wrlx	lp2,krs
-wra	d2,1.99
-
-@isPinConnected Reverb_Level
-rda	d1,1.99
-mulx	pot0
-mulx	pot0
-@else
-rda d1, 0.75
-@endif
-
-wrax	revout,0
-
-;smooth reverb:
-
-cho rda,sin0,sin|reg|compc,lap1b+100
-cho rda,sin0,sin,lap1b+101
-wra	lap1b+200,0
-cho rda,sin0,sin|reg|compc,lap2b+100
-cho rda,sin0,sin,lap2b+101
-wra	lap2b+200,0
 
 ;now do flange, begin by adding feedabck to delay
 
@@ -124,20 +53,20 @@ mulx	fbk
 rdax	mono,1
 wra	fladel,0
 
-;prepare a flamix and fbk values from pot2:
+;prepare a flamix and fbk values from input2:
 
 @isPinConnected Effect_Level_Feedback
-rdax	pot2,1
+rdax	input2,1
 sof	1.99,0		;clip function so we mix from 0 to max in 1st half of pot rotation
 @else
-sof 0.0, 0.5
+sof 0.5, 0.0
 @endif
 
 wrax	flamix,0		;write flange mix value
 
 
 @isPinConnected Effect_Level_Feedback
-rdax	pot2,1
+rdax	input2,1
 sof	1,-1		;goes from -1 to 0
 sof	1.999,0		;goes -1 to -1 at half point, then on to 0
 sof	1,0.999		;goes from zero to 1 beginning at midpoint
@@ -147,12 +76,12 @@ clr
 
 wrax	fbk,0		;wrtie to feedback register
 
-;now prepare triangle with pot1:
+;now prepare triangle with input1:
 
 @isPinConnected Flange_Rate
-rdax	pot1,1
-mulx	pot1
-mulx	pot1
+rdax	input1,1
+mulx	input1
+mulx	input1
 sof	0.4,0.01		;40:1 rate range
 @else
 sof 0.0, 0.2
@@ -168,14 +97,15 @@ wrax	tri,0
 ;now servo rmp1 with the tri signal:
 
 cho rdal,rmp1	;read ramp
+wrax servo, 1.0	
 rdax	tri,-0.06		;subtract tri
-sof	0.5,0
+sof	0.25,0
 wrax	rmp1_rate,0	;write ramp rate
 
 cho rda,rmp1,reg|compc,fladel
 cho rda,rmp1,0,fladel+1
-rdfx	fhp,0.02
-wrhx	fhp,-1
+;rdfx	fhp,0.02
+;wrhx	fhp,-1
 wrax	flaout,0
 
 ;now sum outputs:
@@ -183,11 +113,11 @@ wrax	flaout,0
 rdax	flaout,1
 mulx	flamix
 rdax	mono,1
-rdax	revout,1
 wrax	dacl,0
 
 @setOutputPin Audio_Output_1 dacl
 @setOutputPin Triangle_LFO tri
+@setOutputPin Servo servo
 @endif
 
 

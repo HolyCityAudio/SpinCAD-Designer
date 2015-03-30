@@ -147,7 +147,7 @@ public class ChorusReadDelay extends Instruction {
 				lfoval = state.getRampLFOVal(lfo - 2);
 			}
 			// GSW attempting to debug Ramp LFO
-			lfoPos = lfoval >> 9;
+			lfoPos = lfoval >> 14;
 		}
 
 
@@ -194,7 +194,14 @@ public class ChorusReadDelay extends Instruction {
 		// do delay offset lookup
 		else {
 			int delayPos = addr + lfoPos;
-			int inter = lfoval & 0xff;
+			int inter = -1;
+			if(lfo == 0 || lfo == 1) {
+				inter = lfoval & 0xff;
+			}
+			// for RAMP LFOs, i think we need to do maxval - offset
+			else {
+				inter = ((lfoval & 0xffc0) >> 6) & 0xff;
+			}
 //TODO debug GSW
 			if(Debug.DEBUG == true) {
 				System.out.printf("lfoVal: %d lfoPos: %d delayPos: %d inter: %d ", lfoval, lfoPos, delayPos, inter);

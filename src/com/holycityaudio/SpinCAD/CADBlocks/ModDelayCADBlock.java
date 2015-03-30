@@ -29,11 +29,11 @@ public class ModDelayCADBlock extends ModulationCADBlock {
 	 * 
 	 */
 	private static final long serialVersionUID = 695539935034103396L;
-	int delayLength = 8192;
+	int delayLength = 4096;
 
 	public ModDelayCADBlock(int x, int y) {
 		super(x, y);
-		hasControlPanel = true;
+//		hasControlPanel = true;
 		addControlInputPin(this,"Modulation In");
 		setName("Mod Delay");
 	}
@@ -72,7 +72,7 @@ public class ModDelayCADBlock extends ModulationCADBlock {
 //			cho rdal,rmp0      ;servo ramp0 to correct position using value in control
 			sfxb.chorusReadValue(RMP0);
 //			rdax control,-0.25    ;scaled so that 0 - 1 sweeps full range
-			sfxb.readRegister(Control1,  -0.25);
+			sfxb.readRegister(Control1,  -0.125);
 //			wrax rmp0_rate,0
 			sfxb.writeRegister(RMP0_RATE, 0);
 //			cho rda,rmp0,reg|compc,moddel   ;read from delay

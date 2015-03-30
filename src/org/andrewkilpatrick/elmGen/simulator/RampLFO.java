@@ -53,6 +53,7 @@ public class RampLFO {
 	}
 // GSW trying to debug Ramp LFO
 // up to now I can tell you I have not been successful!
+// well, making sure the sign was used sure helps!!!
 	public void increment() {
 		int sign = 1;
 		if(unit == 0) {
@@ -77,7 +78,7 @@ public class RampLFO {
 			amp = AMP_2048;
 		}
 // taking freq at full resolution for pointer increment
-		int increment = freq; 
+		int increment = freq * sign; 
 		pos = (pos - increment) & amp;
 		
 		// divide windows into eighths

@@ -78,14 +78,15 @@
 //@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 
 
-/* @menu "Guitar"
-@menuitem "GA Chorus" ga_demo_chorus 
-@menuitem "GA Echo Repeat" ga_demo_echo_repeat 
+@menu "Guitar"
+//@menuitem "GA Chorus" ga_demo_chorus 
+//@menuitem "GA Echo Repeat" ga_demo_echo_repeat 
 @menuitem "GA Flanger" ga_demo_flanger 
-@menuitem "GA Phaser" ga_demo_phaser 
-@menuitem "GA Vibrato" ga_demo_vibrato 
-@menuitem "GA Wah" ga_demo_wah 
-*/
+@menuitem "Ramp LFO Test" ramp_lfo_test
+@menuitem "Servo" servo
+//@menuitem "GA Phaser" ga_demo_phaser 
+//@menuitem "GA Vibrato" ga_demo_vibrato 
+//@menuitem "GA Wah" ga_demo_wah 
 
 // @menu "Pots"
 

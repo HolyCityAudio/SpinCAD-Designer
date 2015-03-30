@@ -30,20 +30,13 @@
 			private ga_demo_flangerControlPanel cp = null;
 			
 			private int mono;
-			private int apout;
-			private int lp1;
-			private int lp2;
-			private int revout;
 			private int flaout;
 			private int fbk;
 			private int flamix;
 			private int tri;
 			private int fhp;
 			private int dacl;
-			private double kap = 0.6;
-			private double krt = 0.55;
-			private double krf = 0.5;
-			private double krs = -0.6;
+			private int servo;
 			private double fbkmax = 0.9;
 
 			public ga_demo_flangerCADBlock(int x, int y) {
@@ -53,6 +46,7 @@
 				addInputPin(this, "Input_Left");
 				addOutputPin(this, "Audio_Output_1");
 				addControlOutputPin(this, "Triangle_LFO");
+				addControlOutputPin(this, "Servo");
 				addControlInputPin(this, "Reverb_Level");
 				addControlInputPin(this, "Flange_Rate");
 				addControlInputPin(this, "Effect_Level_Feedback");
@@ -105,76 +99,20 @@
 			
 			// finally, generate the instructions
 			if(this.getPin("Input_Left").isConnected() == true) {
-			sfxb.FXallocDelayMem("ap1", 334); 
-			sfxb.FXallocDelayMem("ap2", 556); 
-			sfxb.FXallocDelayMem("ap3", 871); 
-			sfxb.FXallocDelayMem("lap1a", 808); 
-			sfxb.FXallocDelayMem("lap1b", 1934); 
-			sfxb.FXallocDelayMem("d1", 2489); 
-			sfxb.FXallocDelayMem("lap2a", 1016); 
-			sfxb.FXallocDelayMem("lap2b", 1787); 
-			sfxb.FXallocDelayMem("d2", 2287); 
 			sfxb.FXallocDelayMem("fladel", 1000); 
 			mono = sfxb.allocateReg();
-			apout = sfxb.allocateReg();
-			lp1 = sfxb.allocateReg();
-			lp2 = sfxb.allocateReg();
-			revout = sfxb.allocateReg();
 			flaout = sfxb.allocateReg();
 			fbk = sfxb.allocateReg();
 			flamix = sfxb.allocateReg();
 			tri = sfxb.allocateReg();
 			fhp = sfxb.allocateReg();
 			dacl = sfxb.allocateReg();
-			sfxb.skip(RUN, 6);
-			sfxb.writeRegister(lp1, 0);
-			sfxb.writeRegister(lp2, 0);
-			sfxb.writeRegister(fhp, 0);
-			sfxb.loadSinLFO((int) SIN0,(int) 12, (int) 100);
-			sfxb.loadRampLFO((int) 0, (int) 0, (int) 4096);
-			sfxb.loadRampLFO((int) 0, (int) 1, (int) 512);
+			servo = sfxb.allocateReg();
+			sfxb.skip(RUN, 2);
+			sfxb.loadRampLFO((int) 0, (int) 10, (int) 4096);
+			sfxb.loadRampLFO((int) 1, (int) 0, (int) 512);
 			sfxb.readRegister(adcl, 1.0);
 			sfxb.writeRegister(mono, 0.5);
-			sfxb.FXreadDelay("ap1#", 0, kap);
-			sfxb.FXwriteAllpass("ap1", 0, -kap);
-			sfxb.FXreadDelay("ap2#", 0, kap);
-			sfxb.FXwriteAllpass("ap2", 0, -kap);
-			sfxb.FXreadDelay("ap3#", 0, kap);
-			sfxb.FXwriteAllpass("ap3", 0, -kap);
-			sfxb.writeRegister(apout, 0);
-			sfxb.FXreadDelay("d2#", 0, krt);
-			sfxb.readRegister(apout, 1);
-			sfxb.FXreadDelay("lap1a#", 0, kap);
-			sfxb.FXwriteAllpass("lap1a", 0, -kap);
-			sfxb.FXreadDelay("lap1b#", 0, kap);
-			sfxb.FXwriteAllpass("lap1b", 0, -kap);
-			sfxb.readRegisterFilter(lp1, krf);
-			sfxb.writeRegisterLowshelf(lp1, krs);
-			sfxb.FXwriteDelay("d1", 0, 0);
-			sfxb.FXreadDelay("d1#", 0, krt);
-			sfxb.readRegister(apout, 1);
-			sfxb.FXreadDelay("lap2a#", 0, kap);
-			sfxb.FXwriteAllpass("lap2a", 0, -kap);
-			sfxb.FXreadDelay("lap2b#", 0, kap);
-			sfxb.FXwriteAllpass("lap2b", 0, -kap);
-			sfxb.readRegisterFilter(lp2, krf);
-			sfxb.writeRegisterLowshelf(lp2, krs);
-			sfxb.FXwriteDelay("d2", 0, 1.99);
-			if(this.getPin("Reverb_Level").isConnected() == true) {
-			sfxb.FXreadDelay("d1", 0, 1.99);
-			sfxb.mulx(input0);
-			sfxb.mulx(input0);
-			} else {
-			sfxb.FXreadDelay("d1", 0, 0.75);
-			}
-			
-			sfxb.writeRegister(revout, 0);
-			sfxb.FXchorusReadDelay(SIN0, SIN|REG|COMPC, "lap1b+", 100);
-			sfxb.FXchorusReadDelay(SIN0, SIN, "lap1b+", 101);
-			sfxb.FXwriteDelay("lap1b+", (int)(200 * 1.0), 0);
-			sfxb.FXchorusReadDelay(SIN0, SIN|REG|COMPC, "lap2b+", 100);
-			sfxb.FXchorusReadDelay(SIN0, SIN, "lap2b+", 101);
-			sfxb.FXwriteDelay("lap2b+", (int)(200 * 1.0), 0);
 			sfxb.readRegister(flaout, fbkmax);
 			sfxb.mulx(fbk);
 			sfxb.readRegister(mono, 1);
@@ -183,7 +121,7 @@
 			sfxb.readRegister(input2, 1);
 			sfxb.scaleOffset(1.99, 0);
 			} else {
-			sfxb.scaleOffset(0.0, 0.5);
+			sfxb.scaleOffset(0.5, 0.0);
 			}
 			
 			sfxb.writeRegister(flamix, 0);
@@ -212,21 +150,20 @@
 			sfxb.absa();
 			sfxb.writeRegister(tri, 0);
 			sfxb.chorusReadValue(RMP1);
+			sfxb.writeRegister(servo, 1.0);
 			sfxb.readRegister(tri, -0.06);
-			sfxb.scaleOffset(0.5, 0);
+			sfxb.scaleOffset(0.25, 0);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.FXchorusReadDelay(RMP1, REG|COMPC, "fladel", 0);
 			sfxb.FXchorusReadDelay(RMP1, 0, "fladel+", 1);
-			sfxb.readRegisterFilter(fhp, 0.02);
-			sfxb.writeRegisterHighshelf(fhp, -1);
 			sfxb.writeRegister(flaout, 0);
 			sfxb.readRegister(flaout, 1);
 			sfxb.mulx(flamix);
 			sfxb.readRegister(mono, 1);
-			sfxb.readRegister(revout, 1);
 			sfxb.writeRegister(dacl, 0);
 			this.getPin("Audio_Output_1").setRegister(dacl);
 			this.getPin("Triangle_LFO").setRegister(tri);
+			this.getPin("Servo").setRegister(servo);
 			}
 			
 

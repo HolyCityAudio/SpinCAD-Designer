@@ -49,6 +49,8 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_flangerCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ramp_lfo_testCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.servoCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
@@ -552,6 +554,24 @@
 		}
 	});
 	mn_guitar.add(mntm_ga_demo_flanger);
+		
+	final JMenuItem mntm_ramp_lfo_test = new JMenuItem("Ramp LFO Test");
+	mntm_ramp_lfo_test.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ramp_lfo_testCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ramp_lfo_test);
+		
+	final JMenuItem mntm_servo = new JMenuItem("Servo");
+	mntm_servo.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new servoCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_servo);
 		
 	JMenu mn_control = new JMenu("Control");
 	menuBar.add(mn_control);
