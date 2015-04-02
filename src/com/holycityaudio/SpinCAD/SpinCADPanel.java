@@ -40,14 +40,26 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JSlider;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import org.andrewkilpatrick.elmGen.Debug;
+import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
 import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Iterator;
 
 // =======================================================================================================
@@ -74,7 +86,7 @@ public class SpinCADPanel extends JPanel {
 	private Line2D dragLine = null;
 	private Rectangle2D dragRect = null;
 	private static String keys = null;
-
+	
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
 

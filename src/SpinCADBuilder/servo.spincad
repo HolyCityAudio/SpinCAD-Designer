@@ -1,0 +1,72 @@
+@name Servo
+@audioInput input Input
+@audioOutput output Output  
+@controlInput control Delay
+@controlOutput servo Servo
+@controlOutput delta Delta
+
+equ servoGain 0.25
+@sliderLabel servoGain Servo_Gain 0.0 1.0 0.25 100.0 2
+
+equ freq 0.25
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq Low_Pass 500 7500 100.0 100.0 1 LOGFREQ 
+
+equ lfoSel 0
+@comboBox lfoSel 'Ramp 0' 'Ramp 1'
+
+
+@isPinConnected Input
+mem moddel 4096
+equ output reg1
+@isPinConnected Delay
+equ servo reg2
+equ filt reg3
+equ delta reg4
+//			;set up LFOs, only at start up
+@isEqualTo lfoSel 0
+skp run,START 
+wldr 0,0,4096      ;ramp0 used for modulation operations
+START: 
+@else
+skp run,START1 
+wldr 1,0,4096      ;ramp0 used for modulation operations
+START1: 
+@endif
+
+
+rdax input,1
+wra moddel,0      ;write to head of delay
+@isEqualTo lfoSel 0
+cho rdal,rmp0      ;servo ramp0 to correct position using value in control
+@else
+cho rdal,rmp1      ;servo ramp0 to correct position using value in control
+@endif
+wrax servo, 1.0
+rdax control,-servoGain    ;scaled so that 0 - 1 sweeps full range
+wrax delta, 1.0
+@isEqualTo lfoSel 0
+wrax rmp0_rate,0
+cho rda,rmp0,reg|compc,moddel   ;read from delay
+cho rda,rmp0,0,moddel+1
+@else
+wrax rmp1_rate,0
+cho rda,rmp1,reg|compc,moddel   ;read from delay
+cho rda,rmp1,0,moddel+1
+@endif
+rdfx filt, freq
+wrlx filt, -1
+wrax output,0
+@setOutputPin Servo servo
+@setOutputPin Delta delta
+@setOutputPin Output output
+@else
+// if control input is not connected just read from the middle of the delay
+rdax input,1
+wra moddel,0      ;write to head of delay
+rda moddel^, 1.0
+wrax output,0
+@setOutputPin Output output
+@endif
+@endif
+

@@ -119,19 +119,19 @@
 		class pitch_fourSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == pitch1Slider) {
-				gCB.setpitch1((double) (pitch1Slider.getValue()/1.0));
+			gCB.setpitch1((double) (pitch1Slider.getValue()/1.0));
 				updatepitch1Label();
 			}
 			if(ce.getSource() == pitch2Slider) {
-				gCB.setpitch2((double) (pitch2Slider.getValue()/1.0));
+			gCB.setpitch2((double) (pitch2Slider.getValue()/1.0));
 				updatepitch2Label();
 			}
 			if(ce.getSource() == pitch3Slider) {
-				gCB.setpitch3((double) (pitch3Slider.getValue()/1.0));
+			gCB.setpitch3((double) (pitch3Slider.getValue()/1.0));
 				updatepitch3Label();
 			}
 			if(ce.getSource() == pitch4Slider) {
-				gCB.setpitch4((double) (pitch4Slider.getValue()/1.0));
+			gCB.setpitch4((double) (pitch4Slider.getValue()/1.0));
 				updatepitch4Label();
 			}
 			}

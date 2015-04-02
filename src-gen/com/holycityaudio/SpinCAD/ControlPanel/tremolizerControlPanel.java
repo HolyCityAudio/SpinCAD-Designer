@@ -78,7 +78,7 @@
 		class tremolizerSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == depthSlider) {
-				gCB.setdepth((double) (depthSlider.getValue()/100.0));
+			gCB.setdepth((double) (depthSlider.getValue()/100.0));
 				updatedepthLabel();
 			}
 			}

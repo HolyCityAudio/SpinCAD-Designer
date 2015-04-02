@@ -269,31 +269,31 @@
 			sfxb.readRegister(temp, 1);
 			sfxb.mulx(krt);
 			sfxb.writeRegister(lup, 0);
-			sfxb.FXreadDelay("del1+", 201, 0.8);
-			sfxb.FXreadDelay("del2+", 145, 0.7);
-			sfxb.FXreadDelay("del3+", 697, 0.6);
-			sfxb.FXreadDelay("del4+", 580, 0.5);
+			sfxb.FXreadDelay("del1+", (int)(201 * 1.0), 0.8);
+			sfxb.FXreadDelay("del2+", (int)(145 * 1.0), 0.7);
+			sfxb.FXreadDelay("del3+", (int)(697 * 1.0), 0.6);
+			sfxb.FXreadDelay("del4+", (int)(580 * 1.0), 0.5);
 			sfxb.writeRegister(dacl, 0);
-			sfxb.FXreadDelay("del1+", 697, 0.8);
-			sfxb.FXreadDelay("del2+", 845, 0.7);
-			sfxb.FXreadDelay("del3+", 487, 0.6);
-			sfxb.FXreadDelay("del4+", 780, 0.5);
+			sfxb.FXreadDelay("del1+", (int)(697 * 1.0), 0.8);
+			sfxb.FXreadDelay("del2+", (int)(845 * 1.0), 0.7);
+			sfxb.FXreadDelay("del3+", (int)(487 * 1.0), 0.6);
+			sfxb.FXreadDelay("del4+", (int)(780 * 1.0), 0.5);
 			sfxb.writeRegister(dacr, 0);
 			sfxb.skip(RUN, 2);
 			sfxb.loadSinLFO((int) 0,(int) 12, (int) 37);
 			sfxb.loadSinLFO((int) 1,(int) 15, (int) 33);
 			sfxb.FXchorusReadDelay(SIN0, REG|SIN|COMPC, "apd1+", 40);
 			sfxb.FXchorusReadDelay(SIN0, SIN, "apd1+", 41);
-			sfxb.FXwriteDelay("apd1+", 80, 0);
+			sfxb.FXwriteDelay("apd1+", (int)(80 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN0, COS|COMPC, "apd2+", 40);
 			sfxb.FXchorusReadDelay(SIN0, COS, "apd2+", 41);
-			sfxb.FXwriteDelay("apd2+", 80, 0);
+			sfxb.FXwriteDelay("apd2+", (int)(80 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN1, REG|SIN|COMPC, "apd3+", 40);
 			sfxb.FXchorusReadDelay(SIN0, SIN, "apd3+", 41);
-			sfxb.FXwriteDelay("apd3+", 80, 0);
+			sfxb.FXwriteDelay("apd3+", (int)(80 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN1, COS|COMPC, "apd4+", 40);
 			sfxb.FXchorusReadDelay(SIN0, COS, "apd4+", 41);
-			sfxb.FXwriteDelay("apd4+", 80, 0);
+			sfxb.FXwriteDelay("apd4+", (int)(80 * 1.0), 0);
 			}
 			
 

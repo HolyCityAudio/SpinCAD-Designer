@@ -211,10 +211,10 @@
 			sfxb.readRegister(temp, 1);
 			sfxb.mulx(krt);
 			sfxb.writeRegister(lup, 0);
-			sfxb.FXreadDelay("del1+", 201, 0.6);
-			sfxb.FXreadDelay("del2+", 1345, 0.5);
-			sfxb.FXreadDelay("del3+", 897, 0.6);
-			sfxb.FXreadDelay("del4+", 1780, 0.5);
+			sfxb.FXreadDelay("del1+", (int)(201 * 1.0), 0.6);
+			sfxb.FXreadDelay("del2+", (int)(1345 * 1.0), 0.5);
+			sfxb.FXreadDelay("del3+", (int)(897 * 1.0), 0.6);
+			sfxb.FXreadDelay("del4+", (int)(1780 * 1.0), 0.5);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Output").setRegister(output);
 			sfxb.skip(RUN, 2);
@@ -222,16 +222,16 @@
 			sfxb.loadSinLFO((int) 1,(int) rate2, (int) 33);
 			sfxb.FXchorusReadDelay(SIN0, REG|SIN|COMPC, "apd1+", 40);
 			sfxb.FXchorusReadDelay(SIN0, SIN, "apd1+", 41);
-			sfxb.FXwriteDelay("apd1+", 80, 0);
+			sfxb.FXwriteDelay("apd1+", (int)(80 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN0, COS|COMPC, "apd2+", 40);
 			sfxb.FXchorusReadDelay(SIN0, COS, "apd2+", 41);
-			sfxb.FXwriteDelay("apd2+", 80, 0);
+			sfxb.FXwriteDelay("apd2+", (int)(80 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN1, REG|SIN|COMPC, "apd3+", 40);
 			sfxb.FXchorusReadDelay(SIN0, SIN, "apd3+", 41);
-			sfxb.FXwriteDelay("apd3+", 80, 0);
+			sfxb.FXwriteDelay("apd3+", (int)(80 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN1, COS|COMPC, "apd4+", 40);
 			sfxb.FXchorusReadDelay(SIN0, COS, "apd4+", 41);
-			sfxb.FXwriteDelay("apd4+", 80, 0);
+			sfxb.FXwriteDelay("apd4+", (int)(80 * 1.0), 0);
 			}
 			
 

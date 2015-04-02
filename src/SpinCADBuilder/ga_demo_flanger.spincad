@@ -1,23 +1,21 @@
 @name Flanger
 @audioInput adcl Input_Left 
-@audioOutput dacl Audio_Output_1 
+@audioOutput output Audio_Output_1 
 @controlOutput tri Triangle_LFO
 @controlOutput servo Servo
 
-@controlInput input0 Reverb_Level
 @controlInput input1 Flange_Rate
 @controlInput input2 Effect_Level_Feedback
 
 ;GA_DEMO	Flanger
 
-;Pot0 = Reverb level
 ;input1 = Flange rate
 ;input2 = Effect level w/ feedback
 
 ;memory declarations:
 @isPinConnected Input_Left
 
-mem	fladel	1000
+mem	fladel	512
 
 ;register equates:
 
@@ -27,7 +25,7 @@ equ	fbk	reg6
 equ	flamix	reg7
 equ	tri	reg8
 equ	fhp	reg9
-equ dacl reg10
+equ output reg10
 equ servo reg1
 
 ;declare constants:
@@ -59,7 +57,7 @@ wra	fladel,0
 rdax	input2,1
 sof	1.99,0		;clip function so we mix from 0 to max in 1st half of pot rotation
 @else
-sof 0.5, 0.0
+sof 0.0, 0.9990
 @endif
 
 wrax	flamix,0		;write flange mix value
@@ -86,7 +84,6 @@ sof	0.4,0.01		;40:1 rate range
 @else
 sof 0.0, 0.2
 @endif
-
 wrax	rmp0_rate,0	;control rmp0 rate
 
 cho rdal, rmp0
@@ -98,7 +95,7 @@ wrax	tri,0
 
 cho rdal,rmp1	;read ramp
 wrax servo, 1.0	
-rdax	tri,-0.06		;subtract tri
+rdax	tri,-0.16		;subtract tri
 sof	0.25,0
 wrax	rmp1_rate,0	;write ramp rate
 
@@ -113,9 +110,9 @@ wrax	flaout,0
 rdax	flaout,1
 mulx	flamix
 rdax	mono,1
-wrax	dacl,0
+wrax	output,0
 
-@setOutputPin Audio_Output_1 dacl
+@setOutputPin Audio_Output_1 output
 @setOutputPin Triangle_LFO tri
 @setOutputPin Servo servo
 @endif

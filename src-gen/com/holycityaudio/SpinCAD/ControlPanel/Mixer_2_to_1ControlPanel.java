@@ -91,11 +91,11 @@
 		class Mixer_2_to_1SliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-				gCB.setgain1((double) (gain1Slider.getValue()/1.0));
+			gCB.setgain1((double) (gain1Slider.getValue()/1.0));
 				updategain1Label();
 			}
 			if(ce.getSource() == gain2Slider) {
-				gCB.setgain2((double) (gain2Slider.getValue()/1.0));
+			gCB.setgain2((double) (gain2Slider.getValue()/1.0));
 				updategain2Label();
 			}
 			}

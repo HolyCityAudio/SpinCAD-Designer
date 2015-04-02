@@ -193,10 +193,10 @@
 			sfxb.writeRegister(revout, 0);
 			sfxb.FXchorusReadDelay(SIN0, SIN|REG|COMPC, "lap1b+", 100);
 			sfxb.FXchorusReadDelay(SIN0, SIN, "lap1b+", 101);
-			sfxb.FXwriteDelay("lap1b+", 200, 0);
+			sfxb.FXwriteDelay("lap1b+", (int)(200 * 1.0), 0);
 			sfxb.FXchorusReadDelay(SIN0, SIN|REG|COMPC, "lap2b+", 100);
 			sfxb.FXchorusReadDelay(SIN0, SIN, "lap2b+", 101);
-			sfxb.FXwriteDelay("lap2b+", 200, 0);
+			sfxb.FXwriteDelay("lap2b+", (int)(200 * 1.0), 0);
 			if(this.getPin("Phase_Width").isConnected() == true) {
 			sfxb.readRegister(input2, 1);
 			sfxb.readRegister(bypass, 0.9);

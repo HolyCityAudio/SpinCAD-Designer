@@ -186,43 +186,43 @@
 		class eighttapSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-				gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-				gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1GainSlider) {
-				gCB.settap1Gain((double) (tap1GainSlider.getValue()/1.0));
+			gCB.settap1Gain((double) (tap1GainSlider.getValue()/1.0));
 				updatetap1GainLabel();
 			}
 			if(ce.getSource() == tap2GainSlider) {
-				gCB.settap2Gain((double) (tap2GainSlider.getValue()/1.0));
+			gCB.settap2Gain((double) (tap2GainSlider.getValue()/1.0));
 				updatetap2GainLabel();
 			}
 			if(ce.getSource() == tap3GainSlider) {
-				gCB.settap3Gain((double) (tap3GainSlider.getValue()/1.0));
+			gCB.settap3Gain((double) (tap3GainSlider.getValue()/1.0));
 				updatetap3GainLabel();
 			}
 			if(ce.getSource() == tap4GainSlider) {
-				gCB.settap4Gain((double) (tap4GainSlider.getValue()/1.0));
+			gCB.settap4Gain((double) (tap4GainSlider.getValue()/1.0));
 				updatetap4GainLabel();
 			}
 			if(ce.getSource() == tap5GainSlider) {
-				gCB.settap5Gain((double) (tap5GainSlider.getValue()/1.0));
+			gCB.settap5Gain((double) (tap5GainSlider.getValue()/1.0));
 				updatetap5GainLabel();
 			}
 			if(ce.getSource() == tap6GainSlider) {
-				gCB.settap6Gain((double) (tap6GainSlider.getValue()/1.0));
+			gCB.settap6Gain((double) (tap6GainSlider.getValue()/1.0));
 				updatetap6GainLabel();
 			}
 			if(ce.getSource() == tap7GainSlider) {
-				gCB.settap7Gain((double) (tap7GainSlider.getValue()/1.0));
+			gCB.settap7Gain((double) (tap7GainSlider.getValue()/1.0));
 				updatetap7GainLabel();
 			}
 			if(ce.getSource() == tap8GainSlider) {
-				gCB.settap8Gain((double) (tap8GainSlider.getValue()/1.0));
+			gCB.settap8Gain((double) (tap8GainSlider.getValue()/1.0));
 				updatetap8GainLabel();
 			}
 			}

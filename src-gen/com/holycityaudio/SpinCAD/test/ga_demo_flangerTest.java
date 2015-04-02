@@ -56,22 +56,15 @@ f.dropBlock(p, o);
 	Pot0CADBlock pot0 = new Pot0CADBlock(25, 150 + 40 * 1);
 	f.dropBlock(p, pot0);
 	SpinCADPin p1 = pot0.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Reverb_Level");
+	SpinCADPin p2 = m.getPin("Flange_Rate");
 	p2.setConnection(pot0, p1);
 }
 {
 	Pot1CADBlock pot1 = new Pot1CADBlock(25, 150 + 40 * 2);
 	f.dropBlock(p, pot1);
 	SpinCADPin p1 = pot1.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Flange_Rate");
-	p2.setConnection(pot1, p1);
-}
-{
-	Pot2CADBlock pot2 = new Pot2CADBlock(25, 150 + 40 * 3);
-	f.dropBlock(p, pot2);
-	SpinCADPin p1 = pot2.getPin("Output 1");
 	SpinCADPin p2 = m.getPin("Effect_Level_Feedback");
-	p2.setConnection(pot2, p1);
+	p2.setConnection(pot1, p1);
 }
 f.getModel().sortAlignGen();
 System.out.println("ga_demo_flangerCADBlock test passed with all control connections!");

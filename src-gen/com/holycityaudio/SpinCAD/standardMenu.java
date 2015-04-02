@@ -21,7 +21,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.slow_gearCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
@@ -43,14 +42,12 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ModDelayCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.servoCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PhaserCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RingModCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_flangerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ramp_lfo_testCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.servoCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
@@ -59,7 +56,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.PatternGeneratorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
@@ -285,15 +281,6 @@
 	});
 	mn_dynamics.add(mntm_soft_knee_limiter);
 		
-	final JMenuItem mntm_slow_gear = new JMenuItem("Slow Gear");
-	mntm_slow_gear.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new slow_gearCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_dynamics.add(mntm_slow_gear);
-		
 	JMenu mn_filters = new JMenu("Filters");
 	menuBar.add(mn_filters);
 	
@@ -495,6 +482,15 @@
 	});
 	mn_modulation.add(mntm_ModDelay);
 		
+	final JMenuItem mntm_servo = new JMenuItem("Servo");
+	mntm_servo.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new servoCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_modulation.add(mntm_servo);
+		
 	final JMenuItem mntm_Phaser = new JMenuItem("Phaser");
 	mntm_Phaser.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -542,36 +538,6 @@
 		}
 	});
 	mn_pitch.add(mntm_pitchoffset);
-		
-	JMenu mn_guitar = new JMenu("Guitar");
-	menuBar.add(mn_guitar);
-	
-	final JMenuItem mntm_ga_demo_flanger = new JMenuItem("GA Flanger");
-	mntm_ga_demo_flanger.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new ga_demo_flangerCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_guitar.add(mntm_ga_demo_flanger);
-		
-	final JMenuItem mntm_ramp_lfo_test = new JMenuItem("Ramp LFO Test");
-	mntm_ramp_lfo_test.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new ramp_lfo_testCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_guitar.add(mntm_ramp_lfo_test);
-		
-	final JMenuItem mntm_servo = new JMenuItem("Servo");
-	mntm_servo.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new servoCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_guitar.add(mntm_servo);
 		
 	JMenu mn_control = new JMenu("Control");
 	menuBar.add(mn_control);
@@ -647,15 +613,6 @@
 		}
 	});
 	mn_control.add(mntm_SampleHold);
-		
-	final JMenuItem mntm_PatternGenerator = new JMenuItem("Pattern Gen");
-	mntm_PatternGenerator.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new PatternGeneratorCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_PatternGenerator);
 		
 	final JMenuItem mntm_tremolizer = new JMenuItem("Tremolizer");
 	mntm_tremolizer.addActionListener(new ActionListener() {

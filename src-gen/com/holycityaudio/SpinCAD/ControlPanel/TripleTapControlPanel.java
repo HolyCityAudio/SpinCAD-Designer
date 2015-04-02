@@ -123,23 +123,23 @@
 		class TripleTapSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-				gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-				gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1RatioSlider) {
-				gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/1000.0));
+			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/1000.0));
 				updatetap1RatioLabel();
 			}
 			if(ce.getSource() == tap2RatioSlider) {
-				gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/1000.0));
+			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/1000.0));
 				updatetap2RatioLabel();
 			}
 			if(ce.getSource() == tap3RatioSlider) {
-				gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/1000.0));
+			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/1000.0));
 				updatetap3RatioLabel();
 			}
 			}

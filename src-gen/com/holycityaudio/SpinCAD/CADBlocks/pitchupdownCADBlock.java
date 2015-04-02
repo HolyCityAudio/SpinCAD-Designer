@@ -84,9 +84,8 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayd", 4096); 
 			sfxb.FXallocDelayMem("temp", 1); 
-			sfxb.skip(RUN, 2);
+			sfxb.skip(RUN, 1);
 			sfxb.loadRampLFO((int) 1, (int) 16384, (int) 4096);
-			sfxb.loadRampLFO((int) 0, (int) -8192, (int) 4096);
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayd", 0, 0);
 			sfxb.FXchorusReadDelay(RMP0, REG|COMPC, "delayd", 0);

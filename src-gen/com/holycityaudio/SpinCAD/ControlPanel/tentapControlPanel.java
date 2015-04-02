@@ -309,91 +309,91 @@
 		class tentapSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-				gCB.setinputGain((double) (inputGainSlider.getValue()/1000.0));
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1000.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-				gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1RatioSlider) {
-				gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/1000.0));
+			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/1000.0));
 				updatetap1RatioLabel();
 			}
 			if(ce.getSource() == tap1GainSlider) {
-				gCB.settap1Gain((double) (tap1GainSlider.getValue()/1000.0));
+			gCB.settap1Gain((double) (tap1GainSlider.getValue()/1000.0));
 				updatetap1GainLabel();
 			}
 			if(ce.getSource() == tap2RatioSlider) {
-				gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/1000.0));
+			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/1000.0));
 				updatetap2RatioLabel();
 			}
 			if(ce.getSource() == tap2GainSlider) {
-				gCB.settap2Gain((double) (tap2GainSlider.getValue()/1000.0));
+			gCB.settap2Gain((double) (tap2GainSlider.getValue()/1000.0));
 				updatetap2GainLabel();
 			}
 			if(ce.getSource() == tap3RatioSlider) {
-				gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/1000.0));
+			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/1000.0));
 				updatetap3RatioLabel();
 			}
 			if(ce.getSource() == tap3GainSlider) {
-				gCB.settap3Gain((double) (tap3GainSlider.getValue()/1000.0));
+			gCB.settap3Gain((double) (tap3GainSlider.getValue()/1000.0));
 				updatetap3GainLabel();
 			}
 			if(ce.getSource() == tap4RatioSlider) {
-				gCB.settap4Ratio((double) (tap4RatioSlider.getValue()/1000.0));
+			gCB.settap4Ratio((double) (tap4RatioSlider.getValue()/1000.0));
 				updatetap4RatioLabel();
 			}
 			if(ce.getSource() == tap4GainSlider) {
-				gCB.settap4Gain((double) (tap4GainSlider.getValue()/1000.0));
+			gCB.settap4Gain((double) (tap4GainSlider.getValue()/1000.0));
 				updatetap4GainLabel();
 			}
 			if(ce.getSource() == tap5RatioSlider) {
-				gCB.settap5Ratio((double) (tap5RatioSlider.getValue()/1000.0));
+			gCB.settap5Ratio((double) (tap5RatioSlider.getValue()/1000.0));
 				updatetap5RatioLabel();
 			}
 			if(ce.getSource() == tap5GainSlider) {
-				gCB.settap5Gain((double) (tap5GainSlider.getValue()/1000.0));
+			gCB.settap5Gain((double) (tap5GainSlider.getValue()/1000.0));
 				updatetap5GainLabel();
 			}
 			if(ce.getSource() == tap6RatioSlider) {
-				gCB.settap6Ratio((double) (tap6RatioSlider.getValue()/1000.0));
+			gCB.settap6Ratio((double) (tap6RatioSlider.getValue()/1000.0));
 				updatetap6RatioLabel();
 			}
 			if(ce.getSource() == tap6GainSlider) {
-				gCB.settap6Gain((double) (tap6GainSlider.getValue()/1000.0));
+			gCB.settap6Gain((double) (tap6GainSlider.getValue()/1000.0));
 				updatetap6GainLabel();
 			}
 			if(ce.getSource() == tap7RatioSlider) {
-				gCB.settap7Ratio((double) (tap7RatioSlider.getValue()/1000.0));
+			gCB.settap7Ratio((double) (tap7RatioSlider.getValue()/1000.0));
 				updatetap7RatioLabel();
 			}
 			if(ce.getSource() == tap7GainSlider) {
-				gCB.settap7Gain((double) (tap7GainSlider.getValue()/1000.0));
+			gCB.settap7Gain((double) (tap7GainSlider.getValue()/1000.0));
 				updatetap7GainLabel();
 			}
 			if(ce.getSource() == tap8RatioSlider) {
-				gCB.settap8Ratio((double) (tap8RatioSlider.getValue()/1000.0));
+			gCB.settap8Ratio((double) (tap8RatioSlider.getValue()/1000.0));
 				updatetap8RatioLabel();
 			}
 			if(ce.getSource() == tap8GainSlider) {
-				gCB.settap8Gain((double) (tap8GainSlider.getValue()/1000.0));
+			gCB.settap8Gain((double) (tap8GainSlider.getValue()/1000.0));
 				updatetap8GainLabel();
 			}
 			if(ce.getSource() == tap9RatioSlider) {
-				gCB.settap9Ratio((double) (tap9RatioSlider.getValue()/1000.0));
+			gCB.settap9Ratio((double) (tap9RatioSlider.getValue()/1000.0));
 				updatetap9RatioLabel();
 			}
 			if(ce.getSource() == tap9GainSlider) {
-				gCB.settap9Gain((double) (tap9GainSlider.getValue()/1000.0));
+			gCB.settap9Gain((double) (tap9GainSlider.getValue()/1000.0));
 				updatetap9GainLabel();
 			}
 			if(ce.getSource() == tap10RatioSlider) {
-				gCB.settap10Ratio((double) (tap10RatioSlider.getValue()/1000.0));
+			gCB.settap10Ratio((double) (tap10RatioSlider.getValue()/1000.0));
 				updatetap10RatioLabel();
 			}
 			if(ce.getSource() == tap10GainSlider) {
-				gCB.settap10Gain((double) (tap10GainSlider.getValue()/1000.0));
+			gCB.settap10Gain((double) (tap10GainSlider.getValue()/1000.0));
 				updatetap10GainLabel();
 			}
 			}

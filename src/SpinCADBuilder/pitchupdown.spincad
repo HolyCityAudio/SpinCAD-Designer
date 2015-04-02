@@ -19,7 +19,7 @@ mem temp 1
 
 skp run, START 
 wldr 1,16384,4096 
-wldr 0, -8192,4096 
+// wldr 0, -8192,4096 
 START: 
 ldax input
 wra delayd,0

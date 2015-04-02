@@ -35,7 +35,7 @@
 			private int flamix;
 			private int tri;
 			private int fhp;
-			private int dacl;
+			private int output;
 			private int servo;
 			private double fbkmax = 0.9;
 
@@ -47,7 +47,6 @@
 				addOutputPin(this, "Audio_Output_1");
 				addControlOutputPin(this, "Triangle_LFO");
 				addControlOutputPin(this, "Servo");
-				addControlInputPin(this, "Reverb_Level");
 				addControlInputPin(this, "Flange_Rate");
 				addControlInputPin(this, "Effect_Level_Feedback");
 			// if any control panel elements declared, set hasControlPanel to true
@@ -81,11 +80,6 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			sp = this.getPin("Reverb_Level").getPinConnection();
-			int input0 = -1;
-			if(sp != null) {
-				input0 = sp.getRegister();
-			}
 			sp = this.getPin("Flange_Rate").getPinConnection();
 			int input1 = -1;
 			if(sp != null) {
@@ -99,14 +93,14 @@
 			
 			// finally, generate the instructions
 			if(this.getPin("Input_Left").isConnected() == true) {
-			sfxb.FXallocDelayMem("fladel", 1000); 
+			sfxb.FXallocDelayMem("fladel", 512); 
 			mono = sfxb.allocateReg();
 			flaout = sfxb.allocateReg();
 			fbk = sfxb.allocateReg();
 			flamix = sfxb.allocateReg();
 			tri = sfxb.allocateReg();
 			fhp = sfxb.allocateReg();
-			dacl = sfxb.allocateReg();
+			output = sfxb.allocateReg();
 			servo = sfxb.allocateReg();
 			sfxb.skip(RUN, 2);
 			sfxb.loadRampLFO((int) 0, (int) 10, (int) 4096);
@@ -121,7 +115,7 @@
 			sfxb.readRegister(input2, 1);
 			sfxb.scaleOffset(1.99, 0);
 			} else {
-			sfxb.scaleOffset(0.5, 0.0);
+			sfxb.scaleOffset(0.0, 0.9990);
 			}
 			
 			sfxb.writeRegister(flamix, 0);
@@ -151,7 +145,7 @@
 			sfxb.writeRegister(tri, 0);
 			sfxb.chorusReadValue(RMP1);
 			sfxb.writeRegister(servo, 1.0);
-			sfxb.readRegister(tri, -0.06);
+			sfxb.readRegister(tri, -0.16);
 			sfxb.scaleOffset(0.25, 0);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.FXchorusReadDelay(RMP1, REG|COMPC, "fladel", 0);
@@ -160,8 +154,8 @@
 			sfxb.readRegister(flaout, 1);
 			sfxb.mulx(flamix);
 			sfxb.readRegister(mono, 1);
-			sfxb.writeRegister(dacl, 0);
-			this.getPin("Audio_Output_1").setRegister(dacl);
+			sfxb.writeRegister(output, 0);
+			this.getPin("Audio_Output_1").setRegister(output);
 			this.getPin("Triangle_LFO").setRegister(tri);
 			this.getPin("Servo").setRegister(servo);
 			}

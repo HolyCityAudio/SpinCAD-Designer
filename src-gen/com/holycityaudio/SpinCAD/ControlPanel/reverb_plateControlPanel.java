@@ -101,15 +101,15 @@
 		class reverb_plateSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-				gCB.setgain((double) (gainSlider.getValue()/1.0));
+			gCB.setgain((double) (gainSlider.getValue()/1.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == rate1Slider) {
-				gCB.setrate1((double) (rate1Slider.getValue()/100.0));
+			gCB.setrate1((double) (rate1Slider.getValue()/100.0));
 				updaterate1Label();
 			}
 			if(ce.getSource() == rate2Slider) {
-				gCB.setrate2((double) (rate2Slider.getValue()/100.0));
+			gCB.setrate2((double) (rate2Slider.getValue()/100.0));
 				updaterate2Label();
 			}
 			}

@@ -96,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 904;
+	int buildNum = 905;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -108,6 +108,7 @@ public class SpinCADFrame extends JFrame {
 	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
 	private final simControlToolBar sctb = new simControlToolBar();
+	private commentBlock cb = new commentBlock();
 	private final JPanel controlPanels = new JPanel();
 	private final JPanel simPanel = new JPanel();
 	private JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
@@ -248,6 +249,14 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnNewMenu.add(mntmSaveAsm);
+
+		JMenuItem mntmInfo = new JMenuItem("Info");
+		mntmInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cb.show();
+			}
+		});
+		mnNewMenu.add(mntmInfo);
 
 		JMenuItem mntmBatch = new JMenuItem("Batch Convert");
 		fileBatch(panel, mntmBatch);
@@ -440,7 +449,7 @@ public class SpinCADFrame extends JFrame {
 						File fileToBeSaved = new File(spcFileName);
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
-							SpinCADFile.fileSave(getModel(), filePath);
+							SpinCADFile.fileSave(cb, getModel(), filePath);
 							saveMRUFolder(fileToBeSaved.getPath());
 							spcFileName = fileToBeSaved.getName();
 							getModel().setChanged(false);
@@ -488,7 +497,7 @@ public class SpinCADFrame extends JFrame {
 					File fileToBeSaved = new File(prefs.get("MRUFolder",  "") + "/" + spcFileName);
 					String filePath = fileToBeSaved.getPath();
 					try {
-						SpinCADFile.fileSave(getModel(), filePath);
+						SpinCADFile.fileSave(cb, getModel(), filePath);
 						prefs.put("MRUFolder", filePath);
 						saveMRUFolder(filePath);
 						getModel().setChanged(false);
@@ -537,7 +546,7 @@ public class SpinCADFrame extends JFrame {
 							+ newline);
 					try {
 						String filePath = file.getPath();
-						model = SpinCADFile.fileRead(getModel(), filePath );
+						model = SpinCADFile.fileRead(cb, getModel(), filePath );
 						spcFileName = file.getName();
 						getModel().getIndexFB();
 						getModel().setChanged(false);						
@@ -620,7 +629,7 @@ public class SpinCADFrame extends JFrame {
 									+ newline);
 							try {
 								String filePath = files[index].getPath();
-								model = SpinCADFile.fileRead(getModel(), filePath );
+								model = SpinCADFile.fileRead(cb, getModel(), filePath );
 								getModel().getIndexFB();
 								getModel().setChanged(false);						
 								getModel().sortAlignGen();
@@ -629,7 +638,7 @@ public class SpinCADFrame extends JFrame {
 								// XXX debug
 								String spnPath  = prefs.get("MRUSpnFolder", "") + "/" + spcFileName + ".spn";
 
-								SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock().getProgramListing(1), spnPath.replace(".spcd.spn",  ".spn"));
+								SpinCADFile.fileSaveAsm(cb, SpinCADModel.getRenderBlock().getProgramListing(1), spnPath.replace(".spcd.spn",  ".spn"));
 
 								updateFrameTitle();
 								//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
@@ -680,7 +689,7 @@ public class SpinCADFrame extends JFrame {
 		}
 		if (n == JOptionPane.YES_OPTION) {
 			try {
-				SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
+				SpinCADFile.fileSave(cb, getModel(), fileToBeSaved.getPath());
 				spcFileName = fileToBeSaved.getName();
 				getModel().setChanged(false);
 				saveMRUFolder(fileToBeSaved.getPath());
@@ -689,7 +698,6 @@ public class SpinCADFrame extends JFrame {
 			}
 		}
 	}
-
 
 	public void fileSaveAsm() {
 		// Create a file chooser
@@ -722,7 +730,7 @@ public class SpinCADFrame extends JFrame {
 			} finally {
 			}
 			try {
-				SpinCADFile.fileSaveAsm(SpinCADModel.getRenderBlock()
+				SpinCADFile.fileSaveAsm(cb, SpinCADModel.getRenderBlock()
 						.getProgramListing(1), filePath);
 			} catch (IOException e) {
 				JOptionPane.showOptionDialog(null,
@@ -915,6 +923,50 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	// ======================================================================================================
+	class commentBlock {
+		String line1 = "Patch Name: " + spcFileName;
+		String line2 = "SpinCAD Designer version: " + buildNum ;
+		String line3 = "Pot 0 controls";
+		String line4 = "Pot 1 controls";
+		String line5 = "Pot 2 controls";
+
+		JFrame commentFrame = new JFrame("Patch Information");
+
+		JTextField line1text = new JTextField(line1, 64);
+		JTextField line2text = new JTextField(line2, 64);
+		JTextField line3text = new JTextField(line3, 64);
+		JTextField line4text = new JTextField(line4, 64);
+		JTextField line5text = new JTextField(line5, 64);
+		JTextField line6text = new JTextField("", 64);
+		JTextField line7text = new JTextField("", 64);
+
+		public commentBlock() {
+			commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
+
+			line1text.setEditable(false);
+			commentFrame.add(line1text);
+			line2text.setEditable(false);
+			commentFrame.add(line2text);
+			commentFrame.add(line3text);
+			commentFrame.add(line4text);
+			commentFrame.add(line5text);
+			commentFrame.add(line6text);
+			commentFrame.add(line7text);
+		}
+		
+		private void show() {
+			commentFrame.show();
+			commentFrame.setVisible(true);
+			commentFrame.setAlwaysOnTop(true);
+			commentFrame.pack();
+		}
+		
+		private void updateFileName() {
+			line1text.setText("Patch Name: " + spcFileName);
+		}
+	}
+
+	// ======================================================================================================
 	class simControlToolBar extends JToolBar implements ActionListener,
 	ChangeListener {
 
@@ -998,7 +1050,7 @@ public class SpinCADFrame extends JFrame {
 							e.printStackTrace();
 						}
 						String simDebugFileName = prefs.get("SIMULATOR_DEBUG_FILE", "");
-//						sim.setLoopMode(false);
+						//						sim.setLoopMode(false);
 					}
 
 					btnStartSimulation.setText("Stop Simulator");
@@ -1082,6 +1134,7 @@ public class SpinCADFrame extends JFrame {
 		}
 	}
 
+	// ======================================================================================================
 	// ================= used for the status toolbar and simulator start/stop
 	// button
 	public class ModelResourcesToolBar extends JToolBar implements
@@ -1094,8 +1147,8 @@ public class SpinCADFrame extends JFrame {
 		final JTextField ramp1Bar = new JTextField("RMP 1", 6);
 		final JTextField sine0Bar = new JTextField("SIN 0", 6);
 		final JTextField sine1Bar = new JTextField("SIN 1", 6);
-		
-		
+
+
 
 		class Task extends SwingWorker<Void, Void> {
 			/*
@@ -1164,9 +1217,9 @@ public class SpinCADFrame extends JFrame {
 			sine1Bar.setHorizontalAlignment(JTextField.CENTER);
 			sine1Bar.setBackground(Color.GREEN);
 			sine1Bar.setForeground(Color.BLUE);
-			
+
 			Dimension lfoBarDim = sine1Bar.getPreferredSize();
-	
+
 			ramp0Bar.setMaximumSize(lfoBarDim);
 			ramp1Bar.setMaximumSize(lfoBarDim);
 			sine0Bar.setMaximumSize(lfoBarDim);
@@ -1185,7 +1238,7 @@ public class SpinCADFrame extends JFrame {
 		/**
 		 * Invoked when the user presses the start button.
 		 */
-		
+
 		public void actionPerformed(ActionEvent evt) {
 			// progressBar.setIndeterminate(true);
 			int codeLength = getModel().sortAlignGen();
@@ -1253,7 +1306,7 @@ public class SpinCADFrame extends JFrame {
 				ramp1Bar.setBackground(Color.RED);
 				ramp1Bar.setForeground(Color.white);
 			}
-			
+
 			int sineLFO_0 = SpinCADModel.countLFOReferences("LoadSinLFO(0");
 			if(sineLFO_0 == 0) {
 				sine0Bar.setBackground(Color.GREEN);
@@ -1265,7 +1318,7 @@ public class SpinCADFrame extends JFrame {
 				sine0Bar.setBackground(Color.RED);
 				sine0Bar.setForeground(Color.white);
 			}
-			
+
 			int sineLFO_1 = SpinCADModel.countLFOReferences("LoadSinLFO(1");
 			if(sineLFO_1 == 0) {
 				sine1Bar.setBackground(Color.GREEN);

@@ -27,7 +27,7 @@
 @menuitem "RMS Lim/Exp" rms_lim_exp
 @menuitem "RMS Limiter" rms_limiter
 @menuitem "Soft Knee Limiter" soft_knee_limiter
-@menuitem "Slow Gear" slow_gear
+//@menuitem "Slow Gear" slow_gear
 
 @menu "Filters"
 //@menuitem "Bassman '59" BassmanEQ 
@@ -66,6 +66,7 @@
 //@menuitem "Quad Chorus" ChorusQuad 
 @menuitem "Flanger" Flanger 
 @menuitem "Mod Delay" ModDelay 
+@menuitem "Servo" servo
 @menuitem "Phaser" Phaser 
 @menuitem "Ring Modulator" RingMod 
 
@@ -78,12 +79,11 @@
 //@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 
 
-@menu "Guitar"
+//@menu "Guitar"
 //@menuitem "GA Chorus" ga_demo_chorus 
 //@menuitem "GA Echo Repeat" ga_demo_echo_repeat 
-@menuitem "GA Flanger" ga_demo_flanger 
-@menuitem "Ramp LFO Test" ramp_lfo_test
-@menuitem "Servo" servo
+//@menuitem "GA Flanger" ga_demo_flanger 
+//@menuitem "Ramp LFO Test" ramp_lfo_test
 //@menuitem "GA Phaser" ga_demo_phaser 
 //@menuitem "GA Vibrato" ga_demo_vibrato 
 //@menuitem "GA Wah" ga_demo_wah 
@@ -99,7 +99,7 @@
 @menuitem "Ramp LFO" RampLFO
 @menuitem "Oscillator" Oscillator
 @menuitem "Sample/Hold" SampleHold
-@menuitem "Pattern Gen" PatternGenerator
+//@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Power" PowerControl

@@ -89,11 +89,11 @@
 		class aliaserSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-				gCB.setinputGain((double) (inputGainSlider.getValue()/1000.0));
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1000.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == ripLevelSlider) {
-				gCB.setripLevel((double) (ripLevelSlider.getValue()/1000.0));
+			gCB.setripLevel((double) (ripLevelSlider.getValue()/1000.0));
 				updateripLevelLabel();
 			}
 			}
