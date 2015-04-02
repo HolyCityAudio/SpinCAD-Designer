@@ -250,7 +250,7 @@ public class SpinCADFrame extends JFrame {
 		});
 		mnNewMenu.add(mntmSaveAsm);
 
-		JMenuItem mntmInfo = new JMenuItem("Info");
+		JMenuItem mntmInfo = new JMenuItem("Information");
 		mntmInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				cb.show();
@@ -630,6 +630,7 @@ public class SpinCADFrame extends JFrame {
 							try {
 								String filePath = files[index].getPath();
 								model = SpinCADFile.fileRead(cb, getModel(), filePath );
+								//cb.line2text.setText()
 								getModel().getIndexFB();
 								getModel().setChanged(false);						
 								getModel().sortAlignGen();
@@ -763,7 +764,9 @@ public class SpinCADFrame extends JFrame {
 					}
 				}
 				spcFileName = "Untitled";
+				updateFrameTitle();
 				getModel().newModel();
+				cb.clearComments();
 				repaint();
 			}
 		});
@@ -924,11 +927,11 @@ public class SpinCADFrame extends JFrame {
 
 	// ======================================================================================================
 	class commentBlock {
-		String line1 = "Patch Name: " + spcFileName;
+		String line1 = "Patch: " + spcFileName;
 		String line2 = "SpinCAD Designer version: " + buildNum ;
-		String line3 = "Pot 0 controls";
-		String line4 = "Pot 1 controls";
-		String line5 = "Pot 2 controls";
+		String line3 = "Pot 0: ";
+		String line4 = "Pot 1: ";
+		String line5 = "Pot 2: ";
 
 		JFrame commentFrame = new JFrame("Patch Information");
 
@@ -955,14 +958,24 @@ public class SpinCADFrame extends JFrame {
 		}
 		
 		private void show() {
-			commentFrame.show();
 			commentFrame.setVisible(true);
 			commentFrame.setAlwaysOnTop(true);
 			commentFrame.pack();
+			commentFrame.setLocation(200, 150);
+			commentFrame.show();
 		}
 		
 		private void updateFileName() {
 			line1text.setText("Patch Name: " + spcFileName);
+		}
+		
+		private void clearComments() {
+			line1text.setText("Patch: untitled");
+			line3text.setText(line3);
+			line4text.setText(line4);
+			line5text.setText(line5);
+			line6text.setText("");
+			line7text.setText("");
 		}
 	}
 

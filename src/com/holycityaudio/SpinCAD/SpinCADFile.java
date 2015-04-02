@@ -40,8 +40,9 @@ public class SpinCADFile {
 		try { 
 			FileOutputStream fos = new FileOutputStream(fileName); 
 			ObjectOutputStream oos = new ObjectOutputStream(fos); 
-			oos.writeObject((Object)cb.line1text.getText());
-			oos.writeObject((Object)cb.line2text.getText());
+			// file name and SpinCAD Version are not saved with the file.
+			//oos.writeObject((Object)cb.line1text.getText());
+			//oos.writeObject((Object)cb.line2text.getText());
 			oos.writeObject((Object)cb.line3text.getText());
 			oos.writeObject((Object)cb.line4text.getText());
 			oos.writeObject((Object)cb.line5text.getText());
@@ -87,8 +88,9 @@ public class SpinCADFile {
 		// Object deserialization 
 		FileInputStream fis = new FileInputStream(fileName); 
 		ObjectInputStream ois = new ObjectInputStream(fis); 
-		cb.line1text.setText((String)ois.readObject());
-		cb.line2text.setText((String)ois.readObject());
+		cb.line1text.setText("Patch: " + fileName);
+		// line 2 is set back in SpinCAD Frame - it's the SpinCAD Designer version
+		// cb.line2text.setText((String)ois.readObject());
 		cb.line3text.setText((String)ois.readObject());
 		cb.line4text.setText((String)ois.readObject());
 		cb.line5text.setText((String)ois.readObject());
