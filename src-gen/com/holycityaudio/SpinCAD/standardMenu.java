@@ -4,11 +4,11 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.VolumeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1x2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer3_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer4_1CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.aliaser_02CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.CubeGainCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.DistortionCADBlock;
@@ -46,8 +46,16 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.PhaserCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RingModCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Pitch_shift_testCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_chorusCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_echo_repeatCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_flangerCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ramp_lfo_testCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_phaserCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_vibratoCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_wahCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
@@ -122,6 +130,15 @@
 	});
 	mn_io_mix.add(mntm_GainBoost);
 		
+	final JMenuItem mntm_crossfade = new JMenuItem("Crossfade");
+	mntm_crossfade.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new crossfadeCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_io_mix.add(mntm_crossfade);
+		
 	final JMenuItem mntm_Mixer_2_to_1 = new JMenuItem("2:1 Mixer");
 	mntm_Mixer_2_to_1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -157,15 +174,6 @@
 		}
 	});
 	mn_io_mix.add(mntm_Mixer4_1);
-		
-	final JMenuItem mntm_crossfade = new JMenuItem("Crossfade");
-	mntm_crossfade.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new crossfadeCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_io_mix.add(mntm_crossfade);
 		
 	JMenu mn_waveshaper = new JMenu("Wave Shaper");
 	menuBar.add(mn_waveshaper);
@@ -521,6 +529,15 @@
 	});
 	mn_pitch.add(mntm_PitchShiftFixed);
 		
+	final JMenuItem mntm_Pitch_shift_test = new JMenuItem("Pitch Shift Test");
+	mntm_Pitch_shift_test.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Pitch_shift_testCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_pitch.add(mntm_Pitch_shift_test);
+		
 	final JMenuItem mntm_pitchupdown = new JMenuItem("Pitch Up/Down");
 	mntm_pitchupdown.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -538,6 +555,72 @@
 		}
 	});
 	mn_pitch.add(mntm_pitchoffset);
+		
+	JMenu mn_guitar = new JMenu("Guitar");
+	menuBar.add(mn_guitar);
+	
+	final JMenuItem mntm_ga_demo_chorus = new JMenuItem("GA Chorus");
+	mntm_ga_demo_chorus.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ga_demo_chorusCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ga_demo_chorus);
+		
+	final JMenuItem mntm_ga_demo_echo_repeat = new JMenuItem("GA Echo Repeat");
+	mntm_ga_demo_echo_repeat.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ga_demo_echo_repeatCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ga_demo_echo_repeat);
+		
+	final JMenuItem mntm_ga_demo_flanger = new JMenuItem("GA Flanger");
+	mntm_ga_demo_flanger.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ga_demo_flangerCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ga_demo_flanger);
+		
+	final JMenuItem mntm_ramp_lfo_test = new JMenuItem("Ramp LFO Test");
+	mntm_ramp_lfo_test.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ramp_lfo_testCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ramp_lfo_test);
+		
+	final JMenuItem mntm_ga_demo_phaser = new JMenuItem("GA Phaser");
+	mntm_ga_demo_phaser.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ga_demo_phaserCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ga_demo_phaser);
+		
+	final JMenuItem mntm_ga_demo_vibrato = new JMenuItem("GA Vibrato");
+	mntm_ga_demo_vibrato.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ga_demo_vibratoCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ga_demo_vibrato);
+		
+	final JMenuItem mntm_ga_demo_wah = new JMenuItem("GA Wah");
+	mntm_ga_demo_wah.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ga_demo_wahCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_guitar.add(mntm_ga_demo_wah);
 		
 	JMenu mn_control = new JMenu("Control");
 	menuBar.add(mn_control);

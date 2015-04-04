@@ -96,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 905;
+	int buildNum = 907;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -962,6 +962,7 @@ public class SpinCADFrame extends JFrame {
 			commentFrame.setAlwaysOnTop(true);
 			commentFrame.pack();
 			commentFrame.setLocation(200, 150);
+			commentFrame.setResizable(false);
 			commentFrame.show();
 		}
 		

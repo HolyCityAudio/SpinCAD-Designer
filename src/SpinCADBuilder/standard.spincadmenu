@@ -5,11 +5,11 @@
 @menuitem "Output" Output 
 @menuitem "Volume" Volume
 @menuitem "Gain Boost" GainBoost
+@menuitem "Crossfade" crossfade
 @menuitem "2:1 Mixer" Mixer_2_to_1
 @menuitem "2:1 (x2) Mixer" Mixer2_1x2
 @menuitem "3:1 Mixer" Mixer3_1
 @menuitem "4:1 Mixer" Mixer4_1
-@menuitem "Crossfade" crossfade
 
 @menu "Wave Shaper" 
 @menuitem "Aliaser" aliaser_02 
@@ -73,20 +73,21 @@
 @menu "Pitch"
 //@menuitem "Pitch Test" PitchTest 
 @menuitem "Pitch Shift Fixed" PitchShiftFixed 
+@menuitem "Pitch Shift Test" Pitch_shift_test 
 // @menuitem "Pitch Up" PitchUp 
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Pitch Up/Down" pitchupdown 
 //@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 
 
-//@menu "Guitar"
-//@menuitem "GA Chorus" ga_demo_chorus 
-//@menuitem "GA Echo Repeat" ga_demo_echo_repeat 
-//@menuitem "GA Flanger" ga_demo_flanger 
-//@menuitem "Ramp LFO Test" ramp_lfo_test
-//@menuitem "GA Phaser" ga_demo_phaser 
-//@menuitem "GA Vibrato" ga_demo_vibrato 
-//@menuitem "GA Wah" ga_demo_wah 
+@menu "Guitar"
+@menuitem "GA Chorus" ga_demo_chorus 
+@menuitem "GA Echo Repeat" ga_demo_echo_repeat 
+@menuitem "GA Flanger" ga_demo_flanger 
+@menuitem "Ramp LFO Test" ramp_lfo_test
+@menuitem "GA Phaser" ga_demo_phaser 
+@menuitem "GA Vibrato" ga_demo_vibrato 
+@menuitem "GA Wah" ga_demo_wah 
 
 // @menu "Pots"
 

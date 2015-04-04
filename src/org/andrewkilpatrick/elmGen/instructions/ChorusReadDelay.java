@@ -86,11 +86,11 @@ public class ChorusReadDelay extends Instruction {
 				throw new IllegalArgumentException("rptr2 cannot be used for SIN LFOs");
 			}
 		}
-	// GSW added for integration with SpinCAD Designer
-	// there was also an issue here somewhere with LFO value
+		// GSW added for integration with SpinCAD Designer
+		// there was also an issue here somewhere with LFO value
 
 		readMode = new ChorusModeFlags().readMode(flags);
-		
+
 		if(addr < 0 || addr > 32767) {
 			throw new IllegalArgumentException("addr out of range: " + addr +
 					" - valid range: 0 - 32767");
@@ -98,7 +98,7 @@ public class ChorusReadDelay extends Instruction {
 		this.addr = addr;
 		tempReg = new Reg();
 	}
-	
+
 	@Override
 	public int getHexWord() {
 		int ret = 0x14;
@@ -147,7 +147,7 @@ public class ChorusReadDelay extends Instruction {
 				lfoval = state.getRampLFOVal(lfo - 2);
 			}
 			// GSW attempting to debug Ramp LFO
-			lfoPos = lfoval >> 14;
+			lfoPos = lfoval >> 10;
 		}
 
 
@@ -179,7 +179,7 @@ public class ChorusReadDelay extends Instruction {
 			tempReg.mult(xfade);
 			// XXX TODO debug GSW
 			if(Debug.DEBUG == true) {
-//				System.out.printf("xfade %d ", xfade);
+				//				System.out.printf("xfade %d ", xfade);
 			}
 			value = tempReg.getValue();
 			if(value != 0) {
@@ -190,33 +190,40 @@ public class ChorusReadDelay extends Instruction {
 		}
 		// GSW ok this part doesn't make much sense to me.  It is mutually exclusive with the "NA" parameter.
 		// however, how the heck do you expect to read anything in the "NA" mode unless you read something?
-		
+
 		// do delay offset lookup
 		else {
 			int delayPos = addr + lfoPos;
 			int inter = -1;
 			if(lfo == 0 || lfo == 1) {
 				inter = lfoval & 0xff;
+				// get the delay memory value and scale it by the interpolation amount
+				if(compc) {
+					tempReg.setValue(state.getDelayVal(delayPos));
+					tempReg.mult((255 - inter) << 5);
+					state.getACC().add(tempReg.getValue());
+				}
+				else {
+					tempReg.setValue(state.getDelayVal(delayPos));
+					tempReg.mult(inter << 5);
+					state.getACC().add(tempReg.getValue());
+				}	
 			}
-			// for RAMP LFOs, i think we need to do maxval - offset
+			// for RAMP LFOs, use bottom 14 (fractional) bits for inter-sample interpolation
 			else {
-				inter = ((lfoval & 0xffc0) >> 6) & 0xff;
+				inter = (lfoval & 0x3fff);
+				// get the delay memory value and scale it by the interpolation amount
+				if(compc) {
+					tempReg.setValue(state.getDelayVal(delayPos));
+					tempReg.mult((16383 - inter));
+					state.getACC().add(tempReg.getValue());
+				}
+				else {
+					tempReg.setValue(state.getDelayVal(delayPos));
+					tempReg.mult(inter);
+					state.getACC().add(tempReg.getValue());
+				}			
 			}
-//TODO debug GSW
-			if(Debug.DEBUG == true) {
-				System.out.printf("lfoVal: %d lfoPos: %d delayPos: %d inter: %d ", lfoval, lfoPos, delayPos, inter);
-			}
-			// get the delay memory value and scale it by the interpolation amount
-			if(compc) {
-				tempReg.setValue(state.getDelayVal(delayPos));
-				tempReg.mult((255 - inter) << 6);
-				state.getACC().add(tempReg.getValue());
-			}
-			else {
-				tempReg.setValue(state.getDelayVal(delayPos));
-				tempReg.mult(inter << 6);
-				state.getACC().add(tempReg.getValue());
-			}			
 		}
 	}
 }

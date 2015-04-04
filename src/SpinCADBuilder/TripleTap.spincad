@@ -22,6 +22,7 @@ equ delayLength 32767
 
 equ tap1Ratio 0.85 
 @sliderLabel tap1Ratio Tap_1_Time  0.0 1.0 0.85 1000.0 2  
+
 // tap 2 length in % (control panel value)
 equ tap2Ratio 0.60 
 @sliderLabel tap2Ratio Tap_2_Time 0.0 1.0 0.60 1000.0 2	

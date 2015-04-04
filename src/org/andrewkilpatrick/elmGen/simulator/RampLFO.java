@@ -60,12 +60,13 @@ public class RampLFO {
 //			System.out.printf("Ramp rate: %x\n", state.getRegVal(freqReg));
 		}
 		int freq = state.getRegVal(freqReg);
-		freq = freq >> 8;
+//		freq = freq >> 8;
 
 		if((freq & 0x80000) != 0) {
 			sign = -1;
 			freq = ~((-1 ^ 0x7FFFF) | freq) + 1;
 		}
+		
 		int regAmp = state.getRegVal(ampReg);
 		amp = AMP_4096;
 		if(regAmp == 0x03) {
@@ -80,6 +81,7 @@ public class RampLFO {
 // taking freq at full resolution for pointer increment
 		int increment = freq * sign; 
 		pos = (pos - increment) & amp;
+		//state.setRegVal(freqReg, pos);
 		
 		// divide windows into eighths
 		int eighthAmp = amp >> 3;

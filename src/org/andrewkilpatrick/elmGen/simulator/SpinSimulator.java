@@ -209,16 +209,10 @@ public class SpinSimulator extends Thread {
 	public void processSample() {
 // GSW changed this line to integrate into SpinCAD Designer
 		int codeLen = simList.size();	// this includes comments
-//		System.out.println("processing sample with: " + codeLen + " instructions");
-		if(Debug.DEBUG == true) {
-			System.out.println(" ");
-		}
 		state.resetPC();
 		while(state.getPC() < codeLen) {
 			Instruction inst = null;
 			inst = simList.get(state.getPC());
-			// GSW we're gonna update PACC right here
-//			state.getPACC().setValue(state.getACC().getValue());
 			inst.simulate(state);
 			state.incrementPC();
 		}

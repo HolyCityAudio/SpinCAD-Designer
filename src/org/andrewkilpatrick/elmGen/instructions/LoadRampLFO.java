@@ -91,8 +91,10 @@ public class LoadRampLFO extends Instruction {
 	
 	@Override
 	public void simulate(SimulatorState state) {
-		int regFreq = (freq & 0x7fff) << 8;
-		// if freq = 32767, then regFreq should be 0x7FFF00, but it seems to be something else
+		int regFreq = -1;
+		regFreq = freq;
+//		(freq & 0x7fff) << 8;
+		// XXX debug GSW
 		if(freq < 0) {
 			regFreq |= 0x800000l;
 		}

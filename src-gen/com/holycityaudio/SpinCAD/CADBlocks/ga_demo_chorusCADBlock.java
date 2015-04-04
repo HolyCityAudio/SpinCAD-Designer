@@ -205,6 +205,8 @@
 			sfxb.writeRegister(output1, 1);
 			sfxb.scaleOffset(1, -0.04);
 			sfxb.writeRegister(output2, 0);
+			this.getPin("Audio_Output_1").setRegister(output1);
+			this.getPin("Audio_Output_2").setRegister(output2);
 			}
 			
 

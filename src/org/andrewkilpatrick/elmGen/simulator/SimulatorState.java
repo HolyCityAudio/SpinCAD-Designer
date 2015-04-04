@@ -84,22 +84,12 @@ public class SimulatorState {
 	 */
 	public void sampleIncrement() {
 		firstRun = false;
-		// GSW this looks a bit suspicious here,  
-		// changed wraparound point to -32768, doesn't seem to 
-		// change anything but I like it better.
 		delayp--;
 		if(delayp == -32768) {
 			delayp = 0;
 		}
-		// I don't think the following statement belongs here.  It belongs
-		// before each instruction getting executed.
 		pacc.setValue(acc.getValue());
-		// XXX debug GSW, trying to figure out WRLX and WRHX
-//		System.out.println("PACC = " + pacc.getValue());
-//		System.out.println("ACC = " + acc.getValue());
-		// hum is it this?  ACC doesn't automatically clear...
 		acc.clear();
-//		System.out.println("ACC (cleared) = " + acc.getValue());
 		for(int i = 0; i < sinLFO.length; i ++) {
 			sinLFO[i].increment();
 		}
@@ -170,9 +160,6 @@ public class SimulatorState {
 		int index = (offset + delayp) & 0x7fff;
 		int val = (int)DelayCompressor.decompress(delay[index]);
 
-		if(Debug.DEBUG == true) {
-			System.out.printf("Get: %d ", index);
-		}
 		lr.setValue(val);
 		return val;
 	}
@@ -184,9 +171,6 @@ public class SimulatorState {
 //		delay[(offset + delayp) & 0x7fff] = value;  // use this line to bypass the compressor	
 		int index = (offset + delayp) & 0x7fff;
 
-		if(Debug.DEBUG == true) {
-			System.out.printf("Set: %d ", index);
-		}
 		delay[index] = (int)DelayCompressor.compress(value);		
 	}
 

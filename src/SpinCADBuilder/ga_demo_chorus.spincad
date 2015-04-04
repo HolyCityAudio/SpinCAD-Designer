@@ -160,4 +160,7 @@ sof	1,0.02
 wrax	output1,1
 sof	1,-0.04
 wrax	output2,0
+@setOutputPin  Audio_Output_1 output1
+@setOutputPin  Audio_Output_2 output2
+
 @endif
