@@ -28,23 +28,7 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * 
  * @author andrew
  */
-public class ChorusReadDelay extends Instruction {
-	final int lfo;
-	final int flags;
-	final int addr;
-	int xfade;
-	Reg tempReg;
-	// simulator stuff
-	boolean cos = false;
-	boolean compc = false;
-	boolean compa = false;
-	boolean rptr2 = false;
-	boolean na = false;
-	// GSW added for integration with SpinCAD Designer
-	// don't exactly remember why
-
-	String readMode = "";
-
+public class ChorusReadDelay extends ChorusInstruction {
 
 	/**
 	 * Read delay RAM based on chorus position.
@@ -54,42 +38,9 @@ public class ChorusReadDelay extends Instruction {
 	 * @param addr the address in delay memory (0-32767)
 	 */
 	public ChorusReadDelay(int lfo, int flags, int addr) {
-		if(lfo < 0 || lfo > 3) {
-			throw new IllegalArgumentException("lfo out of range: " + lfo +
-					" - valid values: 0, 1, 2 or 3 (SIN0, SIN1, RMP0 or RMP1)");
-		}
-		this.lfo = lfo;
-		this.flags = (flags & 0x3f);
-		// GSW I changed the names of the constants to be consistent
-		// with Spin ASM, too confusing otherwise
-		if((flags & ElmProgram.COS) != 0) {
-			cos = true;
-			if(lfo == 2 || lfo == 3) {
-				throw new IllegalArgumentException("cos cannot be used for RAMP LFOs");
-			}
-		}
-		if ((flags & ElmProgram.NA) != 0){
-			na = true;
-			if(lfo == 0 || lfo == 1) {
-				throw new IllegalArgumentException("na cannot be used for SIN LFOs");
-			}
-		}
-		if ((flags & ElmProgram.COMPA) != 0){
-			compa = true;
-		}
-		if ((flags & ElmProgram.COMPC) != 0){
-			compc = true;
-		}
-		if ((flags & ElmProgram.RPTR2) != 0){
-			rptr2 = true;
-			if(lfo == 0 || lfo == 1) {
-				throw new IllegalArgumentException("rptr2 cannot be used for SIN LFOs");
-			}
-		}
+		SetFlags(lfo, flags);
 		// GSW added for integration with SpinCAD Designer
 		// there was also an issue here somewhere with LFO value
-
-		readMode = new ChorusModeFlags().readMode(flags);
 
 		if(addr < 0 || addr > 32767) {
 			throw new IllegalArgumentException("addr out of range: " + addr +
@@ -124,48 +75,7 @@ public class ChorusReadDelay extends Instruction {
 	@Override
 	public void simulate(SimulatorState state) {
 		// XXX - finish/test ChorusReadDelay simulation
-		int lfoval = 0;
-		int lfoPos = 0;
-		// SIN LFOs
-		if(lfo == 0 || lfo == 1) {
-			if(cos) {
-				lfoval = state.getSinLFOVal(2 + lfo);
-			}
-			else {
-				lfoval = state.getSinLFOVal(lfo);
-			}
-			// GSW attempting to debug SIN LFO
-			lfoPos = lfoval >> 8;
-		}
-		// RAMP LFOs
-		else if(lfo == 2 || lfo == 3) {
-			// do the ramp pointer magic
-			if(rptr2) {
-				lfoval = state.getRampLFORptr2Val(lfo - 2);
-			}
-			else {
-				lfoval = state.getRampLFOVal(lfo - 2);
-			}
-			// GSW attempting to debug Ramp LFO
-			lfoPos = lfoval >> 10;
-		}
-
-
-		// TODO debug!!!! GSW
-		//		if(lfo == 2 && !rptr2)
-		//			System.out.println("LFOPos " + lfo + " = " + lfoPos);
-
-		// possibly invert the waveform
-		if(compa) { 
-			// for SIN LFOs, just flip the wave over
-			if(lfo == 0 || lfo == 1) {
-				lfoPos = -lfoPos; 
-			}
-			// for RAMP LFOs, i think we need to do maxval - offset
-			else {
-				lfoPos = state.getRampLFOAmp(lfo - 2) - lfoPos;
-			}
-		}
+		lfoPrepare(state);
 
 		// do crossfading only = GSW this is oversimplified but might work for simulation
 		if(na) {
@@ -181,7 +91,7 @@ public class ChorusReadDelay extends Instruction {
 			if(Debug.DEBUG == true) {
 				//				System.out.printf("xfade %d ", xfade);
 			}
-			value = tempReg.getValue();
+			//value = tempReg.getValue();
 			if(value != 0) {
 				@SuppressWarnings("unused")
 				int iopl = 345;

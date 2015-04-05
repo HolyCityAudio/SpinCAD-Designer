@@ -27,16 +27,8 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * 
  * @author andrew
  */
-public class ChorusScaleOffset extends Instruction {
-	final int lfo;
-	final int flags;
+public class ChorusScaleOffset extends ChorusInstruction {
 	final double offset;
-	private boolean cos;
-	private boolean compc;
-	private boolean compa;
-	// GSW added for integration with SpinCAD Designer
-
-	String readMode = "";
 	
 	/**
 	 * Scale offset based on LFO position.
@@ -45,29 +37,8 @@ public class ChorusScaleOffset extends Instruction {
 	 * @param flags the flags OR'd together
 	 */
 	public ChorusScaleOffset(int lfo, int flags, double offset) {
-		if(lfo < 0 || lfo > 3) {
-			throw new IllegalArgumentException("lfo out of range: " + lfo +
-					" - valid values: 0, 1, 2 or 3 (SIN0, SIN1, RMP0 or RMP1)");
-		}
-		this.lfo = lfo;
-		this.flags = (flags & 0x3f);	
-	// GSW changed the names of LFO constants to be consistent with
-	// Spin ASM, less confusing that way
+		SetFlags(lfo, flags);
 
-		if((flags & ElmProgram.COS) != 0) {
-			cos = true;
-			if(lfo == 2 || lfo == 2) {
-				throw new IllegalArgumentException("cos cannot be used for SIN LFOs");
-			}
-		}
-		if((flags & ElmProgram.COMPC) != 0) {
-			compc = true;
-		}
-		if((flags & ElmProgram.COMPA) != 0) {
-			compa = true;
-		}
-	// GSW added for integration with SpinCAD Designer
-		readMode = new ChorusModeFlags().readMode(flags);
 		checkS15(offset);
 		this.offset = offset;
 	}
@@ -99,34 +70,7 @@ public class ChorusScaleOffset extends Instruction {
 	@Override
 	public void simulate(SimulatorState state) {
 		// XXX - finish/test ChorusScaleOffset simulation
-		int lfoval = 0;
-		// SIN LFOs
-		if(lfo == 0 || lfo == 1) {
-			if(cos) {
-				lfoval = state.getSinLFOVal(2 + lfo);
-			}
-			else {
-				lfoval = state.getSinLFOVal(lfo);
-			}
-		}
-		// RAMP LFOs
-		else if(lfo == 2 || lfo == 3) {
-			lfoval = state.getRampLFOVal(lfo - 2);
-		}
-
-		int lfoPos = lfoval;
-		
-		// possibly invert the waveform - is this also where compc goes?
-		if(compa || compc) {
-			// for SIN LFOs, just flip the wave over
-			if(lfo == 0 || lfo == 1) {
-				lfoPos = -lfoPos;
-			}
-			// for RAMP LFOs, i think we need to do maxval - offset
-			else {
-				lfoPos = state.getRampLFOAmp(lfo - 2) - lfoPos;
-			}
-		}
+		lfoPrepare(state);
 
 		double scale = Util.regToDouble(lfoPos);
 		state.getACC().scale(scale);

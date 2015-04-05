@@ -51,22 +51,22 @@ public class RampLFO {
 			throw new IllegalArgumentException("Ramp LFO: bad unit: " + unit);
 		}
 	}
-// GSW trying to debug Ramp LFO
-// up to now I can tell you I have not been successful!
-// well, making sure the sign was used sure helps!!!
+	// GSW trying to debug Ramp LFO
+	// up to now I can tell you I have not been successful!
+	// well, making sure the sign was used sure helps!!!
 	public void increment() {
 		int sign = 1;
 		if(unit == 0) {
-//			System.out.printf("Ramp rate: %x\n", state.getRegVal(freqReg));
+			//			System.out.printf("Ramp rate: %x\n", state.getRegVal(freqReg));
 		}
 		int freq = state.getRegVal(freqReg);
-//		freq = freq >> 8;
+		//		freq = freq >> 8;
 
 		if((freq & 0x80000) != 0) {
 			sign = -1;
 			freq = ~((-1 ^ 0x7FFFF) | freq) + 1;
 		}
-		
+
 		int regAmp = state.getRegVal(ampReg);
 		amp = AMP_4096;
 		if(regAmp == 0x03) {
@@ -78,11 +78,11 @@ public class RampLFO {
 		else if(regAmp == 0x01) {
 			amp = AMP_2048;
 		}
-// taking freq at full resolution for pointer increment
+		// taking freq at full resolution for pointer increment
 		int increment = freq * sign; 
 		pos = (pos - increment) & amp;
 		//state.setRegVal(freqReg, pos);
-		
+
 		// divide windows into eighths
 		int eighthAmp = amp >> 3;
 		// need to get the frequency setting
@@ -95,10 +95,13 @@ public class RampLFO {
 			xfade += 1;
 		}
 		else if (pos > eighthAmp * 3) {
-			 xfade = xfade;
+			xfade = xfade * 1;
 		}
 		else if ((pos > eighthAmp * 1) && (xfade > 0)) {
 			xfade -= 1;
+		}
+		else {
+			xfade = 0;
 		}
 	}
 
@@ -108,20 +111,21 @@ public class RampLFO {
 
 	public int getValue() {
 		// shift right 4 places before returning value
-				return (pos >> 4);
-			}
-	
+		return (pos >> 4);
+	}
+
 	public int getXfade() {
 		// correction factor = (freq/RAMP_MAX) * some constant
 		// looks like xfade * freq might be too big for an int, hmmm trying a long
 		// yes a long for xfade internally does help.
 		// with RAMP_AMP = 4096, >> 18 gives xfade = 16384 max, which appears to give
 		// full amplitude output in the simulator window.
-				return (int) ((xfade * state.getRegVal(freqReg)) >> 18);
-			}
+		//		return (int) ((xfade * state.getRegVal(freqReg)) >> 15);
+		return (int) (xfade * 2);
+	}
 
 	public int getRptr2Value() {
-// shift right 4 places before returning value
+		// shift right 4 places before returning value
 		return ((pos + (amp >> 1)) & amp) >> 4;
 	}
 
