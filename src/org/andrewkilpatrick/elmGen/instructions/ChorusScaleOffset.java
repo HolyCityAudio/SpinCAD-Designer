@@ -70,10 +70,16 @@ public class ChorusScaleOffset extends ChorusInstruction {
 	@Override
 	public void simulate(SimulatorState state) {
 		// XXX - finish/test ChorusScaleOffset simulation
+		int fadeVal = 0;
 		lfoPrepare(state);
+		if(na) {
+			fadeVal = (int) state.getRampXfadeVal(lfo - 2);
+			if(compc) {
+				fadeVal = 16384 - fadeVal;
+			}
+		}
 
-		double scale = Util.regToDouble(lfoPos);
-		state.getACC().scale(scale);
+		state.getACC().mult(fadeVal);
 		state.getACC().add(offset);		
 	}
 }

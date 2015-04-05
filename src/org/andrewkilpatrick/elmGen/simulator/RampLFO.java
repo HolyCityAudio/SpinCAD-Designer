@@ -35,6 +35,8 @@ public class RampLFO {
 	int pos = 0;
 	int amp = 0;
 	long xfade = 0;
+	int xFadeScale = 1;
+	long xFadeMax = 0;
 
 	public RampLFO(SimulatorState state, int unit) {
 		this.state = state;
@@ -69,14 +71,19 @@ public class RampLFO {
 
 		int regAmp = state.getRegVal(ampReg);
 		amp = AMP_4096;
+		xFadeScale = 8;
+		
 		if(regAmp == 0x03) {
 			amp = AMP_512;
+			xFadeScale = 64;
 		}
 		else if(regAmp == 0x02) {
 			amp = AMP_1024;
+			xFadeScale = 32;
 		}
 		else if(regAmp == 0x01) {
 			amp = AMP_2048;
+			xFadeScale = 16;
 		}
 		// taking freq at full resolution for pointer increment
 		int increment = freq * sign; 
@@ -85,9 +92,7 @@ public class RampLFO {
 
 		// divide windows into eighths
 		int eighthAmp = amp >> 3;
-		// need to get the frequency setting
-		// int xfadeIncrement = frequency;
-		// LFO pos is low resolution counter
+		
 		if(pos > eighthAmp * 7) {
 			xfade = 0;
 		}
@@ -114,19 +119,13 @@ public class RampLFO {
 		return (pos >> 4);
 	}
 
-	public int getXfade() {
-		// correction factor = (freq/RAMP_MAX) * some constant
-		// looks like xfade * freq might be too big for an int, hmmm trying a long
-		// yes a long for xfade internally does help.
-		// with RAMP_AMP = 4096, >> 18 gives xfade = 16384 max, which appears to give
-		// full amplitude output in the simulator window.
-		//		return (int) ((xfade * state.getRegVal(freqReg)) >> 15);
-		return (int) (xfade * 2);
-	}
-
 	public int getRptr2Value() {
 		// shift right 4 places before returning value
 		return ((pos + (amp >> 1)) & amp) >> 4;
+	}
+
+	public int getXfade() {
+		return (int) (xfade * xFadeScale);
 	}
 
 	public int getAmp() {

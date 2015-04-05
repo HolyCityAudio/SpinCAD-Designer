@@ -20,12 +20,10 @@ package org.andrewkilpatrick.elmGen.instructions;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.simulator.Reg;
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
-import org.andrewkilpatrick.elmGen.util.Util;
-
 
 /**
  * This class represents the parent class of the CHO SOF and CHO RDA instructions.
- * Because they share a lot of code!
+ * Because they share a lot of code!  Added by GSW
  * @author andrew
  * 
  */
@@ -72,9 +70,16 @@ public class ChorusInstruction extends Instruction {
 		if((flags & ElmProgram.COMPC) != 0) {
 			compc = true;
 		}
+		if((flags & ElmProgram.NA) != 0) {
+			na = true;
+		}
 		if((flags & ElmProgram.COMPA) != 0) {
 			compa = true;
 		}
+		if((flags & ElmProgram.RPTR2) != 0) {
+			rptr2 = true;
+		}
+
 		// GSW added for integration with SpinCAD Designer
 		readMode = new ChorusModeFlags().readMode(flags);
 	}

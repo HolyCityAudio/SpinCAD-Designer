@@ -79,28 +79,21 @@ public class ChorusReadDelay extends ChorusInstruction {
 
 		// do crossfading only = GSW this is oversimplified but might work for simulation
 		if(na) {
-			xfade = state.getRampXfadeVal(lfo - 2);
+			int fadeVal = state.getRampXfadeVal(lfo - 2);
 			// do the crossfade
 			// GSW gonna try this, to get a value from delay RAM
 			int delayPos = addr + lfoPos;
 
 			tempReg.setValue(state.getDelayVal(delayPos));
 			int value = tempReg.getValue();
-			tempReg.mult(xfade);
-			// XXX TODO debug GSW
-			if(Debug.DEBUG == true) {
-				//				System.out.printf("xfade %d ", xfade);
-			}
-			//value = tempReg.getValue();
+			tempReg.mult(fadeVal);
+			value = tempReg.getValue();
 			if(value != 0) {
 				@SuppressWarnings("unused")
 				int iopl = 345;
 			}
 			state.getACC().add(value);
 		}
-		// GSW ok this part doesn't make much sense to me.  It is mutually exclusive with the "NA" parameter.
-		// however, how the heck do you expect to read anything in the "NA" mode unless you read something?
-
 		// do delay offset lookup
 		else {
 			int delayPos = addr + lfoPos;
