@@ -80,9 +80,12 @@ public class ChorusReadDelay extends ChorusInstruction {
 		// do crossfading only = GSW this is oversimplified but might work for simulation
 		if(na) {
 			int fadeVal = state.getRampXfadeVal(lfo - 2);
+			if(fadeVal != 0) {
+				@SuppressWarnings("unused")
+				int iopl = 346;
+			}
 			// do the crossfade
-			// GSW gonna try this, to get a value from delay RAM
-			int delayPos = addr + lfoPos;
+			int delayPos = addr;
 
 			tempReg.setValue(state.getDelayVal(delayPos));
 			int value = tempReg.getValue();

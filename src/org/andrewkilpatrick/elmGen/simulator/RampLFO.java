@@ -23,10 +23,10 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 // left 4 places so that freq can be rendered in full resolution.
 
 public class RampLFO {
-	public static final int AMP_4096 = 0x3ffffff;
-	public static final int AMP_2048 = 0x1ffffff;
-	public static final int AMP_1024 = 0x0ffffff;
-	public static final int AMP_512 =  0x07fffff;
+	public static final int AMP_4096 = 0x1ffffff;
+	public static final int AMP_2048 = 0x0ffffff;
+	public static final int AMP_1024 = 0x07fffff;
+	public static final int AMP_512 =  0x03fffff;
 
 	final SimulatorState state;
 	final int unit;
@@ -58,11 +58,7 @@ public class RampLFO {
 	// well, making sure the sign was used sure helps!!!
 	public void increment() {
 		int sign = 1;
-		if(unit == 0) {
-			//			System.out.printf("Ramp rate: %x\n", state.getRegVal(freqReg));
-		}
 		int freq = state.getRegVal(freqReg);
-		//		freq = freq >> 8;
 
 		if((freq & 0x80000) != 0) {
 			sign = -1;
@@ -70,20 +66,21 @@ public class RampLFO {
 		}
 
 		int regAmp = state.getRegVal(ampReg);
+		// default values
 		amp = AMP_4096;
-		xFadeScale = 8;
+		xFadeScale = 16;
 		
 		if(regAmp == 0x03) {
 			amp = AMP_512;
-			xFadeScale = 64;
+			xFadeScale = 128;
 		}
 		else if(regAmp == 0x02) {
 			amp = AMP_1024;
-			xFadeScale = 32;
+			xFadeScale = 64;
 		}
 		else if(regAmp == 0x01) {
 			amp = AMP_2048;
-			xFadeScale = 16;
+			xFadeScale = 32;
 		}
 		// taking freq at full resolution for pointer increment
 		int increment = freq * sign; 

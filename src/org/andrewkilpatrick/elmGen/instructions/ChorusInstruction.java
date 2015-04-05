@@ -106,14 +106,10 @@ public class ChorusInstruction extends Instruction {
 				lfoval = state.getRampLFOVal(lfo - 2);
 			}
 			// GSW attempting to debug Ramp LFO
-			lfoPos = lfoval >> 10;
+			lfoPos = lfoval >> 9;
 		}
 
-		// TODO debug!!!! GSW
-		//		if(lfo == 2 && !rptr2)
-		//			System.out.println("LFOPos " + lfo + " = " + lfoPos);
-
-		// possibly invert the waveform
+		// invert the waveform for COMPA
 		if(compa) { 
 			// for SIN LFOs, just flip the wave over
 			if(lfo == 0 || lfo == 1) {
@@ -128,19 +124,15 @@ public class ChorusInstruction extends Instruction {
 
 	@Override
 	public int getHexWord() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public String getInstructionString() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void simulate(SimulatorState state) {
-		// TODO Auto-generated method stub
-
 	}
 }
