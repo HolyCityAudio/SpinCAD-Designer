@@ -256,6 +256,7 @@
 			sfxb.FXreadDelay("del1+", (int)(2093 * 1.0), 1.1);
 			sfxb.FXreadDelay("del4+", (int)(1234 * 1.0), 1.1);
 			sfxb.writeRegister(revout, 1);
+			sfxb.FXwriteDelay("delayl", 0, 0);
 			sfxb.FXchorusReadDelay(RMP0, REG|COMPC, "delayl", 0);
 			sfxb.FXchorusReadDelay(RMP0, 0, "delayl+", 1);
 			sfxb.FXwriteDelay("temp1", 0, 0);

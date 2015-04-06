@@ -1,17 +1,20 @@
 @name Pitch_Test
 @audioInput input Input
 @audioOutput pitch Pitch_Out
+@audioOutput pitch1 Pitch_1_Out
+@audioOutput pitch2 Pitch_2_Out
+@audioOutput pitch3 Pitch_3_Out
 
 equ pitchCoeff 8192 
 // variable - Name - low - high - multiplier - precision - option 
-@sliderLabel pitchCoeff Pitch_Coefficient 0 16384 8192 1.0 0  
+@sliderLabel pitchCoeff Pitch_Coefficient -8192 32767 8192 1.0 0  
 
 
 @isPinConnected Input
 equ pitch reg0
-equ phase1 reg2
-equ phase2 reg3
-equ tempR reg4
+equ pitch1 reg2
+equ pitch2 reg3
+equ pitch3 reg4
 
 // establish the base address for this module
 @getBaseAddress
@@ -27,14 +30,20 @@ wra delayd,0
 			
 cho rda,RMP0,REG|COMPC,delayd 
 cho rda,RMP0,0,delayd+ 1 
+wrax pitch3,1 
 wra temp,0 
 cho rda,RMP0,RPTR2|COMPC,delayd 
-cho rda,RMP0,RPTR2,delayd+ 1 
+cho rda,RMP0,RPTR2,delayd+ 1
+wrax pitch1,1 
 cho sof,RMP0,NA|COMPC,0
+wrax pitch2, 0
 cho rda,RMP0,NA,temp
 wrax pitch,0
 
 @setOutputPin Pitch_Out pitch
+@setOutputPin Pitch_1_Out pitch1 
+@setOutputPin Pitch_2_Out pitch2 
+@setOutputPin Pitch_3_Out pitch3 
 
 @endif
 

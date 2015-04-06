@@ -32,7 +32,7 @@ public class RampLFO {
 	final int unit;
 	final int freqReg;
 	final int ampReg;
-	
+
 	int pos = 0;
 	int amp = 0;
 	long xfade = 0;
@@ -71,7 +71,7 @@ public class RampLFO {
 		// default values
 		amp = AMP_4096;
 		xFadeScale = 16;
-		
+
 		if(regAmp == 0x03) {
 			amp = AMP_512;
 			xFadeScale = 128;
@@ -90,21 +90,40 @@ public class RampLFO {
 
 		// divide windows into eighths
 		int eighthAmp = amp >> 3;
-		
-		if(pos > eighthAmp * 7) {
-			xfade = 0;
+
+		if(sign == 1) {
+			if(pos > eighthAmp * 7) {
+				xfade = 0;
+			}
+			else if (pos > eighthAmp * 5) {
+				xfade += increment;
+			}
+			else if (pos > eighthAmp * 3) {
+				xfade = xfade * 1;
+			}
+			else if ((pos > eighthAmp * 1) && (xfade > 0)) {
+				xfade -= increment;
+			}
+			else {
+				xfade = 0;
+			}
 		}
-		else if (pos > eighthAmp * 5) {
-			xfade += increment;
-		}
-		else if (pos > eighthAmp * 3) {
-			xfade = xfade * 1;
-		}
-		else if ((pos > eighthAmp * 1) && (xfade > 0)) {
-			xfade -= increment;
-		}
-		else {
-			xfade = 0;
+		if(sign == -1) {
+			if(pos > eighthAmp * 7) {
+				xfade = 0;
+			}
+			else if (pos > eighthAmp * 5) {
+				xfade += increment;
+			}
+			else if (pos > eighthAmp * 3) {
+				xfade = xfade * 1;
+			}
+			else if ((pos > eighthAmp * 1)) {
+				xfade -= increment;
+			}
+			else {
+				xfade = 0;
+			}
 		}
 		if(xFadeMax < xfade) {
 			xFadeMax = xfade;

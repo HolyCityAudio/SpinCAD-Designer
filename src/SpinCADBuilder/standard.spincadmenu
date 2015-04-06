@@ -57,8 +57,8 @@
 //@menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
 //@menuitem "Plate Reverb" reverb_plate 
-@menuitem "Adjustable Reverb" reverb 
-// @menuitem "Shimmer Reverb" shimmer_verb 
+@menuitem "Adjustable Reverb" reverb
+@menuitem "Shimmer Reverb" shimmer_verb 
 // @menuitem "Reverb Filter" reverbFilter 
 
 @menu "Modulation"  

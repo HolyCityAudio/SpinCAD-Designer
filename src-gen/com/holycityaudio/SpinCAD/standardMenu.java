@@ -39,6 +39,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.shimmer_verbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ModDelayCADBlock;
@@ -459,6 +460,15 @@
 		}
 	});
 	mn_reverb.add(mntm_reverb);
+		
+	final JMenuItem mntm_shimmer_verb = new JMenuItem("Shimmer Reverb");
+	mntm_shimmer_verb.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new shimmer_verbCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_shimmer_verb);
 		
 	JMenu mn_modulation = new JMenu("Modulation");
 	menuBar.add(mn_modulation);

@@ -214,6 +214,8 @@ wrax   revout,      1   ;Write to revout register, keep in ACC for pitch shiftin
 
 ;PITCH SHIFT +1 OCTAVE 
 
+wra delayl, 0
+
 cho rda,   RMP0,   REG|COMPC,   delayl 
 cho rda,   RMP0,   0,   delayl+1 
 wra   temp1,   0 
