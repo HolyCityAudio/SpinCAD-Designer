@@ -24,19 +24,21 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 
 public class RampLFO {
 	public static final int AMP_4096 = 0x1ffffff;
-	public static final int AMP_2048 = 0x0ffffff;
-	public static final int AMP_1024 = 0x07fffff;
-	public static final int AMP_512 =  0x03fffff;
+	public static final int AMP_2048 = 0x07ffffff;
+	public static final int AMP_1024 = 0x03fffff;
+	public static final int AMP_512 =  0x01fffff;
 
 	final SimulatorState state;
 	final int unit;
 	final int freqReg;
 	final int ampReg;
+	
 	int pos = 0;
 	int amp = 0;
 	long xfade = 0;
 	int xFadeScale = 1;
 	long xFadeMax = 0;
+	long xFadeMin = 16384;
 
 	public RampLFO(SimulatorState state, int unit) {
 		this.state = state;
@@ -58,7 +60,7 @@ public class RampLFO {
 	// well, making sure the sign was used sure helps!!!
 	public void increment() {
 		int sign = 1;
-		int freq = state.getRegVal(freqReg);
+		int freq = state.getRegVal(freqReg) >> 1;
 
 		if((freq & 0x80000) != 0) {
 			sign = -1;
@@ -85,7 +87,6 @@ public class RampLFO {
 		// taking freq at full resolution for pointer increment
 		int increment = freq * sign; 
 		pos = (pos - increment) & amp;
-		//state.setRegVal(freqReg, pos);
 
 		// divide windows into eighths
 		int eighthAmp = amp >> 3;
@@ -94,16 +95,22 @@ public class RampLFO {
 			xfade = 0;
 		}
 		else if (pos > eighthAmp * 5) {
-			xfade += 1;
+			xfade += increment;
 		}
 		else if (pos > eighthAmp * 3) {
 			xfade = xfade * 1;
 		}
 		else if ((pos > eighthAmp * 1) && (xfade > 0)) {
-			xfade -= 1;
+			xfade -= increment;
 		}
 		else {
 			xfade = 0;
+		}
+		if(xFadeMax < xfade) {
+			xFadeMax = xfade;
+		}
+		if(xFadeMin > xfade) {
+			xFadeMin = xfade;
 		}
 	}
 
@@ -122,7 +129,7 @@ public class RampLFO {
 	}
 
 	public int getXfade() {
-		return (int) (xfade * xFadeScale);
+		return (int) (xfade * xFadeScale)/8192;
 	}
 
 	public int getAmp() {
