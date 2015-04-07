@@ -19,14 +19,14 @@ package org.andrewkilpatrick.elmGen.simulator;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
-// GSW I am taking AK's ramp max values and shifting them 
-// left 4 places so that freq can be rendered in full resolution.
+// GSW I would like to revisit resolution and rounding and clipping and 
+// number of bits used where
 
 public class RampLFO {
 	public static final int AMP_4096 = 0x1ffffff;
-	public static final int AMP_2048 = 0x07ffffff;
-	public static final int AMP_1024 = 0x03fffff;
-	public static final int AMP_512 =  0x01fffff;
+	public static final int AMP_2048 = 0x0ffffff;
+	public static final int AMP_1024 = 0x07fffff;
+	public static final int AMP_512 =  0x03fffff;
 
 	final SimulatorState state;
 	final int unit;

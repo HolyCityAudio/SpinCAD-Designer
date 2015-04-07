@@ -9,6 +9,27 @@ equ pitchCoeff 8192
 // variable - Name - low - high - multiplier - precision - option 
 @sliderLabel pitchCoeff Pitch_Coefficient -8192 32767 8192 1.0 0  
 
+equ lfoWidth 0
+@comboBox lfoWidth '4096' '2048' '1024' '512'
+
+equ length 1
+
+@isEqualTo lfoWidth 0
+@equals length 4096
+@endif
+
+@isEqualTo lfoWidth 1
+@equals length 2048
+@endif
+
+@isEqualTo lfoWidth 2
+@equals length 1024
+@endif
+
+@isEqualTo lfoWidth 3
+@equals length 512
+@endif
+
 
 @isPinConnected Input
 equ pitch reg0
@@ -19,11 +40,11 @@ equ pitch3 reg4
 // establish the base address for this module
 @getBaseAddress
 // then allocate memory
-mem delayd 4096
+mem delayd length
 mem temp 1 
 
 skp run, START 
-wldr 0,pitchCoeff,4096 
+wldr 0,pitchCoeff, length 
 START: 
 ldax input
 wra delayd,0

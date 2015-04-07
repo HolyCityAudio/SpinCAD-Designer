@@ -135,12 +135,12 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 			//cho rda,RMP0,REG|COMPC,delayd 
 			sfxb.FXchorusReadDelay(lfoFlag, REG | COMPC, "delayd", 0);
 			if(Debug.DEBUG== true) {
-				sfxb.writeRegister(chordadelayd, 1.0);
+				sfxb.writeRegister(chordadelayd, 0.0);
 			}
 			//cho rda,RMP0,,delayd+1 
 			sfxb.FXchorusReadDelay(lfoFlag, 0, "delayd+", 1);
 			if(Debug.DEBUG== true) {
-				sfxb.writeRegister(chordadelaydplusone, 1.0);
+				sfxb.writeRegister(chordadelaydplusone, 0.0);
 			}			
 			// wra temp,0 
 			sfxb.FXwriteDelay("temp", 0, 0.0);

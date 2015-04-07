@@ -58,7 +58,7 @@
 @menuitem "ROM Reverb 2" rom_rev2 
 //@menuitem "Plate Reverb" reverb_plate 
 @menuitem "Adjustable Reverb" reverb
-@menuitem "Shimmer Reverb" shimmer_verb 
+//@menuitem "Shimmer Reverb" shimmer_verb 
 // @menuitem "Reverb Filter" reverbFilter 
 
 @menu "Modulation"  
@@ -77,17 +77,17 @@
 // @menuitem "Pitch Up" PitchUp 
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Pitch Up/Down" pitchupdown 
-//@menuitem "Pitch Four" pitch_four 
+@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 
 
-@menu "Guitar"
-@menuitem "GA Chorus" ga_demo_chorus 
-@menuitem "GA Echo Repeat" ga_demo_echo_repeat 
-@menuitem "GA Flanger" ga_demo_flanger 
-@menuitem "Ramp LFO Test" ramp_lfo_test
-@menuitem "GA Phaser" ga_demo_phaser 
-@menuitem "GA Vibrato" ga_demo_vibrato 
-@menuitem "GA Wah" ga_demo_wah 
+//@menu "Guitar"
+//@menuitem "GA Chorus" ga_demo_chorus 
+//@menuitem "GA Echo Repeat" ga_demo_echo_repeat 
+//@menuitem "GA Flanger" ga_demo_flanger 
+//@menuitem "Ramp LFO Test" ramp_lfo_test
+//@menuitem "GA Phaser" ga_demo_phaser 
+//@menuitem "GA Vibrato" ga_demo_vibrato 
+//@menuitem "GA Wah" ga_demo_wah 
 
 // @menu "Pots"
 

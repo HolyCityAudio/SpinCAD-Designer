@@ -96,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 909;
+	int buildNum = 910;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -1049,24 +1049,9 @@ public class SpinCADFrame extends JFrame {
 					loggerPanel.setVisible(false);
 					btnStartSimulation.setText("Start Simulator");
 					sim.stopSimulator();
-					if(Debug.DEBUG == true) {
-						PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out));
-						System.setOut(ps);
-					}
 				} else {
 					setSimRunning(true);
 					// create file
-					if(Debug.DEBUG == true) {
-						try {
-							System.setOut(new PrintStream("simulator-debug.txt"));
-						} catch (FileNotFoundException e) {
-							System.out.println("Error setting debug output PrintStream!"); 
-							e.printStackTrace();
-						}
-						String simDebugFileName = prefs.get("SIMULATOR_DEBUG_FILE", "");
-						//						sim.setLoopMode(false);
-					}
-
 					btnStartSimulation.setText("Stop Simulator");
 					pb.update();
 					String testWavFileName = prefs.get("SIMULATOR_FILE", "");
