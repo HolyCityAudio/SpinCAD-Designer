@@ -46,9 +46,6 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		addControlInputPin(this, "LFO Speed");
 		addControlInputPin(this, "LFO Width");			
 		addControlInputPin(this, "Phase");
-		for (int i = 0; i < 5; i++)
-			addControlInputPin(this, "Phase " + (i + 1));
-
 		if(controlMode == 0) {
 		} else if (controlMode == 1) {
 		}  else if (controlMode == 2) {
@@ -245,12 +242,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 			if(p != null) {
 				return p.getRegister();
 			}
-		} else if (controlMode == 2) {
-			SpinCADPin p = this.getPin("Phase " + stg).getPinConnection();
-			if(p != null) {
-				return p.getRegister();
-			}
-		}
+		} 
 		return -1;
 	}
 
