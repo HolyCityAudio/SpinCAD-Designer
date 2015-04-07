@@ -106,7 +106,7 @@ public class ChorusInstruction extends Instruction {
 				lfoval = state.getRampLFOVal(lfo - 2);
 			}
 			// GSW attempting to debug Ramp LFO
-			lfoPos = lfoval >> 9;
+			lfoPos = lfoval >> 10;
 		}
 
 		// invert the waveform for COMPA

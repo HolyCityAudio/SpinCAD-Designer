@@ -23,10 +23,10 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 // number of bits used where
 
 public class RampLFO {
-	public static final int AMP_4096 = 0x1ffffff;
-	public static final int AMP_2048 = 0x0ffffff;
-	public static final int AMP_1024 = 0x07fffff;
-	public static final int AMP_512 =  0x03fffff;
+	public static final int AMP_4096 = 0x3ffffff;
+	public static final int AMP_2048 = 0x1ffffff;
+	public static final int AMP_1024 = 0x0ffffff;
+	public static final int AMP_512 =  0x07fffff;
 
 	final SimulatorState state;
 	final int unit;
@@ -60,7 +60,7 @@ public class RampLFO {
 	// well, making sure the sign was used sure helps!!!
 	public void increment() {
 		int sign = 1;
-		int freq = state.getRegVal(freqReg) >> 1;
+		int freq = state.getRegVal(freqReg);
 
 		if((freq & 0x80000) != 0) {
 			sign = -1;
@@ -148,7 +148,7 @@ public class RampLFO {
 	}
 
 	public int getXfade() {
-		return (int) (xfade * xFadeScale)/8192;
+		return (int) (xfade * xFadeScale)/16384;
 	}
 
 	public int getAmp() {
