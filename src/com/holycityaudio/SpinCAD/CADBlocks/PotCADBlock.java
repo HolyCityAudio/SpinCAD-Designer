@@ -58,7 +58,7 @@ public class PotCADBlock extends SpinCADBlock{
 			// wrhx   potfilt, -0.75    ; it cuts lower freqs by factor of 4 
 			eP.writeRegisterHighshelf(potfilt, -0.75);
 			// rdax   fastpot, 0.75     ; this gives 4X recursive gain 
-			eP.readRegister(fastpot, 0.25);
+			eP.readRegister(fastpot, 0.75);
 			// wrax   fastpot, 1        ; to recover full range
 			eP.writeRegister(fastpot,  0.0);
 			this.getPin("Control Output 1").setRegister(fastpot);
