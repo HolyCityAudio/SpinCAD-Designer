@@ -56,7 +56,7 @@ public class RampLFOCADBlock extends ControlCADBlock{
 
 		if(p.isConnected()) {
 			int speedIn = p.getPinConnection().getRegister();			
-			sfxb.readRegister(speedIn, lfoRate/32767.0);	// scale pot by control panel rate setting
+			sfxb.readRegister(speedIn, (lfoRate/32767.0));	// scale pot by control panel rate setting
 			if(whichLFO == 0) {
 				sfxb.writeRegister(RMP0_RATE, 0.0);
 			}

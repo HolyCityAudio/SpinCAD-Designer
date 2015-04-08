@@ -48,7 +48,7 @@ public class SinLFO {
 		int coeff = state.getRegVal(freqReg) >> 14;
 		amp = state.getRegVal(ampReg) >> 8;
 		// calculate next value
-		// TODO GSW added saturation logic here to avoid glitches at peak.
+		// GSW added saturation logic here to avoid glitches at peak.
 		long acc = sin;			
 		acc = (acc * coeff) >> 17;
 		if(acc + cos > 0x7fffff) {
@@ -59,7 +59,6 @@ public class SinLFO {
 		}
 		else
 			acc = acc + cos;
-		// acc = acc + cos;
 		cos = acc;
 		acc = -acc;
 		acc = (acc * coeff) >> 17;
@@ -84,7 +83,6 @@ public class SinLFO {
 		if(val < 0) {
 			return -(int)(0x7fffff - (val & 0x7fffff));
 		}
-//		System.out.println("Sin Value: " + sin);
 		return (int)(val & 0x7fffff);
 	}
 	

@@ -60,7 +60,7 @@ public class RampLFO {
 	// well, making sure the sign was used sure helps!!!
 	public void increment() {
 		int sign = 1;
-		int freq = state.getRegVal(freqReg);
+		int freq = state.getRegVal(freqReg) >> 9;
 
 		if((freq & 0x80000) != 0) {
 			sign = -1;
@@ -124,12 +124,6 @@ public class RampLFO {
 			else {
 				xfade = 0;
 			}
-		}
-		if(xFadeMax < xfade) {
-			xFadeMax = xfade;
-		}
-		if(xFadeMin > xfade) {
-			xFadeMin = xfade;
 		}
 	}
 

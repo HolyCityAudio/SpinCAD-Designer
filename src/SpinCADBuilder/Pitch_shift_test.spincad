@@ -1,6 +1,8 @@
 @name Pitch_Shift
 @audioInput input Input
 @audioOutput pitch Pitch_Out
+@controlInput pitchControl Pitch_Control
+
 //@audioOutput pitch1 Pitch_1_Out
 //@audioOutput pitch2 Pitch_2_Out
 //@audioOutput pitch3 Pitch_3_Out
@@ -44,11 +46,19 @@ equ pitch reg0
 @getBaseAddress
 // then allocate memory
 mem delayd length
-mem temp 1 
+mem temp 1
+
+// these are here to test scaling factor between direct load of RMP0_RATE via WLDR and
+// on the flip side, setting the RATE register with a "double" value determined from a POT or something
+
+equ sixteen 16384
+@divideDouble scaledPitch pitchCoeff sixteen
 
 @isEqualTo lfoSel 0
 skp run, START 
 wldr 0,pitchCoeff, length 
+//sof 0.0, scaledPitch
+//wrax RMP0_RATE, 0
 START: 
 @else
 skp run, START1 
@@ -59,8 +69,17 @@ START1:
 ldax input
 wra delayd,0
 
+@isPinConnected Pitch_Control
+rdax pitchControl, scaledPitch
+@isEqualTo lfoSel 0
+wrax RMP0_RATE, 0
+@endif
 
-			
+@isEqualTo lfoSel 1
+wrax RMP1_RATE, 0
+@endif
+@endif
+
 @isEqualTo lfoSel 0
 cho rda,RMP0,REG|COMPC,delayd 
 cho rda,RMP0,0,delayd+ 1 
