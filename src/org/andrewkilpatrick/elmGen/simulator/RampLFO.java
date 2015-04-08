@@ -55,12 +55,11 @@ public class RampLFO {
 			throw new IllegalArgumentException("Ramp LFO: bad unit: " + unit);
 		}
 	}
-	// GSW trying to debug Ramp LFO
-	// up to now I can tell you I have not been successful!
-	// well, making sure the sign was used sure helps!!!
+
 	public void increment() {
 		int sign = 1;
-		int freq = state.getRegVal(freqReg) >> 9;
+		int freq = state.getRegVal(freqReg);
+		freq = freq >> 8;
 
 		if((freq & 0x80000) != 0) {
 			sign = -1;

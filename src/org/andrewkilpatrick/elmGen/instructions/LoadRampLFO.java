@@ -95,7 +95,7 @@ public class LoadRampLFO extends Instruction {
 		regFreq = (freq & 0x7fff) << 8;
 		// XXX debug GSW
 		if(freq < 0) {
-			regFreq |= 0x800000l;
+			regFreq |= 0xFF80_0000l;
 		}
 		if(lfo == 1) {
 			state.setRegVal(ElmProgram.RMP1_RATE, regFreq);
