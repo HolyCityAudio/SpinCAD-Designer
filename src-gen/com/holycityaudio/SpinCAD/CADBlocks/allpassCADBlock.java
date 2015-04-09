@@ -29,7 +29,9 @@
 			private static final long serialVersionUID = 1L;
 			private allpassControlPanel cp = null;
 			
-			private int temp;
+			private double gain = 0.5;
+			private double nAPs = 4;
+			private double kiap = 0.5;
 			private int output1;
 
 			public allpassCADBlock(int x, int y) {
@@ -38,8 +40,10 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
-				addControlInputPin(this, "Phase");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -70,28 +74,65 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Phase").getPinConnection();
-			int phase = -1;
-			if(sp != null) {
-				phase = sp.getRegister();
-			}
 			
 			// finally, generate the instructions
-			sfxb.FXallocDelayMem("delay", 1); 
-			temp = sfxb.allocateReg();
 			output1 = sfxb.allocateReg();
-			sfxb.readRegister(input, 1.0);
-			sfxb.writeRegister(temp, 0);
-			sfxb.FXreadDelay("delay#", 0, 1);
-			sfxb.mulx(phase);
-			sfxb.readRegister(temp, 1);
-			sfxb.FXwriteDelay("delay", 0, -1);
-			sfxb.mulx(phase);
-			sfxb.FXreadDelay("delay#", 0, 1);
-			sfxb.writeRegister(output1, 0.0);
+			if(nAPs > 3) {
+			sfxb.FXallocDelayMem("iap1", 156); 
+			}
+			
+			if(nAPs > 2) {
+			sfxb.FXallocDelayMem("iap2", 223); 
+			}
+			
+			if(nAPs > 1) {
+			sfxb.FXallocDelayMem("iap3", 332); 
+			}
+			
+			sfxb.FXallocDelayMem("iap4", 448); 
+			sfxb.readRegister(input, gain);
+			if(nAPs > 3) {
+			sfxb.FXreadDelay("iap1#", 0, kiap);
+			sfxb.FXwriteAllpass("iap1", 0, -kiap);
+			}
+			
+			if(nAPs > 2) {
+			sfxb.FXreadDelay("iap2#", 0, kiap);
+			sfxb.FXwriteAllpass("iap2", 0, -kiap);
+			}
+			
+			if(nAPs > 1) {
+			sfxb.FXreadDelay("iap3#", 0, kiap);
+			sfxb.FXwriteAllpass("iap3", 0, -kiap);
+			}
+			
+			sfxb.FXreadDelay("iap4#", 0, kiap);
+			sfxb.FXwriteAllpass("iap4", 0, -kiap);
+			sfxb.writeRegister(output1, 0);
 			this.getPin("Output").setRegister(output1);
 
 			}
 			
 			// create setters and getter for control panel variables
+			public void setgain(double __param) {
+				gain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getgain() {
+				return gain;
+			}
+			public void setnAPs(double __param) {
+				nAPs = __param;	
+			}
+			
+			public double getnAPs() {
+				return nAPs;
+			}
+			public void setkiap(double __param) {
+				kiap = __param;	
+			}
+			
+			public double getkiap() {
+				return kiap;
+			}
 		}	

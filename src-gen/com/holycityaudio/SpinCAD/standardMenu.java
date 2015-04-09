@@ -34,7 +34,9 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.ServoDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.sixtapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.allpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
@@ -404,6 +406,15 @@
 	});
 	mn_delay.add(mntm_MN3011a);
 		
+	final JMenuItem mntm_sixtap = new JMenuItem("6-Tap Stereo");
+	mntm_sixtap.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new sixtapCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_delay.add(mntm_sixtap);
+		
 	final JMenuItem mntm_eighttap = new JMenuItem("8-Tap");
 	mntm_eighttap.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -416,6 +427,15 @@
 	JMenu mn_reverb = new JMenu("Reverb");
 	menuBar.add(mn_reverb);
 	
+	final JMenuItem mntm_allpass = new JMenuItem("Allpass");
+	mntm_allpass.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new allpassCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_allpass);
+		
 	final JMenuItem mntm_MinReverb = new JMenuItem("Small Reverb");
 	mntm_MinReverb.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {

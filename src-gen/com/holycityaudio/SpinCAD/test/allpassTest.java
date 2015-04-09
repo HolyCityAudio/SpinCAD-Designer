@@ -52,13 +52,6 @@ f.dropBlock(p, o);
 	SpinCADPin p2 = m.getPin("Output");
 	p2.setConnection(o, p1);
 }
-{
-	Pot0CADBlock pot0 = new Pot0CADBlock(25, 150 + 40 * 1);
-	f.dropBlock(p, pot0);
-	SpinCADPin p1 = pot0.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Phase");
-	p2.setConnection(pot0, p1);
-}
 f.getModel().sortAlignGen();
 System.out.println("allpassCADBlock test passed with all control connections!");
 

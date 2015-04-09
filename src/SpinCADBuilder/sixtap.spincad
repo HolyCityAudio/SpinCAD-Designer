@@ -1,4 +1,4 @@
-@name Ten_Tap
+@name Six_Tap
 @audioInput adcl Input 
 @audioOutput mix1 Mix_1_Out
 @audioOutput mix2 Mix_2_Out
@@ -14,7 +14,7 @@ equ delayLength 32767
 @sliderLabel delayLength Delay_Time 0 32767 16384 1 0 lengthToTime
 		
 // tap 1 length in % (control panel value) 
-// 	'equ' ename = ID value = SPINDOUBLE (controlType = ID controlName = ID max = SPINDOUBLE multiplier = SPINDOUBLE)?;
+// 'equ' ename = ID value = SPINDOUBLE (controlType = ID controlName = ID max = SPINDOUBLE multiplier = SPINDOUBLE)?;
 // tap1 
 
 equ tap1Ratio 0.10 
