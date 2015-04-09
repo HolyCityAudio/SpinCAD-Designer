@@ -2,14 +2,8 @@
 @audioInput input Input
 @audioOutput pitch1 Pitch_Down_Out 
 @audioOutput pitch2 Pitch_Up_Out
-@audioOutput phase1 Phase_1_Out 
-@audioOutput phase2 Phase_2_Out
 
 @isPinConnected Input
-equ pitch1 reg0
-equ pitch2 reg1 
-equ phase1 reg2
-equ phase2 reg3
 
 // establish the base address for this module
 @getBaseAddress
@@ -19,37 +13,39 @@ mem temp 1
 
 skp run, START 
 wldr 1,16384,4096 
-// wldr 0, -8192,4096 
+wldr 0, -8192,4096 
 START: 
 ldax input
 wra delayd,0
 			
+@isPinConnected Pitch_Down_Out
+equ pitch1 reg0
 cho rda,RMP0,REG|COMPC,delayd 
 cho rda,RMP0,0,delayd+ 1 
-wrax phase1, 1
 wra temp,0 
 cho rda,RMP0,RPTR2|COMPC,delayd 
 cho rda,RMP0,RPTR2,delayd+ 1 
-wrax phase2, 1
 cho sof,RMP0,NA|COMPC,0 
 cho rda,RMP0,NA,temp
 wrax pitch1,0
+@endif
 
 @setOutputPin Pitch_Down_Out pitch1
 	
-// second pitch shift
-//cho rda,RMP1,REG|COMPC,delayd 
-//cho rda,RMP1,0,delayd+ 1 
-//wra temp,0 
-//cho rda,RMP1,RPTR2|COMPC,delayd 
-//cho rda,RMP1,RPTR2,delayd+ 1 
-//cho sof,RMP1,NA|COMPC,0 
-//cho rda,RMP1,NA,temp
-//wrax pitch2,0 
+@isPinConnected Pitch_Up_Out
+//second pitch shift
+equ pitch2 reg1 
+cho rda,RMP1,REG|COMPC,delayd 
+cho rda,RMP1,0,delayd+ 1 
+wra temp,0 
+cho rda,RMP1,RPTR2|COMPC,delayd 
+cho rda,RMP1,RPTR2,delayd+ 1 
+cho sof,RMP1,NA|COMPC,0 
+cho rda,RMP1,NA,temp
+wrax pitch2,0 
 
 @setOutputPin Pitch_Up_Out pitch2
-@setOutputPin Phase_1_Out phase1
-@setOutputPin Phase_2_Out phase2
+@endif
 
 @endif
 

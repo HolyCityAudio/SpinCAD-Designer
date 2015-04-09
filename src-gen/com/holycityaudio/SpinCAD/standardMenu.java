@@ -35,7 +35,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.tentapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
@@ -48,7 +47,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pitch_shift_testCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.pitch_fourCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
@@ -415,15 +413,6 @@
 	});
 	mn_delay.add(mntm_eighttap);
 		
-	final JMenuItem mntm_tentap = new JMenuItem("10-Tap Stereo");
-	mntm_tentap.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new tentapCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_delay.add(mntm_tentap);
-		
 	JMenu mn_reverb = new JMenu("Reverb");
 	menuBar.add(mn_reverb);
 	
@@ -523,7 +512,7 @@
 	});
 	mn_pitch.add(mntm_PitchShiftFixed);
 		
-	final JMenuItem mntm_Pitch_shift_test = new JMenuItem("Pitch Shift Test");
+	final JMenuItem mntm_Pitch_shift_test = new JMenuItem("Pitch Shift Adjustable");
 	mntm_Pitch_shift_test.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new Pitch_shift_testCADBlock(50, 100);
@@ -540,15 +529,6 @@
 		}
 	});
 	mn_pitch.add(mntm_pitchupdown);
-		
-	final JMenuItem mntm_pitch_four = new JMenuItem("Pitch Four");
-	mntm_pitch_four.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new pitch_fourCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_pitch.add(mntm_pitch_four);
 		
 	final JMenuItem mntm_pitchoffset = new JMenuItem("Pitch Offset");
 	mntm_pitchoffset.addActionListener(new ActionListener() {

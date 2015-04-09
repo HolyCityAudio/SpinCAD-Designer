@@ -31,8 +31,6 @@
 			
 			private int pitch1;
 			private int pitch2;
-			private int phase1;
-			private int phase2;
 
 			public pitchupdownCADBlock(int x, int y) {
 				super(x, y);
@@ -41,8 +39,6 @@
 				addInputPin(this, "Input");
 				addOutputPin(this, "Pitch_Down_Out");
 				addOutputPin(this, "Pitch_Up_Out");
-				addOutputPin(this, "Phase_1_Out");
-				addOutputPin(this, "Phase_2_Out");
 			// if any control panel elements declared, set hasControlPanel to true
 						}
 		
@@ -77,31 +73,40 @@
 			
 			// finally, generate the instructions
 			if(this.getPin("Input").isConnected() == true) {
-			pitch1 = sfxb.allocateReg();
-			pitch2 = sfxb.allocateReg();
-			phase1 = sfxb.allocateReg();
-			phase2 = sfxb.allocateReg();
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayd", 4096); 
 			sfxb.FXallocDelayMem("temp", 1); 
-			sfxb.skip(RUN, 1);
+			sfxb.skip(RUN, 2);
 			sfxb.loadRampLFO((int) 1, (int) 16384, (int) 4096);
+			sfxb.loadRampLFO((int) 0, (int) -8192, (int) 4096);
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayd", 0, 0);
+			if(this.getPin("Pitch_Down_Out").isConnected() == true) {
+			pitch1 = sfxb.allocateReg();
 			sfxb.FXchorusReadDelay(RMP0, REG|COMPC, "delayd", 0);
 			sfxb.FXchorusReadDelay(RMP0, 0, "delayd+", 1);
-			sfxb.writeRegister(phase1, 1);
 			sfxb.FXwriteDelay("temp", 0, 0);
 			sfxb.FXchorusReadDelay(RMP0, RPTR2|COMPC, "delayd", 0);
 			sfxb.FXchorusReadDelay(RMP0, RPTR2, "delayd+", 1);
-			sfxb.writeRegister(phase2, 1);
 			sfxb.chorusScaleOffset(RMP0, NA|COMPC, 0);
 			sfxb.FXchorusReadDelay(RMP0, NA, "temp", 0);
 			sfxb.writeRegister(pitch1, 0);
+			}
+			
 			this.getPin("Pitch_Down_Out").setRegister(pitch1);
+			if(this.getPin("Pitch_Up_Out").isConnected() == true) {
+			pitch2 = sfxb.allocateReg();
+			sfxb.FXchorusReadDelay(RMP1, REG|COMPC, "delayd", 0);
+			sfxb.FXchorusReadDelay(RMP1, 0, "delayd+", 1);
+			sfxb.FXwriteDelay("temp", 0, 0);
+			sfxb.FXchorusReadDelay(RMP1, RPTR2|COMPC, "delayd", 0);
+			sfxb.FXchorusReadDelay(RMP1, RPTR2, "delayd+", 1);
+			sfxb.chorusScaleOffset(RMP1, NA|COMPC, 0);
+			sfxb.FXchorusReadDelay(RMP1, NA, "temp", 0);
+			sfxb.writeRegister(pitch2, 0);
 			this.getPin("Pitch_Up_Out").setRegister(pitch2);
-			this.getPin("Phase_1_Out").setRegister(phase1);
-			this.getPin("Phase_2_Out").setRegister(phase2);
+			}
+			
 			}
 			
 

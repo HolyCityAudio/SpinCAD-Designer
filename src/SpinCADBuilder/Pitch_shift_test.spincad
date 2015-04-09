@@ -51,7 +51,7 @@ mem temp 1
 // these are here to test scaling factor between direct load of RMP0_RATE via WLDR and
 // on the flip side, setting the RATE register with a "double" value determined from a POT or something
 
-equ sixteen 16384
+equ sixteen 32768
 @divideDouble scaledPitch pitchCoeff sixteen
 
 @isEqualTo lfoSel 0

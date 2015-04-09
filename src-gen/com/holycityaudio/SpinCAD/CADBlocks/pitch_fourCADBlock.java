@@ -96,11 +96,11 @@
 			if(this.getPin("Pitch_Select").isConnected() == true) {
 			sfxb.loadAccumulator(select);
 			sfxb.and(0b01100000_00000000_00000000);
-			sfxb.skip(ZRO, 13);
+			sfxb.skip(ZRO, 16);
 			sfxb.scaleOffset(1.0, -0.25);
-			sfxb.skip(ZRO, 8);
+			sfxb.skip(ZRO, 10);
 			sfxb.scaleOffset(1.0, -0.25);
-			sfxb.skip(ZRO, 3);
+			sfxb.skip(ZRO, 4);
 			double shift4 = 0.0;
 			if(pitch4 > 0) {
 				shift4 = (16384.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
@@ -110,8 +110,13 @@
 				shift4 = (-8192.0 * Math.pow(2.0, (-pitch4/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift4);
+			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
-			sfxb.skip(RUN, 8);
+			} else {
+			sfxb.writeRegister(RMP1_RATE, 0);
+			}
+			
+			sfxb.skip(RUN, 11);
 			double shift1 = 0.0;
 			if(pitch3 > 0) {
 				shift1 = (16384.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
@@ -121,8 +126,13 @@
 				shift1 = (-8192.0 * Math.pow(2.0, (-pitch3/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift1);
+			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
-			sfxb.skip(RUN, 5);
+			} else {
+			sfxb.writeRegister(RMP1_RATE, 0);
+			}
+			
+			sfxb.skip(RUN, 7);
 			double shift2 = 0.0;
 			if(pitch2 > 0) {
 				shift2 = (16384.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
@@ -132,8 +142,13 @@
 				shift2 = (-8192.0 * Math.pow(2.0, (-pitch2/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift2);
+			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
-			sfxb.skip(RUN, 2);
+			} else {
+			sfxb.writeRegister(RMP1_RATE, 0);
+			}
+			
+			sfxb.skip(RUN, 3);
 			double shift3 = 0.0;
 			if(pitch1 > 0) {
 				shift3 = (16384.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
@@ -143,7 +158,12 @@
 				shift3 = (-8192.0 * Math.pow(2.0, (-pitch1/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift3);
-			sfxb.writeRegister(RMP0_RATE, 0.0);
+			if(lfoSel == 0) {
+			sfxb.writeRegister(RMP0_RATE, 0);
+			} else {
+			sfxb.writeRegister(RMP1_RATE, 0);
+			}
+			
 			}
 			
 			sfxb.loadAccumulator(input);

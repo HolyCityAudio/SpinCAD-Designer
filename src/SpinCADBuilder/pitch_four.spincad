@@ -46,7 +46,7 @@ sof 1.0, -0.25
 ; this should be 8
 skp ZRO, slot2
 
-sof 1.0, -0.25 
+sof 1.0, -0.25  
 ; this should be 3  
 skp ZRO, slot1
 
@@ -54,28 +54,44 @@ slot0:
 // function to convert semitones to LFO coefficient
 @semitonesToRmpRate shift4 pitch4 
 sof 0.0, shift4
+@isEqualTo lfoSel 0
 wrax RMP0_RATE, 0
+@else
+wrax RMP1_RATE, 0
+@endif
 ; this should be 8
 skp RUN, SHIFT
 
 slot1:
 @semitonesToRmpRate shift1 pitch3
 sof 0.0, shift1
+@isEqualTo lfoSel 0
 wrax RMP0_RATE, 0
+@else
+wrax RMP1_RATE, 0
+@endif
 ; this should be 5
 skp RUN, SHIFT
 
 slot2:
 @semitonesToRmpRate shift2 pitch2
 sof 0.0, shift2
+@isEqualTo lfoSel 0
 wrax RMP0_RATE, 0
+@else
+wrax RMP1_RATE, 0
+@endif
 ; this should be 2
 skp RUN, SHIFT
 
 slot3:
 @semitonesToRmpRate shift3 pitch1
 sof 0.0, shift3
-wrax RMP0_RATE, 0.0
+@isEqualTo lfoSel 0
+wrax RMP0_RATE, 0
+@else
+wrax RMP1_RATE, 0
+@endif
 
 SHIFT:
 

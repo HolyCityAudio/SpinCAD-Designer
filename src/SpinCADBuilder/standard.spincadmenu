@@ -48,7 +48,7 @@
 @menuitem "Triple-tap" TripleTap 
 @menuitem "MN3011" MN3011a 
 @menuitem "8-Tap" eighttap 
-@menuitem "10-Tap Stereo" tentap 
+// @menuitem "10-Tap Stereo" tentap 
 
 @menu "Reverb" 
 //@menuitem "Allpass" allpass 
@@ -73,11 +73,11 @@
 @menu "Pitch"
 //@menuitem "Pitch Test" PitchTest 
 @menuitem "Pitch Shift Fixed" PitchShiftFixed 
-@menuitem "Pitch Shift Test" Pitch_shift_test 
+@menuitem "Pitch Shift Adjustable" Pitch_shift_test 
 // @menuitem "Pitch Up" PitchUp 
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Pitch Up/Down" pitchupdown 
-@menuitem "Pitch Four" pitch_four 
+//@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 
 
 //@menu "Guitar"
