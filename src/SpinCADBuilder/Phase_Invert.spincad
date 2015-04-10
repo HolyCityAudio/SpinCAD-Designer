@@ -1,0 +1,14 @@
+@name Phase_Invert
+@audioInput input Input
+@audioOutput output Output
+
+;REGISTERS 
+equ   output     reg0       
+
+@isPinConnected Input
+rdax    input, -1.0    ;read input signal
+wrax    output,0    ; 
+
+@setOutputPin Output output
+@endif
+

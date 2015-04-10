@@ -4,6 +4,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.VolumeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Phase_InvertCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1x2CADBlock;
@@ -12,7 +13,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.aliaser_02CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.CubeGainCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.DistortionCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.noise_block24CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OctaveCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OverdriveCADBlock;
@@ -124,6 +124,15 @@
 	});
 	mn_io_mix.add(mntm_GainBoost);
 		
+	final JMenuItem mntm_Phase_Invert = new JMenuItem("Phase Invert");
+	mntm_Phase_Invert.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Phase_InvertCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_io_mix.add(mntm_Phase_Invert);
+		
 	final JMenuItem mntm_crossfade = new JMenuItem("Crossfade");
 	mntm_crossfade.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -198,15 +207,6 @@
 		}
 	});
 	mn_waveshaper.add(mntm_Distortion);
-		
-	final JMenuItem mntm_noise_block24 = new JMenuItem("Noise");
-	mntm_noise_block24.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new noise_block24CADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_waveshaper.add(mntm_noise_block24);
 		
 	final JMenuItem mntm_noise_amz = new JMenuItem("Noise AMZ");
 	mntm_noise_amz.addActionListener(new ActionListener() {
