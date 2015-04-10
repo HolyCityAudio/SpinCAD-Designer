@@ -29,7 +29,8 @@
 			private static final long serialVersionUID = 1L;
 			private eighttapControlPanel cp = null;
 			
-			private double inputGain = 0.5;
+			private double inputGain = 1.0;
+			private double fbkGain = 0.5;
 			private double delayLength = 32767;
 			private double tap1Ratio = 0.1250;
 			private double tap1Gain = 0.5;
@@ -51,18 +52,21 @@
 			private int mix1;
 			private int mix2;
 			private int max;
-			private int output5;
+			private int tap8;
 
 			public eighttapCADBlock(int x, int y) {
 				super(x, y);
 				setName("Eight_Tap");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addInputPin(this, "Feedbck");
 				addOutputPin(this, "Mix_1_Out");
 				addOutputPin(this, "Mix_2_Out");
-				addOutputPin(this, "Delay_Out_End");
+				addOutputPin(this, "Tap_8_Out");
 				addControlInputPin(this, "Delay_Time_1");
+				addControlInputPin(this, "Feedback");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -104,16 +108,34 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
+			sp = this.getPin("Feedbck").getPinConnection();
+			int feedback = -1;
+			if(sp != null) {
+				feedback = sp.getRegister();
+			}
 			sp = this.getPin("Delay_Time_1").getPinConnection();
 			int cIn1 = -1;
 			if(sp != null) {
 				cIn1 = sp.getRegister();
+			}
+			sp = this.getPin("Feedback").getPinConnection();
+			int fbk = -1;
+			if(sp != null) {
+				fbk = sp.getRegister();
 			}
 			
 			// finally, generate the instructions
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("eight_tap", delayLength); 
 			if(this.getPin("Input").isConnected() == true) {
+			if(this.getPin("Feedbck").isConnected() == true) {
+			sfxb.readRegister(feedback, fbkGain);
+			if(this.getPin("Feedback").isConnected() == true) {
+			sfxb.mulx(fbk);
+			}
+			
+			}
+			
 			sfxb.readRegister(adcl, inputGain);
 			sfxb.FXwriteDelay("eight_tap", 0, 0.0);
 			if(this.getPin("Delay_Time_1").isConnected() == true) {
@@ -190,12 +212,15 @@
 			sfxb.writeRegister(mix2, 0.0);
 			}
 			
+			if(this.getPin("Tap_8_Out").isConnected() == true) {
+			tap8 = sfxb.allocateReg();
+			sfxb.FXreadDelay("eight_tap+", ratio, 1.0);
+			sfxb.writeRegister(tap8, 0);
+			this.getPin("Tap_8_Out").setRegister(tap8);
+			}
+			
 			this.getPin("Mix_1_Out").setRegister(mix1);
 			this.getPin("Mix_2_Out").setRegister(mix2);
-			output5 = sfxb.allocateReg();
-			sfxb.FXreadDelay("eight_tap#", 0, 1.0);
-			sfxb.writeRegister(output5, 0.0);
-			this.getPin("Delay_Out_End").setRegister(output5);
 			}
 			
 
@@ -208,6 +233,13 @@
 			
 			public double getinputGain() {
 				return inputGain;
+			}
+			public void setfbkGain(double __param) {
+				fbkGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getfbkGain() {
+				return fbkGain;
 			}
 			public void setdelayLength(double __param) {
 				delayLength = __param;	

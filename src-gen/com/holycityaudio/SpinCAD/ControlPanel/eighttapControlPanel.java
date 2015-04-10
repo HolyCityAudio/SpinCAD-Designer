@@ -43,6 +43,8 @@
 		// declare the controls
 			JSlider inputGainSlider;
 			JLabel  inputGainLabel;	
+			JSlider fbkGainSlider;
+			JLabel  fbkGainLabel;	
 			JSlider delayLengthSlider;
 			JLabel  delayLengthLabel;	
 			JSlider tap1GainSlider;
@@ -83,6 +85,16 @@
 				frame.getContentPane().add(inputGainLabel);
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(inputGainSlider);		
+			
+			// dB level slider goes in steps of 1 dB
+				fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+				fbkGainSlider.addChangeListener(new eighttapSliderListener());
+				fbkGainLabel = new JLabel();
+				updatefbkGainLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(fbkGainLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(fbkGainSlider);		
 			
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
 				delayLengthSlider.addChangeListener(new eighttapSliderListener());
@@ -189,6 +201,10 @@
 			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
 				updateinputGainLabel();
 			}
+			if(ce.getSource() == fbkGainSlider) {
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
+				updatefbkGainLabel();
+			}
 			if(ce.getSource() == delayLengthSlider) {
 			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
@@ -247,6 +263,9 @@
 		}
 		private void updateinputGainLabel() {
 		inputGainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
+		}		
+		private void updatefbkGainLabel() {
+		fbkGainLabel.setText("Feedback_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
 		}		
 		private void updatedelayLengthLabel() {
 		delayLengthLabel.setText("Delay_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		

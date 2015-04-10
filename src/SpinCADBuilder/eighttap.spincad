@@ -1,12 +1,17 @@
 @name Eight_Tap
 @audioInput adcl Input 
+@audioInput feedback Feedbck
 @audioOutput mix1 Mix_1_Out
 @audioOutput mix2 Mix_2_Out
-@audioOutput output1 Delay_Out_End
+@audioOutput tap8 Tap_8_Out
 @controlInput cIn1 Delay_Time_1 
+@controlInput fbk Feedback
 
-equ inputGain 0.5
-@sliderLabel inputGain Input_Gain  -24 0 -6 1.0 1 DBLEVEL
+equ inputGain 1.0
+@sliderLabel inputGain Input_Gain  -24 0 0 1.0 1 DBLEVEL
+
+equ fbkGain 0.5
+@sliderLabel fbkGain Feedback_Gain -24 0 -6 1.0 1 DBLEVEL 
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
@@ -61,6 +66,12 @@ mem eight_tap delayLength
 // input connection must be there for any code to be generated
 @isPinConnected Input
 // read the input and write to base of delay line
+@isPinConnected Feedbck
+rdax feedback,fbkGain
+@isPinConnected Feedback
+mulx fbk
+@endif
+@endif
 
 rdax adcl, inputGain
 wra eight_tap, 0.0
@@ -176,19 +187,18 @@ rda eight_tap+ratio, tap6Gain
 
 @getSamplesFromRatio ratio tap8Ratio delayLength 
 rda eight_tap+ratio, tap8Gain
-
 wrax mix2, 0.0
+@endif
 
+@isPinConnected Tap_8_Out
+equ tap8 reg10
+rda eight_tap+ratio, 1.0
+wrax tap8,0
+@setOutputPin Tap_8_Out tap8
 @endif
 
 @setOutputPin Mix_1_Out mix1
 @setOutputPin Mix_2_Out mix2
-
-// set the end tap regardless if the control input is connected
-equ output5 reg5
-rda eight_tap#, 1.0
-wrax output5, 0.0
-@setOutputPin Delay_Out_End output5
 
 @endif
 
