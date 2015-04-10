@@ -1,16 +1,19 @@
 @name ThreeTap
 @audioInput adcl Input 
+@audioInput feedback Feedbck
 @audioOutput output1 Tap1_Out
 @audioOutput output2 Tap2_Out  
 @audioOutput output3 Tap3_Out  
-@audioOutput output4 Delay_Out_Center
-@audioOutput output5 Delay_Out_End
 @controlInput cIn1 Delay_Time_1 
 @controlInput cIn2 Delay_Time_2  
 @controlInput cIn3 Delay_Time_3  
+@controlInput fbk Feedback
 
-equ inputGain 0.5
-@sliderLabel inputGain Input_Gain  -24 0 -6 1.0 1 DBLEVEL
+equ inputGain 1.0
+@sliderLabel inputGain Input_Gain  -24 0 0 1.0 1 DBLEVEL
+
+equ fbkGain 0.5
+@sliderLabel fbkGain Feedback_Gain -24 0 -6 1.0 1 DBLEVEL 
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
@@ -40,6 +43,12 @@ mem threeTap delayLength
 // input connection must be there for any code to be generated
 @isPinConnected Input
 // read the input and write to base of delay line
+@isPinConnected Feedbck
+rdax feedback,fbkGain
+@isPinConnected Feedback
+mulx fbk
+@endif
+@endif
 rdax adcl, inputGain
 wra threeTap, 0.0
 
@@ -56,7 +65,7 @@ mulx cIn1
 wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output1, 0.0 
-@setOutputPin Tap1_Out output1
+@setOutputPin Tap1_Out output1 
 @endif
 
 // tap 2 -----------------------------------------------------------
@@ -87,20 +96,6 @@ wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output3, 0.0
 @setOutputPin Tap3_Out output3
-@endif
-
-@isPinConnected Delay_Out_Center 
-equ output4 reg4
-rda threeTap^, 1.0
-wrax output4, 0.0
-@setOutputPin Delay_Out_Center output4
-@endif
-
-@isPinConnected Delay_Out_End 
-equ output5 reg5
-rda threeTap#, 1.0
-wrax output5, 0.0
-@setOutputPin Delay_Out_End output5
 @endif
 
 @endif

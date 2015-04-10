@@ -48,6 +48,11 @@ f.dropBlock(p, o);
 	p2.setConnection(i, p1);
 }
 {
+	SpinCADPin p1 = i.getPin("Output 2");
+	SpinCADPin p2 = m.getPin("Feedbck");
+	p2.setConnection(i, p1);
+}
+{
 	SpinCADPin p1 = o.getPin("Input 1");
 	SpinCADPin p2 = m.getPin("Tap1_Out");
 	p2.setConnection(o, p1);
@@ -60,16 +65,6 @@ f.dropBlock(p, o);
 {
 	SpinCADPin p1 = o.getPin("Input 3");
 	SpinCADPin p2 = m.getPin("Tap3_Out");
-	p2.setConnection(o, p1);
-}
-{
-	SpinCADPin p1 = o.getPin("Input 4");
-	SpinCADPin p2 = m.getPin("Delay_Out_Center");
-	p2.setConnection(o, p1);
-}
-{
-	SpinCADPin p1 = o.getPin("Input 5");
-	SpinCADPin p2 = m.getPin("Delay_Out_End");
 	p2.setConnection(o, p1);
 }
 {
@@ -93,6 +88,7 @@ f.dropBlock(p, o);
 	SpinCADPin p2 = m.getPin("Delay_Time_3");
 	p2.setConnection(pot2, p1);
 }
+
 f.getModel().sortAlignGen();
 System.out.println("TripleTapCADBlock test passed with all control connections!");
 

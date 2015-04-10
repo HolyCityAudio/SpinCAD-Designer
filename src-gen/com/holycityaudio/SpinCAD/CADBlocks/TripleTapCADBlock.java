@@ -29,7 +29,8 @@
 			private static final long serialVersionUID = 1L;
 			private TripleTapControlPanel cp = null;
 			
-			private double inputGain = 0.5;
+			private double inputGain = 1.0;
+			private double fbkGain = 0.5;
 			private double delayLength = 32767;
 			private double tap1Ratio = 0.85;
 			private double tap2Ratio = 0.60;
@@ -38,23 +39,22 @@
 			private int output1;
 			private int output2;
 			private int output3;
-			private int output4;
-			private int output5;
 
 			public TripleTapCADBlock(int x, int y) {
 				super(x, y);
 				setName("ThreeTap");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addInputPin(this, "Feedbck");
 				addOutputPin(this, "Tap1_Out");
 				addOutputPin(this, "Tap2_Out");
 				addOutputPin(this, "Tap3_Out");
-				addOutputPin(this, "Delay_Out_Center");
-				addOutputPin(this, "Delay_Out_End");
 				addControlInputPin(this, "Delay_Time_1");
 				addControlInputPin(this, "Delay_Time_2");
 				addControlInputPin(this, "Delay_Time_3");
+				addControlInputPin(this, "Feedback");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -90,6 +90,11 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
+			sp = this.getPin("Feedbck").getPinConnection();
+			int feedback = -1;
+			if(sp != null) {
+				feedback = sp.getRegister();
+			}
 			sp = this.getPin("Delay_Time_1").getPinConnection();
 			int cIn1 = -1;
 			if(sp != null) {
@@ -105,11 +110,24 @@
 			if(sp != null) {
 				cIn3 = sp.getRegister();
 			}
+			sp = this.getPin("Feedback").getPinConnection();
+			int fbk = -1;
+			if(sp != null) {
+				fbk = sp.getRegister();
+			}
 			
 			// finally, generate the instructions
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("threeTap", delayLength); 
 			if(this.getPin("Input").isConnected() == true) {
+			if(this.getPin("Feedbck").isConnected() == true) {
+			sfxb.readRegister(feedback, fbkGain);
+			if(this.getPin("Feedback").isConnected() == true) {
+			sfxb.mulx(fbk);
+			}
+			
+			}
+			
 			sfxb.readRegister(adcl, inputGain);
 			sfxb.FXwriteDelay("threeTap", 0, 0.0);
 			if(this.getPin("Tap1_Out").isConnected() == true) {
@@ -157,20 +175,6 @@
 			this.getPin("Tap3_Out").setRegister(output3);
 			}
 			
-			if(this.getPin("Delay_Out_Center").isConnected() == true) {
-			output4 = sfxb.allocateReg();
-			sfxb.FXreadDelay("threeTap^", 0, 1.0);
-			sfxb.writeRegister(output4, 0.0);
-			this.getPin("Delay_Out_Center").setRegister(output4);
-			}
-			
-			if(this.getPin("Delay_Out_End").isConnected() == true) {
-			output5 = sfxb.allocateReg();
-			sfxb.FXreadDelay("threeTap#", 0, 1.0);
-			sfxb.writeRegister(output5, 0.0);
-			this.getPin("Delay_Out_End").setRegister(output5);
-			}
-			
 			}
 			
 
@@ -183,6 +187,13 @@
 			
 			public double getinputGain() {
 				return inputGain;
+			}
+			public void setfbkGain(double __param) {
+				fbkGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getfbkGain() {
+				return fbkGain;
 			}
 			public void setdelayLength(double __param) {
 				delayLength = __param;	
