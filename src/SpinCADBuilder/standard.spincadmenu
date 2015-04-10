@@ -59,7 +59,6 @@
 //@menuitem "Plate Reverb" reverb_plate 
 @menuitem "Adjustable Reverb" reverb
 //@menuitem "Shimmer Reverb" shimmer_verb 
-// @menuitem "Reverb Filter" reverbFilter 
 
 @menu "Modulation"  
 @menuitem "Chorus" Chorus 

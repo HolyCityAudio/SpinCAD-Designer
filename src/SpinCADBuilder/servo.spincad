@@ -1,10 +1,18 @@
-@name Servo
+@name Servo_Flanger
 @audioInput input Input
+@audioInput feedback Feedbck
 @audioOutput output Output  
-@audioOutput output1 Tap_1_Output  
-@controlInput control Delay
-@controlOutput servo Servo
-@controlOutput delta Delta
+@audioOutput output1 Tap_1_Output
+@controlInput control1 Delay
+@controlInput fbk Feedback
+//@controlOutput servo Servo
+//@controlOutput delta Delta 
+
+equ inputGain 1.0
+@sliderLabel inputGain Input_Gain -24 0 0 1.0 1 DBLEVEL 
+
+equ fbkGain 0.5
+@sliderLabel fbkGain Feedback_Gain -24 0 -6 1.0 1 DBLEVEL 
 
 equ servoGain 0.25
 @sliderLabel servoGain Servo_Gain 0.0 0.49 0.25 100.0 2
@@ -14,12 +22,11 @@ equ freq 0.25
 @sliderLabel freq Low_Pass 500 7500 100.0 100.0 1 LOGFREQ 
 
 equ delayLength 4096 
-equ tap1Ratio 0.5 
-@sliderLabel tap1Ratio Tap_1_Time  0.01 0.5 0.25 100.0 2  
+equ tap1Ratio 0.025 
+@sliderLabel tap1Ratio Tap_1_Time  0.001 0.05 0.025 1000.0 3  
 
 equ lfoSel 0
 @comboBox lfoSel 'Ramp 0' 'Ramp 1'
-
 
 @isPinConnected Input
 equ delayOffset -1
@@ -29,9 +36,9 @@ equ delayOffset -1
 mem moddel 4096
 equ output reg1
 @isPinConnected Delay
-equ servo reg2
+//equ servo reg2
 equ filt reg3
-equ delta reg4
+//equ delta reg4
 //			;set up LFOs, only at start up
 @isEqualTo lfoSel 0
 skp run,START 
@@ -44,16 +51,23 @@ START1:
 @endif
 
 
-rdax input,1
+@isPinConnected Feedbck
+rdax feedback,fbkGain
+@isPinConnected Feedback
+mulx fbk
+@endif
+@endif
+rdax input,inputGain
+
 wra moddel,0      ;write to head of delay
 @isEqualTo lfoSel 0
 cho rdal,rmp0      ;servo ramp0 to correct position using value in control
 @else
 cho rdal,rmp1      ;servo ramp0 to correct position using value in control
 @endif
-wrax servo, 1.0
-rdax control,-servoGain    ;scaled so that 0 - 1 sweeps full range
-wrax delta, 1.0
+//wrax servo, 1.0
+rdax control1,-servoGain    ;scaled so that 0 - 1 sweeps full range
+//wrax delta, 1.0
 @isEqualTo lfoSel 0
 wrax rmp0_rate,0
 cho rda,rmp0,reg|compc,moddel   ;read from delay
@@ -78,8 +92,8 @@ wrax output1, 0.0
 @setOutputPin Tap_1_Output output1
 @endif
 
-@setOutputPin Servo servo
-@setOutputPin Delta delta
+//@setOutputPin Servo servo
+//@setOutputPin Delta delta
 @setOutputPin Output output
 @else
 // if control input is not connected just read from the middle of the delay

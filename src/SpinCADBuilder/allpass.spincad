@@ -24,7 +24,6 @@ mem   iap3   332
 @endif
 mem   iap4   448
 
-
 ;now run input signal into 4 all passes:
 
 rdax   input, gain      ;attenuate signal to avoid clipping   
