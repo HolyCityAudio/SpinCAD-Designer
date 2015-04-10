@@ -1,12 +1,16 @@
 @name MN3011a
-@audioInput adcl Input 
+@audioInput input Input 
+@audioInput feedback Feedbck_Input
 @audioOutput mix Mix_Out
 @audioOutput tap6reg Tap_6_Out 
-@audioOutput output1 Delay_Out_End 
 @controlInput cIn1 Delay_Time_1 
+@controlInput fbk Feedback
 
 equ inputGain 0.5
 @sliderLabel inputGain Input_Gain  -24 0 -6 1.0 1 DBLEVEL
+
+equ fbkGain 0.5
+@sliderLabel fbkGain Feedback_Gain -24 0 -6 1.0 1 DBLEVEL 
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
@@ -58,7 +62,14 @@ mem mn3011delay delayLength
 @isPinConnected Input
 equ   mix  reg0      
 // read the input and write to base of delay line
-rdax adcl, inputGain
+@isPinConnected Feedbck_Input
+rdax feedback,fbkGain
+@isPinConnected Feedback
+mulx fbk
+@endif
+@endif
+rdax input,inputGain
+
 wra mn3011delay, 0.0
 
 // tap 1 -----------------------------------------------------------
@@ -167,14 +178,6 @@ rda mn3011delay+ratio, tap5Gain
 wrax mix, 0.0
 @setOutputPin Mix_Out mix
 
-// set the end tap regardless if the control input is connected
-@isPinConnected Delay_Out_End
-equ output5 reg5
-rda mn3011delay#, 1.0
-wrax output5, 0.0
-@endif
-
-@setOutputPin Delay_Out_End output5
 @setOutputPin Tap_6_Out tap6reg
 
 @endif
