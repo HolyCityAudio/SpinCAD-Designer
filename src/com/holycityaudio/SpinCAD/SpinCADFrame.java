@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 916;
+	int buildNum = 917;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -120,7 +120,7 @@ public class SpinCADFrame extends JFrame {
 
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
-	private RecentFileList recentFileList;
+	private RecentFileList recentFileList = null;
 	private JFileChooser fc;
 	// simulator input file
 	private static String spcFileName = "Untitled";
@@ -133,7 +133,6 @@ public class SpinCADFrame extends JFrame {
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
 	private int canUndo = 0;
-
 
 	// ------------------------------------------------------------
 	/**
@@ -167,7 +166,7 @@ public class SpinCADFrame extends JFrame {
 
 		// create a Preferences instance (somewhere later in the code)
 		prefs = Preferences.userNodeForPackage(this.getClass());
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -177,8 +176,6 @@ public class SpinCADFrame extends JFrame {
 				}
 			}
 		});
-		
-		recentFileList = new RecentFileList(null);
 
 		WindowListener exitListener = window();
 		addWindowListener(exitListener);
@@ -387,7 +384,6 @@ public class SpinCADFrame extends JFrame {
 							+ "file is a stereo 16 bit WAV file sampled \nat 32768, 44100, or 48000 Hz.");
 				}
 				catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -426,7 +422,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MessageBox("About SpinCAD Designer", "Version 0.96 Build " + buildNum + "\n"
+				MessageBox("About SpinCAD Designer", "Version 0.97 Build " + buildNum + "\n"
 						+ "Copyright 2015 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
@@ -498,6 +494,36 @@ public class SpinCADFrame extends JFrame {
 		//		System.out.println(" nameS " + nameS);
 	}
 
+	private void saveRecentFileList() {
+		StringBuilder sb = new StringBuilder(128);
+		if(recentFileList != null) {
+			for (int index = 0; index < recentFileList.listModel.getSize(); index++) {
+				File file = recentFileList.listModel.getElementAt(index);
+				if (sb.length() > 0) {
+					sb.append(File.pathSeparator);
+				}
+				sb.append(file.getPath());
+			}
+			//		System.out.println(sb.toString());
+			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+			p.put("RecentFileList.fileList", sb.toString());
+		}
+	}
+
+	private void loadRecentFileList() {
+		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+		String listOfFiles = p.get("RecentFileList.fileList", null);
+		if (listOfFiles != null) {
+			String[] files = listOfFiles.split(File.pathSeparator);
+			for (String fileRef : files) {
+				File file = new File(fileRef);
+				if (file.exists()) {
+					recentFileList.listModel.add(file);
+				}
+			}
+		}
+	}
+
 	/**
 	 * @param mntmSave
 	 */
@@ -512,6 +538,7 @@ public class SpinCADFrame extends JFrame {
 						prefs.put("MRUFolder", filePath);
 						saveMRUFolder(filePath);
 						getModel().setChanged(false);
+						recentFileList.add(fileToBeSaved);
 						updateFrameTitle();
 					} finally {
 					}
@@ -540,14 +567,15 @@ public class SpinCADFrame extends JFrame {
 						// System.out.println("Yes option");
 					}
 				}
-				String savedPath = prefs.get("MRUFolder", "");
+//				String savedPath = prefs.get("MRUFolder", "");
 
-                if (fc == null) {
-                    fc = new JFileChooser();
-                    recentFileList = new RecentFileList(fc);
-                    fc.setAccessory(recentFileList);
-                    fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                }
+				if (fc == null) {
+					fc = new JFileChooser();
+					recentFileList = new RecentFileList(fc);
+					loadRecentFileList();
+					fc.setAccessory(recentFileList);
+					fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				}
 
 				final String newline = "\n";
 				// In response to a button click:
@@ -569,7 +597,7 @@ public class SpinCADFrame extends JFrame {
 							getModel().setChanged(false);						
 							getModel().presetIndexFB();
 							saveMRUFolder(filePath);
-                            recentFileList.add(file);
+							recentFileList.add(file);
 							updateFrameTitle();
 						} catch (Exception e) {	// thrown over in SpinCADFile.java
 							spcFileName = "Untitled";
@@ -654,14 +682,9 @@ public class SpinCADFrame extends JFrame {
 								getModel().sortAlignGen();
 
 								spcFileName = files[index].getName();
-								// XXX debug
 								String spnPath  = prefs.get("MRUSpnFolder", "") + "/" + spcFileName + ".spn";
-
 								SpinCADFile.fileSaveAsm(cb, SpinCADModel.getRenderBlock().getProgramListing(1), spnPath.replace(".spcd.spn",  ".spn"));
-
 								updateFrameTitle();
-								//							SpinCADFile.fileSave(getModel(), fileToBeSaved.getPath());
-								//							spcFileName = fileToBeSaved.getName();
 							} catch (Exception e) {	// thrown over in SpinCADFile.java
 								spcFileName = "Untitled";
 								//						e.printStackTrace();
@@ -711,6 +734,7 @@ public class SpinCADFrame extends JFrame {
 				SpinCADFile.fileSave(cb, getModel(), fileToBeSaved.getPath());
 				spcFileName = fileToBeSaved.getName();
 				getModel().setChanged(false);
+				recentFileList.add(fileToBeSaved);
 				saveMRUFolder(fileToBeSaved.getPath());
 				updateFrameTitle();
 			} finally {
@@ -799,6 +823,7 @@ public class SpinCADFrame extends JFrame {
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
+					saveRecentFileList();
 					System.exit(0);
 				}
 			}
@@ -976,15 +1001,14 @@ public class SpinCADFrame extends JFrame {
 		}
 
 		private void show() {
-			commentFrame.setVisible(true);
 			commentFrame.setAlwaysOnTop(true);
 			commentFrame.pack();
 			commentFrame.setLocation(200, 150);
 			commentFrame.setResizable(false);
-			commentFrame.show();
+			commentFrame.setVisible(true);
 		}
 
-		private void updateFileName() {
+		public void updateFileName() {
 			line1text.setText("Patch Name: " + spcFileName);
 		}
 
@@ -1059,7 +1083,6 @@ public class SpinCADFrame extends JFrame {
 			}
 		}
 
-		@SuppressWarnings("unused")
 		public void actionPerformed(ActionEvent arg0) {
 			if (arg0.getSource() == btnStartSimulation) {
 				if (isSimRunning() == true) {

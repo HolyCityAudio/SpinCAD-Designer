@@ -28,6 +28,7 @@
 		import java.awt.event.ItemEvent;
 		import javax.swing.BoxLayout;
 		import javax.swing.JSlider;
+		import javax.swing.JSpinner;
 		import javax.swing.JLabel;
 		import javax.swing.JCheckBox;
 		import javax.swing.JComboBox;
@@ -41,6 +42,9 @@
 
 		private control_smootherCADBlock gCB;
 		// declare the controls
+			JSlider filtSlider;
+			JLabel  filtLabel;
+			JSpinner  filtSpinner;	
 
 		public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 		
@@ -53,19 +57,45 @@
 				frame.setTitle("Smoother");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+			//				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(0.51) * 100.0),(int) (Math.log10(15.00) * 100.0), (int) (Math.log10(gCB.getfilt()) * 100));
+							filtSlider = gCB.LogFilterSlider(0.51,15.00,gCB.getfilt());
+				filtSlider.addChangeListener(new control_smootherListener());
+				
+				filtLabel = new JLabel("Frequency");
+			
+				filtSpinner = new JSpinner();
+				updatefiltSpinner();
+				filtSpinner.addChangeListener(new control_smootherListener());
+			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(filtLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(filtSpinner);		
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(filtSlider);		
 				frame.addWindowListener(new MyWindowListener());
-				frame.setVisible(true);		
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setAlwaysOnTop(true);
+				frame.setVisible(true);		
 			}
 		});
 		}
 
 		// add change listener for Sliders 
-		class control_smootherSliderListener implements ChangeListener { 
+		class control_smootherListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == filtSlider) {
+			gCB.setfilt((double) gCB.freqToFilt(gCB.sliderToLogval((int)(filtSlider.getValue()), 100.0)));
+				updatefiltSpinner();
+			}
+			if(ce.getSource() == filtSpinner) {
+					gCB.setfilt(gCB.freqToFilt((double) filtSpinner.getValue()));
+			gCB.setfilt(gCB.freqToFilt((double)(filtSpinner.getValue())));
+//				updatefiltSlider();
+			}
 			}
 		}
 
@@ -86,6 +116,10 @@
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updatefiltSpinner() {
+		filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
+		//				filtSpinner.setText("Frequency " + String.format("%4.5f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

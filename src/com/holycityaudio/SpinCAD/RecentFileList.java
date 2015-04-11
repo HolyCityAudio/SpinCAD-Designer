@@ -30,7 +30,7 @@ import javax.swing.filechooser.FileSystemView;
 public class RecentFileList extends JPanel {
 
 	private final JList<File> list;
-	private final FileListModel listModel;
+	final FileListModel listModel;
 	private final JFileChooser fileChooser;
 
 	public RecentFileList(JFileChooser chooser) {

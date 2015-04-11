@@ -33,7 +33,7 @@ public class control_smootherACADBlock extends SpinCADBlock {
 
 	public control_smootherACADBlock(int x, int y) {
 		super(x, y);
-		setName("Smoother");	
+		setName("Smoother A");	
 		// Iterate through pin definitions and allocate or assign as needed
 		addControlInputPin(this, "Control_Input");
 		addControlOutputPin(this, "Control_Output");

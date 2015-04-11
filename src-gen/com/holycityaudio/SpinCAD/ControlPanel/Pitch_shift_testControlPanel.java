@@ -28,6 +28,7 @@
 		import java.awt.event.ItemEvent;
 		import javax.swing.BoxLayout;
 		import javax.swing.JSlider;
+		import javax.swing.JSpinner;
 		import javax.swing.JLabel;
 		import javax.swing.JCheckBox;
 		import javax.swing.JComboBox;
@@ -83,11 +84,11 @@
 				frame.getContentPane().add(lfoWidthComboBox);
 				lfoWidthComboBox.addActionListener(new Pitch_shift_testActionListener());
 				frame.addWindowListener(new MyWindowListener());
-				frame.setVisible(true);		
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setAlwaysOnTop(true);
+				frame.setVisible(true);		
 			}
 		});
 		}

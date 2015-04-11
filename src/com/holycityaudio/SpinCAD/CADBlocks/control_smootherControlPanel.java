@@ -90,7 +90,7 @@ public class control_smootherControlPanel {
 
 		        updatefiltSpinner();
 				topLine.add(filtSpinner);
-				filtSpinner.addChangeListener(new control_smootherSpinnerListener());
+				filtSpinner.addChangeListener(new control_smootherListener());
 
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(topLine);
@@ -105,7 +105,7 @@ public class control_smootherControlPanel {
 //				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
 				filtSlider = gCB.LogFilterSlider(0.5129,10.0,gCB.getfilt());
 
-				filtSlider.addChangeListener(new control_smootherSliderListener());
+				filtSlider.addChangeListener(new control_smootherListener());
 				frame.getContentPane().add(filtSlider);		
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				
@@ -122,22 +122,14 @@ public class control_smootherControlPanel {
 	}
 
 	// add change listener for Sliders 
-	class control_smootherSliderListener implements ChangeListener { 
+	class control_smootherListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == filtSlider) {
 				gCB.setfilt(gCB.freqToFilt(gCB.sliderToLogval(filtSlider.getValue(), 100.0)));
-//				updatefiltLabel();
 				updatefiltSpinner();
 			}
-		}
-	}
-	
-	// add change listener for Sliders 
-	class control_smootherSpinnerListener implements ChangeListener { 
-		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == filtSpinner) {
 				gCB.setfilt(gCB.freqToFilt((double) filtSpinner.getValue()));
-//				updatefiltLabel();
 				updatefiltSlider();
 			}
 		}
