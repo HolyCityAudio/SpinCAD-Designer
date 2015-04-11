@@ -121,6 +121,7 @@ public class SpinCADFrame extends JFrame {
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
 	private RecentFileList recentFileList;
+	private JFileChooser fc;
 	// simulator input file
 	private static String spcFileName = "Untitled";
 	// simulator output file
@@ -176,6 +177,8 @@ public class SpinCADFrame extends JFrame {
 				}
 			}
 		});
+		
+		recentFileList = new RecentFileList(null);
 
 		WindowListener exitListener = window();
 		addWindowListener(exitListener);
@@ -539,10 +542,12 @@ public class SpinCADFrame extends JFrame {
 				}
 				String savedPath = prefs.get("MRUFolder", "");
 
-				final JFileChooser fc = new JFileChooser(savedPath);
-				recentFileList = new RecentFileList(fc);
-				fc.setAccessory(recentFileList);
-				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                if (fc == null) {
+                    fc = new JFileChooser();
+                    recentFileList = new RecentFileList(fc);
+                    fc.setAccessory(recentFileList);
+                    fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                }
 
 				final String newline = "\n";
 				// In response to a button click:
@@ -564,6 +569,7 @@ public class SpinCADFrame extends JFrame {
 							getModel().setChanged(false);						
 							getModel().presetIndexFB();
 							saveMRUFolder(filePath);
+                            recentFileList.add(file);
 							updateFrameTitle();
 						} catch (Exception e) {	// thrown over in SpinCADFile.java
 							spcFileName = "Untitled";
