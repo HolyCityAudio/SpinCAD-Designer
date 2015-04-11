@@ -553,7 +553,7 @@ public class SpinCADFrame extends JFrame {
 				// In response to a button click:
 					FileNameExtensionFilter filter = new FileNameExtensionFilter(
 							"SpinCAD Files", "spcd");
-					//				fc.setFileFilter(filter);
+					fc.setFileFilter(filter);
 
 					int returnVal = fc.showOpenDialog(SpinCADFrame.this);
 					if (returnVal == JFileChooser.APPROVE_OPTION) {
