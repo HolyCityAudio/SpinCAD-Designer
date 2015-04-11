@@ -50,6 +50,7 @@ wldr 1,0,4096      ;ramp0 used for modulation operations
 START1: 
 @endif
 
+clr
 
 @isPinConnected Feedbck
 rdax feedback,fbkGain

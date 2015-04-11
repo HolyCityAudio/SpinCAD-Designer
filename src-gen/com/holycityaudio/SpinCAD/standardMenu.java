@@ -49,6 +49,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pitch_shift_testCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
@@ -60,7 +61,9 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.AbsaCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock;
@@ -68,8 +71,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherACADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
 
 	import java.awt.event.ActionEvent;
@@ -550,6 +552,15 @@
 	});
 	mn_pitch.add(mntm_pitchupdown);
 		
+	final JMenuItem mntm_Glitch_shift = new JMenuItem("Glitch Shift Adjustable");
+	mntm_Glitch_shift.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Glitch_shiftCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_pitch.add(mntm_Glitch_shift);
+		
 	final JMenuItem mntm_pitchoffset = new JMenuItem("Pitch Offset");
 	mntm_pitchoffset.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -652,6 +663,15 @@
 	});
 	mn_control.add(mntm_EnvelopeControl);
 		
+	final JMenuItem mntm_InvertControl = new JMenuItem("Invert");
+	mntm_InvertControl.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new InvertControlCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_InvertControl);
+		
 	final JMenuItem mntm_PowerControl = new JMenuItem("Power");
 	mntm_PowerControl.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -660,6 +680,15 @@
 		}
 	});
 	mn_control.add(mntm_PowerControl);
+		
+	final JMenuItem mntm_ClipControl = new JMenuItem("Clip");
+	mntm_ClipControl.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ClipControlCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_ClipControl);
 		
 	final JMenuItem mntm_Root = new JMenuItem("Root");
 	mntm_Root.addActionListener(new ActionListener() {
@@ -715,7 +744,7 @@
 	});
 	mn_control.add(mntm_ControlMixer);
 		
-	final JMenuItem mntm_control_smootherA = new JMenuItem("Smoother");
+	final JMenuItem mntm_control_smootherA = new JMenuItem("SmootherA");
 	mntm_control_smootherA.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new control_smootherACADBlock(50, 100);
@@ -724,23 +753,14 @@
 	});
 	mn_control.add(mntm_control_smootherA);
 		
-	final JMenuItem mntm_ClipControl = new JMenuItem("Clip");
-	mntm_ClipControl.addActionListener(new ActionListener() {
+	final JMenuItem mntm_control_smoother = new JMenuItem("Smoother");
+	mntm_control_smoother.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new ClipControlCADBlock(50, 100);
+			SpinCADBlock pcB = new control_smootherCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_control.add(mntm_ClipControl);
-		
-	final JMenuItem mntm_InvertControl = new JMenuItem("Invert");
-	mntm_InvertControl.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new InvertControlCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_InvertControl);
+	mn_control.add(mntm_control_smoother);
 		
 	final JMenuItem mntm_TapTempo = new JMenuItem("Tap Tempo");
 	mntm_TapTempo.addActionListener(new ActionListener() {

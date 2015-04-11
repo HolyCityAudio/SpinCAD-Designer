@@ -49,6 +49,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import java.awt.datatransfer.Clipboard;
@@ -70,14 +72,9 @@ import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
-//import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -88,6 +85,7 @@ import java.util.prefs.Preferences;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 
@@ -122,7 +120,7 @@ public class SpinCADFrame extends JFrame {
 
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
-
+	private RecentFileList recentFileList;
 	// simulator input file
 	private static String spcFileName = "Untitled";
 	// simulator output file
@@ -168,6 +166,16 @@ public class SpinCADFrame extends JFrame {
 
 		// create a Preferences instance (somewhere later in the code)
 		prefs = Preferences.userNodeForPackage(this.getClass());
+		
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+				}
+			}
+		});
 
 		WindowListener exitListener = window();
 		addWindowListener(exitListener);
@@ -532,38 +540,42 @@ public class SpinCADFrame extends JFrame {
 				String savedPath = prefs.get("MRUFolder", "");
 
 				final JFileChooser fc = new JFileChooser(savedPath);
+				recentFileList = new RecentFileList(fc);
+				fc.setAccessory(recentFileList);
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
 				final String newline = "\n";
 				// In response to a button click:
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						"SpinCAD Files", "spcd");
-				fc.setFileFilter(filter);
+					FileNameExtensionFilter filter = new FileNameExtensionFilter(
+							"SpinCAD Files", "spcd");
+					//				fc.setFileFilter(filter);
 
-				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = fc.getSelectedFile();
-					// This is where a real application would open the file.
-					System.out.println("Opening: " + file.getName() + "."
-							+ newline);
-					try {
-						String filePath = file.getPath();
-						model = SpinCADFile.fileRead(cb, getModel(), filePath );
-						spcFileName = file.getName();
-						getModel().getIndexFB();
-						getModel().setChanged(false);						
-						getModel().presetIndexFB();
-						saveMRUFolder(filePath);
-						updateFrameTitle();
-					} catch (Exception e) {	// thrown over in SpinCADFile.java
-						spcFileName = "Untitled";
-						//						e.printStackTrace();
-						MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+					int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+					if (returnVal == JFileChooser.APPROVE_OPTION) {
+						File file = fc.getSelectedFile();
+						// This is where a real application would open the file.
+						System.out.println("Opening: " + file.getName() + "."
+								+ newline);
+						try {
+							String filePath = file.getPath();
+							model = SpinCADFile.fileRead(cb, getModel(), filePath );
+							spcFileName = file.getName();
+							getModel().getIndexFB();
+							getModel().setChanged(false);						
+							getModel().presetIndexFB();
+							saveMRUFolder(filePath);
+							updateFrameTitle();
+						} catch (Exception e) {	// thrown over in SpinCADFile.java
+							spcFileName = "Untitled";
+							//						e.printStackTrace();
+							MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+						}
+					} else {
+						System.out.println("Open command cancelled by user."
+								+ newline);
 					}
-				} else {
-					System.out.println("Open command cancelled by user."
-							+ newline);
-				}
-				pb.update();
-				panel.repaint();
+					pb.update();
+					panel.repaint();
 			}
 		});
 	}
@@ -956,7 +968,7 @@ public class SpinCADFrame extends JFrame {
 			commentFrame.add(line6text);
 			commentFrame.add(line7text);
 		}
-		
+
 		private void show() {
 			commentFrame.setVisible(true);
 			commentFrame.setAlwaysOnTop(true);
@@ -965,11 +977,11 @@ public class SpinCADFrame extends JFrame {
 			commentFrame.setResizable(false);
 			commentFrame.show();
 		}
-		
+
 		private void updateFileName() {
 			line1text.setText("Patch Name: " + spcFileName);
 		}
-		
+
 		private void clearComments() {
 			line1text.setText("Patch: untitled");
 			line3text.setText(line3);
@@ -1433,6 +1445,4 @@ public class SpinCADFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
-
-
 }

@@ -83,14 +83,12 @@
 			
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();
-			if(this.getPin("Input_2").isConnected() == true) {
-			sfxb.readRegister(inp2, 1);
-			}
-			
 			if(this.getPin("Input_1").isConnected() == true) {
 			sfxb.readRegister(inp1, -1);
 			}
 			
+			if(this.getPin("Input_2").isConnected() == true) {
+			sfxb.readRegister(inp2, 1);
 			if(this.getPin("Fade").isConnected() == true) {
 			sfxb.mulx(input0);
 			} else {
@@ -98,6 +96,8 @@
 			}
 			
 			sfxb.readRegister(inp1, 1);
+			}
+			
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Audio_Output").setRegister(output1);
 

@@ -47,8 +47,6 @@ public class Reg {
 	 * @return the value
 	 */
 	public int getValue() {
-		// XXX debug GSW
-//		System.out.println("Reg = " + value);
 		return value;
 	}
 	

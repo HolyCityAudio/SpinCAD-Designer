@@ -80,6 +80,9 @@ public class ChorusReadDelay extends ChorusInstruction {
 		// do crossfading only = GSW this is oversimplified but might work for simulation
 		if(na) {
 			int fadeVal = state.getRampXfadeVal(lfo - 2);
+			if(compc) {
+				fadeVal = 16384 - fadeVal;
+			}
 			if(fadeVal != 0) {
 				@SuppressWarnings("unused")
 				int iopl = 346;
