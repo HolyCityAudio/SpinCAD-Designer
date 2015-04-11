@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * control_smootherCADBlock.java
+ * PatternGeneratorCADBlock.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -22,31 +22,35 @@
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
- 		import com.holycityaudio.SpinCAD.ControlPanel.control_smootherControlPanel;
+ 		import com.holycityaudio.SpinCAD.ControlPanel.PatternGeneratorControlPanel;
 		
-		public class control_smootherCADBlock extends SpinCADBlock {
+		public class PatternGeneratorCADBlock extends SpinCADBlock {
 
 			private static final long serialVersionUID = 1L;
-			private control_smootherControlPanel cp = null;
+			private PatternGeneratorControlPanel cp = null;
 			
-			private int filtReg;
-			private double filt = 0.00015;
+			private int output;
+			private int hold;
+			private double symmetry = 0.25;
+			private double step1 = 0.1;
+			private double step2 = 0.5;
+			private double step3 = 0.01;
+			private double step4 = 1.0;
 
-			public control_smootherCADBlock(int x, int y) {
+			public PatternGeneratorCADBlock(int x, int y) {
 				super(x, y);
-				setName("Smoother");	
+				setName("PatternGenerator");	
 				// Iterate through pin definitions and allocate or assign as needed
-				addControlInputPin(this, "Control_Input");
-				addControlOutputPin(this, "Control_Output");
+				addControlInputPin(this, "Rate");
+				addControlOutputPin(this, "Pattern_Out");
 			// if any control panel elements declared, set hasControlPanel to true
-						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
 			public void editBlock(){ 
 				if(cp == null) {
 					if(hasControlPanel == true) {
-						cp = new control_smootherControlPanel(this);
+						cp = new PatternGeneratorControlPanel(this);
 					}
 				}
 			}
@@ -65,30 +69,37 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("Control_Input").getPinConnection();
-			int input = -1;
+			sp = this.getPin("Rate").getPinConnection();
+			int rate = -1;
 			if(sp != null) {
-				input = sp.getRegister();
+				rate = sp.getRegister();
 			}
 			
 			// finally, generate the instructions
-			filtReg = sfxb.allocateReg();
-			if(this.getPin("Input").isConnected() == true) {
-			sfxb.readRegister(input, 1.0);
-			sfxb.readRegisterFilter(filtReg, filt);
-			sfxb.writeRegister(filtReg, 0.0);
-			this.getPin("Control_Output").setRegister(filtReg);
+			output = sfxb.allocateReg();
+			hold = sfxb.allocateReg();
+			if(this.getPin("Rate").isConnected() == true) {
+			sfxb.skip(RUN, 1);
+			sfxb.loadRampLFO((int) 0, (int) 20, (int) 4096);
+			sfxb.loadAccumulator(rate);
+			sfxb.mulx(rate);
+			sfxb.mulx(rate);
+			sfxb.scaleOffset(0.5, 0.1);
+			sfxb.writeRegister(RMP0_RATE, 0);
+			sfxb.chorusReadValue(RMP0);
+			sfxb.scaleOffset(1.0, -symmetry);
+			sfxb.skip(ZRC, 4);
+			sfxb.clear();
+			sfxb.readRegister(hold, 1);
+			sfxb.writeRegister(output, 0);
+			sfxb.skip(ZRO, 2);
+			sfxb.scaleOffset(0.0, step1);
+			sfxb.writeRegister(hold, 0);
+			this.getPin("Pattern_Out").setRegister(output);
 			}
 			
 
 			}
 			
 			// create setters and getter for control panel variables
-			public void setfilt(double __param) {
-				filt = __param;	
-			}
-			
-			public double getfilt() {
-				return filt;
-			}
 		}	

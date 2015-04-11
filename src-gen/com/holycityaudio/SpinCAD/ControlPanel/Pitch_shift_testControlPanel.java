@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * control_smootherControlPanel.java
+ * Pitch_shift_testControlPanel.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -34,15 +34,19 @@
 		import javax.swing.Box;
 		import java.awt.Dimension;
 		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
+		import com.holycityaudio.SpinCAD.CADBlocks.Pitch_shift_testCADBlock;
 
-		public class control_smootherControlPanel extends spinCADControlPanel {
+		public class Pitch_shift_testControlPanel extends spinCADControlPanel {
 		private JFrame frame;
 
-		private control_smootherCADBlock gCB;
+		private Pitch_shift_testCADBlock gCB;
 		// declare the controls
+			JSlider pitchCoeffSlider;
+			JLabel  pitchCoeffLabel;	
+			private JComboBox <String> lfoSelComboBox; 
+			private JComboBox <String> lfoWidthComboBox; 
 
-		public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
+		public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -50,9 +54,34 @@
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Smoother");
+				frame.setTitle("Pitch_Shift");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+			pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-8192 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
+				pitchCoeffSlider.addChangeListener(new Pitch_shift_testSliderListener());
+				pitchCoeffLabel = new JLabel();
+				updatepitchCoeffLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(pitchCoeffLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(pitchCoeffSlider);		
+				lfoSelComboBox = new JComboBox <String> ();
+				lfoSelComboBox.addItem("Ramp 0");
+				lfoSelComboBox.addItem("Ramp 1");
+				lfoSelComboBox.setSelectedIndex(gCB.getlfoSel());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(lfoSelComboBox);
+				lfoSelComboBox.addActionListener(new Pitch_shift_testActionListener());
+				lfoWidthComboBox = new JComboBox <String> ();
+				lfoWidthComboBox.addItem("4096");
+				lfoWidthComboBox.addItem("2048");
+			lfoWidthComboBox.addItem("1024");
+			lfoWidthComboBox.addItem("512");
+				lfoWidthComboBox.setSelectedIndex(gCB.getlfoWidth());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(lfoWidthComboBox);
+				lfoWidthComboBox.addActionListener(new Pitch_shift_testActionListener());
 				frame.addWindowListener(new MyWindowListener());
 				frame.setVisible(true);		
 				frame.pack();
@@ -64,13 +93,17 @@
 		}
 
 		// add change listener for Sliders 
-		class control_smootherSliderListener implements ChangeListener { 
+		class Pitch_shift_testSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == pitchCoeffSlider) {
+			gCB.setpitchCoeff((double) (pitchCoeffSlider.getValue()/1.0));
+				updatepitchCoeffLabel();
+			}
 			}
 		}
 
 		// add item listener 
-		class control_smootherItemListener implements java.awt.event.ItemListener { 
+		class Pitch_shift_testItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
 			
@@ -81,11 +114,20 @@
 		}
 		
 		// add action listener 
-		class control_smootherActionListener implements java.awt.event.ActionListener { 
+		class Pitch_shift_testActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+			if(arg0.getSource() == lfoSelComboBox) {
+				gCB.setlfoSel((lfoSelComboBox.getSelectedIndex()));
+			}
+			if(arg0.getSource() == lfoWidthComboBox) {
+				gCB.setlfoWidth((lfoWidthComboBox.getSelectedIndex()));
+			}
 			}
 		}
+		private void updatepitchCoeffLabel() {
+		pitchCoeffLabel.setText("Pitch_Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

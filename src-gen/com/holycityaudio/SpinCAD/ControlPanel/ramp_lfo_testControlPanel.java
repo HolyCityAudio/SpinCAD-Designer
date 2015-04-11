@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * control_smootherControlPanel.java
+ * ramp_lfo_testControlPanel.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -34,15 +34,15 @@
 		import javax.swing.Box;
 		import java.awt.Dimension;
 		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
+		import com.holycityaudio.SpinCAD.CADBlocks.ramp_lfo_testCADBlock;
 
-		public class control_smootherControlPanel extends spinCADControlPanel {
+		public class ramp_lfo_testControlPanel extends spinCADControlPanel {
 		private JFrame frame;
 
-		private control_smootherCADBlock gCB;
+		private ramp_lfo_testCADBlock gCB;
 		// declare the controls
 
-		public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
+		public ramp_lfo_testControlPanel(ramp_lfo_testCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -50,7 +50,7 @@
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Smoother");
+				frame.setTitle("Ramp_LFO_Test");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				frame.addWindowListener(new MyWindowListener());
@@ -64,13 +64,13 @@
 		}
 
 		// add change listener for Sliders 
-		class control_smootherSliderListener implements ChangeListener { 
+		class ramp_lfo_testSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
 		}
 
 		// add item listener 
-		class control_smootherItemListener implements java.awt.event.ItemListener { 
+		class ramp_lfo_testItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
 			
@@ -81,7 +81,7 @@
 		}
 		
 		// add action listener 
-		class control_smootherActionListener implements java.awt.event.ActionListener { 
+		class ramp_lfo_testActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

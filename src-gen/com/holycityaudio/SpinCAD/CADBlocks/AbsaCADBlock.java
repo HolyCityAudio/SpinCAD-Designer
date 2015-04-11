@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * control_smootherCADBlock.java
+ * AbsaCADBlock.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -22,31 +22,29 @@
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
- 		import com.holycityaudio.SpinCAD.ControlPanel.control_smootherControlPanel;
+ 		import com.holycityaudio.SpinCAD.ControlPanel.AbsaControlPanel;
 		
-		public class control_smootherCADBlock extends SpinCADBlock {
+		public class AbsaCADBlock extends SpinCADBlock {
 
 			private static final long serialVersionUID = 1L;
-			private control_smootherControlPanel cp = null;
+			private AbsaControlPanel cp = null;
 			
-			private int filtReg;
-			private double filt = 0.00015;
+			private int output1;
 
-			public control_smootherCADBlock(int x, int y) {
+			public AbsaCADBlock(int x, int y) {
 				super(x, y);
-				setName("Smoother");	
+				setName("AbsoluteValue");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control_Input");
 				addControlOutputPin(this, "Control_Output");
 			// if any control panel elements declared, set hasControlPanel to true
-						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
 			public void editBlock(){ 
 				if(cp == null) {
 					if(hasControlPanel == true) {
-						cp = new control_smootherControlPanel(this);
+						cp = new AbsaControlPanel(this);
 					}
 				}
 			}
@@ -72,23 +70,16 @@
 			}
 			
 			// finally, generate the instructions
-			filtReg = sfxb.allocateReg();
+			output1 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
-			sfxb.readRegister(input, 1.0);
-			sfxb.readRegisterFilter(filtReg, filt);
-			sfxb.writeRegister(filtReg, 0.0);
-			this.getPin("Control_Output").setRegister(filtReg);
+			sfxb.readRegister(input, 1);
+			sfxb.absa();
+			sfxb.writeRegister(output1, 0);
+			this.getPin("Control_Output").setRegister(output1);
 			}
 			
 
 			}
 			
 			// create setters and getter for control panel variables
-			public void setfilt(double __param) {
-				filt = __param;	
-			}
-			
-			public double getfilt() {
-				return filt;
-			}
 		}	

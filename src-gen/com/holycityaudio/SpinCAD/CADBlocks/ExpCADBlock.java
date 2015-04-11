@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * control_smootherCADBlock.java
+ * ExpCADBlock.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -22,19 +22,19 @@
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
- 		import com.holycityaudio.SpinCAD.ControlPanel.control_smootherControlPanel;
+ 		import com.holycityaudio.SpinCAD.ControlPanel.ExpControlPanel;
 		
-		public class control_smootherCADBlock extends SpinCADBlock {
+		public class ExpCADBlock extends SpinCADBlock {
 
 			private static final long serialVersionUID = 1L;
-			private control_smootherControlPanel cp = null;
+			private ExpControlPanel cp = null;
 			
-			private int filtReg;
-			private double filt = 0.00015;
+			private double multiplier = 0.5;
+			private int output1;
 
-			public control_smootherCADBlock(int x, int y) {
+			public ExpCADBlock(int x, int y) {
 				super(x, y);
-				setName("Smoother");	
+				setName("Exp");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control_Input");
 				addControlOutputPin(this, "Control_Output");
@@ -46,7 +46,7 @@
 			public void editBlock(){ 
 				if(cp == null) {
 					if(hasControlPanel == true) {
-						cp = new control_smootherControlPanel(this);
+						cp = new ExpControlPanel(this);
 					}
 				}
 			}
@@ -72,23 +72,23 @@
 			}
 			
 			// finally, generate the instructions
-			filtReg = sfxb.allocateReg();
+			output1 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
-			sfxb.readRegister(input, 1.0);
-			sfxb.readRegisterFilter(filtReg, filt);
-			sfxb.writeRegister(filtReg, 0.0);
-			this.getPin("Control_Output").setRegister(filtReg);
+			sfxb.readRegister(input, 1);
+			sfxb.exp(multiplier, 0.5);
+			sfxb.writeRegister(output1, 0);
+			this.getPin("Control_Output").setRegister(output1);
 			}
 			
 
 			}
 			
 			// create setters and getter for control panel variables
-			public void setfilt(double __param) {
-				filt = __param;	
+			public void setmultiplier(double __param) {
+				multiplier = __param;	
 			}
 			
-			public double getfilt() {
-				return filt;
+			public double getmultiplier() {
+				return multiplier;
 			}
 		}	
