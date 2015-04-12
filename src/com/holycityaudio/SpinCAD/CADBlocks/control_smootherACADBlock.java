@@ -29,7 +29,7 @@ public class control_smootherACADBlock extends SpinCADBlock {
 
 	private int filtReg;
 	private double filt = 0.00015;	// default value is 1.0 Hz
-	private control_smootherControlPanel cp = null;
+	private control_smootherControlPanelA cp = null;
 
 	public control_smootherACADBlock(int x, int y) {
 		super(x, y);
@@ -45,7 +45,7 @@ public class control_smootherACADBlock extends SpinCADBlock {
 	public void editBlock(){ 
 		if(cp == null) {
 			if(hasControlPanel == true) {
-				cp = new control_smootherControlPanel(this);
+				cp = new control_smootherControlPanelA(this);
 			}
 		}
 	}
@@ -75,7 +75,6 @@ public class control_smootherACADBlock extends SpinCADBlock {
 		filtReg = sfxb.allocateReg();
 		if(this.getPin("Input").getPinConnection() != null) {
 			sfxb.readRegister(input, 1.0);
-			//			sfxb.readRegisterFilter(filtReg, Math.sin((2 * Math.PI * filt)/sfxb.getSamplerate()));
 			sfxb.readRegisterFilter(filtReg, filt);
 			sfxb.writeRegister(filtReg, 0.0);
 			this.getPin("Control_Output").setRegister(filtReg);

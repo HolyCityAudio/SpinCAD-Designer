@@ -17,37 +17,45 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 
-		public class rms_limiterControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class rms_limiterControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private rms_limiterCADBlock gCB;
-		// declare the controls
-			JSlider inGainSlider;
-			JLabel  inGainLabel;	
-			JSlider filtSlider;
-			JLabel  filtLabel;	
+	private rms_limiterCADBlock gCB;
+	// declare the controls
+	JSlider inGainSlider;
+	JLabel  inGainLabel;	
+	JSlider filtSlider;
+	JLabel  filtLabel;	
 
-		public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
+public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -60,23 +68,38 @@
 
 			
 			inGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.1 * 100.0),(int) (1.0 * 100.0), (int) (gCB.getinGain() * 100.0));
-				inGainSlider.addChangeListener(new rms_limiterSliderListener());
+				inGainSlider.addChangeListener(new rms_limiterListener());
 				inGainLabel = new JLabel();
 				updateinGainLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(inGainLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(inGainSlider);		
+				
+				Border inGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel inGaininnerPanel = new JPanel();
+					
+				inGaininnerPanel.setLayout(new BoxLayout(inGaininnerPanel, BoxLayout.Y_AXIS));
+				inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				inGaininnerPanel.add(inGainLabel);
+				inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				inGaininnerPanel.add(inGainSlider);		
+				inGaininnerPanel.setBorder(inGainborder);
 			
-			//				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(10) * 100.0),(int) (Math.log10(100) * 100.0), (int) (Math.log10(gCB.getfilt()) * 100));
-							filtSlider = gCB.LogFilterSlider(10,100,gCB.getfilt());
-				filtSlider.addChangeListener(new rms_limiterSliderListener());
+				frame.add(inGaininnerPanel);
+			
+			filtSlider = gCB.LogFilterSlider(10,100,gCB.getfilt());
+				filtSlider.addChangeListener(new rms_limiterListener());
 				filtLabel = new JLabel();
 				updatefiltLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(filtLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(filtSlider);		
+				
+				Border filtborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel filtinnerPanel = new JPanel();
+					
+				filtinnerPanel.setLayout(new BoxLayout(filtinnerPanel, BoxLayout.Y_AXIS));
+				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				filtinnerPanel.add(filtLabel);
+				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				filtinnerPanel.add(filtSlider);		
+				filtinnerPanel.setBorder(filtborder);
+			
+				frame.add(filtinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -87,8 +110,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class rms_limiterSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class rms_limiterListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inGainSlider) {
 			gCB.setinGain((double) (inGainSlider.getValue()/100.0));

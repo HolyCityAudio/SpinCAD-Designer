@@ -17,35 +17,43 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 
-		public class tremolizerControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class tremolizerControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private tremolizerCADBlock gCB;
-		// declare the controls
-			JSlider depthSlider;
-			JLabel  depthLabel;	
+	private tremolizerCADBlock gCB;
+	// declare the controls
+	JSlider depthSlider;
+	JLabel  depthLabel;	
 
-		public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
+public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -58,13 +66,21 @@
 
 			
 			depthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.5 * 100.0),(int) (0.999 * 100.0), (int) (gCB.getdepth() * 100.0));
-				depthSlider.addChangeListener(new tremolizerSliderListener());
+				depthSlider.addChangeListener(new tremolizerListener());
 				depthLabel = new JLabel();
 				updatedepthLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(depthLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(depthSlider);		
+				
+				Border depthborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel depthinnerPanel = new JPanel();
+					
+				depthinnerPanel.setLayout(new BoxLayout(depthinnerPanel, BoxLayout.Y_AXIS));
+				depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				depthinnerPanel.add(depthLabel);
+				depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				depthinnerPanel.add(depthSlider);		
+				depthinnerPanel.setBorder(depthborder);
+			
+				frame.add(depthinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -75,8 +91,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class tremolizerSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class tremolizerListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == depthSlider) {
 			gCB.setdepth((double) (depthSlider.getValue()/100.0));

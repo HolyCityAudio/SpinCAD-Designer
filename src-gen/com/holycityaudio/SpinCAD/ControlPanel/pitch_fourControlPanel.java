@@ -17,42 +17,50 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.pitch_fourCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.pitch_fourCADBlock;
 
-		public class pitch_fourControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class pitch_fourControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private pitch_fourCADBlock gCB;
-		// declare the controls
-			JSlider pitch1Slider;
-			JLabel  pitch1Label;	
-			JSlider pitch2Slider;
-			JLabel  pitch2Label;	
-			JSlider pitch3Slider;
-			JLabel  pitch3Label;	
-			JSlider pitch4Slider;
-			JLabel  pitch4Label;	
-			private JComboBox <String> lfoSelComboBox; 
+	private pitch_fourCADBlock gCB;
+	// declare the controls
+	JSlider pitch1Slider;
+	JLabel  pitch1Label;	
+	JSlider pitch2Slider;
+	JLabel  pitch2Label;	
+	JSlider pitch3Slider;
+	JLabel  pitch3Label;	
+	JSlider pitch4Slider;
+	JLabel  pitch4Label;	
+	private JComboBox <String> lfoSelComboBox; 
 
-		public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
+public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -65,40 +73,72 @@
 
 			
 			pitch1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (17 * 1.0), (int) (gCB.getpitch1() * 1.0));
-				pitch1Slider.addChangeListener(new pitch_fourSliderListener());
+				pitch1Slider.addChangeListener(new pitch_fourListener());
 				pitch1Label = new JLabel();
 				updatepitch1Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitch1Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitch1Slider);		
+				
+				Border pitch1border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel pitch1innerPanel = new JPanel();
+					
+				pitch1innerPanel.setLayout(new BoxLayout(pitch1innerPanel, BoxLayout.Y_AXIS));
+				pitch1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitch1innerPanel.add(pitch1Label);
+				pitch1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitch1innerPanel.add(pitch1Slider);		
+				pitch1innerPanel.setBorder(pitch1border);
+			
+				frame.add(pitch1innerPanel);
 			
 			pitch2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (17 * 1.0), (int) (gCB.getpitch2() * 1.0));
-				pitch2Slider.addChangeListener(new pitch_fourSliderListener());
+				pitch2Slider.addChangeListener(new pitch_fourListener());
 				pitch2Label = new JLabel();
 				updatepitch2Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitch2Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitch2Slider);		
+				
+				Border pitch2border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel pitch2innerPanel = new JPanel();
+					
+				pitch2innerPanel.setLayout(new BoxLayout(pitch2innerPanel, BoxLayout.Y_AXIS));
+				pitch2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitch2innerPanel.add(pitch2Label);
+				pitch2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitch2innerPanel.add(pitch2Slider);		
+				pitch2innerPanel.setBorder(pitch2border);
+			
+				frame.add(pitch2innerPanel);
 			
 			pitch3Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (17 * 1.0), (int) (gCB.getpitch3() * 1.0));
-				pitch3Slider.addChangeListener(new pitch_fourSliderListener());
+				pitch3Slider.addChangeListener(new pitch_fourListener());
 				pitch3Label = new JLabel();
 				updatepitch3Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitch3Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitch3Slider);		
+				
+				Border pitch3border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel pitch3innerPanel = new JPanel();
+					
+				pitch3innerPanel.setLayout(new BoxLayout(pitch3innerPanel, BoxLayout.Y_AXIS));
+				pitch3innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitch3innerPanel.add(pitch3Label);
+				pitch3innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitch3innerPanel.add(pitch3Slider);		
+				pitch3innerPanel.setBorder(pitch3border);
+			
+				frame.add(pitch3innerPanel);
 			
 			pitch4Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (17 * 1.0), (int) (gCB.getpitch4() * 1.0));
-				pitch4Slider.addChangeListener(new pitch_fourSliderListener());
+				pitch4Slider.addChangeListener(new pitch_fourListener());
 				pitch4Label = new JLabel();
 				updatepitch4Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitch4Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitch4Slider);		
+				
+				Border pitch4border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel pitch4innerPanel = new JPanel();
+					
+				pitch4innerPanel.setLayout(new BoxLayout(pitch4innerPanel, BoxLayout.Y_AXIS));
+				pitch4innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitch4innerPanel.add(pitch4Label);
+				pitch4innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitch4innerPanel.add(pitch4Slider);		
+				pitch4innerPanel.setBorder(pitch4border);
+			
+				frame.add(pitch4innerPanel);
 				lfoSelComboBox = new JComboBox <String> ();
 				lfoSelComboBox.addItem("Ramp 0");
 				lfoSelComboBox.addItem("Ramp 1");
@@ -116,8 +156,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class pitch_fourSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class pitch_fourListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == pitch1Slider) {
 			gCB.setpitch1((double) (pitch1Slider.getValue()/1.0));

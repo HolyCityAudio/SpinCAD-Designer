@@ -17,35 +17,43 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.slow_gearCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.slow_gearCADBlock;
 
-		public class slow_gearControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class slow_gearControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private slow_gearCADBlock gCB;
-		// declare the controls
-			JSlider threshSlider;
-			JLabel  threshLabel;	
+	private slow_gearCADBlock gCB;
+	// declare the controls
+	JSlider threshSlider;
+	JLabel  threshLabel;	
 
-		public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
+public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -59,13 +67,21 @@
 			
 			// dB level slider goes in steps of 1 dB
 				threshSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getthresh())));
-				threshSlider.addChangeListener(new slow_gearSliderListener());
+				threshSlider.addChangeListener(new slow_gearListener());
 				threshLabel = new JLabel();
 				updatethreshLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(threshLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(threshSlider);		
+				
+				Border threshborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel threshinnerPanel = new JPanel();
+					
+				threshinnerPanel.setLayout(new BoxLayout(threshinnerPanel, BoxLayout.Y_AXIS));
+				threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				threshinnerPanel.add(threshLabel);
+				threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				threshinnerPanel.add(threshSlider);		
+				threshinnerPanel.setBorder(threshborder);
+			
+				frame.add(threshinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -76,8 +92,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class slow_gearSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class slow_gearListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == threshSlider) {
 			gCB.setthresh((double) (threshSlider.getValue()/1.0));

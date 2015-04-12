@@ -17,36 +17,45 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 
-		public class control_smootherControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class control_smootherControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private control_smootherCADBlock gCB;
-		// declare the controls
-			JSlider filtSlider;
-			JLabel  filtLabel;
-			JSpinner  filtSpinner;	
+	private control_smootherCADBlock gCB;
+	// declare the controls
+	JSlider filtSlider;
+	JLabel  filtLabel;
+	JSpinner  filtSpinner;	
+	private boolean silentGUIChange = false;	
 
-		public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
+public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -58,22 +67,48 @@
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			//				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(0.51) * 100.0),(int) (Math.log10(15.00) * 100.0), (int) (Math.log10(gCB.getfilt()) * 100));
-							filtSlider = gCB.LogFilterSlider(0.51,15.00,gCB.getfilt());
+			filtSlider = SpinCADBlock.LogFilterSlider(0.51,15.00,gCB.getfilt());
 				filtSlider.addChangeListener(new control_smootherListener());
 				
-				filtLabel = new JLabel("Frequency");
+				filtLabel = new JLabel("Frequency (Hz)");
 			
-				filtSpinner = new JSpinner();
+				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getfilt()) * 100, 0.51, 10000.00, 0.01);
+			
+				filtSpinner = new JSpinner(filtSpinnerNumberModel);
+				JSpinner.NumberEditor editor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
+				DecimalFormat format = editor.getFormat();  
+			 			format.setMinimumFractionDigits(2);  
+				format.setMaximumFractionDigits(2);  
+				editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
+				Dimension d = filtSpinner.getPreferredSize();  
+				d.width = 25;  
+				filtSpinner.setPreferredSize(d);  
+				
 				updatefiltSpinner();
 				filtSpinner.addChangeListener(new control_smootherListener());
+				
+				JPanel topLine = new JPanel();
+				topLine.setLayout(new BoxLayout(topLine, BoxLayout.X_AXIS));
 			
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(filtLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(filtSpinner);		
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(filtSlider);		
+				topLine.add(Box.createRigidArea(new Dimension(35,4)));			
+				topLine.add(filtLabel);
+				topLine.add(Box.createRigidArea(new Dimension(35,4)));			
+				topLine.add(filtSpinner);
+				
+				Border border2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				topLine.setBorder(border2);
+			
+				Border border1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel innerPanel = new JPanel();
+					
+				innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
+				innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				innerPanel.add(topLine);
+				innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				innerPanel.add(filtSlider);		
+				innerPanel.setBorder(border1);
+			
+				frame.add(innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -84,17 +119,19 @@
 		});
 		}
 
-		// add change listener for Sliders 
+		// add change listener for Sliders, Spinners 
 		class control_smootherListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(silentGUIChange == true) 
+				return;
+			
 			if(ce.getSource() == filtSlider) {
 			gCB.setfilt((double) gCB.freqToFilt(gCB.sliderToLogval((int)(filtSlider.getValue()), 100.0)));
 				updatefiltSpinner();
 			}
 			if(ce.getSource() == filtSpinner) {
-					gCB.setfilt(gCB.freqToFilt((double) filtSpinner.getValue()));
 			gCB.setfilt(gCB.freqToFilt((double)(filtSpinner.getValue())));
-//				updatefiltSlider();
+				updatefiltSlider();
 			}
 			}
 		}
@@ -117,9 +154,33 @@
 			}
 		}
 		private void updatefiltSpinner() {
+			SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					silentGUIChange = true;
 		filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
-		//				filtSpinner.setText("Frequency " + String.format("%4.5f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
+				}
+				finally {
+					silentGUIChange = false;   	    	  
+				}
+			}
+		});
+		}	
+		
+		private void updatefiltSlider() {
+			SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					silentGUIChange = true;
+		filtSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getfilt()))));		
+				}
+				finally {
+					silentGUIChange = false;   	    	  
+				}
+			}
+		});
 		}		
+			
 		
 		class MyWindowListener implements WindowListener
 		{

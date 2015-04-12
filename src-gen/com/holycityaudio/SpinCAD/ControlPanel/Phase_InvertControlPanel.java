@@ -17,33 +17,41 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.Phase_InvertCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.Phase_InvertCADBlock;
 
-		public class Phase_InvertControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class Phase_InvertControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private Phase_InvertCADBlock gCB;
-		// declare the controls
+	private Phase_InvertCADBlock gCB;
+	// declare the controls
 
-		public Phase_InvertControlPanel(Phase_InvertCADBlock genericCADBlock) {
+public Phase_InvertControlPanel(Phase_InvertCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -64,8 +72,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class Phase_InvertSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class Phase_InvertListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			}
 		}

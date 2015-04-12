@@ -17,37 +17,45 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
 
-		public class Glitch_shiftControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class Glitch_shiftControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private Glitch_shiftCADBlock gCB;
-		// declare the controls
-			JSlider pitchCoeffSlider;
-			JLabel  pitchCoeffLabel;	
-			private JComboBox <String> lfoSelComboBox; 
-			private JComboBox <String> lfoWidthComboBox; 
+	private Glitch_shiftCADBlock gCB;
+	// declare the controls
+	JSlider pitchCoeffSlider;
+	JLabel  pitchCoeffLabel;	
+	private JComboBox <String> lfoSelComboBox; 
+	private JComboBox <String> lfoWidthComboBox; 
 
-		public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
+public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -60,13 +68,21 @@
 
 			
 			pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-8192 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
-				pitchCoeffSlider.addChangeListener(new Glitch_shiftSliderListener());
+				pitchCoeffSlider.addChangeListener(new Glitch_shiftListener());
 				pitchCoeffLabel = new JLabel();
 				updatepitchCoeffLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitchCoeffLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(pitchCoeffSlider);		
+				
+				Border pitchCoeffborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel pitchCoeffinnerPanel = new JPanel();
+					
+				pitchCoeffinnerPanel.setLayout(new BoxLayout(pitchCoeffinnerPanel, BoxLayout.Y_AXIS));
+				pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitchCoeffinnerPanel.add(pitchCoeffLabel);
+				pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				pitchCoeffinnerPanel.add(pitchCoeffSlider);		
+				pitchCoeffinnerPanel.setBorder(pitchCoeffborder);
+			
+				frame.add(pitchCoeffinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();
 				lfoSelComboBox.addItem("Ramp 0");
 				lfoSelComboBox.addItem("Ramp 1");
@@ -93,8 +109,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class Glitch_shiftSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class Glitch_shiftListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == pitchCoeffSlider) {
 			gCB.setpitchCoeff((double) (pitchCoeffSlider.getValue()/1.0));

@@ -42,17 +42,18 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinSliderSpinner;
 
 
-public class control_smootherControlPanel {
+public class control_smootherControlPanelA {
 	private JFrame frame;
 
 	private control_smootherACADBlock gCB;
+	private boolean silentGUIChange = false;
 	// declare the controls
 	JSlider filtSlider;
 	JLabel  filtLabel;	
 	JSpinner filtSpinner;
-	SpinSliderSpinner goombah;
-	
-	public control_smootherControlPanel(control_smootherACADBlock genericCADBlock) {
+
+
+	public control_smootherControlPanelA(control_smootherACADBlock genericCADBlock) {
 
 		gCB = genericCADBlock;
 
@@ -61,56 +62,50 @@ public class control_smootherControlPanel {
 
 				frame = new JFrame();
 				frame.setTitle("Smoother");
-				
-				goombah = new SpinSliderSpinner(" Frekwencee (Hurts) ");
-//				frame.add(goombah);
-				
+
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				JPanel topLine = new JPanel();
 				topLine.setLayout(new BoxLayout(topLine, BoxLayout.X_AXIS));
-			
-				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(gCB.filtToFreq(gCB.getfilt()) * 100, 0.51, 10000.00, 0.01);
-
-				filtSpinner = new JSpinner(filtSpinnerNumberModel);
-		        
-				JSpinner.NumberEditor editor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
-				filtLabel = new JLabel();
-				updatefiltLabel();
+				// Label
+				filtLabel = new JLabel("  Frequency (Hz)  ");
 				topLine.add(filtLabel);
-				topLine.setVisible(true);
-				frame.getContentPane().add(filtLabel);
 
-                DecimalFormat format = editor.getFormat();  
-		        format.setMinimumFractionDigits(2);  
-		        format.setMaximumFractionDigits(2);  
-		        editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
-		        Dimension d = filtSpinner.getPreferredSize();  
-		        d.width = 55;  
-		        filtSpinner.setPreferredSize(d);  
+				// Spinner
+				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getfilt()) * 100, 0.51, 10000.00, 0.01);
+				filtSpinner = new JSpinner(filtSpinnerNumberModel);
+				JSpinner.NumberEditor editor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
 
-		        updatefiltSpinner();
-				topLine.add(filtSpinner);
+				DecimalFormat format = editor.getFormat();  
+				format.setMinimumFractionDigits(2);  
+				format.setMaximumFractionDigits(2);  
+				editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
+				Dimension d = filtSpinner.getPreferredSize();  
+				d.width = 55;  
+				filtSpinner.setPreferredSize(d);  
+
+				updatefiltSpinner();
 				filtSpinner.addChangeListener(new control_smootherListener());
+				topLine.add(filtSpinner);
+				topLine.setVisible(true);
 
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
 				frame.getContentPane().add(topLine);
 
 				frame.add(Box.createRigidArea(new Dimension(5,5)));			
-				
+
 				// JSlider value is converted to an exponent representing filter frequency, so 
 				// -29 => 10^(-29/100) = 0.5129 Hz which determined is the lowest practical frequency possible
 				// with the FV-1's coefficient resolution.
 				// 100 => 10^(100/100) = 10 Hz.
-			
-//				filtSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (100), gCB.logvalToSlider(gCB.filtToFreq(gCB.getfilt()), 100.0));
+
 				filtSlider = gCB.LogFilterSlider(0.5129,10.0,gCB.getfilt());
 
 				filtSlider.addChangeListener(new control_smootherListener());
 				frame.getContentPane().add(filtSlider);		
 				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				
+
 				frame.addWindowListener(new MyWindowListener());
-				
+
 				frame.setVisible(true);		
 				frame.pack();
 				frame.setResizable(false);
@@ -124,6 +119,8 @@ public class control_smootherControlPanel {
 	// add change listener for Sliders 
 	class control_smootherListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(silentGUIChange == true) 
+				return;
 			if(ce.getSource() == filtSlider) {
 				gCB.setfilt(gCB.freqToFilt(gCB.sliderToLogval(filtSlider.getValue(), 100.0)));
 				updatefiltSpinner();
@@ -134,28 +131,36 @@ public class control_smootherControlPanel {
 			}
 		}
 	}
-	
-	// add item listener for Bool (CheckbBox) 
-	class control_smootherItemListener implements java.awt.event.ItemListener { 
-		public void stateChanged(ChangeEvent ce) {
-		}
-		@Override
-		public void itemStateChanged(ItemEvent arg0) {
-		}
-	}
 
-	private void updatefiltLabel() {
-		filtLabel.setText(String.format(" Frequency (Hz) "));		
-	}
-	
+
 	private void updatefiltSpinner() {
-		filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					silentGUIChange = true;
+					filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
+				}
+				finally {
+					silentGUIChange = false;   	    	  
+				}
+			}
+		});
 	}
 
 	private void updatefiltSlider() {
-		filtSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getfilt()))));
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					silentGUIChange = true;
+					filtSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getfilt()))));
+				}
+				finally {
+					silentGUIChange = false;   	    	  
+				}
+			}
+		});
 	}
-	
+
 	class MyWindowListener implements WindowListener
 	{
 		@Override

@@ -17,49 +17,57 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 
-		public class rom_rev2ControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class rom_rev2ControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private rom_rev2CADBlock gCB;
-		// declare the controls
-			JSlider gainSlider;
-			JLabel  gainLabel;	
-			JSlider revTimeMaxSlider;
-			JLabel  revTimeMaxLabel;	
-			JSlider kapiSlider;
-			JLabel  kapiLabel;	
-			JSlider kapd1Slider;
-			JLabel  kapd1Label;	
-			JSlider kapd2Slider;
-			JLabel  kapd2Label;	
-			JSlider kflSlider;
-			JLabel  kflLabel;	
-			JSlider kfhSlider;
-			JLabel  kfhLabel;	
-			JSlider memscaleSlider;
-			JLabel  memscaleLabel;	
+	private rom_rev2CADBlock gCB;
+	// declare the controls
+	JSlider gainSlider;
+	JLabel  gainLabel;	
+	JSlider revTimeMaxSlider;
+	JLabel  revTimeMaxLabel;	
+	JSlider kapiSlider;
+	JLabel  kapiLabel;	
+	JSlider kapd1Slider;
+	JLabel  kapd1Label;	
+	JSlider kapd2Slider;
+	JLabel  kapd2Label;	
+	JSlider kflSlider;
+	JLabel  kflLabel;	
+	JSlider kfhSlider;
+	JLabel  kfhLabel;	
+	JSlider memscaleSlider;
+	JLabel  memscaleLabel;	
 
-		public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
+public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -73,78 +81,140 @@
 			
 			// dB level slider goes in steps of 1 dB
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
-				gainSlider.addChangeListener(new rom_rev2SliderListener());
+				gainSlider.addChangeListener(new rom_rev2Listener());
 				gainLabel = new JLabel();
 				updategainLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gainLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gainSlider);		
+				
+				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gaininnerPanel = new JPanel();
+					
+				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainLabel);
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainSlider);		
+				gaininnerPanel.setBorder(gainborder);
+			
+				frame.add(gaininnerPanel);
 			
 			revTimeMaxSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.9 * 100.0), (int) (gCB.getrevTimeMax() * 100.0));
-				revTimeMaxSlider.addChangeListener(new rom_rev2SliderListener());
+				revTimeMaxSlider.addChangeListener(new rom_rev2Listener());
 				revTimeMaxLabel = new JLabel();
 				updaterevTimeMaxLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(revTimeMaxLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(revTimeMaxSlider);		
+				
+				Border revTimeMaxborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel revTimeMaxinnerPanel = new JPanel();
+					
+				revTimeMaxinnerPanel.setLayout(new BoxLayout(revTimeMaxinnerPanel, BoxLayout.Y_AXIS));
+				revTimeMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				revTimeMaxinnerPanel.add(revTimeMaxLabel);
+				revTimeMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				revTimeMaxinnerPanel.add(revTimeMaxSlider);		
+				revTimeMaxinnerPanel.setBorder(revTimeMaxborder);
+			
+				frame.add(revTimeMaxinnerPanel);
 			
 			kapiSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.3 * 100.0),(int) (0.8 * 100.0), (int) (gCB.getkapi() * 100.0));
-				kapiSlider.addChangeListener(new rom_rev2SliderListener());
+				kapiSlider.addChangeListener(new rom_rev2Listener());
 				kapiLabel = new JLabel();
 				updatekapiLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kapiLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kapiSlider);		
+				
+				Border kapiborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel kapiinnerPanel = new JPanel();
+					
+				kapiinnerPanel.setLayout(new BoxLayout(kapiinnerPanel, BoxLayout.Y_AXIS));
+				kapiinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kapiinnerPanel.add(kapiLabel);
+				kapiinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kapiinnerPanel.add(kapiSlider);		
+				kapiinnerPanel.setBorder(kapiborder);
+			
+				frame.add(kapiinnerPanel);
 			
 			kapd1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.3 * 100.0),(int) (0.8 * 100.0), (int) (gCB.getkapd1() * 100.0));
-				kapd1Slider.addChangeListener(new rom_rev2SliderListener());
+				kapd1Slider.addChangeListener(new rom_rev2Listener());
 				kapd1Label = new JLabel();
 				updatekapd1Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kapd1Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kapd1Slider);		
+				
+				Border kapd1border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel kapd1innerPanel = new JPanel();
+					
+				kapd1innerPanel.setLayout(new BoxLayout(kapd1innerPanel, BoxLayout.Y_AXIS));
+				kapd1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kapd1innerPanel.add(kapd1Label);
+				kapd1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kapd1innerPanel.add(kapd1Slider);		
+				kapd1innerPanel.setBorder(kapd1border);
+			
+				frame.add(kapd1innerPanel);
 			
 			kapd2Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.3 * 100.0),(int) (0.8 * 100.0), (int) (gCB.getkapd2() * 100.0));
-				kapd2Slider.addChangeListener(new rom_rev2SliderListener());
+				kapd2Slider.addChangeListener(new rom_rev2Listener());
 				kapd2Label = new JLabel();
 				updatekapd2Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kapd2Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kapd2Slider);		
+				
+				Border kapd2border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel kapd2innerPanel = new JPanel();
+					
+				kapd2innerPanel.setLayout(new BoxLayout(kapd2innerPanel, BoxLayout.Y_AXIS));
+				kapd2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kapd2innerPanel.add(kapd2Label);
+				kapd2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kapd2innerPanel.add(kapd2Slider);		
+				kapd2innerPanel.setBorder(kapd2border);
 			
-			//				kflSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(500) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.getkfl()) * 100));
-							kflSlider = gCB.LogFilterSlider(500,5000,gCB.getkfl());
-				kflSlider.addChangeListener(new rom_rev2SliderListener());
+				frame.add(kapd2innerPanel);
+			
+			kflSlider = gCB.LogFilterSlider(500,5000,gCB.getkfl());
+				kflSlider.addChangeListener(new rom_rev2Listener());
 				kflLabel = new JLabel();
 				updatekflLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kflLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kflSlider);		
+				
+				Border kflborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel kflinnerPanel = new JPanel();
+					
+				kflinnerPanel.setLayout(new BoxLayout(kflinnerPanel, BoxLayout.Y_AXIS));
+				kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kflinnerPanel.add(kflLabel);
+				kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kflinnerPanel.add(kflSlider);		
+				kflinnerPanel.setBorder(kflborder);
 			
-			//				kfhSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(40) * 100.0),(int) (Math.log10(1000) * 100.0), (int) (Math.log10(gCB.getkfh()) * 100));
-							kfhSlider = gCB.LogFilterSlider(40,1000,gCB.getkfh());
-				kfhSlider.addChangeListener(new rom_rev2SliderListener());
+				frame.add(kflinnerPanel);
+			
+			kfhSlider = gCB.LogFilterSlider(40,1000,gCB.getkfh());
+				kfhSlider.addChangeListener(new rom_rev2Listener());
 				kfhLabel = new JLabel();
 				updatekfhLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kfhLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kfhSlider);		
+				
+				Border kfhborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel kfhinnerPanel = new JPanel();
+					
+				kfhinnerPanel.setLayout(new BoxLayout(kfhinnerPanel, BoxLayout.Y_AXIS));
+				kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kfhinnerPanel.add(kfhLabel);
+				kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kfhinnerPanel.add(kfhSlider);		
+				kfhinnerPanel.setBorder(kfhborder);
+			
+				frame.add(kfhinnerPanel);
 			
 			memscaleSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.5 * 10.0),(int) (1.0 * 10.0), (int) (gCB.getmemscale() * 10.0));
-				memscaleSlider.addChangeListener(new rom_rev2SliderListener());
+				memscaleSlider.addChangeListener(new rom_rev2Listener());
 				memscaleLabel = new JLabel();
 				updatememscaleLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(memscaleLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(memscaleSlider);		
+				
+				Border memscaleborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel memscaleinnerPanel = new JPanel();
+					
+				memscaleinnerPanel.setLayout(new BoxLayout(memscaleinnerPanel, BoxLayout.Y_AXIS));
+				memscaleinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				memscaleinnerPanel.add(memscaleLabel);
+				memscaleinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				memscaleinnerPanel.add(memscaleSlider);		
+				memscaleinnerPanel.setBorder(memscaleborder);
+			
+				frame.add(memscaleinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -155,8 +225,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class rom_rev2SliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class rom_rev2Listener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
 			gCB.setgain((double) (gainSlider.getValue()/1.0));

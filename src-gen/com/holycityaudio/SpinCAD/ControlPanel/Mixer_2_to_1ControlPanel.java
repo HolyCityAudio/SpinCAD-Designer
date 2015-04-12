@@ -17,37 +17,45 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
 
-		public class Mixer_2_to_1ControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class Mixer_2_to_1ControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private Mixer_2_to_1CADBlock gCB;
-		// declare the controls
-			JSlider gain1Slider;
-			JLabel  gain1Label;	
-			JSlider gain2Slider;
-			JLabel  gain2Label;	
+	private Mixer_2_to_1CADBlock gCB;
+	// declare the controls
+	JSlider gain1Slider;
+	JLabel  gain1Label;	
+	JSlider gain2Slider;
+	JLabel  gain2Label;	
 
-		public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
+public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -61,23 +69,39 @@
 			
 			// dB level slider goes in steps of 1 dB
 				gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
-				gain1Slider.addChangeListener(new Mixer_2_to_1SliderListener());
+				gain1Slider.addChangeListener(new Mixer_2_to_1Listener());
 				gain1Label = new JLabel();
 				updategain1Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gain1Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gain1Slider);		
+				
+				Border gain1border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gain1innerPanel = new JPanel();
+					
+				gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
+				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gain1innerPanel.add(gain1Label);
+				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gain1innerPanel.add(gain1Slider);		
+				gain1innerPanel.setBorder(gain1border);
+			
+				frame.add(gain1innerPanel);
 			
 			// dB level slider goes in steps of 1 dB
 				gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
-				gain2Slider.addChangeListener(new Mixer_2_to_1SliderListener());
+				gain2Slider.addChangeListener(new Mixer_2_to_1Listener());
 				gain2Label = new JLabel();
 				updategain2Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gain2Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gain2Slider);		
+				
+				Border gain2border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gain2innerPanel = new JPanel();
+					
+				gain2innerPanel.setLayout(new BoxLayout(gain2innerPanel, BoxLayout.Y_AXIS));
+				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gain2innerPanel.add(gain2Label);
+				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gain2innerPanel.add(gain2Slider);		
+				gain2innerPanel.setBorder(gain2border);
+			
+				frame.add(gain2innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -88,8 +112,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class Mixer_2_to_1SliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class Mixer_2_to_1Listener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
 			gCB.setgain1((double) (gain1Slider.getValue()/1.0));

@@ -17,39 +17,47 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.reverb_plateCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.reverb_plateCADBlock;
 
-		public class reverb_plateControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class reverb_plateControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private reverb_plateCADBlock gCB;
-		// declare the controls
-			JSlider gainSlider;
-			JLabel  gainLabel;	
-			JSlider rate1Slider;
-			JLabel  rate1Label;	
-			JSlider rate2Slider;
-			JLabel  rate2Label;	
+	private reverb_plateCADBlock gCB;
+	// declare the controls
+	JSlider gainSlider;
+	JLabel  gainLabel;	
+	JSlider rate1Slider;
+	JLabel  rate1Label;	
+	JSlider rate2Slider;
+	JLabel  rate2Label;	
 
-		public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
+public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -63,31 +71,55 @@
 			
 			// dB level slider goes in steps of 1 dB
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
-				gainSlider.addChangeListener(new reverb_plateSliderListener());
+				gainSlider.addChangeListener(new reverb_plateListener());
 				gainLabel = new JLabel();
 				updategainLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gainLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gainSlider);		
+				
+				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gaininnerPanel = new JPanel();
+					
+				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainLabel);
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainSlider);		
+				gaininnerPanel.setBorder(gainborder);
+			
+				frame.add(gaininnerPanel);
 			
 			rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
-				rate1Slider.addChangeListener(new reverb_plateSliderListener());
+				rate1Slider.addChangeListener(new reverb_plateListener());
 				rate1Label = new JLabel();
 				updaterate1Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(rate1Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(rate1Slider);		
+				
+				Border rate1border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel rate1innerPanel = new JPanel();
+					
+				rate1innerPanel.setLayout(new BoxLayout(rate1innerPanel, BoxLayout.Y_AXIS));
+				rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				rate1innerPanel.add(rate1Label);
+				rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				rate1innerPanel.add(rate1Slider);		
+				rate1innerPanel.setBorder(rate1border);
+			
+				frame.add(rate1innerPanel);
 			
 			rate2Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate2()) * 100.0));
-				rate2Slider.addChangeListener(new reverb_plateSliderListener());
+				rate2Slider.addChangeListener(new reverb_plateListener());
 				rate2Label = new JLabel();
 				updaterate2Label();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(rate2Label);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(rate2Slider);		
+				
+				Border rate2border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel rate2innerPanel = new JPanel();
+					
+				rate2innerPanel.setLayout(new BoxLayout(rate2innerPanel, BoxLayout.Y_AXIS));
+				rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				rate2innerPanel.add(rate2Label);
+				rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				rate2innerPanel.add(rate2Slider);		
+				rate2innerPanel.setBorder(rate2border);
+			
+				frame.add(rate2innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -98,8 +130,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class reverb_plateSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class reverb_plateListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
 			gCB.setgain((double) (gainSlider.getValue()/1.0));

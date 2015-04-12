@@ -17,35 +17,43 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.shimmer_verbCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.shimmer_verbCADBlock;
 
-		public class shimmer_verbControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class shimmer_verbControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private shimmer_verbCADBlock gCB;
-		// declare the controls
-			JSlider gainSlider;
-			JLabel  gainLabel;	
+	private shimmer_verbCADBlock gCB;
+	// declare the controls
+	JSlider gainSlider;
+	JLabel  gainLabel;	
 
-		public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
+public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -59,13 +67,21 @@
 			
 			// dB level slider goes in steps of 1 dB
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
-				gainSlider.addChangeListener(new shimmer_verbSliderListener());
+				gainSlider.addChangeListener(new shimmer_verbListener());
 				gainLabel = new JLabel();
 				updategainLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gainLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gainSlider);		
+				
+				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gaininnerPanel = new JPanel();
+					
+				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainLabel);
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainSlider);		
+				gaininnerPanel.setBorder(gainborder);
+			
+				frame.add(gaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -76,8 +92,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class shimmer_verbSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class shimmer_verbListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
 			gCB.setgain((double) (gainSlider.getValue()/1.0));

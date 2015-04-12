@@ -17,45 +17,53 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-		package com.holycityaudio.SpinCAD.ControlPanel;
-		import javax.swing.JFrame;
-		import javax.swing.SwingUtilities;
-		import javax.swing.event.ChangeEvent;
-		import javax.swing.event.ChangeListener;
-		import java.awt.event.ActionEvent;
-		import java.awt.event.WindowEvent;
-		import java.awt.event.WindowListener;
-		import java.awt.event.ItemEvent;
-		import javax.swing.BoxLayout;
-		import javax.swing.JSlider;
-		import javax.swing.JSpinner;
-		import javax.swing.JLabel;
-		import javax.swing.JCheckBox;
-		import javax.swing.JComboBox;
-		import javax.swing.Box;
-		import java.awt.Dimension;
-		import com.holycityaudio.SpinCAD.spinCADControlPanel;
-		import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
+package com.holycityaudio.SpinCAD.ControlPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ItemEvent;
+import javax.swing.BoxLayout;
+import javax.swing.JSlider;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import java.awt.Dimension;
+import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.spinCADControlPanel;
+import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
 
-		public class reverbControlPanel extends spinCADControlPanel {
-		private JFrame frame;
+public class reverbControlPanel extends spinCADControlPanel {
+	private JFrame frame;
 
-		private reverbCADBlock gCB;
-		// declare the controls
-			JSlider gainSlider;
-			JLabel  gainLabel;	
-			JSlider kiapSlider;
-			JLabel  kiapLabel;	
-			JSlider nDLsSlider;
-			JLabel  nDLsLabel;	
-			JSlider klapSlider;
-			JLabel  klapLabel;	
-			JSlider kflSlider;
-			JLabel  kflLabel;	
-			JSlider kfhSlider;
-			JLabel  kfhLabel;	
+	private reverbCADBlock gCB;
+	// declare the controls
+	JSlider gainSlider;
+	JLabel  gainLabel;	
+	JSlider kiapSlider;
+	JLabel  kiapLabel;	
+	JSlider nDLsSlider;
+	JLabel  nDLsLabel;	
+	JSlider klapSlider;
+	JLabel  klapLabel;	
+	JSlider kflSlider;
+	JLabel  kflLabel;	
+	JSlider kfhSlider;
+	JLabel  kfhLabel;	
 
-		public reverbControlPanel(reverbCADBlock genericCADBlock) {
+public reverbControlPanel(reverbCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -69,60 +77,106 @@
 			
 			// dB level slider goes in steps of 1 dB
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
-				gainSlider.addChangeListener(new reverbSliderListener());
+				gainSlider.addChangeListener(new reverbListener());
 				gainLabel = new JLabel();
 				updategainLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gainLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(gainSlider);		
+				
+				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gaininnerPanel = new JPanel();
+					
+				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainLabel);
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainSlider);		
+				gaininnerPanel.setBorder(gainborder);
+			
+				frame.add(gaininnerPanel);
 			
 			kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkiap() * 100.0));
-				kiapSlider.addChangeListener(new reverbSliderListener());
+				kiapSlider.addChangeListener(new reverbListener());
 				kiapLabel = new JLabel();
 				updatekiapLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kiapLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kiapSlider);		
+				
+				Border kiapborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel kiapinnerPanel = new JPanel();
+					
+				kiapinnerPanel.setLayout(new BoxLayout(kiapinnerPanel, BoxLayout.Y_AXIS));
+				kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kiapinnerPanel.add(kiapLabel);
+				kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kiapinnerPanel.add(kiapSlider);		
+				kiapinnerPanel.setBorder(kiapborder);
+			
+				frame.add(kiapinnerPanel);
 			
 			nDLsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (4 * 1.0), (int) (gCB.getnDLs() * 1.0));
-				nDLsSlider.addChangeListener(new reverbSliderListener());
+				nDLsSlider.addChangeListener(new reverbListener());
 				nDLsLabel = new JLabel();
 				updatenDLsLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(nDLsLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(nDLsSlider);		
+				
+				Border nDLsborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel nDLsinnerPanel = new JPanel();
+					
+				nDLsinnerPanel.setLayout(new BoxLayout(nDLsinnerPanel, BoxLayout.Y_AXIS));
+				nDLsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				nDLsinnerPanel.add(nDLsLabel);
+				nDLsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				nDLsinnerPanel.add(nDLsSlider);		
+				nDLsinnerPanel.setBorder(nDLsborder);
+			
+				frame.add(nDLsinnerPanel);
 			
 			klapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getklap() * 100.0));
-				klapSlider.addChangeListener(new reverbSliderListener());
+				klapSlider.addChangeListener(new reverbListener());
 				klapLabel = new JLabel();
 				updateklapLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(klapLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(klapSlider);		
+				
+				Border klapborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel klapinnerPanel = new JPanel();
+					
+				klapinnerPanel.setLayout(new BoxLayout(klapinnerPanel, BoxLayout.Y_AXIS));
+				klapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				klapinnerPanel.add(klapLabel);
+				klapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				klapinnerPanel.add(klapSlider);		
+				klapinnerPanel.setBorder(klapborder);
 			
-			//				kflSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(500) * 100.0),(int) (Math.log10(5000) * 100.0), (int) (Math.log10(gCB.getkfl()) * 100));
-							kflSlider = gCB.LogFilterSlider(500,5000,gCB.getkfl());
-				kflSlider.addChangeListener(new reverbSliderListener());
+				frame.add(klapinnerPanel);
+			
+			kflSlider = gCB.LogFilterSlider(500,5000,gCB.getkfl());
+				kflSlider.addChangeListener(new reverbListener());
 				kflLabel = new JLabel();
 				updatekflLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kflLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kflSlider);		
+				
+				Border kflborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel kflinnerPanel = new JPanel();
+					
+				kflinnerPanel.setLayout(new BoxLayout(kflinnerPanel, BoxLayout.Y_AXIS));
+				kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kflinnerPanel.add(kflLabel);
+				kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kflinnerPanel.add(kflSlider);		
+				kflinnerPanel.setBorder(kflborder);
 			
-			//				kfhSlider = new JSlider(JSlider.HORIZONTAL, (int)(Math.log10(40) * 100.0),(int) (Math.log10(1000) * 100.0), (int) (Math.log10(gCB.getkfh()) * 100));
-							kfhSlider = gCB.LogFilterSlider(40,1000,gCB.getkfh());
-				kfhSlider.addChangeListener(new reverbSliderListener());
+				frame.add(kflinnerPanel);
+			
+			kfhSlider = gCB.LogFilterSlider(40,1000,gCB.getkfh());
+				kfhSlider.addChangeListener(new reverbListener());
 				kfhLabel = new JLabel();
 				updatekfhLabel();
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kfhLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.getContentPane().add(kfhSlider);		
+				
+				Border kfhborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel kfhinnerPanel = new JPanel();
+					
+				kfhinnerPanel.setLayout(new BoxLayout(kfhinnerPanel, BoxLayout.Y_AXIS));
+				kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kfhinnerPanel.add(kfhLabel);
+				kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				kfhinnerPanel.add(kfhSlider);		
+				kfhinnerPanel.setBorder(kfhborder);
+			
+				frame.add(kfhinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -133,8 +187,8 @@
 		});
 		}
 
-		// add change listener for Sliders 
-		class reverbSliderListener implements ChangeListener { 
+		// add change listener for Sliders, Spinners 
+		class reverbListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
 			gCB.setgain((double) (gainSlider.getValue()/1.0));
