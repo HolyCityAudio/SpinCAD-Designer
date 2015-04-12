@@ -224,20 +224,20 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
+		inputGainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
 		}		
 		private void updatefbkGainLabel() {
-		fbkGainLabel.setText("Feedback_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
+		fbkGainLabel.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
 		}		
 		private void updateservoGainLabel() {
-		servoGainLabel.setText("Servo_Gain " + String.format("%4.2f", gCB.getservoGain()));		
+		servoGainLabel.setText("Servo Gain " + String.format("%4.2f", gCB.getservoGain()));		
 		}		
 		private void updatefreqLabel() {
 		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
 						freqLabel.setText("Low_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		private void updatetap1RatioLabel() {
-		tap1RatioLabel.setText("Tap_1_Time " + String.format("%4.3f", gCB.gettap1Ratio()));		
+		tap1RatioLabel.setText("Tap Time Ratio " + String.format("%4.3f", gCB.gettap1Ratio()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

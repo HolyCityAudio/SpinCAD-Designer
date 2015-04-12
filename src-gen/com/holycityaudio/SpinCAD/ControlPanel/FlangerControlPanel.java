@@ -176,13 +176,13 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			}
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay_Time " + String.format("%4.2f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
+		delayLengthLabel.setText("Delay Time " + String.format("%4.2f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
 		}		
 		private void updaterateLabel() {
-		rateLabel.setText("LFO_Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
+		rateLabel.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
 		}		
 		private void updatewidthLabel() {
-		widthLabel.setText("LFO_Width " + String.format("%4.1f", gCB.getwidth()));		
+		widthLabel.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

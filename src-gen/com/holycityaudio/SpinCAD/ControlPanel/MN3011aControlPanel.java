@@ -85,6 +85,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 				inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 				inputGainSlider.addChangeListener(new MN3011aListener());
 				inputGainLabel = new JLabel();
+				Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				inputGainLabel.setBorder(inputGainBorder1);
 				updateinputGainLabel();
 				
 				Border inputGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
@@ -311,31 +313,31 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
+		inputGainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
 		}		
 		private void updatefbkGainLabel() {
-		fbkGainLabel.setText("Feedback_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
+		fbkGainLabel.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
 		}		
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
+		delayLengthLabel.setText("Delay Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
 		}		
 		private void updatetap1GainLabel() {
-		tap1GainLabel.setText("Tap_1_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap1Gain()))));		
+		tap1GainLabel.setText("Tap 1 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap1Gain()))));		
 		}		
 		private void updatetap2GainLabel() {
-		tap2GainLabel.setText("Tap_2_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap2Gain()))));		
+		tap2GainLabel.setText("Tap 2 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap2Gain()))));		
 		}		
 		private void updatetap3GainLabel() {
-		tap3GainLabel.setText("Tap_3_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap3Gain()))));		
+		tap3GainLabel.setText("Tap 3 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap3Gain()))));		
 		}		
 		private void updatetap4GainLabel() {
-		tap4GainLabel.setText("Tap_4_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap4Gain()))));		
+		tap4GainLabel.setText("Tap 4 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap4Gain()))));		
 		}		
 		private void updatetap5GainLabel() {
-		tap5GainLabel.setText("Tap_5_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap5Gain()))));		
+		tap5GainLabel.setText("Tap 5 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap5Gain()))));		
 		}		
 		private void updatetap6GainLabel() {
-		tap6GainLabel.setText("Tap_6_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap6Gain()))));		
+		tap6GainLabel.setText("Tap 6 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap6Gain()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

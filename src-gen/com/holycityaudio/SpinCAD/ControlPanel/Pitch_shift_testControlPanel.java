@@ -67,7 +67,7 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-8192 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
+			pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-16384 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
 				pitchCoeffSlider.addChangeListener(new Pitch_shift_testListener());
 				pitchCoeffLabel = new JLabel();
 				updatepitchCoeffLabel();
@@ -143,7 +143,7 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitchCoeffLabel() {
-		pitchCoeffLabel.setText("Pitch_Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
+		pitchCoeffLabel.setText("Pitch Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

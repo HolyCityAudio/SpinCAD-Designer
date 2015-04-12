@@ -4,7 +4,7 @@
 
 equ freq 0.015
 // variable - Name - low - high - multiplier - precision - option 
-@sliderLabel freq Frequency 40 1500 100.0 100.0 1 LOGFREQ 
+@sliderLabel freq 'Frequency (Hz)' 40 1500 100.0 100.0 1 LOGFREQ 
 
 equ output Reg0
 equ lpf1 Reg1

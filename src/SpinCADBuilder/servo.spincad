@@ -9,13 +9,13 @@
 //@controlOutput delta Delta 
 
 equ inputGain 1.0
-@sliderLabel inputGain Input_Gain -24 0 0 1.0 1 DBLEVEL 
+@sliderLabel inputGain 'Input Gain' -24 0 0 1.0 1 DBLEVEL 
 
 equ fbkGain 0.5
-@sliderLabel fbkGain Feedback_Gain -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel fbkGain 'Feedback Gain' -24 0 -6 1.0 1 DBLEVEL 
 
 equ servoGain 0.25
-@sliderLabel servoGain Servo_Gain 0.0 0.49 0.25 100.0 2
+@sliderLabel servoGain 'Servo Gain' 0.0 0.49 0.25 100.0 2
 
 equ freq 0.25
 // variable - Name - low - high - multiplier - precision - option 
@@ -23,7 +23,7 @@ equ freq 0.25
 
 equ delayLength 4096 
 equ tap1Ratio 0.025 
-@sliderLabel tap1Ratio Tap_1_Time  0.001 0.05 0.025 1000.0 3  
+@sliderLabel tap1Ratio 'Tap Time Ratio'  0.001 0.05 0.025 1000.0 3  
 
 equ lfoSel 0
 @comboBox lfoSel 'Ramp 0' 'Ramp 1'

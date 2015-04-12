@@ -143,7 +143,7 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitchCoeffLabel() {
-		pitchCoeffLabel.setText("Pitch_Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
+		pitchCoeffLabel.setText("Pitch Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

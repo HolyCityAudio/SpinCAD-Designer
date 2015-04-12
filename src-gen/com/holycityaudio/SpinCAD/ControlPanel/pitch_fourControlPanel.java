@@ -199,16 +199,16 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitch1Label() {
-		pitch1Label.setText("Pitch_1 " + String.format("%4.0f", gCB.getpitch1()));		
+		pitch1Label.setText("Pitch 1 " + String.format("%4.0f", gCB.getpitch1()));		
 		}		
 		private void updatepitch2Label() {
-		pitch2Label.setText("Pitch_2 " + String.format("%4.0f", gCB.getpitch2()));		
+		pitch2Label.setText("Pitch 2 " + String.format("%4.0f", gCB.getpitch2()));		
 		}		
 		private void updatepitch3Label() {
-		pitch3Label.setText("Pitch_3 " + String.format("%4.0f", gCB.getpitch3()));		
+		pitch3Label.setText("Pitch 3 " + String.format("%4.0f", gCB.getpitch3()));		
 		}		
 		private void updatepitch4Label() {
-		pitch4Label.setText("Pitch_4 " + String.format("%4.0f", gCB.getpitch4()));		
+		pitch4Label.setText("Pitch 4 " + String.format("%4.0f", gCB.getpitch4()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

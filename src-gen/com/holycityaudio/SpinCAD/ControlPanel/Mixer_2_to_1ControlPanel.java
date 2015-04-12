@@ -144,10 +144,10 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Label.setText("Input_Gain_1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
+		gain1Label.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
 		}		
 		private void updategain2Label() {
-		gain2Label.setText("Input_Gain_2 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
+		gain2Label.setText("Input Gain 2 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

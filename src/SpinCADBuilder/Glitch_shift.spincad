@@ -9,7 +9,7 @@
 
 equ pitchCoeff 8192 
 // variable - Name - low - high - multiplier - precision - option 
-@sliderLabel pitchCoeff Pitch_Coefficient -8192 32767 8192 1.0 0  
+@sliderLabel pitchCoeff 'Pitch Coefficient' -8192 32767 8192 1.0 0  
 
 equ lfoSel 0
 @comboBox lfoSel 'Ramp 0' 'Ramp 1'

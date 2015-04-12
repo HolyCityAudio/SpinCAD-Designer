@@ -3,7 +3,7 @@
 @controlOutput output1 Control_Output  
 
 equ multiplier 0.5 
-@sliderLabel multiplier Log_Multiplier 0.001 0.99999 0.5 1000.0 3 
+@sliderLabel multiplier 'Log Multiplier' 0.001 0.99999 0.5 1000.0 3 
 
 
 ;REGISTERS 

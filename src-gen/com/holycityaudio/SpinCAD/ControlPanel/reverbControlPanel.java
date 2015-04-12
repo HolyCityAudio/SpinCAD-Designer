@@ -235,24 +235,24 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		gainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		private void updatekiapLabel() {
-		kiapLabel.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		
+		kiapLabel.setText("Input All Pass: " + String.format("%4.2f", gCB.getkiap()));		
 		}		
 		private void updatenDLsLabel() {
-		nDLsLabel.setText("Delay_Stages " + String.format("%4.0f", gCB.getnDLs()));		
+		nDLsLabel.setText("Delay_Stages: " + String.format("%4.0f", gCB.getnDLs()));		
 		}		
 		private void updateklapLabel() {
-		klapLabel.setText("Loop_All_Pass " + String.format("%4.2f", gCB.getklap()));		
+		klapLabel.setText("Loop All Pass " + String.format("%4.2f", gCB.getklap()));		
 		}		
 		private void updatekflLabel() {
 		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						kflLabel.setText("Low_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
+						kflLabel.setText("Low Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
 		}		
 		private void updatekfhLabel() {
 		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						kfhLabel.setText("High_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfh())) + " Hz");		
+						kfhLabel.setText("High Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfh())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

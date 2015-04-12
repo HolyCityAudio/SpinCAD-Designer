@@ -147,7 +147,7 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 						freqLabel.setText("Frequency " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		private void updateshelfLabel() {
-		shelfLabel.setText("Shelf " + String.format("%4.1f dB", (20 * Math.log10(gCB.getshelf()))));		
+		shelfLabel.setText("Shelf Depth " + String.format("%4.1f dB", (20 * Math.log10(gCB.getshelf()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

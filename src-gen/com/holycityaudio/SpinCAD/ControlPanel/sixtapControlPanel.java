@@ -418,25 +418,25 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getinputGain()));		
+		inputGainLabel.setText("Input Gain " + String.format("%4.2f", gCB.getinputGain()));		
 		}		
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
+		delayLengthLabel.setText("Delay Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
 		}		
 		private void updatetap1RatioLabel() {
-		tap1RatioLabel.setText("Tap_1_Time " + String.format("%4.2f", gCB.gettap1Ratio()));		
+		tap1RatioLabel.setText("Tap 1 Time " + String.format("%4.2f", gCB.gettap1Ratio()));		
 		}		
 		private void updatetap2RatioLabel() {
-		tap2RatioLabel.setText("Tap_2_Time " + String.format("%4.2f", gCB.gettap2Ratio()));		
+		tap2RatioLabel.setText("Tap 2 Time " + String.format("%4.2f", gCB.gettap2Ratio()));		
 		}		
 		private void updatetap3RatioLabel() {
-		tap3RatioLabel.setText("Tap_3_Time " + String.format("%4.2f", gCB.gettap3Ratio()));		
+		tap3RatioLabel.setText("Tap 3 Time " + String.format("%4.2f", gCB.gettap3Ratio()));		
 		}		
 		private void updatetap4RatioLabel() {
-		tap4RatioLabel.setText("Tap_4_Time " + String.format("%4.2f", gCB.gettap4Ratio()));		
+		tap4RatioLabel.setText("Tap 4 Time " + String.format("%4.2f", gCB.gettap4Ratio()));		
 		}		
 		private void updatetap5RatioLabel() {
-		tap5RatioLabel.setText("Tap_5_Time " + String.format("%4.2f", gCB.gettap5Ratio()));		
+		tap5RatioLabel.setText("Tap 5 Time " + String.format("%4.2f", gCB.gettap5Ratio()));		
 		}		
 		private void updatetap6RatioLabel() {
 		tap6RatioLabel.setText("Tap_6_Time " + String.format("%4.2f", gCB.gettap6Ratio()));		

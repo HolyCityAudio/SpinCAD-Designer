@@ -4,16 +4,16 @@
 @controlInput select Pitch_Select 
 
 equ pitch1 -12 
-@sliderLabel pitch1 Pitch_1 -12 17 7 1.0 0
+@sliderLabel pitch1 'Pitch 1' -12 17 7 1.0 0
 
 equ pitch2 -7  
-@sliderLabel pitch2 Pitch_2 -12 17 7 1.0 0
+@sliderLabel pitch2 'Pitch 2' -12 17 7 1.0 0
 
 equ pitch3 7  
-@sliderLabel pitch3 Pitch_3 -12 17 7 1.0 0
+@sliderLabel pitch3 'Pitch 3' -12 17 7 1.0 0
 
 equ pitch4 12  
-@sliderLabel pitch4 Pitch_4 -12 17 7 1.0 0
+@sliderLabel pitch4 'Pitch 4' -12 17 7 1.0 0
 
 equ lfoSel 0
 @comboBox lfoSel 'Ramp 0' 'Ramp 1'

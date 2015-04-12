@@ -119,7 +119,7 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 			}
 		}
 		private void updatemultiplierLabel() {
-		multiplierLabel.setText("Log_Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
+		multiplierLabel.setText("Log Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -120,7 +120,7 @@ public HPF_RDFXControlPanel(HPF_RDFXCADBlock genericCADBlock) {
 		}
 		private void updatefreqLabel() {
 		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						freqLabel.setText("Frequency " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
+						freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener
