@@ -5,10 +5,10 @@
 @controlInput crusher Crush
 
 equ ripLow 0.002
-@sliderLabel ripLow Rip_Low 0.001 0.015 0.01 1000.0 3
+@sliderLabel ripLow 'Rip Low' 0.001 0.015 0.01 1000.0 3
 
 equ ripHigh 0.1
-@sliderLabel ripHigh Rip_High 0.02 0.2 0.1 1000.0 3
+@sliderLabel ripHigh 'Rip High' 0.02 0.2 0.1 1000.0 3
 
 equ old reg0 
 equ new_val reg1 

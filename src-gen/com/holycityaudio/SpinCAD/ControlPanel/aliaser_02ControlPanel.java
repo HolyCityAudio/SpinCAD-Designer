@@ -142,10 +142,10 @@ public aliaser_02ControlPanel(aliaser_02CADBlock genericCADBlock) {
 			}
 		}
 		private void updateripLowLabel() {
-		ripLowLabel.setText("Rip_Low " + String.format("%4.3f", gCB.getripLow()));		
+		ripLowLabel.setText("Rip Low " + String.format("%4.3f", gCB.getripLow()));		
 		}		
 		private void updateripHighLabel() {
-		ripHighLabel.setText("Rip_High " + String.format("%4.3f", gCB.getripHigh()));		
+		ripHighLabel.setText("Rip High " + String.format("%4.3f", gCB.getripHigh()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

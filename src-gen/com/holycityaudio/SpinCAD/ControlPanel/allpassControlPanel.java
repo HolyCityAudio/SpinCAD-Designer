@@ -166,13 +166,13 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		gainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		private void updatenAPsLabel() {
-		nAPsLabel.setText("All_Pass_Stages " + String.format("%4.1f", gCB.getnAPs()));		
+		nAPsLabel.setText("All Pass Stages " + String.format("%4.1f", gCB.getnAPs()));		
 		}		
 		private void updatekiapLabel() {
-		kiapLabel.setText("All_Pass " + String.format("%4.2f", gCB.getkiap()));		
+		kiapLabel.setText("All Pass " + String.format("%4.2f", gCB.getkiap()));		
 		}		
 		
 		class MyWindowListener implements WindowListener
