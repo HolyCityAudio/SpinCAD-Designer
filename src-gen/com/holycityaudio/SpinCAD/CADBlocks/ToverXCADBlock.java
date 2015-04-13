@@ -35,7 +35,7 @@
 			private int lf3;
 			private int lf4;
 			private double threshold = -0.1875;
-			private double filterFactor = 0.75;
+			private double filterFactor = 0.4;
 
 			public ToverXCADBlock(int x, int y) {
 				super(x, y);
@@ -44,6 +44,7 @@
 				addInputPin(this, "Input");
 				addOutputPin(this, "Audio_Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -122,4 +123,11 @@
 			}
 			
 			// create setters and getter for control panel variables
+			public void setfilterFactor(double __param) {
+				filterFactor = __param;	
+			}
+			
+			public double getfilterFactor() {
+				return filterFactor;
+			}
 		}	

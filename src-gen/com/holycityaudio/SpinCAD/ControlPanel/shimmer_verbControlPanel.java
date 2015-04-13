@@ -69,9 +69,11 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
 				gainSlider.addChangeListener(new shimmer_verbListener());
 				gainLabel = new JLabel();
+				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gainLabel.setBorder(gainBorder1);
 				updategainLabel();
 				
-				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gaininnerPanel = new JPanel();
 					
 				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
@@ -79,7 +81,7 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 				gaininnerPanel.add(gainLabel);
 				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder);
+				gaininnerPanel.setBorder(gainborder2);
 			
 				frame.add(gaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());

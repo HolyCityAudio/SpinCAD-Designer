@@ -73,9 +73,11 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(16 * 1),(int) (512 * 1), (int) (gCB.getdelayLength() * 1));
 				delayLengthSlider.addChangeListener(new FlangerListener());
 				delayLengthLabel = new JLabel();
+				Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				delayLengthLabel.setBorder(delayLengthBorder1);
 				updatedelayLengthLabel();
 				
-				Border delayLengthborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel delayLengthinnerPanel = new JPanel();
 					
 				delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
@@ -83,16 +85,18 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 				delayLengthinnerPanel.add(delayLengthLabel);
 				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				delayLengthinnerPanel.add(delayLengthSlider);		
-				delayLengthinnerPanel.setBorder(delayLengthborder);
+				delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
 				frame.add(delayLengthinnerPanel);
 			
 			rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 				rateSlider.addChangeListener(new FlangerListener());
 				rateLabel = new JLabel();
+				Border rateBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				rateLabel.setBorder(rateBorder1);
 				updaterateLabel();
 				
-				Border rateborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border rateborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel rateinnerPanel = new JPanel();
 					
 				rateinnerPanel.setLayout(new BoxLayout(rateinnerPanel, BoxLayout.Y_AXIS));
@@ -100,16 +104,18 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 				rateinnerPanel.add(rateLabel);
 				rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				rateinnerPanel.add(rateSlider);		
-				rateinnerPanel.setBorder(rateborder);
+				rateinnerPanel.setBorder(rateborder2);
 			
 				frame.add(rateinnerPanel);
 			
 			widthSlider = new JSlider(JSlider.HORIZONTAL, (int)(5.0 * 100.0),(int) (100.0 * 100.0), (int) (gCB.getwidth() * 100.0));
 				widthSlider.addChangeListener(new FlangerListener());
 				widthLabel = new JLabel();
+				Border widthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				widthLabel.setBorder(widthBorder1);
 				updatewidthLabel();
 				
-				Border widthborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border widthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel widthinnerPanel = new JPanel();
 					
 				widthinnerPanel.setLayout(new BoxLayout(widthinnerPanel, BoxLayout.Y_AXIS));
@@ -117,7 +123,7 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 				widthinnerPanel.add(widthLabel);
 				widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				widthinnerPanel.add(widthSlider);		
-				widthinnerPanel.setBorder(widthborder);
+				widthinnerPanel.setBorder(widthborder2);
 			
 				frame.add(widthinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();

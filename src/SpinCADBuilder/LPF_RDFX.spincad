@@ -1,4 +1,4 @@
-@name LPF_1P
+@name 'LPF_1P'
 @audioInput input Input
 @audioOutput lpf1 Output  
 

@@ -50,6 +50,8 @@ public class ToverXControlPanel extends spinCADControlPanel {
 
 	private ToverXCADBlock gCB;
 	// declare the controls
+	JSlider filterFactorSlider;
+	JLabel  filterFactorLabel;	
 
 public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		
@@ -62,6 +64,25 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 				frame.setTitle("ToverX");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+			filterFactorSlider = gCB.LogFilterSlider(350,5000,gCB.getfilterFactor());
+				filterFactorSlider.addChangeListener(new ToverXListener());
+				filterFactorLabel = new JLabel();
+				Border filterFactorBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				filterFactorLabel.setBorder(filterFactorBorder1);
+				updatefilterFactorLabel();
+				
+				Border filterFactorborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel filterFactorinnerPanel = new JPanel();
+					
+				filterFactorinnerPanel.setLayout(new BoxLayout(filterFactorinnerPanel, BoxLayout.Y_AXIS));
+				filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				filterFactorinnerPanel.add(filterFactorLabel);
+				filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				filterFactorinnerPanel.add(filterFactorSlider);		
+				filterFactorinnerPanel.setBorder(filterFactorborder2);
+			
+				frame.add(filterFactorinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -75,6 +96,10 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class ToverXListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == filterFactorSlider) {
+			gCB.setfilterFactor((double) gCB.freqToFilt(gCB.sliderToLogval((int)(filterFactorSlider.getValue()), 100.0)));
+				updatefilterFactorLabel();
+			}
 			}
 		}
 
@@ -95,6 +120,10 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updatefilterFactorLabel() {
+		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
+						filterFactorLabel.setText("Low Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getfilterFactor())) + " Hz");		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

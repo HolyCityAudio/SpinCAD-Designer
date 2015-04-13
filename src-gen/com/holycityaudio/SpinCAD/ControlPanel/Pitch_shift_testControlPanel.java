@@ -52,6 +52,7 @@ public class Pitch_shift_testControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider pitchCoeffSlider;
 	JLabel  pitchCoeffLabel;	
+	private JComboBox <String> controlRangeComboBox; 
 	private JComboBox <String> lfoSelComboBox; 
 	private JComboBox <String> lfoWidthComboBox; 
 
@@ -63,16 +64,18 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Pitch_Shift");
+				frame.setTitle("Pitch Shift");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
 			pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-16384 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
 				pitchCoeffSlider.addChangeListener(new Pitch_shift_testListener());
 				pitchCoeffLabel = new JLabel();
+				Border pitchCoeffBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				pitchCoeffLabel.setBorder(pitchCoeffBorder1);
 				updatepitchCoeffLabel();
 				
-				Border pitchCoeffborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border pitchCoeffborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel pitchCoeffinnerPanel = new JPanel();
 					
 				pitchCoeffinnerPanel.setLayout(new BoxLayout(pitchCoeffinnerPanel, BoxLayout.Y_AXIS));
@@ -80,9 +83,16 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 				pitchCoeffinnerPanel.add(pitchCoeffLabel);
 				pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				pitchCoeffinnerPanel.add(pitchCoeffSlider);		
-				pitchCoeffinnerPanel.setBorder(pitchCoeffborder);
+				pitchCoeffinnerPanel.setBorder(pitchCoeffborder2);
 			
 				frame.add(pitchCoeffinnerPanel);
+				controlRangeComboBox = new JComboBox <String> ();
+				controlRangeComboBox.addItem("0 -> +1");
+				controlRangeComboBox.addItem("-1 -> +1");
+				controlRangeComboBox.setSelectedIndex(gCB.getcontrolRange());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(controlRangeComboBox);
+				controlRangeComboBox.addActionListener(new Pitch_shift_testActionListener());
 				lfoSelComboBox = new JComboBox <String> ();
 				lfoSelComboBox.addItem("Ramp 0");
 				lfoSelComboBox.addItem("Ramp 1");
@@ -134,6 +144,9 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 		class Pitch_shift_testActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+			if(arg0.getSource() == controlRangeComboBox) {
+				gCB.setcontrolRange((controlRangeComboBox.getSelectedIndex()));
+			}
 			if(arg0.getSource() == lfoSelComboBox) {
 				gCB.setlfoSel((lfoSelComboBox.getSelectedIndex()));
 			}

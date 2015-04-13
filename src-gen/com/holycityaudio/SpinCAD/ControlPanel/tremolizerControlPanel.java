@@ -68,9 +68,11 @@ public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
 			depthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.5 * 100.0),(int) (0.999 * 100.0), (int) (gCB.getdepth() * 100.0));
 				depthSlider.addChangeListener(new tremolizerListener());
 				depthLabel = new JLabel();
+				Border depthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				depthLabel.setBorder(depthBorder1);
 				updatedepthLabel();
 				
-				Border depthborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border depthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel depthinnerPanel = new JPanel();
 					
 				depthinnerPanel.setLayout(new BoxLayout(depthinnerPanel, BoxLayout.Y_AXIS));
@@ -78,7 +80,7 @@ public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
 				depthinnerPanel.add(depthLabel);
 				depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				depthinnerPanel.add(depthSlider);		
-				depthinnerPanel.setBorder(depthborder);
+				depthinnerPanel.setBorder(depthborder2);
 			
 				frame.add(depthinnerPanel);
 				frame.addWindowListener(new MyWindowListener());

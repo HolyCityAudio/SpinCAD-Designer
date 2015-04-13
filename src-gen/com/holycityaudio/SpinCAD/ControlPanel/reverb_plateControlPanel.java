@@ -73,9 +73,11 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 				gainSlider.addChangeListener(new reverb_plateListener());
 				gainLabel = new JLabel();
+				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gainLabel.setBorder(gainBorder1);
 				updategainLabel();
 				
-				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gaininnerPanel = new JPanel();
 					
 				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
@@ -83,16 +85,18 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 				gaininnerPanel.add(gainLabel);
 				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder);
+				gaininnerPanel.setBorder(gainborder2);
 			
 				frame.add(gaininnerPanel);
 			
 			rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
 				rate1Slider.addChangeListener(new reverb_plateListener());
 				rate1Label = new JLabel();
+				Border rate1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				rate1Label.setBorder(rate1Border1);
 				updaterate1Label();
 				
-				Border rate1border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border rate1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel rate1innerPanel = new JPanel();
 					
 				rate1innerPanel.setLayout(new BoxLayout(rate1innerPanel, BoxLayout.Y_AXIS));
@@ -100,16 +104,18 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 				rate1innerPanel.add(rate1Label);
 				rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				rate1innerPanel.add(rate1Slider);		
-				rate1innerPanel.setBorder(rate1border);
+				rate1innerPanel.setBorder(rate1border2);
 			
 				frame.add(rate1innerPanel);
 			
 			rate2Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate2()) * 100.0));
 				rate2Slider.addChangeListener(new reverb_plateListener());
 				rate2Label = new JLabel();
+				Border rate2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				rate2Label.setBorder(rate2Border1);
 				updaterate2Label();
 				
-				Border rate2border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border rate2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel rate2innerPanel = new JPanel();
 					
 				rate2innerPanel.setLayout(new BoxLayout(rate2innerPanel, BoxLayout.Y_AXIS));
@@ -117,7 +123,7 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 				rate2innerPanel.add(rate2Label);
 				rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				rate2innerPanel.add(rate2Slider);		
-				rate2innerPanel.setBorder(rate2border);
+				rate2innerPanel.setBorder(rate2border2);
 			
 				frame.add(rate2innerPanel);
 				frame.addWindowListener(new MyWindowListener());

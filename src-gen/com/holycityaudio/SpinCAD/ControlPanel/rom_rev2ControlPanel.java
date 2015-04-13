@@ -83,9 +83,11 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
 				gainSlider.addChangeListener(new rom_rev2Listener());
 				gainLabel = new JLabel();
+				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gainLabel.setBorder(gainBorder1);
 				updategainLabel();
 				
-				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gaininnerPanel = new JPanel();
 					
 				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
@@ -93,16 +95,18 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				gaininnerPanel.add(gainLabel);
 				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder);
+				gaininnerPanel.setBorder(gainborder2);
 			
 				frame.add(gaininnerPanel);
 			
 			revTimeMaxSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.9 * 100.0), (int) (gCB.getrevTimeMax() * 100.0));
 				revTimeMaxSlider.addChangeListener(new rom_rev2Listener());
 				revTimeMaxLabel = new JLabel();
+				Border revTimeMaxBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				revTimeMaxLabel.setBorder(revTimeMaxBorder1);
 				updaterevTimeMaxLabel();
 				
-				Border revTimeMaxborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border revTimeMaxborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel revTimeMaxinnerPanel = new JPanel();
 					
 				revTimeMaxinnerPanel.setLayout(new BoxLayout(revTimeMaxinnerPanel, BoxLayout.Y_AXIS));
@@ -110,16 +114,18 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				revTimeMaxinnerPanel.add(revTimeMaxLabel);
 				revTimeMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				revTimeMaxinnerPanel.add(revTimeMaxSlider);		
-				revTimeMaxinnerPanel.setBorder(revTimeMaxborder);
+				revTimeMaxinnerPanel.setBorder(revTimeMaxborder2);
 			
 				frame.add(revTimeMaxinnerPanel);
 			
 			kapiSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.3 * 100.0),(int) (0.8 * 100.0), (int) (gCB.getkapi() * 100.0));
 				kapiSlider.addChangeListener(new rom_rev2Listener());
 				kapiLabel = new JLabel();
+				Border kapiBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				kapiLabel.setBorder(kapiBorder1);
 				updatekapiLabel();
 				
-				Border kapiborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border kapiborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel kapiinnerPanel = new JPanel();
 					
 				kapiinnerPanel.setLayout(new BoxLayout(kapiinnerPanel, BoxLayout.Y_AXIS));
@@ -127,16 +133,18 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				kapiinnerPanel.add(kapiLabel);
 				kapiinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				kapiinnerPanel.add(kapiSlider);		
-				kapiinnerPanel.setBorder(kapiborder);
+				kapiinnerPanel.setBorder(kapiborder2);
 			
 				frame.add(kapiinnerPanel);
 			
 			kapd1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.3 * 100.0),(int) (0.8 * 100.0), (int) (gCB.getkapd1() * 100.0));
 				kapd1Slider.addChangeListener(new rom_rev2Listener());
 				kapd1Label = new JLabel();
+				Border kapd1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				kapd1Label.setBorder(kapd1Border1);
 				updatekapd1Label();
 				
-				Border kapd1border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border kapd1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel kapd1innerPanel = new JPanel();
 					
 				kapd1innerPanel.setLayout(new BoxLayout(kapd1innerPanel, BoxLayout.Y_AXIS));
@@ -144,16 +152,18 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				kapd1innerPanel.add(kapd1Label);
 				kapd1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				kapd1innerPanel.add(kapd1Slider);		
-				kapd1innerPanel.setBorder(kapd1border);
+				kapd1innerPanel.setBorder(kapd1border2);
 			
 				frame.add(kapd1innerPanel);
 			
 			kapd2Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.3 * 100.0),(int) (0.8 * 100.0), (int) (gCB.getkapd2() * 100.0));
 				kapd2Slider.addChangeListener(new rom_rev2Listener());
 				kapd2Label = new JLabel();
+				Border kapd2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				kapd2Label.setBorder(kapd2Border1);
 				updatekapd2Label();
 				
-				Border kapd2border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border kapd2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel kapd2innerPanel = new JPanel();
 					
 				kapd2innerPanel.setLayout(new BoxLayout(kapd2innerPanel, BoxLayout.Y_AXIS));
@@ -161,16 +171,18 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				kapd2innerPanel.add(kapd2Label);
 				kapd2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				kapd2innerPanel.add(kapd2Slider);		
-				kapd2innerPanel.setBorder(kapd2border);
+				kapd2innerPanel.setBorder(kapd2border2);
 			
 				frame.add(kapd2innerPanel);
 			
 			kflSlider = gCB.LogFilterSlider(500,5000,gCB.getkfl());
 				kflSlider.addChangeListener(new rom_rev2Listener());
 				kflLabel = new JLabel();
+				Border kflBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				kflLabel.setBorder(kflBorder1);
 				updatekflLabel();
 				
-				Border kflborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border kflborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel kflinnerPanel = new JPanel();
 					
 				kflinnerPanel.setLayout(new BoxLayout(kflinnerPanel, BoxLayout.Y_AXIS));
@@ -178,16 +190,18 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				kflinnerPanel.add(kflLabel);
 				kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				kflinnerPanel.add(kflSlider);		
-				kflinnerPanel.setBorder(kflborder);
+				kflinnerPanel.setBorder(kflborder2);
 			
 				frame.add(kflinnerPanel);
 			
 			kfhSlider = gCB.LogFilterSlider(40,1000,gCB.getkfh());
 				kfhSlider.addChangeListener(new rom_rev2Listener());
 				kfhLabel = new JLabel();
+				Border kfhBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				kfhLabel.setBorder(kfhBorder1);
 				updatekfhLabel();
 				
-				Border kfhborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border kfhborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel kfhinnerPanel = new JPanel();
 					
 				kfhinnerPanel.setLayout(new BoxLayout(kfhinnerPanel, BoxLayout.Y_AXIS));
@@ -195,16 +209,18 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				kfhinnerPanel.add(kfhLabel);
 				kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				kfhinnerPanel.add(kfhSlider);		
-				kfhinnerPanel.setBorder(kfhborder);
+				kfhinnerPanel.setBorder(kfhborder2);
 			
 				frame.add(kfhinnerPanel);
 			
 			memscaleSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.5 * 10.0),(int) (1.0 * 10.0), (int) (gCB.getmemscale() * 10.0));
 				memscaleSlider.addChangeListener(new rom_rev2Listener());
 				memscaleLabel = new JLabel();
+				Border memscaleBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				memscaleLabel.setBorder(memscaleBorder1);
 				updatememscaleLabel();
 				
-				Border memscaleborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border memscaleborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel memscaleinnerPanel = new JPanel();
 					
 				memscaleinnerPanel.setLayout(new BoxLayout(memscaleinnerPanel, BoxLayout.Y_AXIS));
@@ -212,7 +228,7 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 				memscaleinnerPanel.add(memscaleLabel);
 				memscaleinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				memscaleinnerPanel.add(memscaleSlider);		
-				memscaleinnerPanel.setBorder(memscaleborder);
+				memscaleinnerPanel.setBorder(memscaleborder2);
 			
 				frame.add(memscaleinnerPanel);
 				frame.addWindowListener(new MyWindowListener());

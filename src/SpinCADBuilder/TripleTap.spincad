@@ -10,28 +10,28 @@
 @controlInput fbk Feedback
 
 equ inputGain 1.0
-@sliderLabel inputGain Input_Gain  -24 0 0 1.0 1 DBLEVEL
+@sliderLabel inputGain 'Input Gain: '  -24 0 0 1.0 1 DBLEVEL
 
 equ fbkGain 0.5
-@sliderLabel fbkGain Feedback_Gain -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel fbkGain 'Feedback Gain: ' -24 0 -6 1.0 1 DBLEVEL 
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
 equ delayLength 32767 
-@sliderLabel delayLength Delay_Time 0 32767 16384 1 0 lengthToTime
+@sliderLabel delayLength 'Delay Time (ms): ' 0 32767 16384 1 0 lengthToTime
 		
 // tap 1 length in % (control panel value) 
 //	'@sliderLabel' ename = ID controlName = ID (minVal = SPINDOUBLE maxVal = SPINDOUBLE initVal = SPINDOUBLE multiplier = SPINDOUBLE precision = INT (option = ID)?)?
 
 equ tap1Ratio 0.85 
-@sliderLabel tap1Ratio Tap_1_Time  0.0 1.0 0.85 1000.0 2  
+@sliderLabel tap1Ratio 'Tap 1 Time (%): '  0.0 1.0 0.85 1000.0 2  
 
 // tap 2 length in % (control panel value)
 equ tap2Ratio 0.60 
-@sliderLabel tap2Ratio Tap_2_Time 0.0 1.0 0.60 1000.0 2	
+@sliderLabel tap2Ratio 'Tap 2 Time (%): ' 0.0 1.0 0.60 1000.0 2	
 // tap 3 length in % (control panel value)
 equ tap3Ratio 0.45 
-@sliderLabel tap3Ratio Tap_3_Time 0.0 1.0 0.45 1000.0 2
+@sliderLabel tap3Ratio 'Tap 3 Time (%): ' 0.0 1.0 0.45 1000.0 2
 
 equ delayOffset -1
 

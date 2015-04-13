@@ -38,11 +38,11 @@
 
 			public Glitch_shiftCADBlock(int x, int y) {
 				super(x, y);
-				setName("Glitch_Shift");	
+				setName("Glitch Shift");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addOutputPin(this, "Glitch_Out");
-				addControlInputPin(this, "Pitch_Control");
+				addOutputPin(this, "Glitch Out");
+				addControlInputPin(this, "Pitch Control");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -77,7 +77,7 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Pitch_Control").getPinConnection();
+			sp = this.getPin("Pitch Control").getPinConnection();
 			int pitchControl = -1;
 			if(sp != null) {
 				pitchControl = sp.getRegister();
@@ -116,7 +116,7 @@
 			
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayd", 0, 0);
-			if(this.getPin("Pitch_Control").isConnected() == true) {
+			if(this.getPin("Pitch Control").isConnected() == true) {
 			sfxb.readRegister(pitchControl, scaledPitch);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
@@ -147,7 +147,7 @@
 			}
 			
 			sfxb.writeRegister(pitch, 0);
-			this.getPin("Glitch_Out").setRegister(pitch);
+			this.getPin("Glitch Out").setRegister(pitch);
 			}
 			
 

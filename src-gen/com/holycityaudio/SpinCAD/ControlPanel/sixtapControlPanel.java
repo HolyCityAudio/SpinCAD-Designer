@@ -94,9 +94,11 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getinputGain() * 1000.0));
 				inputGainSlider.addChangeListener(new sixtapListener());
 				inputGainLabel = new JLabel();
+				Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				inputGainLabel.setBorder(inputGainBorder1);
 				updateinputGainLabel();
 				
-				Border inputGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel inputGaininnerPanel = new JPanel();
 					
 				inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
@@ -104,16 +106,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				inputGaininnerPanel.add(inputGainLabel);
 				inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				inputGaininnerPanel.add(inputGainSlider);		
-				inputGaininnerPanel.setBorder(inputGainborder);
+				inputGaininnerPanel.setBorder(inputGainborder2);
 			
 				frame.add(inputGaininnerPanel);
 			
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
 				delayLengthSlider.addChangeListener(new sixtapListener());
 				delayLengthLabel = new JLabel();
+				Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				delayLengthLabel.setBorder(delayLengthBorder1);
 				updatedelayLengthLabel();
 				
-				Border delayLengthborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel delayLengthinnerPanel = new JPanel();
 					
 				delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
@@ -121,16 +125,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				delayLengthinnerPanel.add(delayLengthLabel);
 				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				delayLengthinnerPanel.add(delayLengthSlider);		
-				delayLengthinnerPanel.setBorder(delayLengthborder);
+				delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
 				frame.add(delayLengthinnerPanel);
 			
 			tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
 				tap1RatioSlider.addChangeListener(new sixtapListener());
 				tap1RatioLabel = new JLabel();
+				Border tap1RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap1RatioLabel.setBorder(tap1RatioBorder1);
 				updatetap1RatioLabel();
 				
-				Border tap1Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap1Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap1RatioinnerPanel = new JPanel();
 					
 				tap1RatioinnerPanel.setLayout(new BoxLayout(tap1RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -138,16 +144,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap1RatioinnerPanel.add(tap1RatioLabel);
 				tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap1RatioinnerPanel.add(tap1RatioSlider);		
-				tap1RatioinnerPanel.setBorder(tap1Ratioborder);
+				tap1RatioinnerPanel.setBorder(tap1Ratioborder2);
 			
 				frame.add(tap1RatioinnerPanel);
 			
 			tap2RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
 				tap2RatioSlider.addChangeListener(new sixtapListener());
 				tap2RatioLabel = new JLabel();
+				Border tap2RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap2RatioLabel.setBorder(tap2RatioBorder1);
 				updatetap2RatioLabel();
 				
-				Border tap2Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap2Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap2RatioinnerPanel = new JPanel();
 					
 				tap2RatioinnerPanel.setLayout(new BoxLayout(tap2RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -155,16 +163,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap2RatioinnerPanel.add(tap2RatioLabel);
 				tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap2RatioinnerPanel.add(tap2RatioSlider);		
-				tap2RatioinnerPanel.setBorder(tap2Ratioborder);
+				tap2RatioinnerPanel.setBorder(tap2Ratioborder2);
 			
 				frame.add(tap2RatioinnerPanel);
 			
 			tap3RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
 				tap3RatioSlider.addChangeListener(new sixtapListener());
 				tap3RatioLabel = new JLabel();
+				Border tap3RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap3RatioLabel.setBorder(tap3RatioBorder1);
 				updatetap3RatioLabel();
 				
-				Border tap3Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap3Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap3RatioinnerPanel = new JPanel();
 					
 				tap3RatioinnerPanel.setLayout(new BoxLayout(tap3RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -172,16 +182,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap3RatioinnerPanel.add(tap3RatioLabel);
 				tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap3RatioinnerPanel.add(tap3RatioSlider);		
-				tap3RatioinnerPanel.setBorder(tap3Ratioborder);
+				tap3RatioinnerPanel.setBorder(tap3Ratioborder2);
 			
 				frame.add(tap3RatioinnerPanel);
 			
 			tap4RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Ratio() * 1000.0));
 				tap4RatioSlider.addChangeListener(new sixtapListener());
 				tap4RatioLabel = new JLabel();
+				Border tap4RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap4RatioLabel.setBorder(tap4RatioBorder1);
 				updatetap4RatioLabel();
 				
-				Border tap4Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap4Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap4RatioinnerPanel = new JPanel();
 					
 				tap4RatioinnerPanel.setLayout(new BoxLayout(tap4RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -189,16 +201,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap4RatioinnerPanel.add(tap4RatioLabel);
 				tap4RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap4RatioinnerPanel.add(tap4RatioSlider);		
-				tap4RatioinnerPanel.setBorder(tap4Ratioborder);
+				tap4RatioinnerPanel.setBorder(tap4Ratioborder2);
 			
 				frame.add(tap4RatioinnerPanel);
 			
 			tap5RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap5Ratio() * 1000.0));
 				tap5RatioSlider.addChangeListener(new sixtapListener());
 				tap5RatioLabel = new JLabel();
+				Border tap5RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap5RatioLabel.setBorder(tap5RatioBorder1);
 				updatetap5RatioLabel();
 				
-				Border tap5Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap5Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap5RatioinnerPanel = new JPanel();
 					
 				tap5RatioinnerPanel.setLayout(new BoxLayout(tap5RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -206,16 +220,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap5RatioinnerPanel.add(tap5RatioLabel);
 				tap5RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap5RatioinnerPanel.add(tap5RatioSlider);		
-				tap5RatioinnerPanel.setBorder(tap5Ratioborder);
+				tap5RatioinnerPanel.setBorder(tap5Ratioborder2);
 			
 				frame.add(tap5RatioinnerPanel);
 			
 			tap6RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap6Ratio() * 1000.0));
 				tap6RatioSlider.addChangeListener(new sixtapListener());
 				tap6RatioLabel = new JLabel();
+				Border tap6RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap6RatioLabel.setBorder(tap6RatioBorder1);
 				updatetap6RatioLabel();
 				
-				Border tap6Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap6Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap6RatioinnerPanel = new JPanel();
 					
 				tap6RatioinnerPanel.setLayout(new BoxLayout(tap6RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -223,16 +239,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap6RatioinnerPanel.add(tap6RatioLabel);
 				tap6RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap6RatioinnerPanel.add(tap6RatioSlider);		
-				tap6RatioinnerPanel.setBorder(tap6Ratioborder);
+				tap6RatioinnerPanel.setBorder(tap6Ratioborder2);
 			
 				frame.add(tap6RatioinnerPanel);
 			
 			tap1GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Gain() * 1000.0));
 				tap1GainSlider.addChangeListener(new sixtapListener());
 				tap1GainLabel = new JLabel();
+				Border tap1GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap1GainLabel.setBorder(tap1GainBorder1);
 				updatetap1GainLabel();
 				
-				Border tap1Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap1Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap1GaininnerPanel = new JPanel();
 					
 				tap1GaininnerPanel.setLayout(new BoxLayout(tap1GaininnerPanel, BoxLayout.Y_AXIS));
@@ -240,16 +258,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap1GaininnerPanel.add(tap1GainLabel);
 				tap1GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap1GaininnerPanel.add(tap1GainSlider);		
-				tap1GaininnerPanel.setBorder(tap1Gainborder);
+				tap1GaininnerPanel.setBorder(tap1Gainborder2);
 			
 				frame.add(tap1GaininnerPanel);
 			
 			tap2GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Gain() * 1000.0));
 				tap2GainSlider.addChangeListener(new sixtapListener());
 				tap2GainLabel = new JLabel();
+				Border tap2GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap2GainLabel.setBorder(tap2GainBorder1);
 				updatetap2GainLabel();
 				
-				Border tap2Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap2Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap2GaininnerPanel = new JPanel();
 					
 				tap2GaininnerPanel.setLayout(new BoxLayout(tap2GaininnerPanel, BoxLayout.Y_AXIS));
@@ -257,16 +277,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap2GaininnerPanel.add(tap2GainLabel);
 				tap2GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap2GaininnerPanel.add(tap2GainSlider);		
-				tap2GaininnerPanel.setBorder(tap2Gainborder);
+				tap2GaininnerPanel.setBorder(tap2Gainborder2);
 			
 				frame.add(tap2GaininnerPanel);
 			
 			tap3GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Gain() * 1000.0));
 				tap3GainSlider.addChangeListener(new sixtapListener());
 				tap3GainLabel = new JLabel();
+				Border tap3GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap3GainLabel.setBorder(tap3GainBorder1);
 				updatetap3GainLabel();
 				
-				Border tap3Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap3Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap3GaininnerPanel = new JPanel();
 					
 				tap3GaininnerPanel.setLayout(new BoxLayout(tap3GaininnerPanel, BoxLayout.Y_AXIS));
@@ -274,16 +296,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap3GaininnerPanel.add(tap3GainLabel);
 				tap3GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap3GaininnerPanel.add(tap3GainSlider);		
-				tap3GaininnerPanel.setBorder(tap3Gainborder);
+				tap3GaininnerPanel.setBorder(tap3Gainborder2);
 			
 				frame.add(tap3GaininnerPanel);
 			
 			tap4GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Gain() * 1000.0));
 				tap4GainSlider.addChangeListener(new sixtapListener());
 				tap4GainLabel = new JLabel();
+				Border tap4GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap4GainLabel.setBorder(tap4GainBorder1);
 				updatetap4GainLabel();
 				
-				Border tap4Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap4Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap4GaininnerPanel = new JPanel();
 					
 				tap4GaininnerPanel.setLayout(new BoxLayout(tap4GaininnerPanel, BoxLayout.Y_AXIS));
@@ -291,16 +315,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap4GaininnerPanel.add(tap4GainLabel);
 				tap4GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap4GaininnerPanel.add(tap4GainSlider);		
-				tap4GaininnerPanel.setBorder(tap4Gainborder);
+				tap4GaininnerPanel.setBorder(tap4Gainborder2);
 			
 				frame.add(tap4GaininnerPanel);
 			
 			tap5GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap5Gain() * 1000.0));
 				tap5GainSlider.addChangeListener(new sixtapListener());
 				tap5GainLabel = new JLabel();
+				Border tap5GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap5GainLabel.setBorder(tap5GainBorder1);
 				updatetap5GainLabel();
 				
-				Border tap5Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap5Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap5GaininnerPanel = new JPanel();
 					
 				tap5GaininnerPanel.setLayout(new BoxLayout(tap5GaininnerPanel, BoxLayout.Y_AXIS));
@@ -308,16 +334,18 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap5GaininnerPanel.add(tap5GainLabel);
 				tap5GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap5GaininnerPanel.add(tap5GainSlider);		
-				tap5GaininnerPanel.setBorder(tap5Gainborder);
+				tap5GaininnerPanel.setBorder(tap5Gainborder2);
 			
 				frame.add(tap5GaininnerPanel);
 			
 			tap6GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap6Gain() * 1000.0));
 				tap6GainSlider.addChangeListener(new sixtapListener());
 				tap6GainLabel = new JLabel();
+				Border tap6GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap6GainLabel.setBorder(tap6GainBorder1);
 				updatetap6GainLabel();
 				
-				Border tap6Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap6Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap6GaininnerPanel = new JPanel();
 					
 				tap6GaininnerPanel.setLayout(new BoxLayout(tap6GaininnerPanel, BoxLayout.Y_AXIS));
@@ -325,7 +353,7 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				tap6GaininnerPanel.add(tap6GainLabel);
 				tap6GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap6GaininnerPanel.add(tap6GainSlider);		
-				tap6GaininnerPanel.setBorder(tap6Gainborder);
+				tap6GaininnerPanel.setBorder(tap6Gainborder2);
 			
 				frame.add(tap6GaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());

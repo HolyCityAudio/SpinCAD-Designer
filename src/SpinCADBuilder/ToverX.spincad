@@ -11,7 +11,8 @@ equ   lf4 	reg4
 
 ;CONSTANTS 
 equ   threshold   -0.1875       
-equ   filterFactor 0.75      
+equ   filterFactor   0.4  ; low pass filter
+@sliderLabel filterFactor 'Low Pass' 350 5000 1400.0 100.0 1 LOGFREQ
 
 @isPinConnected Input
 rdax    adcl,1    ;read input signal

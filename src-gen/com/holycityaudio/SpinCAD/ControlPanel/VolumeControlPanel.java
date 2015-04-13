@@ -69,9 +69,11 @@ public VolumeControlPanel(VolumeCADBlock genericCADBlock) {
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 				gainSlider.addChangeListener(new VolumeListener());
 				gainLabel = new JLabel();
+				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gainLabel.setBorder(gainBorder1);
 				updategainLabel();
 				
-				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gaininnerPanel = new JPanel();
 					
 				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
@@ -79,7 +81,7 @@ public VolumeControlPanel(VolumeCADBlock genericCADBlock) {
 				gaininnerPanel.add(gainLabel);
 				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder);
+				gaininnerPanel.setBorder(gainborder2);
 			
 				frame.add(gaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
@@ -120,7 +122,7 @@ public VolumeControlPanel(VolumeCADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		gainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

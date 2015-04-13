@@ -1,7 +1,7 @@
-@name Pitch_Shift
+@name 'Pitch Shift'
 @audioInput input Input
-@audioOutput pitch Pitch_Out
-@controlInput pitchControl Pitch_Control
+@audioOutput pitch 'Pitch Out'
+@controlInput pitchControl 'Pitch Control'
 
 //@audioOutput pitch1 Pitch_1_Out
 //@audioOutput pitch2 Pitch_2_Out
@@ -11,8 +11,8 @@ equ pitchCoeff 8192
 // variable - Name - low - high - multiplier - precision - option 
 @sliderLabel pitchCoeff 'Pitch Coefficient' -16384 32767 8192 1.0 0  
 
-// variable - Name - low - high - multiplier - precision - option 
-//@sliderLabelSpinner pitchCoeff 'Pitch Coefficient' -16384 32767 8192 1.0 0  
+equ controlRange 0
+@comboBox controlRange '0 -> +1' '-1 -> +1'
 
 equ lfoSel 0
 @comboBox lfoSel 'Ramp 0' 'Ramp 1'
@@ -60,8 +60,6 @@ equ sixteen 32768
 @isEqualTo lfoSel 0
 skp run, START 
 wldr 0,pitchCoeff, length 
-//sof 0.0, scaledPitch
-//wrax RMP0_RATE, 0
 START: 
 @else
 skp run, START1 
@@ -72,8 +70,22 @@ START1:
 ldax input
 wra delayd,0
 
-@isPinConnected Pitch_Control
+equ two 2.0
+@divideDouble halfPitch scaledPitch two
+
+@isPinConnected 'Pitch Control'
+// scale negative pitch shift coefficients by 0.5
+// debug!  XXX
+@isEqualTo controlRange 1
+rdax pitchControl, 1.0
+sof scaledPitch, -halfPitch
+skp gez, positive1
+sof 0.5, 0
+positive1:
+@else
 rdax pitchControl, scaledPitch
+@endif
+
 @isEqualTo lfoSel 0
 wrax RMP0_RATE, 0
 @endif
@@ -109,7 +121,7 @@ cho rda,RMP1,NA,temp
 
 wrax pitch,0
 
-@setOutputPin Pitch_Out pitch
+@setOutputPin 'Pitch Out' pitch
 //@setOutputPin Pitch_1_Out pitch1 
 //@setOutputPin Pitch_2_Out pitch2 
 //@setOutputPin Pitch_3_Out pitch3 

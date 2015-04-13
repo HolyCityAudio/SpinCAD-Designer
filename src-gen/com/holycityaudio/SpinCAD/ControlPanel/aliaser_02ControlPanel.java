@@ -70,9 +70,11 @@ public aliaser_02ControlPanel(aliaser_02CADBlock genericCADBlock) {
 			ripLowSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.015 * 1000.0), (int) (gCB.getripLow() * 1000.0));
 				ripLowSlider.addChangeListener(new aliaser_02Listener());
 				ripLowLabel = new JLabel();
+				Border ripLowBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				ripLowLabel.setBorder(ripLowBorder1);
 				updateripLowLabel();
 				
-				Border ripLowborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border ripLowborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel ripLowinnerPanel = new JPanel();
 					
 				ripLowinnerPanel.setLayout(new BoxLayout(ripLowinnerPanel, BoxLayout.Y_AXIS));
@@ -80,16 +82,18 @@ public aliaser_02ControlPanel(aliaser_02CADBlock genericCADBlock) {
 				ripLowinnerPanel.add(ripLowLabel);
 				ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				ripLowinnerPanel.add(ripLowSlider);		
-				ripLowinnerPanel.setBorder(ripLowborder);
+				ripLowinnerPanel.setBorder(ripLowborder2);
 			
 				frame.add(ripLowinnerPanel);
 			
 			ripHighSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.02 * 1000.0),(int) (0.2 * 1000.0), (int) (gCB.getripHigh() * 1000.0));
 				ripHighSlider.addChangeListener(new aliaser_02Listener());
 				ripHighLabel = new JLabel();
+				Border ripHighBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				ripHighLabel.setBorder(ripHighBorder1);
 				updateripHighLabel();
 				
-				Border ripHighborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border ripHighborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel ripHighinnerPanel = new JPanel();
 					
 				ripHighinnerPanel.setLayout(new BoxLayout(ripHighinnerPanel, BoxLayout.Y_AXIS));
@@ -97,7 +101,7 @@ public aliaser_02ControlPanel(aliaser_02CADBlock genericCADBlock) {
 				ripHighinnerPanel.add(ripHighLabel);
 				ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				ripHighinnerPanel.add(ripHighSlider);		
-				ripHighinnerPanel.setBorder(ripHighborder);
+				ripHighinnerPanel.setBorder(ripHighborder2);
 			
 				frame.add(ripHighinnerPanel);
 				frame.addWindowListener(new MyWindowListener());

@@ -68,9 +68,11 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 			multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
 				multiplierSlider.addChangeListener(new LogListener());
 				multiplierLabel = new JLabel();
+				Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				multiplierLabel.setBorder(multiplierBorder1);
 				updatemultiplierLabel();
 				
-				Border multiplierborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border multiplierborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel multiplierinnerPanel = new JPanel();
 					
 				multiplierinnerPanel.setLayout(new BoxLayout(multiplierinnerPanel, BoxLayout.Y_AXIS));
@@ -78,7 +80,7 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 				multiplierinnerPanel.add(multiplierLabel);
 				multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				multiplierinnerPanel.add(multiplierSlider);		
-				multiplierinnerPanel.setBorder(multiplierborder);
+				multiplierinnerPanel.setBorder(multiplierborder2);
 			
 				frame.add(multiplierinnerPanel);
 				frame.addWindowListener(new MyWindowListener());

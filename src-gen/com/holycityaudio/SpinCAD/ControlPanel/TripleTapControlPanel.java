@@ -79,9 +79,11 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 				inputGainSlider.addChangeListener(new TripleTapListener());
 				inputGainLabel = new JLabel();
+				Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				inputGainLabel.setBorder(inputGainBorder1);
 				updateinputGainLabel();
 				
-				Border inputGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel inputGaininnerPanel = new JPanel();
 					
 				inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
@@ -89,7 +91,7 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				inputGaininnerPanel.add(inputGainLabel);
 				inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				inputGaininnerPanel.add(inputGainSlider);		
-				inputGaininnerPanel.setBorder(inputGainborder);
+				inputGaininnerPanel.setBorder(inputGainborder2);
 			
 				frame.add(inputGaininnerPanel);
 			
@@ -97,9 +99,11 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
 				fbkGainSlider.addChangeListener(new TripleTapListener());
 				fbkGainLabel = new JLabel();
+				Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				fbkGainLabel.setBorder(fbkGainBorder1);
 				updatefbkGainLabel();
 				
-				Border fbkGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel fbkGaininnerPanel = new JPanel();
 					
 				fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
@@ -107,16 +111,18 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				fbkGaininnerPanel.add(fbkGainLabel);
 				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				fbkGaininnerPanel.add(fbkGainSlider);		
-				fbkGaininnerPanel.setBorder(fbkGainborder);
+				fbkGaininnerPanel.setBorder(fbkGainborder2);
 			
 				frame.add(fbkGaininnerPanel);
 			
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
 				delayLengthSlider.addChangeListener(new TripleTapListener());
 				delayLengthLabel = new JLabel();
+				Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				delayLengthLabel.setBorder(delayLengthBorder1);
 				updatedelayLengthLabel();
 				
-				Border delayLengthborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel delayLengthinnerPanel = new JPanel();
 					
 				delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
@@ -124,16 +130,18 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				delayLengthinnerPanel.add(delayLengthLabel);
 				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				delayLengthinnerPanel.add(delayLengthSlider);		
-				delayLengthinnerPanel.setBorder(delayLengthborder);
+				delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
 				frame.add(delayLengthinnerPanel);
 			
 			tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
 				tap1RatioSlider.addChangeListener(new TripleTapListener());
 				tap1RatioLabel = new JLabel();
+				Border tap1RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap1RatioLabel.setBorder(tap1RatioBorder1);
 				updatetap1RatioLabel();
 				
-				Border tap1Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap1Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap1RatioinnerPanel = new JPanel();
 					
 				tap1RatioinnerPanel.setLayout(new BoxLayout(tap1RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -141,16 +149,18 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				tap1RatioinnerPanel.add(tap1RatioLabel);
 				tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap1RatioinnerPanel.add(tap1RatioSlider);		
-				tap1RatioinnerPanel.setBorder(tap1Ratioborder);
+				tap1RatioinnerPanel.setBorder(tap1Ratioborder2);
 			
 				frame.add(tap1RatioinnerPanel);
 			
 			tap2RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
 				tap2RatioSlider.addChangeListener(new TripleTapListener());
 				tap2RatioLabel = new JLabel();
+				Border tap2RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap2RatioLabel.setBorder(tap2RatioBorder1);
 				updatetap2RatioLabel();
 				
-				Border tap2Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap2Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap2RatioinnerPanel = new JPanel();
 					
 				tap2RatioinnerPanel.setLayout(new BoxLayout(tap2RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -158,16 +168,18 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				tap2RatioinnerPanel.add(tap2RatioLabel);
 				tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap2RatioinnerPanel.add(tap2RatioSlider);		
-				tap2RatioinnerPanel.setBorder(tap2Ratioborder);
+				tap2RatioinnerPanel.setBorder(tap2Ratioborder2);
 			
 				frame.add(tap2RatioinnerPanel);
 			
 			tap3RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
 				tap3RatioSlider.addChangeListener(new TripleTapListener());
 				tap3RatioLabel = new JLabel();
+				Border tap3RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap3RatioLabel.setBorder(tap3RatioBorder1);
 				updatetap3RatioLabel();
 				
-				Border tap3Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap3Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap3RatioinnerPanel = new JPanel();
 					
 				tap3RatioinnerPanel.setLayout(new BoxLayout(tap3RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -175,7 +187,7 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				tap3RatioinnerPanel.add(tap3RatioLabel);
 				tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap3RatioinnerPanel.add(tap3RatioSlider);		
-				tap3RatioinnerPanel.setBorder(tap3Ratioborder);
+				tap3RatioinnerPanel.setBorder(tap3Ratioborder2);
 			
 				frame.add(tap3RatioinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
@@ -236,22 +248,22 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
+		inputGainLabel.setText("Input Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
 		}		
 		private void updatefbkGainLabel() {
-		fbkGainLabel.setText("Feedback_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
+		fbkGainLabel.setText("Feedback Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
 		}		
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
+		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
 		}		
 		private void updatetap1RatioLabel() {
-		tap1RatioLabel.setText("Tap_1_Time " + String.format("%4.2f", gCB.gettap1Ratio()));		
+		tap1RatioLabel.setText("Tap 1 Time (%):  " + String.format("%4.2f", gCB.gettap1Ratio()));		
 		}		
 		private void updatetap2RatioLabel() {
-		tap2RatioLabel.setText("Tap_2_Time " + String.format("%4.2f", gCB.gettap2Ratio()));		
+		tap2RatioLabel.setText("Tap 2 Time (%):  " + String.format("%4.2f", gCB.gettap2Ratio()));		
 		}		
 		private void updatetap3RatioLabel() {
-		tap3RatioLabel.setText("Tap_3_Time " + String.format("%4.2f", gCB.gettap3Ratio()));		
+		tap3RatioLabel.setText("Tap 3 Time (%):  " + String.format("%4.2f", gCB.gettap3Ratio()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

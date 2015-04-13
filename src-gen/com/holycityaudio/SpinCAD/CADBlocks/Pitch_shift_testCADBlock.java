@@ -30,20 +30,23 @@
 			private Pitch_shift_testControlPanel cp = null;
 			
 			private double pitchCoeff = 8192;
+			private double controlRange = 0;
 			private double lfoSel = 0;
 			private double lfoWidth = 0;
 			private double length = 1;
 			private int pitch;
 			private double sixteen = 32768;
+			private double two = 2.0;
 
 			public Pitch_shift_testCADBlock(int x, int y) {
 				super(x, y);
-				setName("Pitch_Shift");	
+				setName("Pitch Shift");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addOutputPin(this, "Pitch_Out");
-				addControlInputPin(this, "Pitch_Control");
+				addOutputPin(this, "Pitch Out");
+				addControlInputPin(this, "Pitch Control");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -77,7 +80,7 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Pitch_Control").getPinConnection();
+			sp = this.getPin("Pitch Control").getPinConnection();
 			int pitchControl = -1;
 			if(sp != null) {
 				pitchControl = sp.getRegister();
@@ -116,8 +119,17 @@
 			
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayd", 0, 0);
-			if(this.getPin("Pitch_Control").isConnected() == true) {
+			double halfPitch = scaledPitch / two;
+			if(this.getPin("Pitch Control").isConnected() == true) {
+			if(controlRange == 1) {
+			sfxb.readRegister(pitchControl, 1.0);
+			sfxb.scaleOffset(scaledPitch, -halfPitch);
+			sfxb.skip(GEZ, 1);
+			sfxb.scaleOffset(0.5, 0);
+			} else {
 			sfxb.readRegister(pitchControl, scaledPitch);
+			}
+			
 			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
 			}
@@ -147,7 +159,7 @@
 			}
 			
 			sfxb.writeRegister(pitch, 0);
-			this.getPin("Pitch_Out").setRegister(pitch);
+			this.getPin("Pitch Out").setRegister(pitch);
 			}
 			
 
@@ -160,6 +172,13 @@
 			
 			public double getpitchCoeff() {
 				return pitchCoeff;
+			}
+			public void setcontrolRange(int __param) {
+				controlRange = (double) __param;	
+			}
+			
+			public int getcontrolRange() {
+				return (int) controlRange;
 			}
 			public void setlfoSel(int __param) {
 				lfoSel = (double) __param;	

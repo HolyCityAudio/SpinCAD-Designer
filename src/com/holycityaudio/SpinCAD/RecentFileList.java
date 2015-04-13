@@ -7,9 +7,12 @@ import java.awt.EventQueue;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -42,7 +45,26 @@ public class RecentFileList extends JPanel {
 
 		setLayout(new BorderLayout());
 		add(new JScrollPane(list));
+// add double click handler here
+		
+		list.addMouseListener(new MouseAdapter() {
+		    public void mouseClicked(MouseEvent evt) {
+//		        @SuppressWarnings("rawtypes")
+//				JList list = (JList)evt.getSource();
+		        if (evt.getClickCount() == 2) {
 
+		            // Double-click detected
+		            @SuppressWarnings("unused")
+//					int index = list.locationToIndex(evt.getPoint())
+					File file = list.getSelectedValue();
+		        } else if (evt.getClickCount() == 3) {
+
+		            // Triple-click detected
+		            int index = list.locationToIndex(evt.getPoint());
+		        }
+		    }
+		});
+		
 		list.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {

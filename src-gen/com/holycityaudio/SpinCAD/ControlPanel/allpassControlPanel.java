@@ -73,9 +73,11 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 				gainSlider.addChangeListener(new allpassListener());
 				gainLabel = new JLabel();
+				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gainLabel.setBorder(gainBorder1);
 				updategainLabel();
 				
-				Border gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gaininnerPanel = new JPanel();
 					
 				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
@@ -83,16 +85,18 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 				gaininnerPanel.add(gainLabel);
 				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder);
+				gaininnerPanel.setBorder(gainborder2);
 			
 				frame.add(gaininnerPanel);
 			
 			nAPsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (4 * 1.0), (int) (gCB.getnAPs() * 1.0));
 				nAPsSlider.addChangeListener(new allpassListener());
 				nAPsLabel = new JLabel();
+				Border nAPsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				nAPsLabel.setBorder(nAPsBorder1);
 				updatenAPsLabel();
 				
-				Border nAPsborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border nAPsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel nAPsinnerPanel = new JPanel();
 					
 				nAPsinnerPanel.setLayout(new BoxLayout(nAPsinnerPanel, BoxLayout.Y_AXIS));
@@ -100,16 +104,18 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 				nAPsinnerPanel.add(nAPsLabel);
 				nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				nAPsinnerPanel.add(nAPsSlider);		
-				nAPsinnerPanel.setBorder(nAPsborder);
+				nAPsinnerPanel.setBorder(nAPsborder2);
 			
 				frame.add(nAPsinnerPanel);
 			
 			kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
 				kiapSlider.addChangeListener(new allpassListener());
 				kiapLabel = new JLabel();
+				Border kiapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				kiapLabel.setBorder(kiapBorder1);
 				updatekiapLabel();
 				
-				Border kiapborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border kiapborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel kiapinnerPanel = new JPanel();
 					
 				kiapinnerPanel.setLayout(new BoxLayout(kiapinnerPanel, BoxLayout.Y_AXIS));
@@ -117,7 +123,7 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 				kiapinnerPanel.add(kiapLabel);
 				kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				kiapinnerPanel.add(kiapSlider);		
-				kiapinnerPanel.setBorder(kiapborder);
+				kiapinnerPanel.setBorder(kiapborder2);
 			
 				frame.add(kiapinnerPanel);
 				frame.addWindowListener(new MyWindowListener());

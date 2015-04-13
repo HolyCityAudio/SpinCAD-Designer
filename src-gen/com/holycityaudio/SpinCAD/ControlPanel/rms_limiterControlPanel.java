@@ -70,9 +70,11 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 			inGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.1 * 100.0),(int) (1.0 * 100.0), (int) (gCB.getinGain() * 100.0));
 				inGainSlider.addChangeListener(new rms_limiterListener());
 				inGainLabel = new JLabel();
+				Border inGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				inGainLabel.setBorder(inGainBorder1);
 				updateinGainLabel();
 				
-				Border inGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border inGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel inGaininnerPanel = new JPanel();
 					
 				inGaininnerPanel.setLayout(new BoxLayout(inGaininnerPanel, BoxLayout.Y_AXIS));
@@ -80,16 +82,18 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 				inGaininnerPanel.add(inGainLabel);
 				inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				inGaininnerPanel.add(inGainSlider);		
-				inGaininnerPanel.setBorder(inGainborder);
+				inGaininnerPanel.setBorder(inGainborder2);
 			
 				frame.add(inGaininnerPanel);
 			
 			filtSlider = gCB.LogFilterSlider(10,100,gCB.getfilt());
 				filtSlider.addChangeListener(new rms_limiterListener());
 				filtLabel = new JLabel();
+				Border filtBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				filtLabel.setBorder(filtBorder1);
 				updatefiltLabel();
 				
-				Border filtborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border filtborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel filtinnerPanel = new JPanel();
 					
 				filtinnerPanel.setLayout(new BoxLayout(filtinnerPanel, BoxLayout.Y_AXIS));
@@ -97,7 +101,7 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 				filtinnerPanel.add(filtLabel);
 				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				filtinnerPanel.add(filtSlider);		
-				filtinnerPanel.setBorder(filtborder);
+				filtinnerPanel.setBorder(filtborder2);
 			
 				frame.add(filtinnerPanel);
 				frame.addWindowListener(new MyWindowListener());

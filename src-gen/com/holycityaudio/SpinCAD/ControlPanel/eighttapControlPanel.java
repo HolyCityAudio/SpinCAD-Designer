@@ -89,9 +89,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 				inputGainSlider.addChangeListener(new eighttapListener());
 				inputGainLabel = new JLabel();
+				Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				inputGainLabel.setBorder(inputGainBorder1);
 				updateinputGainLabel();
 				
-				Border inputGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel inputGaininnerPanel = new JPanel();
 					
 				inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
@@ -99,7 +101,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				inputGaininnerPanel.add(inputGainLabel);
 				inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				inputGaininnerPanel.add(inputGainSlider);		
-				inputGaininnerPanel.setBorder(inputGainborder);
+				inputGaininnerPanel.setBorder(inputGainborder2);
 			
 				frame.add(inputGaininnerPanel);
 			
@@ -107,9 +109,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
 				fbkGainSlider.addChangeListener(new eighttapListener());
 				fbkGainLabel = new JLabel();
+				Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				fbkGainLabel.setBorder(fbkGainBorder1);
 				updatefbkGainLabel();
 				
-				Border fbkGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel fbkGaininnerPanel = new JPanel();
 					
 				fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
@@ -117,16 +121,18 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				fbkGaininnerPanel.add(fbkGainLabel);
 				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				fbkGaininnerPanel.add(fbkGainSlider);		
-				fbkGaininnerPanel.setBorder(fbkGainborder);
+				fbkGaininnerPanel.setBorder(fbkGainborder2);
 			
 				frame.add(fbkGaininnerPanel);
 			
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
 				delayLengthSlider.addChangeListener(new eighttapListener());
 				delayLengthLabel = new JLabel();
+				Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				delayLengthLabel.setBorder(delayLengthBorder1);
 				updatedelayLengthLabel();
 				
-				Border delayLengthborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel delayLengthinnerPanel = new JPanel();
 					
 				delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
@@ -134,7 +140,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				delayLengthinnerPanel.add(delayLengthLabel);
 				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				delayLengthinnerPanel.add(delayLengthSlider);		
-				delayLengthinnerPanel.setBorder(delayLengthborder);
+				delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
 				frame.add(delayLengthinnerPanel);
 			
@@ -142,9 +148,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap1GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap1Gain())));
 				tap1GainSlider.addChangeListener(new eighttapListener());
 				tap1GainLabel = new JLabel();
+				Border tap1GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap1GainLabel.setBorder(tap1GainBorder1);
 				updatetap1GainLabel();
 				
-				Border tap1Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap1Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap1GaininnerPanel = new JPanel();
 					
 				tap1GaininnerPanel.setLayout(new BoxLayout(tap1GaininnerPanel, BoxLayout.Y_AXIS));
@@ -152,7 +160,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap1GaininnerPanel.add(tap1GainLabel);
 				tap1GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap1GaininnerPanel.add(tap1GainSlider);		
-				tap1GaininnerPanel.setBorder(tap1Gainborder);
+				tap1GaininnerPanel.setBorder(tap1Gainborder2);
 			
 				frame.add(tap1GaininnerPanel);
 			
@@ -160,9 +168,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap2GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap2Gain())));
 				tap2GainSlider.addChangeListener(new eighttapListener());
 				tap2GainLabel = new JLabel();
+				Border tap2GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap2GainLabel.setBorder(tap2GainBorder1);
 				updatetap2GainLabel();
 				
-				Border tap2Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap2Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap2GaininnerPanel = new JPanel();
 					
 				tap2GaininnerPanel.setLayout(new BoxLayout(tap2GaininnerPanel, BoxLayout.Y_AXIS));
@@ -170,7 +180,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap2GaininnerPanel.add(tap2GainLabel);
 				tap2GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap2GaininnerPanel.add(tap2GainSlider);		
-				tap2GaininnerPanel.setBorder(tap2Gainborder);
+				tap2GaininnerPanel.setBorder(tap2Gainborder2);
 			
 				frame.add(tap2GaininnerPanel);
 			
@@ -178,9 +188,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap3GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap3Gain())));
 				tap3GainSlider.addChangeListener(new eighttapListener());
 				tap3GainLabel = new JLabel();
+				Border tap3GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap3GainLabel.setBorder(tap3GainBorder1);
 				updatetap3GainLabel();
 				
-				Border tap3Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap3Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap3GaininnerPanel = new JPanel();
 					
 				tap3GaininnerPanel.setLayout(new BoxLayout(tap3GaininnerPanel, BoxLayout.Y_AXIS));
@@ -188,7 +200,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap3GaininnerPanel.add(tap3GainLabel);
 				tap3GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap3GaininnerPanel.add(tap3GainSlider);		
-				tap3GaininnerPanel.setBorder(tap3Gainborder);
+				tap3GaininnerPanel.setBorder(tap3Gainborder2);
 			
 				frame.add(tap3GaininnerPanel);
 			
@@ -196,9 +208,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap4GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap4Gain())));
 				tap4GainSlider.addChangeListener(new eighttapListener());
 				tap4GainLabel = new JLabel();
+				Border tap4GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap4GainLabel.setBorder(tap4GainBorder1);
 				updatetap4GainLabel();
 				
-				Border tap4Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap4Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap4GaininnerPanel = new JPanel();
 					
 				tap4GaininnerPanel.setLayout(new BoxLayout(tap4GaininnerPanel, BoxLayout.Y_AXIS));
@@ -206,7 +220,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap4GaininnerPanel.add(tap4GainLabel);
 				tap4GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap4GaininnerPanel.add(tap4GainSlider);		
-				tap4GaininnerPanel.setBorder(tap4Gainborder);
+				tap4GaininnerPanel.setBorder(tap4Gainborder2);
 			
 				frame.add(tap4GaininnerPanel);
 			
@@ -214,9 +228,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap5GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap5Gain())));
 				tap5GainSlider.addChangeListener(new eighttapListener());
 				tap5GainLabel = new JLabel();
+				Border tap5GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap5GainLabel.setBorder(tap5GainBorder1);
 				updatetap5GainLabel();
 				
-				Border tap5Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap5Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap5GaininnerPanel = new JPanel();
 					
 				tap5GaininnerPanel.setLayout(new BoxLayout(tap5GaininnerPanel, BoxLayout.Y_AXIS));
@@ -224,7 +240,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap5GaininnerPanel.add(tap5GainLabel);
 				tap5GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap5GaininnerPanel.add(tap5GainSlider);		
-				tap5GaininnerPanel.setBorder(tap5Gainborder);
+				tap5GaininnerPanel.setBorder(tap5Gainborder2);
 			
 				frame.add(tap5GaininnerPanel);
 			
@@ -232,9 +248,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap6GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap6Gain())));
 				tap6GainSlider.addChangeListener(new eighttapListener());
 				tap6GainLabel = new JLabel();
+				Border tap6GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap6GainLabel.setBorder(tap6GainBorder1);
 				updatetap6GainLabel();
 				
-				Border tap6Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap6Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap6GaininnerPanel = new JPanel();
 					
 				tap6GaininnerPanel.setLayout(new BoxLayout(tap6GaininnerPanel, BoxLayout.Y_AXIS));
@@ -242,7 +260,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap6GaininnerPanel.add(tap6GainLabel);
 				tap6GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap6GaininnerPanel.add(tap6GainSlider);		
-				tap6GaininnerPanel.setBorder(tap6Gainborder);
+				tap6GaininnerPanel.setBorder(tap6Gainborder2);
 			
 				frame.add(tap6GaininnerPanel);
 			
@@ -250,9 +268,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap7GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap7Gain())));
 				tap7GainSlider.addChangeListener(new eighttapListener());
 				tap7GainLabel = new JLabel();
+				Border tap7GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap7GainLabel.setBorder(tap7GainBorder1);
 				updatetap7GainLabel();
 				
-				Border tap7Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap7Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap7GaininnerPanel = new JPanel();
 					
 				tap7GaininnerPanel.setLayout(new BoxLayout(tap7GaininnerPanel, BoxLayout.Y_AXIS));
@@ -260,7 +280,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap7GaininnerPanel.add(tap7GainLabel);
 				tap7GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap7GaininnerPanel.add(tap7GainSlider);		
-				tap7GaininnerPanel.setBorder(tap7Gainborder);
+				tap7GaininnerPanel.setBorder(tap7Gainborder2);
 			
 				frame.add(tap7GaininnerPanel);
 			
@@ -268,9 +288,11 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap8GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap8Gain())));
 				tap8GainSlider.addChangeListener(new eighttapListener());
 				tap8GainLabel = new JLabel();
+				Border tap8GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap8GainLabel.setBorder(tap8GainBorder1);
 				updatetap8GainLabel();
 				
-				Border tap8Gainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap8Gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap8GaininnerPanel = new JPanel();
 					
 				tap8GaininnerPanel.setLayout(new BoxLayout(tap8GaininnerPanel, BoxLayout.Y_AXIS));
@@ -278,7 +300,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 				tap8GaininnerPanel.add(tap8GainLabel);
 				tap8GaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap8GaininnerPanel.add(tap8GainSlider);		
-				tap8GaininnerPanel.setBorder(tap8Gainborder);
+				tap8GaininnerPanel.setBorder(tap8Gainborder2);
 			
 				frame.add(tap8GaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());

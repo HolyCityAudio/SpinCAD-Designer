@@ -1,4 +1,4 @@
-@name HPF_1P
+@name 'HPF 1P'
 @audioInput input Input
 @audioOutput output Output  
 

@@ -63,16 +63,18 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Glitch_Shift");
+				frame.setTitle("Glitch Shift");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
 			pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-8192 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
 				pitchCoeffSlider.addChangeListener(new Glitch_shiftListener());
 				pitchCoeffLabel = new JLabel();
+				Border pitchCoeffBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				pitchCoeffLabel.setBorder(pitchCoeffBorder1);
 				updatepitchCoeffLabel();
 				
-				Border pitchCoeffborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border pitchCoeffborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel pitchCoeffinnerPanel = new JPanel();
 					
 				pitchCoeffinnerPanel.setLayout(new BoxLayout(pitchCoeffinnerPanel, BoxLayout.Y_AXIS));
@@ -80,7 +82,7 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 				pitchCoeffinnerPanel.add(pitchCoeffLabel);
 				pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				pitchCoeffinnerPanel.add(pitchCoeffSlider);		
-				pitchCoeffinnerPanel.setBorder(pitchCoeffborder);
+				pitchCoeffinnerPanel.setBorder(pitchCoeffborder2);
 			
 				frame.add(pitchCoeffinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();

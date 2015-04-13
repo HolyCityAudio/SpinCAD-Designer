@@ -35,7 +35,7 @@
 
 			public HPF_RDFXCADBlock(int x, int y) {
 				super(x, y);
-				setName("HPF_1P");	
+				setName("HPF 1P");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

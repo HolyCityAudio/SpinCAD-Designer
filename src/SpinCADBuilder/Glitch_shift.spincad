@@ -1,7 +1,7 @@
-@name Glitch_Shift
+@name 'Glitch Shift' 
 @audioInput input Input
-@audioOutput pitch Glitch_Out
-@controlInput pitchControl Pitch_Control
+@audioOutput pitch 'Glitch Out'
+@controlInput pitchControl 'Pitch Control'
 
 //@audioOutput pitch1 Pitch_1_Out
 //@audioOutput pitch2 Pitch_2_Out
@@ -69,7 +69,7 @@ START1:
 ldax input
 wra delayd,0
 
-@isPinConnected Pitch_Control
+@isPinConnected 'Pitch Control' 
 rdax pitchControl, scaledPitch
 @isEqualTo lfoSel 0
 wrax RMP0_RATE, 0
@@ -106,7 +106,7 @@ cho rda,RMP1,NA|COMPC,temp
 
 wrax pitch,0
 
-@setOutputPin Glitch_Out pitch
+@setOutputPin 'Glitch Out' pitch  
 //@setOutputPin Pitch_1_Out pitch1 
 //@setOutputPin Pitch_2_Out pitch2 
 //@setOutputPin Pitch_3_Out pitch3 

@@ -69,9 +69,11 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 				threshSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getthresh())));
 				threshSlider.addChangeListener(new slow_gearListener());
 				threshLabel = new JLabel();
+				Border threshBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				threshLabel.setBorder(threshBorder1);
 				updatethreshLabel();
 				
-				Border threshborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border threshborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel threshinnerPanel = new JPanel();
 					
 				threshinnerPanel.setLayout(new BoxLayout(threshinnerPanel, BoxLayout.Y_AXIS));
@@ -79,7 +81,7 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 				threshinnerPanel.add(threshLabel);
 				threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				threshinnerPanel.add(threshSlider);		
-				threshinnerPanel.setBorder(threshborder);
+				threshinnerPanel.setBorder(threshborder2);
 			
 				frame.add(threshinnerPanel);
 				frame.addWindowListener(new MyWindowListener());

@@ -63,7 +63,7 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Mixer_2_1");
+				frame.setTitle("Mixer 2:1");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
@@ -71,9 +71,11 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 				gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
 				gain1Slider.addChangeListener(new Mixer_2_to_1Listener());
 				gain1Label = new JLabel();
+				Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gain1Label.setBorder(gain1Border1);
 				updategain1Label();
 				
-				Border gain1border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gain1innerPanel = new JPanel();
 					
 				gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
@@ -81,7 +83,7 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 				gain1innerPanel.add(gain1Label);
 				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gain1innerPanel.add(gain1Slider);		
-				gain1innerPanel.setBorder(gain1border);
+				gain1innerPanel.setBorder(gain1border2);
 			
 				frame.add(gain1innerPanel);
 			
@@ -89,9 +91,11 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 				gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
 				gain2Slider.addChangeListener(new Mixer_2_to_1Listener());
 				gain2Label = new JLabel();
+				Border gain2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gain2Label.setBorder(gain2Border1);
 				updategain2Label();
 				
-				Border gain2border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border gain2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gain2innerPanel = new JPanel();
 					
 				gain2innerPanel.setLayout(new BoxLayout(gain2innerPanel, BoxLayout.Y_AXIS));
@@ -99,7 +103,7 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 				gain2innerPanel.add(gain2Label);
 				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gain2innerPanel.add(gain2Slider);		
-				gain2innerPanel.setBorder(gain2border);
+				gain2innerPanel.setBorder(gain2border2);
 			
 				frame.add(gain2innerPanel);
 				frame.addWindowListener(new MyWindowListener());

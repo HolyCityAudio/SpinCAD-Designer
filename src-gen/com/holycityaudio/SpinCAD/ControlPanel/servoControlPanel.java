@@ -78,9 +78,11 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 				inputGainSlider.addChangeListener(new servoListener());
 				inputGainLabel = new JLabel();
+				Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				inputGainLabel.setBorder(inputGainBorder1);
 				updateinputGainLabel();
 				
-				Border inputGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel inputGaininnerPanel = new JPanel();
 					
 				inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
@@ -88,7 +90,7 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				inputGaininnerPanel.add(inputGainLabel);
 				inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				inputGaininnerPanel.add(inputGainSlider);		
-				inputGaininnerPanel.setBorder(inputGainborder);
+				inputGaininnerPanel.setBorder(inputGainborder2);
 			
 				frame.add(inputGaininnerPanel);
 			
@@ -96,9 +98,11 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
 				fbkGainSlider.addChangeListener(new servoListener());
 				fbkGainLabel = new JLabel();
+				Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				fbkGainLabel.setBorder(fbkGainBorder1);
 				updatefbkGainLabel();
 				
-				Border fbkGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel fbkGaininnerPanel = new JPanel();
 					
 				fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
@@ -106,16 +110,18 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				fbkGaininnerPanel.add(fbkGainLabel);
 				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				fbkGaininnerPanel.add(fbkGainSlider);		
-				fbkGaininnerPanel.setBorder(fbkGainborder);
+				fbkGaininnerPanel.setBorder(fbkGainborder2);
 			
 				frame.add(fbkGaininnerPanel);
 			
 			servoGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.49 * 100.0), (int) (gCB.getservoGain() * 100.0));
 				servoGainSlider.addChangeListener(new servoListener());
 				servoGainLabel = new JLabel();
+				Border servoGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				servoGainLabel.setBorder(servoGainBorder1);
 				updateservoGainLabel();
 				
-				Border servoGainborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border servoGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel servoGaininnerPanel = new JPanel();
 					
 				servoGaininnerPanel.setLayout(new BoxLayout(servoGaininnerPanel, BoxLayout.Y_AXIS));
@@ -123,16 +129,18 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				servoGaininnerPanel.add(servoGainLabel);
 				servoGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				servoGaininnerPanel.add(servoGainSlider);		
-				servoGaininnerPanel.setBorder(servoGainborder);
+				servoGaininnerPanel.setBorder(servoGainborder2);
 			
 				frame.add(servoGaininnerPanel);
 			
 			freqSlider = gCB.LogFilterSlider(500,7500,gCB.getfreq());
 				freqSlider.addChangeListener(new servoListener());
 				freqLabel = new JLabel();
+				Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				freqLabel.setBorder(freqBorder1);
 				updatefreqLabel();
 				
-				Border freqborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel freqinnerPanel = new JPanel();
 					
 				freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
@@ -140,16 +148,18 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				freqinnerPanel.add(freqLabel);
 				freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				freqinnerPanel.add(freqSlider);		
-				freqinnerPanel.setBorder(freqborder);
+				freqinnerPanel.setBorder(freqborder2);
 			
 				frame.add(freqinnerPanel);
 			
 			tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.05 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
 				tap1RatioSlider.addChangeListener(new servoListener());
 				tap1RatioLabel = new JLabel();
+				Border tap1RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				tap1RatioLabel.setBorder(tap1RatioBorder1);
 				updatetap1RatioLabel();
 				
-				Border tap1Ratioborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border tap1Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel tap1RatioinnerPanel = new JPanel();
 					
 				tap1RatioinnerPanel.setLayout(new BoxLayout(tap1RatioinnerPanel, BoxLayout.Y_AXIS));
@@ -157,7 +167,7 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				tap1RatioinnerPanel.add(tap1RatioLabel);
 				tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				tap1RatioinnerPanel.add(tap1RatioSlider);		
-				tap1RatioinnerPanel.setBorder(tap1Ratioborder);
+				tap1RatioinnerPanel.setBorder(tap1Ratioborder2);
 			
 				frame.add(tap1RatioinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();

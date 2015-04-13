@@ -75,9 +75,11 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 			pitch1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (17 * 1.0), (int) (gCB.getpitch1() * 1.0));
 				pitch1Slider.addChangeListener(new pitch_fourListener());
 				pitch1Label = new JLabel();
+				Border pitch1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				pitch1Label.setBorder(pitch1Border1);
 				updatepitch1Label();
 				
-				Border pitch1border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border pitch1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel pitch1innerPanel = new JPanel();
 					
 				pitch1innerPanel.setLayout(new BoxLayout(pitch1innerPanel, BoxLayout.Y_AXIS));
@@ -85,16 +87,18 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 				pitch1innerPanel.add(pitch1Label);
 				pitch1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				pitch1innerPanel.add(pitch1Slider);		
-				pitch1innerPanel.setBorder(pitch1border);
+				pitch1innerPanel.setBorder(pitch1border2);
 			
 				frame.add(pitch1innerPanel);
 			
 			pitch2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (17 * 1.0), (int) (gCB.getpitch2() * 1.0));
 				pitch2Slider.addChangeListener(new pitch_fourListener());
 				pitch2Label = new JLabel();
+				Border pitch2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				pitch2Label.setBorder(pitch2Border1);
 				updatepitch2Label();
 				
-				Border pitch2border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border pitch2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel pitch2innerPanel = new JPanel();
 					
 				pitch2innerPanel.setLayout(new BoxLayout(pitch2innerPanel, BoxLayout.Y_AXIS));
@@ -102,16 +106,18 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 				pitch2innerPanel.add(pitch2Label);
 				pitch2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				pitch2innerPanel.add(pitch2Slider);		
-				pitch2innerPanel.setBorder(pitch2border);
+				pitch2innerPanel.setBorder(pitch2border2);
 			
 				frame.add(pitch2innerPanel);
 			
 			pitch3Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (17 * 1.0), (int) (gCB.getpitch3() * 1.0));
 				pitch3Slider.addChangeListener(new pitch_fourListener());
 				pitch3Label = new JLabel();
+				Border pitch3Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				pitch3Label.setBorder(pitch3Border1);
 				updatepitch3Label();
 				
-				Border pitch3border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border pitch3border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel pitch3innerPanel = new JPanel();
 					
 				pitch3innerPanel.setLayout(new BoxLayout(pitch3innerPanel, BoxLayout.Y_AXIS));
@@ -119,16 +125,18 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 				pitch3innerPanel.add(pitch3Label);
 				pitch3innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				pitch3innerPanel.add(pitch3Slider);		
-				pitch3innerPanel.setBorder(pitch3border);
+				pitch3innerPanel.setBorder(pitch3border2);
 			
 				frame.add(pitch3innerPanel);
 			
 			pitch4Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (17 * 1.0), (int) (gCB.getpitch4() * 1.0));
 				pitch4Slider.addChangeListener(new pitch_fourListener());
 				pitch4Label = new JLabel();
+				Border pitch4Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				pitch4Label.setBorder(pitch4Border1);
 				updatepitch4Label();
 				
-				Border pitch4border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border pitch4border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel pitch4innerPanel = new JPanel();
 					
 				pitch4innerPanel.setLayout(new BoxLayout(pitch4innerPanel, BoxLayout.Y_AXIS));
@@ -136,7 +144,7 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 				pitch4innerPanel.add(pitch4Label);
 				pitch4innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				pitch4innerPanel.add(pitch4Slider);		
-				pitch4innerPanel.setBorder(pitch4border);
+				pitch4innerPanel.setBorder(pitch4border2);
 			
 				frame.add(pitch4innerPanel);
 				lfoSelComboBox = new JComboBox <String> ();

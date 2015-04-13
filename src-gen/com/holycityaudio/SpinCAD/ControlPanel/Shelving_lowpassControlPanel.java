@@ -70,9 +70,11 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 			freqSlider = gCB.LogFilterSlider(80,2500,gCB.getfreq());
 				freqSlider.addChangeListener(new Shelving_lowpassListener());
 				freqLabel = new JLabel();
+				Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				freqLabel.setBorder(freqBorder1);
 				updatefreqLabel();
 				
-				Border freqborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel freqinnerPanel = new JPanel();
 					
 				freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
@@ -80,7 +82,7 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 				freqinnerPanel.add(freqLabel);
 				freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				freqinnerPanel.add(freqSlider);		
-				freqinnerPanel.setBorder(freqborder);
+				freqinnerPanel.setBorder(freqborder2);
 			
 				frame.add(freqinnerPanel);
 			
@@ -88,9 +90,11 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 				shelfSlider = new JSlider(JSlider.HORIZONTAL, (int)(-40),(int) (-3), (int) (20 * Math.log10(gCB.getshelf())));
 				shelfSlider.addChangeListener(new Shelving_lowpassListener());
 				shelfLabel = new JLabel();
+				Border shelfBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				shelfLabel.setBorder(shelfBorder1);
 				updateshelfLabel();
 				
-				Border shelfborder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				Border shelfborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel shelfinnerPanel = new JPanel();
 					
 				shelfinnerPanel.setLayout(new BoxLayout(shelfinnerPanel, BoxLayout.Y_AXIS));
@@ -98,7 +102,7 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 				shelfinnerPanel.add(shelfLabel);
 				shelfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				shelfinnerPanel.add(shelfSlider);		
-				shelfinnerPanel.setBorder(shelfborder);
+				shelfinnerPanel.setBorder(shelfborder2);
 			
 				frame.add(shelfinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
