@@ -1,12 +1,11 @@
-@name rom_rev2
+@name 'ROM Reverb 2'
 @audioInput input Input
 @audioOutput output Output
-@controlInput revTime Reverb_Time
-@controlInput lfRespInput LF_Response
-@controlInput hfRespInput HF_Response
+@controlInput revTime 'Reverb Time'
+@controlInput lfRespInput 'LF Response'
+@controlInput hfRespInput 'HF Response'
 
 ;reverb program
-;moderate sized reverb, stereo in and out
 ;for mixers
 ;pot0=reverb time
 ;pot1=low freq response
@@ -15,28 +14,28 @@
 
 
 equ gain 0.5 
-@sliderLabel gain Input_Gain -18 0.0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain 'Input Gain' -18 0.0 -6 1.0 1 DBLEVEL 
 
 equ revTimeMax 0.6 
-@sliderLabel revTimeMax Reverb_Time 0.0 0.9 0.6 100.0 2 
+@sliderLabel revTimeMax 'Reverb Time' 0.0 0.9 0.6 100.0 2 
  
 equ kapi 0.6 
-@sliderLabel kapi Input_All_Pass_Gain 0.3 0.8 0.6 100.0 2 
+@sliderLabel kapi 'Input AP Gain' 0.3 0.8 0.6 100.0 2 
 
 equ kapd1 0.6 
-@sliderLabel kapd1 Delay_All_Pass_1_Gain 0.3 0.8 0.6 100.0 2 
+@sliderLabel kapd1 'Delay AP 1 Gain' 0.3 0.8 0.6 100.0 2 
 
 equ kapd2 0.5 
-@sliderLabel kapd2 Delay_All_Pass_2_Gain 0.3 0.8 0.5 100.0 2 
+@sliderLabel kapd2 'Delay AP 2 Gain' 0.3 0.8 0.5 100.0 2 
 
 equ   kfl   0.4  ; low pass filter
-@sliderLabel kfl Low_Pass 500 5000 400.0 100.0 1 LOGFREQ
+@sliderLabel kfl 'Low Pass' 500 5000 400.0 100.0 1 LOGFREQ
 
 equ   kfh   0.01  ; high pass filter
-@sliderLabel kfh High_Pass 40 1000 400.0 100.0 1 LOGFREQ
+@sliderLabel kfh 'High Pass' 40 1000 400.0 100.0 1 LOGFREQ
 
 equ memscale 0.98 
-@sliderLabel memscale Delay_Scale 0.5 1.0 0.8 10.0 1 
+@sliderLabel memscale 'Delay Scale' 0.5 1.0 0.8 10.0 1 
 
 @isPinConnected Input
 
@@ -125,7 +124,7 @@ wra	ap3+100,	0
 ;prepare pots for control:
 
 equ rt REG0
-@isPinConnected Reverb_Time
+@isPinConnected 'Reverb Time'
 rdax	revTime,	revTimeMax
 sof 	0.9, 	0.1
 @else
@@ -135,7 +134,7 @@ wrax	rt,	0
 ;
 ;shelving controls are negative:
 equ hfResp REG2
-@isPinConnected LF_Response
+@isPinConnected 'LF Response'
 rdax	lfRespInput,	1.0
 sof	0.8, 	-0.8
 @else
@@ -144,7 +143,7 @@ sof	0.0, 	-0.6
 wrax 	hfResp,	0
 ;
 equ lfResp REG1
-@isPinConnected HF_Response
+@isPinConnected 'HF Response'
 rdax	hfRespInput,	1.0
 sof 	0.8,	-0.8
 @else

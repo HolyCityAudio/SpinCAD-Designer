@@ -173,6 +173,8 @@ public class SpinCADFrame extends JFrame {
 				try {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+				} finally {
+					loadRecentFileList();			
 				}
 			}
 		});
@@ -183,6 +185,7 @@ public class SpinCADFrame extends JFrame {
 		// ==========================================================================================
 		// ======================= main panel
 		// =========================================================
+		
 
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.LIGHT_GRAY);
@@ -482,16 +485,11 @@ public class SpinCADFrame extends JFrame {
 
 		prefs.put("MRUFolder", pathS);
 		prefs.put("MRUFileName", nameS);
-		//		System.out.println("MRUFolder: pathS " + pathS);
-		//		System.out.println(" nameS " + nameS);
 	}
 
 	private void saveMRUSpnFolder(String path) {
 		Path pathE = Paths.get(path);
 		prefs.put("MRUSpnFolder", pathE.toString());
-		//		prefs.put("MRUFileName", nameS);
-		//		System.out.println("MRUFolder: pathS " + pathS);
-		//		System.out.println(" nameS " + nameS);
 	}
 
 	private void saveRecentFileList() {
@@ -504,7 +502,6 @@ public class SpinCADFrame extends JFrame {
 				}
 				sb.append(file.getPath());
 			}
-			//		System.out.println(sb.toString());
 			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 			p.put("RecentFileList.fileList", sb.toString());
 		}
@@ -513,14 +510,20 @@ public class SpinCADFrame extends JFrame {
 	private void loadRecentFileList() {
 		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 		String listOfFiles = p.get("RecentFileList.fileList", null);
-		if (listOfFiles != null) {
-			String[] files = listOfFiles.split(File.pathSeparator);
-			for (String fileRef : files) {
-				File file = new File(fileRef);
-				if (file.exists()) {
-					recentFileList.listModel.add(file);
+		if (fc == null) {
+			fc = new JFileChooser();
+			recentFileList = new RecentFileList(fc);
+			if (listOfFiles != null) {
+				String[] files = listOfFiles.split(File.pathSeparator);
+				for (String fileRef : files) {
+					File file = new File(fileRef);
+					if (file.exists()) {
+						recentFileList.listModel.add(file);
+					}
 				}
 			}
+			fc.setAccessory(recentFileList);
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		}
 	}
 
@@ -564,18 +567,12 @@ public class SpinCADFrame extends JFrame {
 					if (dialogResult == 0) {
 						getModel().newModel();
 						repaint();
-						// System.out.println("Yes option");
 					}
 				}
-//				String savedPath = prefs.get("MRUFolder", "");
 
-				if (fc == null) {
-					fc = new JFileChooser();
-					recentFileList = new RecentFileList(fc);
-					loadRecentFileList();
-					fc.setAccessory(recentFileList);
-					fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				}
+
+				// debug, want to open recent file list at program init.
+				loadRecentFileList();
 
 				final String newline = "\n";
 				// In response to a button click:

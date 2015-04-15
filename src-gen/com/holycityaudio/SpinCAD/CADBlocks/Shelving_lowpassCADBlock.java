@@ -38,7 +38,7 @@
 
 			public Shelving_lowpassCADBlock(int x, int y) {
 				super(x, y);
-				setName("Shelving_Lowpass");	
+				setName("Shelving Lowpass");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

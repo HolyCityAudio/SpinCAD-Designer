@@ -1,12 +1,12 @@
 @name ThreeTap
 @audioInput adcl Input 
 @audioInput feedback Feedbck
-@audioOutput output1 Tap1_Out
-@audioOutput output2 Tap2_Out  
-@audioOutput output3 Tap3_Out  
-@controlInput cIn1 Delay_Time_1 
-@controlInput cIn2 Delay_Time_2  
-@controlInput cIn3 Delay_Time_3  
+@audioOutput output1 'Tap 1 Out'
+@audioOutput output2 'Tap 2 Out'  
+@audioOutput output3 'Tap 3 Out'  
+@controlInput cIn1 'Delay Time 1' 
+@controlInput cIn2 'Delay Time 2'  
+@controlInput cIn3 'Delay Time 3'  
 @controlInput fbk Feedback
 
 equ inputGain 1.0
@@ -54,11 +54,11 @@ wra threeTap, 0.0
 
 // tap 1 -----------------------------------------------------------
 
-@isPinConnected Tap1_Out
+@isPinConnected 'Tap 1 Out'
 equ   output1     reg0      
 clr
 or $7FFF00
-@isPinConnected Delay_Time_1
+@isPinConnected 'Delay Time 1'
 mulx cIn1
 @endif
 @getDelayScaleControl tap1Ratio delayLength delayOffset 
@@ -69,33 +69,33 @@ wrax output1, 0.0
 @endif
 
 // tap 2 -----------------------------------------------------------
-@isPinConnected Tap2_Out
+@isPinConnected 'Tap 2 Out'
 equ   output2     reg1       
 clr
 or $7FFF00
-@isPinConnected Delay_Time_2
+@isPinConnected 'Delay Time 2'
 mulx cIn2
 @endif
 @getDelayScaleControl tap2Ratio delayLength delayOffset 
 wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output2, 0.0
-@setOutputPin Tap2_Out output2
+@setOutputPin 'Tap 2 Out' output2
 @endif
 
 // tap 3 -----------------------------------------------------------
-@isPinConnected Tap3_Out
+@isPinConnected 'Tap 3 Out'
 equ   output3     reg2  
 clr
 or $7FFF00  
-@isPinConnected Delay_Time_3
+@isPinConnected 'Delay Time 3'
 mulx cIn3
 @endif
 @getDelayScaleControl tap3Ratio delayLength delayOffset
 wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output3, 0.0
-@setOutputPin Tap3_Out output3
+@setOutputPin 'Tap 3 Out' output3
 @endif
 
 @endif

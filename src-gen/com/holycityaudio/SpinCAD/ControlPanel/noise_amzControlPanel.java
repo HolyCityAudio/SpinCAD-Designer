@@ -50,6 +50,8 @@ public class noise_amzControlPanel extends spinCADControlPanel {
 
 	private noise_amzCADBlock gCB;
 	// declare the controls
+	JSlider gainSlider;
+	JLabel  gainLabel;	
 
 public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 		
@@ -62,6 +64,26 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 				frame.setTitle("Noise_AMZ");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+			// dB level slider goes in steps of 1 dB
+				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
+				gainSlider.addChangeListener(new noise_amzListener());
+				gainLabel = new JLabel();
+				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gainLabel.setBorder(gainBorder1);
+				updategainLabel();
+				
+				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gaininnerPanel = new JPanel();
+					
+				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainLabel);
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainSlider);		
+				gaininnerPanel.setBorder(gainborder2);
+			
+				frame.add(gaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -75,6 +97,10 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class noise_amzListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == gainSlider) {
+			gCB.setgain((double) (gainSlider.getValue()/1.0));
+				updategainLabel();
+			}
 			}
 		}
 
@@ -95,6 +121,9 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updategainLabel() {
+		gainLabel.setText("Output Level " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

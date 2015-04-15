@@ -67,13 +67,13 @@
 
 			public rom_rev2CADBlock(int x, int y) {
 				super(x, y);
-				setName("rom_rev2");	
+				setName("ROM Reverb 2");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
-				addControlInputPin(this, "Reverb_Time");
-				addControlInputPin(this, "LF_Response");
-				addControlInputPin(this, "HF_Response");
+				addControlInputPin(this, "Reverb Time");
+				addControlInputPin(this, "LF Response");
+				addControlInputPin(this, "HF Response");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -113,17 +113,17 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Reverb_Time").getPinConnection();
+			sp = this.getPin("Reverb Time").getPinConnection();
 			int revTime = -1;
 			if(sp != null) {
 				revTime = sp.getRegister();
 			}
-			sp = this.getPin("LF_Response").getPinConnection();
+			sp = this.getPin("LF Response").getPinConnection();
 			int lfRespInput = -1;
 			if(sp != null) {
 				lfRespInput = sp.getRegister();
 			}
-			sp = this.getPin("HF_Response").getPinConnection();
+			sp = this.getPin("HF Response").getPinConnection();
 			int hfRespInput = -1;
 			if(sp != null) {
 				hfRespInput = sp.getRegister();
@@ -172,7 +172,7 @@
 			sfxb.FXchorusReadDelay(SIN0, 01, "ap3+", 51);
 			sfxb.FXwriteDelay("ap3+", (int)(100 * 1.0), 0);
 			rt = sfxb.allocateReg();
-			if(this.getPin("Reverb_Time").isConnected() == true) {
+			if(this.getPin("Reverb Time").isConnected() == true) {
 			sfxb.readRegister(revTime, revTimeMax);
 			sfxb.scaleOffset(0.9, 0.1);
 			} else {
@@ -181,7 +181,7 @@
 			
 			sfxb.writeRegister(rt, 0);
 			hfResp = sfxb.allocateReg();
-			if(this.getPin("LF_Response").isConnected() == true) {
+			if(this.getPin("LF Response").isConnected() == true) {
 			sfxb.readRegister(lfRespInput, 1.0);
 			sfxb.scaleOffset(0.8, -0.8);
 			} else {
@@ -190,7 +190,7 @@
 			
 			sfxb.writeRegister(hfResp, 0);
 			lfResp = sfxb.allocateReg();
-			if(this.getPin("HF_Response").isConnected() == true) {
+			if(this.getPin("HF Response").isConnected() == true) {
 			sfxb.readRegister(hfRespInput, 1.0);
 			sfxb.scaleOffset(0.8, -0.8);
 			} else {

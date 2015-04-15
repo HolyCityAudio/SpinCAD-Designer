@@ -38,7 +38,7 @@
 
 			public Shelving_HipassCADBlock(int x, int y) {
 				super(x, y);
-				setName("Shelving_Hipass");	
+				setName("Shelving Hipass");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

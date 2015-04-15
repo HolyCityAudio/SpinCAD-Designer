@@ -29,6 +29,7 @@
 			private static final long serialVersionUID = 1L;
 			private noise_amzControlPanel cp = null;
 			
+			private double gain = 1.0;
 			private int LFSR;
 			private int TEMP;
 			private int output1;
@@ -39,6 +40,7 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -66,6 +68,7 @@
 			// Iterate through pin definitions and connect or assign as needed
 			
 			// finally, generate the instructions
+			if(this.getPin("Output").isConnected() == true) {
 			LFSR = sfxb.allocateReg();
 			TEMP = sfxb.allocateReg();
 			output1 = sfxb.allocateReg();
@@ -84,11 +87,20 @@
 			sfxb.loadAccumulator(LFSR);
 			sfxb.xor(0xD80000);
 			sfxb.writeRegister(LFSR, 0);
-			sfxb.loadAccumulator(LFSR);
+			sfxb.readRegister(LFSR, gain);
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Output").setRegister(output1);
+			}
+			
 
 			}
 			
 			// create setters and getter for control panel variables
+			public void setgain(double __param) {
+				gain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getgain() {
+				return gain;
+			}
 		}	

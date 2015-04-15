@@ -63,7 +63,7 @@ public Shelving_HipassControlPanel(Shelving_HipassCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Shelving_Hipass");
+				frame.setTitle("Shelving Hipass");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			

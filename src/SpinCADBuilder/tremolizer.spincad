@@ -3,9 +3,9 @@
 // There is also a control panel setting for maximum depth
 
 @name Tremolizer
-@controlInput input LFO_Input
-@controlInput width LFO_Width
-@controlOutput output Control_Output
+@controlInput input 'LFO Input'
+@controlInput width 'LFO Width'
+@controlOutput output 'Control Output'
 
 equ depth 0.75 
 equ output reg0
@@ -16,13 +16,13 @@ equ output reg0
 @isPinConnected Input
 rdax input, depth
 
-@isPinConnected LFO_Width
+@isPinConnected 'LFO Width'
 mulx width
 @endif
 
 sof -0.999, 0.999
 wrax output, 0.0
 
-@setOutputPin Control_Output output
+@setOutputPin 'Control Output' output
 @endif
 

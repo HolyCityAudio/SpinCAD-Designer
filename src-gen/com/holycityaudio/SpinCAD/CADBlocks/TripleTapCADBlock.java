@@ -46,12 +46,12 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addInputPin(this, "Feedbck");
-				addOutputPin(this, "Tap1_Out");
-				addOutputPin(this, "Tap2_Out");
-				addOutputPin(this, "Tap3_Out");
-				addControlInputPin(this, "Delay_Time_1");
-				addControlInputPin(this, "Delay_Time_2");
-				addControlInputPin(this, "Delay_Time_3");
+				addOutputPin(this, "Tap 1 Out");
+				addOutputPin(this, "Tap 2 Out");
+				addOutputPin(this, "Tap 3 Out");
+				addControlInputPin(this, "Delay Time 1");
+				addControlInputPin(this, "Delay Time 2");
+				addControlInputPin(this, "Delay Time 3");
 				addControlInputPin(this, "Feedback");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
@@ -95,17 +95,17 @@
 			if(sp != null) {
 				feedback = sp.getRegister();
 			}
-			sp = this.getPin("Delay_Time_1").getPinConnection();
+			sp = this.getPin("Delay Time 1").getPinConnection();
 			int cIn1 = -1;
 			if(sp != null) {
 				cIn1 = sp.getRegister();
 			}
-			sp = this.getPin("Delay_Time_2").getPinConnection();
+			sp = this.getPin("Delay Time 2").getPinConnection();
 			int cIn2 = -1;
 			if(sp != null) {
 				cIn2 = sp.getRegister();
 			}
-			sp = this.getPin("Delay_Time_3").getPinConnection();
+			sp = this.getPin("Delay Time 3").getPinConnection();
 			int cIn3 = -1;
 			if(sp != null) {
 				cIn3 = sp.getRegister();
@@ -130,11 +130,11 @@
 			
 			sfxb.readRegister(adcl, inputGain);
 			sfxb.FXwriteDelay("threeTap", 0, 0.0);
-			if(this.getPin("Tap1_Out").isConnected() == true) {
+			if(this.getPin("Tap 1 Out").isConnected() == true) {
 			output1 = sfxb.allocateReg();
 			sfxb.clear();
 			sfxb.or(0x7FFF00);
-			if(this.getPin("Delay_Time_1").isConnected() == true) {
+			if(this.getPin("Delay Time 1").isConnected() == true) {
 			sfxb.mulx(cIn1);
 			}
 			
@@ -145,11 +145,11 @@
 			this.getPin("Tap1_Out").setRegister(output1);
 			}
 			
-			if(this.getPin("Tap2_Out").isConnected() == true) {
+			if(this.getPin("Tap 2 Out").isConnected() == true) {
 			output2 = sfxb.allocateReg();
 			sfxb.clear();
 			sfxb.or(0x7FFF00);
-			if(this.getPin("Delay_Time_2").isConnected() == true) {
+			if(this.getPin("Delay Time 2").isConnected() == true) {
 			sfxb.mulx(cIn2);
 			}
 			
@@ -157,14 +157,14 @@
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readDelayPointer(1.0);
 			sfxb.writeRegister(output2, 0.0);
-			this.getPin("Tap2_Out").setRegister(output2);
+			this.getPin("Tap 2 Out").setRegister(output2);
 			}
 			
-			if(this.getPin("Tap3_Out").isConnected() == true) {
+			if(this.getPin("Tap 3 Out").isConnected() == true) {
 			output3 = sfxb.allocateReg();
 			sfxb.clear();
 			sfxb.or(0x7FFF00);
-			if(this.getPin("Delay_Time_3").isConnected() == true) {
+			if(this.getPin("Delay Time 3").isConnected() == true) {
 			sfxb.mulx(cIn3);
 			}
 			
@@ -172,7 +172,7 @@
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readDelayPointer(1.0);
 			sfxb.writeRegister(output3, 0.0);
-			this.getPin("Tap3_Out").setRegister(output3);
+			this.getPin("Tap 3 Out").setRegister(output3);
 			}
 			
 			}

@@ -1,6 +1,6 @@
 @name Smoother
-@controlInput input Control_Input
-@controlOutput output Control_Output 
+@controlInput input 'Control Input'
+@controlOutput output 'Control Output' 
 
 equ	filtReg reg0 
 
@@ -13,6 +13,6 @@ rdax input, 1.0
 rdfx filtReg, filt
 wrax filtReg, 0.0
 
-@setOutputPin Control_Output filtReg
+@setOutputPin 'Control Output' filtReg
 @endif
 

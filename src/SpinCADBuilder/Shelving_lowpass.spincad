@@ -1,4 +1,4 @@
-@name Shelving_Lowpass
+@name 'Shelving Lowpass'
 @audioInput input Input
 @audioOutput output Output  
 //@controlInput freqIn Frequency

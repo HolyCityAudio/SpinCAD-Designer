@@ -57,6 +57,7 @@ public class RecentFileList extends JPanel {
 		            @SuppressWarnings("unused")
 //					int index = list.locationToIndex(evt.getPoint())
 					File file = list.getSelectedValue();
+		            System.out.println(file.getName());
 		        } else if (evt.getClickCount() == 3) {
 
 		            // Triple-click detected

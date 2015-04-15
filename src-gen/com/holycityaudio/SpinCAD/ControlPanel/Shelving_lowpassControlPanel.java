@@ -63,7 +63,7 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Shelving_Lowpass");
+				frame.setTitle("Shelving Lowpass");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			

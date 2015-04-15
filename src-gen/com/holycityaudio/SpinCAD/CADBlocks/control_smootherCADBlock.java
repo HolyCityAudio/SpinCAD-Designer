@@ -36,8 +36,8 @@
 				super(x, y);
 				setName("Smoother");	
 				// Iterate through pin definitions and allocate or assign as needed
-				addControlInputPin(this, "Control_Input");
-				addControlOutputPin(this, "Control_Output");
+				addControlInputPin(this, "Control Input");
+				addControlOutputPin(this, "Control Output");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						}
@@ -65,7 +65,7 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("Control_Input").getPinConnection();
+			sp = this.getPin("Control Input").getPinConnection();
 			int input = -1;
 			if(sp != null) {
 				input = sp.getRegister();
@@ -77,7 +77,7 @@
 			sfxb.readRegister(input, 1.0);
 			sfxb.readRegisterFilter(filtReg, filt);
 			sfxb.writeRegister(filtReg, 0.0);
-			this.getPin("Control_Output").setRegister(filtReg);
+			this.getPin("Control Output").setRegister(filtReg);
 			}
 			
 

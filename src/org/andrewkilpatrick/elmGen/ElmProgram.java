@@ -389,8 +389,7 @@ public class ElmProgram implements Serializable {
 
 	public String getProgramListing(int mode) {
 		if (mode == 1) {
-			String str = "; " + " Program: " + name
-					+ " exported from SpinCAD Designer\n";
+			String str = "; ----------------------------\n";
 			for (int i = 0; i < instList.size(); i++) {
 				Instruction inst = instList.get(i);
 				// str += String.format("%08X", inst.getHexWord()) + " - ";

@@ -72,13 +72,15 @@ public aliaser_02ControlPanel(aliaser_02CADBlock genericCADBlock) {
 				ripLowLabel = new JLabel();
 				Border ripLowBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 				ripLowLabel.setBorder(ripLowBorder1);
+// somewhere in here we should be able to make the label full width
+				
 				updateripLowLabel();
 				
 				Border ripLowborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel ripLowinnerPanel = new JPanel();
 					
 				ripLowinnerPanel.setLayout(new BoxLayout(ripLowinnerPanel, BoxLayout.Y_AXIS));
-				ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));	
 				ripLowinnerPanel.add(ripLowLabel);
 				ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				ripLowinnerPanel.add(ripLowSlider);		

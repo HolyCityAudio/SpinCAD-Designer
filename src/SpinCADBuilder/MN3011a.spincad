@@ -1,9 +1,9 @@
-@name MN3011a
+@name MN3011
 @audioInput input Input 
-@audioInput feedback Feedbck_Input
-@audioOutput mix Mix_Out
-@audioOutput tap6reg Tap_6_Out 
-@controlInput cIn1 Delay_Time_1 
+@audioInput feedback 'Feedback Input'
+@audioOutput mix 'Mix Out'
+@audioOutput tap6reg 'Tap 6 Out' 
+@controlInput cIn1 'Delay Time' 
 @controlInput fbk Feedback
 
 equ inputGain 0.5
@@ -47,7 +47,7 @@ equ tap6Ratio 1.0
 equ tap6Gain 0.5
 @sliderLabel tap6Gain 'Tap 6 Gain'  -24 0 -6 1.0 1 DBLEVEL
 
-@isPinConnected Tap_6_Out
+@isPinConnected 'Tap 6 Out'
 equ tap6reg REG12
 @endif
   
@@ -62,7 +62,7 @@ mem mn3011delay delayLength
 @isPinConnected Input
 equ   mix  reg0      
 // read the input and write to base of delay line
-@isPinConnected Feedbck_Input
+@isPinConnected 'Feedback Input'
 rdax feedback,fbkGain
 @isPinConnected Feedback
 mulx fbk
@@ -74,7 +74,7 @@ wra mn3011delay, 0.0
 
 // tap 1 -----------------------------------------------------------
 
-@isPinConnected Delay_Time_1
+@isPinConnected 'Delay Time'
 equ max reg1
 
 clr
@@ -94,7 +94,7 @@ wrax mix, 0.0
 // doing this tap first saves a few instructions.
 // tap6 output will not  be scaled by the gain setting
 
-@isPinConnected Tap_6_Out
+@isPinConnected 'Tap 6 Out'
 rmpa 1.0
 wrax tap6reg, 0.0
 @endif
@@ -153,7 +153,7 @@ offset ratio 1
 // save the mix first
 
 @getSamplesFromRatio ratio tap6Ratio delayLength 
-@isPinConnected Tap_6_Out
+@isPinConnected 'Tap 6 Out'
 rda mn3011delay+ratio, 1.0
 wrax tap6reg, 0.0
 @endif
@@ -176,9 +176,9 @@ rda mn3011delay+ratio, tap5Gain
 @endif
 
 wrax mix, 0.0
-@setOutputPin Mix_Out mix
+@setOutputPin 'Mix Out' mix
 
-@setOutputPin Tap_6_Out tap6reg
+@setOutputPin 'Tap 6 Out' tap6reg
 
 @endif
 

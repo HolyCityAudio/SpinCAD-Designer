@@ -51,13 +51,13 @@
 
 			public MN3011aCADBlock(int x, int y) {
 				super(x, y);
-				setName("MN3011a");	
+				setName("MN3011");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addInputPin(this, "Feedbck_Input");
-				addOutputPin(this, "Mix_Out");
-				addOutputPin(this, "Tap_6_Out");
-				addControlInputPin(this, "Delay_Time_1");
+				addInputPin(this, "Feedback Input");
+				addOutputPin(this, "Mix Out");
+				addOutputPin(this, "Tap 6 Out");
+				addControlInputPin(this, "Delay Time");
 				addControlInputPin(this, "Feedback");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
@@ -100,12 +100,12 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Feedbck_Input").getPinConnection();
+			sp = this.getPin("Feedback Input").getPinConnection();
 			int feedback = -1;
 			if(sp != null) {
 				feedback = sp.getRegister();
 			}
-			sp = this.getPin("Delay_Time_1").getPinConnection();
+			sp = this.getPin("Delay Time").getPinConnection();
 			int cIn1 = -1;
 			if(sp != null) {
 				cIn1 = sp.getRegister();
@@ -117,7 +117,7 @@
 			}
 			
 			// finally, generate the instructions
-			if(this.getPin("Tap_6_Out").isConnected() == true) {
+			if(this.getPin("Tap 6 Out").isConnected() == true) {
 			tap6reg = sfxb.allocateReg();
 			}
 			
@@ -125,7 +125,7 @@
 			sfxb.FXallocDelayMem("mn3011delay", delayLength); 
 			if(this.getPin("Input").isConnected() == true) {
 			mix = sfxb.allocateReg();
-			if(this.getPin("Feedbck_Input").isConnected() == true) {
+			if(this.getPin("Feedback Input").isConnected() == true) {
 			sfxb.readRegister(feedback, fbkGain);
 			if(this.getPin("Feedback").isConnected() == true) {
 			sfxb.mulx(fbk);
@@ -135,7 +135,7 @@
 			
 			sfxb.readRegister(input, inputGain);
 			sfxb.FXwriteDelay("mn3011delay", 0, 0.0);
-			if(this.getPin("Delay_Time_1").isConnected() == true) {
+			if(this.getPin("Delay Time").isConnected() == true) {
 			max = sfxb.allocateReg();
 			sfxb.clear();
 			sfxb.or(0x7FFF00);
@@ -145,7 +145,7 @@
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readDelayPointer(tap6Gain);
 			sfxb.writeRegister(mix, 0.0);
-			if(this.getPin("Tap_6_Out").isConnected() == true) {
+			if(this.getPin("Tap 6 Out").isConnected() == true) {
 			sfxb.readDelayPointer(1.0);
 			sfxb.writeRegister(tap6reg, 0.0);
 			}
@@ -181,7 +181,7 @@
 			sfxb.readRegister(mix, 1.0);
 			} else {
 			ratio = (int) (tap6Ratio * delayLength);
-			if(this.getPin("Tap_6_Out").isConnected() == true) {
+			if(this.getPin("Tap 6 Out").isConnected() == true) {
 			sfxb.FXreadDelay("mn3011delay+", ratio, 1.0);
 			sfxb.writeRegister(tap6reg, 0.0);
 			}
@@ -200,8 +200,8 @@
 			}
 			
 			sfxb.writeRegister(mix, 0.0);
-			this.getPin("Mix_Out").setRegister(mix);
-			this.getPin("Tap_6_Out").setRegister(tap6reg);
+			this.getPin("Mix Out").setRegister(mix);
+			this.getPin("Tap 6 Out").setRegister(tap6reg);
 			}
 			
 

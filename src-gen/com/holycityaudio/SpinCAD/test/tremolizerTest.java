@@ -46,14 +46,14 @@ f.dropBlock(p, o);
 	Pot0CADBlock pot0 = new Pot0CADBlock(25, 150 + 40 * 1);
 	f.dropBlock(p, pot0);
 	SpinCADPin p1 = pot0.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("LFO_Input");
+	SpinCADPin p2 = m.getPin("LFO Input");
 	p2.setConnection(pot0, p1);
 }
 {
 	Pot1CADBlock pot1 = new Pot1CADBlock(25, 150 + 40 * 2);
 	f.dropBlock(p, pot1);
 	SpinCADPin p1 = pot1.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("LFO_Width");
+	SpinCADPin p2 = m.getPin("LFO Width");
 	p2.setConnection(pot1, p1);
 }
 f.getModel().sortAlignGen();

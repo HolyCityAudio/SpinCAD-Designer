@@ -36,8 +36,8 @@
 				super(x, y);
 				setName("Log");	
 				// Iterate through pin definitions and allocate or assign as needed
-				addControlInputPin(this, "Control_Input");
-				addControlOutputPin(this, "Control_Output");
+				addControlInputPin(this, "Control Input");
+				addControlOutputPin(this, "Log Output");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						}
@@ -65,7 +65,7 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("Control_Input").getPinConnection();
+			sp = this.getPin("Control Input").getPinConnection();
 			int input = -1;
 			if(sp != null) {
 				input = sp.getRegister();
@@ -73,11 +73,11 @@
 			
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();
-			if(this.getPin("Input").isConnected() == true) {
+			if(this.getPin("Control Input").isConnected() == true) {
 			sfxb.readRegister(input, 1);
 			sfxb.log(multiplier, 0);
 			sfxb.writeRegister(output1, 0);
-			this.getPin("Control_Output").setRegister(output1);
+			this.getPin("Log Output").setRegister(output1);
 			}
 			
 

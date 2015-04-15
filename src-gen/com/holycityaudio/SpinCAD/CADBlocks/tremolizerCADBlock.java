@@ -36,9 +36,9 @@
 				super(x, y);
 				setName("Tremolizer");	
 				// Iterate through pin definitions and allocate or assign as needed
-				addControlInputPin(this, "LFO_Input");
-				addControlInputPin(this, "LFO_Width");
-				addControlOutputPin(this, "Control_Output");
+				addControlInputPin(this, "LFO Input");
+				addControlInputPin(this, "LFO Width");
+				addControlOutputPin(this, "Control Output");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						}
@@ -66,12 +66,12 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("LFO_Input").getPinConnection();
+			sp = this.getPin("LFO Input").getPinConnection();
 			int input = -1;
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("LFO_Width").getPinConnection();
+			sp = this.getPin("LFO Width").getPinConnection();
 			int width = -1;
 			if(sp != null) {
 				width = sp.getRegister();
@@ -81,13 +81,13 @@
 			output = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, depth);
-			if(this.getPin("LFO_Width").isConnected() == true) {
+			if(this.getPin("LFO Width").isConnected() == true) {
 			sfxb.mulx(width);
 			}
 			
 			sfxb.scaleOffset(-0.999, 0.999);
 			sfxb.writeRegister(output, 0.0);
-			this.getPin("Control_Output").setRegister(output);
+			this.getPin("Control Output").setRegister(output);
 			}
 			
 

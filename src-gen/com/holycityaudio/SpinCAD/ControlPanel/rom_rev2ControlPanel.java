@@ -75,7 +75,7 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("rom_rev2");
+				frame.setTitle("ROM Reverb 2");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
@@ -297,30 +297,30 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		gainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		private void updaterevTimeMaxLabel() {
-		revTimeMaxLabel.setText("Reverb_Time " + String.format("%4.2f", gCB.getrevTimeMax()));		
+		revTimeMaxLabel.setText("Reverb Time " + String.format("%4.2f", gCB.getrevTimeMax()));		
 		}		
 		private void updatekapiLabel() {
-		kapiLabel.setText("Input_All_Pass_Gain " + String.format("%4.2f", gCB.getkapi()));		
+		kapiLabel.setText("Input AP Gain " + String.format("%4.2f", gCB.getkapi()));		
 		}		
 		private void updatekapd1Label() {
-		kapd1Label.setText("Delay_All_Pass_1_Gain " + String.format("%4.2f", gCB.getkapd1()));		
+		kapd1Label.setText("Delay AP 1 Gain " + String.format("%4.2f", gCB.getkapd1()));		
 		}		
 		private void updatekapd2Label() {
-		kapd2Label.setText("Delay_All_Pass_2_Gain " + String.format("%4.2f", gCB.getkapd2()));		
+		kapd2Label.setText("Delay AP 2 Gain " + String.format("%4.2f", gCB.getkapd2()));		
 		}		
 		private void updatekflLabel() {
 		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						kflLabel.setText("Low_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
+						kflLabel.setText("Low Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
 		}		
 		private void updatekfhLabel() {
 		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						kfhLabel.setText("High_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfh())) + " Hz");		
+						kfhLabel.setText("High Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getkfh())) + " Hz");		
 		}		
 		private void updatememscaleLabel() {
-		memscaleLabel.setText("Delay_Scale " + String.format("%4.1f", gCB.getmemscale()));		
+		memscaleLabel.setText("Delay Scale " + String.format("%4.1f", gCB.getmemscale()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

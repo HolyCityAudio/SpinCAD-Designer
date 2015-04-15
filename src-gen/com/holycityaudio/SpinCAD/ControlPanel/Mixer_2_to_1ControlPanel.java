@@ -55,8 +55,8 @@ public class Mixer_2_to_1ControlPanel extends spinCADControlPanel {
 	JSlider gain2Slider;
 	JLabel  gain2Label;	
 
-public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
-		
+	public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
+
 		gCB = genericCADBlock;
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -66,45 +66,44 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 				frame.setTitle("Mixer 2:1");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
-			
-			// dB level slider goes in steps of 1 dB
+				// dB level slider goes in steps of 1 dB
 				gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
 				gain1Slider.addChangeListener(new Mixer_2_to_1Listener());
 				gain1Label = new JLabel();
 				Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 				gain1Label.setBorder(gain1Border1);
 				updategain1Label();
-				
+
 				Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gain1innerPanel = new JPanel();
-					
+
 				gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
 				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gain1innerPanel.add(gain1Label);
 				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gain1innerPanel.add(gain1Slider);		
 				gain1innerPanel.setBorder(gain1border2);
-			
+
 				frame.add(gain1innerPanel);
-			
-			// dB level slider goes in steps of 1 dB
+
+				// dB level slider goes in steps of 1 dB
 				gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
 				gain2Slider.addChangeListener(new Mixer_2_to_1Listener());
 				gain2Label = new JLabel();
 				Border gain2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 				gain2Label.setBorder(gain2Border1);
 				updategain2Label();
-				
+
 				Border gain2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 				JPanel gain2innerPanel = new JPanel();
-					
+
 				gain2innerPanel.setLayout(new BoxLayout(gain2innerPanel, BoxLayout.Y_AXIS));
 				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gain2innerPanel.add(gain2Label);
 				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
 				gain2innerPanel.add(gain2Slider);		
 				gain2innerPanel.setBorder(gain2border2);
-			
+
 				frame.add(gain2innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
@@ -114,64 +113,66 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 				frame.setVisible(true);		
 			}
 		});
-		}
+	}
 
-		// add change listener for Sliders, Spinners 
-		class Mixer_2_to_1Listener implements ChangeListener { 
+	// add change listener for Sliders, Spinners 
+	class Mixer_2_to_1Listener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-			gCB.setgain1((double) (gain1Slider.getValue()/1.0));
+				gCB.setgain1((double) (gain1Slider.getValue()/1.0));
 				updategain1Label();
 			}
 			if(ce.getSource() == gain2Slider) {
-			gCB.setgain2((double) (gain2Slider.getValue()/1.0));
+				gCB.setgain2((double) (gain2Slider.getValue()/1.0));
 				updategain2Label();
 			}
-			}
 		}
+	}
 
-		// add item listener 
-		class Mixer_2_to_1ItemListener implements java.awt.event.ItemListener { 
+	// add item listener 
+	class Mixer_2_to_1ItemListener implements java.awt.event.ItemListener { 
 		public void stateChanged(ChangeEvent ce) {
-			}
-			
+		}
+
 		@Override
-			public void itemStateChanged(ItemEvent arg0) {
-				// TODO Auto-generated method stub
-			}
+		public void itemStateChanged(ItemEvent arg0) {
+			// TODO Auto-generated method stub
 		}
-		
-		// add action listener 
-		class Mixer_2_to_1ActionListener implements java.awt.event.ActionListener { 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-			}
+	}
+
+	// add action listener 
+	class Mixer_2_to_1ActionListener implements java.awt.event.ActionListener { 
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
 		}
-		private void updategain1Label() {
+	}
+
+	private void updategain1Label() {
 		gain1Label.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
-		}		
-		private void updategain2Label() {
+	}		
+
+	private void updategain2Label() {
 		gain2Label.setText("Input Gain 2 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
-		}		
-		
-		class MyWindowListener implements WindowListener
-		{
+	}		
+
+	class MyWindowListener implements WindowListener
+	{
 		@Override
-			public void windowActivated(WindowEvent arg0) {
-			}
+		public void windowActivated(WindowEvent arg0) {
+		}
 
 		@Override
-			public void windowClosed(WindowEvent arg0) {
-			}
+		public void windowClosed(WindowEvent arg0) {
+		}
 
 		@Override
-			public void windowClosing(WindowEvent arg0) {
-				gCB.clearCP();
-			}
+		public void windowClosing(WindowEvent arg0) {
+			gCB.clearCP();
+		}
 
 		@Override
-			public void windowDeactivated(WindowEvent arg0) {
-			}
+		public void windowDeactivated(WindowEvent arg0) {
+		}
 
 		@Override
 		public void windowDeiconified(WindowEvent arg0) {
@@ -182,9 +183,8 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 
 		}
 
-			@Override
-			public void windowOpened(WindowEvent arg0) {
-			}
+		@Override
+		public void windowOpened(WindowEvent arg0) {
 		}
-		
 	}
+}

@@ -77,7 +77,7 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("MN3011a");
+				frame.setTitle("MN3011");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
