@@ -65,7 +65,7 @@ mulx cIn1
 wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output1, 0.0 
-@setOutputPin Tap1_Out output1 
+@setOutputPin 'Tap 1 Out' output1 
 @endif
 
 // tap 2 -----------------------------------------------------------

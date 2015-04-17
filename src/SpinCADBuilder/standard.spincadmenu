@@ -113,6 +113,6 @@
 @menuitem "Log" Log
 @menuitem "Scale/Offset" ScaleOffsetControl
 @menuitem "Control Mixer" ControlMixer
-@menuitem "SmootherA" control_smootherA
+//@menuitem "SmootherA" control_smootherA
 @menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo

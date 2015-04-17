@@ -173,13 +173,18 @@ public class Reg {
 	 * 
 	 * @param mask the mask
 	 */
+	
+	// XXX debug GSW
+	
 	public void xor(int mask) {
+//		int res = value ^ mask;
 		int res = (value ^ (mask & 0x007fffff));
-		if(((mask & 0x800000) != 0 && (value & 0x80000000) == 0) ||
-				((mask & 0x800000) == 0 && (value & 0x80000000) != 0)) {
-//			res |= 0x80000000;
+		if(((mask & 0x800000) != 0 && (value & 0x800000) == 0) ||
+				((mask & 0x800000) == 0 && (value & 0x800000) != 0)) {
+//			res |= 0x800000;
 			res = -res;
 		}
+
 		value = res;
 	}
 	
@@ -222,19 +227,56 @@ public class Reg {
 	public static void main(String args[]) {
 		Reg acc = new Reg();
 		
+		acc.clear();
+		
+		acc.setValue(0xAA_AAAA);
+		showAcc(" - acc: ", acc);
+		acc.xor(0xFF_FFFF);
+		showAcc(" - xor: ", acc);
+		acc.xor(0xFF_ffff);
+		showAcc(" - xor: ", acc);
+		System.out.println("");
+
+		acc.setValue(0x55_5555);
+		showAcc(" - acc: ", acc);
+		acc.xor(0xFF_FFFF);
+		showAcc(" - xor: ", acc);
+		acc.xor(0xFF_ffff);
+		showAcc(" - xor: ", acc);
+		System.out.println("");
+
+		acc.setValue(0x0A_0A0A);
+		showAcc(" - acc: ", acc);
+		acc.xor(0xFF_FFFF);
+		showAcc(" - xor: ", acc);
+		acc.xor(0xFF_ffff);
+		showAcc(" - xor: ", acc);
+		System.out.println("");
+
+		acc.setValue(0xA0_A0A0);
+		showAcc(" - acc: ", acc);
+		acc.xor(0xFF_FFFF);
+		showAcc(" - xor: ", acc);
+		acc.xor(0xFF_ffff);
+		showAcc(" - xor: ", acc);
+		System.out.println("");
+
+		/*
 		for(int i = -0x810000; i < 0x810000; i += 0x7fe0) {
 			acc.setValue(i);
-//			acc.add(100);
+			acc.add(100);
 			acc.mult(-0x8000);
 			acc.scale(-1.0);
-//			acc.and(0xffffff);
-//			acc.or(0x000fff);
-//			acc.xor(0x435);
-//			acc.not();
-//			acc.abs();
+			acc.and(0xffffff);
+			acc.or(0x000fff);
+			acc.xor(0x435);
+			acc.xor(0xD80000);
+			acc.not();
+			acc.abs();
 			System.out.println("i: " + i + " - " + String.format("0x%08x", i) +
 					" - acc: " + acc.getValue() + " - " + String.format("0x%08x", acc.getValue()));
 		}
+		*/
 		
 		for(double i = -2.1; i < 2.1; i += 0.01) {
 //			int val = Util.doubleToScale(i);
@@ -242,8 +284,12 @@ public class Reg {
 		}
 		
 		for(int i = -0x810000; i < 0x810000; i += 0x7fe0) {
-			double val = Util.regToDouble(i);
-			System.out.println("i: " + i + " - val: " + val);
+//			double val = Util.regToDouble(i);
+//			System.out.println("i: " + i + " - val: " + val);
 		}		
+	}
+
+	static void showAcc(String label, Reg acc) {
+		System.out.println(label + String.format("0x%08x", acc.getValue()) +  " - " + acc.getValue());
 	}
 }

@@ -142,7 +142,7 @@
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readDelayPointer(1.0);
 			sfxb.writeRegister(output1, 0.0);
-			this.getPin("Tap1_Out").setRegister(output1);
+			this.getPin("Tap 1 Out").setRegister(output1);
 			}
 			
 			if(this.getPin("Tap 2 Out").isConnected() == true) {

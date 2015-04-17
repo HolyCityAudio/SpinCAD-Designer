@@ -70,7 +70,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
 
@@ -743,15 +742,6 @@
 		}
 	});
 	mn_control.add(mntm_ControlMixer);
-		
-	final JMenuItem mntm_control_smootherA = new JMenuItem("SmootherA");
-	mntm_control_smootherA.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new control_smootherACADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_control_smootherA);
 		
 	final JMenuItem mntm_control_smoother = new JMenuItem("Smoother");
 	mntm_control_smoother.addActionListener(new ActionListener() {
