@@ -18,16 +18,16 @@
  */
 
 package com.holycityaudio.SpinCAD.CADBlocks;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class PhaserCADBlock extends ModulationCADBlock{
+public class PhaserCADBlock extends SpinCADBlock{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 343880108475812086L;
 	int temp, temp1, phase, stages, controlMode;
-	int phase0, phase1, phase2, phase3, phase4;
 	PhaserControlPanel cP = null; 
 
 	public PhaserCADBlock(int x, int y) {
@@ -36,7 +36,9 @@ public class PhaserCADBlock extends ModulationCADBlock{
 		stages = 4;
 		controlMode = 0; 	// default to LFO mode
 		setupControls();
-		addOutputPin(this, "Dry");
+		addInputPin(this, "Audio Input");
+		addOutputPin(this, "Mix Out");
+		addOutputPin(this, "Wet Out");
 		setName("Phaser");
 		// add a listener up to the JPanel to redraw this block when the control mode is changed.
 	}
@@ -55,8 +57,8 @@ public class PhaserCADBlock extends ModulationCADBlock{
 	public void generateCode(SpinFXBlock sfxb) {
 		//				equ	mono	reg0
 		int input = -1;
-		int dry = -1;
-		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
+		int wet = -1;
+		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 		sfxb.comment(getName());
 
 
@@ -101,7 +103,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 
 			temp = sfxb.allocateReg();
 			temp1 = sfxb.allocateReg();
-			dry = sfxb.allocateReg();
+			wet = sfxb.allocateReg();
 
 			int BYPASS = -1;
 
@@ -195,7 +197,7 @@ public class PhaserCADBlock extends ModulationCADBlock{
 			//					sof	-2,0	;output of phase shifter in acc
 			sfxb.scaleOffset(-2.0, 0.0);
 
-			sfxb.writeRegister(dry, 1.0);
+			sfxb.writeRegister(wet, 1.0);
 			//					mulx	bypass
 			if(controlMode == 0) {
 				sfxb.mulx(BYPASS);
@@ -206,10 +208,10 @@ public class PhaserCADBlock extends ModulationCADBlock{
 			sfxb.writeRegister(POUT, 0);
 
 			// last instruction clears accumulator
-			p = this.getPin("Audio Output 1");
+			p = this.getPin("Mix Out");
 			p.setRegister(POUT);
-			p = this.getPin("Dry");
-			p.setRegister(dry);
+			p = this.getPin("Wet Out");
+			p.setRegister(wet);
 		}
 		System.out.println("Phaser code gen!"); 
 	}
