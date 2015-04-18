@@ -52,6 +52,7 @@ public class noise_amzControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider gainSlider;
 	JLabel  gainLabel;	
+	private JComboBox <String> controlRangeComboBox; 
 
 public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 		
@@ -84,6 +85,13 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 				gaininnerPanel.setBorder(gainborder2);
 			
 				frame.add(gaininnerPanel);
+				controlRangeComboBox = new JComboBox <String> ();
+				controlRangeComboBox.addItem("0 -> +1");
+				controlRangeComboBox.addItem("-1 -> +1");
+				controlRangeComboBox.setSelectedIndex(gCB.getcontrolRange());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(controlRangeComboBox);
+				controlRangeComboBox.addActionListener(new noise_amzActionListener());
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -119,6 +127,9 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 		class noise_amzActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+			if(arg0.getSource() == controlRangeComboBox) {
+				gCB.setcontrolRange((controlRangeComboBox.getSelectedIndex()));
+			}
 			}
 		}
 		private void updategainLabel() {

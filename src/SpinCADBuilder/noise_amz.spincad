@@ -4,6 +4,9 @@
 equ gain 1.0 
 @sliderLabel gain 'Output Level' -24 0 -6 1.0 1 DBLEVEL 
 
+equ controlRange 0
+@comboBox controlRange '0 -> +1' '-1 -> +1'
+
 ; 24 bit maximal period Galois LFSR 
 ; Example by Jack Orman 
 ; http://www.muzique.com 
@@ -38,6 +41,11 @@ wrax LFSR,0       ; SAVE IT
 SHFTZRO: 
 ; rdax LFSR, gain 
 ldax LFSR
+
+@isEqualTo controlRange 0 ; 0 - 1
+absa
+@endif
+
 wrax output1,0 
 
 @setOutputPin Output output1

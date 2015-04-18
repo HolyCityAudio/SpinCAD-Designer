@@ -34,8 +34,8 @@ public class PowerControlCADBlock extends ControlCADBlock{
 	public PowerControlCADBlock(int x, int y) {
 		super(x, y);
 		hasControlPanel = true;
-		addControlInputPin(this);	//	feedback
-		addControlOutputPin(this);	//	feedback
+		addControlInputPin(this);	
+		addControlOutputPin(this);	
 		setName("Power");
 	}
 
@@ -49,7 +49,6 @@ public class PowerControlCADBlock extends ControlCADBlock{
 			int output = sfxb.allocateReg();
 			
 			sfxb.comment(getName());
-			//			rdax	pot2,-1
 			sfxb.readRegister(control, 1.0);
 			if(invert == true) {
 				sfxb.comment("---Invert");
@@ -57,10 +56,8 @@ public class PowerControlCADBlock extends ControlCADBlock{
 			}
 			sfxb.writeRegister(value, 1.0);
 			for(int i = 0; i < (int) power - 1; i++) {
-				//				mulx	pot2
 				sfxb.mulx(value);		
 			}
-			//			wrax	lbyp,0
 			if(flip == true) {
 				sfxb.comment("---Flip");
 				sfxb.scaleOffset(-0.9990234375, 0.9990234375);

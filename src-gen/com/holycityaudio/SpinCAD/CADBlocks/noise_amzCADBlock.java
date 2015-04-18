@@ -30,6 +30,7 @@
 			private noise_amzControlPanel cp = null;
 			
 			private double gain = 1.0;
+			private double controlRange = 0;
 			private int LFSR;
 			private int TEMP;
 			private int output1;
@@ -40,6 +41,7 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -88,6 +90,10 @@
 			sfxb.xor(0xD80000);
 			sfxb.writeRegister(LFSR, 0);
 			sfxb.loadAccumulator(LFSR);
+			if(controlRange == 0) {
+			sfxb.absa();
+			}
+			
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Output").setRegister(output1);
 			}
@@ -102,5 +108,12 @@
 			
 			public double getgain() {
 				return gain;
+			}
+			public void setcontrolRange(int __param) {
+				controlRange = (double) __param;	
+			}
+			
+			public int getcontrolRange() {
+				return (int) controlRange;
 			}
 		}	
