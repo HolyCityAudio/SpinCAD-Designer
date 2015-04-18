@@ -141,6 +141,7 @@ public class SpinSimulator extends Thread {
 				}
 
 				for(int i = 0; i < ret; i += 2) {
+//					for(int i = 0; i < 20; i += 2) {
 					state.setRegVal(ElmProgram.ADCL, inBuf[i]);
 					state.setRegVal(ElmProgram.ADCR, inBuf[i + 1]);
 					state.setRegVal(ElmProgram.POT0, pot0);

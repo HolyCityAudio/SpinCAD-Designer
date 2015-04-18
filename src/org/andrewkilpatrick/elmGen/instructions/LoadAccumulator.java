@@ -61,6 +61,7 @@ public class LoadAccumulator extends Instruction {
 	
 	@Override
 	public void simulate(SimulatorState state) {
+//		System.out.println("LDAX -> " + String.format("%08X",state.getRegVal(addr)));
 		state.setACCVal(state.getRegVal(addr));
 	}
 }

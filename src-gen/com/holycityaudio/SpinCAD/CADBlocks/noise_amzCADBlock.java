@@ -87,7 +87,7 @@
 			sfxb.loadAccumulator(LFSR);
 			sfxb.xor(0xD80000);
 			sfxb.writeRegister(LFSR, 0);
-			sfxb.readRegister(LFSR, gain);
+			sfxb.loadAccumulator(LFSR);
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Output").setRegister(output1);
 			}

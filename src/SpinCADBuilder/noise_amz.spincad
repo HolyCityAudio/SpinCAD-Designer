@@ -36,7 +36,8 @@ ldax LFSR        ; GET THE SAVED LFSR
 xor $D80000     ; TOGGLE THE MASK BITS 
 wrax LFSR,0       ; SAVE IT 
 SHFTZRO: 
-rdax LFSR, gain 
+; rdax LFSR, gain 
+ldax LFSR
 wrax output1,0 
 
 @setOutputPin Output output1

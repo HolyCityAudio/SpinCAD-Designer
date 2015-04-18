@@ -140,12 +140,9 @@ public class Reg {
 	 * @param mask the mask
 	 */
 	public void and(int mask) {
-		int msk = mask | 0xff800000;
-		int res = (value & msk);
-		if((mask & 0x00800000) == 0 && value < 0) {
-			res = -res;
-		}
-		value = res;
+		int res = (value & mask);
+		// XXX debug GSW
+		value = extendNeg(res);
 	}
 	
 	/**
@@ -161,11 +158,8 @@ public class Reg {
 	 * @param mask the mask
 	 */
 	public void or(int mask) {
-		int res = (value | (mask & 0xff7fffff));
-		if((mask & 0x00800000) != 0 && value > 0) {
-			res = -res;
-		}
-		value = clamp(res);
+		int res = (value | mask);
+		value = extendNeg(res);
 	}
 	
 	/**
@@ -177,15 +171,8 @@ public class Reg {
 	// XXX debug GSW
 	
 	public void xor(int mask) {
-//		int res = value ^ mask;
-		int res = (value ^ (mask & 0x007fffff));
-		if(((mask & 0x800000) != 0 && (value & 0x800000) == 0) ||
-				((mask & 0x800000) == 0 && (value & 0x800000) != 0)) {
-//			res |= 0x800000;
-			res = -res;
-		}
-
-		value = res;
+		int res = value ^ mask;
+		value = extendNeg(res);
 	}
 	
 	/**
@@ -219,6 +206,21 @@ public class Reg {
 		return clampVal;
 	}
 	
+	
+	/**
+	 * Clamps a 24 bit value.
+	 * 
+	 * @param clampVal the value to clamp
+	 * @return the clamped value
+	 */
+	private static int extendNeg(int val) {
+		if((val & 0x80_0000) != 0) {
+			return val | 0xff00_0000;
+		} else {
+			return val;
+		}
+	}
+	
 	/**
 	 * Test main for Reg().
 	 * 
@@ -228,37 +230,33 @@ public class Reg {
 		Reg acc = new Reg();
 		
 		acc.clear();
+		showAcc(" - acc: ", acc);
+		acc.or(0xFF_FFFE);
+		showAcc(" - or: ", acc);
+		acc.not();
+		showAcc(" - not: ", acc);
+		acc.and(0x01);
+		showAcc(" - and: ", acc);
 		
-		acc.setValue(0xAA_AAAA);
+		acc.setValue(0x7A_AAAA);
 		showAcc(" - acc: ", acc);
 		acc.xor(0xFF_FFFF);
 		showAcc(" - xor: ", acc);
-		acc.xor(0xFF_ffff);
-		showAcc(" - xor: ", acc);
-		System.out.println("");
+		acc.and(0xFF_FFFF);
+		showAcc(" - and: ", acc);
+		acc.and(0xF_ffff);
+		showAcc(" - and: ", acc);
+		acc.and(0x0_ffff);
+		showAcc(" - and: ", acc);
+		acc.and(0x0_0fff);
+		showAcc(" - and: ", acc);
 
-		acc.setValue(0x55_5555);
-		showAcc(" - acc: ", acc);
-		acc.xor(0xFF_FFFF);
-		showAcc(" - xor: ", acc);
-		acc.xor(0xFF_ffff);
-		showAcc(" - xor: ", acc);
-		System.out.println("");
+		acc.and(0x0_00ff);
+		showAcc(" - and: ", acc);
 
-		acc.setValue(0x0A_0A0A);
-		showAcc(" - acc: ", acc);
-		acc.xor(0xFF_FFFF);
-		showAcc(" - xor: ", acc);
-		acc.xor(0xFF_ffff);
-		showAcc(" - xor: ", acc);
-		System.out.println("");
+		acc.and(0x0_000f);
+		showAcc(" - and: ", acc);
 
-		acc.setValue(0xA0_A0A0);
-		showAcc(" - acc: ", acc);
-		acc.xor(0xFF_FFFF);
-		showAcc(" - xor: ", acc);
-		acc.xor(0xFF_ffff);
-		showAcc(" - xor: ", acc);
 		System.out.println("");
 
 		/*
