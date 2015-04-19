@@ -1,28 +1,30 @@
 @name Crossfade
-@audioInput inp1 Input_1
-@audioInput inp2 Input_2 
-@audioOutput output1 Audio_Output  
+@audioInput inp1 'Input 1'
+@audioInput inp2 'Input 2' 
+@audioOutput output1 'Audio Output'  
 @controlInput input0 Fade
 
 ; from Spin Knowledge base
 ; http://www.spinsemi.com/knowledge_base/coding_examples.html#Cross_fading
 
-equ output1 REG07
+equ gain 0.5 
+@sliderLabel gain 'Input Gain' -12 0 -6 1.0 1 DBLEVEL 
 
+equ output1 REG01
 
-@isPinConnected Input_1
-rdax	inp1,-1
+@isPinConnected 'Input 1'
+rdax	inp1,-gain
 @endif
-@isPinConnected Input_2
-rdax	inp2,1
+@isPinConnected 'Input 2'
+rdax	inp2,gain
 @isPinConnected Fade 
 mulx	input0
 @else
 sof 0.5, 0.0
 @endif
-rdax	inp1,1
+rdax	inp1,gain
 @endif
 
 wrax	output1,0
 
-@setOutputPin Audio_Output output1
+@setOutputPin 'Audio Output' output1

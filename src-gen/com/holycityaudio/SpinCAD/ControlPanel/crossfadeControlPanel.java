@@ -50,6 +50,8 @@ public class crossfadeControlPanel extends spinCADControlPanel {
 
 	private crossfadeCADBlock gCB;
 	// declare the controls
+	JSlider gainSlider;
+	JLabel  gainLabel;	
 
 public crossfadeControlPanel(crossfadeCADBlock genericCADBlock) {
 		
@@ -62,6 +64,26 @@ public crossfadeControlPanel(crossfadeCADBlock genericCADBlock) {
 				frame.setTitle("Crossfade");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+			// dB level slider goes in steps of 1 dB
+				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
+				gainSlider.addChangeListener(new crossfadeListener());
+				gainLabel = new JLabel();
+				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gainLabel.setBorder(gainBorder1);
+				updategainLabel();
+				
+				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gaininnerPanel = new JPanel();
+					
+				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainLabel);
+				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gaininnerPanel.add(gainSlider);		
+				gaininnerPanel.setBorder(gainborder2);
+			
+				frame.add(gaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -75,6 +97,10 @@ public crossfadeControlPanel(crossfadeCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class crossfadeListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == gainSlider) {
+			gCB.setgain((double) (gainSlider.getValue()/1.0));
+				updategainLabel();
+			}
 			}
 		}
 
@@ -95,6 +121,9 @@ public crossfadeControlPanel(crossfadeCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updategainLabel() {
+		gainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

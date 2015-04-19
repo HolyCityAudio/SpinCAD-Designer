@@ -29,17 +29,19 @@
 			private static final long serialVersionUID = 1L;
 			private crossfadeControlPanel cp = null;
 			
+			private double gain = 0.5;
 			private int output1;
 
 			public crossfadeCADBlock(int x, int y) {
 				super(x, y);
 				setName("Crossfade");	
 				// Iterate through pin definitions and allocate or assign as needed
-				addInputPin(this, "Input_1");
-				addInputPin(this, "Input_2");
-				addOutputPin(this, "Audio_Output");
+				addInputPin(this, "Input 1");
+				addInputPin(this, "Input 2");
+				addOutputPin(this, "Audio Output");
 				addControlInputPin(this, "Fade");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -65,12 +67,12 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("Input_1").getPinConnection();
+			sp = this.getPin("Input 1").getPinConnection();
 			int inp1 = -1;
 			if(sp != null) {
 				inp1 = sp.getRegister();
 			}
-			sp = this.getPin("Input_2").getPinConnection();
+			sp = this.getPin("Input 2").getPinConnection();
 			int inp2 = -1;
 			if(sp != null) {
 				inp2 = sp.getRegister();
@@ -83,25 +85,32 @@
 			
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();
-			if(this.getPin("Input_1").isConnected() == true) {
-			sfxb.readRegister(inp1, -1);
+			if(this.getPin("Input 1").isConnected() == true) {
+			sfxb.readRegister(inp1, -gain);
 			}
 			
-			if(this.getPin("Input_2").isConnected() == true) {
-			sfxb.readRegister(inp2, 1);
+			if(this.getPin("Input 2").isConnected() == true) {
+			sfxb.readRegister(inp2, gain);
 			if(this.getPin("Fade").isConnected() == true) {
 			sfxb.mulx(input0);
 			} else {
 			sfxb.scaleOffset(0.5, 0.0);
 			}
 			
-			sfxb.readRegister(inp1, 1);
+			sfxb.readRegister(inp1, gain);
 			}
 			
 			sfxb.writeRegister(output1, 0);
-			this.getPin("Audio_Output").setRegister(output1);
+			this.getPin("Audio Output").setRegister(output1);
 
 			}
 			
 			// create setters and getter for control panel variables
+			public void setgain(double __param) {
+				gain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getgain() {
+				return gain;
+			}
 		}	

@@ -44,17 +44,17 @@ f.dropBlock(p, m);
 f.dropBlock(p, o);	
 {
 	SpinCADPin p1 = i.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Input_1");
+	SpinCADPin p2 = m.getPin("Input 1");
 	p2.setConnection(i, p1);
 }
 {
 	SpinCADPin p1 = i.getPin("Output 2");
-	SpinCADPin p2 = m.getPin("Input_2");
+	SpinCADPin p2 = m.getPin("Input 2");
 	p2.setConnection(i, p1);
 }
 {
 	SpinCADPin p1 = o.getPin("Input 1");
-	SpinCADPin p2 = m.getPin("Audio_Output");
+	SpinCADPin p2 = m.getPin("Audio Output");
 	p2.setConnection(o, p1);
 }
 {
