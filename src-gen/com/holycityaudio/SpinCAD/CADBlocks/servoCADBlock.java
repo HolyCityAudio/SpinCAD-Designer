@@ -43,14 +43,14 @@
 
 			public servoCADBlock(int x, int y) {
 				super(x, y);
-				setName("Servo_Flanger");	
+				setName("Servo Flanger");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addInputPin(this, "Feedbck");
+				addInputPin(this, "Feedback In");
 				addOutputPin(this, "Output");
-				addOutputPin(this, "Tap_1_Output");
-				addControlInputPin(this, "Delay");
-				addControlInputPin(this, "Feedback");
+				addOutputPin(this, "Tap Output");
+				addControlInputPin(this, "Delay Time");
+				addControlInputPin(this, "Feedback Gain");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -88,17 +88,17 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Feedbck").getPinConnection();
+			sp = this.getPin("Feedback In").getPinConnection();
 			int feedback = -1;
 			if(sp != null) {
 				feedback = sp.getRegister();
 			}
-			sp = this.getPin("Delay").getPinConnection();
+			sp = this.getPin("Delay Time").getPinConnection();
 			int control1 = -1;
 			if(sp != null) {
 				control1 = sp.getRegister();
 			}
-			sp = this.getPin("Feedback").getPinConnection();
+			sp = this.getPin("Feedback Gain").getPinConnection();
 			int fbk = -1;
 			if(sp != null) {
 				fbk = sp.getRegister();
@@ -109,7 +109,7 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("moddel", 4096); 
 			output = sfxb.allocateReg();
-			if(this.getPin("Delay").isConnected() == true) {
+			if(this.getPin("Delay Time").isConnected() == true) {
 			filt = sfxb.allocateReg();
 			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
@@ -120,9 +120,9 @@
 			}
 			
 			sfxb.clear();
-			if(this.getPin("Feedbck").isConnected() == true) {
+			if(this.getPin("Feedback In").isConnected() == true) {
 			sfxb.readRegister(feedback, fbkGain);
-			if(this.getPin("Feedback").isConnected() == true) {
+			if(this.getPin("Feedback Gain").isConnected() == true) {
 			sfxb.mulx(fbk);
 			}
 			
@@ -150,7 +150,7 @@
 			sfxb.readRegisterFilter(filt, freq);
 			sfxb.writeRegisterLowshelf(filt, -1);
 			sfxb.writeRegister(output, 0);
-			if(this.getPin("Tap_1_Output").isConnected() == true) {
+			if(this.getPin("Tap Output").isConnected() == true) {
 			output1 = sfxb.allocateReg();
 			sfxb.clear();
 			sfxb.or(0x7FFF00);
@@ -158,7 +158,7 @@
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readDelayPointer(1.0);
 			sfxb.writeRegister(output1, 0.0);
-			this.getPin("Tap_1_Output").setRegister(output1);
+			this.getPin("Tap Output").setRegister(output1);
 			}
 			
 			this.getPin("Output").setRegister(output);

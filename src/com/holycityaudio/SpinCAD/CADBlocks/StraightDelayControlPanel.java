@@ -30,14 +30,14 @@ import javax.swing.event.ChangeListener;
 
 class ServoDelayControlPanel {
 
-	private ServoDelayCADBlock mD;
+	private CoarseDelayCADBlock mD;
 	private JSlider delaySliderCoarse;
 	private JSlider delaySliderFine;
 	private JLabel delayLabelCoarse;
 	private JLabel delayLabelFine;
 	private JFrame frame;
 
-	public ServoDelayControlPanel(ServoDelayCADBlock sDCB) {
+	public ServoDelayControlPanel(CoarseDelayCADBlock sDCB) {
 		this.mD = sDCB;
 
 		SwingUtilities.invokeLater(new Runnable() {

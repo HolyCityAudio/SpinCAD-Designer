@@ -87,7 +87,7 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Six_Tap");
+				frame.setTitle("Six Tap");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
@@ -243,7 +243,8 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			
 				frame.add(tap6RatioinnerPanel);
 			
-			tap1GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Gain() * 1000.0));
+			// dB level slider goes in steps of 1 dB
+				tap1GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap1Gain())));
 				tap1GainSlider.addChangeListener(new sixtapListener());
 				tap1GainLabel = new JLabel();
 				Border tap1GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -262,7 +263,8 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			
 				frame.add(tap1GaininnerPanel);
 			
-			tap2GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Gain() * 1000.0));
+			// dB level slider goes in steps of 1 dB
+				tap2GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap2Gain())));
 				tap2GainSlider.addChangeListener(new sixtapListener());
 				tap2GainLabel = new JLabel();
 				Border tap2GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -281,7 +283,8 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			
 				frame.add(tap2GaininnerPanel);
 			
-			tap3GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Gain() * 1000.0));
+			// dB level slider goes in steps of 1 dB
+				tap3GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap3Gain())));
 				tap3GainSlider.addChangeListener(new sixtapListener());
 				tap3GainLabel = new JLabel();
 				Border tap3GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -300,7 +303,8 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			
 				frame.add(tap3GaininnerPanel);
 			
-			tap4GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Gain() * 1000.0));
+			// dB level slider goes in steps of 1 dB
+				tap4GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap4Gain())));
 				tap4GainSlider.addChangeListener(new sixtapListener());
 				tap4GainLabel = new JLabel();
 				Border tap4GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -319,7 +323,8 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			
 				frame.add(tap4GaininnerPanel);
 			
-			tap5GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap5Gain() * 1000.0));
+			// dB level slider goes in steps of 1 dB
+				tap5GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap5Gain())));
 				tap5GainSlider.addChangeListener(new sixtapListener());
 				tap5GainLabel = new JLabel();
 				Border tap5GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -338,7 +343,8 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			
 				frame.add(tap5GaininnerPanel);
 			
-			tap6GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap6Gain() * 1000.0));
+			// dB level slider goes in steps of 1 dB
+				tap6GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap6Gain())));
 				tap6GainSlider.addChangeListener(new sixtapListener());
 				tap6GainLabel = new JLabel();
 				Border tap6GainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -402,27 +408,27 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				updatetap6RatioLabel();
 			}
 			if(ce.getSource() == tap1GainSlider) {
-			gCB.settap1Gain((double) (tap1GainSlider.getValue()/1000.0));
+			gCB.settap1Gain((double) (tap1GainSlider.getValue()/1.0));
 				updatetap1GainLabel();
 			}
 			if(ce.getSource() == tap2GainSlider) {
-			gCB.settap2Gain((double) (tap2GainSlider.getValue()/1000.0));
+			gCB.settap2Gain((double) (tap2GainSlider.getValue()/1.0));
 				updatetap2GainLabel();
 			}
 			if(ce.getSource() == tap3GainSlider) {
-			gCB.settap3Gain((double) (tap3GainSlider.getValue()/1000.0));
+			gCB.settap3Gain((double) (tap3GainSlider.getValue()/1.0));
 				updatetap3GainLabel();
 			}
 			if(ce.getSource() == tap4GainSlider) {
-			gCB.settap4Gain((double) (tap4GainSlider.getValue()/1000.0));
+			gCB.settap4Gain((double) (tap4GainSlider.getValue()/1.0));
 				updatetap4GainLabel();
 			}
 			if(ce.getSource() == tap5GainSlider) {
-			gCB.settap5Gain((double) (tap5GainSlider.getValue()/1000.0));
+			gCB.settap5Gain((double) (tap5GainSlider.getValue()/1.0));
 				updatetap5GainLabel();
 			}
 			if(ce.getSource() == tap6GainSlider) {
-			gCB.settap6Gain((double) (tap6GainSlider.getValue()/1000.0));
+			gCB.settap6Gain((double) (tap6GainSlider.getValue()/1.0));
 				updatetap6GainLabel();
 			}
 			}
@@ -470,22 +476,22 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 		tap6RatioLabel.setText("Tap_6_Time " + String.format("%4.2f", gCB.gettap6Ratio()));		
 		}		
 		private void updatetap1GainLabel() {
-		tap1GainLabel.setText("Tap_1_Gain " + String.format("%4.2f", gCB.gettap1Gain()));		
+		tap1GainLabel.setText("Tap 1 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap1Gain()))));		
 		}		
 		private void updatetap2GainLabel() {
-		tap2GainLabel.setText("Tap_2_Gain " + String.format("%4.2f", gCB.gettap2Gain()));		
+		tap2GainLabel.setText("Tap 2 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap2Gain()))));		
 		}		
 		private void updatetap3GainLabel() {
-		tap3GainLabel.setText("Tap_3_Gain " + String.format("%4.2f", gCB.gettap3Gain()));		
+		tap3GainLabel.setText("Tap 3 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap3Gain()))));		
 		}		
 		private void updatetap4GainLabel() {
-		tap4GainLabel.setText("Tap_4_Gain " + String.format("%4.2f", gCB.gettap4Gain()));		
+		tap4GainLabel.setText("Tap 4 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap4Gain()))));		
 		}		
 		private void updatetap5GainLabel() {
-		tap5GainLabel.setText("Tap_5_Gain " + String.format("%4.2f", gCB.gettap5Gain()));		
+		tap5GainLabel.setText("Tap 5 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap5Gain()))));		
 		}		
 		private void updatetap6GainLabel() {
-		tap6GainLabel.setText("Tap_6_Gain " + String.format("%4.2f", gCB.gettap6Gain()));		
+		tap6GainLabel.setText("Tap 6 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap6Gain()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

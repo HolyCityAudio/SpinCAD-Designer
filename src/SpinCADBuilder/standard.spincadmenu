@@ -39,13 +39,13 @@
 @menuitem "2P SVF Fixed" SVF2P 
 @menuitem "2P/4P Lowpass" LPF4P 
 @menuitem "2P/4P Highpass" HPF2P 
-//@menuitem "Notch" Notch 
+@menuitem "Notch" Notch 
 @menuitem "1-Band EQ" OneBandEQ 
 @menuitem "6-Band EQ" SixBandEQ 
 
 @menu "Delay" 
 @menuitem "Single Delay" SingleDelay
-@menuitem "Servo Delay" ServoDelay 
+@menuitem "Coarse Delay" CoarseDelay 
 @menuitem "Triple-tap" TripleTap 
 @menuitem "MN3011" MN3011a 
 @menuitem "6-Tap Stereo" sixtap 
@@ -62,11 +62,10 @@
 //@menuitem "Shimmer Reverb" shimmer_verb 
 
 @menu "Modulation"  
-@menuitem "Chorus" Chorus 
+@menuitem "LFO Chorus" Chorus 
 //@menuitem "Quad Chorus" ChorusQuad 
-@menuitem "Flanger" Flanger 
-@menuitem "Mod Delay" ModDelay 
-@menuitem "Servo" servo
+@menuitem "LFO Flanger" Flanger 
+@menuitem "Servo Flanger" servo
 @menuitem "Phaser" Phaser 
 @menuitem "Ring Modulator" RingMod 
 

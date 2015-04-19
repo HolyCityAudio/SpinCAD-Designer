@@ -1,7 +1,7 @@
-@name Six_Tap
+@name 'Six Tap'
 @audioInput adcl Input 
-@audioOutput mix1 Mix_1_Out
-@audioOutput mix2 Mix_2_Out
+@audioOutput mix1 'Mix L Out'
+@audioOutput mix2 'Mix R Out'
 @audioOutput output1 Delay_Out_End 
 @controlInput cIn1 Delay_Time_1 
 
@@ -39,22 +39,22 @@ equ tap6Ratio 0.6
 @sliderLabel tap6Ratio Tap_6_Time  0.0 1.0 0.5 1000.0 2
  
 equ tap1Gain 0.5
-@sliderLabel tap1Gain Tap_1_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap1Gain 'Tap 1 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
 
 equ tap2Gain 0.5
-@sliderLabel tap2Gain Tap_2_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap2Gain 'Tap 2 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
 
 equ tap3Gain 0.5
-@sliderLabel tap3Gain Tap_3_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap3Gain 'Tap 3 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
 
 equ tap4Gain 0.5
-@sliderLabel tap4Gain Tap_4_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap4Gain 'Tap 4 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
   
 equ tap5Gain 0.5
-@sliderLabel tap5Gain Tap_5_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap5Gain 'Tap 5 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
   
 equ tap6Gain 0.8
-@sliderLabel tap6Gain Tap_6_Gain  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap6Gain 'Tap 6 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
   
 equ delayOffset -1
 
@@ -134,7 +134,7 @@ wrax mix2, 0.0
 // fixed delay spacing below
 @else
 offset ratio 1   
-
+ 
 @getSamplesFromRatio ratio tap1Ratio delayLength 
 rda delay+ratio, tap1Gain
 
@@ -144,12 +144,13 @@ rda delay+ratio, tap2Gain
 @getSamplesFromRatio ratio tap3Ratio delayLength 
 rda delay+ratio, tap3Gain
 
+wrax mix1, 0.0
+
 @getSamplesFromRatio ratio tap4Ratio delayLength 
 rda delay+ratio, tap4Gain
 
 @getSamplesFromRatio ratio tap5Ratio delayLength 
 rda delay+ratio, tap5Gain
-wrax mix1, 0.0
 
 @getSamplesFromRatio ratio tap6Ratio delayLength 
 rda delay+ratio, tap6Gain
@@ -157,9 +158,6 @@ rda delay+ratio, tap6Gain
 wrax mix2, 0.0
 
 @endif
-
-@setOutputPin Mix_1_Out mix1
-@setOutputPin Mix_2_Out mix2
 
 // set the end tap regardless if the control input is connected
 equ output5 reg5
@@ -169,4 +167,6 @@ wrax output5, 0.0
 
 @endif
 
+@setOutputPin 'Mix L Out' mix1
+@setOutputPin 'Mix R Out' mix2
 

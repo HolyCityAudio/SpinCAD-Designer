@@ -28,10 +28,11 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.SVF2PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF4PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF2PCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.NotchCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OneBandEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SixBandEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SingleDelayCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ServoDelayCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.CoarseDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.sixtapCADBlock;
@@ -42,7 +43,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ModDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.servoCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PhaserCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RingModCADBlock;
@@ -350,6 +350,15 @@
 	});
 	mn_filters.add(mntm_HPF2P);
 		
+	final JMenuItem mntm_Notch = new JMenuItem("Notch");
+	mntm_Notch.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new NotchCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_filters.add(mntm_Notch);
+		
 	final JMenuItem mntm_OneBandEQ = new JMenuItem("1-Band EQ");
 	mntm_OneBandEQ.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -380,14 +389,14 @@
 	});
 	mn_delay.add(mntm_SingleDelay);
 		
-	final JMenuItem mntm_ServoDelay = new JMenuItem("Servo Delay");
-	mntm_ServoDelay.addActionListener(new ActionListener() {
+	final JMenuItem mntm_CoarseDelay = new JMenuItem("Coarse Delay");
+	mntm_CoarseDelay.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new ServoDelayCADBlock(50, 100);
+			SpinCADBlock pcB = new CoarseDelayCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_delay.add(mntm_ServoDelay);
+	mn_delay.add(mntm_CoarseDelay);
 		
 	final JMenuItem mntm_TripleTap = new JMenuItem("Triple-tap");
 	mntm_TripleTap.addActionListener(new ActionListener() {
@@ -467,7 +476,7 @@
 	JMenu mn_modulation = new JMenu("Modulation");
 	menuBar.add(mn_modulation);
 	
-	final JMenuItem mntm_Chorus = new JMenuItem("Chorus");
+	final JMenuItem mntm_Chorus = new JMenuItem("LFO Chorus");
 	mntm_Chorus.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new ChorusCADBlock(50, 100);
@@ -476,7 +485,7 @@
 	});
 	mn_modulation.add(mntm_Chorus);
 		
-	final JMenuItem mntm_Flanger = new JMenuItem("Flanger");
+	final JMenuItem mntm_Flanger = new JMenuItem("LFO Flanger");
 	mntm_Flanger.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new FlangerCADBlock(50, 100);
@@ -485,16 +494,7 @@
 	});
 	mn_modulation.add(mntm_Flanger);
 		
-	final JMenuItem mntm_ModDelay = new JMenuItem("Mod Delay");
-	mntm_ModDelay.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new ModDelayCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_modulation.add(mntm_ModDelay);
-		
-	final JMenuItem mntm_servo = new JMenuItem("Servo");
+	final JMenuItem mntm_servo = new JMenuItem("Servo Flanger");
 	mntm_servo.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new servoCADBlock(50, 100);

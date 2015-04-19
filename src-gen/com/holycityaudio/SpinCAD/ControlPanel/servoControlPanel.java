@@ -70,7 +70,7 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Servo_Flanger");
+				frame.setTitle("Servo Flanger");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			

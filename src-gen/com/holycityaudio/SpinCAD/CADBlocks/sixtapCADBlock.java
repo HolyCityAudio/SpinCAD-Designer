@@ -51,11 +51,11 @@
 
 			public sixtapCADBlock(int x, int y) {
 				super(x, y);
-				setName("Six_Tap");	
+				setName("Six Tap");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addOutputPin(this, "Mix_1_Out");
-				addOutputPin(this, "Mix_2_Out");
+				addOutputPin(this, "Mix L Out");
+				addOutputPin(this, "Mix R Out");
 				addOutputPin(this, "Delay_Out_End");
 				addControlInputPin(this, "Delay_Time_1");
 			// if any control panel elements declared, set hasControlPanel to true
@@ -164,24 +164,24 @@
 			sfxb.FXreadDelay("delay+", ratio, tap2Gain);
 			ratio = (int) (tap3Ratio * delayLength);
 			sfxb.FXreadDelay("delay+", ratio, tap3Gain);
+			sfxb.writeRegister(mix1, 0.0);
 			ratio = (int) (tap4Ratio * delayLength);
 			sfxb.FXreadDelay("delay+", ratio, tap4Gain);
 			ratio = (int) (tap5Ratio * delayLength);
 			sfxb.FXreadDelay("delay+", ratio, tap5Gain);
-			sfxb.writeRegister(mix1, 0.0);
 			ratio = (int) (tap6Ratio * delayLength);
 			sfxb.FXreadDelay("delay+", ratio, tap6Gain);
 			sfxb.writeRegister(mix2, 0.0);
 			}
 			
-			this.getPin("Mix_1_Out").setRegister(mix1);
-			this.getPin("Mix_2_Out").setRegister(mix2);
 			output5 = sfxb.allocateReg();
 			sfxb.FXreadDelay("delay#", 0, 1.0);
 			sfxb.writeRegister(output5, 0.0);
 			this.getPin("Delay_Out_End").setRegister(output5);
 			}
 			
+			this.getPin("Mix L Out").setRegister(mix1);
+			this.getPin("Mix R Out").setRegister(mix2);
 
 			}
 			
@@ -243,42 +243,42 @@
 				return tap6Ratio;
 			}
 			public void settap1Gain(double __param) {
-				tap1Gain = __param;	
+				tap1Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap1Gain() {
 				return tap1Gain;
 			}
 			public void settap2Gain(double __param) {
-				tap2Gain = __param;	
+				tap2Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap2Gain() {
 				return tap2Gain;
 			}
 			public void settap3Gain(double __param) {
-				tap3Gain = __param;	
+				tap3Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap3Gain() {
 				return tap3Gain;
 			}
 			public void settap4Gain(double __param) {
-				tap4Gain = __param;	
+				tap4Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap4Gain() {
 				return tap4Gain;
 			}
 			public void settap5Gain(double __param) {
-				tap5Gain = __param;	
+				tap5Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap5Gain() {
 				return tap5Gain;
 			}
 			public void settap6Gain(double __param) {
-				tap6Gain = __param;	
+				tap6Gain = Math.pow(10.0, __param/20.0);	
 			}
 			
 			public double gettap6Gain() {

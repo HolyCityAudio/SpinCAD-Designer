@@ -1,10 +1,10 @@
-@name Servo_Flanger
+@name 'Servo Flanger'
 @audioInput input Input
-@audioInput feedback Feedbck
+@audioInput feedback 'Feedback In'
 @audioOutput output Output  
-@audioOutput output1 Tap_1_Output
-@controlInput control1 Delay
-@controlInput fbk Feedback
+@audioOutput output1 'Tap Output'
+@controlInput control1 'Delay Time'
+@controlInput fbk 'Feedback Gain'
 //@controlOutput servo Servo
 //@controlOutput delta Delta 
 
@@ -35,7 +35,7 @@ equ delayOffset -1
 
 mem moddel 4096
 equ output reg1
-@isPinConnected Delay
+@isPinConnected 'Delay Time'
 //equ servo reg2
 equ filt reg3
 //equ delta reg4
@@ -52,9 +52,9 @@ START1:
 
 clr
 
-@isPinConnected Feedbck
+@isPinConnected 'Feedback In'
 rdax feedback,fbkGain
-@isPinConnected Feedback
+@isPinConnected 'Feedback Gain'
 mulx fbk
 @endif
 @endif
@@ -82,7 +82,7 @@ rdfx filt, freq
 wrlx filt, -1
 wrax output,0
 
-@isPinConnected Tap_1_Output
+@isPinConnected 'Tap Output'
 equ   output1     reg0      
 clr
 or $7FFF00
@@ -90,7 +90,7 @@ or $7FFF00
 wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output1, 0.0 
-@setOutputPin Tap_1_Output output1
+@setOutputPin 'Tap Output' output1
 @endif
 
 //@setOutputPin Servo servo
