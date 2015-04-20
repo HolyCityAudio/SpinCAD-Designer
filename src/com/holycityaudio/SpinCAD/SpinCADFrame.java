@@ -496,7 +496,7 @@ public class SpinCADFrame extends JFrame {
 		StringBuilder sb = new StringBuilder(128);
 		if(recentFileList != null) {
 			int k = recentFileList.listModel.getSize() - 1;
-			for (int index = 0; index <= k; index++) {
+			for (int index = 0; index < k; index++) {
 				File file = recentFileList.listModel.getElementAt(k - index);
 				if (sb.length() > 0) {
 					sb.append(File.pathSeparator);
@@ -710,11 +710,13 @@ public class SpinCADFrame extends JFrame {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUFolder", "");
 		final JFileChooser fc = new JFileChooser(savedPath);
-		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"SpinCAD Files", "spcd");
 		fc.setFileFilter(filter);
+		// TODO trying to prefill selected file as current file XXX debug
+//		fc.setSelectedFile(spcFileName);
 		fc.showSaveDialog(SpinCADFrame.this);
+		// In response to a button click:
 		File fileToBeSaved = fc.getSelectedFile();
 
 		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {

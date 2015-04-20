@@ -32,6 +32,8 @@
 			private double rateMax = 511;
 			private double number6554000 = 6554000.0;
 			private int output1;
+			private double inputGain = 1.0;
+			private double fbkGain = 0.5;
 			private double delayLength = 64;
 			private double tap1Center = 0.5;
 			private double rate = 20;
@@ -46,11 +48,15 @@
 				setName("Flanger");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addInputPin(this, "Feedback In");
 				addOutputPin(this, "Output");
-				addOutputPin(this, "Center_Tap");
-				addControlInputPin(this, "LFO_Rate");
-				addControlInputPin(this, "LFO_Width");
+				addOutputPin(this, "Tap");
+				addControlInputPin(this, "Feedback Gain");
+				addControlInputPin(this, "LFO Rate");
+				addControlInputPin(this, "LFO Width");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -85,12 +91,22 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("LFO_Rate").getPinConnection();
+			sp = this.getPin("Feedback In").getPinConnection();
+			int feedbackIn = -1;
+			if(sp != null) {
+				feedbackIn = sp.getRegister();
+			}
+			sp = this.getPin("Feedback Gain").getPinConnection();
+			int fbk = -1;
+			if(sp != null) {
+				fbk = sp.getRegister();
+			}
+			sp = this.getPin("LFO Rate").getPinConnection();
 			int rateIn = -1;
 			if(sp != null) {
 				rateIn = sp.getRegister();
 			}
-			sp = this.getPin("LFO_Width").getPinConnection();
+			sp = this.getPin("LFO Width").getPinConnection();
 			int widthIn = -1;
 			if(sp != null) {
 				widthIn = sp.getRegister();
@@ -112,7 +128,7 @@
 			sfxb.loadSinLFO((int) SIN1,(int) rate, (int) x2);
 			}
 			
-			if(this.getPin("LFO_Width").isConnected() == true) {
+			if(this.getPin("LFO Width").isConnected() == true) {
 			sfxb.readRegister(widthIn, x3);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RANGE, 0);
@@ -122,7 +138,7 @@
 			
 			}
 			
-			if(this.getPin("LFO_Rate").isConnected() == true) {
+			if(this.getPin("LFO Rate").isConnected() == true) {
 			double temp1 = rate / rateMax;
 			sfxb.readRegister(rateIn, temp1);
 			if(lfoSel == 0) {
@@ -133,7 +149,15 @@
 			
 			}
 			
-			sfxb.loadAccumulator(input);
+			if(this.getPin("Feedback In").isConnected() == true) {
+			sfxb.readRegister(feedbackIn, fbkGain);
+			if(this.getPin("Feedback Gain").isConnected() == true) {
+			sfxb.mulx(fbk);
+			}
+			
+			}
+			
+			sfxb.readRegister(input, inputGain);
 			sfxb.FXwriteDelay("delayl", 0, 0);
 			if(lfoSel == 0) {
 			{
@@ -150,11 +174,11 @@
 			}
 			
 			sfxb.writeRegister(output1, 0);
-			if(this.getPin("Center_Tap").isConnected() == true) {
+			if(this.getPin("Tap").isConnected() == true) {
 			center = sfxb.allocateReg();
 			sfxb.FXreadDelay("delayl^", 0, 1);
 			sfxb.writeRegister(center, 0);
-			this.getPin("Center_Tap").setRegister(center);
+			this.getPin("Tap").setRegister(center);
 			}
 			
 			this.getPin("Output").setRegister(output1);
@@ -164,6 +188,20 @@
 			}
 			
 			// create setters and getter for control panel variables
+			public void setinputGain(double __param) {
+				inputGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getinputGain() {
+				return inputGain;
+			}
+			public void setfbkGain(double __param) {
+				fbkGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getfbkGain() {
+				return fbkGain;
+			}
 			public void setdelayLength(double __param) {
 				delayLength = __param;	
 			}
