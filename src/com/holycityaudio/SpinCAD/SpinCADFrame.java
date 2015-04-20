@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 923;
+	int buildNum = 924;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -495,8 +495,9 @@ public class SpinCADFrame extends JFrame {
 	private void saveRecentFileList() {
 		StringBuilder sb = new StringBuilder(128);
 		if(recentFileList != null) {
-			for (int index = 0; index < recentFileList.listModel.getSize(); index++) {
-				File file = recentFileList.listModel.getElementAt(index);
+			int k = recentFileList.listModel.getSize() - 1;
+			for (int index = 0; index <= k; index++) {
+				File file = recentFileList.listModel.getElementAt(k - index);
 				if (sb.length() > 0) {
 					sb.append(File.pathSeparator);
 				}
