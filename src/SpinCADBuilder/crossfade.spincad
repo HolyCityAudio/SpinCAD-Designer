@@ -7,22 +7,25 @@
 ; from Spin Knowledge base
 ; http://www.spinsemi.com/knowledge_base/coding_examples.html#Cross_fading
 
-equ gain 0.5 
-@sliderLabel gain 'Input Gain' -12 0 -6 1.0 1 DBLEVEL 
+equ gain1 0.5 
+@sliderLabel gain1 'Input 1 Gain' -12 0 -6 1.0 1 DBLEVEL 
+
+equ gain2 0.5 
+@sliderLabel gain2 'Input 2 Gain' -12 0 -6 1.0 1 DBLEVEL 
 
 equ output1 REG01
 
 @isPinConnected 'Input 1'
-rdax	inp1,-gain
+rdax	inp1,-gain1
 @endif
 @isPinConnected 'Input 2'
-rdax	inp2,gain
+rdax	inp2,gain2
 @isPinConnected Fade 
 mulx	input0
 @else
 sof 0.5, 0.0
 @endif
-rdax	inp1,gain
+rdax	inp1,gain1
 @endif
 
 wrax	output1,0

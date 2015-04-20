@@ -38,6 +38,7 @@
 			private double width = 30;
 			private double lfoSel = 0;
 			private double delayOffset = -1;
+			private double twoHundred = 200.0;
 			private int center;
 
 			public FlangerCADBlock(int x, int y) {
@@ -102,12 +103,13 @@
 			sfxb.FXallocDelayMem("delayl", delayLength); 
 			double x1 = delayLength * width;
 			double x3 = x1 / number6554000;
+			double x2 = x1 / twoHundred;
 			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO((int) SIN0,(int) 50, (int) 64);
+			sfxb.loadSinLFO((int) SIN0,(int) rate, (int) x2);
 			} else {
 			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO((int) SIN1,(int) 50, (int) 64);
+			sfxb.loadSinLFO((int) SIN1,(int) rate, (int) x2);
 			}
 			
 			if(this.getPin("LFO_Width").isConnected() == true) {

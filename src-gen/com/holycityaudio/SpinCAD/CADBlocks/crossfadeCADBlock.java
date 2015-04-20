@@ -29,7 +29,8 @@
 			private static final long serialVersionUID = 1L;
 			private crossfadeControlPanel cp = null;
 			
-			private double gain = 0.5;
+			private double gain1 = 0.5;
+			private double gain2 = 0.5;
 			private int output1;
 
 			public crossfadeCADBlock(int x, int y) {
@@ -41,6 +42,7 @@
 				addOutputPin(this, "Audio Output");
 				addControlInputPin(this, "Fade");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -86,18 +88,18 @@
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();
 			if(this.getPin("Input 1").isConnected() == true) {
-			sfxb.readRegister(inp1, -gain);
+			sfxb.readRegister(inp1, -gain1);
 			}
 			
 			if(this.getPin("Input 2").isConnected() == true) {
-			sfxb.readRegister(inp2, gain);
+			sfxb.readRegister(inp2, gain2);
 			if(this.getPin("Fade").isConnected() == true) {
 			sfxb.mulx(input0);
 			} else {
 			sfxb.scaleOffset(0.5, 0.0);
 			}
 			
-			sfxb.readRegister(inp1, gain);
+			sfxb.readRegister(inp1, gain1);
 			}
 			
 			sfxb.writeRegister(output1, 0);
@@ -106,11 +108,18 @@
 			}
 			
 			// create setters and getter for control panel variables
-			public void setgain(double __param) {
-				gain = Math.pow(10.0, __param/20.0);	
+			public void setgain1(double __param) {
+				gain1 = Math.pow(10.0, __param/20.0);	
 			}
 			
-			public double getgain() {
-				return gain;
+			public double getgain1() {
+				return gain1;
+			}
+			public void setgain2(double __param) {
+				gain2 = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getgain2() {
+				return gain2;
 			}
 		}	
