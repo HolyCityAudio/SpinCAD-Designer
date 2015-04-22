@@ -51,9 +51,9 @@
 				addInputPin(this, "Feedback In");
 				addOutputPin(this, "Output");
 				addOutputPin(this, "Tap");
-				addControlInputPin(this, "Feedback Gain");
 				addControlInputPin(this, "LFO Rate");
 				addControlInputPin(this, "LFO Width");
+				addControlInputPin(this, "Feedback Gain");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -96,11 +96,6 @@
 			if(sp != null) {
 				feedbackIn = sp.getRegister();
 			}
-			sp = this.getPin("Feedback Gain").getPinConnection();
-			int fbk = -1;
-			if(sp != null) {
-				fbk = sp.getRegister();
-			}
 			sp = this.getPin("LFO Rate").getPinConnection();
 			int rateIn = -1;
 			if(sp != null) {
@@ -110,6 +105,11 @@
 			int widthIn = -1;
 			if(sp != null) {
 				widthIn = sp.getRegister();
+			}
+			sp = this.getPin("Feedback Gain").getPinConnection();
+			int fbk = -1;
+			if(sp != null) {
+				fbk = sp.getRegister();
 			}
 			
 			// finally, generate the instructions

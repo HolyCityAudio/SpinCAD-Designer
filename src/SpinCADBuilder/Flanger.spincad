@@ -3,9 +3,9 @@
 @audioInput feedbackIn 'Feedback In'
 @audioOutput output1 Output
 @audioOutput center 'Tap'
-@controlInput fbk 'Feedback Gain'
 @controlInput rateIn 'LFO Rate' 
 @controlInput widthIn 'LFO Width' 
+@controlInput fbk 'Feedback Gain'
 
 equ rateMax 511
 equ number6554000 6554000.0

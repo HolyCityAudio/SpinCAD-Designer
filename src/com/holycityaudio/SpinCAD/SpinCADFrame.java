@@ -714,7 +714,7 @@ public class SpinCADFrame extends JFrame {
 				"SpinCAD Files", "spcd");
 		fc.setFileFilter(filter);
 		// TODO trying to prefill selected file as current file XXX debug
-//		fc.setSelectedFile(spcFileName);
+		fc.setSelectedFile(new File(spcFileName));
 		fc.showSaveDialog(SpinCADFrame.this);
 		// In response to a button click:
 		File fileToBeSaved = fc.getSelectedFile();
