@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 924;
+	int buildNum = 926;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -185,7 +185,7 @@ public class SpinCADFrame extends JFrame {
 		// ==========================================================================================
 		// ======================= main panel
 		// =========================================================
-		
+
 
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.LIGHT_GRAY);
@@ -464,12 +464,13 @@ public class SpinCADFrame extends JFrame {
 							spcFileName = fileToBeSaved.getName();
 							getModel().setChanged(false);
 							updateFrameTitle();
-						} else
+						} else {
 							fileSaveAs();
-						spcFileName = fileToBeSaved.getName();
-						saveMRUFolder(fileToBeSaved.getPath());
-						getModel().setChanged(false);
-						updateFrameTitle();
+							spcFileName = fileToBeSaved.getName();
+							saveMRUFolder(fileToBeSaved.getPath());
+							getModel().setChanged(false);
+							updateFrameTitle();
+						}
 					}
 					System.exit(0);
 				}
@@ -496,7 +497,7 @@ public class SpinCADFrame extends JFrame {
 		StringBuilder sb = new StringBuilder(128);
 		if(recentFileList != null) {
 			int k = recentFileList.listModel.getSize() - 1;
-			for (int index = 0; index < k; index++) {
+			for (int index = 0; index <= k; index++) {
 				File file = recentFileList.listModel.getElementAt(k - index);
 				if (sb.length() > 0) {
 					sb.append(File.pathSeparator);
@@ -577,37 +578,37 @@ public class SpinCADFrame extends JFrame {
 
 				final String newline = "\n";
 				// In response to a button click:
-					FileNameExtensionFilter filter = new FileNameExtensionFilter(
-							"SpinCAD Files", "spcd");
-					fc.setFileFilter(filter);
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"SpinCAD Files", "spcd");
+				fc.setFileFilter(filter);
 
-					int returnVal = fc.showOpenDialog(SpinCADFrame.this);
-					if (returnVal == JFileChooser.APPROVE_OPTION) {
-						File file = fc.getSelectedFile();
-						// This is where a real application would open the file.
-						System.out.println("Opening: " + file.getName() + "."
-								+ newline);
-						try {
-							String filePath = file.getPath();
-							model = SpinCADFile.fileRead(cb, getModel(), filePath );
-							spcFileName = file.getName();
-							getModel().getIndexFB();
-							getModel().setChanged(false);						
-							getModel().presetIndexFB();
-							saveMRUFolder(filePath);
-							recentFileList.add(file);
-							updateFrameTitle();
-						} catch (Exception e) {	// thrown over in SpinCADFile.java
-							spcFileName = "Untitled";
-							//						e.printStackTrace();
-							MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
-						}
-					} else {
-						System.out.println("Open command cancelled by user."
-								+ newline);
+				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					// This is where a real application would open the file.
+					System.out.println("Opening: " + file.getName() + "."
+							+ newline);
+					try {
+						String filePath = file.getPath();
+						model = SpinCADFile.fileRead(cb, getModel(), filePath );
+						spcFileName = file.getName();
+						getModel().getIndexFB();
+						getModel().setChanged(false);						
+						getModel().presetIndexFB();
+						saveMRUFolder(filePath);
+						recentFileList.add(file);
+						updateFrameTitle();
+					} catch (Exception e) {	// thrown over in SpinCADFile.java
+						spcFileName = "Untitled";
+						//						e.printStackTrace();
+						MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
 					}
-					pb.update();
-					panel.repaint();
+				} else {
+					System.out.println("Open command cancelled by user."
+							+ newline);
+				}
+				pb.update();
+				panel.repaint();
 			}
 		});
 	}
@@ -713,31 +714,34 @@ public class SpinCADFrame extends JFrame {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"SpinCAD Files", "spcd");
 		fc.setFileFilter(filter);
-		// TODO trying to prefill selected file as current file XXX debug
 		fc.setSelectedFile(new File(spcFileName));
-		fc.showSaveDialog(SpinCADFrame.this);
-		// In response to a button click:
-		File fileToBeSaved = fc.getSelectedFile();
+		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+		// need to process user canceling box right here
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
 
-		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {
-			fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
-		}
-		int n = JOptionPane.YES_OPTION;
-		if (fileToBeSaved.exists()) {
-			JFrame frame = new JFrame();
-			n = JOptionPane.showConfirmDialog(frame,
-					"Would you like to overwrite it?", "File already exists!",
-					JOptionPane.YES_NO_OPTION);
-		}
-		if (n == JOptionPane.YES_OPTION) {
-			try {
-				SpinCADFile.fileSave(cb, getModel(), fileToBeSaved.getPath());
-				spcFileName = fileToBeSaved.getName();
-				getModel().setChanged(false);
-				recentFileList.add(fileToBeSaved);
-				saveMRUFolder(fileToBeSaved.getPath());
-				updateFrameTitle();
-			} finally {
+			// In response to a button click:
+			File fileToBeSaved = fc.getSelectedFile();
+
+			if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {
+				fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
+			}
+			int n = JOptionPane.YES_OPTION;
+			if (fileToBeSaved.exists()) {
+				JFrame frame = new JFrame();
+				n = JOptionPane.showConfirmDialog(frame,
+						"Would you like to overwrite it?", "File already exists!",
+						JOptionPane.YES_NO_OPTION);
+			}
+			if (n == JOptionPane.YES_OPTION) {
+				try {
+					SpinCADFile.fileSave(cb, getModel(), fileToBeSaved.getPath());
+					spcFileName = fileToBeSaved.getName();
+					getModel().setChanged(false);
+					recentFileList.add(fileToBeSaved);
+					saveMRUFolder(fileToBeSaved.getPath());
+					updateFrameTitle();
+				} finally {
+				}
 			}
 		}
 	}
