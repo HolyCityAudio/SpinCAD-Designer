@@ -835,6 +835,29 @@ public class SpinCADFrame extends JFrame {
 		return exitListener;
 	}
 
+	public String checkSimulatorFile() {
+		File f = null;
+		String testWavFileName = prefs.get("SIMULATOR_FILE", "");
+		if(testWavFileName == "") {
+			System.out.println("Simulator file name blank!");
+			return "Not found!";
+		} else {
+			try {
+				f = new File(testWavFileName);
+			} 
+			catch(Exception e) {
+				System.out.println("Exception opening file!");
+				return "Not found!";
+			}
+			finally {
+			}
+			if(f.exists() && !f.isDirectory()) {
+				return testWavFileName;	
+			}
+		}
+		return "Not found!";
+	}
+
 	public void getSimulatorFile() throws UnsupportedAudioFileException, IOException {
 		String testWavFileName = prefs.get("SIMULATOR_FILE", "");
 		final JFileChooser fc = new JFileChooser(testWavFileName);
@@ -1095,20 +1118,25 @@ public class SpinCADFrame extends JFrame {
 					btnStartSimulation.setText("Start Simulator");
 					sim.stopSimulator();
 				} else {
-					setSimRunning(true);
-					// create file
-					btnStartSimulation.setText("Stop Simulator");
-					pb.update();
-					String testWavFileName = prefs.get("SIMULATOR_FILE", "");
-					sim = new SpinSimulator(SpinCADModel.getRenderBlock(),
-							testWavFileName, outputFile, pot0Level, pot1Level,
-							pot2Level);
-					// loggerPanel.setVisible(loggerIsVisible);
-					if(loggerIsVisible) {
-						sim.showLevelLogger(loggerPanel);
+					String testWavFileName = checkSimulatorFile();
+					if(testWavFileName != "Not found!") {
+						setSimRunning(true);
+						// create file
+						btnStartSimulation.setText("Stop Simulator");
+						pb.update();
+						sim = new SpinSimulator(SpinCADModel.getRenderBlock(),
+								testWavFileName, outputFile, pot0Level, pot1Level,
+								pot2Level);
+						// loggerPanel.setVisible(loggerIsVisible);
+						if(loggerIsVisible) {
+							sim.showLevelLogger(loggerPanel);
+						}
+						//					sim.showLevelMeter();
+						sim.start();
 					}
-					//					sim.showLevelMeter();
-					sim.start();
+					else { 
+						MessageBox("No simulator file", "Please set a simulator source file.");
+					} 
 				}
 			} else if (arg0.getSource() == btnSigGen) {
 				if (isSimRunning() == true) {

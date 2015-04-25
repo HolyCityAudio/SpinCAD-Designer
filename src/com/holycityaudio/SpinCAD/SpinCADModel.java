@@ -199,90 +199,95 @@ public class SpinCADModel implements Serializable {
 		int i = 0;
 
 		// have to initialize FeedBack block registers to -1 or the next part doesn't work the second time!
-
-		while (itr.hasNext()) {
-			block = itr.next();
-			if(block instanceof FBInputCADBlock)
-			{
-				((FBInputCADBlock) block).setRegister(-1);
-			}
-			else if(block instanceof FBOutputCADBlock)
-			{
-				((FBOutputCADBlock) block).setRegister(-1);
-			}
-		}
-
-		itr = blockList.iterator();
-		i = 0;
-
-		while (itr.hasNext()) {
-			block = itr.next();
-			block.setBlockNum(i);
-			if(block instanceof FBInputCADBlock)
-			{
-				// XXX under construction feedback block register resolution
-				//search list to find matching FBOutputCADBlock
-				// if it's not there, then allocateReg and set register to the returned value
-				// if it is there, then it's already been allocated, so get the register value and
-				// assign it here
-				SpinCADBlock blockSearch = null;
-				boolean found = false;
-				Iterator<SpinCADBlock> itrFB = blockList.iterator();
-				while (itrFB.hasNext()) {
-					blockSearch = itrFB.next();
-					if((blockSearch instanceof FBOutputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
-					{
-						int i2 = ((FBOutputCADBlock) blockSearch).getRegister();
-						if(i2 == -1) {
-							i2 = getRenderBlock().allocateReg();
-							((FBOutputCADBlock) blockSearch).setRegister(i2);
-						}						
-						((FBInputCADBlock) block).setRegister(i2);
-						found = true;
-					}
+		try {
+			while (itr.hasNext()) {
+				block = itr.next();
+				if(block instanceof FBInputCADBlock)
+				{
+					((FBInputCADBlock) block).setRegister(-1);
 				}
-				if(found == false) {
-					int i1 = getRenderBlock().allocateReg();
-					((FBInputCADBlock) block).setRegister(i1);
+				else if(block instanceof FBOutputCADBlock)
+				{
+					((FBOutputCADBlock) block).setRegister(-1);
 				}
 			}
-			else if(block instanceof FBOutputCADBlock)
-			{
-				//search list to find matching FBInputCADBlock
-				// if it's not there, then allocateReg and set register to the returned value
-				// if it is there, then it's already been allocated, so get the register value and
-				// assign it here
-				SpinCADBlock blockSearch = null;
-				boolean found = false;
-				Iterator<SpinCADBlock> itrFB = blockList.iterator();
-				while (itrFB.hasNext()) {
-					blockSearch = itrFB.next();
-					if((blockSearch instanceof FBInputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
-					{
-						int i3 = ((FBInputCADBlock) blockSearch).getRegister();
-						if(i3 == -1) {
-							i3 = getRenderBlock().allocateReg();
-							((FBInputCADBlock) blockSearch).setRegister(i3);
+
+			itr = blockList.iterator();
+			i = 0;
+
+			while (itr.hasNext()) {
+				block = itr.next();
+				block.setBlockNum(i);
+				if(block instanceof FBInputCADBlock)
+				{
+					// XXX under construction feedback block register resolution
+					//search list to find matching FBOutputCADBlock
+					// if it's not there, then allocateReg and set register to the returned value
+					// if it is there, then it's already been allocated, so get the register value and
+					// assign it here
+					SpinCADBlock blockSearch = null;
+					boolean found = false;
+					Iterator<SpinCADBlock> itrFB = blockList.iterator();
+					while (itrFB.hasNext()) {
+						blockSearch = itrFB.next();
+						if((blockSearch instanceof FBOutputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
+						{
+							int i2 = ((FBOutputCADBlock) blockSearch).getRegister();
+							if(i2 == -1) {
+								i2 = getRenderBlock().allocateReg();
+								((FBOutputCADBlock) blockSearch).setRegister(i2);
+							}						
+							((FBInputCADBlock) block).setRegister(i2);
+							found = true;
 						}
-						((FBOutputCADBlock) block).setRegister(i3);
-						found = true;
+					}
+					if(found == false) {
+						int i1 = getRenderBlock().allocateReg();
+						((FBInputCADBlock) block).setRegister(i1);
 					}
 				}
-				if(found == false) {
-					int i4 = getRenderBlock().allocateReg();
-					((FBOutputCADBlock) block).setRegister(i4);
+				else if(block instanceof FBOutputCADBlock)
+				{
+					//search list to find matching FBInputCADBlock
+					// if it's not there, then allocateReg and set register to the returned value
+					// if it is there, then it's already been allocated, so get the register value and
+					// assign it here
+					SpinCADBlock blockSearch = null;
+					boolean found = false;
+					Iterator<SpinCADBlock> itrFB = blockList.iterator();
+					while (itrFB.hasNext()) {
+						blockSearch = itrFB.next();
+						if((blockSearch instanceof FBInputCADBlock) && (blockSearch.getIndex() == block.getIndex()))
+						{
+							int i3 = ((FBInputCADBlock) blockSearch).getRegister();
+							if(i3 == -1) {
+								i3 = getRenderBlock().allocateReg();
+								((FBInputCADBlock) blockSearch).setRegister(i3);
+							}
+							((FBOutputCADBlock) block).setRegister(i3);
+							found = true;
+						}
+					}
+					if(found == false) {
+						int i4 = getRenderBlock().allocateReg();
+						((FBOutputCADBlock) block).setRegister(i4);
+					}
 				}
+				i++;
+				getRenderBlock();
+				// TODO debug this, some problem with triple delay buffer assignments
+				// no there is a problem here
+				SpinFXBlock.setNumBlocks(block.getBlockNum());	// this is for keeping delay segments unique
+				block.generateCode(getRenderBlock());
+				// now blockMin is the block with the lowest number
 			}
-			i++;
-			getRenderBlock();
-			// TODO debug this, some problem with triple delay buffer assignments
-			// no there is a problem here
-			SpinFXBlock.setNumBlocks(block.getBlockNum());	// this is for keeping delay segments unique
-			block.generateCode(getRenderBlock());
-			// now blockMin is the block with the lowest number
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			System.out.println(getRenderBlock().getProgramListing(1));
+			return getRenderBlock().getCodeLen() - getRenderBlock().getNumComments();
 		}
-		System.out.println(getRenderBlock().getProgramListing(1));
-		return getRenderBlock().getCodeLen() - getRenderBlock().getNumComments();
+
 	}
 
 	public static int countLFOReferences(String matchString) {
@@ -301,7 +306,7 @@ public class SpinCADModel implements Serializable {
 		}
 		return count;
 	}
-	
+
 	public static SpinFXBlock getRenderBlock() {
 		return renderBlock;
 	}
