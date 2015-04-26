@@ -16,7 +16,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OctaveCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OverdriveCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.BitCrusherCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.QuantizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ToverXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
@@ -240,7 +240,7 @@
 	final JMenuItem mntm_BitCrusher = new JMenuItem("Quantizer");
 	mntm_BitCrusher.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new BitCrusherCADBlock(50, 100);
+			SpinCADBlock pcB = new QuantizerCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});

@@ -23,7 +23,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class BitCrusherCADBlock extends GainCADBlock{
+public class QuantizerCADBlock extends GainCADBlock{
 
 	/**
 	 * 
@@ -32,11 +32,11 @@ public class BitCrusherCADBlock extends GainCADBlock{
 	int nBits = 3;
 	int divisions = 6;	// # of divisions to use with control input
 
-	public BitCrusherCADBlock(int x, int y) {
+	public QuantizerCADBlock(int x, int y) {
 		super(x, y);
 		addControlInputPin(this);
 		hasControlPanel = true;
-		setName("Bit Crusher");
+		setName("Quantizer");
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -174,7 +174,7 @@ public class BitCrusherCADBlock extends GainCADBlock{
 	}
 	
 	public void editBlock(){
-		new BitCrusherControlPanel(this);
+		new QuantizerControlPanel(this);
 	}
 
 	public int getBits() {

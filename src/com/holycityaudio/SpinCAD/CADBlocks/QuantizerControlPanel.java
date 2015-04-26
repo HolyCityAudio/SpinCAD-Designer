@@ -28,20 +28,20 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-class BitCrusherControlPanel {
+class QuantizerControlPanel {
 
-	private BitCrusherCADBlock BC;
+	private QuantizerCADBlock BC;
 	private JSlider bitSlider;
 	private JLabel bitLabel;
 	private JFrame frame;
 
-	public BitCrusherControlPanel(BitCrusherCADBlock b) {
+	public QuantizerControlPanel(QuantizerCADBlock b) {
 		this.BC = b;
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame();
-				frame.setTitle("Bit Crusher");
+				frame.setTitle("Quantizer");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				bitSlider = new JSlider(JSlider.HORIZONTAL, 1, 16, BC.getBits());
 				bitSlider.addChangeListener(new bitSliderListener());
