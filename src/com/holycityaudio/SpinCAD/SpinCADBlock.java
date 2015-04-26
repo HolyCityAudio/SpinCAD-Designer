@@ -237,7 +237,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		while(itr.hasNext()) {
 			nPin = itr.next();
 			String s = nPin.getName(); 
-			if(s.contains(name)) {
+			if(s.contentEquals(name)) {
 				return nPin;
 			}
 		}

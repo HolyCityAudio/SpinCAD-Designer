@@ -50,7 +50,7 @@ equ tap6Gain 0.5
 @isPinConnected 'Tap 6 Out'
 equ tap6reg REG12
 @endif
-  
+ 
 equ delayOffset -1
 
 // establish the base address for this module
@@ -60,6 +60,7 @@ mem mn3011delay delayLength
 
 // input connection must be there for any code to be generated
 @isPinConnected Input
+
 equ   mix  reg0      
 // read the input and write to base of delay line
 @isPinConnected 'Feedback Input'
