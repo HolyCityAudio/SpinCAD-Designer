@@ -78,7 +78,7 @@ equ two 2.0
 // debug!  XXX
 @isEqualTo controlRange 1
 rdax pitchControl, 1.0
-sof scaledPitch, -halfPitch
+sof 1.0, -0.5
 skp gez, positive1
 sof 0.5, 0
 positive1:

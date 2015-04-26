@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 926;
+	int buildNum = 927;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -1135,7 +1135,7 @@ public class SpinCADFrame extends JFrame {
 						sim.start();
 					}
 					else { 
-						MessageBox("No simulator file", "Please set a simulator source file.");
+						MessageBox("Simulator file not found.", "Please set a simulator source file.");
 					} 
 				}
 			} else if (arg0.getSource() == btnSigGen) {

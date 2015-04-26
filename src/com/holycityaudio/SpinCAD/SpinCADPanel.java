@@ -654,9 +654,9 @@ public class SpinCADPanel extends JPanel {
 				while(itr.hasNext()) {
 					block = itr.next();
 					if(block.selected == true) {
+// TODO need to think of a way to delete an open control panel
+//						if(block.editBlock != null)
 						deleteBlockConnection(block);
-						//
-						//						f.getModel().blockList.remove(block);
 						itr.remove();
 					}
 				}
@@ -669,7 +669,6 @@ public class SpinCADPanel extends JPanel {
 			default: 
 				break;
 			}
-			//			System.out.println("Selected: " + e.getActionCommand());
 		}
 	}
 }

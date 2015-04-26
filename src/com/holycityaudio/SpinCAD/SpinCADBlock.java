@@ -41,8 +41,6 @@ public class SpinCADBlock extends SpinFXBlock {
 	 * SpinCADBlock class extends the idea of a functional block
 	 * to a graphical idea with inputs and outputs
 	 * 
-	 * @param val the value from -0x800000 to 0x7fffff
-	 * @return the double from -1.0 to +0.999...
 	 */
 
 	private static final long serialVersionUID = -3067055375662565795L;
@@ -68,7 +66,7 @@ public class SpinCADBlock extends SpinFXBlock {
 	int height = 40;
 	boolean selected = false;	// for multi-select in panel
 	private String name = null;
-	spinCADControlPanel scCP = null;
+	public spinCADControlPanel scCP = null;			// control panel for editing parameters
 	protected boolean hasControlPanel = false;	// used to determine whether to offer a control panel
 
 	Color borderColor = Color.green;

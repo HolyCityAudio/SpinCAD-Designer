@@ -123,7 +123,7 @@
 			if(this.getPin("Pitch Control").isConnected() == true) {
 			if(controlRange == 1) {
 			sfxb.readRegister(pitchControl, 1.0);
-			sfxb.scaleOffset(scaledPitch, -halfPitch);
+			sfxb.scaleOffset(1.0, -0.5);
 			sfxb.skip(GEZ, 1);
 			sfxb.scaleOffset(0.5, 0);
 			} else {
