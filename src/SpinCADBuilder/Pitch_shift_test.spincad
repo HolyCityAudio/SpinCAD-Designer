@@ -75,7 +75,6 @@ equ two 2.0
 
 @isPinConnected 'Pitch Control'
 // scale negative pitch shift coefficients by 0.5
-// debug!  XXX
 @isEqualTo controlRange 1
 rdax pitchControl, 1.0
 sof 1.0, -0.5

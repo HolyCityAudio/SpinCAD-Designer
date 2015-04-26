@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 927;
+	int buildNum = 928;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -924,7 +924,9 @@ public class SpinCADFrame extends JFrame {
 	public void dropBlock(SpinCADPanel p, SpinCADBlock b) {
 		getModel().addBlock(b);
 		getModel().setChanged(true);
+		p.unselectAll(this);
 		p.dropBlockPanel(b);
+		
 	}
 
 	public boolean isSimRunning() {
