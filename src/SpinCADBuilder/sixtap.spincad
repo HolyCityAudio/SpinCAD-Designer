@@ -1,12 +1,17 @@
 @name 'Six Tap'
-@audioInput adcl Input 
+@audioInput input Input 
+@audioInput feedback 'Feedback In'
 @audioOutput mix1 'Mix L Out'
 @audioOutput mix2 'Mix R Out'
 @audioOutput output1 Delay_Out_End 
 @controlInput cIn1 Delay_Time_1 
+@controlInput fbk 'Feedback Gain'
 
 equ inputGain 0.45
 @sliderLabel inputGain 'Input Gain'  0.0 1.0 0.5 1000.0 2
+
+equ fbkGain 0.5
+@sliderLabel fbkGain 'Feedback Gain' -24 0 -6 1.0 1 DBLEVEL 
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
@@ -64,9 +69,18 @@ equ delayOffset -1
 mem delay delayLength 
 
 // input connection must be there for any code to be generated
-@isPinConnected Input
 // read the input and write to base of delay line
-rdax adcl, inputGain
+@isPinConnected Input
+
+@isPinConnected 'Feedback In'
+rdax feedback,fbkGain
+@isPinConnected 'Feedback Gain'
+mulx fbk
+@endif
+
+@endif
+
+rdax input,inputGain
 wra delay, 0.0
 
 // tap 1 -----------------------------------------------------------

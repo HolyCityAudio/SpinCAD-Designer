@@ -52,6 +52,8 @@ public class sixtapControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider inputGainSlider;
 	JLabel  inputGainLabel;	
+	JSlider fbkGainSlider;
+	JLabel  fbkGainLabel;	
 	JSlider delayLengthSlider;
 	JLabel  delayLengthLabel;	
 	JSlider tap1RatioSlider;
@@ -109,6 +111,26 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 				inputGaininnerPanel.setBorder(inputGainborder2);
 			
 				frame.add(inputGaininnerPanel);
+			
+			// dB level slider goes in steps of 1 dB
+				fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+				fbkGainSlider.addChangeListener(new sixtapListener());
+				fbkGainLabel = new JLabel();
+				Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				fbkGainLabel.setBorder(fbkGainBorder1);
+				updatefbkGainLabel();
+				
+				Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel fbkGaininnerPanel = new JPanel();
+					
+				fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
+				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				fbkGaininnerPanel.add(fbkGainLabel);
+				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				fbkGaininnerPanel.add(fbkGainSlider);		
+				fbkGaininnerPanel.setBorder(fbkGainborder2);
+			
+				frame.add(fbkGaininnerPanel);
 			
 			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
 				delayLengthSlider.addChangeListener(new sixtapListener());
@@ -379,6 +401,10 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			gCB.setinputGain((double) (inputGainSlider.getValue()/1000.0));
 				updateinputGainLabel();
 			}
+			if(ce.getSource() == fbkGainSlider) {
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
+				updatefbkGainLabel();
+			}
 			if(ce.getSource() == delayLengthSlider) {
 			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
@@ -453,6 +479,9 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 		}
 		private void updateinputGainLabel() {
 		inputGainLabel.setText("Input Gain " + String.format("%4.2f", gCB.getinputGain()));		
+		}		
+		private void updatefbkGainLabel() {
+		fbkGainLabel.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
 		}		
 		private void updatedelayLengthLabel() {
 		delayLengthLabel.setText("Delay Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		

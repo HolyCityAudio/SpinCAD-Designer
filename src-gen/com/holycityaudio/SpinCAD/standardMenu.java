@@ -10,7 +10,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1x2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer3_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer4_1CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.aliaser_02CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.AliaserCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.CubeGainCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.DistortionCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock;
@@ -21,6 +21,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.slow_gearCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
@@ -182,14 +183,14 @@
 	JMenu mn_waveshaper = new JMenu("Wave Shaper");
 	menuBar.add(mn_waveshaper);
 	
-	final JMenuItem mntm_aliaser_02 = new JMenuItem("Aliaser");
-	mntm_aliaser_02.addActionListener(new ActionListener() {
+	final JMenuItem mntm_Aliaser = new JMenuItem("Aliaser");
+	mntm_Aliaser.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new aliaser_02CADBlock(50, 100);
+			SpinCADBlock pcB = new AliaserCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_waveshaper.add(mntm_aliaser_02);
+	mn_waveshaper.add(mntm_Aliaser);
 		
 	final JMenuItem mntm_CubeGain = new JMenuItem("Cube");
 	mntm_CubeGain.addActionListener(new ActionListener() {
@@ -283,6 +284,15 @@
 		}
 	});
 	mn_dynamics.add(mntm_soft_knee_limiter);
+		
+	final JMenuItem mntm_slow_gear = new JMenuItem("Slow Gear");
+	mntm_slow_gear.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new slow_gearCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_dynamics.add(mntm_slow_gear);
 		
 	JMenu mn_filters = new JMenu("Filters");
 	menuBar.add(mn_filters);

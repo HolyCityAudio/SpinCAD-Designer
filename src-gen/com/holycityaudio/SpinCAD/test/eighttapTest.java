@@ -49,36 +49,36 @@ f.dropBlock(p, o);
 }
 {
 	SpinCADPin p1 = i.getPin("Output 2");
-	SpinCADPin p2 = m.getPin("Feedbck");
+	SpinCADPin p2 = m.getPin("Feedback");
 	p2.setConnection(i, p1);
 }
 {
 	SpinCADPin p1 = o.getPin("Input 1");
-	SpinCADPin p2 = m.getPin("Mix_1_Out");
+	SpinCADPin p2 = m.getPin("Mix 1 Out");
 	p2.setConnection(o, p1);
 }
 {
 	SpinCADPin p1 = o.getPin("Input 2");
-	SpinCADPin p2 = m.getPin("Mix_2_Out");
+	SpinCADPin p2 = m.getPin("Mix 2 Out");
 	p2.setConnection(o, p1);
 }
 {
 	SpinCADPin p1 = o.getPin("Input 3");
-	SpinCADPin p2 = m.getPin("Tap_8_Out");
+	SpinCADPin p2 = m.getPin("Tap 8 Out");
 	p2.setConnection(o, p1);
 }
 {
 	Pot0CADBlock pot0 = new Pot0CADBlock(25, 150 + 40 * 1);
 	f.dropBlock(p, pot0);
 	SpinCADPin p1 = pot0.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Delay_Time_1");
+	SpinCADPin p2 = m.getPin("Delay Time 1");
 	p2.setConnection(pot0, p1);
 }
 {
 	Pot1CADBlock pot1 = new Pot1CADBlock(25, 150 + 40 * 2);
 	f.dropBlock(p, pot1);
 	SpinCADPin p1 = pot1.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Feedback");
+	SpinCADPin p2 = m.getPin("Feedback Gain");
 	p2.setConnection(pot1, p1);
 }
 f.getModel().sortAlignGen();

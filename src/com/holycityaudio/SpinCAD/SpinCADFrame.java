@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 928;
+	int buildNum = 929;
 
 	private static final long serialVersionUID = -123123512351241L;
 

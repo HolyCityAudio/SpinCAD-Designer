@@ -30,6 +30,7 @@
 			private sixtapControlPanel cp = null;
 			
 			private double inputGain = 0.45;
+			private double fbkGain = 0.5;
 			private double delayLength = 32767;
 			private double tap1Ratio = 0.10;
 			private double tap2Ratio = 0.20;
@@ -54,11 +55,14 @@
 				setName("Six Tap");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addInputPin(this, "Feedback In");
 				addOutputPin(this, "Mix L Out");
 				addOutputPin(this, "Mix R Out");
 				addOutputPin(this, "Delay_Out_End");
 				addControlInputPin(this, "Delay_Time_1");
+				addControlInputPin(this, "Feedback Gain");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -100,21 +104,39 @@
 					
 			// Iterate through pin definitions and connect or assign as needed
 			sp = this.getPin("Input").getPinConnection();
-			int adcl = -1;
+			int input = -1;
 			if(sp != null) {
-				adcl = sp.getRegister();
+				input = sp.getRegister();
+			}
+			sp = this.getPin("Feedback In").getPinConnection();
+			int feedback = -1;
+			if(sp != null) {
+				feedback = sp.getRegister();
 			}
 			sp = this.getPin("Delay_Time_1").getPinConnection();
 			int cIn1 = -1;
 			if(sp != null) {
 				cIn1 = sp.getRegister();
 			}
+			sp = this.getPin("Feedback Gain").getPinConnection();
+			int fbk = -1;
+			if(sp != null) {
+				fbk = sp.getRegister();
+			}
 			
 			// finally, generate the instructions
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delay", delayLength); 
 			if(this.getPin("Input").isConnected() == true) {
-			sfxb.readRegister(adcl, inputGain);
+			if(this.getPin("Feedback In").isConnected() == true) {
+			sfxb.readRegister(feedback, fbkGain);
+			if(this.getPin("Feedback Gain").isConnected() == true) {
+			sfxb.mulx(fbk);
+			}
+			
+			}
+			
+			sfxb.readRegister(input, inputGain);
 			sfxb.FXwriteDelay("delay", 0, 0.0);
 			if(this.getPin("Delay_Time_1").isConnected() == true) {
 			mix1 = sfxb.allocateReg();
@@ -192,6 +214,13 @@
 			
 			public double getinputGain() {
 				return inputGain;
+			}
+			public void setfbkGain(double __param) {
+				fbkGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getfbkGain() {
+				return fbkGain;
 			}
 			public void setdelayLength(double __param) {
 				delayLength = __param;	

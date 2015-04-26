@@ -73,13 +73,13 @@
 			
 			// finally, generate the instructions
 			filtReg = sfxb.allocateReg();
-			if(this.getPin("Input").isConnected() == true) {
+			if(this.getPin("Control Input").isConnected() == true) {
 			sfxb.readRegister(input, 1.0);
 			sfxb.readRegisterFilter(filtReg, filt);
 			sfxb.writeRegister(filtReg, 0.0);
-			this.getPin("Control Output").setRegister(filtReg);
 			}
 			
+			this.getPin("Control Output").setRegister(filtReg);
 
 			}
 			

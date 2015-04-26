@@ -1,13 +1,13 @@
 @name ThreeTap
 @audioInput adcl Input 
-@audioInput feedback Feedbck
+@audioInput feedback Feedback
 @audioOutput output1 'Tap 1 Out'
 @audioOutput output2 'Tap 2 Out'  
 @audioOutput output3 'Tap 3 Out'  
 @controlInput cIn1 'Delay Time 1' 
 @controlInput cIn2 'Delay Time 2'  
 @controlInput cIn3 'Delay Time 3'  
-@controlInput fbk Feedback
+@controlInput fbk 'Feedback Gain'
 
 equ inputGain 1.0
 @sliderLabel inputGain 'Input Gain: '  -24 0 0 1.0 1 DBLEVEL
@@ -43,9 +43,9 @@ mem threeTap delayLength
 // input connection must be there for any code to be generated
 @isPinConnected Input
 // read the input and write to base of delay line
-@isPinConnected Feedbck
-rdax feedback,fbkGain
 @isPinConnected Feedback
+rdax feedback,fbkGain
+@isPinConnected 'Feedback Gain'
 mulx fbk
 @endif
 @endif

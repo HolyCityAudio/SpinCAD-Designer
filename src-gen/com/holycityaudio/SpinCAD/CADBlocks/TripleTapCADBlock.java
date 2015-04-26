@@ -45,14 +45,14 @@
 				setName("ThreeTap");	
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addInputPin(this, "Feedbck");
+				addInputPin(this, "Feedback");
 				addOutputPin(this, "Tap 1 Out");
 				addOutputPin(this, "Tap 2 Out");
 				addOutputPin(this, "Tap 3 Out");
 				addControlInputPin(this, "Delay Time 1");
 				addControlInputPin(this, "Delay Time 2");
 				addControlInputPin(this, "Delay Time 3");
-				addControlInputPin(this, "Feedback");
+				addControlInputPin(this, "Feedback Gain");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -90,7 +90,7 @@
 			if(sp != null) {
 				adcl = sp.getRegister();
 			}
-			sp = this.getPin("Feedbck").getPinConnection();
+			sp = this.getPin("Feedback").getPinConnection();
 			int feedback = -1;
 			if(sp != null) {
 				feedback = sp.getRegister();
@@ -110,7 +110,7 @@
 			if(sp != null) {
 				cIn3 = sp.getRegister();
 			}
-			sp = this.getPin("Feedback").getPinConnection();
+			sp = this.getPin("Feedback Gain").getPinConnection();
 			int fbk = -1;
 			if(sp != null) {
 				fbk = sp.getRegister();
@@ -120,9 +120,9 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("threeTap", delayLength); 
 			if(this.getPin("Input").isConnected() == true) {
-			if(this.getPin("Feedbck").isConnected() == true) {
-			sfxb.readRegister(feedback, fbkGain);
 			if(this.getPin("Feedback").isConnected() == true) {
+			sfxb.readRegister(feedback, fbkGain);
+			if(this.getPin("Feedback Gain").isConnected() == true) {
 			sfxb.mulx(fbk);
 			}
 			

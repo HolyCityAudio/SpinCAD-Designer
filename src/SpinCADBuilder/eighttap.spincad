@@ -1,11 +1,11 @@
 @name Eight_Tap
 @audioInput adcl Input 
-@audioInput feedback Feedbck
-@audioOutput mix1 Mix_1_Out
-@audioOutput mix2 Mix_2_Out
-@audioOutput tap8 Tap_8_Out
-@controlInput cIn1 Delay_Time_1 
-@controlInput fbk Feedback
+@audioInput feedback Feedback
+@audioOutput mix1 'Mix 1 Out'
+@audioOutput mix2 'Mix 2 Out'
+@audioOutput tap8 'Tap 8 Out'
+@controlInput cIn1 'Delay Time 1' 
+@controlInput fbk 'Feedback Gain'
 
 equ inputGain 1.0
 @sliderLabel inputGain 'Input Gain'  -24 0 0 1.0 1 DBLEVEL
@@ -66,7 +66,7 @@ mem eight_tap delayLength
 // input connection must be there for any code to be generated
 @isPinConnected Input
 // read the input and write to base of delay line
-@isPinConnected Feedbck
+@isPinConnected 'Feedback Gain'
 rdax feedback,fbkGain
 @isPinConnected Feedback
 mulx fbk
@@ -78,7 +78,7 @@ wra eight_tap, 0.0
 
 // tap 1 -----------------------------------------------------------
 
-@isPinConnected Delay_Time_1
+@isPinConnected 'Delay Time 1'
 equ   mix1  reg0      
 equ   mix2  reg1      
 equ max reg2
@@ -190,15 +190,15 @@ rda eight_tap+ratio, tap8Gain
 wrax mix2, 0.0
 @endif
 
-@isPinConnected Tap_8_Out
+@isPinConnected 'Tap 8 Out'
 equ tap8 reg10
 rda eight_tap+ratio, 1.0
 wrax tap8,0
-@setOutputPin Tap_8_Out tap8
+@setOutputPin 'Tap 8 Out' tap8
 @endif
 
-@setOutputPin Mix_1_Out mix1
-@setOutputPin Mix_2_Out mix2
+@setOutputPin 'Mix 1 Out' mix1
+@setOutputPin 'Mix 2 Out' mix2
 
 @endif
 

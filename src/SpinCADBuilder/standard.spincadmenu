@@ -13,10 +13,9 @@
 @menuitem "4:1 Mixer" Mixer4_1
 
 @menu "Wave Shaper" 
-@menuitem "Aliaser" aliaser_02 
+@menuitem "Aliaser" Aliaser 
 @menuitem "Cube" CubeGain 
 @menuitem "Distortion" Distortion 
-//@menuitem "Noise" noise_block24 
 @menuitem "Noise AMZ" noise_amz 
 @menuitem "Octave Fuzz" Octave 
 @menuitem "Overdrive" Overdrive 
@@ -28,7 +27,7 @@
 @menuitem "RMS Lim/Exp" rms_lim_exp
 @menuitem "RMS Limiter" rms_limiter
 @menuitem "Soft Knee Limiter" soft_knee_limiter
-//@menuitem "Slow Gear" slow_gear
+@menuitem "Slow Gear" slow_gear
 
 @menu "Filters"
 //@menuitem "Bassman '59" BassmanEQ 
