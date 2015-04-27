@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 929;
+	int buildNum = 930;
 
 	private static final long serialVersionUID = -123123512351241L;
 
@@ -277,7 +277,7 @@ public class SpinCADFrame extends JFrame {
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				getModel().sortAlignGen();
-				StringSelection stringSelection = new StringSelection (SpinCADModel.getRenderBlock()
+				StringSelection stringSelection = new StringSelection (cb.getComments() + SpinCADModel.getRenderBlock()
 						.getProgramListing(1));
 				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
 				clpbrd.setContents (stringSelection, null);
@@ -1048,6 +1048,17 @@ public class SpinCADFrame extends JFrame {
 			line5text.setText(line5);
 			line6text.setText("");
 			line7text.setText("");
+		}
+		
+		// for writing out to clipboard, etc.
+		public String getComments() {
+			return 	"; " + line1text.getText() + "\n" +
+					"; " + line2text.getText() + "\n" +
+					"; " + line3text.getText() + "\n" +
+					"; " + line4text.getText() + "\n" +
+					"; " + line5text.getText() + "\n" +
+					"; " + line6text.getText() + "\n" +
+					"; " + line7text.getText() + "\n";
 		}
 	}
 

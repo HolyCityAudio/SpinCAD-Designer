@@ -21,7 +21,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.slow_gearCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
@@ -237,14 +236,14 @@
 	});
 	mn_waveshaper.add(mntm_Overdrive);
 		
-	final JMenuItem mntm_BitCrusher = new JMenuItem("Quantizer");
-	mntm_BitCrusher.addActionListener(new ActionListener() {
+	final JMenuItem mntm_Quantizer = new JMenuItem("Quantizer");
+	mntm_Quantizer.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new QuantizerCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_waveshaper.add(mntm_BitCrusher);
+	mn_waveshaper.add(mntm_Quantizer);
 		
 	final JMenuItem mntm_ToverX = new JMenuItem("T/X");
 	mntm_ToverX.addActionListener(new ActionListener() {
@@ -284,15 +283,6 @@
 		}
 	});
 	mn_dynamics.add(mntm_soft_knee_limiter);
-		
-	final JMenuItem mntm_slow_gear = new JMenuItem("Slow Gear");
-	mntm_slow_gear.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new slow_gearCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_dynamics.add(mntm_slow_gear);
 		
 	JMenu mn_filters = new JMenu("Filters");
 	menuBar.add(mn_filters);

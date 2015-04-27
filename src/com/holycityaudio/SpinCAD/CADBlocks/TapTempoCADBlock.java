@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C) 2013 - 2014 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
+ * Copyright (C)2013 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -17,30 +17,34 @@
  *     
  */ 
 
-// code/concept supplied by forum member slacker.  Thanks!
- 
- package com.holycityaudio.SpinCAD.CADBlocks;
+package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.ControlBlocks.ControlCADBlock;
 
 public class TapTempoCADBlock extends ControlCADBlock{
 
 	/**
-	 * 
+	 * @author slacker
 	 */
 	private static final long serialVersionUID = 4676526418848384621L;
 
 	public TapTempoCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
 		addControlInputPin(this);
-		addControlOutputPin(this);
-		setName("Tap Tempo");
+		addControlOutputPin(this, "Latch");
+		addControlOutputPin(this, "Ramp");
+		addControlOutputPin(this, "Tap Tempo");
+		setName("Tap-Tempo");
 	}
 
 	public void generateCode(SpinFXBlock sfxb)
 	{
+		int latch = -1;
+		int ramp = -1;
+		int taptempo = -1;
+
 		SpinCADPin p = this.getPin("Control Input 1").getPinConnection();
 		if (p != null) {
 			// A pot is used as a tap tempo switch input. This should be a momentary switch, transition can be high to low or low to high.
@@ -50,9 +54,9 @@ public class TapTempoCADBlock extends ControlCADBlock{
 			// set up registers and equates
 			int db = sfxb.allocateReg();
 			int mom = sfxb.allocateReg();
-			int latch = sfxb.allocateReg();
-			int ramp = sfxb.allocateReg();
-			int taptempo = sfxb.allocateReg();
+			latch = sfxb.allocateReg();
+			ramp = sfxb.allocateReg();
+			taptempo = sfxb.allocateReg();
 			sfxb.comment(getName());
 
 			double maxtime = 1;
@@ -133,8 +137,10 @@ public class TapTempoCADBlock extends ControlCADBlock{
 			sfxb.writeRegister(latch,0);
 //			ENDTT:
 
-			this.getPin("Control Output 1").setRegister(latch);
 			System.out.println("Tap Tempo code gen!");
 		}
+		this.getPin("Latch").setRegister(latch);
+		this.getPin("Tap Tempo").setRegister(taptempo);
+		this.getPin("Ramp").setRegister(ramp);
 	}
 }
