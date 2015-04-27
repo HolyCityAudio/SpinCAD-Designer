@@ -1,36 +1,55 @@
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * RecentFileList.java
+ * Copyright (C) 2015 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2015.  
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 	
+ */
+
 package com.holycityaudio.SpinCAD;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 
 public class RecentFileList extends JPanel {
+
+	/**
+	 * 
+	 */
+
+	private static final long serialVersionUID = -8939170769782253694L;
+
 
 	private final JList<File> list;
 	final FileListModel listModel;
@@ -45,27 +64,25 @@ public class RecentFileList extends JPanel {
 
 		setLayout(new BorderLayout());
 		add(new JScrollPane(list));
-// add double click handler here
-		
+		// add double click handler here
+
 		list.addMouseListener(new MouseAdapter() {
-		    public void mouseClicked(MouseEvent evt) {
-//		        @SuppressWarnings("rawtypes")
-//				JList list = (JList)evt.getSource();
-		        if (evt.getClickCount() == 2) {
+			public void mouseClicked(MouseEvent evt) {
+				//		        @SuppressWarnings("rawtypes")
+				//				JList list = (JList)evt.getSource();
+				if (evt.getClickCount() == 2) {
 
-		            // Double-click detected
-		            @SuppressWarnings("unused")
-//					int index = list.locationToIndex(evt.getPoint())
+					// Double-click detected
 					File file = list.getSelectedValue();
-		            System.out.println(file.getName());
-		        } else if (evt.getClickCount() == 3) {
-
-		            // Triple-click detected
-		            int index = list.locationToIndex(evt.getPoint());
-		        }
-		    }
+					fileChooser.setSelectedFile(file);
+					fileChooser.approveSelection();
+				} else if (evt.getClickCount() == 3) {
+					// Triple-click detected
+					int index = list.locationToIndex(evt.getPoint());
+				}
+			}
 		});
-		
+
 		list.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -88,6 +105,10 @@ public class RecentFileList extends JPanel {
 
 	public class FileListModel extends AbstractListModel<File> {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1058051753311359394L;
 		private List<File> files;
 
 		public FileListModel() {
@@ -126,6 +147,11 @@ public class RecentFileList extends JPanel {
 
 	public class FileListCellRenderer extends DefaultListCellRenderer {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8275640582829749182L;
+
 		@Override
 		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
@@ -141,5 +167,35 @@ public class RecentFileList extends JPanel {
 
 	}
 
+	/*
+	// event listener to inform of file selected via double click
+	EventListenerList xxxListeners = new EventListenerList();
+
+	public void addXXXListener(XXXListener listener) 
+	{
+		xxxListeners.add(XXXListener.class, listener);
+	}
+
+	public void removeXXXListener(XXXListener listener) 
+	{
+		xxxListeners.remove(XXXListener.class, listener);
+	}
+
+	protected void fireXXX(XXXEvent xxxEvent) 
+	{
+		Object[] listeners = xxxListeners.getListenerList();
+		// loop through each listener and pass on the event if needed
+		int numListeners = listeners.length;
+		for (int i = 0; i<numListeners; i+=2) 
+		{
+			if (listeners[i]==XXXListener.class) 
+			{
+				// pass the event to the listeners event dispatch method
+				((XXXListener)listeners[i+1]).dispatchXXX(xxxEvent);
+			}            
+		}
+	}
+
+	 */
 }
 

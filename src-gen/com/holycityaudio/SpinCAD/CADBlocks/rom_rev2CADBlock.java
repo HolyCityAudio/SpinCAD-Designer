@@ -363,4 +363,10 @@
 			public double getmemscale() {
 				return memscale;
 			}
+			
+			public void deleteControlPanel() {
+				if(cp != null) {
+				//	cp.
+				}
+			}
 		}	

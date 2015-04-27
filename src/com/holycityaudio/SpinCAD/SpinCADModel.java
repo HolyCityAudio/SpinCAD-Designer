@@ -84,21 +84,12 @@ public class SpinCADModel implements Serializable {
 				SpinCADBlock cB = currentPin.getBlockConnection();
 				SpinCADPin cP = currentPin.getPinConnection();
 				if (cB != null && cP != null) {
-					// System.out.printf("Original [%s][%d] pin:[%s] ==> [%s] [%d] pin:[%s]\n",
-					// block.getName(), block.getBlockNum(),
-					// currentPin.getName(), cB.getName(), cB.getBlockNum(),
-					// cP.getName());
 					b = block.getBlockNum();
 					if (b < cB.getBlockNum()) {
 						int c = cB.getBlockNum();
 						block.setBlockNum(c);
 						cB.setBlockNum(b);
-						nSwaps++;
-						/*						System.out.printf("Swapped [%s][%d] pin:[%s] ==> [%s] [%d] pin:[%s]\n\n",
-										block.getName(), block.getBlockNum(),
-										currentPin.getName(), cB.getName(),
-										cB.getBlockNum(), cP.getName());
-						 */					}
+					}
 				}
 			}
 		}

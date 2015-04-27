@@ -82,7 +82,6 @@ public class SpinCADBlock extends SpinFXBlock {
 	public SpinCADBlock(int x, int y) {
 		super("SpinCADBlock");
 		CADBlockInit(x, y);
-//		setNumBlocks(getNumBlocks() + 1);
 	}
 
 	/**
@@ -272,18 +271,6 @@ public class SpinCADBlock extends SpinFXBlock {
 	public void drawRect(Graphics2D g2) {
 
 		sizeRect(g2);
-		//		Iterator<SpinCADPin> itr = pinList.iterator();
-		//		SpinCADPin nPin = new SpinCADPin(null, null, -1, -1, null);
-		//		while(itr.hasNext()) {
-		//			nPin = itr.next();
-		//			nPin.drawPin(g2);
-		//		}
-
-		//		Rectangle2D rectHandle = new Rectangle2D.Double(x_pos - 4 , y_pos - 4, 8, 8);
-		//		g2.setColor(Color.BLACK);
-		//		g2.setStroke(new BasicStroke(2));
-		//		g2.draw(rectHandle);
-
 		RoundRectangle2D rect = new RoundRectangle2D.Double(x_pos + 3, y_pos + 5, width - 6, height - 10, 5, 5);
 		if (selected == true) {
 			g2.setColor(Color.CYAN);
@@ -432,6 +419,12 @@ public class SpinCADBlock extends SpinFXBlock {
 	
 	public boolean hasControlPanel() {
 		return hasControlPanel;
+	}
+	
+	public void deleteControlPanel() {
+		if (scCP != null) {
+//			scCP.delete();
+		}
 	}
 	// below are functions to translate parameters between CADBlocks and control panels
 	

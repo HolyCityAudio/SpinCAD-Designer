@@ -33,8 +33,8 @@ public class ThreeTapCADBlock extends DelayCADBlock{
 	If Control 2 not connected, delay length is 100%.
 	Control 3, if connected, controls feedback.
 	If Control 3 not connected, delay feedback s 100% of control panel setting.
-	*/
-	
+	 */
+
 	private static final long serialVersionUID = 3997234959654893065L;
 	private static double tap1level = 0.65;	// tap1 level
 	private static double tap2level = 0.65;	// tap1 level
@@ -77,8 +77,8 @@ public class ThreeTapCADBlock extends DelayCADBlock{
 		int input = -1; 
 		int leftOut = -1;
 		int rightOut = -1;
-		
-		
+
+
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
 		if (p != null) {
 			input = p.getRegister();
@@ -114,11 +114,11 @@ public class ThreeTapCADBlock extends DelayCADBlock{
 				int output1 = sfxb.allocateReg();
 				sfxb.FXreadDelay("PingPongDelay", tap1time, tap1level);  //
 				sfxb.writeRegister(output1, 0);
-				
+
 				int output2 = sfxb.allocateReg();
 				sfxb.FXreadDelay("PingPongDelay", tap2time, tap2level);  //
 				sfxb.writeRegister(output2, 0);
-				
+
 				int output3 = sfxb.allocateReg();
 				sfxb.FXreadDelay("PingPongDelay", tap2time, tap2level);  //
 				sfxb.writeRegister(output3, 0);
