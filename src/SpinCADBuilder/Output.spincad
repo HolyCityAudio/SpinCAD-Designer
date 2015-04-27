@@ -1,0 +1,36 @@
+@name Output
+@audioInput input1 'Input 1'
+@audioInput input2 'Input 2'
+
+bool mono false
+;REGISTERS 
+
+equ gain1 1.0 
+@sliderLabel gain1 'Input Gain 1' -12 0 0 1.0 1 DBLEVEL 
+
+equ gain2 1.0 
+@sliderLabel gain2 'Input Gain 2' -12 0 0 1.0 1 DBLEVEL 
+
+@checkbox mono Mono
+
+@isTrue mono
+@isPinConnected 'Input 1'
+rdax    input1,gain1    ;read input signal
+@endif
+
+@isPinConnected 'Input 2'
+rdax    input2,gain2    ;read input signal
+@endif
+wrax    DACL,1    ;output in ACC and lf1 
+wrax    DACR,0    ;output in ACC and lf1 
+@else
+@isPinConnected 'Input 1'
+rdax    input1,gain1    ;read input signal
+wrax    DACL,0    ;output in ACC and lf1 
+@endif
+
+@isPinConnected 'Input 2'
+rdax    input2,gain2    ;read input signal
+wrax    DACR,0    ;output in ACC and lf1 
+@endif
+@endif
