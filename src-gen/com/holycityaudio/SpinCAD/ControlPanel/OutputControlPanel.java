@@ -107,8 +107,8 @@ public OutputControlPanel(OutputCADBlock genericCADBlock) {
 				gain2innerPanel.setBorder(gain2border2);
 			
 				frame.add(gain2innerPanel);
-			monoCheckBox = new JCheckBox();
-			monoCheckBox.setText("Mono");
+			
+			monoCheckBox = new JCheckBox("Mono", gCB.getmono());
 			monoCheckBox.addItemListener(new OutputItemListener());
 			frame.getContentPane().add(monoCheckBox);		
 				frame.addWindowListener(new MyWindowListener());
