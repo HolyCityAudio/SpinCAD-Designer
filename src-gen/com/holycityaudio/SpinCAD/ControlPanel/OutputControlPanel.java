@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * shimmer_verbControlPanel.java
+ * OutputControlPanel.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -43,17 +43,20 @@ import java.awt.Dimension;
 import java.text.DecimalFormat;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
-import com.holycityaudio.SpinCAD.CADBlocks.shimmer_verbCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
 
-public class shimmer_verbControlPanel extends spinCADControlPanel {
+public class OutputControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 
-	private shimmer_verbCADBlock gCB;
+	private OutputCADBlock gCB;
 	// declare the controls
-	JSlider gainSlider;
-	JLabel  gainLabel;	
+	JSlider gain1Slider;
+	JLabel  gain1Label;	
+	JSlider gain2Slider;
+	JLabel  gain2Label;	
+	JCheckBox monoCheckBox;
 
-public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
+public OutputControlPanel(OutputCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -61,29 +64,53 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Shimmer_reverb");
+				frame.setTitle("Output");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
 			// dB level slider goes in steps of 1 dB
-				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
-				gainSlider.addChangeListener(new shimmer_verbListener());
-				gainLabel = new JLabel();
-				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				gainLabel.setBorder(gainBorder1);
-				updategainLabel();
+				gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+				gain1Slider.addChangeListener(new OutputListener());
+				gain1Label = new JLabel();
+				Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gain1Label.setBorder(gain1Border1);
+				updategain1Label();
 				
-				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel gaininnerPanel = new JPanel();
+				Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gain1innerPanel = new JPanel();
 					
-				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainLabel);
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder2);
+				gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
+				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gain1innerPanel.add(gain1Label);
+				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gain1innerPanel.add(gain1Slider);		
+				gain1innerPanel.setBorder(gain1border2);
 			
-				frame.add(gaininnerPanel);
+				frame.add(gain1innerPanel);
+			
+			// dB level slider goes in steps of 1 dB
+				gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
+				gain2Slider.addChangeListener(new OutputListener());
+				gain2Label = new JLabel();
+				Border gain2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				gain2Label.setBorder(gain2Border1);
+				updategain2Label();
+				
+				Border gain2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel gain2innerPanel = new JPanel();
+					
+				gain2innerPanel.setLayout(new BoxLayout(gain2innerPanel, BoxLayout.Y_AXIS));
+				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gain2innerPanel.add(gain2Label);
+				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				gain2innerPanel.add(gain2Slider);		
+				gain2innerPanel.setBorder(gain2border2);
+			
+				frame.add(gain2innerPanel);
+			monoCheckBox = new JCheckBox();
+			monoCheckBox.setText("Mono");
+			monoCheckBox.addItemListener(new OutputItemListener());
+			frame.getContentPane().add(monoCheckBox);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -95,31 +122,41 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 		}
 
 		// add change listener for Sliders, Spinners 
-		class shimmer_verbListener implements ChangeListener { 
+		class OutputListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
-			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/1.0));
-				updategainLabel();
+			if(ce.getSource() == gain1Slider) {
+			gCB.setgain1((double) (gain1Slider.getValue()/1.0));
+				updategain1Label();
+			}
+			if(ce.getSource() == gain2Slider) {
+			gCB.setgain2((double) (gain2Slider.getValue()/1.0));
+				updategain2Label();
 			}
 			}
 		}
 
 		// add item state changed listener for Checkbox
-		class shimmer_verbItemListener implements java.awt.event.ItemListener { 
+		class OutputItemListener implements java.awt.event.ItemListener { 
 			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
+			if(arg0.getSource() == monoCheckBox) {
+				gCB.setmono((boolean) (monoCheckBox.isSelected()));
+			}
 			}
 		}
 		
 		// add action listener for Combo Box
-		class shimmer_verbActionListener implements java.awt.event.ActionListener { 
+		class OutputActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
-		private void updategainLabel() {
-		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		private void updategain1Label() {
+		gain1Label.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
+		}		
+		private void updategain2Label() {
+		gain2Label.setText("Input Gain 2 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -311,18 +311,15 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			}
 		}
 
-		// add item listener 
+		// add item state changed listener for Checkbox
 		class MN3011aItemListener implements java.awt.event.ItemListener { 
-		public void stateChanged(ChangeEvent ce) {
-			}
 			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				// TODO Auto-generated method stub
 			}
 		}
 		
-		// add action listener 
+		// add action listener for Combo Box
 		class MN3011aActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

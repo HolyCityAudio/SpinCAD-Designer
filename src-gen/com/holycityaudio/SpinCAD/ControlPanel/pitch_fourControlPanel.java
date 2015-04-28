@@ -186,18 +186,15 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 			}
 		}
 
-		// add item listener 
+		// add item state changed listener for Checkbox
 		class pitch_fourItemListener implements java.awt.event.ItemListener { 
-		public void stateChanged(ChangeEvent ce) {
-			}
 			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				// TODO Auto-generated method stub
 			}
 		}
 		
-		// add action listener 
+		// add action listener for Combo Box
 		class pitch_fourActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

@@ -103,18 +103,15 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 			}
 		}
 
-		// add item listener 
+		// add item state changed listener for Checkbox
 		class ExpItemListener implements java.awt.event.ItemListener { 
-		public void stateChanged(ChangeEvent ce) {
-			}
 			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				// TODO Auto-generated method stub
 			}
 		}
 		
-		// add action listener 
+		// add action listener for Combo Box
 		class ExpActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

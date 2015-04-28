@@ -121,18 +121,15 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 			}
 		}
 
-		// add item listener 
+		// add item state changed listener for Checkbox
 		class Glitch_shiftItemListener implements java.awt.event.ItemListener { 
-		public void stateChanged(ChangeEvent ce) {
-			}
 			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				// TODO Auto-generated method stub
 			}
 		}
 		
-		// add action listener 
+		// add action listener for Combo Box
 		class Glitch_shiftActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

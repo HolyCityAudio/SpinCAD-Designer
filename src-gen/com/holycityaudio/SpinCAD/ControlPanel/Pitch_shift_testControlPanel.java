@@ -129,18 +129,15 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 			}
 		}
 
-		// add item listener 
+		// add item state changed listener for Checkbox
 		class Pitch_shift_testItemListener implements java.awt.event.ItemListener { 
-		public void stateChanged(ChangeEvent ce) {
-			}
 			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				// TODO Auto-generated method stub
 			}
 		}
 		
-		// add action listener 
+		// add action listener for Combo Box
 		class Pitch_shift_testActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

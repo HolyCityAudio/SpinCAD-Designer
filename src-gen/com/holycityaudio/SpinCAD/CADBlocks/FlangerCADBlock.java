@@ -35,9 +35,9 @@
 			private double inputGain = 1.0;
 			private double fbkGain = 0.5;
 			private double delayLength = 64;
-			private double tap1Center = 0.5;
 			private double rate = 20;
 			private double width = 30;
+			private double tap1Center = 0.5;
 			private double lfoSel = 0;
 			private double delayOffset = -1;
 			private double twoHundred = 200.0;

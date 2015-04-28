@@ -1,9 +1,9 @@
 @name Output
 @audioInput input1 'Input 1'
-@audioInput input2 'Input 2'
+@audioInput input2 'Input 2' 
 
+// mono = sum inputs together and present equally to both outputs
 bool mono false
-;REGISTERS 
 
 equ gain1 1.0 
 @sliderLabel gain1 'Input Gain 1' -12 0 0 1.0 1 DBLEVEL 
@@ -11,7 +11,7 @@ equ gain1 1.0
 equ gain2 1.0 
 @sliderLabel gain2 'Input Gain 2' -12 0 0 1.0 1 DBLEVEL 
 
-@checkbox mono Mono
+@checkbox mono Mono 
 
 @isTrue mono
 @isPinConnected 'Input 1'
