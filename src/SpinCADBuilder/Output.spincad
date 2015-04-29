@@ -1,6 +1,9 @@
 @name Output
 @audioInput input1 'Input 1'
 @audioInput input2 'Input 2' 
+@controlInput level1 'Level 1'
+@controlInput level2 'Level 2'
+
 
 // mono = sum inputs together and present equally to both outputs
 bool mono false
@@ -16,21 +19,42 @@ equ gain2 1.0
 @isTrue mono
 @isPinConnected 'Input 1'
 rdax    input1,gain1    ;read input signal
+@isPinConnected "Level 1"
+mulx level1
+@isPinConnected 'Input 2'
+equ temp reg0
+wrax temp,0
+@endif
+@endif
 @endif
 
 @isPinConnected 'Input 2'
 rdax    input2,gain2    ;read input signal
+@isPinConnected 'Level 2'
+mulx level2
 @endif
-wrax    DACL,1    ;output in ACC and lf1 
-wrax    DACR,0    ;output in ACC and lf1 
+@isPinConnected 'Input 1'
+rdax temp, 1.0
+@endif
+@endif
+wrax    DACL,1    ;
+wrax    DACR,0    ;
+
 @else
+// Stereo 
 @isPinConnected 'Input 1'
 rdax    input1,gain1    ;read input signal
-wrax    DACL,0    ;output in ACC and lf1 
+@isPinConnected "Level 1"
+mulx level1
+@endif
+wrax    DACL,0    ; 
 @endif
 
 @isPinConnected 'Input 2'
 rdax    input2,gain2    ;read input signal
-wrax    DACR,0    ;output in ACC and lf1 
+@isPinConnected "Level 2"
+mulx level2
+@endif
+wrax    DACR,0    ; 
 @endif
 @endif
