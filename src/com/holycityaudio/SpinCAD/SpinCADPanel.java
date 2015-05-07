@@ -597,7 +597,7 @@ public class SpinCADPanel extends JPanel {
 		if(b.y_pos == 0) {
 			b.y_pos = 100;
 		}
-		lastMouse = new Point(100 + 20,100 + b.height/2);
+		lastMouse = new Point(b.x_pos + 20, b.y_pos + b.height/2);
 		putMouseOnBlock(b);
 
 		setDragModeDragMove();
