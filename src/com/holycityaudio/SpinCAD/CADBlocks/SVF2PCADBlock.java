@@ -39,6 +39,7 @@ public class SVF2PCADBlock extends FilterCADBlock{
 		addOutputPin(this, "Lowpass Out");
 		addOutputPin(this, "Bandpass Out");
 		addOutputPin(this, "Hipass Out");
+		setCoefficients();
 		setName("SVF 2P");	
 	}
 
