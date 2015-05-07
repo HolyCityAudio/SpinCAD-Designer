@@ -15,6 +15,7 @@ public class SpinCADTest {
 	
 	// ------------------------------------------------------------
 	/**
+	 * 
 	 * Launch the application.
 	 */
 	
@@ -42,30 +43,25 @@ public class SpinCADTest {
 					new ChorusPresetTest(dspFrame);
 					new DelayTest(dspFrame);
 					new LPF4PTest(dspFrame);
-//					new CubeGainTest(dspFrame);
+					new CubeGainTest(dspFrame);
 */					
+
 					// these are auto-generated from spincad source files
-					new very_tight_plate_verbTest(dspFrame);	
 					new InstructionTestTest(dspFrame);
-					new dance_ir_fla_lTest(dspFrame);
+// wave shaper menu
 					new ToverXTest(dspFrame);
 					new OctaveTest(dspFrame);
 					new distTest(dspFrame);	
-					new ga_demo_chorusTest(dspFrame);
-					new ga_demo_echo_repeatTest(dspFrame);
-					new ga_demo_echoTest(dspFrame);
-					new ga_demo_flangerTest(dspFrame);
-					new ga_demo_phaserTest(dspFrame);
-					new ga_demo_vibratoTest(dspFrame);
-					new ga_demo_wahTest(dspFrame);
+// dynamics menu
 					new rms_lim_expTest(dspFrame);
 					new rms_limiterTest(dspFrame);
-					new slow_gearTest(dspFrame);
-					new gated_verbTest(dspFrame);
-					new rom_rev1Test(dspFrame);
-					new shimmer_verbTest(dspFrame);
-					new act_xoverTest(dspFrame); 	
 					new soft_knee_limiterTest(dspFrame);
+					new slow_gearTest(dspFrame);
+// reverb menu
+					new allpassTest(dspFrame);
+					new reverbTest(dspFrame);
+					new rom_rev2Test(dspFrame);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

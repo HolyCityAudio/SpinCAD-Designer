@@ -34,17 +34,17 @@ public class InputCADBlock extends SpinCADBlock{
 
 	public InputCADBlock(int x, int y) {
 		super(x, y);
-		addOutputPin(this);
-		addOutputPin(this);
+		addOutputPin(this, "Output 1");
+		addOutputPin(this, "Output 2");
 		setName("Input");
 		setBorderColor(Color.darkGray);
 	}
 	
 	public void generateCode(SpinFXBlock eP) {
 //		System.out.println("Input codegen!");
-		SpinCADPin p = this.getPin("Audio Output 1");
+		SpinCADPin p = this.getPin("Output 1");
 		p.setRegister(ADCL);
-		p = this.getPin("Audio Output 2");
+		p = this.getPin("Output 2");
 		p.setRegister(ADCR);
 		eP.comment("Input");
 	}

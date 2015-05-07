@@ -1,8 +1,8 @@
 @name Plate_Verb_3
 @audioInput adcl Input_Left
 @audioInput adcr Input_Right
-@audioOutput dacl Audio_Output_1  
-@audioOutput dacr Audio_Output_2
+@audioOutput dacl 'Output 1'  
+@audioOutput dacr 'Output 2'
 
 @controlInput input0 Reverb_Time
 @controlInput input1 LF_Loss 
@@ -184,6 +184,7 @@ rda	del3+697,0.6
 rda	del4+580,0.5
 wrax	dacl,0
 
+
 rda	del1+697,0.8
 rda	del2+845,0.7
 rda	del3+487,0.6
@@ -216,3 +217,6 @@ cho rda,sin0,cos,apd4+41
 wra	apd4+80,0
 
 @endif
+
+@setOutputPin 'Output 1' dacl
+@setOutputPin 'Output 2' dacr

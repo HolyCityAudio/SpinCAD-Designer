@@ -86,7 +86,7 @@ public class SpinCADPanel extends JPanel {
 	private Line2D dragLine = null;
 	private Rectangle2D dragRect = null;
 	private static String keys = null;
-	
+
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
 
@@ -99,7 +99,7 @@ public class SpinCADPanel extends JPanel {
 					spdFrame.getModel();
 					SpinCADBlock b = null;	
 					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
-					
+
 					if(lastMouse == null) {
 						lastMouse = mouseAt;
 					}
@@ -352,7 +352,7 @@ public class SpinCADPanel extends JPanel {
 	int getMouseY() {
 		return (int) mouseAt.getY();
 	}
-	
+
 	private void putMouseOnBlock(SpinCADBlock b) {
 		Point p = new Point();
 		p.setLocation(b.getX() + b.width/2, b.getY() + b.height/2);
@@ -588,11 +588,15 @@ public class SpinCADPanel extends JPanel {
 			block.selected = false;				
 		}
 	}
-	
+
 	public void dropBlockPanel(SpinCADBlock b) {
 		b.selected = true;
-		b.x_pos = 100;
-		b.y_pos = 100;
+		if(b.x_pos == 0) {
+			b.x_pos = 100;
+		}
+		if(b.y_pos == 0) {
+			b.y_pos = 100;
+		}
 		lastMouse = new Point(100 + 20,100 + b.height/2);
 		putMouseOnBlock(b);
 
@@ -654,8 +658,8 @@ public class SpinCADPanel extends JPanel {
 				while(itr.hasNext()) {
 					block = itr.next();
 					if(block.selected == true) {
-// TODO need to think of a way to delete an open control panel
-//						if(block.editBlock != null)
+						// TODO need to think of a way to delete an open control panel
+						//						if(block.editBlock != null)
 						deleteBlockConnection(block);
 						itr.remove();
 					}

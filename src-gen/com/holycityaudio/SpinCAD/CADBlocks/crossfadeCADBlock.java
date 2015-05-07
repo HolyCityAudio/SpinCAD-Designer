@@ -88,18 +88,22 @@
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();
 			if(this.getPin("Input 1").isConnected() == true) {
-			sfxb.readRegister(inp1, -gain1);
-			}
-			
 			if(this.getPin("Input 2").isConnected() == true) {
+			sfxb.readRegister(inp1, -gain1);
 			sfxb.readRegister(inp2, gain2);
 			if(this.getPin("Fade").isConnected() == true) {
 			sfxb.mulx(input0);
-			} else {
-			sfxb.scaleOffset(0.5, 0.0);
 			}
 			
 			sfxb.readRegister(inp1, gain1);
+			} else {
+			sfxb.readRegister(inp1, gain1);
+			if(this.getPin("Fade").isConnected() == true) {
+			sfxb.mulx(input0);
+			}
+			
+			}
+			
 			}
 			
 			sfxb.writeRegister(output1, 0);

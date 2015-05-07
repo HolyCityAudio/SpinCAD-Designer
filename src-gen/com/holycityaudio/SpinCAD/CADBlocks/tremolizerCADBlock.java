@@ -79,7 +79,7 @@
 			
 			// finally, generate the instructions
 			output = sfxb.allocateReg();
-			if(this.getPin("Input").isConnected() == true) {
+			if(this.getPin("LFO Input").isConnected() == true) {
 			sfxb.readRegister(input, depth);
 			if(this.getPin("LFO Width").isConnected() == true) {
 			sfxb.mulx(width);

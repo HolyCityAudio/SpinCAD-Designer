@@ -57,8 +57,8 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addInputPin(this, "Input_Right");
-				addOutputPin(this, "Audio_Output_1");
-				addOutputPin(this, "Audio_Output_2");
+				addOutputPin(this, "Output 1");
+				addOutputPin(this, "Output 2");
 				addControlInputPin(this, "Reverb_Time");
 				addControlInputPin(this, "LF_Loss");
 				addControlInputPin(this, "HF_Loss");
@@ -296,6 +296,8 @@
 			sfxb.FXwriteDelay("apd4+", (int)(80 * 1.0), 0);
 			}
 			
+			this.getPin("Output 1").setRegister(dacl);
+			this.getPin("Output 2").setRegister(dacr);
 
 			}
 			
