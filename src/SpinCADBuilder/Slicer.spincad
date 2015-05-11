@@ -13,8 +13,13 @@ equ hold reg1
 
 @isPinConnected 'Control In'
 
+sof 0.0, slice
+
+@isPinConnected 'Slice Level'
+mulx level
+@endif
+
 rdax    input1, -1.0   ;negate input level
-sof 1.0, slice
 skp neg, below
 sof 0, 0.9990234275
 skp run, writeIt
