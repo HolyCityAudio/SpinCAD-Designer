@@ -1,0 +1,27 @@
+@name Slicer
+
+@controlInput input1 'Control In'
+@controlInput level 'Slice Level'
+@controlOutput output 'Slicer Out'
+
+equ slice 0.5
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel slice 'Slice Level' 0.0 0.95 0.5 100.0 2
+
+equ output reg0 
+equ hold reg1
+
+@isPinConnected 'Control In'
+
+rdax    input1, -1.0   ;negate input level
+sof 1.0, slice
+skp neg, below
+sof 0, 0.9990234275
+skp run, writeIt
+below:
+clr
+writeIt:
+wrax output, 0
+@endif
+
+@setOutputPin 'Slicer Out' output

@@ -55,7 +55,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOCADBlock;
+//	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
@@ -64,6 +64,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.AbsaCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock;
@@ -611,8 +612,8 @@
 	final JMenuItem mntm_SinCosLFO = new JMenuItem("Sin/Cos LFO");
 	mntm_SinCosLFO.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new SinCosLFOCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
+//			SpinCADBlock pcB = new SinCosLFOCADBlock(50, 100);
+//			f.dropBlock(panel, pcB);
 		}
 	});
 	mn_control.add(mntm_SinCosLFO);
@@ -688,6 +689,15 @@
 		}
 	});
 	mn_control.add(mntm_ClipControl);
+		
+	final JMenuItem mntm_Slicer = new JMenuItem("Slicer");
+	mntm_Slicer.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new SlicerCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Slicer);
 		
 	final JMenuItem mntm_Root = new JMenuItem("Root");
 	mntm_Root.addActionListener(new ActionListener() {

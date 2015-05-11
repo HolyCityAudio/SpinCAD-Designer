@@ -46,7 +46,7 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 
-public class SinCosLFOControlPanel extends spinCADControlPanel implements ChangeListener, ActionListener, ItemListener {
+public class SinCosLFOControlPanelA extends spinCADControlPanel implements ChangeListener, ActionListener, ItemListener {
 
 	private JSlider lfoWidthSlider = new JSlider(JSlider.HORIZONTAL, 0, 32767, 8192);
 	private JLabel lfoWidthLabel = new JLabel("LFO Rate");
@@ -60,14 +60,14 @@ public class SinCosLFOControlPanel extends spinCADControlPanel implements Change
 	private JComboBox<String> outputRange;
 
 	private JFrame frame;
-	private SinCosLFOCADBlock pC;
+	private SinCosLFOCADBlockA pC;
 
 	private String listOptions[] = {
 			"-1.0 -> 1.0",
 			" 0.0 -> 1.0"
 	};
 
-	public SinCosLFOControlPanel(SinCosLFOCADBlock sinCosLFOCADBlock) {
+	public SinCosLFOControlPanelA(SinCosLFOCADBlockA sinCosLFOCADBlock) {
 		lfoWidthSlider.addChangeListener(this);
 		lfoRateSlider.addChangeListener(this);
 		pC = sinCosLFOCADBlock;
