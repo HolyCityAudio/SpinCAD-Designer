@@ -33,6 +33,8 @@ import java.util.Iterator;
 
 import javax.swing.JSlider;
 
+import org.andrewkilpatrick.elmGen.ElmProgram;
+
 import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
 public class SpinCADBlock extends SpinFXBlock {
@@ -429,11 +431,12 @@ public class SpinCADBlock extends SpinFXBlock {
 	// below are functions to translate parameters between CADBlocks and control panels
 	
 	public double freqToFilt(double freq) {
-		return (Math.sin(2 * Math.PI * freq/getSamplerate()));
+		double omega = 2 * Math.PI * freq/ElmProgram.getSamplerate();
+		return 1 - Math.pow(Math.E, -omega); 
 	}
 	
 	public static double filtToFreq(double filt) {
-		return getSamplerate() * Math.asin(filt)/(2 * Math.PI);
+		return (-(Math.log(1 - filt)) * ElmProgram.getSamplerate()/(2 * Math.PI));	
 	}
 	
 	public static int logvalToSlider(double value, double multiplier) {

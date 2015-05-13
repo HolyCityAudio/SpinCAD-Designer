@@ -1,85 +1,87 @@
 	package com.holycityaudio.SpinCAD;
 	import com.holycityaudio.SpinCAD.SpinCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.VolumeCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Phase_InvertCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1x2CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Mixer3_1CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Mixer4_1CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.AliaserCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.CubeGainCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.DistortionCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.OctaveCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.OverdriveCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.QuantizerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ToverXCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_HipassCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.SVF2PCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.LPF4PCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.HPF2PCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.NotchCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.OneBandEQCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.SixBandEQCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.SingleDelayCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.CoarseDelayCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.sixtapCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.allpassCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.servoCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.PhaserCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.RingModCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Pitch_shift_testCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
-//	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.AbsaCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOCADBlockA;
+import com.holycityaudio.SpinCAD.CADBlocks.VolumeCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Phase_InvertCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1x2CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Mixer3_1CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Mixer4_1CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.AliaserCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.CubeGainCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.DistortionCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.OctaveCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.OverdriveCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.QuantizerCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ToverXCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Shelving_HipassCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.SVF2PCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.LPF4PCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.HPF2PCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.NotchCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.OneBandEQCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.SixBandEQCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.SingleDelayCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.CoarseDelayCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.sixtapCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.allpassCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.servoCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.PhaserCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.RingModCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Pitch_shift_testCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.pitch_fourCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Two_StageCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.AbsaCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
 
 	import java.awt.event.ActionEvent;
-	import java.awt.event.ActionListener;
+import java.awt.event.ActionListener;
 
 	import javax.swing.JMenu;
-	import javax.swing.JMenuBar;
-	import javax.swing.JMenuItem;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 	public class standardMenu {
 
@@ -561,6 +563,15 @@
 	});
 	mn_pitch.add(mntm_Glitch_shift);
 		
+	final JMenuItem mntm_pitch_four = new JMenuItem("Pitch Four");
+	mntm_pitch_four.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new pitch_fourCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_pitch.add(mntm_pitch_four);
+		
 	final JMenuItem mntm_pitchoffset = new JMenuItem("Pitch Offset");
 	mntm_pitchoffset.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -612,8 +623,8 @@
 	final JMenuItem mntm_SinCosLFO = new JMenuItem("Sin/Cos LFO");
 	mntm_SinCosLFO.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-//			SpinCADBlock pcB = new SinCosLFOCADBlock(50, 100);
-//			f.dropBlock(panel, pcB);
+			SpinCADBlock pcB = new SinCosLFOCADBlockA(50, 100);
+			f.dropBlock(panel, pcB);
 		}
 	});
 	mn_control.add(mntm_SinCosLFO);
@@ -698,6 +709,15 @@
 		}
 	});
 	mn_control.add(mntm_Slicer);
+		
+	final JMenuItem mntm_Two_Stage = new JMenuItem("Two Stage");
+	mntm_Two_Stage.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Two_StageCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Two_Stage);
 		
 	final JMenuItem mntm_Root = new JMenuItem("Root");
 	mntm_Root.addActionListener(new ActionListener() {
