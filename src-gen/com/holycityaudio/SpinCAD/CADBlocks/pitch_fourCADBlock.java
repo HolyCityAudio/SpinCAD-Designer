@@ -96,11 +96,12 @@
 			if(this.getPin("Pitch_Select").isConnected() == true) {
 			sfxb.loadAccumulator(select);
 			sfxb.and(0b01100000_00000000_00000000);
-			sfxb.skip(ZRO, 16);
+			if(lfoSel == 0) {
+			sfxb.skip(ZRO, 13);
 			sfxb.scaleOffset(1.0, -0.25);
-			sfxb.skip(ZRO, 10);
+			sfxb.skip(ZRO, 8);
 			sfxb.scaleOffset(1.0, -0.25);
-			sfxb.skip(ZRO, 4);
+			sfxb.skip(ZRO, 3);
 			double shift4 = 0.0;
 			if(pitch4 > 0) {
 				shift4 = (16384.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
@@ -110,13 +111,8 @@
 				shift4 = (-8192.0 * Math.pow(2.0, (-pitch4/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift4);
-			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
-			} else {
-			sfxb.writeRegister(RMP1_RATE, 0);
-			}
-			
-			sfxb.skip(RUN, 11);
+			sfxb.skip(RUN, 8);
 			double shift1 = 0.0;
 			if(pitch3 > 0) {
 				shift1 = (16384.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
@@ -126,13 +122,8 @@
 				shift1 = (-8192.0 * Math.pow(2.0, (-pitch3/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift1);
-			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
-			} else {
-			sfxb.writeRegister(RMP1_RATE, 0);
-			}
-			
-			sfxb.skip(RUN, 7);
+			sfxb.skip(RUN, 5);
 			double shift2 = 0.0;
 			if(pitch2 > 0) {
 				shift2 = (16384.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
@@ -142,13 +133,8 @@
 				shift2 = (-8192.0 * Math.pow(2.0, (-pitch2/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift2);
-			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
-			} else {
-			sfxb.writeRegister(RMP1_RATE, 0);
-			}
-			
-			sfxb.skip(RUN, 3);
+			sfxb.skip(RUN, 2);
 			double shift3 = 0.0;
 			if(pitch1 > 0) {
 				shift3 = (16384.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
@@ -158,12 +144,7 @@
 				shift3 = (-8192.0 * Math.pow(2.0, (-pitch1/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift3);
-			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
-			} else {
-			sfxb.writeRegister(RMP1_RATE, 0);
-			}
-			
 			}
 			
 			sfxb.loadAccumulator(input);
@@ -175,10 +156,70 @@
 			sfxb.FXchorusReadDelay(RMP0, RPTR2, "delayd+", 1);
 			sfxb.chorusScaleOffset(RMP0, NA|COMPC, 0);
 			sfxb.FXchorusReadDelay(RMP0, NA, "temp", 0);
-			sfxb.writeRegister(pitchout, 0);
-			this.getPin("Pitch_Out").setRegister(pitchout);
+			} else {
+			sfxb.skip(ZRO, 13);
+			sfxb.scaleOffset(1.0, -0.25);
+			sfxb.skip(ZRO, 8);
+			sfxb.scaleOffset(1.0, -0.25);
+			sfxb.skip(ZRO, 3);
+			double shift4 = 0.0;
+			if(pitch4 > 0) {
+				shift4 = (16384.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
+			}
+			else
+			{
+				shift4 = (-8192.0 * Math.pow(2.0, (-pitch4/12.0) - 1))/32768.0;
+			}
+			sfxb.scaleOffset(0.0, shift4);
+			sfxb.writeRegister(RMP1_RATE, 0);
+			sfxb.skip(RUN, 8);
+			double shift1 = 0.0;
+			if(pitch3 > 0) {
+				shift1 = (16384.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
+			}
+			else
+			{
+				shift1 = (-8192.0 * Math.pow(2.0, (-pitch3/12.0) - 1))/32768.0;
+			}
+			sfxb.scaleOffset(0.0, shift1);
+			sfxb.writeRegister(RMP1_RATE, 0);
+			sfxb.skip(RUN, 5);
+			double shift2 = 0.0;
+			if(pitch2 > 0) {
+				shift2 = (16384.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
+			}
+			else
+			{
+				shift2 = (-8192.0 * Math.pow(2.0, (-pitch2/12.0) - 1))/32768.0;
+			}
+			sfxb.scaleOffset(0.0, shift2);
+			sfxb.writeRegister(RMP1_RATE, 0);
+			sfxb.skip(RUN, 2);
+			double shift3 = 0.0;
+			if(pitch1 > 0) {
+				shift3 = (16384.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
+			}
+			else
+			{
+				shift3 = (-8192.0 * Math.pow(2.0, (-pitch1/12.0) - 1))/32768.0;
+			}
+			sfxb.scaleOffset(0.0, shift3);
+			sfxb.writeRegister(RMP1_RATE, 0);
 			}
 			
+			sfxb.loadAccumulator(input);
+			sfxb.FXwriteDelay("delayd", 0, 0);
+			sfxb.FXchorusReadDelay(RMP1, REG|COMPC, "delayd", 0);
+			sfxb.FXchorusReadDelay(RMP1, 0, "delayd+", 1);
+			sfxb.FXwriteDelay("temp", 0, 0);
+			sfxb.FXchorusReadDelay(RMP1, RPTR2|COMPC, "delayd", 0);
+			sfxb.FXchorusReadDelay(RMP1, RPTR2, "delayd+", 1);
+			sfxb.chorusScaleOffset(RMP1, NA|COMPC, 0);
+			sfxb.FXchorusReadDelay(RMP1, NA, "temp", 0);
+			}
+			
+			sfxb.writeRegister(pitchout, 0);
+			this.getPin("Pitch_Out").setRegister(pitchout);
 
 			}
 			

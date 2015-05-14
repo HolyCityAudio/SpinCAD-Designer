@@ -39,59 +39,38 @@ START:
 ;skp RUN, SHIFT
 ldax select
 and	%01100000_00000000_00000000
+@isEqualTo lfoSel 0
 ; this should be 13 
 skp ZRO, slot3
-
 sof 1.0, -0.25 
 ; this should be 8
 skp ZRO, slot2
-
 sof 1.0, -0.25  
 ; this should be 3  
-skp ZRO, slot1
-
+skp ZRO, slot1 
 slot0: 
-// function to convert semitones to LFO coefficient
+; function to convert semitones to LFO coefficient
 @semitonesToRmpRate shift4 pitch4 
 sof 0.0, shift4
-@isEqualTo lfoSel 0
 wrax RMP0_RATE, 0
-@else
-wrax RMP1_RATE, 0
-@endif
 ; this should be 8
 skp RUN, SHIFT
-
 slot1:
 @semitonesToRmpRate shift1 pitch3
 sof 0.0, shift1
-@isEqualTo lfoSel 0
-wrax RMP0_RATE, 0
-@else
-wrax RMP1_RATE, 0
-@endif
+wrax RMP0_RATE, 0 
 ; this should be 5
 skp RUN, SHIFT
-
 slot2:
 @semitonesToRmpRate shift2 pitch2
 sof 0.0, shift2
-@isEqualTo lfoSel 0
 wrax RMP0_RATE, 0
-@else
-wrax RMP1_RATE, 0
-@endif
 ; this should be 2
 skp RUN, SHIFT
-
 slot3:
 @semitonesToRmpRate shift3 pitch1
 sof 0.0, shift3
-@isEqualTo lfoSel 0
 wrax RMP0_RATE, 0
-@else
-wrax RMP1_RATE, 0
-@endif
 
 SHIFT:
 
@@ -108,9 +87,57 @@ cho rda,RMP0,RPTR2|COMPC,delayd
 cho rda,RMP0,RPTR2,delayd+ 1 
 cho sof,RMP0,NA|COMPC,0 
 cho rda,RMP0,NA,temp
-wrax pitchout,0
+@else
+; this should be 13 
+skp ZRO, slot3_1
+sof 1.0, -0.25 
+; this should be 8
+skp ZRO, slot2_1
+sof 1.0, -0.25  
+; this should be 3  
+skp ZRO, slot1_1 
+slot0: 
+; function to convert semitones to LFO coefficient
+@semitonesToRmpRate shift4 pitch4 
+sof 0.0, shift4
+wrax RMP1_RATE, 0
+; this should be 8
+skp RUN, SHIFT1
+slot1_1:
+@semitonesToRmpRate shift1 pitch3
+sof 0.0, shift1
+wrax RMP1_RATE, 0 
+; this should be 5
+skp RUN, SHIFT1
+slot2_1:
+@semitonesToRmpRate shift2 pitch2
+sof 0.0, shift2
+wrax RMP1_RATE, 0
+; this should be 2
+skp RUN, SHIFT1
+slot3_1:
+@semitonesToRmpRate shift3 pitch1
+sof 0.0, shift3
+wrax RMP1_RATE, 0
 
+SHIFT1:
+
+@endif
+
+// read the input and do the pitch shift
+ldax input
+wra delayd,0
+			
+cho rda,RMP1,REG|COMPC,delayd 
+cho rda,RMP1,0,delayd+ 1 
+wra temp,0 
+cho rda,RMP1,RPTR2|COMPC,delayd 
+cho rda,RMP1,RPTR2,delayd+ 1 
+cho sof,RMP1,NA|COMPC,0 
+cho rda,RMP1,NA,temp
+@endif
+wrax pitchout,0
 @setOutputPin Pitch_Out pitchout
 	
-@endif
+
 
