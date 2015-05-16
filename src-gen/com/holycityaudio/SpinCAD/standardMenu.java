@@ -51,12 +51,12 @@ import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.Pitch_shift_testCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
-import com.holycityaudio.SpinCAD.CADBlocks.pitch_fourCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOCADBlockA;
 import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
@@ -65,6 +65,7 @@ import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Half_WaveCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.Two_StageCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
@@ -563,15 +564,6 @@ import javax.swing.JMenuItem;
 	});
 	mn_pitch.add(mntm_Glitch_shift);
 		
-	final JMenuItem mntm_pitch_four = new JMenuItem("Pitch Four");
-	mntm_pitch_four.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new pitch_fourCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_pitch.add(mntm_pitch_four);
-		
 	final JMenuItem mntm_pitchoffset = new JMenuItem("Pitch Offset");
 	mntm_pitchoffset.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -700,6 +692,15 @@ import javax.swing.JMenuItem;
 		}
 	});
 	mn_control.add(mntm_ClipControl);
+		
+	final JMenuItem mntm_Half_Wave = new JMenuItem("Half Wave");
+	mntm_Half_Wave.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Half_WaveCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Half_Wave);
 		
 	final JMenuItem mntm_Slicer = new JMenuItem("Slicer");
 	mntm_Slicer.addActionListener(new ActionListener() {

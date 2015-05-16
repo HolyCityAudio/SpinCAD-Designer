@@ -77,7 +77,7 @@
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Pitch Up/Down" pitchupdown 
 @menuitem "Glitch Shift Adjustable" Glitch_shift 
-@menuitem "Pitch Four" pitch_four 
+//@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 
 
 //@menu "Guitar"
@@ -106,6 +106,7 @@
 @menuitem "Invert" InvertControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl
+@menuitem "Half Wave" Half_Wave
 @menuitem "Slicer" Slicer
 @menuitem "Two Stage" Two_Stage
 @menuitem "Root" Root

@@ -92,6 +92,20 @@ public class SpinCADPanel extends JPanel {
 
 		addMouseMotionListener(new MouseAdapter() {
 			@Override
+
+			public void mouseDragged(MouseEvent e) {
+				mouseAt = e.getPoint();
+				if(dm == dragModes.DRAGBOX) {
+					// draw a rectangle
+					double ulhx = Math.min(startPoint.getX(), mouseAt.getX());
+					double ulhy = Math.min(startPoint.getY(), mouseAt.getY());
+					double widthX = Math.abs(mouseAt.getX() - startPoint.getX());
+					double widthY = Math.abs(mouseAt.getY() - startPoint.getY());
+					dragRect = new Rectangle2D.Double(ulhx, ulhy, widthX, widthY);
+					repaint();
+				}
+			}
+			
 			public void mouseMoved(MouseEvent e) {
 				mouseAt = e.getPoint();
 				// in mode DRAGMOVE, we have selected one or more blocks and are dragging them to a new location.
@@ -128,15 +142,6 @@ public class SpinCADPanel extends JPanel {
 					startPoint = getNearbyPoint();
 					repaint();
 				}
-				else if(dm == dragModes.DRAGBOX) {
-					// draw a rectangle
-					double ulhx = Math.min(startPoint.getX(), mouseAt.getX());
-					double ulhy = Math.min(startPoint.getY(), mouseAt.getY());
-					double widthX = Math.abs(mouseAt.getX() - startPoint.getX());
-					double widthY = Math.abs(mouseAt.getY() - startPoint.getY());
-					dragRect = new Rectangle2D.Double(ulhx, ulhy, widthX, widthY);
-					repaint();
-				}
 				Point point = getNearbyPoint();
 				if(point != null) {		
 					// we're near a pin, so iterate through the model and see which one it is
@@ -162,6 +167,18 @@ public class SpinCADPanel extends JPanel {
 
 		addMouseListener(new MouseAdapter() {
 			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				if (dm == dragModes.DRAGBOX) {
+					if(arg0.getButton() == 1) {
+						dm = dragModes.NODRAG;
+						selectGroup(spdFrame, startPoint, mouseAt);
+					} 					
+					dragLine = null;
+					dragRect = null;
+					repaint();
+					return;
+				}
+			}
 			public void mousePressed(MouseEvent arg0) {
 				boolean hitSomething = false;
 				// drop a line or block if you were dragging it
