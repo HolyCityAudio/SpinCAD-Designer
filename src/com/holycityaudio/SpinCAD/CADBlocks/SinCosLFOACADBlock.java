@@ -21,7 +21,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class SinCosLFOCADBlockA extends ControlCADBlock{
+public class SinCosLFOACADBlock extends ControlCADBlock{
 	/**
 	 * 
 	 */
@@ -31,7 +31,7 @@ public class SinCosLFOCADBlockA extends ControlCADBlock{
 	int lfoSel = 0;		// 0 or 1
 	int outputRange = 0;	// if 1, add SOF 0.5, 0.5 at end to scale it to 0.0 to 1.0
 
-	public SinCosLFOCADBlockA(int x, int y) {
+	public SinCosLFOACADBlock(int x, int y) {
 		super(x, y);
 		hasControlPanel = true;
 		addControlInputPin(this, "Speed");	//	speed
@@ -104,7 +104,7 @@ public class SinCosLFOCADBlockA extends ControlCADBlock{
 
 	public void editBlock(){
 		//		SinCosLFOControlPanel cp = new SinCosLFOControlPanel(this);
-		new SinCosLFOControlPanelA(this);
+		new SinCosLFOAControlPanel(this);
 	}
 	//====================================================
 

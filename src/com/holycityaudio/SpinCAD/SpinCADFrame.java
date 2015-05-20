@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 936;
+	int buildNum = 937;
 	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
@@ -714,7 +714,7 @@ public class SpinCADFrame extends JFrame {
 				"SpinCAD Files", "spcd");
 		fc.setFileFilter(filter);
 		fc.setSelectedFile(new File(spcFileName));
-		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+		int returnVal = fc.showSaveDialog(SpinCADFrame.this);
 		// need to process user canceling box right here
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 
