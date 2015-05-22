@@ -1,6 +1,6 @@
 @name AbsoluteValue 
-@controlInput input Control_Input
-@controlOutput output1 Control_Output  
+@controlInput input Input
+@controlOutput output1 Output  
 
 ;REGISTERS 
 equ   output1     reg0       
@@ -9,6 +9,6 @@ equ   output1     reg0
 rdax    input,1    ;read input signal
 absa
 wrax    output1,0    ;output in ACC and lf1 
-@setOutputPin Control_Output output1
+@setOutputPin Output output1
 @endif
 

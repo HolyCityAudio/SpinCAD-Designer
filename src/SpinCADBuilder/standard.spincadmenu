@@ -106,6 +106,7 @@
 @menuitem "Invert" InvertControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl
+@menuitem "Multiply" Multiply
 @menuitem "Half Wave" Half_Wave
 @menuitem "Slicer" Slicer
 @menuitem "Two Stage" Two_Stage

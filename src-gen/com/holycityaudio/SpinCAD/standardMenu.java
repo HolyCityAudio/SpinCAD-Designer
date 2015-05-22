@@ -64,6 +64,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.MultiplyCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Half_WaveCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Two_StageCADBlock;
@@ -691,6 +692,15 @@
 		}
 	});
 	mn_control.add(mntm_ClipControl);
+		
+	final JMenuItem mntm_Multiply = new JMenuItem("Multiply");
+	mntm_Multiply.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new MultiplyCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Multiply);
 		
 	final JMenuItem mntm_Half_Wave = new JMenuItem("Half Wave");
 	mntm_Half_Wave.addActionListener(new ActionListener() {

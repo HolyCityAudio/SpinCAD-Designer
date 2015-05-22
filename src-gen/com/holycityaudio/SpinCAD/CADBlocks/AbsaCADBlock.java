@@ -35,8 +35,8 @@
 				super(x, y);
 				setName("AbsoluteValue");	
 				// Iterate through pin definitions and allocate or assign as needed
-				addControlInputPin(this, "Control_Input");
-				addControlOutputPin(this, "Control_Output");
+				addControlInputPin(this, "Input");
+				addControlOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true
 						}
 		
@@ -63,7 +63,7 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("Control_Input").getPinConnection();
+			sp = this.getPin("Input").getPinConnection();
 			int input = -1;
 			if(sp != null) {
 				input = sp.getRegister();
@@ -75,7 +75,7 @@
 			sfxb.readRegister(input, 1);
 			sfxb.absa();
 			sfxb.writeRegister(output1, 0);
-			this.getPin("Control_Output").setRegister(output1);
+			this.getPin("Output").setRegister(output1);
 			}
 			
 
