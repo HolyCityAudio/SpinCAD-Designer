@@ -53,6 +53,7 @@
 
 @menu "Reverb" 
 @menuitem "Allpass" allpass 
+//@menuitem "Chirp" Chirp 
 @menuitem "Small Reverb" MinReverb 
 // @menuitem "Gated Reverb" gated_verb 
 //@menuitem "ROM Reverb 1" rom_rev1 
@@ -97,6 +98,7 @@
 @menuitem "Pot 2" Pot2 
 @menuitem "Constant" Constant 
 @menuitem "Sin/Cos LFO" SinCosLFOA
+@menuitem "LFO Value" LFO_Value 
 @menuitem "Ramp LFO" RampLFO
 @menuitem "Oscillator" Oscillator
 @menuitem "Sample/Hold" SampleHold
