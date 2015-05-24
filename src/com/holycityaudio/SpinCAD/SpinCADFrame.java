@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 940;
+	int buildNum = 941;
 	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
@@ -600,9 +600,11 @@ public class SpinCADFrame extends JFrame {
 						recentFileList.add(file);
 						updateFrameTitle();
 					} catch (Exception e) {	// thrown over in SpinCADFile.java
-						spcFileName = "Untitled";
 						//						e.printStackTrace();
 						MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+						spcFileName = "Untitled";
+						updateFrameTitle();
+						getModel().newModel();
 					}
 				} else {
 					System.out.println("Open command cancelled by user."
