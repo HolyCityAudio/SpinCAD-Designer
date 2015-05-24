@@ -1334,7 +1334,7 @@ public class SpinCADFrame extends JFrame {
 				progressBar_2.setForeground(Color.green);
 			} else if (codeLength < 105) {
 				progressBar_2.setForeground(Color.yellow);
-			} else if (codeLength < 129) {
+			} else if (codeLength < 128) {
 				progressBar_2.setForeground(Color.orange);
 			} else {
 				progressBar_2.setForeground(Color.red);
