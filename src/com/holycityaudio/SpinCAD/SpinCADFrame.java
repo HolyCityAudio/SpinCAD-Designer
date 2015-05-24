@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 941;
+	int buildNum = 943;
 	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
@@ -743,6 +743,7 @@ public class SpinCADFrame extends JFrame {
 					recentFileList.add(fileToBeSaved);
 					saveMRUFolder(fileToBeSaved.getPath());
 					updateFrameTitle();
+					cb.updateFileName();
 				} finally {
 				}
 			}
