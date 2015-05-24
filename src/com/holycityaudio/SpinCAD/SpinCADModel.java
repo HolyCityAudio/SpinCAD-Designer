@@ -112,6 +112,11 @@ public class SpinCADModel implements Serializable {
 		}
 		return null;
 	}
+	
+	// blockCopy is intended to allow copy-paste of at least one block.  Maybe more!
+	public void blockCopy() {
+		
+	}
 
 	public int realign() {
 		ArrayList<SpinCADBlock> sortedList = new ArrayList<SpinCADBlock>();
@@ -276,7 +281,7 @@ public class SpinCADModel implements Serializable {
 			e.printStackTrace();
 		} finally {
 			System.out.println(getRenderBlock().getProgramListing(1));
-			return getRenderBlock().getCodeLen() - getRenderBlock().getNumComments();
+			return ElmProgram.getCodeLen() - ElmProgram.getNumComments();
 		}
 
 	}

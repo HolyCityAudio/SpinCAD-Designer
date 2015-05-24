@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 939;
+	int buildNum = 940;
 	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
@@ -120,6 +120,7 @@ public class SpinCADFrame extends JFrame {
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
 	private RecentFileList recentFileList = null;
+	// this next one is specific to file open, needs to be here for MRU file list operations
 	private JFileChooser fc;
 	// simulator input file
 	private static String spcFileName = "Untitled";
@@ -512,7 +513,9 @@ public class SpinCADFrame extends JFrame {
 		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 		String listOfFiles = p.get("RecentFileList.fileList", null);
 		if (fc == null) {
-			fc = new JFileChooser();
+			String savedPath = prefs.get("MRUFolder", "");
+			File MRUFolder = new File(savedPath);
+			fc = new JFileChooser(MRUFolder);
 			recentFileList = new RecentFileList(fc);
 			if (listOfFiles != null) {
 				String[] files = listOfFiles.split(File.pathSeparator);
@@ -561,7 +564,6 @@ public class SpinCADFrame extends JFrame {
 	private void fileOpen(final SpinCADPanel panel, JMenuItem mntmFile) {
 		mntmFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// Create a file chooser
 				if (getModel().getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
@@ -571,8 +573,8 @@ public class SpinCADFrame extends JFrame {
 					}
 				}
 
-
 				// debug, want to open recent file list at program init.
+				// TODO set most recently used folder
 				loadRecentFileList();
 
 				final String newline = "\n";
