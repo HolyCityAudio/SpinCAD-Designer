@@ -40,6 +40,14 @@ mulx	input0
 @endif
 ;-
 @endif
+@else
+rdax	inp2,gain2
+
+;---
+@isPinConnected Fade 
+mulx	input0
+;-- end of isPinConnected Fade
+@endif
 @endif
 
 wrax	output1,0

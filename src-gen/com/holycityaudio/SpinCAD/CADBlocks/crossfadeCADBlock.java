@@ -104,6 +104,12 @@
 			
 			}
 			
+			} else {
+			sfxb.readRegister(inp2, gain2);
+			if(this.getPin("Fade").isConnected() == true) {
+			sfxb.mulx(input0);
+			}
+			
 			}
 			
 			sfxb.writeRegister(output1, 0);
