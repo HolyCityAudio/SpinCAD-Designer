@@ -45,7 +45,7 @@
 				addInputPin(this, "Input");
 				addOutputPin(this, "Smooth");
 				addOutputPin(this, "Raw");
-				addControlInputPin(this, "Crush");
+				addControlInputPin(this, "Rip");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -79,10 +79,10 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Crush").getPinConnection();
-			int crusher = -1;
+			sp = this.getPin("Rip").getPinConnection();
+			int ripper = -1;
 			if(sp != null) {
-				crusher = sp.getRegister();
+				ripper = sp.getRegister();
 			}
 			
 			// finally, generate the instructions
@@ -99,8 +99,8 @@
 			sfxb.writeRegister(new_val, 0);
 			sfxb.writeRegister(fptr, 0);
 			sfxb.clear();
-			if(this.getPin("Crush").isConnected() == true) {
-			sfxb.readRegister(crusher, 1.0);
+			if(this.getPin("Rip").isConnected() == true) {
+			sfxb.readRegister(ripper, 1.0);
 			double ripScale = ripHigh - ripLow;
 			sfxb.scaleOffset(ripScale, ripLow);
 			} else {

@@ -52,6 +52,7 @@ public class SlicerControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider sliceSlider;
 	JLabel  sliceLabel;	
+	private JComboBox <String> controlRangeComboBox; 
 
 public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 		
@@ -83,6 +84,13 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 				sliceinnerPanel.setBorder(sliceborder2);
 			
 				frame.add(sliceinnerPanel);
+				controlRangeComboBox = new JComboBox <String> ();
+				controlRangeComboBox.addItem("0 -> +1");
+				controlRangeComboBox.addItem("-1 -> +1");
+				controlRangeComboBox.setSelectedIndex(gCB.getcontrolRange());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(controlRangeComboBox);
+				controlRangeComboBox.addActionListener(new SlicerActionListener());
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -115,6 +123,9 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 		class SlicerActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+			if(arg0.getSource() == controlRangeComboBox) {
+				gCB.setcontrolRange((controlRangeComboBox.getSelectedIndex()));
+			}
 			}
 		}
 		private void updatesliceLabel() {

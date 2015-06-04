@@ -30,6 +30,7 @@
 			private SlicerControlPanel cp = null;
 			
 			private double slice = 0.5;
+			private double controlRange = 0;
 			private int output;
 			private int hold;
 
@@ -41,6 +42,7 @@
 				addControlInputPin(this, "Slice Level");
 				addControlOutputPin(this, "Slicer Out");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -88,11 +90,20 @@
 			}
 			
 			sfxb.readRegister(input1, -1.0);
+			if(controlRange == 0) {
 			sfxb.skip(NEG, 2);
 			sfxb.scaleOffset(0, 0.9990234275);
 			sfxb.skip(RUN, 1);
 			sfxb.clear();
 			sfxb.writeRegister(output, 0);
+			} else {
+			sfxb.skip(NEG, 2);
+			sfxb.scaleOffset(0, 0.9990234275);
+			sfxb.skip(RUN, 1);
+			sfxb.scaleOffset(0, -0.9990234275);
+			sfxb.writeRegister(output, 0);
+			}
+			
 			}
 			
 			this.getPin("Slicer Out").setRegister(output);
@@ -106,5 +117,12 @@
 			
 			public double getslice() {
 				return slice;
+			}
+			public void setcontrolRange(int __param) {
+				controlRange = (double) __param;	
+			}
+			
+			public int getcontrolRange() {
+				return (int) controlRange;
 			}
 		}	

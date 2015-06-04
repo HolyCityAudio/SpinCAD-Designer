@@ -61,7 +61,7 @@ f.dropBlock(p, o);
 	Pot0CADBlock pot0 = new Pot0CADBlock(25, 150 + 40 * 1);
 	f.dropBlock(p, pot0);
 	SpinCADPin p1 = pot0.getPin("Output 1");
-	SpinCADPin p2 = m.getPin("Crush");
+	SpinCADPin p2 = m.getPin("Rip");
 	p2.setConnection(pot0, p1);
 }
 f.getModel().sortAlignGen();

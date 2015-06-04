@@ -2,7 +2,7 @@
 @audioInput input Input
 @audioOutput output Smooth  
 @audioOutput old Raw  
-@controlInput crusher Crush
+@controlInput ripper Rip
 
 equ ripLow 0.002
 @sliderLabel ripLow 'Rip Low' 0.001 0.015 0.01 1000.0 3
@@ -37,8 +37,8 @@ wrax   fptr,0
 
 start: 
 clr 
-@isPinConnected Crush
-rdax   crusher, 1.0 
+@isPinConnected Rip
+rdax   ripper, 1.0 
 @minusDouble ripScale ripHigh ripLow 
 sof   ripScale, ripLow 
 @else
