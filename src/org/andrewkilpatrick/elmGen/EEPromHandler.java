@@ -56,7 +56,9 @@ public class EEPromHandler {
 		if(bank < 0 || bank > 7) {
 			throw new IllegalArgumentException("invalid bank: " + bank);
 		}
-		int code[] = prog.generateHex();
+		
+		// TODO
+/*		byte code[] = prog.generateHex();
 		if(code.length > 128) {
 			throw new ElmProgramException("code too long: " + code.length);
 		}
@@ -68,7 +70,7 @@ public class EEPromHandler {
 		}
 		System.out.println("filled bank: " + bank + " with: " + 
 				code.length + " words");
-	}
+*/	}
 	
 	/**
 	 * Writes the EEPROM with one of the banks.

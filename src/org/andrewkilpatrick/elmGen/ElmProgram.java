@@ -228,11 +228,11 @@ public class ElmProgram implements Serializable {
 			// "of size: " + size + " space available: " +
 			// (MAX_DELAY_MEM - getDelayMemAllocated()));
 			// DEBUG should actually throw exception and catch it farther up
-// yeah that would be great actually since it throws this error for every memory block!
+			// yeah that would be great actually since it throws this error for every memory block!
 			//			JFrame frame = new JFrame();
-//			JOptionPane.showMessageDialog(frame, "Not enough memory!\n"
-//					+ "Adjust delays and chorus blocks to reduce memory.",
-//					"Out of Memory", JOptionPane.OK_OPTION);
+			//			JOptionPane.showMessageDialog(frame, "Not enough memory!\n"
+			//					+ "Adjust delays and chorus blocks to reduce memory.",
+			//					"Out of Memory", JOptionPane.OK_OPTION);
 
 		}
 		memoryMap.add(new MemSegment(name2, size, offset));
@@ -353,8 +353,8 @@ public class ElmProgram implements Serializable {
 	public int[] generateHex() {
 		int hex[] = new int[instList.size()];
 		for (int i = 0; i < instList.size(); i++) {
-			hex[i] = instList.get(i).getHexWord();
-			System.out.printf("%d", hex[i]);
+			hex[i] =  instList.get(i).getHexWord();
+			System.out.printf("%08x\n", hex[i]);
 		}
 		return hex;
 	}

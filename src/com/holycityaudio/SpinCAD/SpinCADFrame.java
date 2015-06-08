@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 946;
+	int buildNum = 947;
 	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
@@ -260,6 +260,15 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnNewMenu.add(mntmSaveAsm);
+
+		JMenuItem mntmSaveHex = new JMenuItem("Save As Hex");
+		mntmSaveHex.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				getModel().sortAlignGen();
+				fileSaveHex();
+			}
+		});
+		mnNewMenu.add(mntmSaveHex);
 
 		JMenuItem mntmInfo = new JMenuItem("Information");
 		mntmInfo.addActionListener(new ActionListener() {
@@ -491,6 +500,11 @@ public class SpinCADFrame extends JFrame {
 	private void saveMRUSpnFolder(String path) {
 		Path pathE = Paths.get(path);
 		prefs.put("MRUSpnFolder", pathE.toString());
+	}
+
+	private void saveMRUHexFolder(String path) {
+		Path pathE = Paths.get(path);
+		prefs.put("MRUHexFolder", pathE.toString());
 	}
 
 	private void saveRecentFileList() {
@@ -793,6 +807,52 @@ public class SpinCADFrame extends JFrame {
 			}
 			getModel().setChanged(false);
 			saveMRUSpnFolder(filePath);
+		}
+	}
+
+	public void fileSaveHex() {
+		// Create a file chooser
+		String savedPath = prefs.get("MRUHexFolder", "");
+
+		final JFileChooser fc = new JFileChooser(savedPath);
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Hex Files", "hex");
+		fc.setFileFilter(filter);
+		fc.showSaveDialog(SpinCADFrame.this);
+		File fileToBeSaved = fc.getSelectedFile();
+
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".hex")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".hex");
+		}
+		int n = JOptionPane.YES_OPTION;
+		if (fileToBeSaved.exists()) {
+			JFrame frame = new JFrame();
+			n = JOptionPane.showConfirmDialog(frame,
+					"Would you like to overwrite it?", "File already exists!",
+					JOptionPane.YES_NO_OPTION);
+		}
+		if (n == JOptionPane.YES_OPTION) {
+			String filePath;
+			try {
+				filePath = fileToBeSaved.getPath();
+				fileToBeSaved.delete();
+				getModel();
+			} finally {
+			}
+			try {
+				SpinCADFile.fileSaveHex(SpinCADModel.getRenderBlock()
+						.generateHex(), filePath);
+			} catch (IOException e) {
+				JOptionPane.showOptionDialog(null,
+						"File save error!", "Error",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+				e.printStackTrace();
+			}
+			getModel().setChanged(false);
+			saveMRUHexFolder(filePath);
 		}
 	}
 

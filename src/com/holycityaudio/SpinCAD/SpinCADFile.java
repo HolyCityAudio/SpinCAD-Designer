@@ -27,6 +27,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.holycityaudio.SpinCAD.SpinCADFrame.commentBlock;
 
@@ -82,6 +85,19 @@ public class SpinCADFile {
 			writer.newLine();
 		}
 		writer.close();
+	}
+
+	public static void fileSaveHex(int[] codeListing, String fileName) throws IOException {
+			    Path path = Paths.get(fileName);
+			    int i = codeListing.length;
+			    byte[] buffer = new byte[i];
+			    for(int ii = 0; ii < i; ii++) {
+			    	buffer[4 * (ii/4)] = (byte)((codeListing[ii] & 0xff000000) >> 24);
+			    	buffer[1 + 4 * (ii/4)] = (byte)((codeListing[ii] & 0x00ff0000) >> 16);
+			    	buffer[2 + 4 * (ii/4)] = (byte)((codeListing[ii] & 0x0000ff00) >> 8);
+			    	buffer[3 + 4 * (ii/4)] = (byte)((codeListing[ii] & 0x000000ff));
+			    }
+			    Files.write(path, buffer); //creates, overwrites
 	}
 
 	public static SpinCADModel fileRead(commentBlock cb, SpinCADModel m, String fileName) throws IOException, ClassNotFoundException {
