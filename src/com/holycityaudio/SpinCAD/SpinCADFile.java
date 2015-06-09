@@ -63,7 +63,7 @@ public class SpinCADFile {
 
 	public static void fileSaveAsm(commentBlock cb, String codeListing, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-		
+
 		writer.write("; " + cb.line1text.getText());
 		writer.newLine();
 		writer.write("; " + cb.line2text.getText());
@@ -88,16 +88,19 @@ public class SpinCADFile {
 	}
 
 	public static void fileSaveHex(int[] codeListing, String fileName) throws IOException {
-			    Path path = Paths.get(fileName);
-			    int i = codeListing.length;
-			    byte[] buffer = new byte[i];
-			    for(int ii = 0; ii < i; ii++) {
-			    	buffer[4 * (ii/4)] = (byte)((codeListing[ii] & 0xff000000) >> 24);
-			    	buffer[1 + 4 * (ii/4)] = (byte)((codeListing[ii] & 0x00ff0000) >> 16);
-			    	buffer[2 + 4 * (ii/4)] = (byte)((codeListing[ii] & 0x0000ff00) >> 8);
-			    	buffer[3 + 4 * (ii/4)] = (byte)((codeListing[ii] & 0x000000ff));
-			    }
-			    Files.write(path, buffer); //creates, overwrites
+		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+		int i = -1;
+		String outputString = new String();
+		for(int ii = 0, index = 0; ii < codeListing.length; ii++) {
+			i = codeListing[ii];
+			if(i != -1) {
+				outputString = String.format("%04x%08x", index, i);
+				writer.write(":04" + outputString);
+				writer.newLine();		
+				index += 4;
+			}
+		}
+		writer.close();
 	}
 
 	public static SpinCADModel fileRead(commentBlock cb, SpinCADModel m, String fileName) throws IOException, ClassNotFoundException {

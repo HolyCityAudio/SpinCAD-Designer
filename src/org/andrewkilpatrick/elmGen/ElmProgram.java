@@ -352,9 +352,13 @@ public class ElmProgram implements Serializable {
 	 */
 	public int[] generateHex() {
 		int hex[] = new int[instList.size()];
-		for (int i = 0; i < instList.size(); i++) {
-			hex[i] =  instList.get(i).getHexWord();
-			System.out.printf("%08x\n", hex[i]);
+		for (int i = 0, j = 0; i < instList.size(); i++) {
+			int ii = instList.get(i).getHexWord();
+			if(ii != -1) {
+				hex[j] = ii; 
+				System.out.printf("%08x\n", hex[j]);
+				j++;
+			}
 		}
 		return hex;
 	}
