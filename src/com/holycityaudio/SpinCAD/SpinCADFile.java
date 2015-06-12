@@ -94,8 +94,8 @@ public class SpinCADFile {
 		for(int ii = 0, index = 0; ii < codeListing.length; ii++) {
 			i = codeListing[ii];
 			if(i != -1) {
-				outputString = String.format("%04x%08x", index, i);
-				writer.write(":04" + outputString);
+				outputString = String.format("04%04x00%08x", index, i);
+				writer.write(":" + outputString);
 				writer.newLine();		
 				index += 4;
 			}

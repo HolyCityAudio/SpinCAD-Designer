@@ -55,8 +55,6 @@ public class RootCADBlock extends SpinCADBlock{
 			}
 			sfxb.log(1.0/root, 0);
 			sfxb.exp(1,0);
-			sfxb.scaleOffset(1.0, -0.5);
-			sfxb.scaleOffset(1.9990, 0);
 			if(flip == true) {
 				sfxb.scaleOffset(-0.9990234375, 0.9990234375);
 			}
@@ -66,7 +64,7 @@ public class RootCADBlock extends SpinCADBlock{
 			p = this.getPin("Control Output 1");
 			p.setRegister(output);
 		}
-		System.out.println("Square Root code gen!");
+		System.out.println("Root code gen!");
 	}
 	
 	public void editBlock(){
