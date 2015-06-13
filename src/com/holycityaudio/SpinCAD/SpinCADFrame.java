@@ -105,9 +105,14 @@ public class SpinCADFrame extends JFrame {
 	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
 	private final simControlToolBar sctb = new simControlToolBar();
+	private final bankToolBar btb = new bankToolBar();
 	private commentBlock cb = new commentBlock();
 	private final JPanel controlPanels = new JPanel();
+	// 
+	// topPanel holds bankPanel and simPanel
+	private final JPanel topPanel = new JPanel();
 	private final JPanel simPanel = new JPanel();
+	private final JPanel bankPanel = new JPanel();
 	private JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
 
 	SpinSimulator sim;
@@ -116,6 +121,12 @@ public class SpinCADFrame extends JFrame {
 	private static double pot0Level = 0;
 	private static double pot1Level = 0;
 	private static double pot2Level = 0;
+
+	// stuff to do with working on a bank of 8 vs. just one patch
+	boolean bankMode = false;
+	// ========================================================
+	private static SpinCADModel model = new SpinCADModel();
+	private static SpinCADModel[] bank = new SpinCADModel[8];
 
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
@@ -127,8 +138,6 @@ public class SpinCADFrame extends JFrame {
 	// simulator output file
 	private String outputFile = null; // play out through the sound card
 
-	// ========================================================
-	private static SpinCADModel model = new SpinCADModel();
 
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
@@ -211,11 +220,25 @@ public class SpinCADFrame extends JFrame {
 
 		pb.setFloatable(false);
 		toolBarPanel.add(pb, BorderLayout.SOUTH);
+		
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
+		btb.setFloatable(true);
+		Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+		btb.setBorder(border);
+		
+		bankPanel.setLayout(new BoxLayout(bankPanel, BoxLayout.X_AXIS));
+		topPanel.add(bankPanel, BorderLayout.NORTH);
+		bankPanel.add(btb);
+		
 		sctb.setFloatable(false);
+		sctb.setBorder(border);
 		simPanel.setLayout(new BoxLayout(simPanel, BoxLayout.Y_AXIS));
-		contentPane.add(simPanel, BorderLayout.NORTH);
 		simPanel.add(sctb);
+		topPanel.add(simPanel, BorderLayout.NORTH);
+
+		contentPane.add(topPanel, BorderLayout.NORTH);
+		
 		simPanel.add(loggerPanel);
 		loggerPanel.setVisible(false);
 
@@ -990,7 +1013,7 @@ public class SpinCADFrame extends JFrame {
 		getModel().setChanged(true);
 		p.unselectAll(this);
 		p.dropBlockPanel(b);
-		
+
 	}
 
 	public boolean isSimRunning() {
@@ -1113,7 +1136,7 @@ public class SpinCADFrame extends JFrame {
 			line6text.setText("");
 			line7text.setText("");
 		}
-		
+
 		// for writing out to clipboard, etc.
 		public String getComments() {
 			return 	"; " + line1text.getText() + "\n" +
@@ -1230,7 +1253,78 @@ public class SpinCADFrame extends JFrame {
 		} 
 	}
 
+	// ======================================================================================================
+	class bankToolBar extends JToolBar implements ActionListener {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4298199583629847984L;
+		final JButton btnPatch0 = new JButton("Patch 0");
+		final JButton btnPatch1 = new JButton("Patch 1");
+		final JButton btnPatch2 = new JButton("Patch 2");
+		final JButton btnPatch3 = new JButton("Patch 3");
+		final JButton btnPatch4 = new JButton("Patch 4");
+		final JButton btnPatch5 = new JButton("Patch 5");
+		final JButton btnPatch6 = new JButton("Patch 6");
+		final JButton btnPatch7 = new JButton("Patch 7");
+
+		public bankToolBar() {
+			super();
+			Dimension buttonSize = new Dimension(120, 10);
+			
+			this.add(btnPatch0);
+			btnPatch0.setMinimumSize(buttonSize);
+			btnPatch0.addActionListener(this);
+
+			this.add(btnPatch1);
+			btnPatch1.setMinimumSize(buttonSize);
+			btnPatch1.addActionListener(this);
+			
+			this.add(btnPatch2);
+			btnPatch2.setMinimumSize(buttonSize);
+			btnPatch2.addActionListener(this);
+
+			this.add(btnPatch3);
+			btnPatch3.setMinimumSize(buttonSize);
+			btnPatch3.addActionListener(this);
+			
+			this.add(btnPatch4);
+//			btnPatch4.setMinimumSize(buttonSize);
+			btnPatch4.addActionListener(this);
+			
+			this.add(btnPatch5);
+//			btnPatch5.setMinimumSize(buttonSize);
+			btnPatch5.addActionListener(this);
+			
+			this.add(btnPatch6);
+//			btnPatch6.setMinimumSize(buttonSize);
+			btnPatch6.addActionListener(this);
+			
+			this.add(btnPatch7);
+//			btnPatch7.setMinimumSize(buttonSize);
+			btnPatch7.addActionListener(this);
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			if (arg0.getSource() == btnPatch0) {
+			}
+			else if (arg0.getSource() == btnPatch1) {
+			}
+			else if (arg0.getSource() == btnPatch2) {
+			}
+			else if (arg0.getSource() == btnPatch3) {
+			}
+			else if (arg0.getSource() == btnPatch4) {
+			}
+			else if (arg0.getSource() == btnPatch5) {
+			}
+			else if (arg0.getSource() == btnPatch6) {
+			}
+			else if (arg0.getSource() == btnPatch7) {
+			}
+		}
+	}
 	// ================= used for the status toolbar and simulator start/stop
 	// button
 	public class EditResourcesToolBar extends JToolBar implements ActionListener {
