@@ -8,8 +8,8 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1x2CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Mixer3_1CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Mixer4_1CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Mixer_3_to_1CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Mixer_4_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.AliaserCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.CubeGainCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.DistortionCADBlock;
@@ -74,7 +74,8 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_2_to_1CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_3_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
 
@@ -166,23 +167,23 @@
 	});
 	mn_io_mix.add(mntm_Mixer2_1x2);
 		
-	final JMenuItem mntm_Mixer3_1 = new JMenuItem("3:1 Mixer");
-	mntm_Mixer3_1.addActionListener(new ActionListener() {
+	final JMenuItem mntm_Mixer_3_to_1 = new JMenuItem("3:1 Mixer");
+	mntm_Mixer_3_to_1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new Mixer3_1CADBlock(50, 100);
+			SpinCADBlock pcB = new Mixer_3_to_1CADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_io_mix.add(mntm_Mixer3_1);
+	mn_io_mix.add(mntm_Mixer_3_to_1);
 		
-	final JMenuItem mntm_Mixer4_1 = new JMenuItem("4:1 Mixer");
-	mntm_Mixer4_1.addActionListener(new ActionListener() {
+	final JMenuItem mntm_Mixer_4_to_1 = new JMenuItem("4:1 Mixer");
+	mntm_Mixer_4_to_1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new Mixer4_1CADBlock(50, 100);
+			SpinCADBlock pcB = new Mixer_4_to_1CADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_io_mix.add(mntm_Mixer4_1);
+	mn_io_mix.add(mntm_Mixer_4_to_1);
 		
 	JMenu mn_waveshaper = new JMenu("Wave Shaper");
 	menuBar.add(mn_waveshaper);
@@ -784,14 +785,23 @@
 	});
 	mn_control.add(mntm_ScaleOffsetControl);
 		
-	final JMenuItem mntm_ControlMixer = new JMenuItem("Control Mixer");
-	mntm_ControlMixer.addActionListener(new ActionListener() {
+	final JMenuItem mntm_ControlMixer_2_to_1 = new JMenuItem("Control Mixer 2:1");
+	mntm_ControlMixer_2_to_1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new ControlMixerCADBlock(50, 100);
+			SpinCADBlock pcB = new ControlMixer_2_to_1CADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_control.add(mntm_ControlMixer);
+	mn_control.add(mntm_ControlMixer_2_to_1);
+		
+	final JMenuItem mntm_ControlMixer_3_to_1 = new JMenuItem("Control Mixer 3:1");
+	mntm_ControlMixer_3_to_1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ControlMixer_3_to_1CADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_ControlMixer_3_to_1);
 		
 	final JMenuItem mntm_control_smoother = new JMenuItem("Smoother");
 	mntm_control_smoother.addActionListener(new ActionListener() {

@@ -91,9 +91,16 @@ public class SpinCADFile {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 		int i = -1;
 		String outputString = new String();
-		for(int ii = 0, index = 0; ii < codeListing.length; ii++) {
-			i = codeListing[ii];
+		for(int ii = 0, index = 0; ii < 128; ii++) {
+			if(ii < codeListing.length) {
+				i = codeListing[ii];
+			} else {
+				i = 0;
+			}
 			if(i != -1) {
+				if(i == 0) { 	// do NOP conversion
+					i = 0x11;
+				}
 				outputString = String.format("04%04X00%08X", index, i);
 				long message = Long.parseLong(outputString, 16);
 				int checksum = 0;

@@ -214,6 +214,7 @@
 			
 			if(this.getPin("Tap 8 Out").isConnected() == true) {
 			tap8 = sfxb.allocateReg();
+			ratio = (int) (tap8Ratio * delayLength);
 			sfxb.FXreadDelay("eight_tap+", ratio, 1.0);
 			sfxb.writeRegister(tap8, 0);
 			this.getPin("Tap 8 Out").setRegister(tap8);

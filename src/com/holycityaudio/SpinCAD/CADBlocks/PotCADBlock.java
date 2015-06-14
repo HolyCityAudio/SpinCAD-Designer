@@ -38,7 +38,7 @@ public class PotCADBlock extends SpinCADBlock{
 		super(x, y);
 		hasControlPanel = true;
 		addControlOutputPin(this);	//	feedback
-		setBorderColor(Color.MAGENTA);
+		setBorderColor(Color.BLUE);
 	}
 	
 	// POT speedup code taken from Spin forum

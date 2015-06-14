@@ -192,6 +192,7 @@ wrax mix2, 0.0
 
 @isPinConnected 'Tap 8 Out'
 equ tap8 reg10
+@getSamplesFromRatio ratio tap8Ratio delayLength 
 rda eight_tap+ratio, 1.0
 wrax tap8,0
 @setOutputPin 'Tap 8 Out' tap8

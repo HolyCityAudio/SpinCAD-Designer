@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 948;
+	int buildNum = 952;
 	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
@@ -1194,17 +1194,19 @@ public class SpinCADFrame extends JFrame {
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == pot0Slider) {
 				pot0Level = (double) pot0Slider.getValue() / 100.0;
+				pot0Slider.setToolTipText("Pot 0: " + pot0Level);
 				//				System.out.println("Pot 0: " + pot0Level);
 				if (sim != null)
 					sim.setPot(0, pot0Level);
 			} else if (e.getSource() == pot1Slider) {
 				pot1Level = (double) pot1Slider.getValue() / 100.0;
+				pot1Slider.setToolTipText("Pot 1: " + pot1Level);
 				//				System.out.println("Pot 1: " + pot1Level);
 				if (sim != null)
 					sim.setPot(1, pot1Level);
 			} else if (e.getSource() == pot2Slider) {
 				pot2Level = (double) pot2Slider.getValue() / 100.0;
-				//				System.out.println("Pot 2: " + pot2Level);
+				pot2Slider.setToolTipText("Pot 2: " + pot2Level);
 				if (sim != null)
 					sim.setPot(2, pot2Level);
 			}
