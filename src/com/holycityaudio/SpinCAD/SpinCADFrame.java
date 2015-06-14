@@ -229,7 +229,7 @@ public class SpinCADFrame extends JFrame {
 		
 		bankPanel.setLayout(new BoxLayout(bankPanel, BoxLayout.X_AXIS));
 		topPanel.add(bankPanel, BorderLayout.NORTH);
-		bankPanel.add(btb);
+//		bankPanel.add(btb);
 		
 		sctb.setFloatable(false);
 		sctb.setBorder(border);

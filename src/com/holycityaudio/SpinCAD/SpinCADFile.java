@@ -114,6 +114,7 @@ public class SpinCADFile {
 				index += 4;
 			}
 		}
+		writer.write(":00000001FF\n");
 		writer.close();
 	}
 
