@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -96,7 +97,7 @@
 
 			public act_xoverCADBlock(int x, int y) {
 				super(x, y);
-				setName("Active_Crossover");	
+				setName("Active_Crossover");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addInputPin(this, "Input_Right");

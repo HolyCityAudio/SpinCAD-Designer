@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -34,7 +35,7 @@
 
 			public ramp_lfo_testCADBlock(int x, int y) {
 				super(x, y);
-				setName("Ramp_LFO_Test");	
+				setName("Ramp_LFO_Test");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlOutputPin(this, "Ramp0");
 				addControlOutputPin(this, "Ramp1");

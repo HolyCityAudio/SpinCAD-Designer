@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -36,7 +37,7 @@
 
 			public distCADBlock(int x, int y) {
 				super(x, y);
-				setName("Distortion");	
+				setName("Distortion");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Audio_Input");
 				addOutputPin(this, "Audio_Output");

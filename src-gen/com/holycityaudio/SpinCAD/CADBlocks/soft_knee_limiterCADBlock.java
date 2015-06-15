@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -37,7 +38,7 @@
 
 			public soft_knee_limiterCADBlock(int x, int y) {
 				super(x, y);
-				setName("Soft_Knee_Limiter");	
+				setName("Soft_Knee_Limiter");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Audio_Output");

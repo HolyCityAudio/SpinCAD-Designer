@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -38,7 +39,7 @@
 
 			public pitch_fourCADBlock(int x, int y) {
 				super(x, y);
-				setName("Pitch_Four");	
+				setName("Pitch_Four");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Pitch_Out");
@@ -105,7 +106,7 @@
 			sfxb.skip(ZRO, 3);
 			double shift4 = 0.0;
 			if(pitch4 > 0) {
-				shift4 = (4096.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
+				shift4 = (16384.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
 			}
 			else
 			{
@@ -116,7 +117,7 @@
 			sfxb.skip(RUN, 8);
 			double shift1 = 0.0;
 			if(pitch3 > 0) {
-				shift1 = (4096.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
+				shift1 = (16384.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
 			}
 			else
 			{
@@ -127,7 +128,7 @@
 			sfxb.skip(RUN, 5);
 			double shift2 = 0.0;
 			if(pitch2 > 0) {
-				shift2 = (4096.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
+				shift2 = (16384.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
 			}
 			else
 			{
@@ -138,7 +139,7 @@
 			sfxb.skip(RUN, 2);
 			double shift3 = 0.0;
 			if(pitch1 > 0) {
-				shift3 = (4096.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
+				shift3 = (16384.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
 			}
 			else
 			{
@@ -163,7 +164,7 @@
 			sfxb.skip(ZRO, 3);
 			double shift4 = 0.0;
 			if(pitch4 > 0) {
-				shift4 = (4096.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
+				shift4 = (16384.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
 			}
 			else
 			{
@@ -174,7 +175,7 @@
 			sfxb.skip(RUN, 8);
 			double shift1 = 0.0;
 			if(pitch3 > 0) {
-				shift1 = (4096.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
+				shift1 = (16384.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
 			}
 			else
 			{
@@ -185,7 +186,7 @@
 			sfxb.skip(RUN, 5);
 			double shift2 = 0.0;
 			if(pitch2 > 0) {
-				shift2 = (4096.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
+				shift2 = (16384.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
 			}
 			else
 			{
@@ -196,7 +197,7 @@
 			sfxb.skip(RUN, 2);
 			double shift3 = 0.0;
 			if(pitch1 > 0) {
-				shift3 = (4096.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
+				shift3 = (16384.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
 			}
 			else
 			{

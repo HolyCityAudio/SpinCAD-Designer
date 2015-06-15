@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -37,7 +38,7 @@
 
 			public noise_amzCADBlock(int x, int y) {
 				super(x, y);
-				setName("Noise_AMZ");	
+				setName("Noise_AMZ");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true

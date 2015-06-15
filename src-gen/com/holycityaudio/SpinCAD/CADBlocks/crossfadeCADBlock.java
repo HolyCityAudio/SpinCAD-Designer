@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -35,7 +36,7 @@
 
 			public crossfadeCADBlock(int x, int y) {
 				super(x, y);
-				setName("Crossfade");	
+				setName("Crossfade");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input 1");
 				addInputPin(this, "Input 2");

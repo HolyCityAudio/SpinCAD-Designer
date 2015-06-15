@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -58,7 +59,7 @@
 
 			public dance_ir_fla_lCADBlock(int x, int y) {
 				super(x, y);
-				setName("Infinite_Rev_Flange");	
+				setName("Infinite_Rev_Flange");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_L");
 				addOutputPin(this, "Audio_Output_1");

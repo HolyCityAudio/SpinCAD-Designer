@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -33,7 +34,8 @@
 
 			public Half_WaveCADBlock(int x, int y) {
 				super(x, y);
-				setName("Half Wave");	
+				setName("Half Wave");					
+			setBorderColor(new Color(0x232345));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Input");
 				addControlOutputPin(this, "Output");

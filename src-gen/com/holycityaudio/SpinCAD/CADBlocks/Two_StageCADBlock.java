@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -34,7 +35,7 @@
 
 			public Two_StageCADBlock(int x, int y) {
 				super(x, y);
-				setName("Two Stage");	
+				setName("Two Stage");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Input");
 				addControlOutputPin(this, "Stage 1");

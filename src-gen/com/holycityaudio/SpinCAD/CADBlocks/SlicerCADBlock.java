@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -36,7 +37,7 @@
 
 			public SlicerCADBlock(int x, int y) {
 				super(x, y);
-				setName("Slicer");	
+				setName("Slicer");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control In");
 				addControlInputPin(this, "Slice Level");

@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -44,7 +45,7 @@
 
 			public ga_demo_chorusCADBlock(int x, int y) {
 				super(x, y);
-				setName("GA_Demo_Chorus");	
+				setName("GA_Demo_Chorus");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addInputPin(this, "Input_Right");

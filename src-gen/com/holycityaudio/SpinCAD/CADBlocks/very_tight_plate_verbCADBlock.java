@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -53,7 +54,7 @@
 
 			public very_tight_plate_verbCADBlock(int x, int y) {
 				super(x, y);
-				setName("Plate_Verb_3");	
+				setName("Plate_Verb_3");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addInputPin(this, "Input_Right");

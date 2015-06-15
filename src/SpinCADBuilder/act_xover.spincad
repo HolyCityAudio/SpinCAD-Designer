@@ -211,9 +211,9 @@ wrax	eqin,1		;keep value in accumulator
 
 wra	del1,1		;write fp value to del1
 rda	del1,-1		;subtract FP value from real value
-wra	del2,0		;write error value to del2 
+wra	del2,0		;write error value to del2  
 
-rda	del1+del,1	;read delayed FP value 
+rda	del1+del,1	;read delayed FP value   
 rda	del2+del,1	;add delayed error value 
 wrax	delout,0	;wrtie value to delay output register.
 

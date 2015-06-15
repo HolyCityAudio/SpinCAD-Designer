@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -34,7 +35,7 @@
 
 			public pitchupdownCADBlock(int x, int y) {
 				super(x, y);
-				setName("Pitch_Up_Down");	
+				setName("Pitch_Up_Down");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Pitch_Down_Out");

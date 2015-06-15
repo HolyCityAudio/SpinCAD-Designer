@@ -1,4 +1,5 @@
 @name AbsoluteValue 
+@color "0x232345"  
 @controlInput input Input
 @controlOutput output1 Output  
 

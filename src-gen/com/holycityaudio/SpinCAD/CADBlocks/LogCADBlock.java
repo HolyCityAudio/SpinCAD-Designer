@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -34,7 +35,7 @@
 
 			public LogCADBlock(int x, int y) {
 				super(x, y);
-				setName("Log");	
+				setName("Log");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control Input");
 				addControlOutputPin(this, "Log Output");

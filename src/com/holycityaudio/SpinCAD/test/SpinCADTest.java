@@ -44,8 +44,6 @@ public class SpinCADTest {
 					new DelayTest(dspFrame);
 					new LPF4PTest(dspFrame);
 					new CubeGainTest(dspFrame);
-*/					
-
 					// these are auto-generated from spincad source files
 					new InstructionTestTest(dspFrame);
 // wave shaper menu
@@ -61,6 +59,9 @@ public class SpinCADTest {
 					new allpassTest(dspFrame);
 					new reverbTest(dspFrame);
 					new rom_rev2Test(dspFrame);
+
+*/					
+
 
 				} catch (Exception e) {
 					e.printStackTrace();

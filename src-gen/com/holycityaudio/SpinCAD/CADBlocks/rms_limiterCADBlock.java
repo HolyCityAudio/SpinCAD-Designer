@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -40,16 +41,17 @@
 
 			public rms_limiterCADBlock(int x, int y) {
 				super(x, y);
-				setName("RMS_Limiter");	
+				setName("RMS_Limiter");					
+			setBorderColor(new Color(0x009595));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addInputPin(this, "Side Chain");
 				addOutputPin(this, "Output");
 				addControlOutputPin(this, "RMS");
 				addControlOutputPin(this, "Square");
 				addControlOutputPin(this, "Log");
 				addControlOutputPin(this, "Avg");
 			// if any control panel elements declared, set hasControlPanel to true
-						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -77,9 +79,14 @@
 					
 			// Iterate through pin definitions and connect or assign as needed
 			sp = this.getPin("Input").getPinConnection();
-			int adcl = -1;
+			int input = -1;
 			if(sp != null) {
-				adcl = sp.getRegister();
+				input = sp.getRegister();
+			}
+			sp = this.getPin("Side Chain").getPinConnection();
+			int sidechain = -1;
+			if(sp != null) {
+				sidechain = sp.getRegister();
 			}
 			
 			// finally, generate the instructions
@@ -90,7 +97,7 @@
 			square = sfxb.allocateReg();
 			logPin = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
-			sfxb.readRegister(adcl, inGain);
+			sfxb.readRegister(input, inGain);
 			sfxb.writeRegister(sigin, 1);
 			sfxb.mulx(sigin);
 			sfxb.writeRegister(square, 1.0);
@@ -100,7 +107,7 @@
 			sfxb.writeRegister(logPin, 1.0);
 			sfxb.exp(1, 0);
 			sfxb.writeRegister(rms, 1);
-			sfxb.mulx(adcl);
+			sfxb.mulx(sidechain);
 			sfxb.scaleOffset(1.5, 0);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Output").setRegister(output);
@@ -120,12 +127,5 @@
 			
 			public double getinGain() {
 				return inGain;
-			}
-			public void setfilt(double __param) {
-				filt = __param;	
-			}
-			
-			public double getfilt() {
-				return filt;
 			}
 		}	

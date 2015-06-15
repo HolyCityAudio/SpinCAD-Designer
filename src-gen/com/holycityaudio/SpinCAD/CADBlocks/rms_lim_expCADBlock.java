@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -37,7 +38,7 @@
 
 			public rms_lim_expCADBlock(int x, int y) {
 				super(x, y);
-				setName("RMS_Lim_Exp");	
+				setName("RMS_Lim_Exp");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addOutputPin(this, "Audio_Output");

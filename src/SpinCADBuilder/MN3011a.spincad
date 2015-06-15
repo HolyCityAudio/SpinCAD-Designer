@@ -154,7 +154,7 @@ offset ratio 1
 // save the mix first
 
 @getSamplesFromRatio ratio tap6Ratio delayLength 
-@isPinConnected 'Tap 6 Out'
+@isPinConnected 'Tap 6 Out' 
 rda mn3011delay+ratio, 1.0
 wrax tap6reg, 0.0
 @endif

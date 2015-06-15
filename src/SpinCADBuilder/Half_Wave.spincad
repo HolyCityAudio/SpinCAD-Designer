@@ -1,13 +1,14 @@
 @name 'Half Wave' 
-@controlInput input Input
+@color "0x232345"  
+@controlInput input Input 
 @controlOutput output Output  
 
-@isPinConnected Input
+@isPinConnected Input 
 equ   output     reg0       
 ; Half wave rectifier 
 ldax input      ; Read from left ADC channel
 skp gez, Rect
-clr
+clr 
 Rect: 
 wrax output,0   ; half wave is in Acc now
 @setOutputPin Output output

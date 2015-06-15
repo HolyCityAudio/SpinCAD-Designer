@@ -1,4 +1,5 @@
 @name Smoother
+@color "0x232345"  
 @controlInput input 'Control Input'
 @controlOutput output 'Control Output' 
 

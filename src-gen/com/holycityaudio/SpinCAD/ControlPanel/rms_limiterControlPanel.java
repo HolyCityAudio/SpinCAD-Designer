@@ -52,8 +52,6 @@ public class rms_limiterControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider inGainSlider;
 	JLabel  inGainLabel;	
-	JSlider filtSlider;
-	JLabel  filtLabel;	
 
 public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 		
@@ -85,25 +83,6 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 				inGaininnerPanel.setBorder(inGainborder2);
 			
 				frame.add(inGaininnerPanel);
-			
-			filtSlider = gCB.LogFilterSlider(10,100,gCB.getfilt());
-				filtSlider.addChangeListener(new rms_limiterListener());
-				filtLabel = new JLabel();
-				Border filtBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				filtLabel.setBorder(filtBorder1);
-				updatefiltLabel();
-				
-				Border filtborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel filtinnerPanel = new JPanel();
-					
-				filtinnerPanel.setLayout(new BoxLayout(filtinnerPanel, BoxLayout.Y_AXIS));
-				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				filtinnerPanel.add(filtLabel);
-				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				filtinnerPanel.add(filtSlider);		
-				filtinnerPanel.setBorder(filtborder2);
-			
-				frame.add(filtinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -120,10 +99,6 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 			if(ce.getSource() == inGainSlider) {
 			gCB.setinGain((double) (inGainSlider.getValue()/100.0));
 				updateinGainLabel();
-			}
-			if(ce.getSource() == filtSlider) {
-			gCB.setfilt((double) gCB.freqToFilt(gCB.sliderToLogval((int)(filtSlider.getValue()), 10.0)));
-				updatefiltLabel();
 			}
 			}
 		}
@@ -144,10 +119,6 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 		}
 		private void updateinGainLabel() {
 		inGainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));		
-		}		
-		private void updatefiltLabel() {
-		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						filtLabel.setText("Filter " + String.format("%4.1f", gCB.filtToFreq(gCB.getfilt())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

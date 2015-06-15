@@ -19,6 +19,7 @@
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
 	
+		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -33,7 +34,7 @@
 
 			public MultiplyCADBlock(int x, int y) {
 				super(x, y);
-				setName("Multiply");	
+				setName("Multiply");					
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Input 1");
 				addControlInputPin(this, "Input 2");

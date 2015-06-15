@@ -71,7 +71,7 @@ public class SpinCADBlock extends SpinFXBlock {
 	public spinCADControlPanel scCP = null;			// control panel for editing parameters
 	protected boolean hasControlPanel = false;	// used to determine whether to offer a control panel
 
-	Color borderColor = Color.green;
+	Color borderColor = new Color(0x09B545);
 
 	/**
 	 * SpinCADBlock class extends the idea of a functional block
