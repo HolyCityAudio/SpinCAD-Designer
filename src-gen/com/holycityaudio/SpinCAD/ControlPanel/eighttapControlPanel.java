@@ -81,7 +81,7 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Eight_Tap");
+				frame.setTitle("Eight Tap");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			

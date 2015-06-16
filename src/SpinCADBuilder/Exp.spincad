@@ -1,5 +1,5 @@
 @name Exp
-@color "0x232345"  
+@color "0xf2f224"  
 @controlInput input Control_Input
 @controlOutput output1 Control_Output  
 

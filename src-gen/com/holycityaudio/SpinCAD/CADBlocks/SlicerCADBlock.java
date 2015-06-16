@@ -38,6 +38,7 @@
 			public SlicerCADBlock(int x, int y) {
 				super(x, y);
 				setName("Slicer");					
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control In");
 				addControlInputPin(this, "Slice Level");

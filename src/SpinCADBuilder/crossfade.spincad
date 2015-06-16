@@ -1,4 +1,5 @@
 @name Crossfade
+@color "0x2468f2"
 @audioInput inp1 'Input 1'
 @audioInput inp2 'Input 2' 
 @audioOutput output1 'Audio Output'  

@@ -1,4 +1,5 @@
-@name Eight_Tap
+@name 'Eight Tap'
+@color "0x6060c4"
 @audioInput adcl Input 
 @audioInput feedback Feedback
 @audioOutput mix1 'Mix 1 Out'

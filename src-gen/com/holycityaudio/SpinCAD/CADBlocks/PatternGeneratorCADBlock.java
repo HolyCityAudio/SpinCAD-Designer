@@ -41,6 +41,7 @@
 			public PatternGeneratorCADBlock(int x, int y) {
 				super(x, y);
 				setName("PatternGenerator");					
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Rate");
 				addControlOutputPin(this, "Pattern_Out");

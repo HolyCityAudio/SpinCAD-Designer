@@ -1,4 +1,5 @@
 @name Pitch_Four
+@color "0x00fc82"
 @audioInput input Input
 @audioOutput pitchout Pitch_Out 
 @controlInput select Pitch_Select 

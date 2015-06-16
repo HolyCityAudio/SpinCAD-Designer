@@ -37,6 +37,7 @@
 			public HPF_RDFXCADBlock(int x, int y) {
 				super(x, y);
 				setName("HPF 1P");					
+			setBorderColor(new Color(0x24f26f));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

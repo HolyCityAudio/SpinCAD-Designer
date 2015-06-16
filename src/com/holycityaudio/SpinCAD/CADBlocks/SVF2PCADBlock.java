@@ -54,6 +54,7 @@ public class SVF2PCADBlock extends FilterCADBlock{
 		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 
 		if(p != null) {
+			setCoefficients();
 			input = p.getRegister();
 
 			int highPass = sfxb.allocateReg();
@@ -85,12 +86,12 @@ public class SVF2PCADBlock extends FilterCADBlock{
 
 	public void setFreq(double f) {
 		f0 = f;
-		setCoefficients();
+//		setCoefficients();
 	}
 
 	public void setQ(double value) {
 		q0 = value;
-		setCoefficients();
+//		setCoefficients();
 	}
 
 	public double getQ() {

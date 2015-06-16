@@ -1,4 +1,5 @@
 @name Pitch_Up_Down
+@color "0x00fc82"
 @audioInput input Input
 @audioOutput pitch1 Pitch_Down_Out 
 @audioOutput pitch2 Pitch_Up_Out

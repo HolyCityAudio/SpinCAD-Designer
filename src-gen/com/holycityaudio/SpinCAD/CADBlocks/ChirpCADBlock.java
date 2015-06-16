@@ -39,6 +39,7 @@
 			public ChirpCADBlock(int x, int y) {
 				super(x, y);
 				setName("Chirp");					
+			setBorderColor(new Color(0x7100fc));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

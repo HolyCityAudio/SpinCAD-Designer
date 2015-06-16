@@ -1,5 +1,5 @@
 @name PitchOffset
-
+@color "0x00fc82"
 @audioInput adcl Input_Left
 @audioOutput output1 Output
 @controlInput input0 Pitch_Offset

@@ -1,4 +1,5 @@
 @name 'Six Tap'
+@color "0x6060c4"
 @audioInput input Input 
 @audioInput feedback 'Feedback In'
 @audioOutput mix1 'Mix L Out'

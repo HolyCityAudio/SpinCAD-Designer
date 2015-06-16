@@ -36,7 +36,7 @@
 			public control_smootherCADBlock(int x, int y) {
 				super(x, y);
 				setName("Smoother");					
-			setBorderColor(new Color(0x232345));
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control Input");
 				addControlOutputPin(this, "Control Output");

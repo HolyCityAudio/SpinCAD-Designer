@@ -1,4 +1,5 @@
 @name Chorus
+@color "0x24f2f2"
 @audioInput input Input
 @audioOutput output1 Output_1 
 @audioOutput output2 Output_2 

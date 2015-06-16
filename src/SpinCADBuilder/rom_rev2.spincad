@@ -1,4 +1,5 @@
 @name 'ROM Reverb 2'
+@color "0x7100fc"
 @audioInput input Input
 @audioOutput output Output
 @controlInput revTime 'Reverb Time'

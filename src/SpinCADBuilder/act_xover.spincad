@@ -1,4 +1,5 @@
-@name Active_Crossover
+@name "L-R Crossover"
+@color "0x24f26f"
 @audioInput adcl Input_Left
 @audioInput adcr Input_Right 
 @audioOutput output1 Output_L 

@@ -36,6 +36,7 @@
 			public tremolizerCADBlock(int x, int y) {
 				super(x, y);
 				setName("Tremolizer");					
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "LFO Input");
 				addControlInputPin(this, "LFO Width");

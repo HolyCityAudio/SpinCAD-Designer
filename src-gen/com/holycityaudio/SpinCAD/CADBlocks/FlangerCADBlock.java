@@ -47,6 +47,7 @@
 			public FlangerCADBlock(int x, int y) {
 				super(x, y);
 				setName("Flanger");					
+			setBorderColor(new Color(0x24f2f2));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addInputPin(this, "Feedback In");

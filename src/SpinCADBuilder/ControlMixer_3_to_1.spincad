@@ -1,5 +1,5 @@
 @name 'Mixer 3:1'
-@color "0x232345"  
+@color "0xf2f224"  
 @controlInput input1 'Input 1'
 @controlInput input2 'Input 2'
 @controlInput input3 'Input 3'

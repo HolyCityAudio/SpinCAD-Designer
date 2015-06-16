@@ -37,6 +37,7 @@
 			public Mixer_2_to_1CADBlock(int x, int y) {
 				super(x, y);
 				setName("Mixer 2:1");					
+			setBorderColor(new Color(0x2468f2));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input 1");
 				addInputPin(this, "Input 2");

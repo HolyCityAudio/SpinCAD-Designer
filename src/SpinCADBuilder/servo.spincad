@@ -1,4 +1,5 @@
 @name 'Servo Flanger'
+@color "0x24f2f2"
 @audioInput input Input
 @audioInput feedback 'Feedback In'
 @audioOutput output Output  

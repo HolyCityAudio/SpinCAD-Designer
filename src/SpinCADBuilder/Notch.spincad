@@ -1,4 +1,5 @@
 @name Notch
+@color "0x24f26f"
 @audioInput input Input
 @audioOutput notch Output_Notch  
 @audioOutput bp_dly Output_Bandpass  

@@ -36,6 +36,7 @@
 			public Two_StageCADBlock(int x, int y) {
 				super(x, y);
 				setName("Two Stage");					
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Input");
 				addControlOutputPin(this, "Stage 1");

@@ -57,7 +57,8 @@
 
 			public eighttapCADBlock(int x, int y) {
 				super(x, y);
-				setName("Eight_Tap");					
+				setName("Eight Tap");					
+			setBorderColor(new Color(0x6060c4));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addInputPin(this, "Feedback");

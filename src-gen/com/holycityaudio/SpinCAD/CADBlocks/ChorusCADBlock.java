@@ -42,6 +42,7 @@
 			public ChorusCADBlock(int x, int y) {
 				super(x, y);
 				setName("Chorus");					
+			setBorderColor(new Color(0x24f2f2));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

@@ -1,5 +1,5 @@
 @name Slicer
-
+@color "0xf2f224"  
 @controlInput input1 'Control In'
 @controlInput level 'Slice Level'
 @controlOutput output 'Slicer Out'

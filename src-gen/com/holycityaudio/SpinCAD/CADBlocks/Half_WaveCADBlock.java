@@ -35,7 +35,7 @@
 			public Half_WaveCADBlock(int x, int y) {
 				super(x, y);
 				setName("Half Wave");					
-			setBorderColor(new Color(0x232345));
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Input");
 				addControlOutputPin(this, "Output");

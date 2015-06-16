@@ -1,4 +1,5 @@
 @name Reverb  
+@color "0x7100fc"
 @audioInput input Input 
 @audioOutput outputL Output_Left
 @audioOutput outputR Output_Right 

@@ -1,4 +1,5 @@
 @name 'Mixer 3:1'
+@color "0x2468f2"
 @audioInput input1 'Input 1'
 @audioInput input2 'Input 2'
 @audioInput input3 'Input 3'

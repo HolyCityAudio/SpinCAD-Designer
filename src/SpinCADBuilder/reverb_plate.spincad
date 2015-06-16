@@ -1,4 +1,5 @@
 @name Reverb_Plate 
+@color "0x7100fc"
 @audioInput input Input 
 @audioOutput output Output 
 @controlInput input0 Reverb_Time

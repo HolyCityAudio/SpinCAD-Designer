@@ -1,4 +1,5 @@
 @name Flanger 
+@color "0x24f2f2"
 @audioInput input Input
 @audioInput feedbackIn 'Feedback In'
 @audioOutput output1 Output

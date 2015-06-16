@@ -1,4 +1,5 @@
 @name 'Shelving Lowpass'
+@color "0x24f26f"
 @audioInput input Input
 @audioOutput output Output  
 //@controlInput freqIn Frequency

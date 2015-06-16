@@ -1,4 +1,5 @@
 @name Chirp
+@color "0x7100fc"
 @audioInput input Input
 @audioOutput output1 Output
 

@@ -97,7 +97,8 @@
 
 			public act_xoverCADBlock(int x, int y) {
 				super(x, y);
-				setName("Active_Crossover");					
+				setName("L-R Crossover");					
+			setBorderColor(new Color(0x24f26f));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addInputPin(this, "Input_Right");

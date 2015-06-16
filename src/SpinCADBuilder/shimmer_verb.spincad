@@ -1,4 +1,5 @@
 @name Shimmer_reverb
+@color "0x7100fc"
 @audioInput revin Input
 @audioOutput output1 Output  
 

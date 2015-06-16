@@ -1,4 +1,5 @@
 @name MN3011
+@color "0x6060c4"
 @audioInput input Input 
 @audioInput feedback 'Feedback Input'
 @audioOutput mix 'Mix Out'

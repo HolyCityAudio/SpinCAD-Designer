@@ -58,6 +58,7 @@
 			public shimmer_verbCADBlock(int x, int y) {
 				super(x, y);
 				setName("Shimmer_reverb");					
+			setBorderColor(new Color(0x7100fc));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

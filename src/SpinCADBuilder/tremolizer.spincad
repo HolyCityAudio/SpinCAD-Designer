@@ -3,6 +3,7 @@
 // There is also a control panel setting for maximum depth
 
 @name Tremolizer
+@color "0xf2f224"
 @controlInput input 'LFO Input'
 @controlInput width 'LFO Width'
 @controlOutput output 'Control Output'

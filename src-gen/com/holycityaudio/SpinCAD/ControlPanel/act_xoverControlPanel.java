@@ -59,7 +59,7 @@ public act_xoverControlPanel(act_xoverCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Active_Crossover");
+				frame.setTitle("L-R Crossover");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				frame.addWindowListener(new MyWindowListener());

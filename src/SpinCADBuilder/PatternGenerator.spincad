@@ -1,4 +1,5 @@
 @name PatternGenerator
+@color "0xf2f224"
 @controlInput rate Rate
 @controlOutput output Pattern_Out
 ;@controlOutput ramp Ramp_LFO

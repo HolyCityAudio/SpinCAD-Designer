@@ -36,7 +36,8 @@
 
 			public LPF_RDFXCADBlock(int x, int y) {
 				super(x, y);
-				setName("LPF_1P");					
+				setName("LPF 1P");					
+			setBorderColor(new Color(0x24f26f));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

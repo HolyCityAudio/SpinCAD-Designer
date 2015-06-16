@@ -1,4 +1,5 @@
 @name Chorus
+@color "0x24f2f2"
 @audioInput input Input
 @audioOutput output1 Output
 @controlInput rateIn LFO_Rate 

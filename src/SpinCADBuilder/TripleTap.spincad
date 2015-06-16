@@ -1,4 +1,5 @@
 @name ThreeTap
+@color "0x6060c4"
 @audioInput adcl Input 
 @audioInput feedback Feedback
 @audioOutput output1 'Tap 1 Out'

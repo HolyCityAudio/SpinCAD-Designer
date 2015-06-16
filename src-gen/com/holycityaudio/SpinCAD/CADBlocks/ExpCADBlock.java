@@ -36,7 +36,7 @@
 			public ExpCADBlock(int x, int y) {
 				super(x, y);
 				setName("Exp");					
-			setBorderColor(new Color(0x232345));
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control_Input");
 				addControlOutputPin(this, "Control_Output");

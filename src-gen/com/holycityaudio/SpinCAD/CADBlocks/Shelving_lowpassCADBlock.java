@@ -40,6 +40,7 @@
 			public Shelving_lowpassCADBlock(int x, int y) {
 				super(x, y);
 				setName("Shelving Lowpass");					
+			setBorderColor(new Color(0x24f26f));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

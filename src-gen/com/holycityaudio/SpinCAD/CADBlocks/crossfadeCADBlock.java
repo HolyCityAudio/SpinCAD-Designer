@@ -37,6 +37,7 @@
 			public crossfadeCADBlock(int x, int y) {
 				super(x, y);
 				setName("Crossfade");					
+			setBorderColor(new Color(0x2468f2));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input 1");
 				addInputPin(this, "Input 2");

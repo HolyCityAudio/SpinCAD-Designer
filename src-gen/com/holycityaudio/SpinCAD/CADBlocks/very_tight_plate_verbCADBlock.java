@@ -55,6 +55,7 @@
 			public very_tight_plate_verbCADBlock(int x, int y) {
 				super(x, y);
 				setName("Plate_Verb_3");					
+			setBorderColor(new Color(0x7100fc));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addInputPin(this, "Input_Right");

@@ -36,6 +36,7 @@
 			public pitchupdownCADBlock(int x, int y) {
 				super(x, y);
 				setName("Pitch_Up_Down");					
+			setBorderColor(new Color(0x00fc82));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Pitch_Down_Out");

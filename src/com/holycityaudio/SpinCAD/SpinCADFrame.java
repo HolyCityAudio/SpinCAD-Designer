@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 953;
+	int buildNum = 956;
 	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
@@ -229,7 +229,7 @@ public class SpinCADFrame extends JFrame {
 		
 		bankPanel.setLayout(new BoxLayout(bankPanel, BoxLayout.X_AXIS));
 		topPanel.add(bankPanel, BorderLayout.NORTH);
-//		bankPanel.add(btb);
+		bankPanel.add(btb);
 		
 		sctb.setFloatable(false);
 		sctb.setBorder(border);

@@ -1,4 +1,5 @@
 @name 'Two Stage'
+@color "0xf2f224"
 @controlInput input Input
 @controlOutput output1 'Stage 1'
 @controlOutput output2 'Stage 2'

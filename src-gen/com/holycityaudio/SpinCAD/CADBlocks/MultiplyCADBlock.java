@@ -35,6 +35,7 @@
 			public MultiplyCADBlock(int x, int y) {
 				super(x, y);
 				setName("Multiply");					
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Input 1");
 				addControlInputPin(this, "Input 2");

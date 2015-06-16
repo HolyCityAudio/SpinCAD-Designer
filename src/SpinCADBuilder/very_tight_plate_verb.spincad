@@ -1,4 +1,5 @@
 @name Plate_Verb_3
+@color "0x7100fc"
 @audioInput adcl Input_Left
 @audioInput adcr Input_Right
 @audioOutput dacl 'Output 1'  
