@@ -34,10 +34,13 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -47,6 +50,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JProgressBar;
 import javax.swing.JMenu;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
@@ -231,6 +235,7 @@ public class SpinCADFrame extends JFrame {
 		bankPanel.setLayout(new BoxLayout(bankPanel, BoxLayout.X_AXIS));
 		topPanel.add(bankPanel, BorderLayout.NORTH);
 		bankPanel.add(btb);
+		bankPanel.setVisible(false);	// start up with bank panel hidden
 
 		sctb.setFloatable(false);
 		sctb.setBorder(border);
@@ -253,28 +258,61 @@ public class SpinCADFrame extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
-		JMenu mnNewMenu = new JMenu("File");
-		menuBar.add(mnNewMenu);
+		JMenu mnFileMenu = new JMenu("File");
+		menuBar.add(mnFileMenu);
+		
+		JMenu mnNewMenu = new JMenu("New");
 
-		JMenuItem mntmNew = new JMenuItem("New");
-		fileNew(panel, mntmNew);
-		mnNewMenu.add(mntmNew);
+		JMenuItem mntmNewFile = new JMenuItem("Patch");
+		fileNewPatch(panel, mntmNewFile);
+		mnNewMenu.add(mntmNewFile);
 
-		JMenuItem mntmFile = new JMenuItem("Open");
-		fileOpenMenu(panel, mntmFile);
-		mnNewMenu.add(mntmFile);
+		JMenuItem mntmNewBank = new JMenuItem("Bank");
+		fileNewBank(panel, mntmNewBank);
+		mnNewMenu.add(mntmNewBank);
+		mnFileMenu.add(mnNewMenu);
+		
+		JMenu mnOpenMenu = new JMenu("Open");
 
-		JMenuItem mntmSave = new JMenuItem("Save");
-		fileSave(mntmSave);
-		mnNewMenu.add(mntmSave);
+		JMenuItem mntmOpenPatch = new JMenuItem("Patch");
+		fileOpenMenu(panel, mntmOpenPatch);
+		mnOpenMenu.add(mntmOpenPatch);
 
-		JMenuItem mntmSaveAs = new JMenuItem("Save As");
-		mntmSaveAs.addActionListener(new ActionListener() {
+		JMenuItem mntmOpenBank = new JMenuItem("Bank");
+		fileOpenMenu(panel, mntmOpenBank);
+		mnOpenMenu.add(mntmOpenBank);
+		mnFileMenu.add(mnOpenMenu);
+
+		JMenu mnSaveMenu = new JMenu("Save");
+		JMenuItem mntmSavePatch = new JMenuItem("Patch");
+		fileSave(mntmSavePatch);
+		mntmSavePatch.setAccelerator(KeyStroke.getKeyStroke("ctrl s"));
+		mnSaveMenu.add(mntmSavePatch);
+
+		JMenuItem mntmSaveBank = new JMenuItem("Bank");
+		fileSave(mntmSaveBank);
+		mnSaveMenu.add(mntmSaveBank);
+		mnFileMenu.add(mnSaveMenu);
+
+		JMenu mnSaveAsMenu = new JMenu("Save As");
+		JMenuItem mntmSavePatchAs = new JMenuItem("Patch");
+		mntmSavePatchAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fileSaveAs();
 			}
 		});
-		mnNewMenu.add(mntmSaveAs);
+		mnSaveAsMenu.add(mntmSavePatchAs);
+
+		JMenuItem mntmSaveBankAs = new JMenuItem("Bank");
+		mntmSaveBankAs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fileSaveAs();
+			}
+		});
+		mnSaveAsMenu.add(mntmSaveBankAs);
+		mnFileMenu.add(mnSaveAsMenu);
+
+		mnFileMenu.addSeparator();
 
 		JMenuItem mntmSaveAsm = new JMenuItem("Save As Spin ASM");
 		mntmSaveAsm.addActionListener(new ActionListener() {
@@ -283,7 +321,7 @@ public class SpinCADFrame extends JFrame {
 				fileSaveAsm();
 			}
 		});
-		mnNewMenu.add(mntmSaveAsm);
+		mnFileMenu.add(mntmSaveAsm);
 
 		JMenuItem mntmSaveHex = new JMenuItem("Save As Hex");
 		mntmSaveHex.addActionListener(new ActionListener() {
@@ -292,7 +330,9 @@ public class SpinCADFrame extends JFrame {
 				fileSaveHex();
 			}
 		});
-		mnNewMenu.add(mntmSaveHex);
+		mnFileMenu.add(mntmSaveHex);
+		
+		mnFileMenu.addSeparator();
 
 		JMenuItem mntmInfo = new JMenuItem("Information");
 		mntmInfo.addActionListener(new ActionListener() {
@@ -300,11 +340,11 @@ public class SpinCADFrame extends JFrame {
 				cb.show();
 			}
 		});
-		mnNewMenu.add(mntmInfo);
+		mnFileMenu.add(mntmInfo);
 
 		JMenuItem mntmBatch = new JMenuItem("Batch Convert");
 		fileBatch(panel, mntmBatch);
-		mnNewMenu.add(mntmBatch);
+		mnFileMenu.add(mntmBatch);
 
 		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy to Clipboard");
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
@@ -317,11 +357,11 @@ public class SpinCADFrame extends JFrame {
 				//				fileSaveAsm();
 			}
 		});
-		mnNewMenu.add(mntmCopyToClipboard);
+		mnFileMenu.add(mntmCopyToClipboard);
 
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		fileSaveAs(panel, mntmExit);
-		mnNewMenu.add(mntmExit);
+		mnFileMenu.add(mntmExit);
 
 		JMenu mn_edit = new JMenu("Edit");
 		menuBar.add(mn_edit);
@@ -357,34 +397,22 @@ public class SpinCADFrame extends JFrame {
 
 		final JMenu mnSimulator = new JMenu("Simulator");
 		menuBar.add(mnSimulator);
-		JMenuItem mntmSetSampleRate = new JMenuItem("Set Sample Rate");
 
-		mntmSetSampleRate.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				SampleRateComboBox srCB = new SampleRateComboBox();
-				srCB.setLocation(mnSimulator.getLocation());
-			}
-		});
-		mnSimulator.add(mntmSetSampleRate);
-
-		final JMenuItem mntmSimLogger = new JMenuItem("Enable Level Viewer");
+		final JMenuItem mntmSimLogger = new JCheckBoxMenuItem("Enable Level Viewer");
 		mntmSimLogger.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(loggerIsVisible == true) {
 					loggerIsVisible = false;
-					mntmSimLogger.setText("Enable Level Viewer");
 				}
 				else {
 					loggerIsVisible = true;
-					mntmSimLogger.setText("Disable Level Viewer");
 				}
 			}
 		});
 		mnSimulator.add(mntmSimLogger);
 
-		JMenuItem mntmSimSendToFile = new JMenuItem("Simulator->File");
+		mnSimulator.addSeparator();
+		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");
 		mntmSimSendToFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				outputFile = prefs.get("SIMULATOR_OUT_FILE", "");
@@ -393,7 +421,7 @@ public class SpinCADFrame extends JFrame {
 		});
 		mnSimulator.add(mntmSimSendToFile);
 
-		JMenuItem mntmSimSendToSound = new JMenuItem("Simulator->Sound Card");
+		JMenuItem mntmSimSendToSound = new JRadioButtonMenuItem("Simulator->Sound Card", true);
 		mntmSimSendToSound.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				outputFile = null;
@@ -401,7 +429,12 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnSimulator.add(mntmSimSendToSound);
-
+		
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(mntmSimSendToFile);
+		bg.add(mntmSimSendToSound);
+		mnSimulator.addSeparator();
+		
 		JMenuItem mntmSimOutFile = new JMenuItem("Set Simulator Output File");
 		mntmSimOutFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -426,7 +459,20 @@ public class SpinCADFrame extends JFrame {
 		});
 		mnSimulator.add(mntmSourceFile);		
 
+		mnSimulator.addSeparator();
+		JMenuItem mntmSetSampleRate = new JMenuItem("Set Sample Rate");
+		mntmSetSampleRate.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SampleRateComboBox srCB = new SampleRateComboBox();
+				srCB.setLocation(mnSimulator.getLocation());
+			}
+		});
+		mnSimulator.add(mntmSetSampleRate);
+
 		if(Debug.DEBUG == true) {
+			mnSimulator.addSeparator();
 			JMenuItem mntmDebugFile = new JMenuItem("Set Simulator Debug file");
 			mntmDebugFile.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -889,7 +935,7 @@ public class SpinCADFrame extends JFrame {
 	 * @param panel
 	 * @param mntmNew
 	 */
-	private void fileNew(final SpinCADPanel panel, JMenuItem mntmNew) {
+	private void fileNewPatch(final SpinCADPanel panel, JMenuItem mntmNew) {
 		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -903,6 +949,7 @@ public class SpinCADFrame extends JFrame {
 					}
 				}
 				spcFileName = "Untitled";
+				bankPanel.setVisible(false);
 				updateFrameTitle();
 				getModel().newModel();
 				cb.clearComments();
@@ -911,6 +958,29 @@ public class SpinCADFrame extends JFrame {
 		});
 	}
 
+	private void fileNewBank(final SpinCADPanel panel, JMenuItem mntmNew) {
+		mntmNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (getModel().getChanged() == true) {
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(panel,
+							"You have unsaved changes!  Continue?", "Warning!",
+							dialogButton);
+					if (dialogResult == JOptionPane.NO_OPTION) {
+						return;
+					}
+				}
+				spcFileName = "Untitled";
+				bankPanel.setVisible(true);
+				updateFrameTitle();
+				getModel().newModel();
+				cb.clearComments();
+				repaint();
+			}
+		});
+	}
+	
 	private WindowListener window() {
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
