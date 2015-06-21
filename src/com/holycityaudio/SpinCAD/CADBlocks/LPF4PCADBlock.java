@@ -20,10 +20,13 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class LPF4PCADBlock extends FilterCADBlock{
+public class LPF4PCADBlock extends SpinCADBlock{
 	/**
 	 * 
 	 */
@@ -37,6 +40,7 @@ public class LPF4PCADBlock extends FilterCADBlock{
 		addInputPin(this, "Audio Input");
 		addOutputPin(this, "Low Pass");
 		hasControlPanel = true;
+		setBorderColor(new Color(0x24f26f));
 		addControlInputPin(this, "Frequency");
 		addControlInputPin(this, "Resonance");
 		if(is4Pole == true) {

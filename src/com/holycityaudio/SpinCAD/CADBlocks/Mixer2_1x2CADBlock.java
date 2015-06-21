@@ -52,7 +52,7 @@ public class Mixer2_1x2CADBlock extends SpinCADBlock{
 		addOutputPin(this, "Audio Out 1");
 		addOutputPin(this, "Audio Out 2");
 		setName("Mixer 2-1x2"); 
-		setBorderColor(Color.YELLOW);
+		setBorderColor(new Color(0x2468f2));
 	}
 
 	public void generateCode(SpinFXBlock sfxb)

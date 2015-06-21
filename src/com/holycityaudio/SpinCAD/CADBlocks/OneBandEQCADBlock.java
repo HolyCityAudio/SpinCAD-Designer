@@ -41,15 +41,13 @@ public class OneBandEQCADBlock extends SpinCADBlock{
 	double kq0;
 	double kf0;
 
-	enum filterType { LOWPASS, BANDPASS, HIGHPASS };
-
 	public OneBandEQCADBlock(int x, int y) {
 		super(x, y);
 		hasControlPanel = true;
 		addOutputPin(this);
 		addInputPin(this);
 		setName("1-Band EQ");
-		setBorderColor(Color.PINK);
+		setBorderColor(new Color(0x24f26f));
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {

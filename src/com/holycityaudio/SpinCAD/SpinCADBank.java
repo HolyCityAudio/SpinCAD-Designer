@@ -36,8 +36,7 @@ public class SpinCADBank {
 	
 	private static final long serialVersionUID = -3067235375662565795L;
 
-	// index currently used for resolving feedback loops
-	int index = 1;
+	int index = 0;
 
 
 	/**

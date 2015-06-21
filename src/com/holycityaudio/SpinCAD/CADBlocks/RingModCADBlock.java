@@ -19,10 +19,13 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class RingModCADBlock extends ModulationCADBlock{
+public class RingModCADBlock extends SpinCADBlock{
 
 	/**
 	 * 
@@ -32,8 +35,11 @@ public class RingModCADBlock extends ModulationCADBlock{
 
 	public RingModCADBlock(int x, int y) {
 		super(x, y);
-		hasControlPanel = true;
+		addInputPin(this);
 		addControlInputPin(this, "Carrier Frequency");
+		addOutputPin(this);
+		setBorderColor(Color.cyan);
+		hasControlPanel = true;
 		setName("Ring Mod");
 	}
 	

@@ -96,7 +96,7 @@ public class SixBandEQCADBlock extends SpinCADBlock{
 		addOutputPin(this);
 		addInputPin(this);
 		setName("6-Band EQ");
-		setBorderColor(Color.PINK);
+		setBorderColor(new Color(0x24f26f));
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {

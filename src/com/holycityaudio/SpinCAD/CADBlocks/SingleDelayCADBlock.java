@@ -19,12 +19,15 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class SingleDelayCADBlock extends DelayCADBlock {
+public class SingleDelayCADBlock extends SpinCADBlock {
 
 	/**
 	 * 
@@ -56,6 +59,7 @@ public class SingleDelayCADBlock extends DelayCADBlock {
 		addControlInputPin(this, "Time");	//	delay time
 		addControlInputPin(this, "Feedback");	//	feedback
 		addOutputPin(this);
+		setBorderColor(new Color(0x6060c4));
 		setName("Single Delay");
 	}
 

@@ -37,7 +37,6 @@ public class InputCADBlock extends SpinCADBlock{
 		addOutputPin(this, "Output 1");
 		addOutputPin(this, "Output 2");
 		setName("Input");
-		setBorderColor(Color.darkGray);
 	}
 	
 	public void generateCode(SpinFXBlock eP) {

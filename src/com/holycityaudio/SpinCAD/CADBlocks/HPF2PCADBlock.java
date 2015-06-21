@@ -20,10 +20,13 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class HPF2PCADBlock extends FilterCADBlock{
+public class HPF2PCADBlock extends SpinCADBlock{
 	/**
 	 * 
 	 */
@@ -39,6 +42,7 @@ public class HPF2PCADBlock extends FilterCADBlock{
 		hasControlPanel = true;
 		addControlInputPin(this, "Frequency");
 		addControlInputPin(this, "Resonance");
+		setBorderColor(new Color(0x24f26f));	
 		setName("High Pass 2P");	}
 
 	public void editBlock(){

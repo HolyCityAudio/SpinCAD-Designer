@@ -124,6 +124,7 @@ public class SpinCADFrame extends JFrame {
 
 	// stuff to do with working on a bank of 8 vs. just one patch
 	boolean bankMode = false;
+	int bankIndex;
 	// ========================================================
 	private static SpinCADModel model = new SpinCADModel();
 	private static SpinCADModel[] bank = new SpinCADModel[8];
@@ -220,17 +221,17 @@ public class SpinCADFrame extends JFrame {
 
 		pb.setFloatable(false);
 		toolBarPanel.add(pb, BorderLayout.SOUTH);
-		
+
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
 		btb.setFloatable(true);
 		Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 		btb.setBorder(border);
-		
+
 		bankPanel.setLayout(new BoxLayout(bankPanel, BoxLayout.X_AXIS));
 		topPanel.add(bankPanel, BorderLayout.NORTH);
 		bankPanel.add(btb);
-		
+
 		sctb.setFloatable(false);
 		sctb.setBorder(border);
 		simPanel.setLayout(new BoxLayout(simPanel, BoxLayout.Y_AXIS));
@@ -238,7 +239,7 @@ public class SpinCADFrame extends JFrame {
 		topPanel.add(simPanel, BorderLayout.NORTH);
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
-		
+
 		simPanel.add(loggerPanel);
 		loggerPanel.setVisible(false);
 
@@ -260,7 +261,7 @@ public class SpinCADFrame extends JFrame {
 		mnNewMenu.add(mntmNew);
 
 		JMenuItem mntmFile = new JMenuItem("Open");
-		fileOpen(panel, mntmFile);
+		fileOpenMenu(panel, mntmFile);
 		mnNewMenu.add(mntmFile);
 
 		JMenuItem mntmSave = new JMenuItem("Save");
@@ -598,60 +599,65 @@ public class SpinCADFrame extends JFrame {
 	 * @param panel
 	 * @param mntmFile
 	 */
-	private void fileOpen(final SpinCADPanel panel, JMenuItem mntmFile) {
+	private void fileOpenMenu(final SpinCADPanel panel, JMenuItem mntmFile) {
 		mntmFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (getModel().getChanged() == true) {
-					int dialogResult = yesNoBox(panel, "Warning!",
-							"You have unsaved changes!  Continue?");
-					if (dialogResult == 0) {
-						getModel().newModel();
-						repaint();
-					}
-				}
-
-				// debug, want to open recent file list at program init.
-				// TODO set most recently used folder
-				loadRecentFileList();
-
-				final String newline = "\n";
-				// In response to a button click:
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						"SpinCAD Files", "spcd");
-				fc.setFileFilter(filter);
-
-				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = fc.getSelectedFile();
-					// This is where a real application would open the file.
-					System.out.println("Opening: " + file.getName() + "."
-							+ newline);
-					try {
-						String filePath = file.getPath();
-						model = SpinCADFile.fileRead(cb, getModel(), filePath );
-						spcFileName = file.getName();
-						getModel().getIndexFB();
-						getModel().setChanged(false);						
-						getModel().presetIndexFB();
-						saveMRUFolder(filePath);
-						recentFileList.add(file);
-						updateFrameTitle();
-					} catch (Exception e) {	// thrown over in SpinCADFile.java
-						//						e.printStackTrace();
-						MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
-						spcFileName = "Untitled";
-						updateFrameTitle();
-						getModel().newModel();
-					}
-				} else {
-					System.out.println("Open command cancelled by user."
-							+ newline);
-				}
-				pb.update();
-				panel.repaint();
+				fileOpen(panel);
 			}
 		});
 	}
+
+	void fileOpen(JPanel panel) {
+		if (getModel().getChanged() == true) {
+			int dialogResult = yesNoBox(panel, "Warning!",
+					"You have unsaved changes!  Continue?");
+			if (dialogResult == 0) {
+				getModel().newModel();
+				repaint();
+			}
+		}
+
+		// debug, want to open recent file list at program init.
+		// TODO set most recently used folder
+		loadRecentFileList();
+
+		final String newline = "\n";
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Files", "spcd");
+		fc.setFileFilter(filter);
+
+		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			// This is where a real application would open the file.
+			System.out.println("Opening: " + file.getName() + "."
+					+ newline);
+			try {
+				String filePath = file.getPath();
+				model = SpinCADFile.fileRead(cb, getModel(), filePath );
+				spcFileName = file.getName();
+				getModel().getIndexFB();
+				getModel().setChanged(false);						
+				getModel().presetIndexFB();
+				saveMRUFolder(filePath);
+				recentFileList.add(file);
+				updateFrameTitle();
+			} catch (Exception e) {	// thrown over in SpinCADFile.java
+				//						e.printStackTrace();
+				MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+				spcFileName = "Untitled";
+				updateFrameTitle();
+				getModel().newModel();
+			}
+		} else {
+			System.out.println("Open command cancelled by user."
+					+ newline);
+		}
+		pb.update();
+		panel.repaint();
+	}
+
 
 
 	private void fileBatch(final SpinCADPanel panel, JMenuItem mntmFile) {
@@ -1274,7 +1280,7 @@ public class SpinCADFrame extends JFrame {
 		public bankToolBar() {
 			super();
 			Dimension buttonSize = new Dimension(120, 10);
-			
+
 			this.add(btnPatch0);
 			btnPatch0.setMinimumSize(buttonSize);
 			btnPatch0.addActionListener(this);
@@ -1282,7 +1288,7 @@ public class SpinCADFrame extends JFrame {
 			this.add(btnPatch1);
 			btnPatch1.setMinimumSize(buttonSize);
 			btnPatch1.addActionListener(this);
-			
+
 			this.add(btnPatch2);
 			btnPatch2.setMinimumSize(buttonSize);
 			btnPatch2.addActionListener(this);
@@ -1290,40 +1296,56 @@ public class SpinCADFrame extends JFrame {
 			this.add(btnPatch3);
 			btnPatch3.setMinimumSize(buttonSize);
 			btnPatch3.addActionListener(this);
-			
+
 			this.add(btnPatch4);
-//			btnPatch4.setMinimumSize(buttonSize);
+			//			btnPatch4.setMinimumSize(buttonSize);
 			btnPatch4.addActionListener(this);
-			
+
 			this.add(btnPatch5);
-//			btnPatch5.setMinimumSize(buttonSize);
+			//			btnPatch5.setMinimumSize(buttonSize);
 			btnPatch5.addActionListener(this);
-			
+
 			this.add(btnPatch6);
-//			btnPatch6.setMinimumSize(buttonSize);
+			//			btnPatch6.setMinimumSize(buttonSize);
 			btnPatch6.addActionListener(this);
-			
+
 			this.add(btnPatch7);
-//			btnPatch7.setMinimumSize(buttonSize);
+			//			btnPatch7.setMinimumSize(buttonSize);
 			btnPatch7.addActionListener(this);
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
 			if (arg0.getSource() == btnPatch0) {
+				bankIndex = 0;
 			}
 			else if (arg0.getSource() == btnPatch1) {
+				bankIndex = 1;
 			}
 			else if (arg0.getSource() == btnPatch2) {
+				bankIndex = 2;
 			}
 			else if (arg0.getSource() == btnPatch3) {
+				bankIndex = 3;
 			}
 			else if (arg0.getSource() == btnPatch4) {
+				bankIndex = 4;
 			}
 			else if (arg0.getSource() == btnPatch5) {
+				bankIndex = 5;
 			}
 			else if (arg0.getSource() == btnPatch6) {
+				bankIndex = 6;
 			}
 			else if (arg0.getSource() == btnPatch7) {
+				bankIndex = 7;
+			}
+			if(bank[bankIndex] != null) {
+				model = bank[bankIndex];
+				contentPane.repaint();
+			}
+			else {
+				fileOpen(contentPane);
+				bank[bankIndex] = model;
 			}
 		}
 	}

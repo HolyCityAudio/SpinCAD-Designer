@@ -18,6 +18,8 @@
  */
 
 package com.holycityaudio.SpinCAD.CADBlocks;
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -39,6 +41,7 @@ public class PhaserCADBlock extends SpinCADBlock{
 		addInputPin(this, "Audio Input");
 		addOutputPin(this, "Mix Out");
 		addOutputPin(this, "Wet Out");
+		setBorderColor(Color.cyan);
 		setName("Phaser");
 		// add a listener up to the JPanel to redraw this block when the control mode is changed.
 	}

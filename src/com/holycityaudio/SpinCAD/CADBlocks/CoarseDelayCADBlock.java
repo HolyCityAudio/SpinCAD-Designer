@@ -30,6 +30,8 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 // GSW had to adjust this so that the offset of the statement prior to RMPA
 // corresponds to the delay buffer offset of this block within the model
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -49,6 +51,7 @@ public class CoarseDelayCADBlock extends SpinCADBlock {
 		addInputPin(this, "Audio Input");
 		addOutputPin(this, "Audio Output");
 		addControlInputPin(this,"Delay Time");
+		setBorderColor(new Color(0x6060c4));
 		setName("Coarse Delay");
 	}
 	

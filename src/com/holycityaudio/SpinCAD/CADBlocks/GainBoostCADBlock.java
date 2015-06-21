@@ -19,6 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
@@ -36,6 +38,7 @@ public class GainBoostCADBlock extends ControlCADBlock{
 		super(x, y);
 		hasControlPanel = true;
 		setName("Gain Boost");
+		setBorderColor(new Color(0x2468f2));
 		addInputPin(this, "Audio Input");	
 		addOutputPin(this, "Audio Output");	
 	}

@@ -19,6 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
@@ -35,6 +37,7 @@ public class SVF2PCADBlock extends FilterCADBlock{
 	public SVF2PCADBlock(int x, int y) {
 		super(x, y);
 		hasControlPanel = true;
+		setBorderColor(new Color(0x24f26f));
 		addInputPin(this, "Audio Input");
 		addOutputPin(this, "Lowpass Out");
 		addOutputPin(this, "Bandpass Out");

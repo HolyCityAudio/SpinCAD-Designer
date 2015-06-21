@@ -23,10 +23,11 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class PitchUpCADBlock extends ModulationCADBlock {
+public class PitchUpCADBlock extends SpinCADBlock {
 
 	/**
 	 * 
@@ -38,6 +39,8 @@ public class PitchUpCADBlock extends ModulationCADBlock {
 
 	public PitchUpCADBlock(int x, int y) {
 		super(x, y);
+		addInputPin(this);
+		addOutputPin(this);
 		addControlInputPin(this);
 		setName("Pitch Up");
 	}

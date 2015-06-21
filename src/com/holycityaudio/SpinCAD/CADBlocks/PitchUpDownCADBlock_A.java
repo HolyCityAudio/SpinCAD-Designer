@@ -24,10 +24,13 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class PitchUpDownCADBlock_A extends ModulationCADBlock {
+public class PitchUpDownCADBlock_A extends SpinCADBlock {
 
 	/**
 	 * 
@@ -39,6 +42,10 @@ public class PitchUpDownCADBlock_A extends ModulationCADBlock {
 
 	public PitchUpDownCADBlock_A(int x, int y) {
 		super(x, y);
+		addInputPin(this, "Audio In");
+		addOutputPin(this, "Pitch Out");
+		setBorderColor(new Color(0x919191));
+
 		setName("Pitch Up/Down");
 		addOutputPin(this);
 	}

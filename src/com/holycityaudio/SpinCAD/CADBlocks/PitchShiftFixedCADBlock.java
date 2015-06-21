@@ -23,6 +23,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import org.andrewkilpatrick.elmGen.Debug;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
@@ -47,6 +49,7 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 		hasControlPanel = true;
 		addInputPin(this, "Audio In");
 		addOutputPin(this, "Pitch Out");
+		setBorderColor(new Color(0x111111));
 		if(Debug.DEBUG== true) {
 			addOutputPin(this, "CHO RDA delayd");
 			addOutputPin(this, "CHO RDA delayd+1");
