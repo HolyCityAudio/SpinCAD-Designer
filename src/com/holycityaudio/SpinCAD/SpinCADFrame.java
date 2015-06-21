@@ -275,11 +275,20 @@ public class SpinCADFrame extends JFrame {
 		JMenu mnOpenMenu = new JMenu("Open");
 
 		JMenuItem mntmOpenPatch = new JMenuItem("Patch");
-		fileOpenMenu(panel, mntmOpenPatch);
+		mntmOpenPatch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fileOpenPatch(panel);
+			}
+		});
+
 		mnOpenMenu.add(mntmOpenPatch);
 
 		JMenuItem mntmOpenBank = new JMenuItem("Bank");
-		fileOpenMenu(panel, mntmOpenBank);
+		mntmOpenBank.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				fileOpenBank(panel);
+			}
+		});
 		mnOpenMenu.add(mntmOpenBank);
 		mnFileMenu.add(mnOpenMenu);
 
@@ -646,14 +655,9 @@ public class SpinCADFrame extends JFrame {
 	 * @param mntmFile
 	 */
 	private void fileOpenMenu(final SpinCADPanel panel, JMenuItem mntmFile) {
-		mntmFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				fileOpen(panel);
-			}
-		});
 	}
 
-	void fileOpen(JPanel panel) {
+	void fileOpenPatch(JPanel panel) {
 		if (getModel().getChanged() == true) {
 			int dialogResult = yesNoBox(panel, "Warning!",
 					"You have unsaved changes!  Continue?");
@@ -704,6 +708,57 @@ public class SpinCADFrame extends JFrame {
 		panel.repaint();
 	}
 
+	void fileOpenBank(JPanel panel) {
+		if (getModel().getChanged() == true) {
+			int dialogResult = yesNoBox(panel, "Warning!",
+					"You have unsaved changes!  Continue?");
+			if (dialogResult == 0) {
+				getModel().newModel();
+				repaint();
+			}
+		}
+
+		// debug, want to open recent file list at program init.
+		// TODO set most recently used folder
+		loadRecentFileList();
+
+		final String newline = "\n";
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Bank Files", "spbk");
+		fc.setFileFilter(filter);
+
+		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			// This is where a real application would open the file.
+			System.out.println("Opening: " + file.getName() + "."
+					+ newline);
+			try {
+				// first, open bank, then open patch 0
+				String filePath = file.getPath();
+				model = SpinCADFile.fileRead(cb, getModel(), filePath );
+				spcFileName = file.getName();
+				getModel().getIndexFB();
+				getModel().setChanged(false);						
+				getModel().presetIndexFB();
+				saveMRUFolder(filePath);
+				recentFileList.add(file);
+				updateFrameTitle();
+			} catch (Exception e) {	// thrown over in SpinCADFile.java
+				//						e.printStackTrace();
+				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
+				spcFileName = "Untitled";
+				updateFrameTitle();
+				getModel().newModel();
+			}
+		} else {
+			System.out.println("Open command cancelled by user."
+					+ newline);
+		}
+		pb.update();
+		panel.repaint();
+	}
 
 
 	private void fileBatch(final SpinCADPanel panel, JMenuItem mntmFile) {
@@ -728,7 +783,7 @@ public class SpinCADFrame extends JFrame {
 				final String newline = "\n";
 				// In response to a button click:
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						"SpinCAD Files", "spcd");
+						"SpinCAD Patch Files", "spcd");
 				fc.setFileFilter(filter);
 
 				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
@@ -1414,7 +1469,7 @@ public class SpinCADFrame extends JFrame {
 				contentPane.repaint();
 			}
 			else {
-				fileOpen(contentPane);
+				fileOpenPatch(contentPane);
 				bank[bankIndex] = model;
 			}
 		}
