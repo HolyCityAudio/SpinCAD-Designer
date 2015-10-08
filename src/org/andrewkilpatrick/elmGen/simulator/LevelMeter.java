@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerPanel;
 import org.andrewkilpatrick.elmGen.util.Util;
 
 
@@ -53,6 +54,17 @@ public class LevelMeter implements AudioSink {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public LevelMeter(final JPanel p) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+//				panel = new JPanel(p);
+				p.setPreferredSize(new Dimension(80, 400));
+				p.setVisible(true);			
+			}
+		});
+//		delay = new AudioDelay();
 	}
 
 	public void close() {

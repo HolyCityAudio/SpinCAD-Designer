@@ -27,11 +27,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import com.holycityaudio.SpinCAD.SpinCADFrame.commentBlock;
+import com.holycityaudio.SpinCAD.SpinCADFrame.commentBlockBank;
+import com.holycityaudio.SpinCAD.SpinCADFrame.commentBlockPatch;
 
 public class SpinCADFile {
 
@@ -39,7 +37,7 @@ public class SpinCADFile {
 		// Auto-generated constructor stub
 	}
 
-	public static void fileSave(commentBlock cb, SpinCADModel m, String fileName) {
+	public static void fileSave(commentBlockPatch cb, SpinCADModel m, String fileName) {
 		try { 
 			FileOutputStream fos = new FileOutputStream(fileName); 
 			ObjectOutputStream oos = new ObjectOutputStream(fos); 
@@ -61,7 +59,28 @@ public class SpinCADFile {
 		} 
 	}
 
-	public static void fileSaveAsm(commentBlock cb, String codeListing, String fileName) throws IOException {
+	public static void fileSave(commentBlockBank cb, SpinCADBank b, String fileName) {
+		try { 
+			FileOutputStream fos = new FileOutputStream(fileName); 
+			ObjectOutputStream oos = new ObjectOutputStream(fos); 
+			// file name and SpinCAD Version are not saved with the file.
+			//oos.writeObject((Object)cb.line1text.getText());
+			//oos.writeObject((Object)cb.line2text.getText());
+			oos.writeObject((Object)cb.line3text.getText());
+			oos.writeObject((Object)cb.line4text.getText());
+			oos.writeObject((Object)cb.line5text.getText());
+			oos.writeObject((Object)cb.line6text.getText());
+			oos.writeObject((Object)cb.line7text.getText());
+			oos.flush(); 
+			oos.close(); 
+		} 
+		catch(Exception e) { 
+			System.out.println("Exception during serialization: " + e); 
+			//		System.exit(0); 
+		} 
+	}
+
+	public static void fileSaveAsm(commentBlockPatch cb, String codeListing, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
 		writer.write("; " + cb.line1text.getText());
@@ -118,7 +137,7 @@ public class SpinCADFile {
 		writer.close();
 	}
 
-	public static SpinCADModel fileRead(commentBlock cb, SpinCADModel m, String fileName) throws IOException, ClassNotFoundException {
+	public static SpinCADModel fileRead(commentBlockPatch cb, SpinCADModel m, String fileName) throws IOException, ClassNotFoundException {
 		// Object deserialization 
 		FileInputStream fis = new FileInputStream(fileName); 
 		ObjectInputStream ois = new ObjectInputStream(fis); 
