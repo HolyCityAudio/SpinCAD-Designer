@@ -61,6 +61,9 @@ import javax.swing.WindowConstants;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -72,6 +75,7 @@ import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADPanel.dragModes;
 
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -86,12 +90,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.prefs.Preferences;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 
@@ -122,7 +128,7 @@ public class SpinCADFrame extends JFrame {
 
 	SpinSimulator sim;
 	private JPanel levelMonitor = new JPanel();
-	
+
 	private boolean simRunning = false;
 	private boolean loggerIsVisible = false;
 	private static double pot0Level = 0;
@@ -232,29 +238,29 @@ public class SpinCADFrame extends JFrame {
 		toolBarPanel.add(pb, BorderLayout.SOUTH);
 
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-		
-//--------------------------------------
-// patch selector buttons in bank toolbar
-		
+
+		//--------------------------------------
+		// patch selector buttons in bank toolbar
+
 		Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 
 		bankPanel.setLayout(new GridLayout(1,8));
 		bankPanel.setVisible(true);
-//		simControlToolBar);	// start up with bank panel hidden
+		//		simControlToolBar);	// start up with bank panel hidden
 		bankPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.green),
-                bankPanel.getBorder()));
-		
+				BorderFactory.createLineBorder(Color.green),
+				bankPanel.getBorder()));
+
 		topPanel.add(bankPanel, BorderLayout.NORTH);
-//----------------------------------------
-		
+		//----------------------------------------
+
 		sctb.setFloatable(false);
 		sctb.setBorder(border);
 		simPanel.setLayout(new BoxLayout(simPanel, BoxLayout.Y_AXIS));
 		simPanel.add(sctb);
 		simPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.blue),
-                simPanel.getBorder()));
+				BorderFactory.createLineBorder(Color.blue),
+				simPanel.getBorder()));
 		topPanel.add(simPanel, BorderLayout.NORTH);
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
@@ -276,7 +282,7 @@ public class SpinCADFrame extends JFrame {
 
 		JMenu mnFileMenu = new JMenu("File");
 		menuBar.add(mnFileMenu);
-		
+
 		JMenu mnNewMenu = new JMenu("New");
 
 		JMenuItem mntmNewFile = new JMenuItem("Patch");
@@ -287,13 +293,14 @@ public class SpinCADFrame extends JFrame {
 		fileNewBank(panel, mntmNewBank);
 		mnNewMenu.add(mntmNewBank);
 		mnFileMenu.add(mnNewMenu);
-		
+
 		JMenu mnOpenMenu = new JMenu("Open");
 
 		JMenuItem mntmOpenPatch = new JMenuItem("Patch");
 		mntmOpenPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fileOpenPatch(panel);
+				bank[bankIndex] = model;
 			}
 		});
 
@@ -336,7 +343,7 @@ public class SpinCADFrame extends JFrame {
 		});
 		mnSaveAsMenu.add(mntmSaveBankAs);
 		mnFileMenu.add(mnSaveAsMenu);
-		
+
 		JMenu mnExport = new JMenu("Export to...");
 
 		JMenuItem mntmSaveAsm = new JMenuItem("Spin ASM");
@@ -378,7 +385,7 @@ public class SpinCADFrame extends JFrame {
 		mnFileMenu.add(mntmBatch);
 
 		mnFileMenu.addSeparator();
-		
+
 		JMenuItem mntmInfo = new JMenuItem("Information");
 		mntmInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -463,12 +470,12 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnSimulator.add(mntmSimSendToSound);
-		
+
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(mntmSimSendToFile);
 		bg.add(mntmSimSendToSound);
 		mnSimulator.addSeparator();
-		
+
 		JMenuItem mntmSimOutFile = new JMenuItem("Set Simulator Output File");
 		mntmSimOutFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -602,16 +609,16 @@ public class SpinCADFrame extends JFrame {
 						File fileToBeSaved = new File(spcFileName);
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
-//							SpinCADFile.fileSave(cb, getModel(), filePath);
+							//							SpinCADFile.fileSave(cb, getModel(), filePath);
 							saveMRUBankFolder(fileToBeSaved.getPath());
 							spcFileName = fileToBeSaved.getName();
-//							getModel().setChanged(false);
+							//							getModel().setChanged(false);
 							updateFrameTitle();
 						} else {
 							fileSaveBankAs();
 							spcFileName = fileToBeSaved.getName();
 							saveMRUBankFolder(fileToBeSaved.getPath());
-//							getModel().setChanged(false);
+							//							getModel().setChanged(false);
 							updateFrameTitle();
 						}
 					}
@@ -840,18 +847,18 @@ public class SpinCADFrame extends JFrame {
 			try {
 				// first, open bank, then open patch 0
 				String filePath = file.getPath();
-//				model = SpinCADFile.fileRead(cb, getModel(), filePath );
-//				spcFileName = file.getName();
-//				getModel().getIndexFB();
-//				getModel().setChanged(false);						
-//				getModel().presetIndexFB();
+				//				model = SpinCADFile.fileRead(cb, getModel(), filePath );
+				//				spcFileName = file.getName();
+				//				getModel().getIndexFB();
+				//				getModel().setChanged(false);						
+				//				getModel().presetIndexFB();
 				saveMRUBankFolder(filePath);
 				recentBankFileList.add(file);
 				updateFrameTitle();
 			} catch (Exception e) {	// thrown over in SpinCADFile.java
 				//						e.printStackTrace();
 				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
-//				spcFileName = "Untitled";
+				//				spcFileName = "Untitled";
 				updateFrameTitle();
 				getModel().newModel();
 			}
@@ -1025,8 +1032,8 @@ public class SpinCADFrame extends JFrame {
 			if (n == JOptionPane.YES_OPTION) {
 				try {
 					SpinCADFile.fileSave(cb, getModel(), fileToBeSaved.getPath());
-//					spcFileName = fileToBeSaved.getName();
-//					getModel().setChanged(false);
+					//					spcFileName = fileToBeSaved.getName();
+					//					getModel().setChanged(false);
 					recentBankFileList.add(fileToBeSaved);
 					saveMRUPatchFolder(fileToBeSaved.getPath());
 					updateFrameTitle();
@@ -1178,7 +1185,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 	}
-	
+
 	private WindowListener window() {
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
@@ -1573,7 +1580,7 @@ public class SpinCADFrame extends JFrame {
 						// loggerPanel.setVisible(loggerIsVisible);
 						if(loggerIsVisible) {
 							sim.showLevelLogger(loggerPanel);
-//							sim.showLevelMeter(levelMonitor);
+							//							sim.showLevelMeter(levelMonitor);
 						}
 						//					sim.showLevelMeter();
 						sim.start();
@@ -1638,8 +1645,6 @@ public class SpinCADFrame extends JFrame {
 			btnPatch3.setPreferredSize(buttonSize);
 			btnPatch3.addActionListener(this);
 
-//			this.add(Box.createRigidArea(new Dimension(5,4)));			
-
 			this.add(btnPatch4);
 			btnPatch4.setMinimumSize(minButtonSize);
 			btnPatch4.setPreferredSize(buttonSize);
@@ -1686,18 +1691,24 @@ public class SpinCADFrame extends JFrame {
 			else if (arg0.getSource() == btnPatch7) {
 				bankIndex = 7;
 			}
+			model = bank[bankIndex];
+			contentPane.repaint();
+			
+			/*
 			if(bank[bankIndex] != null) {
 				model = bank[bankIndex];
 				contentPane.repaint();
 			}
 			else {
-				fileOpenPatch(contentPane);
-				bank[bankIndex] = model;
+				// fileNewPatch(panel, mntmNewFile);
+				bank[bankIndex].newModel();
+				contentPane.repaint();
 			}
+			*/
 		}
 	}
-	
-	
+
+
 	// ================= used for the status toolbar and simulator start/stop
 	// button
 	public class EditResourcesToolBar extends JToolBar implements ActionListener {

@@ -66,7 +66,7 @@ import java.util.Iterator;
 public class SpinCADPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private enum dragModes { NODRAG, DRAGMOVE, CONNECT, DRAGBOX, SELECTED };
+	public enum dragModes { NODRAG, DRAGMOVE, CONNECT, DRAGBOX, SELECTED };
 
 	private SpinCADFrame f = null;
 	// following 4 variables are for pin to pin connections
