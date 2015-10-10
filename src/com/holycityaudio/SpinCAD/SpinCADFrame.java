@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * SpinCADFrame.java
- * Copyright (C) 2013 - 2014 - Gary Worsham
+ * Copyright (C) 2013 - 2015 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
  * 
  *   This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
@@ -61,9 +60,6 @@ import javax.swing.WindowConstants;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -75,7 +71,6 @@ import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
-import com.holycityaudio.SpinCAD.SpinCADPanel.dragModes;
 
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -90,14 +85,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.prefs.Preferences;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
 
@@ -106,7 +99,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 956;
+	int buildNum = 957;
 	private static final long serialVersionUID = -123123512351241L;
 
 	// Swing things
