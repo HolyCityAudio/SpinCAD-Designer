@@ -128,17 +128,31 @@ public class SpinCADFrame extends JFrame {
 	private static double pot1Level = 0;
 	private static double pot2Level = 0;
 
+	// BANK ========================================================
 	// stuff to do with working on a bank of 8 vs. just one patch
 	boolean bankMode = false;
 	int bankIndex;
-	// ========================================================
 	private static SpinCADModel model = new SpinCADModel();
-	private static SpinCADModel[] bank = new SpinCADModel[8];
+	
+	private class SpinCADBank {
+		private SpinCADModel bankModel;
+		private String fileName;
+		
+		SpinCADBank() {
+			bankModel = new SpinCADModel();
+			fileName = "";
+		}
+	}
+	
+	private static SpinCADBank[] bank = new SpinCADBank[8];
 
+	// PREFERENCES =====================================================
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
 	private RecentFileList recentBankFileList = null;
 	private RecentFileList recentPatchFileList = null;
+	
+	
 	// this next one is specific to file open, needs to be here for MRU file list operations
 	private JFileChooser fc;
 	// simulator input file
@@ -293,7 +307,8 @@ public class SpinCADFrame extends JFrame {
 		mntmOpenPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fileOpenPatch(panel);
-				bank[bankIndex] = model;
+				bank[bankIndex].bankModel = model;
+				bank[bankIndex].fileName = spcFileName;		
 			}
 		});
 
@@ -1348,7 +1363,6 @@ public class SpinCADFrame extends JFrame {
 		JOptionPane.showMessageDialog(frame,
 				message, title,
 				JOptionPane.DEFAULT_OPTION);
-
 	}
 
 	int yesNoBox(JPanel panel, String title, String question) {
@@ -1359,7 +1373,7 @@ public class SpinCADFrame extends JFrame {
 		return dialogResult;
 	}
 
-	// ======================================================================================================
+	// ====== COMMENT BLOCK PATCH ==================================================
 	class commentBlockPatch {
 		String line1 = "Patch: " + spcFileName;
 		String line2 = "SpinCAD Designer version: " + buildNum ;
@@ -1685,16 +1699,19 @@ public class SpinCADFrame extends JFrame {
 				bankIndex = 7;
 			}
 			
+			// previously loaded patch into the slot
 			if(bank[bankIndex] != null) {
-				model = bank[bankIndex];
-				contentPane.repaint();
 			}
+			// have not yet loaded a patch into this slot
 			else {
 //				fileNewPatch(panel, mntmNewFile);
-				bank[bankIndex] = new SpinCADModel();
-				bank[bankIndex].newModel();
-				contentPane.repaint();
+				bank[bankIndex] = new SpinCADBank();
+				bank[bankIndex].bankModel.newModel();
 			}
+			model = bank[bankIndex].bankModel;
+			spcFileName = bank[bankIndex].fileName;
+			updateFrameTitle();
+			contentPane.repaint();
 		}
 	}
 
