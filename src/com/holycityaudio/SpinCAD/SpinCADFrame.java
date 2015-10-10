@@ -1691,20 +1691,17 @@ public class SpinCADFrame extends JFrame {
 			else if (arg0.getSource() == btnPatch7) {
 				bankIndex = 7;
 			}
-			model = bank[bankIndex];
-			contentPane.repaint();
 			
-			/*
 			if(bank[bankIndex] != null) {
 				model = bank[bankIndex];
 				contentPane.repaint();
 			}
 			else {
-				// fileNewPatch(panel, mntmNewFile);
+//				fileNewPatch(panel, mntmNewFile);
+				bank[bankIndex] = new SpinCADModel();
 				bank[bankIndex].newModel();
 				contentPane.repaint();
 			}
-			*/
 		}
 	}
 
