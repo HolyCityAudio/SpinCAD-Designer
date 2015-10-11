@@ -1724,6 +1724,7 @@ public class SpinCADFrame extends JFrame {
 			model = eeprom.bank[bankIndex].patchModel;
 			spcFileName = eeprom.bank[bankIndex].patchFileName;
 			updateFrameTitle();
+			pb.update();
 			contentPane.repaint();
 		}
 	}
@@ -1782,8 +1783,7 @@ public class SpinCADFrame extends JFrame {
 	// ======================================================================================================
 	// ================= used for the status toolbar and simulator start/stop
 	// button
-	public class ModelResourcesToolBar extends JToolBar implements
-	ActionListener {
+	public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 		private static final long serialVersionUID = -8905757462245337214L;
 		final JProgressBar progressBar_2 = new JProgressBar();
 		final JProgressBar progressBar_1 = new JProgressBar();
@@ -1792,8 +1792,6 @@ public class SpinCADFrame extends JFrame {
 		final JTextField ramp1Bar = new JTextField("RMP 1", 6);
 		final JTextField sine0Bar = new JTextField("SIN 0", 6);
 		final JTextField sine1Bar = new JTextField("SIN 1", 6);
-
-
 
 		class Task extends SwingWorker<Void, Void> {
 			/*
