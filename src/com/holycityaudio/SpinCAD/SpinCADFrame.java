@@ -124,6 +124,7 @@ public class SpinCADFrame extends JFrame {
 
 	private boolean simRunning = false;
 	private boolean loggerIsVisible = false;
+	
 	private static double pot0Level = 0;
 	private static double pot1Level = 0;
 	private static double pot2Level = 0;
@@ -131,21 +132,31 @@ public class SpinCADFrame extends JFrame {
 	// BANK ========================================================
 	// stuff to do with working on a bank of 8 vs. just one patch
 	boolean bankMode = false;
-	int bankIndex;
+	int bankIndex = 0;
 	private static SpinCADModel model = new SpinCADModel();
 	
-	private class SpinCADBank {
-		private SpinCADModel bankModel;
-		private String fileName;
+	private class SpinCADPatch {
+		private SpinCADModel patchModel;
+		private String patchFileName;
 		
-		SpinCADBank() {
-			bankModel = new SpinCADModel();
-			fileName = "";
+		SpinCADPatch() {
+			patchModel = new SpinCADModel();
+			patchFileName = "Untitled";
 		}
 	}
 	
-	private static SpinCADBank[] bank = new SpinCADBank[8];
-
+	private class SpinCADBank {
+		Boolean changed = false;
+		String bankFileName = "Untitled";
+		SpinCADPatch[] bank;
+		
+		SpinCADBank() {
+			bank = new SpinCADPatch[8];
+		}
+	}
+	
+	SpinCADBank eeprom = new SpinCADBank();
+	
 	// PREFERENCES =====================================================
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
@@ -157,6 +168,7 @@ public class SpinCADFrame extends JFrame {
 	private JFileChooser fc;
 	// simulator input file
 	private static String spcFileName = "Untitled";
+	private static String spcBankFileName = "Untitled";
 	// simulator output file
 	private String outputFile = null; // play out through the sound card
 
@@ -188,7 +200,8 @@ public class SpinCADFrame extends JFrame {
 
 	@SuppressWarnings("unused")
 	public SpinCADFrame() {
-		setTitle("SpinCAD Designer - Untitled");
+		// setTitle("SpinCAD Designer - Untitled");
+		updateFrameTitle();
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 
@@ -307,8 +320,8 @@ public class SpinCADFrame extends JFrame {
 		mntmOpenPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fileOpenPatch(panel);
-				bank[bankIndex].bankModel = model;
-				bank[bankIndex].fileName = spcFileName;		
+				eeprom.bank[bankIndex].patchModel = model;
+				eeprom.bank[bankIndex].patchFileName = spcFileName;		
 			}
 		});
 
@@ -571,7 +584,7 @@ public class SpinCADFrame extends JFrame {
 	void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
-				setTitle("SpinCAD Designer - " + spcFileName + (getModel().changed ? " * " : ""));			
+				setTitle("SpinCAD Designer - Bank [" + spcBankFileName + "] Patch " + bankIndex + " [" + spcFileName + (getModel().changed ? " * ]" : "]"));			
 			}
 		});
 	}
@@ -614,17 +627,17 @@ public class SpinCADFrame extends JFrame {
 							"You have unsaved changes!  Save first?");				
 
 					if (dialogResult == JOptionPane.YES_OPTION) {
-						File fileToBeSaved = new File(spcFileName);
+						File fileToBeSaved = new File(spcBankFileName);
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
 							//							SpinCADFile.fileSave(cb, getModel(), filePath);
 							saveMRUBankFolder(fileToBeSaved.getPath());
-							spcFileName = fileToBeSaved.getName();
+							spcBankFileName = fileToBeSaved.getName();
 							//							getModel().setChanged(false);
 							updateFrameTitle();
 						} else {
 							fileSaveBankAs();
-							spcFileName = fileToBeSaved.getName();
+							spcBankFileName = fileToBeSaved.getName();
 							saveMRUBankFolder(fileToBeSaved.getPath());
 							//							getModel().setChanged(false);
 							updateFrameTitle();
@@ -1043,7 +1056,7 @@ public class SpinCADFrame extends JFrame {
 					//					spcFileName = fileToBeSaved.getName();
 					//					getModel().setChanged(false);
 					recentBankFileList.add(fileToBeSaved);
-					saveMRUPatchFolder(fileToBeSaved.getPath());
+					saveMRUBankFolder(fileToBeSaved.getPath());
 					updateFrameTitle();
 					cb.updateFileName();
 				} finally {
@@ -1700,16 +1713,16 @@ public class SpinCADFrame extends JFrame {
 			}
 			
 			// previously loaded patch into the slot
-			if(bank[bankIndex] != null) {
+			if(eeprom.bank[bankIndex] != null) {
 			}
 			// have not yet loaded a patch into this slot
 			else {
 //				fileNewPatch(panel, mntmNewFile);
-				bank[bankIndex] = new SpinCADBank();
-				bank[bankIndex].bankModel.newModel();
+				eeprom.bank[bankIndex] = new SpinCADPatch();
+				eeprom.bank[bankIndex].patchModel.newModel();
 			}
-			model = bank[bankIndex].bankModel;
-			spcFileName = bank[bankIndex].fileName;
+			model = eeprom.bank[bankIndex].patchModel;
+			spcFileName = eeprom.bank[bankIndex].patchFileName;
 			updateFrameTitle();
 			contentPane.repaint();
 		}
