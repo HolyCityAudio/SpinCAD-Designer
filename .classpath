@@ -6,10 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="C:/Users/User/Documents/workspace/jars/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/User/Documents/workspace/jars/commons-io-2.4-javadoc.jar"/>
-	<classpathentry kind="lib" path="C:/Users/User/Documents/workspace/jars/commons-io-2.4-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/User/Documents/workspace/jars/commons-io-2.4-tests.jar"/>
-	<classpathentry kind="lib" path="C:/Users/User/Documents/workspace/jars/commons-io-2.4-test-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/User/Documents/workspace/jars/elmGen-0.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
