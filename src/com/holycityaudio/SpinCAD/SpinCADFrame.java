@@ -133,11 +133,11 @@ public class SpinCADFrame extends JFrame {
 	// stuff to do with working on a bank of 8 vs. just one patch
 	boolean bankMode = false;
 	int bankIndex = 0;
-	private static SpinCADModel model = new SpinCADModel();
+	private SpinCADModel model = new SpinCADModel();
 	
 	private class SpinCADPatch {
-		private SpinCADModel patchModel;
-		private String patchFileName;
+		SpinCADModel patchModel;
+		String patchFileName;
 		
 		SpinCADPatch() {
 			patchModel = new SpinCADModel();
@@ -148,10 +148,12 @@ public class SpinCADFrame extends JFrame {
 	private class SpinCADBank {
 		Boolean changed = false;
 		String bankFileName = "Untitled";
-		SpinCADPatch[] bank;
+		SpinCADPatch[] bank = new SpinCADPatch[8];
 		
 		SpinCADBank() {
-			bank = new SpinCADPatch[8];
+			for (int i = 0; i < 8; i++) {
+				bank[i] = new SpinCADPatch();			
+			}
 		}
 	}
 	
@@ -320,8 +322,8 @@ public class SpinCADFrame extends JFrame {
 		mntmOpenPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fileOpenPatch(panel);
-				eeprom.bank[bankIndex].patchModel = model;
 				eeprom.bank[bankIndex].patchFileName = spcFileName;		
+				eeprom.bank[bankIndex].patchModel = model;
 			}
 		});
 
@@ -1157,10 +1159,6 @@ public class SpinCADFrame extends JFrame {
 		}
 	}
 
-	/**
-	 * @param panel
-	 * @param mntmNew
-	 */
 	private void fileNewPatch(final SpinCADPanel panel, JMenuItem mntmNew) {
 		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -1363,10 +1361,6 @@ public class SpinCADFrame extends JFrame {
 			} 
 			canUndo = 0;		
 		}
-	}
-
-	public static void setModelCurrentBlock(SpinCADModel model) {
-		SpinCADFrame.model = model;
 	}
 
 	// Swing dialog boxes.
@@ -1717,7 +1711,6 @@ public class SpinCADFrame extends JFrame {
 			}
 			// have not yet loaded a patch into this slot
 			else {
-//				fileNewPatch(panel, mntmNewFile);
 				eeprom.bank[bankIndex] = new SpinCADPatch();
 				eeprom.bank[bankIndex].patchModel.newModel();
 			}
