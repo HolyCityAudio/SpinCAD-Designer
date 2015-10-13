@@ -22,6 +22,7 @@ package com.holycityaudio.SpinCAD;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -38,25 +39,43 @@ public class SpinCADFile {
 	}
 
 	public static void fileSave(commentBlockPatch cb, SpinCADModel m, String fileName) {
-		try { 
-			FileOutputStream fos = new FileOutputStream(fileName); 
-			ObjectOutputStream oos = new ObjectOutputStream(fos); 
+			FileOutputStream fos;
+			ObjectOutputStream oos = null;
+			try {
+				fos = new FileOutputStream(fileName);
+				oos = new ObjectOutputStream(fos); 
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 			// file name and SpinCAD Version are not saved with the file.
 			//oos.writeObject((Object)cb.line1text.getText());
 			//oos.writeObject((Object)cb.line2text.getText());
-			oos.writeObject((Object)cb.line3text.getText());
-			oos.writeObject((Object)cb.line4text.getText());
-			oos.writeObject((Object)cb.line5text.getText());
-			oos.writeObject((Object)cb.line6text.getText());
-			oos.writeObject((Object)cb.line7text.getText());
-			oos.writeObject(m); 
-			oos.flush(); 
-			oos.close(); 
-		} 
-		catch(Exception e) { 
-			System.out.println("Exception during serialization: " + e); 
-			//		System.exit(0); 
-		} 
+			patchSave(cb, m, oos);
+			try {
+				oos.flush();
+				oos.close(); 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+	}
+	
+	private static void patchSave(commentBlockPatch cb, SpinCADModel m, ObjectOutputStream oops) {
+		try {
+			oops.writeObject((Object)cb.line3text.getText());
+			oops.writeObject((Object)cb.line4text.getText());
+			oops.writeObject((Object)cb.line5text.getText());
+			oops.writeObject((Object)cb.line6text.getText());
+			oops.writeObject((Object)cb.line7text.getText());
+			oops.writeObject(m); 	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void fileSave(commentBlockBank cb, SpinCADBank b, String fileName) {
@@ -71,6 +90,10 @@ public class SpinCADFile {
 			oos.writeObject((Object)cb.line5text.getText());
 			oos.writeObject((Object)cb.line6text.getText());
 			oos.writeObject((Object)cb.line7text.getText());
+			for(int i = 0; i < 8; i++ ) {
+//				b.
+//				patchSave(b.bank[i].comment, b.bank[i].patchModel, fileName);
+			}
 			oos.flush(); 
 			oos.close(); 
 		} 

@@ -104,19 +104,22 @@ public class SpinCADFrame extends JFrame {
 
 	// Swing things
 	private JPanel contentPane;
-	// pb shows instructions, registers, and RAM used.
-	// I should add LFOs to it also
+	//=========================================================================================
+	// pb shows instructions, registers, and RAM used.  It also shows allocation state of LFOs
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
 	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
-	private final simControlToolBar sctb = new simControlToolBar();
+	
 	private commentBlockPatch cb = new commentBlockPatch();
 	private final JPanel controlPanels = new JPanel();
 	// 
 	// topPanel holds bankPanel and simPanel
 	private final JPanel topPanel = new JPanel();
+	
+	//=============================================================
+	// Simulator display and control items
+	private final simControlToolBar sctb = new simControlToolBar();
 	private final JPanel simPanel = new JPanel();
-	private final JPanel bankPanel = new bankPanel();
 	private JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
 
 	SpinSimulator sim;
@@ -131,8 +134,10 @@ public class SpinCADFrame extends JFrame {
 
 	// BANK ========================================================
 	// stuff to do with working on a bank of 8 vs. just one patch
-	boolean bankMode = false;
+	// may remove bank mode variable, as will probably always be in bank mode
+	boolean bankMode = true;
 	int bankIndex = 0;
+	private final JPanel bankPanel = new bankPanel();
 	private SpinCADModel model = new SpinCADModel();
 	
 	private class SpinCADPatch {
@@ -145,7 +150,7 @@ public class SpinCADFrame extends JFrame {
 		}
 	}
 	
-	private class SpinCADBank {
+	public class SpinCADBank {
 		Boolean changed = false;
 		String bankFileName = "Untitled";
 		SpinCADPatch[] bank = new SpinCADPatch[8];
@@ -586,7 +591,7 @@ public class SpinCADFrame extends JFrame {
 	void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
-				setTitle("SpinCAD Designer - Bank [" + spcBankFileName + "] Patch " + bankIndex + " [" + spcFileName + (getModel().changed ? " * ]" : "]"));			
+				setTitle("SpinCAD Designer - Bank [" + spcBankFileName + (eeprom.changed ? " * ]" : "]") + " Patch " + bankIndex + " [" + spcFileName + (getModel().changed ? " * ]" : "]"));			
 			}
 		});
 	}
@@ -597,23 +602,18 @@ public class SpinCADFrame extends JFrame {
 				if (getModel().getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!", 
 							"You have unsaved changes!  Save first?");				
-
 					if (dialogResult == JOptionPane.YES_OPTION) {
 						File fileToBeSaved = new File(spcFileName);
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
 							SpinCADFile.fileSave(cb, getModel(), filePath);
-							saveMRUPatchFolder(fileToBeSaved.getPath());
-							spcFileName = fileToBeSaved.getName();
-							getModel().setChanged(false);
-							updateFrameTitle();
 						} else {
 							fileSavePatchAs();
-							spcFileName = fileToBeSaved.getName();
-							saveMRUPatchFolder(fileToBeSaved.getPath());
-							getModel().setChanged(false);
-							updateFrameTitle();
 						}
+						saveMRUPatchFolder(fileToBeSaved.getPath());
+						spcFileName = fileToBeSaved.getName();
+						getModel().setChanged(false);
+						updateFrameTitle();
 					}
 					System.exit(0);
 				}
@@ -837,6 +837,7 @@ public class SpinCADFrame extends JFrame {
 			System.out.println("Open command cancelled by user."
 					+ newline);
 		}
+		eeprom.changed = true;
 		pb.update();
 		panel.repaint();
 	}
