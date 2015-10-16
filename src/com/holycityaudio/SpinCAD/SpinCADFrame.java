@@ -109,13 +109,12 @@ public class SpinCADFrame extends JFrame {
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
 	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
-	
-	private commentBlockPatch cb = new commentBlockPatch();
+
 	private final JPanel controlPanels = new JPanel();
 	// 
 	// topPanel holds bankPanel and simPanel
 	private final JPanel topPanel = new JPanel();
-	
+
 	//=============================================================
 	// Simulator display and control items
 	private final simControlToolBar sctb = new simControlToolBar();
@@ -127,7 +126,7 @@ public class SpinCADFrame extends JFrame {
 
 	private boolean simRunning = false;
 	private boolean loggerIsVisible = false;
-	
+
 	private static double pot0Level = 0;
 	private static double pot1Level = 0;
 	private static double pot2Level = 0;
@@ -139,38 +138,68 @@ public class SpinCADFrame extends JFrame {
 	int bankIndex = 0;
 	private final JPanel bankPanel = new bankPanel();
 	private SpinCADModel model = new SpinCADModel();
-	
-	private class SpinCADPatch {
+
+	class commentBlock {
+		String line1 = "";
+		String line2 = "";
+		String line3 = "";
+		String line4 = "";
+		String line5 = "";
+		String line6 = "";
+		String line7 = "";
+
+		private void clearComments() {
+			line1 = "Patch: untitled";
+			line2 = "Pot 0: ";
+			line3 = "Pot 1: ";
+			line4 = "Pot 2: ";
+			line5 = "";
+			line6 = "";
+			line7 = "";
+		}
+	}
+
+	public class SpinCADPatch {
 		SpinCADModel patchModel;
 		String patchFileName;
-		
+		commentBlock cb = new commentBlock();
+
 		SpinCADPatch() {
 			patchModel = new SpinCADModel();
 			patchFileName = "Untitled";
+			cb.line1 = "Patch: " + spcFileName;
+			cb.line2 = "SpinCAD Designer version: " + buildNum ;
+			cb.line3 = "Pot 0: ";
+			cb.line4 = "Pot 1: ";
+			cb.line5 = "Pot 2: ";
+		}
+
+		void updateFileName(String n) {
+			patchFileName = n;
 		}
 	}
-	
+
 	public class SpinCADBank {
 		Boolean changed = false;
 		String bankFileName = "Untitled";
 		SpinCADPatch[] bank = new SpinCADPatch[8];
-		
+
 		SpinCADBank() {
 			for (int i = 0; i < 8; i++) {
 				bank[i] = new SpinCADPatch();			
 			}
 		}
 	}
-	
+
 	SpinCADBank eeprom = new SpinCADBank();
-	
+
 	// PREFERENCES =====================================================
 	// following things are saved in the SpinCAD preferences
 	private Preferences prefs;
 	private RecentFileList recentBankFileList = null;
 	private RecentFileList recentPatchFileList = null;
-	
-	
+
+
 	// this next one is specific to file open, needs to be here for MRU file list operations
 	private JFileChooser fc;
 	// simulator input file
@@ -395,14 +424,15 @@ public class SpinCADFrame extends JFrame {
 
 		mnFileMenu.addSeparator();
 
+		// XXX DEBUG
 		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy to Clipboard");
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				getModel().sortAlignGen();
-				StringSelection stringSelection = new StringSelection (cb.getComments() + SpinCADModel.getRenderBlock()
-						.getProgramListing(1));
+				//				StringSelection stringSelection = new StringSelection (cb.getComments() + SpinCADModel.getRenderBlock()
+				//						.getProgramListing(1));
 				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
-				clpbrd.setContents (stringSelection, null);
+				//				clpbrd.setContents (stringSelection, null);
 				//				fileSaveAsm();
 			}
 		});
@@ -417,7 +447,8 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmInfo = new JMenuItem("Information");
 		mntmInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				cb.show();
+				commentBlockPatch cbp = new commentBlockPatch(eeprom.bank[bankIndex]);
+				cbp.show();
 			}
 		});
 		mnFileMenu.add(mntmInfo);
@@ -606,7 +637,7 @@ public class SpinCADFrame extends JFrame {
 						File fileToBeSaved = new File(spcFileName);
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
-							SpinCADFile.fileSave(cb, getModel(), filePath);
+							SpinCADFile.fileSave(eeprom.bank[bankIndex], filePath);
 						} else {
 							fileSavePatchAs();
 						}
@@ -767,7 +798,7 @@ public class SpinCADFrame extends JFrame {
 					File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + spcFileName);
 					String filePath = fileToBeSaved.getPath();
 					try {
-						SpinCADFile.fileSave(cb, getModel(), filePath);
+						SpinCADFile.fileSave(eeprom.bank[bankIndex], filePath);
 						prefs.put("MRUPatchFolder", filePath);
 						saveMRUPatchFolder(filePath);
 						getModel().setChanged(false);
@@ -818,7 +849,7 @@ public class SpinCADFrame extends JFrame {
 					+ newline);
 			try {
 				String filePath = file.getPath();
-				model = SpinCADFile.fileRead(cb, getModel(), filePath );
+				model = SpinCADFile.fileRead(eeprom.bank[bankIndex], filePath);
 				spcFileName = file.getName();
 				getModel().getIndexFB();
 				getModel().setChanged(false);						
@@ -955,7 +986,7 @@ public class SpinCADFrame extends JFrame {
 									+ newline);
 							try {
 								String filePath = files[index].getPath();
-								model = SpinCADFile.fileRead(cb, getModel(), filePath );
+								model = SpinCADFile.fileRead(eeprom.bank[bankIndex], filePath );
 								//cb.line2text.setText()
 								getModel().getIndexFB();
 								getModel().setChanged(false);						
@@ -963,7 +994,8 @@ public class SpinCADFrame extends JFrame {
 
 								spcFileName = files[index].getName();
 								String spnPath  = prefs.get("MRUSpnFolder", "") + "/" + spcFileName + ".spn";
-								SpinCADFile.fileSaveAsm(cb, SpinCADModel.getRenderBlock().getProgramListing(1), spnPath.replace(".spcd.spn",  ".spn"));
+								// XXX debug
+								//								SpinCADFile.fileSaveAsm(cb, SpinCADModel.getRenderBlock().getProgramListing(1), spnPath.replace(".spcd.spn",  ".spn"));
 								updateFrameTitle();
 							} catch (Exception e) {	// thrown over in SpinCADFile.java
 								spcFileName = "Untitled";
@@ -1015,13 +1047,13 @@ public class SpinCADFrame extends JFrame {
 			}
 			if (n == JOptionPane.YES_OPTION) {
 				try {
-					SpinCADFile.fileSave(cb, getModel(), fileToBeSaved.getPath());
+					SpinCADFile.fileSave(eeprom.bank[bankIndex], fileToBeSaved.getPath());
 					spcFileName = fileToBeSaved.getName();
 					getModel().setChanged(false);
 					recentPatchFileList.add(fileToBeSaved);
 					saveMRUPatchFolder(fileToBeSaved.getPath());
 					updateFrameTitle();
-					cb.updateFileName();
+					eeprom.bank[bankIndex].updateFileName(spcFileName);
 				} finally {
 				}
 			}
@@ -1055,13 +1087,13 @@ public class SpinCADFrame extends JFrame {
 			}
 			if (n == JOptionPane.YES_OPTION) {
 				try {
-					SpinCADFile.fileSave(cb, getModel(), fileToBeSaved.getPath());
+					SpinCADFile.fileSave(eeprom.bank[bankIndex], fileToBeSaved.getPath());
 					//					spcFileName = fileToBeSaved.getName();
 					//					getModel().setChanged(false);
 					recentBankFileList.add(fileToBeSaved);
 					saveMRUBankFolder(fileToBeSaved.getPath());
 					updateFrameTitle();
-					cb.updateFileName();
+					eeprom.bank[bankIndex].updateFileName(fileToBeSaved.getName());
 				} finally {
 				}
 			}
@@ -1098,7 +1130,8 @@ public class SpinCADFrame extends JFrame {
 				getModel();
 			} finally {
 			}
-			try {
+
+			/*			try {
 				SpinCADFile.fileSaveAsm(cb, SpinCADModel.getRenderBlock()
 						.getProgramListing(1), filePath);
 			} catch (IOException e) {
@@ -1109,8 +1142,8 @@ public class SpinCADFrame extends JFrame {
 
 				e.printStackTrace();
 			}
-			getModel().setChanged(false);
-			saveMRUSpnFolder(filePath);
+			 */			getModel().setChanged(false);
+			 saveMRUSpnFolder(filePath);
 		}
 	}
 
@@ -1177,7 +1210,7 @@ public class SpinCADFrame extends JFrame {
 				bankPanel.setVisible(false);
 				updateFrameTitle();
 				getModel().newModel();
-				cb.clearComments();
+				eeprom.bank[bankIndex].cb.clearComments();
 				repaint();
 			}
 		});
@@ -1200,7 +1233,8 @@ public class SpinCADFrame extends JFrame {
 				bankPanel.setVisible(true);
 				updateFrameTitle();
 				getModel().newModel();
-				cb.clearComments();
+				// XXX DEBUG
+				//				cb.clearComments();
 				repaint();
 			}
 		});
@@ -1383,24 +1417,27 @@ public class SpinCADFrame extends JFrame {
 
 	// ====== COMMENT BLOCK PATCH ==================================================
 	class commentBlockPatch {
-		String line1 = "Patch: " + spcFileName;
-		String line2 = "SpinCAD Designer version: " + buildNum ;
-		String line3 = "Pot 0: ";
-		String line4 = "Pot 1: ";
-		String line5 = "Pot 2: ";
 
 		JFrame commentFrame = new JFrame("Patch Information");
 
-		JTextField line1text = new JTextField(line1, 64);
-		JTextField line2text = new JTextField(line2, 64);
-		JTextField line3text = new JTextField(line3, 64);
-		JTextField line4text = new JTextField(line4, 64);
-		JTextField line5text = new JTextField(line5, 64);
-		JTextField line6text = new JTextField("", 64);
-		JTextField line7text = new JTextField("", 64);
+		JTextField line1text;
+		JTextField line2text;
+		JTextField line3text;
+		JTextField line4text;
+		JTextField line5text;
+		JTextField line6text;
+		JTextField line7text;
 
-		public commentBlockPatch() {
+		public commentBlockPatch(SpinCADPatch patch) {
 			commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
+
+			line1text = new JTextField(patch.cb.line1, 64);
+			line2text = new JTextField(patch.cb.line2, 64);
+			line3text = new JTextField(patch.cb.line3, 64);
+			line4text = new JTextField(patch.cb.line4, 64);
+			line5text = new JTextField(patch.cb.line5, 64);
+			line6text = new JTextField("", 64);
+			line7text = new JTextField("", 64);
 
 			line1text.setEditable(false);
 			commentFrame.add(line1text);
@@ -1427,9 +1464,10 @@ public class SpinCADFrame extends JFrame {
 
 		private void clearComments() {
 			line1text.setText("Patch: untitled");
-			line3text.setText(line3);
-			line4text.setText(line4);
-			line5text.setText(line5);
+			line2text.setText("Pot 0: ");
+			line3text.setText("Pot 1: ");
+			line4text.setText("Pot 2: ");
+			line5text.setText("");
 			line6text.setText("");
 			line7text.setText("");
 		}
@@ -1706,7 +1744,7 @@ public class SpinCADFrame extends JFrame {
 			else if (arg0.getSource() == btnPatch7) {
 				bankIndex = 7;
 			}
-			
+
 			// previously loaded patch into the slot
 			if(eeprom.bank[bankIndex] != null) {
 			}
