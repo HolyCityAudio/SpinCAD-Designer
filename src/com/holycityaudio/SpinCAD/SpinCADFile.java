@@ -31,7 +31,6 @@ import java.io.ObjectOutputStream;
 
 import com.holycityaudio.SpinCAD.SpinCADFrame.SpinCADBank;
 import com.holycityaudio.SpinCAD.SpinCADFrame.SpinCADPatch;
-import com.holycityaudio.SpinCAD.SpinCADFrame.commentBlockBank;
 
 public class SpinCADFile {
 
@@ -173,55 +172,43 @@ public class SpinCADFile {
 		try {
 			p.cb.line3  = (String)ois.readObject();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			p.cb.line4 = (String)ois.readObject();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			p.cb.line5 = (String)ois.readObject();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			p.cb.line6 = (String)ois.readObject();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			p.cb.line7 = (String)ois.readObject();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			p.patchModel = (SpinCADModel)ois.readObject();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 		
 	}
