@@ -106,24 +106,25 @@ public class SpinCADFile {
 		} 
 	}
 
-	public static void fileSaveAsm(commentBlockPatch cb, String codeListing, String fileName) throws IOException {
+	public static void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
-		writer.write("; " + cb.line1text.getText());
+		writer.write("; " + p.cb.line1);
 		writer.newLine();
-		writer.write("; " + cb.line2text.getText());
+		writer.write("; " + p.cb.line2);
 		writer.newLine();
-		writer.write("; " + cb.line3text.getText());
+		writer.write("; " + p.cb.line3);
 		writer.newLine();
-		writer.write("; " + cb.line4text.getText());
+		writer.write("; " + p.cb.line4);
 		writer.newLine();
-		writer.write("; " + cb.line5text.getText());
+		writer.write("; " + p.cb.line5);
 		writer.newLine();
-		writer.write("; " + cb.line6text.getText());
+		writer.write("; " + p.cb.line6);
 		writer.newLine();
-		writer.write("; " + cb.line7text.getText());
+		writer.write("; " + p.cb.line7);
 		writer.newLine();
-
+		
+		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
 		String[] words = codeListing.split("\n");
 		for (String word: words) {
 			writer.write(word);

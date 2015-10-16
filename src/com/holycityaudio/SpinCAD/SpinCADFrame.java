@@ -1131,19 +1131,17 @@ public class SpinCADFrame extends JFrame {
 			} finally {
 			}
 
-			/*			try {
-				SpinCADFile.fileSaveAsm(cb, SpinCADModel.getRenderBlock()
-						.getProgramListing(1), filePath);
+			try {SpinCADFile.fileSaveAsm(eeprom.bank[bankIndex], filePath);
 			} catch (IOException e) {
 				JOptionPane.showOptionDialog(null,
 						"File save error!", "Error",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, null, null);
-
 				e.printStackTrace();
 			}
-			 */			getModel().setChanged(false);
-			 saveMRUSpnFolder(filePath);
+						
+			getModel().setChanged(false);
+			saveMRUSpnFolder(filePath);
 		}
 	}
 
