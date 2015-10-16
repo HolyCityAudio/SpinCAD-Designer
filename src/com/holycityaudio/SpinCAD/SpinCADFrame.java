@@ -58,7 +58,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -124,7 +123,6 @@ public class SpinCADFrame extends JFrame {
 	SpinSimulator sim;
 	private JPanel levelMonitor = new JPanel();
 
-	private boolean simRunning = false;
 	private boolean loggerIsVisible = false;
 
 	private static double pot0Level = 0;
@@ -183,8 +181,15 @@ public class SpinCADFrame extends JFrame {
 		Boolean changed = false;
 		String bankFileName = "Untitled";
 		SpinCADPatch[] bank = new SpinCADPatch[8];
+		commentBlock cb = new commentBlock();
 
 		SpinCADBank() {
+			cb.line1 = "Bank: " + bankFileName;
+			cb.line2 = "SpinCAD Designer version: " + buildNum ;
+			cb.line3 = "";
+			cb.line4 = "";
+			cb.line5 = "";
+
 			for (int i = 0; i < 8; i++) {
 				bank[i] = new SpinCADPatch();			
 			}
@@ -1350,15 +1355,6 @@ public class SpinCADFrame extends JFrame {
 
 	}
 
-	public boolean isSimRunning() {
-		return simRunning;
-	}
-
-	public boolean setSimRunning(boolean simRunning) {
-		this.simRunning = simRunning;
-		return simRunning;
-	}
-
 	public SpinCADModel getModel() {
 		return model;
 	}
@@ -1484,13 +1480,13 @@ public class SpinCADFrame extends JFrame {
 
 	// ======================================================================================================
 	class commentBlockBank {
-		String line1 = "Bank: " + spcFileName;
+		String line1 = "Bank: " + eeprom.bankFileName;
 		String line2 = "SpinCAD Designer version: " + buildNum ;
-		String line3 = "Pot 0: ";
-		String line4 = "Pot 1: ";
-		String line5 = "Pot 2: ";
+		String line3 = "";
+		String line4 = "";
+		String line5 = "";
 
-		JFrame commentFrame = new JFrame("Patch Information");
+		JFrame commentFrame = new JFrame("Bank Information");
 
 		JTextField line1text = new JTextField(line1, 64);
 		JTextField line2text = new JTextField(line2, 64);
@@ -1500,8 +1496,16 @@ public class SpinCADFrame extends JFrame {
 		JTextField line6text = new JTextField("", 64);
 		JTextField line7text = new JTextField("", 64);
 
-		public commentBlockBank() {
+		public commentBlockBank(SpinCADBank bank) {
 			commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
+
+			line1text = new JTextField(bank.cb.line1, 64);
+			line2text = new JTextField(bank.cb.line2, 64);
+			line3text = new JTextField(bank.cb.line3, 64);
+			line4text = new JTextField(bank.cb.line4, 64);
+			line5text = new JTextField(bank.cb.line5, 64);
+			line6text = new JTextField("", 64);
+			line7text = new JTextField("", 64);
 
 			line1text.setEditable(false);
 			commentFrame.add(line1text);
@@ -1523,11 +1527,12 @@ public class SpinCADFrame extends JFrame {
 		}
 
 		public void updateFileName() {
-			line1text.setText("Patch Name: " + spcFileName);
+			line1text.setText("Bank: " + spcFileName);
 		}
 
 		private void clearComments() {
 			line1text.setText("Bank: untitled");
+			line2text.setText("");
 			line3text.setText("");
 			line4text.setText("");
 			line5text.setText("");
@@ -1611,9 +1616,10 @@ public class SpinCADFrame extends JFrame {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
+			SpinCADSimulator simX = new SpinCADSimulator();
 			if (arg0.getSource() == btnStartSimulation) {
-				if (isSimRunning() == true) {
-					setSimRunning(false);
+				if (simX.isSimRunning() == true) {
+					simX.setSimRunning(false);
 					loggerPanel.setVisible(false);
 					levelMonitor.setVisible(false);;
 					btnStartSimulation.setText("Start Simulator");
@@ -1621,7 +1627,7 @@ public class SpinCADFrame extends JFrame {
 				} else {
 					String testWavFileName = checkSimulatorFile();
 					if(testWavFileName != "Not found!") {
-						setSimRunning(true);
+						simX.setSimRunning(true);
 						// create file
 						btnStartSimulation.setText("Stop Simulator");
 						pb.update();
@@ -1641,13 +1647,13 @@ public class SpinCADFrame extends JFrame {
 					} 
 				}
 			} else if (arg0.getSource() == btnSigGen) {
-				if (isSimRunning() == true) {
-					setSimRunning(false);
+				if (simX.isSimRunning() == true) {
+					simX.setSimRunning(false);
 					btnSigGen.setText("Start Signal");
 					sim.stopSimulator();
 				} else {
 					//					String outputFile = null; // play out through the sound card
-					setSimRunning(true);
+					simX.setSimRunning(true);
 					btnSigGen.setText("Stop Signal");
 					//					SignalGenerator SigGen = new SignalGenerator();
 				}

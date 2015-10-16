@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import com.holycityaudio.SpinCAD.SpinCADFrame.SpinCADBank;
 import com.holycityaudio.SpinCAD.SpinCADFrame.SpinCADPatch;
 import com.holycityaudio.SpinCAD.SpinCADFrame.commentBlockBank;
-import com.holycityaudio.SpinCAD.SpinCADFrame.commentBlockPatch;
 
 public class SpinCADFile {
 
@@ -46,21 +46,15 @@ public class SpinCADFile {
 				fos = new FileOutputStream(fileName);
 				oos = new ObjectOutputStream(fos); 
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-			// file name and SpinCAD Version are not saved with the file.
-			//oos.writeObject((Object)cb.line1text.getText());
-			//oos.writeObject((Object)cb.line2text.getText());
 			patchSave(m, oos);
 			try {
 				oos.flush();
 				oos.close(); 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 	}
@@ -76,26 +70,24 @@ public class SpinCADFile {
 			oops.writeObject((Object)m.cb.line7);
 			oops.writeObject(m); 	
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public static void fileSave(commentBlockBank cb, SpinCADBank b, String fileName) {
+	public static void fileSave(SpinCADBank b, String fileName) {
 		try { 
 			FileOutputStream fos = new FileOutputStream(fileName); 
 			ObjectOutputStream oos = new ObjectOutputStream(fos); 
 			// file name and SpinCAD Version are not saved with the file.
 			//oos.writeObject((Object)cb.line1text.getText());
 			//oos.writeObject((Object)cb.line2text.getText());
-			oos.writeObject((Object)cb.line3text.getText());
-			oos.writeObject((Object)cb.line4text.getText());
-			oos.writeObject((Object)cb.line5text.getText());
-			oos.writeObject((Object)cb.line6text.getText());
-			oos.writeObject((Object)cb.line7text.getText());
+			oos.writeObject((Object)b.cb.line3);
+			oos.writeObject((Object)b.cb.line4);
+			oos.writeObject((Object)b.cb.line5);
+			oos.writeObject((Object)b.cb.line6);
+			oos.writeObject((Object)b.cb.line7);
 			for(int i = 0; i < 8; i++ ) {
-//				b.
-//				patchSave(b.bank[i].comment, b.bank[i].patchModel, fileName);
+				patchSave(b.bank[i], oos);
 			}
 			oos.flush(); 
 			oos.close(); 
@@ -124,7 +116,7 @@ public class SpinCADFile {
 		writer.write("; " + p.cb.line7);
 		writer.newLine();
 		
-		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
+		String codeListing = SpinCADModel.getRenderBlock().getProgramListing(1);
 		String[] words = codeListing.split("\n");
 		for (String word: words) {
 			writer.write(word);
@@ -171,15 +163,87 @@ public class SpinCADFile {
 		m.cb.line1 = "Patch: " + fileName;
 		// line 2 is set back in SpinCAD Frame - it's the SpinCAD Designer version
 		// cb.line2text.setText((String)ois.readObject());
-		m.cb.line3  = (String)ois.readObject();
-		m.cb.line4 = (String)ois.readObject();
-		m.cb.line5 = (String)ois.readObject();
-		m.cb.line6 = (String)ois.readObject();
-		m.cb.line7 = (String)ois.readObject();
-		m.patchModel = (SpinCADModel)ois.readObject(); 
+		patchRead(m, ois);
 		ois.close(); 
 		// System.out.println("m: " + m); 
 		return m.patchModel;
+	} 
+	
+	private static void patchRead(SpinCADPatch p, ObjectInputStream ois) {
+		try {
+			p.cb.line3  = (String)ois.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			p.cb.line4 = (String)ois.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			p.cb.line5 = (String)ois.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			p.cb.line6 = (String)ois.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			p.cb.line7 = (String)ois.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			p.patchModel = (SpinCADModel)ois.readObject();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 		
+	}
+	
+	public static SpinCADBank fileRead(SpinCADBank b, String fileName) throws IOException, ClassNotFoundException {
+		// Object deserialization 
+		FileInputStream fis = new FileInputStream(fileName); 
+		ObjectInputStream ois = new ObjectInputStream(fis); 
+		// b.cb.line1 = "Patch: " + fileName;
+		// line 2 is set back in SpinCAD Frame - it's the SpinCAD Designer version
+		// cb.line2text.setText((String)ois.readObject());
+		b.cb.line3  = (String)ois.readObject();
+		b.cb.line4 = (String)ois.readObject();
+		b.cb.line5 = (String)ois.readObject();
+		b.cb.line6 = (String)ois.readObject();
+		b.cb.line7 = (String)ois.readObject();
+		for(int i = 0; i < 8; i++ ) {
+			patchRead(b.bank[i], ois);
+		}
+		ois.close(); 
+		// System.out.println("m: " + m); 
+		return b;
 	} 	
 }
 
