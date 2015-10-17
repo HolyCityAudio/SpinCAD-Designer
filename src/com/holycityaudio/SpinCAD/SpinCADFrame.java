@@ -76,6 +76,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -163,64 +164,6 @@ public class SpinCADFrame extends JFrame {
 		});
 	}
 
-	class commentBlock {
-		String line1 = "";
-		String line2 = "";
-		String line3 = "";
-		String line4 = "";
-		String line5 = "";
-		String line6 = "";
-		String line7 = "";
-
-		private void clearComments() {
-			line1 = "Patch: untitled";
-			line2 = "Pot 0: ";
-			line3 = "Pot 1: ";
-			line4 = "Pot 2: ";
-			line5 = "";
-			line6 = "";
-			line7 = "";
-		}
-	}
-
-	public class SpinCADPatch {
-		SpinCADModel patchModel;
-		String patchFileName;
-		commentBlock cb = new commentBlock();
-
-		SpinCADPatch() {
-			patchModel = new SpinCADModel();
-			patchFileName = "Untitled";
-			cb.line1 = "Patch: " + spcFileName;
-			cb.line2 = "SpinCAD Designer version: " + buildNum ;
-			cb.line3 = "Pot 0: ";
-			cb.line4 = "Pot 1: ";
-			cb.line5 = "Pot 2: ";
-		}
-
-		void updateFileName(String n) {
-			patchFileName = n;
-		}
-	}
-
-	public class SpinCADBank {
-		Boolean changed = false;
-		String bankFileName = "Untitled";
-		SpinCADPatch[] bank = new SpinCADPatch[8];
-		commentBlock cb = new commentBlock();
-
-		SpinCADBank() {
-			cb.line1 = "Bank: " + bankFileName;
-			cb.line2 = "SpinCAD Designer version: " + buildNum ;
-			cb.line3 = "";
-			cb.line4 = "";
-			cb.line5 = "";
-
-			for (int i = 0; i < 8; i++) {
-				bank[i] = new SpinCADPatch();			
-			}
-		}
-	}
 	
 	/**
 	 * Create the frame.
@@ -841,7 +784,8 @@ public class SpinCADFrame extends JFrame {
 					+ newline);
 			try {
 				String filePath = file.getPath();
-				model = SpinCADFile.fileRead(eeprom.bank[bankIndex], filePath);
+				eeprom.bank[bankIndex] = SpinCADFile.fileReadPatch(filePath);
+				model = eeprom.bank[bankIndex].patchModel;
 				spcFileName = file.getName();
 				getModel().getIndexFB();
 				getModel().setChanged(false);						
@@ -894,7 +838,7 @@ public class SpinCADFrame extends JFrame {
 			try {
 				// first, open bank, then open patch 0
 				String filePath = file.getPath();
-				eeprom = SpinCADFile.fileRead(eeprom, filePath );
+				eeprom = SpinCADFile.fileReadBank(filePath );
 				spcBankFileName = eeprom.bankFileName;
 				saveMRUBankFolder(filePath);
 				recentBankFileList.add(file);
@@ -975,7 +919,7 @@ public class SpinCADFrame extends JFrame {
 									+ newline);
 							try {
 								String filePath = files[index].getPath();
-								model = SpinCADFile.fileRead(eeprom.bank[bankIndex], filePath );
+								eeprom.bank[bankIndex] = SpinCADFile.fileReadPatch(filePath );
 								//cb.line2text.setText()
 								getModel().getIndexFB();
 								getModel().setChanged(false);						
