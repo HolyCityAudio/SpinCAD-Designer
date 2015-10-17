@@ -557,7 +557,7 @@ public class SpinCADFrame extends JFrame {
 	void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
-				setTitle("SpinCAD Designer - Bank [" + spcBankFileName + (eeprom.changed ? " * ]" : "]") + " Patch " + bankIndex + " [" + spcFileName + (getModel().changed ? " * ]" : "]"));			
+				setTitle("SpinCAD Designer - Bank [" + eeprom.bankFileName + (eeprom.changed ? " * ]" : "]") + " Patch " + bankIndex + " [" + spcFileName + (getModel().changed ? " * ]" : "]"));			
 			}
 		});
 	}
@@ -595,17 +595,17 @@ public class SpinCADFrame extends JFrame {
 							"You have unsaved changes!  Save first?");				
 
 					if (dialogResult == JOptionPane.YES_OPTION) {
-						File fileToBeSaved = new File(spcBankFileName);
+						File fileToBeSaved = new File(eeprom.bankFileName);
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
 							//							SpinCADFile.fileSave(cb, getModel(), filePath);
 							saveMRUBankFolder(fileToBeSaved.getPath());
-							spcBankFileName = fileToBeSaved.getName();
+							eeprom.bankFileName = fileToBeSaved.getName();
 							//							getModel().setChanged(false);
 							updateFrameTitle();
 						} else {
 							fileSaveBankAs();
-							spcBankFileName = fileToBeSaved.getName();
+							eeprom.bankFileName = fileToBeSaved.getName();
 							saveMRUBankFolder(fileToBeSaved.getPath());
 							//							getModel().setChanged(false);
 							updateFrameTitle();
@@ -839,14 +839,13 @@ public class SpinCADFrame extends JFrame {
 				// first, open bank, then open patch 0
 				String filePath = file.getPath();
 				eeprom = SpinCADFile.fileReadBank(filePath );
-				spcBankFileName = eeprom.bankFileName;
 				saveMRUBankFolder(filePath);
 				recentBankFileList.add(file);
 				updateFrameTitle();
 			} catch (Exception e) {	// thrown over in SpinCADFile.java
 				//						e.printStackTrace();
 				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
-				spcBankFileName = "Untitled";
+				eeprom.bankFileName = "Untitled";
 				updateFrameTitle();
 //				getModel().newModel();
 			}
@@ -1020,7 +1019,7 @@ public class SpinCADFrame extends JFrame {
 			}
 			if (n == JOptionPane.YES_OPTION) {
 				try {
-					SpinCADFile.fileSave(eeprom.bank[bankIndex], fileToBeSaved.getPath());
+					SpinCADFile.fileSave(eeprom, fileToBeSaved.getPath());
 					//					spcFileName = fileToBeSaved.getName();
 					//					getModel().setChanged(false);
 					recentBankFileList.add(fileToBeSaved);

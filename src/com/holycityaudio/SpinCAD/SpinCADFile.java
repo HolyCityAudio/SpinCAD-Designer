@@ -28,6 +28,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class SpinCADFile {
 
@@ -87,6 +89,17 @@ public class SpinCADFile {
 		} 
 	}
 
+	public static SpinCADBank fileReadBank(String fileName) throws IOException, ClassNotFoundException {
+		// Object deserialization 
+		FileInputStream fis = new FileInputStream(fileName); 
+		ObjectInputStream ois = new ObjectInputStream(fis); 
+		SpinCADBank p  = (SpinCADBank)ois.readObject();
+
+		ois.close(); 
+		// System.out.println("m: " + m); 
+		return p;
+	} 	
+	
 	public static void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
@@ -144,16 +157,5 @@ public class SpinCADFile {
 		writer.write(":00000001FF\n");
 		writer.close();
 	}
-
-	public static SpinCADBank fileReadBank(String fileName) throws IOException, ClassNotFoundException {
-		// Object deserialization 
-		FileInputStream fis = new FileInputStream(fileName); 
-		ObjectInputStream ois = new ObjectInputStream(fis); 
-		SpinCADBank p  = (SpinCADBank)ois.readObject();
-
-		ois.close(); 
-		// System.out.println("m: " + m); 
-		return p;
-	} 	
 }
 
