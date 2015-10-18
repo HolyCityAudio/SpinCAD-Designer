@@ -360,8 +360,7 @@ public class SpinCADFile {
 	}
 
 
-
-	public static void fileSavePatchAs(SpinCADPatch p) {
+	public void fileSavePatchAs(SpinCADPatch p) {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUFolder", "");
 		final JFileChooser fc = new JFileChooser(savedPath);

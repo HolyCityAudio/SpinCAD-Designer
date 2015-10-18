@@ -97,9 +97,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 957;
-	private static final long serialVersionUID = -123123512351241L;
-
+	int buildNum = 958;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -112,21 +110,19 @@ public class SpinCADFrame extends JFrame {
 	// 
 	// topPanel holds bankPanel and simPanel
 	private final JPanel topPanel = new JPanel();
+	private final JPanel bankPanel = new bankPanel();
 
 	//=============================================================
 	// Simulator display and control items
 	SpinCADSimulator simX = new SpinCADSimulator(this);
 	private final simControlToolBar sctb = simX.sctb;
 	private final JPanel simPanel = new JPanel();
-
-
+	
 	// BANK ========================================================
 	// stuff to do with working on a bank of 8 vs. just one patch
 	// may remove bank mode variable, as will probably always be in bank mode
 	boolean bankMode = true;
 	static int bankIndex = 0;
-	private final JPanel bankPanel = new bankPanel();
-	private SpinCADModel model = new SpinCADModel();
 
 	private static SpinCADBank eeprom = new SpinCADBank();
 
@@ -258,17 +254,57 @@ public class SpinCADFrame extends JFrame {
 		JMenu mnFileMenu = new JMenu("File");
 		menuBar.add(mnFileMenu);
 
+		// NEW PATCH AND BANK
 		JMenu mnNewMenu = new JMenu("New");
 
-		JMenuItem mntmNewFile = new JMenuItem("Patch");
-		fileNewPatch(panel, mntmNewFile);
-		mnNewMenu.add(mntmNewFile);
+		JMenuItem mntmNewPatch = new JMenuItem("Patch");
+		mntmNewPatch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (getModel().getChanged() == true) {
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(panel,
+							"You have unsaved changes!  Continue?", "Warning!",
+							dialogButton);
+					if (dialogResult == JOptionPane.NO_OPTION) {
+						return;
+					}
+				}
+				eeprom.bank[bankIndex] = new SpinCADPatch();
+				bankPanel.setVisible(false);
+				updateFrameTitle();
+				repaint();
+			}
+		});
+		mnNewMenu.add(mntmNewPatch);
 
 		JMenuItem mntmNewBank = new JMenuItem("Bank");
-		fileNewBank(panel, mntmNewBank);
+		mntmNewBank.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (getModel().getChanged() == true) {
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(panel,
+							"You have unsaved changes!  Continue?", "Warning!",
+							dialogButton);
+					if (dialogResult == JOptionPane.NO_OPTION) {
+						return;
+					}
+				}
+				eeprom.bankFileName = "Untitled";
+				bankPanel.setVisible(true);
+				updateFrameTitle();
+				getModel().newModel();
+				eeprom = new SpinCADBank();
+				repaint();
+			}
+		});
+
 		mnNewMenu.add(mntmNewBank);
 		mnFileMenu.add(mnNewMenu);
 
+		// OPEN PATCH AND BANK
+		
 		JMenu mnOpenMenu = new JMenu("Open");
 
 		JMenuItem mntmOpenPatch = new JMenuItem("Patch");
@@ -283,7 +319,7 @@ public class SpinCADFrame extends JFrame {
 						repaint();
 					}
 					else {
-						f.fileOpenPatch();
+						eeprom.bank[bankIndex] = f.fileOpenPatch();
 						getModel().getIndexFB();
 						getModel().setChanged(false);						
 						getModel().presetIndexFB();
@@ -309,7 +345,7 @@ public class SpinCADFrame extends JFrame {
 						getModel().newModel();
 						repaint();
 					}
-					f.fileOpenBank();
+					eeprom = f.fileOpenBank();
 				}
 				eeprom = f.fileOpenBank();
 			}
@@ -317,6 +353,7 @@ public class SpinCADFrame extends JFrame {
 		mnOpenMenu.add(mntmOpenBank);
 		mnFileMenu.add(mnOpenMenu);
 
+// SAVE PATCH AND BANK		
 		JMenu mnSaveMenu = new JMenu("Save");
 		JMenuItem mntmSavePatch = new JMenuItem("Patch");
 		fileSave(mntmSavePatch);
@@ -332,7 +369,9 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSavePatchAs = new JMenuItem("Patch");
 		mntmSavePatchAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				 SpinCADFile.fileSavePatchAs(eeprom.bank[bankIndex]);
+				eeprom.bank[bankIndex].cb.line2 = "Patch saved from SpinCAD Designer version" + buildNum;
+				SpinCADFile f = new SpinCADFile();
+				f.fileSavePatchAs(eeprom.bank[bankIndex]);
 			}
 		});
 		mnSaveAsMenu.add(mntmSavePatchAs);
@@ -340,6 +379,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveBankAs = new JMenuItem("Bank");
 		mntmSaveBankAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				eeprom.cb.line2 = "Bank saved from SpinCAD Designer version" + buildNum;
 				SpinCADFile f = new SpinCADFile();
 				f.fileSaveBankAs(eeprom);
 			}
@@ -594,7 +634,8 @@ public class SpinCADFrame extends JFrame {
 					}
 
 				} else {
-					SpinCADFile.fileSavePatchAs(eeprom.bank[bankIndex]);
+					SpinCADFile f = new SpinCADFile();
+					f.fileSavePatchAs(eeprom.bank[bankIndex]);
 					getModel().setChanged(false);
 				}
 			}
@@ -614,7 +655,8 @@ public class SpinCADFrame extends JFrame {
 							SpinCADFile f = new SpinCADFile();
 							f.fileSave(eeprom.bank[bankIndex]);
 						} else {
-							SpinCADFile.fileSavePatchAs(eeprom.bank[bankIndex]);
+							SpinCADFile f = new SpinCADFile();
+							f.fileSavePatchAs(eeprom.bank[bankIndex]);
 						}
 						// XXX debug
 						//						eeprom.bank[bankIndex].setChanged(false);
@@ -656,49 +698,10 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	private void fileNewPatch(final SpinCADPanel panel, JMenuItem mntmNew) {
-		mntmNew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
 
-				if (getModel().getChanged() == true) {
-					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(panel,
-							"You have unsaved changes!  Continue?", "Warning!",
-							dialogButton);
-					if (dialogResult == JOptionPane.NO_OPTION) {
-						return;
-					}
-				}
-				eeprom.bank[bankIndex].patchFileName = "Untitled";
-				bankPanel.setVisible(false);
-				updateFrameTitle();
-				getModel().newModel();
-				eeprom.bank[bankIndex].cb.clearComments();
-				repaint();
-			}
-		});
 	}
 
 	private void fileNewBank(final SpinCADPanel panel, JMenuItem mntmNew) {
-		mntmNew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				if (getModel().getChanged() == true) {
-					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(panel,
-							"You have unsaved changes!  Continue?", "Warning!",
-							dialogButton);
-					if (dialogResult == JOptionPane.NO_OPTION) {
-						return;
-					}
-				}
-				eeprom.bankFileName = "Untitled";
-				bankPanel.setVisible(true);
-				updateFrameTitle();
-				getModel().newModel();
-				eeprom = new SpinCADBank();
-				repaint();
-			}
-		});
 	}
 	
 	void fileBatch(final SpinCADPanel panel, JMenuItem mntmFile) {
