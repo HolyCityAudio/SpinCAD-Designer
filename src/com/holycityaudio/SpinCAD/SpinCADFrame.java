@@ -311,6 +311,7 @@ public class SpinCADFrame extends JFrame {
 					}
 					f.fileOpenBank();
 				}
+				eeprom = f.fileOpenBank();
 			}
 		});
 		mnOpenMenu.add(mntmOpenBank);

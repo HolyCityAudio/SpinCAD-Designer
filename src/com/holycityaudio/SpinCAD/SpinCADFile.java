@@ -20,8 +20,6 @@
 
 package com.holycityaudio.SpinCAD;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,9 +35,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SpinCADFile {
@@ -353,7 +349,7 @@ public class SpinCADFile {
 				// first, open bank, then open patch 0
 				b = fileReadBank(file);
 			} catch (Exception e) {	// thrown over in SpinCADFile.java
-				//						e.printStackTrace();
+				e.printStackTrace();
 //				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
 			}
 		} else {
@@ -429,8 +425,6 @@ public class SpinCADFile {
 			if (n == JOptionPane.YES_OPTION) {
 				try {
 					fileSave(b);
-					//					spcFileName = fileToBeSaved.getName();
-					//					getModel().setChanged(false);
 					recentBankFileList.add(fileToBeSaved);
 					saveMRUBankFolder(fileToBeSaved.getPath());
 				} finally {
