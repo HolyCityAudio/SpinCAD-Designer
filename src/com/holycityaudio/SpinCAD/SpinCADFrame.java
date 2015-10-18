@@ -271,7 +271,7 @@ public class SpinCADFrame extends JFrame {
 					}
 				}
 				eeprom.bank[bankIndex] = new SpinCADPatch();
-				bankPanel.setVisible(false);
+//				bankPanel.setVisible(false);
 				updateFrameTitle();
 				repaint();
 			}

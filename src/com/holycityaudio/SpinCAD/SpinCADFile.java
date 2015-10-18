@@ -55,30 +55,30 @@ public class SpinCADFile {
 	public static void fileSave(SpinCADPatch m) {
 		File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + m.patchFileName);
 		String filePath = fileToBeSaved.getPath();
-			FileOutputStream fos;
-			ObjectOutputStream oos = null;
-			try {
-				fos = new FileOutputStream(filePath);
-				oos = new ObjectOutputStream(fos); 
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} 
-			try {
-				oos.writeObject(m);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} 	
-			try {
-				oos.flush();
-				oos.close(); 
-			} catch (IOException e) {
-				e.printStackTrace();
-			} 
+		FileOutputStream fos;
+		ObjectOutputStream oos = null;
+		try {
+			fos = new FileOutputStream(filePath);
+			oos = new ObjectOutputStream(fos); 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		try {
+			oos.writeObject(m);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 	
+		try {
+			oos.flush();
+			oos.close(); 
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 	}
-	
+
 	public void fileSave(SpinCADBank b) {
 		File fileToBeSaved = new File(prefs.get("MRUBankFolder",  "") + "/" + b.bankFileName);
 		String filePath = fileToBeSaved.getPath();
@@ -102,8 +102,8 @@ public class SpinCADFile {
 			recentBankFileList.add(fileToBeSaved);		
 		}
 	}
-	
-	
+
+
 	public SpinCADPatch fileReadPatch(String fileName) throws IOException, ClassNotFoundException {
 		// Object deserialization 
 		FileInputStream fis = new FileInputStream(fileName); 
@@ -115,7 +115,7 @@ public class SpinCADFile {
 		ois.close(); 
 		return p;
 	} 
-	
+
 	public SpinCADPatch fileOpenPatch() {
 
 		// debug, want to open recent file list at program init.
@@ -123,7 +123,7 @@ public class SpinCADFile {
 		loadRecentPatchFileList();
 		final String newline = "\n";
 		SpinCADPatch p = new SpinCADPatch();
-		
+
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"SpinCAD Files", "spcd");
@@ -142,7 +142,7 @@ public class SpinCADFile {
 				recentPatchFileList.add(file);
 			} catch (Exception e) {	// thrown over in SpinCADFile.java
 				//						e.printStackTrace();
-// XXX				MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+				// XXX				MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
 			}
 		} else {
 			System.out.println("Open command cancelled by user."
@@ -159,7 +159,7 @@ public class SpinCADFile {
 		ois.close(); 
 		return b;
 	} 	
-	
+
 	public static void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
@@ -177,7 +177,7 @@ public class SpinCADFile {
 		writer.newLine();
 		writer.write("; " + p.cb.line7);
 		writer.newLine();
-		
+
 		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
 		String[] words = codeListing.split("\n");
 		for (String word: words) {
@@ -217,7 +217,7 @@ public class SpinCADFile {
 		writer.write(":00000001FF\n");
 		writer.close();
 	}
-	
+
 	private static void saveMRUBankFolder(String path) {
 		Path pathE = Paths.get(path);
 
@@ -227,7 +227,7 @@ public class SpinCADFile {
 		prefs.put("MRUBankFolder", pathS);
 		prefs.put("MRUBankFileName", nameS);
 	}
-	
+
 	private static void saveMRUPatchFolder(String path) {
 		Path pathE = Paths.get(path);
 
@@ -247,7 +247,7 @@ public class SpinCADFile {
 		Path pathE = Paths.get(path);
 		prefs.put("MRUHexFolder", pathE.toString());
 	}
-	
+
 
 	private void saveRecentPatchFileList() {
 		StringBuilder sb = new StringBuilder(128);
@@ -324,13 +324,13 @@ public class SpinCADFile {
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		}
 	}
-	
+
 
 	public SpinCADBank fileOpenBank() {
 		// debug, want to open recent file list at program init.
 		// TODO set most recently used folder
 		loadRecentBankFileList();
-		
+
 		SpinCADBank b = null;
 
 		final String newline = "\n";
@@ -350,7 +350,7 @@ public class SpinCADFile {
 				b = fileReadBank(file);
 			} catch (Exception e) {	// thrown over in SpinCADFile.java
 				e.printStackTrace();
-//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
+				//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
 			}
 		} else {
 			System.out.println("Open command cancelled by user."
@@ -414,20 +414,25 @@ public class SpinCADFile {
 			if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spbk")) {
 				fileToBeSaved = new File(fc.getSelectedFile() + ".spbk");
 			}
+			b.bankFileName = fileToBeSaved.getName();
+
 			int n = JOptionPane.YES_OPTION;
 			if (fileToBeSaved.exists()) {
 				JFrame frame = new JFrame();
 				n = JOptionPane.showConfirmDialog(frame,
 						"Would you like to overwrite it?", "File already exists!",
 						JOptionPane.YES_NO_OPTION);
-			}
-			if (n == JOptionPane.YES_OPTION) {
-				try {
-					fileSave(b);
-					recentBankFileList.add(fileToBeSaved);
-					saveMRUBankFolder(fileToBeSaved.getPath());
-				} finally {
+				if (n == JOptionPane.YES_OPTION) {
+					try {
+						fileSave(b);
+					} finally {
+						recentBankFileList.add(fileToBeSaved);
+						saveMRUBankFolder(fileToBeSaved.getPath());
+					}
 				}
+			}
+			else {
+				fileSave(b);
 			}
 		}
 	}
@@ -441,7 +446,7 @@ public class SpinCADFile {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Spin ASM Files", "spn");
 		fc.setFileFilter(filter);
-// XXX DEBUG
+		// XXX DEBUG
 		//		fc.showSaveDialog(model);
 		File fileToBeSaved = fc.getSelectedFile();
 
@@ -472,7 +477,7 @@ public class SpinCADFile {
 						JOptionPane.QUESTION_MESSAGE, null, null, null);
 				e.printStackTrace();
 			}
-					
+
 			saveMRUSpnFolder(filePath);
 		}
 	}
