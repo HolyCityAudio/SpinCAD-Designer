@@ -39,19 +39,34 @@ public class SpinCADSimulator {
 	
 	public simControlToolBar sctb;
 
+	// constructor
+	public SpinCADSimulator(SpinCADFrame f) {
+		frame = f;
+		sctb = new simControlToolBar(frame);
+		prefs = Preferences.userNodeForPackage(this.getClass());
+	}
+	
+	// check wheter simulator is currently running
 	public boolean isSimRunning() {
 		return simRunning;
 	}
 
+	// start or stop simulator
 	public boolean setSimRunning(boolean simRunning) {
 		this.simRunning = simRunning;
 		return simRunning;
 	}
 	
-	public SpinCADSimulator(SpinCADFrame f) {
-		frame = f;
-		sctb = new simControlToolBar(frame);
-		prefs = Preferences.userNodeForPackage(this.getClass());
+	// if outputFile = null, then simulator goes thru speakers
+	public void setOutputFileMode(Boolean state) {
+		
+		if(state == true) {
+			outputFile = prefs.get("SIMULATOR_OUT_FILE", "");
+		}
+		else {
+			outputFile = null;
+		}
+		
 	}
 
 	// ======================================================================================================

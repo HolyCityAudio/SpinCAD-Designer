@@ -124,24 +124,11 @@ public class SpinCADFrame extends JFrame {
 	// stuff to do with working on a bank of 8 vs. just one patch
 	// may remove bank mode variable, as will probably always be in bank mode
 	boolean bankMode = true;
-	int bankIndex = 0;
+	static int bankIndex = 0;
 	private final JPanel bankPanel = new bankPanel();
 	private SpinCADModel model = new SpinCADModel();
 
-	SpinCADBank eeprom = new SpinCADBank();
-
-	// PREFERENCES =====================================================
-	// following things are saved in the SpinCAD preferences
-	public Preferences prefs;
-	private RecentFileList recentBankFileList = null;
-	private RecentFileList recentPatchFileList = null;
-
-
-	// this next one is specific to file open, needs to be here for MRU file list operations
-	private JFileChooser fc;
-	// simulator input file
-	private static String spcFileName = "Untitled";
-	private static String spcBankFileName = "Untitled";
+	private static SpinCADBank eeprom = new SpinCADBank();
 
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
@@ -179,9 +166,6 @@ public class SpinCADFrame extends JFrame {
 		final SpinCADPanel panel = new SpinCADPanel(this);
 		panel.setBackground(SystemColor.inactiveCaption);
 
-		// create a Preferences instance (somewhere later in the code)
-		prefs = Preferences.userNodeForPackage(this.getClass());
-
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -189,8 +173,8 @@ public class SpinCADFrame extends JFrame {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
 				} finally {
-					loadRecentPatchFileList();			
-					loadRecentBankFileList();			
+//					loadRecentPatchFileList();			
+//					loadRecentBankFileList();			
 				}
 			}
 		});
@@ -290,9 +274,25 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmOpenPatch = new JMenuItem("Patch");
 		mntmOpenPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				fileOpenPatch(panel);
-				eeprom.bank[bankIndex].patchFileName = spcFileName;		
-				eeprom.bank[bankIndex].patchModel = model;
+				SpinCADFile f = new SpinCADFile();
+				if (eeprom.bank[bankIndex].patchModel.getChanged() == true) {
+					int dialogResult = yesNoBox(panel, "Warning!",
+							"You have unsaved changes!  Continue?");
+					if (dialogResult == 0) {
+						getModel().newModel();
+						repaint();
+					}
+					else {
+						f.fileOpenPatch();
+						getModel().getIndexFB();
+						getModel().setChanged(false);						
+						getModel().presetIndexFB();
+					}
+				}
+				eeprom.bank[bankIndex] = f.fileOpenPatch();
+				getModel().getIndexFB();
+				getModel().setChanged(false);						
+				getModel().presetIndexFB();
 			}
 		});
 
@@ -301,7 +301,16 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmOpenBank = new JMenuItem("Bank");
 		mntmOpenBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				fileOpenBank(panel);
+				SpinCADFile f= new SpinCADFile();
+				if (getModel().getChanged() == true) {
+					int dialogResult = yesNoBox(panel, "Warning!",
+							"You have unsaved changes!  Continue?");
+					if (dialogResult == 0) {
+						getModel().newModel();
+						repaint();
+					}
+					f.fileOpenBank();
+				}
 			}
 		});
 		mnOpenMenu.add(mntmOpenBank);
@@ -322,7 +331,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSavePatchAs = new JMenuItem("Patch");
 		mntmSavePatchAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				fileSavePatchAs();
+				 SpinCADFile.fileSavePatchAs(eeprom.bank[bankIndex]);
 			}
 		});
 		mnSaveAsMenu.add(mntmSavePatchAs);
@@ -330,7 +339,8 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveBankAs = new JMenuItem("Bank");
 		mntmSaveBankAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				fileSaveBankAs();
+				SpinCADFile f = new SpinCADFile();
+				f.fileSaveBankAs(eeprom);
 			}
 		});
 		mnSaveAsMenu.add(mntmSaveBankAs);
@@ -342,7 +352,8 @@ public class SpinCADFrame extends JFrame {
 		mntmSaveAsm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				getModel().sortAlignGen();
-				fileSaveAsm();
+				SpinCADFile f = new SpinCADFile();
+				f.fileSaveAsm(eeprom.bank[bankIndex]);
 			}
 		});
 		mnExport.add(mntmSaveAsm);
@@ -351,7 +362,8 @@ public class SpinCADFrame extends JFrame {
 		mntmSaveHex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				getModel().sortAlignGen();
-				fileSaveHex();
+				SpinCADFile f = new SpinCADFile();
+				f.fileSaveHex(getModel());
 			}
 		});
 		mnExport.add(mntmSaveHex);
@@ -374,9 +386,10 @@ public class SpinCADFrame extends JFrame {
 		mnFileMenu.add(mntmCopyToClipboard);
 
 		JMenuItem mntmBatch = new JMenuItem("Batch Convert");
-		fileBatch(panel, mntmBatch);
+// XXX 	    SpinCADFile.fileBatch(panel, mntmBatch);
 		mnFileMenu.add(mntmBatch);
 
+		
 		mnFileMenu.addSeparator();
 
 		JMenuItem mntmInfo = new JMenuItem("Information");
@@ -450,7 +463,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");
 		mntmSimSendToFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				simX.outputFile = prefs.get("SIMULATOR_OUT_FILE", "");
+				simX.setOutputFileMode(true);
 				simX.sim.setLoopMode(false);
 			}
 		});
@@ -557,28 +570,53 @@ public class SpinCADFrame extends JFrame {
 	void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
-				setTitle("SpinCAD Designer - Bank [" + eeprom.bankFileName + (eeprom.changed ? " * ]" : "]") + " Patch " + bankIndex + " [" + spcFileName + (getModel().changed ? " * ]" : "]"));			
+				String bankName = eeprom.bankFileName + (eeprom.changed ? " * ]" : "]");
+				String patchName = bankIndex + " [" + eeprom.bank[bankIndex].patchFileName + (eeprom.bank[bankIndex].patchModel.changed ? " * ]" : "]");
+				setTitle("SpinCAD Designer - Bank [" + bankName + " Patch " + patchName);			
 			}
 		});
 	}
 
-	private void fileSavePatchAs(final SpinCADPanel panel, JMenuItem mntmExit) {
+
+	/**
+	 * @param mntmSave
+	 */
+	private void fileSave(JMenuItem mntmSave) {
+		mntmSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(eeprom.bank[bankIndex].patchFileName != "Untitled") {
+					try {
+						SpinCADFile.fileSave(eeprom.bank[bankIndex]);
+						getModel().setChanged(false);
+						updateFrameTitle();
+					} finally {
+					}
+
+				} else {
+					SpinCADFile.fileSavePatchAs(eeprom.bank[bankIndex]);
+					getModel().setChanged(false);
+				}
+			}
+		});
+	}
+	
+	public void fileSavePatchAs(final SpinCADPanel panel, JMenuItem mntmExit) {
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (getModel().getChanged() == true) {
+				if (eeprom.bank[bankIndex].patchModel.getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!", 
 							"You have unsaved changes!  Save first?");				
 					if (dialogResult == JOptionPane.YES_OPTION) {
-						File fileToBeSaved = new File(spcFileName);
+						File fileToBeSaved = new File(eeprom.bank[bankIndex].patchFileName);
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
-							SpinCADFile.fileSave(eeprom.bank[bankIndex], filePath);
+							SpinCADFile f = new SpinCADFile();
+							f.fileSave(eeprom.bank[bankIndex]);
 						} else {
-							fileSavePatchAs();
+							SpinCADFile.fileSavePatchAs(eeprom.bank[bankIndex]);
 						}
-						saveMRUPatchFolder(fileToBeSaved.getPath());
-						spcFileName = fileToBeSaved.getName();
-						getModel().setChanged(false);
+						// XXX debug
+						//						eeprom.bank[bankIndex].setChanged(false);
 						updateFrameTitle();
 					}
 					System.exit(0);
@@ -587,10 +625,10 @@ public class SpinCADFrame extends JFrame {
 		});
 	}
 
-	private void fileSaveBankAs(final SpinCADPanel panel, JMenuItem mntmExit) {
+	void fileSaveBankAs(final SpinCADPanel panel, JMenuItem mntmExit) {
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (getModel().getChanged() == true) {
+				if (eeprom.bank[bankIndex].patchModel.getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!", 
 							"You have unsaved changes!  Save first?");				
 
@@ -599,14 +637,13 @@ public class SpinCADFrame extends JFrame {
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
 							//							SpinCADFile.fileSave(cb, getModel(), filePath);
-							saveMRUBankFolder(fileToBeSaved.getPath());
 							eeprom.bankFileName = fileToBeSaved.getName();
 							//							getModel().setChanged(false);
 							updateFrameTitle();
 						} else {
-							fileSaveBankAs();
+							SpinCADFile f = new SpinCADFile();
+							f.fileSaveBankAs(eeprom);
 							eeprom.bankFileName = fileToBeSaved.getName();
-							saveMRUBankFolder(fileToBeSaved.getPath());
 							//							getModel().setChanged(false);
 							updateFrameTitle();
 						}
@@ -617,261 +654,57 @@ public class SpinCADFrame extends JFrame {
 		});
 	}
 
-	private void saveMRUPatchFolder(String path) {
-		Path pathE = Paths.get(path);
-
-		String pathS = pathE.getParent().toString();
-		String nameS = pathE.getFileName().toString();
-
-		prefs.put("MRUPatchFolder", pathS);
-		prefs.put("MRUPatchFileName", nameS);
-	}
-
-	private void saveMRUBankFolder(String path) {
-		Path pathE = Paths.get(path);
-
-		String pathS = pathE.getParent().toString();
-		String nameS = pathE.getFileName().toString();
-
-		prefs.put("MRUBankFolder", pathS);
-		prefs.put("MRUBankFileName", nameS);
-	}
-
-	private void saveMRUSpnFolder(String path) {
-		Path pathE = Paths.get(path);
-		prefs.put("MRUSpnFolder", pathE.toString());
-	}
-
-	private void saveMRUHexFolder(String path) {
-		Path pathE = Paths.get(path);
-		prefs.put("MRUHexFolder", pathE.toString());
-	}
-
-	private void saveRecentPatchFileList() {
-		StringBuilder sb = new StringBuilder(128);
-		if(recentPatchFileList != null) {
-			int k = recentPatchFileList.listModel.getSize() - 1;
-			for (int index = 0; index <= k; index++) {
-				File file = recentPatchFileList.listModel.getElementAt(k - index);
-				if (sb.length() > 0) {
-					sb.append(File.pathSeparator);
-				}
-				sb.append(file.getPath());
-			}
-			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-			p.put("RecentFileList.fileList", sb.toString());
-		}
-	}
-
-	private void saveRecentBankFileList() {
-		StringBuilder sb = new StringBuilder(128);
-		if(recentBankFileList != null) {
-			int k = recentBankFileList.listModel.getSize() - 1;
-			for (int index = 0; index <= k; index++) {
-				File file = recentBankFileList.listModel.getElementAt(k - index);
-				if (sb.length() > 0) {
-					sb.append(File.pathSeparator);
-				}
-				sb.append(file.getPath());
-			}
-			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-			p.put("RecentBankFileList.fileList", sb.toString());
-		}
-	}
-
-	private void loadRecentPatchFileList() {
-		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-		String listOfFiles = p.get("RecentFileList.fileList", null);
-		if (fc == null) {
-			String savedPath = prefs.get("MRUPatchFolder", "");
-			File MRUFolder = new File(savedPath);
-			fc = new JFileChooser(MRUFolder);
-			recentPatchFileList = new RecentFileList(fc);
-			if (listOfFiles != null) {
-				String[] files = listOfFiles.split(File.pathSeparator);
-				for (String fileRef : files) {
-					File file = new File(fileRef);
-					if (file.exists()) {
-						recentPatchFileList.listModel.add(file);
-					}
-				}
-			}
-			fc.setAccessory(recentPatchFileList);
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		}
-	}
-
-	private void loadRecentBankFileList() {
-		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-		String listOfFiles = p.get("RecentBankFileList.fileList", null);
-		if (fc == null) {
-			String savedPath = prefs.get("MRUBankFolder", "");
-			File MRUBankFolder = new File(savedPath);
-			fc = new JFileChooser(MRUBankFolder);
-			recentBankFileList = new RecentFileList(fc);
-			if (listOfFiles != null) {
-				String[] files = listOfFiles.split(File.pathSeparator);
-				for (String fileRef : files) {
-					File file = new File(fileRef);
-					if (file.exists()) {
-						recentBankFileList.listModel.add(file);
-					}
-				}
-			}
-			fc.setAccessory(recentBankFileList);
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		}
-	}
-
-	/**
-	 * @param mntmSave
-	 */
-	private void fileSave(JMenuItem mntmSave) {
-		mntmSave.addActionListener(new ActionListener() {
+	private void fileNewPatch(final SpinCADPanel panel, JMenuItem mntmNew) {
+		mntmNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(spcFileName != "Untitled") {
-					File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + spcFileName);
-					String filePath = fileToBeSaved.getPath();
-					try {
-						SpinCADFile.fileSave(eeprom.bank[bankIndex], filePath);
-						prefs.put("MRUPatchFolder", filePath);
-						saveMRUPatchFolder(filePath);
-						getModel().setChanged(false);
-						recentPatchFileList.add(fileToBeSaved);
-						updateFrameTitle();
-					} finally {
-					}
 
-				} else {
-					fileSavePatchAs();
+				if (getModel().getChanged() == true) {
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(panel,
+							"You have unsaved changes!  Continue?", "Warning!",
+							dialogButton);
+					if (dialogResult == JOptionPane.NO_OPTION) {
+						return;
+					}
 				}
+				eeprom.bank[bankIndex].patchFileName = "Untitled";
+				bankPanel.setVisible(false);
+				updateFrameTitle();
+				getModel().newModel();
+				eeprom.bank[bankIndex].cb.clearComments();
+				repaint();
 			}
 		});
 	}
 
-	/**
-	 * @param panel
-	 * @param mntmFile
-	 */
-	private void fileOpenMenu(final SpinCADPanel panel, JMenuItem mntmFile) {
-	}
+	private void fileNewBank(final SpinCADPanel panel, JMenuItem mntmNew) {
+		mntmNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 
-	void fileOpenPatch(JPanel panel) {
-		if (getModel().getChanged() == true) {
-			int dialogResult = yesNoBox(panel, "Warning!",
-					"You have unsaved changes!  Continue?");
-			if (dialogResult == 0) {
-				getModel().newModel();
-				repaint();
-			}
-		}
-
-		// debug, want to open recent file list at program init.
-		// TODO set most recently used folder
-		loadRecentPatchFileList();
-
-		final String newline = "\n";
-		// In response to a button click:
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Files", "spcd");
-		fc.setFileFilter(filter);
-
-		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
-			// This is where a real application would open the file.
-			System.out.println("Opening: " + file.getName() + "."
-					+ newline);
-			try {
-				String filePath = file.getPath();
-				eeprom.bank[bankIndex] = SpinCADFile.fileReadPatch(filePath);
-				model = eeprom.bank[bankIndex].patchModel;
-				spcFileName = file.getName();
-				getModel().getIndexFB();
-				getModel().setChanged(false);						
-				getModel().presetIndexFB();
-				saveMRUPatchFolder(filePath);
-				recentPatchFileList.add(file);
-				updateFrameTitle();
-			} catch (Exception e) {	// thrown over in SpinCADFile.java
-				//						e.printStackTrace();
-				MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
-				spcFileName = "Untitled";
-				updateFrameTitle();
-				getModel().newModel();
-			}
-		} else {
-			System.out.println("Open command cancelled by user."
-					+ newline);
-		}
-		eeprom.changed = true;
-		pb.update();
-		panel.repaint();
-	}
-
-	void fileOpenBank(JPanel panel) {
-		if (getModel().getChanged() == true) {
-			int dialogResult = yesNoBox(panel, "Warning!",
-					"You have unsaved changes!  Continue?");
-			if (dialogResult == 0) {
-				getModel().newModel();
-				repaint();
-			}
-		}
-
-		// debug, want to open recent file list at program init.
-		// TODO set most recently used folder
-		loadRecentBankFileList();
-
-		final String newline = "\n";
-		// In response to a button click:
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Bank Files", "spbk");
-		fc.setFileFilter(filter);
-
-		int returnVal = fc.showOpenDialog(SpinCADFrame.this);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
-			// This is where a real application would open the file.
-			System.out.println("Opening: " + file.getName() + "."
-					+ newline);
-			try {
-				// first, open bank, then open patch 0
-				String filePath = file.getPath();
-				eeprom = SpinCADFile.fileReadBank(filePath );
-				saveMRUBankFolder(filePath);
-				recentBankFileList.add(file);
-				updateFrameTitle();
-			} catch (Exception e) {	// thrown over in SpinCADFile.java
-				//						e.printStackTrace();
-				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
+				if (getModel().getChanged() == true) {
+					int dialogButton = JOptionPane.YES_NO_OPTION;
+					int dialogResult = JOptionPane.showConfirmDialog(panel,
+							"You have unsaved changes!  Continue?", "Warning!",
+							dialogButton);
+					if (dialogResult == JOptionPane.NO_OPTION) {
+						return;
+					}
+				}
 				eeprom.bankFileName = "Untitled";
+				bankPanel.setVisible(true);
 				updateFrameTitle();
-//				getModel().newModel();
+				getModel().newModel();
+				eeprom = new SpinCADBank();
+				repaint();
 			}
-		} else {
-			System.out.println("Open command cancelled by user."
-					+ newline);
-		}
-		pb.update();
-		panel.repaint();
+		});
 	}
-
-
-	private void fileBatch(final SpinCADPanel panel, JMenuItem mntmFile) {
+	
+	void fileBatch(final SpinCADPanel panel, JMenuItem mntmFile) {
 		mntmFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Create a file chooser
-				if (getModel().getChanged() == true) {
-					int dialogResult = yesNoBox(panel, "Warning!",
-							"You have unsaved changes!  Continue?");
-					if (dialogResult == 0) {
-						getModel().newModel();
-						repaint();
-						// System.out.println("Yes option");
-					}
-				}
-				String savedPath = prefs.get("MRUFolder", "");
+/*				String savedPath = prefs.get("MRUFolder", "");
 
 				final JFileChooser fc = new JFileChooser(savedPath);
 				fc.setDialogTitle("Choose files to convert...");
@@ -888,6 +721,7 @@ public class SpinCADFrame extends JFrame {
 				// returnVal is from the first file open dialog
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					// now ask user to enter converted file destination
+					/* XXX debug
 					savedPath = prefs.get("MRUSpnFolder", "");
 
 					final JFileChooser fc2 = new JFileChooser(savedPath); 
@@ -937,238 +771,17 @@ public class SpinCADFrame extends JFrame {
 							}
 							index++;
 						}
-						getModel().newModel();
-						spcFileName = "Untitled";
-						pb.update();
-						repaint();
-						updateFrameTitle();
 						MessageBox("Conversion completed", (index - failed) + " files were converted.\n" + failed + " files failed.");
 					} else {
 						System.out.println("Open command cancelled by user."
 								+ newline);
 					}
 				}
+*/
 			}
 		});
-	}
+}
 
-	public void fileSavePatchAs() {
-		// Create a file chooser
-		String savedPath = prefs.get("MRUFolder", "");
-		final JFileChooser fc = new JFileChooser(savedPath);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Files", "spcd");
-		fc.setFileFilter(filter);
-		fc.setSelectedFile(new File(spcFileName));
-		int returnVal = fc.showSaveDialog(SpinCADFrame.this);
-		// need to process user canceling box right here
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-			// In response to a button click:
-			File fileToBeSaved = fc.getSelectedFile();
-
-			if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {
-				fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
-			}
-			int n = JOptionPane.YES_OPTION;
-			if (fileToBeSaved.exists()) {
-				JFrame frame = new JFrame();
-				n = JOptionPane.showConfirmDialog(frame,
-						"Would you like to overwrite it?", "File already exists!",
-						JOptionPane.YES_NO_OPTION);
-			}
-			if (n == JOptionPane.YES_OPTION) {
-				try {
-					SpinCADFile.fileSave(eeprom.bank[bankIndex], fileToBeSaved.getPath());
-					spcFileName = fileToBeSaved.getName();
-					getModel().setChanged(false);
-					recentPatchFileList.add(fileToBeSaved);
-					saveMRUPatchFolder(fileToBeSaved.getPath());
-					updateFrameTitle();
-					eeprom.bank[bankIndex].updateFileName(spcFileName);
-				} finally {
-				}
-			}
-		}
-	}
-
-	public void fileSaveBankAs() {
-		// Create a file chooser
-		String savedPath = prefs.get("MRUBankFolder", "");
-		final JFileChooser fc = new JFileChooser(savedPath);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Bank Files", "spbk");
-		fc.setFileFilter(filter);
-		fc.setSelectedFile(new File(spcFileName));
-		int returnVal = fc.showSaveDialog(SpinCADFrame.this);
-		// need to process user canceling box right here
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-			// In response to a button click:
-			File fileToBeSaved = fc.getSelectedFile();
-
-			if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spbk")) {
-				fileToBeSaved = new File(fc.getSelectedFile() + ".spbk");
-			}
-			int n = JOptionPane.YES_OPTION;
-			if (fileToBeSaved.exists()) {
-				JFrame frame = new JFrame();
-				n = JOptionPane.showConfirmDialog(frame,
-						"Would you like to overwrite it?", "File already exists!",
-						JOptionPane.YES_NO_OPTION);
-			}
-			if (n == JOptionPane.YES_OPTION) {
-				try {
-					SpinCADFile.fileSave(eeprom, fileToBeSaved.getPath());
-					//					spcFileName = fileToBeSaved.getName();
-					//					getModel().setChanged(false);
-					recentBankFileList.add(fileToBeSaved);
-					saveMRUBankFolder(fileToBeSaved.getPath());
-					updateFrameTitle();
-					eeprom.bank[bankIndex].updateFileName(fileToBeSaved.getName());
-				} finally {
-				}
-			}
-		}
-	}
-
-	public void fileSaveAsm() {
-		// Create a file chooser
-		String savedPath = prefs.get("MRUSpnFolder", "");
-
-		final JFileChooser fc = new JFileChooser(savedPath);
-		// In response to a button click:
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Spin ASM Files", "spn");
-		fc.setFileFilter(filter);
-		fc.showSaveDialog(SpinCADFrame.this);
-		File fileToBeSaved = fc.getSelectedFile();
-
-		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spn")) {
-			fileToBeSaved = new File(fc.getSelectedFile() + ".spn");
-		}
-		int n = JOptionPane.YES_OPTION;
-		if (fileToBeSaved.exists()) {
-			JFrame frame = new JFrame();
-			n = JOptionPane.showConfirmDialog(frame,
-					"Would you like to overwrite it?", "File already exists!",
-					JOptionPane.YES_NO_OPTION);
-		}
-		if (n == JOptionPane.YES_OPTION) {
-			String filePath;
-			try {
-				filePath = fileToBeSaved.getPath();
-				fileToBeSaved.delete();
-				getModel();
-			} finally {
-			}
-
-			try {SpinCADFile.fileSaveAsm(eeprom.bank[bankIndex], filePath);
-			} catch (IOException e) {
-				JOptionPane.showOptionDialog(null,
-						"File save error!", "Error",
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, null, null);
-				e.printStackTrace();
-			}
-						
-			getModel().setChanged(false);
-			saveMRUSpnFolder(filePath);
-		}
-	}
-
-	public void fileSaveHex() {
-		// Create a file chooser
-		String savedPath = prefs.get("MRUHexFolder", "");
-
-		final JFileChooser fc = new JFileChooser(savedPath);
-		// In response to a button click:
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Hex Files", "hex");
-		fc.setFileFilter(filter);
-		fc.showSaveDialog(SpinCADFrame.this);
-		File fileToBeSaved = fc.getSelectedFile();
-
-		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".hex")) {
-			fileToBeSaved = new File(fc.getSelectedFile() + ".hex");
-		}
-		int n = JOptionPane.YES_OPTION;
-		if (fileToBeSaved.exists()) {
-			JFrame frame = new JFrame();
-			n = JOptionPane.showConfirmDialog(frame,
-					"Would you like to overwrite it?", "File already exists!",
-					JOptionPane.YES_NO_OPTION);
-		}
-		if (n == JOptionPane.YES_OPTION) {
-			String filePath;
-			try {
-				filePath = fileToBeSaved.getPath();
-				fileToBeSaved.delete();
-				getModel();
-			} finally {
-			}
-			try {
-				SpinCADFile.fileSaveHex(SpinCADModel.getRenderBlock()
-						.generateHex(), filePath);
-			} catch (IOException e) {
-				JOptionPane.showOptionDialog(null,
-						"File save error!", "Error",
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, null, null);
-
-				e.printStackTrace();
-			}
-			getModel().setChanged(false);
-			saveMRUHexFolder(filePath);
-		}
-	}
-
-	private void fileNewPatch(final SpinCADPanel panel, JMenuItem mntmNew) {
-		mntmNew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				if (getModel().getChanged() == true) {
-					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(panel,
-							"You have unsaved changes!  Continue?", "Warning!",
-							dialogButton);
-					if (dialogResult == JOptionPane.NO_OPTION) {
-						return;
-					}
-				}
-				spcFileName = "Untitled";
-				bankPanel.setVisible(false);
-				updateFrameTitle();
-				getModel().newModel();
-				eeprom.bank[bankIndex].cb.clearComments();
-				repaint();
-			}
-		});
-	}
-
-	private void fileNewBank(final SpinCADPanel panel, JMenuItem mntmNew) {
-		mntmNew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				if (getModel().getChanged() == true) {
-					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(panel,
-							"You have unsaved changes!  Continue?", "Warning!",
-							dialogButton);
-					if (dialogResult == JOptionPane.NO_OPTION) {
-						return;
-					}
-				}
-				spcFileName = "Untitled";
-				bankPanel.setVisible(true);
-				updateFrameTitle();
-				getModel().newModel();
-				// XXX DEBUG
-				//				cb.clearComments();
-				repaint();
-			}
-		});
-	}
 
 	private WindowListener window() {
 		WindowListener exitListener = new WindowAdapter() {
@@ -1179,8 +792,6 @@ public class SpinCADFrame extends JFrame {
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
-					saveRecentPatchFileList();
-					saveRecentBankFileList();
 					System.exit(0);
 				}
 			}
@@ -1197,14 +808,18 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	public SpinCADModel getModel() {
-		return model;
+		return eeprom.bank[bankIndex].patchModel;
 	}
 
+	public void setModel(SpinCADModel m) {
+		eeprom.bank[bankIndex].patchModel = m;
+	}
+	
 	public void saveModel() {
 		try { 
 			modelSave = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(modelSave); 
-			oos.writeObject(model); 
+			oos.writeObject(getModel()); 
 			oos.flush(); 
 			oos.close(); 
 		} 
@@ -1219,7 +834,7 @@ public class SpinCADFrame extends JFrame {
 			try { 
 				ByteArrayInputStream bais = new ByteArrayInputStream(modelSave.toByteArray());
 				ObjectInputStream is = new ObjectInputStream(bais);
-				model = (SpinCADModel) is.readObject();
+				setModel((SpinCADModel) is.readObject());
 				is.close(); 
 				contentPane.repaint();
 				// System.out.println("m: " + m); 
@@ -1242,7 +857,7 @@ public class SpinCADFrame extends JFrame {
 				JOptionPane.DEFAULT_OPTION);
 	}
 
-	int yesNoBox(JPanel panel, String title, String question) {
+	static int yesNoBox(JPanel panel, String title, String question) {
 		int dialogButton = JOptionPane.YES_NO_OPTION;
 		int dialogResult = JOptionPane.showConfirmDialog(panel,
 				question,
@@ -1294,7 +909,7 @@ public class SpinCADFrame extends JFrame {
 		}
 
 		public void updateFileName() {
-			line1text.setText("Patch Name: " + spcFileName);
+			line1text.setText("Patch Name: " + eeprom.bank[bankIndex].patchFileName);
 		}
 
 		private void clearComments() {
@@ -1368,7 +983,7 @@ public class SpinCADFrame extends JFrame {
 		}
 
 		public void updateFileName() {
-			line1text.setText("Bank: " + spcFileName);
+			line1text.setText("Bank: " + eeprom.bank[bankIndex].patchFileName);
 		}
 
 		private void clearComments() {
@@ -1490,8 +1105,6 @@ public class SpinCADFrame extends JFrame {
 				eeprom.bank[bankIndex] = new SpinCADPatch();
 				eeprom.bank[bankIndex].patchModel.newModel();
 			}
-			model = eeprom.bank[bankIndex].patchModel;
-			spcFileName = eeprom.bank[bankIndex].patchFileName;
 			updateFrameTitle();
 			pb.update();
 			contentPane.repaint();

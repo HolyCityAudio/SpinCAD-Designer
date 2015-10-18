@@ -20,7 +20,10 @@
 
 package com.holycityaudio.SpinCAD;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,18 +33,36 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.prefs.Preferences;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SpinCADFile {
+	// PREFERENCES =====================================================
+	// following things are saved in the SpinCAD preferences
+	private static Preferences prefs;
+	private static RecentFileList recentBankFileList = null;
+	private static RecentFileList recentPatchFileList = null;
+	// this next one is specific to file open, needs to be here for MRU file list operations
+	private JFileChooser fc;
 
 	public SpinCADFile() {
-		// Auto-generated constructor stub
+		// create a Preferences instance (somewhere later in the code)
+		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
 
-	public static void fileSave(SpinCADPatch m, String fileName) {
+	public static void fileSave(SpinCADPatch m) {
+		File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + m.patchFileName);
+		String filePath = fileToBeSaved.getPath();
 			FileOutputStream fos;
 			ObjectOutputStream oos = null;
 			try {
-				fos = new FileOutputStream(fileName);
+				fos = new FileOutputStream(filePath);
 				oos = new ObjectOutputStream(fos); 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -62,20 +83,13 @@ public class SpinCADFile {
 			} 
 	}
 	
-	public static SpinCADPatch fileReadPatch(String fileName) throws IOException, ClassNotFoundException {
-		// Object deserialization 
-		FileInputStream fis = new FileInputStream(fileName); 
-		ObjectInputStream ois = new ObjectInputStream(fis); 
-		SpinCADPatch p  = new SpinCADPatch();
-		p = (SpinCADPatch) ois.readObject();
-		ois.close(); 
-		// System.out.println("m: " + m); 
-		return p;
-	} 
-	
-	public static void fileSave(SpinCADBank b, String fileName) {
+	public void fileSave(SpinCADBank b) {
+		File fileToBeSaved = new File(prefs.get("MRUBankFolder",  "") + "/" + b.bankFileName);
+		String filePath = fileToBeSaved.getPath();
+		loadRecentBankFileList();
+
 		try { 
-			FileOutputStream fos = new FileOutputStream(fileName); 
+			FileOutputStream fos = new FileOutputStream(filePath); 
 			ObjectOutputStream oos = new ObjectOutputStream(fos); 
 
 			oos.writeObject(b); 	
@@ -87,17 +101,67 @@ public class SpinCADFile {
 			System.out.println("Exception during serialization: " + e); 
 			//		System.exit(0); 
 		} 
+		finally {
+			saveMRUBankFolder(filePath);
+			recentBankFileList.add(fileToBeSaved);		
+		}
 	}
-
-	public static SpinCADBank fileReadBank(String fileName) throws IOException, ClassNotFoundException {
+	
+	
+	public SpinCADPatch fileReadPatch(String fileName) throws IOException, ClassNotFoundException {
 		// Object deserialization 
 		FileInputStream fis = new FileInputStream(fileName); 
 		ObjectInputStream ois = new ObjectInputStream(fis); 
-		SpinCADBank p  = (SpinCADBank)ois.readObject();
+		SpinCADPatch p  = new SpinCADPatch();
+
+		p = (SpinCADPatch) ois.readObject();
 
 		ois.close(); 
-		// System.out.println("m: " + m); 
 		return p;
+	} 
+	
+	public SpinCADPatch fileOpenPatch() {
+
+		// debug, want to open recent file list at program init.
+		// TODO set most recently used folder
+		loadRecentPatchFileList();
+		final String newline = "\n";
+		SpinCADPatch p = new SpinCADPatch();
+		
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Files", "spcd");
+		fc.setFileFilter(filter);
+
+		int returnVal = fc.showOpenDialog(new JFrame());
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			// This is where a real application would open the file.
+			System.out.println("Opening: " + file.getName() + "."
+					+ newline);
+			try {
+				String filePath = file.getPath();
+				p = fileReadPatch(filePath);
+				saveMRUPatchFolder(filePath);
+				recentPatchFileList.add(file);
+			} catch (Exception e) {	// thrown over in SpinCADFile.java
+				//						e.printStackTrace();
+// XXX				MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+			}
+		} else {
+			System.out.println("Open command cancelled by user."
+					+ newline);
+		}
+		return p;
+	}
+
+	public SpinCADBank fileReadBank(File fileName) throws IOException, ClassNotFoundException {
+		// Object deserialization 
+		FileInputStream fis = new FileInputStream(fileName); 
+		ObjectInputStream ois = new ObjectInputStream(fis); 
+		SpinCADBank b  = (SpinCADBank)ois.readObject();
+		ois.close(); 
+		return b;
 	} 	
 	
 	public static void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
@@ -118,7 +182,7 @@ public class SpinCADFile {
 		writer.write("; " + p.cb.line7);
 		writer.newLine();
 		
-		String codeListing = SpinCADModel.getRenderBlock().getProgramListing(1);
+		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
 		String[] words = codeListing.split("\n");
 		for (String word: words) {
 			writer.write(word);
@@ -156,6 +220,313 @@ public class SpinCADFile {
 		}
 		writer.write(":00000001FF\n");
 		writer.close();
+	}
+	
+	private static void saveMRUBankFolder(String path) {
+		Path pathE = Paths.get(path);
+
+		String pathS = pathE.getParent().toString();
+		String nameS = pathE.getFileName().toString();
+
+		prefs.put("MRUBankFolder", pathS);
+		prefs.put("MRUBankFileName", nameS);
+	}
+	
+	private static void saveMRUPatchFolder(String path) {
+		Path pathE = Paths.get(path);
+
+		String pathS = pathE.getParent().toString();
+		String nameS = pathE.getFileName().toString();
+
+		prefs.put("MRUPatchFolder", pathS);
+		prefs.put("MRUPatchFileName", nameS);
+	}
+
+	private void saveMRUSpnFolder(String path) {
+		Path pathE = Paths.get(path);
+		prefs.put("MRUSpnFolder", pathE.toString());
+	}
+
+	private void saveMRUHexFolder(String path) {
+		Path pathE = Paths.get(path);
+		prefs.put("MRUHexFolder", pathE.toString());
+	}
+	
+
+	private void saveRecentPatchFileList() {
+		StringBuilder sb = new StringBuilder(128);
+		if(recentPatchFileList != null) {
+			int k = recentPatchFileList.listModel.getSize() - 1;
+			for (int index = 0; index <= k; index++) {
+				File file = recentPatchFileList.listModel.getElementAt(k - index);
+				if (sb.length() > 0) {
+					sb.append(File.pathSeparator);
+				}
+				sb.append(file.getPath());
+			}
+			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+			p.put("RecentFileList.fileList", sb.toString());
+		}
+	}
+
+	private void saveRecentBankFileList() {
+		StringBuilder sb = new StringBuilder(128);
+		if(recentBankFileList != null) {
+			int k = recentBankFileList.listModel.getSize() - 1;
+			for (int index = 0; index <= k; index++) {
+				File file = recentBankFileList.listModel.getElementAt(k - index);
+				if (sb.length() > 0) {
+					sb.append(File.pathSeparator);
+				}
+				sb.append(file.getPath());
+			}
+			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+			p.put("RecentBankFileList.fileList", sb.toString());
+		}
+	}
+
+	private void loadRecentPatchFileList() {
+		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+		String listOfFiles = p.get("RecentFileList.fileList", null);
+		if (fc == null) {
+			String savedPath = prefs.get("MRUPatchFolder", "");
+			File MRUFolder = new File(savedPath);
+			fc = new JFileChooser(MRUFolder);
+			recentPatchFileList = new RecentFileList(fc);
+			if (listOfFiles != null) {
+				String[] files = listOfFiles.split(File.pathSeparator);
+				for (String fileRef : files) {
+					File file = new File(fileRef);
+					if (file.exists()) {
+						recentPatchFileList.listModel.add(file);
+					}
+				}
+			}
+			fc.setAccessory(recentPatchFileList);
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		}
+	}
+
+	private void loadRecentBankFileList() {
+		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+		String listOfFiles = p.get("RecentBankFileList.fileList", null);
+		if (fc == null) {
+			String savedPath = prefs.get("MRUBankFolder", "");
+			File MRUBankFolder = new File(savedPath);
+			fc = new JFileChooser(MRUBankFolder);
+			recentBankFileList = new RecentFileList(fc);
+			if (listOfFiles != null) {
+				String[] files = listOfFiles.split(File.pathSeparator);
+				for (String fileRef : files) {
+					File file = new File(fileRef);
+					if (file.exists()) {
+						recentBankFileList.listModel.add(file);
+					}
+				}
+			}
+			fc.setAccessory(recentBankFileList);
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		}
+	}
+	
+
+	public SpinCADBank fileOpenBank() {
+		// debug, want to open recent file list at program init.
+		// TODO set most recently used folder
+		loadRecentBankFileList();
+		
+		SpinCADBank b = null;
+
+		final String newline = "\n";
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Bank Files", "spbk");
+		fc.setFileFilter(filter);
+
+		int returnVal = fc.showOpenDialog(new JFrame());
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			// This is where a real application would open the file.
+			System.out.println("Opening: " + file.getName() + "."
+					+ newline);
+			try {
+				// first, open bank, then open patch 0
+				b = fileReadBank(file);
+			} catch (Exception e) {	// thrown over in SpinCADFile.java
+				//						e.printStackTrace();
+//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
+			}
+		} else {
+			System.out.println("Open command cancelled by user."
+					+ newline);
+		}
+		return b;
+	}
+
+
+
+	public static void fileSavePatchAs(SpinCADPatch p) {
+		// Create a file chooser
+		String savedPath = prefs.get("MRUFolder", "");
+		final JFileChooser fc = new JFileChooser(savedPath);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Files", "spcd");
+		fc.setFileFilter(filter);
+		fc.setSelectedFile(new File(p.patchFileName));
+		int returnVal = fc.showSaveDialog(new JFrame());
+		// need to process user canceling box right here
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+			// In response to a button click:
+			File fileToBeSaved = fc.getSelectedFile();
+
+			if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {
+				fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
+			}
+			int n = JOptionPane.YES_OPTION;
+			if (fileToBeSaved.exists()) {
+				JFrame frame = new JFrame();
+				n = JOptionPane.showConfirmDialog(frame,
+						"Would you like to overwrite it?", "File already exists!",
+						JOptionPane.YES_NO_OPTION);
+			}
+			if (n == JOptionPane.YES_OPTION) {
+				try {
+					SpinCADFile.fileSave(p);
+					recentPatchFileList.add(fileToBeSaved);
+					saveMRUPatchFolder(fileToBeSaved.getPath());
+				} finally {
+				}
+			}
+		}
+	}
+
+	public void fileSaveBankAs(SpinCADBank b) {
+		// Create a file chooser
+		String savedPath = prefs.get("MRUBankFolder", "");
+		final JFileChooser fc = new JFileChooser(savedPath);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Bank Files", "spbk");
+		fc.setFileFilter(filter);
+		fc.setSelectedFile(new File(b.bankFileName));
+		int returnVal = fc.showSaveDialog(new JFrame());
+		// need to process user canceling box right here
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+			// In response to a button click:
+			File fileToBeSaved = fc.getSelectedFile();
+
+			if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spbk")) {
+				fileToBeSaved = new File(fc.getSelectedFile() + ".spbk");
+			}
+			int n = JOptionPane.YES_OPTION;
+			if (fileToBeSaved.exists()) {
+				JFrame frame = new JFrame();
+				n = JOptionPane.showConfirmDialog(frame,
+						"Would you like to overwrite it?", "File already exists!",
+						JOptionPane.YES_NO_OPTION);
+			}
+			if (n == JOptionPane.YES_OPTION) {
+				try {
+					fileSave(b);
+					//					spcFileName = fileToBeSaved.getName();
+					//					getModel().setChanged(false);
+					recentBankFileList.add(fileToBeSaved);
+					saveMRUBankFolder(fileToBeSaved.getPath());
+				} finally {
+				}
+			}
+		}
+	}
+
+	public void fileSaveAsm(SpinCADPatch patch) {
+		// Create a file chooser
+		String savedPath = prefs.get("MRUSpnFolder", "");
+
+		final JFileChooser fc = new JFileChooser(savedPath);
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Spin ASM Files", "spn");
+		fc.setFileFilter(filter);
+// XXX DEBUG
+		//		fc.showSaveDialog(model);
+		File fileToBeSaved = fc.getSelectedFile();
+
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spn")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".spn");
+		}
+		int n = JOptionPane.YES_OPTION;
+		if (fileToBeSaved.exists()) {
+			JFrame frame1 = new JFrame();
+			n = JOptionPane.showConfirmDialog(frame1,
+					"Would you like to overwrite it?", "File already exists!",
+					JOptionPane.YES_NO_OPTION);
+		}
+		if (n == JOptionPane.YES_OPTION) {
+			String filePath;
+			try {
+				filePath = fileToBeSaved.getPath();
+				fileToBeSaved.delete();
+			} finally {
+			}
+
+			try {
+				fileSaveAsm(patch, filePath);
+			} catch (IOException e) {
+				JOptionPane.showOptionDialog(null,
+						"File save error!", "Error",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);
+				e.printStackTrace();
+			}
+					
+			saveMRUSpnFolder(filePath);
+		}
+	}
+
+	public void fileSaveHex(SpinCADModel model) {
+		// Create a file chooser
+		String savedPath = prefs.get("MRUHexFolder", "");
+
+		final JFileChooser fc = new JFileChooser(savedPath);
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Hex Files", "hex");
+		fc.setFileFilter(filter);
+		// debug
+		//		fc.showSaveDialog(model);
+		File fileToBeSaved = fc.getSelectedFile();
+
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".hex")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".hex");
+		}
+		int n = JOptionPane.YES_OPTION;
+		if (fileToBeSaved.exists()) {
+			JFrame frame1 = new JFrame();
+			n = JOptionPane.showConfirmDialog(frame1,
+					"Would you like to overwrite it?", "File already exists!",
+					JOptionPane.YES_NO_OPTION);
+		}
+		if (n == JOptionPane.YES_OPTION) {
+			String filePath;
+			try {
+				filePath = fileToBeSaved.getPath();
+				fileToBeSaved.delete();
+			} finally {
+			}
+			try {
+				SpinCADFile.fileSaveHex(SpinCADModel.getRenderBlock()
+						.generateHex(), filePath);
+			} catch (IOException e) {
+				JOptionPane.showOptionDialog(null,
+						"File save error!", "Error",
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+				e.printStackTrace();
+			}
+			saveMRUHexFolder(filePath);
+		}
 	}
 }
 
