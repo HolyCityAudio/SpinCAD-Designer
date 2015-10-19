@@ -41,9 +41,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class SpinCADFile {
 	// PREFERENCES =====================================================
 	// following things are saved in the SpinCAD preferences
-	private static Preferences prefs;
-	private static RecentFileList recentBankFileList = null;
-	private static RecentFileList recentPatchFileList = null;
+	private Preferences prefs;
+	private RecentFileList recentBankFileList = null;
+	private RecentFileList recentPatchFileList = null;
 	// this next one is specific to file open, needs to be here for MRU file list operations
 	private JFileChooser fc;
 
@@ -52,7 +52,7 @@ public class SpinCADFile {
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
 
-	public static void fileSave(SpinCADPatch m) {
+	public void fileSave(SpinCADPatch m) {
 		File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + m.patchFileName);
 		String filePath = fileToBeSaved.getPath();
 		FileOutputStream fos;
@@ -160,22 +160,24 @@ public class SpinCADFile {
 		return b;
 	} 	
 
-	public static void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
+	public void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
-		writer.write("; " + p.cb.line1);
+		writer.write("; " + p.cb.fileName);
 		writer.newLine();
-		writer.write("; " + p.cb.line2);
+		writer.write("; " + p.cb.version);
 		writer.newLine();
-		writer.write("; " + p.cb.line3);
+		writer.write("; " + p.cb.line[0]);
 		writer.newLine();
-		writer.write("; " + p.cb.line4);
+		writer.write("; " + p.cb.line[1]);
 		writer.newLine();
-		writer.write("; " + p.cb.line5);
+		writer.write("; " + p.cb.line[2]);
 		writer.newLine();
-		writer.write("; " + p.cb.line6);
+		writer.write("; " + p.cb.line[3]);
 		writer.newLine();
-		writer.write("; " + p.cb.line7);
+		writer.write("; " + p.cb.line[4]);
+		writer.newLine();
+		writer.write("; " + p.cb.line[5]);
 		writer.newLine();
 
 		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
@@ -187,7 +189,7 @@ public class SpinCADFile {
 		writer.close();
 	}
 
-	public static void fileSaveHex(int[] codeListing, String fileName) throws IOException {
+	public void fileSaveHex(int[] codeListing, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 		int i = -1;
 		String outputString = new String();
@@ -218,7 +220,7 @@ public class SpinCADFile {
 		writer.close();
 	}
 
-	private static void saveMRUBankFolder(String path) {
+	private void saveMRUBankFolder(String path) {
 		Path pathE = Paths.get(path);
 
 		String pathS = pathE.getParent().toString();
@@ -228,7 +230,7 @@ public class SpinCADFile {
 		prefs.put("MRUBankFileName", nameS);
 	}
 
-	private static void saveMRUPatchFolder(String path) {
+	private void saveMRUPatchFolder(String path) {
 		Path pathE = Paths.get(path);
 
 		String pathS = pathE.getParent().toString();
@@ -261,7 +263,7 @@ public class SpinCADFile {
 				sb.append(file.getPath());
 			}
 			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-			p.put("RecentFileList.fileList", sb.toString());
+			p.put("RecentPatchFileList.fileList", sb.toString());
 		}
 	}
 
@@ -283,11 +285,11 @@ public class SpinCADFile {
 
 	private void loadRecentPatchFileList() {
 		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-		String listOfFiles = p.get("RecentFileList.fileList", null);
+		String listOfFiles = p.get("RecentPatchFileList.fileList", null);
 		if (fc == null) {
 			String savedPath = prefs.get("MRUPatchFolder", "");
-			File MRUFolder = new File(savedPath);
-			fc = new JFileChooser(MRUFolder);
+			File MRUPatchFolder = new File(savedPath);
+			fc = new JFileChooser(MRUPatchFolder);
 			recentPatchFileList = new RecentFileList(fc);
 			if (listOfFiles != null) {
 				String[] files = listOfFiles.split(File.pathSeparator);
@@ -362,7 +364,7 @@ public class SpinCADFile {
 
 	public void fileSavePatchAs(SpinCADPatch p) {
 		// Create a file chooser
-		String savedPath = prefs.get("MRUFolder", "");
+		String savedPath = prefs.get("MRUPatchFolder", "");
 		final JFileChooser fc = new JFileChooser(savedPath);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"SpinCAD Files", "spcd");
@@ -387,7 +389,7 @@ public class SpinCADFile {
 			}
 			if (n == JOptionPane.YES_OPTION) {
 				try {
-					SpinCADFile.fileSave(p);
+					fileSave(p);
 					recentPatchFileList.add(fileToBeSaved);
 					saveMRUPatchFolder(fileToBeSaved.getPath());
 				} finally {
@@ -513,8 +515,7 @@ public class SpinCADFile {
 			} finally {
 			}
 			try {
-				SpinCADFile.fileSaveHex(SpinCADModel.getRenderBlock()
-						.generateHex(), filePath);
+				fileSaveHex(SpinCADModel.getRenderBlock().generateHex(), filePath);
 			} catch (IOException e) {
 				JOptionPane.showOptionDialog(null,
 						"File save error!", "Error",
