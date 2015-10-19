@@ -55,6 +55,8 @@ public class SpinCADFile {
 	public void fileSave(SpinCADPatch m) {
 		File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + m.patchFileName);
 		String filePath = fileToBeSaved.getPath();
+		loadRecentPatchFileList();
+		
 		FileOutputStream fos;
 		ObjectOutputStream oos = null;
 		try {
