@@ -129,6 +129,8 @@ public class SpinCADFile {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"SpinCAD Files", "spcd");
 		fc.setFileFilter(filter);
+		fc.setAccessory(recentPatchFileList);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 		int returnVal = fc.showOpenDialog(new JFrame());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -166,10 +168,7 @@ public class SpinCADFile {
 	} 	
 
 	public SpinCADBank fileOpenBank() {
-		// debug, want to open recent file list at program init.
-		// TODO set most recently used folder
 		loadRecentBankFileList();
-
 		SpinCADBank b = null;
 
 		final String newline = "\n";
@@ -177,6 +176,8 @@ public class SpinCADFile {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"SpinCAD Bank Files", "spbk");
 		fc.setFileFilter(filter);
+		fc.setAccessory(recentBankFileList);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 		int returnVal = fc.showOpenDialog(new JFrame());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -190,6 +191,7 @@ public class SpinCADFile {
 				String filePath = file.getName();
 				saveMRUBankFolder(filePath);
 				recentBankFileList.add(file);
+				// XXX debug looks like we kinda have the same info in 2 places
 				b.bankFileName = filePath;
 				b.cb.setFileName(filePath);
 			} catch (Exception e) {	// thrown over in SpinCADFile.java
@@ -262,115 +264,6 @@ public class SpinCADFile {
 		writer.write(":00000001FF\n");
 		writer.close();
 	}
-
-	private void saveMRUBankFolder(String path) {
-		Path pathE = Paths.get(path);
-
-		String pathS = pathE.getParent().toString();
-		String nameS = pathE.getFileName().toString();
-
-		prefs.put("MRUBankFolder", pathS);
-		prefs.put("MRUBankFileName", nameS);
-	}
-
-	private void saveMRUPatchFolder(String path) {
-		Path pathE = Paths.get(path);
-
-		String pathS = pathE.getParent().toString();
-		String nameS = pathE.getFileName().toString();
-
-		prefs.put("MRUPatchFolder", pathS);
-		prefs.put("MRUPatchFileName", nameS);
-	}
-
-	private void saveMRUSpnFolder(String path) {
-		Path pathE = Paths.get(path);
-		prefs.put("MRUSpnFolder", pathE.toString());
-	}
-
-	private void saveMRUHexFolder(String path) {
-		Path pathE = Paths.get(path);
-		prefs.put("MRUHexFolder", pathE.toString());
-	}
-
-
-	private void saveRecentPatchFileList() {
-		StringBuilder sb = new StringBuilder(128);
-		if(recentPatchFileList != null) {
-			int k = recentPatchFileList.listModel.getSize() - 1;
-			for (int index = 0; index <= k; index++) {
-				File file = recentPatchFileList.listModel.getElementAt(k - index);
-				if (sb.length() > 0) {
-					sb.append(File.pathSeparator);
-				}
-				sb.append(file.getPath());
-			}
-			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-			p.put("RecentPatchFileList.fileList", sb.toString());
-		}
-	}
-
-	private void saveRecentBankFileList() {
-		StringBuilder sb = new StringBuilder(128);
-		if(recentBankFileList != null) {
-			int k = recentBankFileList.listModel.getSize() - 1;
-			for (int index = 0; index <= k; index++) {
-				File file = recentBankFileList.listModel.getElementAt(k - index);
-				if (sb.length() > 0) {
-					sb.append(File.pathSeparator);
-				}
-				sb.append(file.getPath());
-			}
-			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-			p.put("RecentBankFileList.fileList", sb.toString());
-		}
-	}
-
-	private void loadRecentPatchFileList() {
-		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-		String listOfFiles = p.get("RecentPatchFileList.fileList", null);
-		if (fc == null) {
-			String savedPath = prefs.get("MRUPatchFolder", "");
-			File MRUPatchFolder = new File(savedPath);
-			fc = new JFileChooser(MRUPatchFolder);
-			recentPatchFileList = new RecentFileList(fc);
-			if (listOfFiles != null) {
-				String[] files = listOfFiles.split(File.pathSeparator);
-				for (String fileRef : files) {
-					File file = new File(fileRef);
-					if (file.exists()) {
-						recentPatchFileList.listModel.add(file);
-					}
-				}
-			}
-			fc.setAccessory(recentPatchFileList);
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		}
-	}
-
-	private void loadRecentBankFileList() {
-		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-		String listOfFiles = p.get("RecentBankFileList.fileList", null);
-		if (fc == null) {
-			String savedPath = prefs.get("MRUBankFolder", "");
-			File MRUBankFolder = new File(savedPath);
-			fc = new JFileChooser(MRUBankFolder);
-			recentBankFileList = new RecentFileList(fc);
-			if (listOfFiles != null) {
-				String[] files = listOfFiles.split(File.pathSeparator);
-				for (String fileRef : files) {
-					File file = new File(fileRef);
-					if (file.exists()) {
-						recentBankFileList.listModel.add(file);
-					}
-				}
-			}
-			fc.setAccessory(recentBankFileList);
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		}
-	}
-
-
 
 	public void fileSavePatchAs(SpinCADPatch p) {
 		// Create a file chooser
@@ -538,6 +431,114 @@ public class SpinCADFile {
 				e.printStackTrace();
 			}
 			saveMRUHexFolder(filePath);
+		}
+	}
+	
+	//====================================================
+	// most-recently used file and folder methods
+	
+	private void saveMRUBankFolder(String path) {
+		Path pathE = Paths.get(path);
+
+		String pathS = pathE.getParent().toString();
+		String nameS = pathE.getFileName().toString();
+
+		prefs.put("MRUBankFolder", pathS);
+		prefs.put("MRUBankFileName", nameS);
+	}
+
+	private void saveMRUPatchFolder(String path) {
+		Path pathE = Paths.get(path);
+
+		String pathS = pathE.getParent().toString();
+		String nameS = pathE.getFileName().toString();
+
+		prefs.put("MRUPatchFolder", pathS);
+		prefs.put("MRUPatchFileName", nameS);
+	}
+
+	private void saveMRUSpnFolder(String path) {
+		Path pathE = Paths.get(path);
+		prefs.put("MRUSpnFolder", pathE.toString());
+	}
+
+	private void saveMRUHexFolder(String path) {
+		Path pathE = Paths.get(path);
+		prefs.put("MRUHexFolder", pathE.toString());
+	}
+
+
+	private void saveRecentPatchFileList() {
+		StringBuilder sb = new StringBuilder(128);
+		if(recentPatchFileList != null) {
+			int k = recentPatchFileList.listModel.getSize() - 1;
+			for (int index = 0; index <= k; index++) {
+				File file = recentPatchFileList.listModel.getElementAt(k - index);
+				if (sb.length() > 0) {
+					sb.append(File.pathSeparator);
+				}
+				sb.append(file.getPath());
+			}
+			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+			p.put("RecentPatchFileList.fileList", sb.toString());
+		}
+	}
+
+	private void saveRecentBankFileList() {
+		StringBuilder sb = new StringBuilder(128);
+		if(recentBankFileList != null) {
+			int k = recentBankFileList.listModel.getSize() - 1;
+			for (int index = 0; index <= k; index++) {
+				File file = recentBankFileList.listModel.getElementAt(k - index);
+				if (sb.length() > 0) {
+					sb.append(File.pathSeparator);
+				}
+				sb.append(file.getPath());
+			}
+			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+			p.put("RecentBankFileList.fileList", sb.toString());
+		}
+	}
+
+	private void loadRecentPatchFileList() {
+		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+		String listOfFiles = p.get("RecentPatchFileList.fileList", null);
+		if (fc == null) {
+			String savedPath = prefs.get("MRUPatchFolder", "");
+			File MRUPatchFolder = new File(savedPath);
+			fc = new JFileChooser(MRUPatchFolder);
+			recentPatchFileList = new RecentFileList(fc);
+			if (listOfFiles != null) {
+				String[] files = listOfFiles.split(File.pathSeparator);
+				for (String fileRef : files) {
+					File file = new File(fileRef);
+					if (file.exists()) {
+						recentPatchFileList.listModel.add(file);
+					}
+				}
+			}
+		}
+	}
+
+	private void loadRecentBankFileList() {
+		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+		String listOfFiles = p.get("RecentBankFileList.fileList", null);
+		if (fc == null) {
+			String savedPath = prefs.get("MRUBankFolder", "");
+			File MRUBankFolder = new File(savedPath);
+			fc = new JFileChooser(MRUBankFolder);
+			recentBankFileList = new RecentFileList(fc);
+			if (listOfFiles != null) {
+				String[] files = listOfFiles.split(File.pathSeparator);
+				for (String fileRef : files) {
+					File file = new File(fileRef);
+					if (file.exists()) {
+						recentBankFileList.listModel.add(file);
+					}
+				}
+			}
+			fc.setAccessory(recentBankFileList);
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		}
 	}
 }

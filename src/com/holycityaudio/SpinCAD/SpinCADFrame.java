@@ -1013,13 +1013,14 @@ public class SpinCADFrame extends JFrame {
 	}
 
 
-	// ================= used for the status toolbar and simulator start/stop
-	// button
+	// ================= EditResourcesToolbar
+	// this shows the pin name as you hover over a pin
+	
 	public class EditResourcesToolBar extends JToolBar implements ActionListener {
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -8905757462245337214L;
+
 		final JLabel pinName = new JLabel("");
 
 		class Task extends SwingWorker<Void, Void> {
@@ -1049,12 +1050,8 @@ public class SpinCADFrame extends JFrame {
 			setVisible(true);
 		}
 
-		/**
-		 * Invoked when the user presses the start button.
-		 */
 		public void actionPerformed(ActionEvent evt) {
-			System.out.println("Print: ");
-
+			System.out.println("EditResources toolbar Action Event ");
 		}
 
 		public void update() {

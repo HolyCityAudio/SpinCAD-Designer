@@ -46,7 +46,7 @@ public class SpinCADSimulator {
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
 	
-	// check wheter simulator is currently running
+	// check whether simulator is currently running
 	public boolean isSimRunning() {
 		return simRunning;
 	}
@@ -76,7 +76,6 @@ public class SpinCADSimulator {
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -4298199583629847984L;
 		final JButton btnStartSimulation = new JButton("Start Simulation");
 		final JButton btnSigGen = new JButton("Sig Gen Sim");
 
@@ -146,7 +145,7 @@ public class SpinCADSimulator {
 						setSimRunning(true);
 						// create file
 						btnStartSimulation.setText("Stop Simulator");
-//						pb.update();
+						frame.updateAll();
 						sim = new SpinSimulator(SpinCADModel.getRenderBlock(),
 								testWavFileName, outputFile, pot0Level, pot1Level,
 								pot2Level);
