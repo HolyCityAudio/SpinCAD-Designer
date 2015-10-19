@@ -103,7 +103,6 @@ public class SpinCADFile {
 		}
 	}
 
-
 	public SpinCADPatch fileReadPatch(String fileName) throws IOException, ClassNotFoundException {
 		// Object deserialization 
 		FileInputStream fis = new FileInputStream(fileName); 
@@ -132,7 +131,7 @@ public class SpinCADFile {
 		int returnVal = fc.showOpenDialog(new JFrame());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
-			// This is where a real application would open the file.
+
 			System.out.println("Opening: " + file.getName() + "."
 					+ newline);
 			try {
@@ -140,9 +139,13 @@ public class SpinCADFile {
 				p = fileReadPatch(filePath);
 				saveMRUPatchFolder(filePath);
 				recentPatchFileList.add(file);
-			} catch (Exception e) {	// thrown over in SpinCADFile.java
-				//						e.printStackTrace();
+				String fileName = file.getName();
+				p.patchFileName = fileName;
+				p.cb.setFileName(fileName);
+			} catch (Exception e) {	
+				e.printStackTrace();
 				// XXX				MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+			} finally {
 			}
 		} else {
 			System.out.println("Open command cancelled by user."
@@ -159,6 +162,44 @@ public class SpinCADFile {
 		ois.close(); 
 		return b;
 	} 	
+
+	public SpinCADBank fileOpenBank() {
+		// debug, want to open recent file list at program init.
+		// TODO set most recently used folder
+		loadRecentBankFileList();
+
+		SpinCADBank b = null;
+
+		final String newline = "\n";
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"SpinCAD Bank Files", "spbk");
+		fc.setFileFilter(filter);
+
+		int returnVal = fc.showOpenDialog(new JFrame());
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			// This is where a real application would open the file.
+			System.out.println("Opening: " + file.getName() + "."
+					+ newline);
+			try {
+				// first, open bank, then open patch 0
+				b = fileReadBank(file);
+				String filePath = file.getName();
+				saveMRUBankFolder(filePath);
+				recentBankFileList.add(file);
+				b.bankFileName = filePath;
+				b.cb.setFileName(filePath);
+			} catch (Exception e) {	// thrown over in SpinCADFile.java
+				e.printStackTrace();
+				//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
+			}
+		} else {
+			System.out.println("Open command cancelled by user."
+					+ newline);
+		}
+		return b;
+	}
 
 	public void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
@@ -328,39 +369,6 @@ public class SpinCADFile {
 	}
 
 
-	public SpinCADBank fileOpenBank() {
-		// debug, want to open recent file list at program init.
-		// TODO set most recently used folder
-		loadRecentBankFileList();
-
-		SpinCADBank b = null;
-
-		final String newline = "\n";
-		// In response to a button click:
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Bank Files", "spbk");
-		fc.setFileFilter(filter);
-
-		int returnVal = fc.showOpenDialog(new JFrame());
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
-			// This is where a real application would open the file.
-			System.out.println("Opening: " + file.getName() + "."
-					+ newline);
-			try {
-				// first, open bank, then open patch 0
-				b = fileReadBank(file);
-			} catch (Exception e) {	// thrown over in SpinCADFile.java
-				e.printStackTrace();
-				//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
-			}
-		} else {
-			System.out.println("Open command cancelled by user."
-					+ newline);
-		}
-		return b;
-	}
-
 
 	public void fileSavePatchAs(SpinCADPatch p) {
 		// Create a file chooser
@@ -377,7 +385,7 @@ public class SpinCADFile {
 			// In response to a button click:
 			File fileToBeSaved = fc.getSelectedFile();
 
-			if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spcd")) {
+			if (!fileToBeSaved.getAbsolutePath().endsWith(".spcd")) {
 				fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
 			}
 			int n = JOptionPane.YES_OPTION;
@@ -389,9 +397,12 @@ public class SpinCADFile {
 			}
 			if (n == JOptionPane.YES_OPTION) {
 				try {
+					String filePath = fileToBeSaved.getPath();
+					String fileName = fileToBeSaved.getName();
+					p.patchFileName = fileName;
 					fileSave(p);
 					recentPatchFileList.add(fileToBeSaved);
-					saveMRUPatchFolder(fileToBeSaved.getPath());
+					saveMRUPatchFolder(filePath);
 				} finally {
 				}
 			}

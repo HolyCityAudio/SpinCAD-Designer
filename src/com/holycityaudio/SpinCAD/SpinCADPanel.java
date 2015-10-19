@@ -312,8 +312,7 @@ public class SpinCADPanel extends JPanel {
 											dragLine = null;
 											startBlock = null;
 											spdFrame.getModel().setChanged(true);
-											spdFrame.getResourceToolbar().update();	// recalculate model resources toolbar
-											f.updateFrameTitle();
+											f.updateAll();
 											repaint();
 											// made the connection, we can stop now
 											return;
@@ -331,8 +330,7 @@ public class SpinCADPanel extends JPanel {
 											dragLine = null;
 											startBlock = null;
 											spdFrame.getModel().setChanged(true);
-											f.updateFrameTitle();
-											spdFrame.getResourceToolbar().update();	// recalculate model resources toolbar
+											f.updateAll();
 											repaint();
 											// made the connection, we can stop now
 											return;
@@ -683,8 +681,7 @@ public class SpinCADPanel extends JPanel {
 				}
 
 				f.getModel().setChanged(true);
-				f.updateFrameTitle();
-				f.getResourceToolbar().update();
+				f.updateAll();
 				repaint();
 				break;
 			default: 
