@@ -11,6 +11,7 @@ public class SpinCADCommentBlock implements Serializable {
 
 	SpinCADCommentBlock() {
 		line = new String[6];
+		clearComments();
 	}
 	
 	public void clearComments() {

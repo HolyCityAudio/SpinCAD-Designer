@@ -55,6 +55,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -252,10 +253,9 @@ public class SpinCADFrame extends JFrame {
 		JMenu mnFileMenu = new JMenu("File");
 		menuBar.add(mnFileMenu);
 
-		// NEW PATCH AND BANK
-		JMenu mnNewMenu = new JMenu("New");
+		// Patch File operations
 
-		JMenuItem mntmNewPatch = new JMenuItem("Patch");
+		JMenuItem mntmNewPatch = new JMenuItem("New Patch");
 		mntmNewPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -274,9 +274,87 @@ public class SpinCADFrame extends JFrame {
 				repaint();
 			}
 		});
-		mnNewMenu.add(mntmNewPatch);
+		mnFileMenu.add(mntmNewPatch);
 
-		JMenuItem mntmNewBank = new JMenuItem("Bank");
+		JMenuItem mntmOpenPatch = new JMenuItem("Open Patch");
+		mntmOpenPatch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SpinCADFile f = new SpinCADFile();
+				if (eeprom.bank[bankIndex].patchModel.getChanged() == true) {
+					int dialogResult = yesNoBox(panel, "Warning!",
+							"You have unsaved changes!  Continue?");
+					if (dialogResult == 0) {
+						getModel().newModel();
+						repaint();
+					}
+					else {
+						eeprom.bank[bankIndex] = f.fileOpenPatch();
+						eeprom.bank[bankIndex].patchModel.getIndexFB();
+						eeprom.bank[bankIndex].patchModel.setChanged(false);						
+						eeprom.bank[bankIndex].patchModel.presetIndexFB();
+						eeprom.changed = true;
+						updateAll();
+					}
+				}
+				eeprom.bank[bankIndex] = f.fileOpenPatch();
+				eeprom.bank[bankIndex].patchModel.getIndexFB();
+				eeprom.bank[bankIndex].patchModel.setChanged(false);						
+				eeprom.bank[bankIndex].patchModel.presetIndexFB();
+				eeprom.changed = true;
+				updateAll();
+			}
+		});
+
+		mnFileMenu.add(mntmOpenPatch);
+
+		JMenuItem mntmSavePatch = new JMenuItem("Save Patch");
+		mntmSavePatch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(eeprom.bank[bankIndex].patchFileName != "Untitled") {
+					try {
+						SpinCADFile f = new SpinCADFile();
+						f.fileSavePatchAs(eeprom.bank[bankIndex]);
+						eeprom.bank[bankIndex].patchModel.setChanged(false);
+						updateAll();
+					} finally {
+					}
+
+				} else {
+					SpinCADFile f = new SpinCADFile();
+					f.fileSavePatchAs(eeprom.bank[bankIndex]);
+					eeprom.bank[bankIndex].patchModel.setChanged(false);
+					updateAll();
+				}
+			}
+		});
+		mntmSavePatch.setAccelerator(KeyStroke.getKeyStroke("ctrl s"));
+		mnFileMenu.add(mntmSavePatch);
+
+		JMenuItem mntmSavePatchAs = new JMenuItem("Save Patch As");
+		mntmSavePatchAs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				eeprom.bank[bankIndex].cb.setVersion("Patch saved from SpinCAD Designer version" + buildNum);
+				SpinCADFile f = new SpinCADFile();
+				f.fileSavePatchAs(eeprom.bank[bankIndex]);
+				eeprom.bank[bankIndex].patchModel.changed = false;
+			}
+		});
+		mnFileMenu.add(mntmSavePatchAs);
+
+		JMenuItem mntmSaveAsm = new JMenuItem("Save Patch as ASM");
+		mntmSaveAsm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				getModel().sortAlignGen();
+				SpinCADFile f = new SpinCADFile();
+				f.fileSaveAsm(eeprom.bank[bankIndex]);
+			}
+		});
+		mnFileMenu.add(mntmSaveAsm);
+		
+		mnFileMenu.addSeparator();
+
+		// Bank File operations
+		JMenuItem mntmNewBank = new JMenuItem("New Bank");
 		mntmNewBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -298,43 +376,9 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 
-		mnNewMenu.add(mntmNewBank);
-		mnFileMenu.add(mnNewMenu);
+		mnFileMenu.add(mntmNewBank);
 
-		// OPEN PATCH AND BANK
-
-		JMenu mnOpenMenu = new JMenu("Open");
-
-		JMenuItem mntmOpenPatch = new JMenuItem("Patch");
-		mntmOpenPatch.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				SpinCADFile f = new SpinCADFile();
-				if (eeprom.bank[bankIndex].patchModel.getChanged() == true) {
-					int dialogResult = yesNoBox(panel, "Warning!",
-							"You have unsaved changes!  Continue?");
-					if (dialogResult == 0) {
-						getModel().newModel();
-						repaint();
-					}
-					else {
-						eeprom.bank[bankIndex] = f.fileOpenPatch();
-						eeprom.bank[bankIndex].patchModel.getIndexFB();
-						eeprom.bank[bankIndex].patchModel.setChanged(false);						
-						eeprom.bank[bankIndex].patchModel.presetIndexFB();
-						updateAll();
-					}
-				}
-				eeprom.bank[bankIndex] = f.fileOpenPatch();
-				eeprom.bank[bankIndex].patchModel.getIndexFB();
-				eeprom.bank[bankIndex].patchModel.setChanged(false);						
-				eeprom.bank[bankIndex].patchModel.presetIndexFB();
-				updateAll();
-			}
-		});
-
-		mnOpenMenu.add(mntmOpenPatch);
-
-		JMenuItem mntmOpenBank = new JMenuItem("Bank");
+		JMenuItem mntmOpenBank = new JMenuItem("Open Bank");
 		mntmOpenBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADFile f= new SpinCADFile();
@@ -352,35 +396,10 @@ public class SpinCADFrame extends JFrame {
 				updateAll();
 			}
 		});
-		mnOpenMenu.add(mntmOpenBank);
-		mnFileMenu.add(mnOpenMenu);
 
-		// SAVE PATCH AND BANK		
-		JMenu mnSaveMenu = new JMenu("Save");
-		JMenuItem mntmSavePatch = new JMenuItem("Patch");
-		mntmSavePatch.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if(eeprom.bank[bankIndex].patchFileName != "Untitled") {
-					try {
-						SpinCADFile f = new SpinCADFile();
-						f.fileSavePatchAs(eeprom.bank[bankIndex]);
-						eeprom.bank[bankIndex].patchModel.setChanged(false);
-						updateAll();
-					} finally {
-					}
+		mnFileMenu.add(mntmOpenBank);
 
-				} else {
-					SpinCADFile f = new SpinCADFile();
-					f.fileSavePatchAs(eeprom.bank[bankIndex]);
-					eeprom.bank[bankIndex].patchModel.setChanged(false);
-					updateAll();
-				}
-			}
-		});
-		mntmSavePatch.setAccelerator(KeyStroke.getKeyStroke("ctrl s"));
-		mnSaveMenu.add(mntmSavePatch);
-
-		JMenuItem mntmSaveBank = new JMenuItem("Bank");
+		JMenuItem mntmSaveBank = new JMenuItem("Save Bank");
 		mntmSaveBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				File fileToBeSaved = new File(eeprom.bankFileName);
@@ -390,44 +409,22 @@ public class SpinCADFrame extends JFrame {
 				updateAll();
 			}
 		});
-		mnSaveMenu.add(mntmSaveBank);
-		mnFileMenu.add(mnSaveMenu);
+		
+		mnFileMenu.add(mntmSaveBank);
 
-		JMenu mnSaveAsMenu = new JMenu("Save As");
-		JMenuItem mntmSavePatchAs = new JMenuItem("Patch");
-		mntmSavePatchAs.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				eeprom.bank[bankIndex].cb.setVersion("Patch saved from SpinCAD Designer version" + buildNum);
-				SpinCADFile f = new SpinCADFile();
-				f.fileSavePatchAs(eeprom.bank[bankIndex]);
-			}
-		});
-		mnSaveAsMenu.add(mntmSavePatchAs);
-
-		JMenuItem mntmSaveBankAs = new JMenuItem("Bank");
+		JMenuItem mntmSaveBankAs = new JMenuItem("Save Bank As");
 		mntmSaveBankAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.cb.setVersion("Bank saved from SpinCAD Designer version" + buildNum);
 				SpinCADFile f = new SpinCADFile();
 				f.fileSaveBankAs(eeprom);
+				eeprom.changed = false;
 			}
 		});
-		mnSaveAsMenu.add(mntmSaveBankAs);
-		mnFileMenu.add(mnSaveAsMenu);
 
-		JMenu mnExport = new JMenu("Export to...");
-
-		JMenuItem mntmSaveAsm = new JMenuItem("Spin ASM");
-		mntmSaveAsm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				getModel().sortAlignGen();
-				SpinCADFile f = new SpinCADFile();
-				f.fileSaveAsm(eeprom.bank[bankIndex]);
-			}
-		});
-		mnExport.add(mntmSaveAsm);
-
-		JMenuItem mntmSaveHex = new JMenuItem("Hex");
+		mnFileMenu.add(mntmSaveBankAs);
+		
+		JMenuItem mntmSaveHex = new JMenuItem("Export Bank to Hex");
 		mntmSaveHex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				getModel().sortAlignGen();
@@ -435,8 +432,8 @@ public class SpinCADFrame extends JFrame {
 				f.fileSaveHex(getModel());
 			}
 		});
-		mnExport.add(mntmSaveHex);
-		mnFileMenu.add(mnExport);
+
+		mnFileMenu.add(mntmSaveHex);
 
 		mnFileMenu.addSeparator();
 
@@ -444,12 +441,10 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy to Clipboard");
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				getModel().sortAlignGen();
-				//				StringSelection stringSelection = new StringSelection (cb.getComments() + SpinCADModel.getRenderBlock()
-				//						.getProgramListing(1));
+				eeprom.bank[bankIndex].patchModel.sortAlignGen();
+				StringSelection stringSelection = new StringSelection (eeprom.bank[bankIndex].cb.getComments() + SpinCADModel.getRenderBlock().getProgramListing(1));
 				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
-				//				clpbrd.setContents (stringSelection, null);
-				//				fileSaveAsm();
+				clpbrd.setContents (stringSelection, null);
 			}
 		});
 		mnFileMenu.add(mntmCopyToClipboard);
@@ -849,13 +844,13 @@ public class SpinCADFrame extends JFrame {
 		public commentBlockPanel(SpinCADPatch p) {
 			commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
 
-			line1text = new JTextField(p.cb.line[0], 64);
-			line2text = new JTextField(p.cb.line[1], 64);
-			line3text = new JTextField(p.cb.line[2], 64);
-			line4text = new JTextField(p.cb.line[3], 64);
-			line5text = new JTextField(p.cb.line[4], 64);
-			line6text = new JTextField(p.cb.line[5], 64);
-			line7text = new JTextField(p.cb.fileName, 64);
+			line1text = new JTextField(p.cb.fileName, 64);
+			line2text = new JTextField(p.cb.version, 64);
+			line3text = new JTextField(p.cb.line[0], 64);
+			line4text = new JTextField(p.cb.line[1], 64);
+			line5text = new JTextField(p.cb.line[2], 64);
+			line6text = new JTextField(p.cb.line[3], 64);
+			line7text = new JTextField(p.cb.line[4], 64);
 
 			line1text.setEditable(false);
 			commentFrame.add(line1text);
@@ -909,7 +904,6 @@ public class SpinCADFrame extends JFrame {
 		public commentBlockBank(SpinCADBank bank) {
 			cbPnl = new commentBlockPanel(bank);
 		}
-
 	}
 
 	// ======================================================================================================
