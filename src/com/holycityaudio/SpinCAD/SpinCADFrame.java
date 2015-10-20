@@ -350,7 +350,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnFileMenu.add(mntmSaveAsm);
-		
+
 		mnFileMenu.addSeparator();
 
 		// Bank File operations
@@ -409,7 +409,7 @@ public class SpinCADFrame extends JFrame {
 				updateAll();
 			}
 		});
-		
+
 		mnFileMenu.add(mntmSaveBank);
 
 		JMenuItem mntmSaveBankAs = new JMenuItem("Save Bank As");
@@ -423,7 +423,7 @@ public class SpinCADFrame extends JFrame {
 		});
 
 		mnFileMenu.add(mntmSaveBankAs);
-		
+
 		JMenuItem mntmSaveHex = new JMenuItem("Export Bank to Hex");
 		mntmSaveHex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -824,11 +824,20 @@ public class SpinCADFrame extends JFrame {
 		commentBlockPanel cbPnl;
 
 		public commentBlockPatch(SpinCADPatch patch) {
-			cbPnl = new commentBlockPanel(patch);
+			cbPnl = new commentBlockPanel(patch.cb);
 		}
 	}
 
-	private class commentBlockPanel {
+	// ======================================================================================================
+	class commentBlockBank {
+		commentBlockPanel cbPnl;
+
+		public commentBlockBank(SpinCADBank bank) {
+			cbPnl = new commentBlockPanel(bank.cb);
+		}
+	}
+
+	private class commentBlockPanel extends JFrame implements WindowListener {
 		JFrame commentFrame = new JFrame("Patch Information");
 
 		JTextField fileNameText;
@@ -840,70 +849,93 @@ public class SpinCADFrame extends JFrame {
 		JTextField line5text;
 		JTextField line6text;
 		JTextField line7text;	
+		SpinCADCommentBlock spcb;
 
-		public commentBlockPanel(SpinCADPatch p) {
-			commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
+		public commentBlockPanel(SpinCADCommentBlock cb) {
 
-			line1text = new JTextField(p.cb.fileName, 64);
-			line2text = new JTextField(p.cb.version, 64);
-			line3text = new JTextField(p.cb.line[0], 64);
-			line4text = new JTextField(p.cb.line[1], 64);
-			line5text = new JTextField(p.cb.line[2], 64);
-			line6text = new JTextField(p.cb.line[3], 64);
-			line7text = new JTextField(p.cb.line[4], 64);
+			spcb = cb;
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
 
-			line1text.setEditable(false);
-			commentFrame.add(line1text);
-			line2text.setEditable(false);
-			commentFrame.add(line2text);
+					commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
 
-			commentFrame.add(line3text);
-			commentFrame.add(line4text);
-			commentFrame.add(line5text);
-			commentFrame.add(line6text);
-			commentFrame.add(line7text);		
+					line1text = new JTextField(spcb.fileName, 64);
+					line2text = new JTextField(spcb.version, 64);
+					line3text = new JTextField(spcb.line[0], 64);
+					line4text = new JTextField(spcb.line[1], 64);
+					line5text = new JTextField(spcb.line[2], 64);
+					line6text = new JTextField(spcb.line[3], 64);
+					line7text = new JTextField(spcb.line[4], 64);
+
+					line1text.setEditable(false);
+					commentFrame.add(line1text);
+					line2text.setEditable(false);
+					commentFrame.add(line2text);
+
+					commentFrame.add(line3text);
+					commentFrame.add(line4text);
+					commentFrame.add(line5text);
+					commentFrame.add(line6text);
+					commentFrame.add(line7text);	
+					commentFrame.setAlwaysOnTop(true);
+					commentFrame.pack();
+					commentFrame.setLocation(200, 150);
+					commentFrame.setResizable(false);
+					commentFrame.setVisible(true);
+				}
+			});
+			commentFrame.addWindowListener(this);
 		}
 
-		public commentBlockPanel(SpinCADBank bank) {
-			commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
 
-			line1text = new JTextField(bank.cb.line[0], 64);
-			line2text = new JTextField(bank.cb.line[1], 64);
-			line3text = new JTextField(bank.cb.line[2], 64);
-			line4text = new JTextField(bank.cb.line[3], 64);
-			line5text = new JTextField(bank.cb.line[4], 64);
-			line6text = new JTextField("", 64);
-			line7text = new JTextField("", 64);
-
-			commentFrame.add(fileNameText);
-			fileNameText.setEditable(false);
-			commentFrame.add(versionText);
-			versionText.setEditable(false);
-			commentFrame.add(line1text);
-			commentFrame.add(line2text);
-			commentFrame.add(line3text);
-			commentFrame.add(line4text);
-			commentFrame.add(line5text);
-			commentFrame.add(line6text);
-			commentFrame.add(line7text);
-		}
-		
-		private void show() {
+		public void show() {
 			commentFrame.setAlwaysOnTop(true);
 			commentFrame.pack();
 			commentFrame.setLocation(200, 150);
 			commentFrame.setResizable(false);
 			commentFrame.setVisible(true);
-		}	
-	}
-
-	// ======================================================================================================
-	class commentBlockBank {
-		commentBlockPanel cbPnl;
-
-		public commentBlockBank(SpinCADBank bank) {
-			cbPnl = new commentBlockPanel(bank);
 		}
+
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			spcb.line[0] = "hey you";	
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+			spcb.line[0] = line2text.getText();	
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}	
 	}
 
 	// ======================================================================================================
@@ -912,7 +944,6 @@ public class SpinCADFrame extends JFrame {
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -4298199583629847984L;
 		final JButton btnPatch0 = new JButton("Patch 0");
 		final JButton btnPatch1 = new JButton("Patch 1");
 		final JButton btnPatch2 = new JButton("Patch 2");
@@ -1009,7 +1040,7 @@ public class SpinCADFrame extends JFrame {
 
 	// ================= EditResourcesToolbar
 	// this shows the pin name as you hover over a pin
-	
+
 	public class EditResourcesToolBar extends JToolBar implements ActionListener {
 		/**
 		 * 
@@ -1057,7 +1088,7 @@ public class SpinCADFrame extends JFrame {
 	ModelResourcesToolBar getResourceToolbar() {
 		return pb;
 	}
-	
+
 	public void updateAll() {
 		updateFrameTitle();
 		pb.update(eeprom.bank[bankIndex].patchModel);
