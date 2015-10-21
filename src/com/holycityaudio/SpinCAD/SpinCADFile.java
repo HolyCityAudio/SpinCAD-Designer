@@ -78,7 +78,12 @@ public class SpinCADFile {
 			oos.close(); 
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
+		finally {
+			saveMRUPatchFolder(filePath);
+			recentPatchFileList.add(fileToBeSaved);		
+			saveRecentPatchFileList();
+		}
 	}
 
 	public void fileSave(SpinCADBank b) {
@@ -102,6 +107,7 @@ public class SpinCADFile {
 		finally {
 			saveMRUBankFolder(filePath);
 			recentBankFileList.add(fileToBeSaved);		
+			saveRecentBankFileList();
 		}
 	}
 
@@ -119,8 +125,6 @@ public class SpinCADFile {
 
 	public SpinCADPatch fileOpenPatch() {
 
-		// debug, want to open recent file list at program init.
-		// TODO set most recently used folder
 		loadRecentPatchFileList();
 		final String newline = "\n";
 		SpinCADPatch p = new SpinCADPatch();
@@ -155,6 +159,7 @@ public class SpinCADFile {
 			System.out.println("Open command cancelled by user."
 					+ newline);
 		}
+		saveRecentPatchFileList();
 		return p;
 	}
 
@@ -202,6 +207,7 @@ public class SpinCADFile {
 			System.out.println("Open command cancelled by user."
 					+ newline);
 		}
+		saveRecentBankFileList();
 		return b;
 	}
 
@@ -467,7 +473,9 @@ public class SpinCADFile {
 		prefs.put("MRUHexFolder", pathE.toString());
 	}
 
-
+//========================================================================	
+// recent file lists
+	
 	private void saveRecentPatchFileList() {
 		StringBuilder sb = new StringBuilder(128);
 		if(recentPatchFileList != null) {
@@ -481,22 +489,6 @@ public class SpinCADFile {
 			}
 			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 			p.put("RecentPatchFileList.fileList", sb.toString());
-		}
-	}
-
-	private void saveRecentBankFileList() {
-		StringBuilder sb = new StringBuilder(128);
-		if(recentBankFileList != null) {
-			int k = recentBankFileList.listModel.getSize() - 1;
-			for (int index = 0; index <= k; index++) {
-				File file = recentBankFileList.listModel.getElementAt(k - index);
-				if (sb.length() > 0) {
-					sb.append(File.pathSeparator);
-				}
-				sb.append(file.getPath());
-			}
-			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
-			p.put("RecentBankFileList.fileList", sb.toString());
 		}
 	}
 
@@ -517,6 +509,24 @@ public class SpinCADFile {
 					}
 				}
 			}
+			fc.setAccessory(recentPatchFileList);
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		}
+	}
+
+	private void saveRecentBankFileList() {
+		StringBuilder sb = new StringBuilder(128);
+		if(recentBankFileList != null) {
+			int k = recentBankFileList.listModel.getSize() - 1;
+			for (int index = 0; index <= k; index++) {
+				File file = recentBankFileList.listModel.getElementAt(k - index);
+				if (sb.length() > 0) {
+					sb.append(File.pathSeparator);
+				}
+				sb.append(file.getPath());
+			}
+			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+			p.put("RecentBankFileList.fileList", sb.toString());
 		}
 	}
 

@@ -350,7 +350,28 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnFileMenu.add(mntmSaveAsm);
+		
+		// XXX DEBUG
+		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy ASM to Clipboard");
+		mntmCopyToClipboard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				eeprom.bank[bankIndex].patchModel.sortAlignGen();
+				StringSelection stringSelection = new StringSelection (eeprom.bank[bankIndex].cb.getComments() + SpinCADModel.getRenderBlock().getProgramListing(1));
+				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
+				clpbrd.setContents (stringSelection, null);
+			}
+		});
+		mnFileMenu.add(mntmCopyToClipboard);
 
+		JMenuItem mntmInfo = new JMenuItem("Patch Information");
+		mntmInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				commentBlockPatch cbp = new commentBlockPatch(eeprom.bank[bankIndex]);
+				cbp.cbPnl.show();
+			}
+		});
+		mnFileMenu.add(mntmInfo);
+		
 		mnFileMenu.addSeparator();
 
 		// Bank File operations
@@ -435,19 +456,18 @@ public class SpinCADFrame extends JFrame {
 
 		mnFileMenu.add(mntmSaveHex);
 
-		mnFileMenu.addSeparator();
-
-		// XXX DEBUG
-		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy to Clipboard");
-		mntmCopyToClipboard.addActionListener(new ActionListener() {
+		JMenuItem mntmBankInfo = new JMenuItem("Bank Information");
+		mntmBankInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				eeprom.bank[bankIndex].patchModel.sortAlignGen();
-				StringSelection stringSelection = new StringSelection (eeprom.bank[bankIndex].cb.getComments() + SpinCADModel.getRenderBlock().getProgramListing(1));
-				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
-				clpbrd.setContents (stringSelection, null);
+				commentBlockBank cbb = new commentBlockBank(eeprom);
+				cbb.cbPnl.show();
 			}
 		});
-		mnFileMenu.add(mntmCopyToClipboard);
+		mnFileMenu.add(mntmBankInfo);
+		
+		mnFileMenu.addSeparator();
+
+
 
 		JMenuItem mntmBatch = new JMenuItem("Batch Convert");
 		// XXX 	    SpinCADFile.fileBatch(panel, mntmBatch);
@@ -456,14 +476,7 @@ public class SpinCADFrame extends JFrame {
 
 		mnFileMenu.addSeparator();
 
-		JMenuItem mntmInfo = new JMenuItem("Information");
-		mntmInfo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				commentBlockPatch cbp = new commentBlockPatch(eeprom.bank[bankIndex]);
-				cbp.cbPnl.show();
-			}
-		});
-		mnFileMenu.add(mntmInfo);
+
 
 		mnFileMenu.addSeparator();
 

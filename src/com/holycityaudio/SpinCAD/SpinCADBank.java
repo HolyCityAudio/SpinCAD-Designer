@@ -11,8 +11,8 @@ public class SpinCADBank implements Serializable {
 
 	SpinCADBank() {
 		cb.line[0] = "Bank";
-		cb.line[1] = "Thank";
-		cb.line[2] = "You";
+		cb.line[1] = "";
+		cb.line[2] = "";
 
 		for (int i = 0; i < 8; i++) {
 			bank[i] = new SpinCADPatch();			
