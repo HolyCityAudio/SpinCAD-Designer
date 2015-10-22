@@ -175,7 +175,8 @@ public class SpinCADFile {
 	public SpinCADBank fileOpenBank() {
 		loadRecentBankFileList();
 		SpinCADBank b = null;
-
+		File file = null;
+		
 		final String newline = "\n";
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -186,19 +187,13 @@ public class SpinCADFile {
 
 		int returnVal = fc.showOpenDialog(new JFrame());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
+			file = fc.getSelectedFile();
 			// This is where a real application would open the file.
 			System.out.println("Opening: " + file.getName() + "."
 					+ newline);
 			try {
 				// first, open bank, then open patch 0
 				b = fileReadBank(file);
-				String filePath = file.getName();
-				saveMRUBankFolder(filePath);
-				recentBankFileList.add(file);
-				// XXX debug looks like we kinda have the same info in 2 places
-				b.bankFileName = filePath;
-				b.cb.setFileName(filePath);
 			} catch (Exception e) {	// thrown over in SpinCADFile.java
 				e.printStackTrace();
 				//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
@@ -207,6 +202,14 @@ public class SpinCADFile {
 			System.out.println("Open command cancelled by user."
 					+ newline);
 		}
+		String filePath = file.getPath();
+		String fileName = file.getName();
+		saveMRUBankFolder(filePath);
+		recentBankFileList.add(file);
+		// XXX debug looks like we kinda have the same info in 2 places
+		b.bankFileName = fileName;
+		b.cb.setFileName(fileName);
+		b.changed = false;
 		saveRecentBankFileList();
 		return b;
 	}
@@ -340,14 +343,15 @@ public class SpinCADFile {
 					try {
 						fileSave(b);
 					} finally {
-						recentBankFileList.add(fileToBeSaved);
-						saveMRUBankFolder(fileToBeSaved.getPath());
 					}
 				}
 			}
 			else {
 				fileSave(b);
 			}
+			b.changed = false;
+			recentBankFileList.add(fileToBeSaved);
+			saveMRUBankFolder(fileToBeSaved.getPath());
 		}
 	}
 
