@@ -356,7 +356,7 @@ public class ElmProgram implements Serializable {
 			int ii = instList.get(i).getHexWord();
 			if(ii != -1) {
 				hex[j] = ii; 
-				System.out.printf("%08x\n", hex[j]);
+//				System.out.printf("%08x\n", hex[j]);
 				j++;
 			}
 		}

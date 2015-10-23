@@ -56,7 +56,7 @@ public class SpinCADFile {
 		File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + m.patchFileName);
 		String filePath = fileToBeSaved.getPath();
 		loadRecentPatchFileList();
-		
+
 		FileOutputStream fos;
 		ObjectOutputStream oos = null;
 		try {
@@ -176,7 +176,7 @@ public class SpinCADFile {
 		loadRecentBankFileList();
 		SpinCADBank b = null;
 		File file = null;
-		
+
 		final String newline = "\n";
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -217,6 +217,7 @@ public class SpinCADFile {
 	public void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
+/* 		XXX debug
 		writer.write("; " + p.cb.fileName);
 		writer.newLine();
 		writer.write("; " + p.cb.version);
@@ -233,44 +234,13 @@ public class SpinCADFile {
 		writer.newLine();
 		writer.write("; " + p.cb.line[5]);
 		writer.newLine();
-
+*/
 		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
 		String[] words = codeListing.split("\n");
 		for (String word: words) {
 			writer.write(word);
 			writer.newLine();
 		}
-		writer.close();
-	}
-
-	public void fileSaveHex(int[] codeListing, String fileName) throws IOException {
-		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-		int i = -1;
-		String outputString = new String();
-		for(int ii = 0, index = 0; ii < 128; ii++) {
-			if(ii < codeListing.length) {
-				i = codeListing[ii];
-			} else {
-				i = 0;
-			}
-			if(i != -1) {
-				if(i == 0) { 	// do NOP conversion
-					i = 0x11;
-				}
-				outputString = String.format("04%04X00%08X", index, i);
-				long message = Long.parseLong(outputString, 16);
-				int checksum = 0;
-				for(int iii = 0; iii < 8; iii++) {
-					checksum = checksum + (int) (message & 0xff);
-					message = message >> 8;
-				}
-				checksum = ((~checksum) & 0xff) + 1;
-				writer.write(":" + outputString + String.format("%02X",  checksum));
-				writer.newLine();		
-				index += 4;
-			}
-		}
-		writer.write(":00000001FF\n");
 		writer.close();
 	}
 
@@ -365,7 +335,7 @@ public class SpinCADFile {
 				"Spin ASM Files", "spn");
 		fc.setFileFilter(filter);
 		// XXX DEBUG
-		//		fc.showSaveDialog(model);
+		fc.showSaveDialog(new JFrame());
 		File fileToBeSaved = fc.getSelectedFile();
 
 		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spn")) {
@@ -400,7 +370,7 @@ public class SpinCADFile {
 		}
 	}
 
-	public void fileSaveHex(SpinCADModel model) {
+	public void fileSaveHex(SpinCADBank bank) {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUHexFolder", "");
 
@@ -409,8 +379,8 @@ public class SpinCADFile {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Hex Files", "hex");
 		fc.setFileFilter(filter);
-		// debug
-		//		fc.showSaveDialog(model);
+		// XXX debug
+		fc.showSaveDialog(new JFrame());
 		File fileToBeSaved = fc.getSelectedFile();
 
 		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".hex")) {
@@ -430,23 +400,60 @@ public class SpinCADFile {
 				fileToBeSaved.delete();
 			} finally {
 			}
-			try {
-				fileSaveHex(SpinCADModel.getRenderBlock().generateHex(), filePath);
-			} catch (IOException e) {
-				JOptionPane.showOptionDialog(null,
-						"File save error!", "Error",
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, null, null);
+			for(int i = 0; i < 8; i++) {
+				try {
+					fileSaveHex(i, bank.bank[i].patchModel.getRenderBlock().generateHex(), filePath);
+				} catch (IOException e) {
+					JOptionPane.showOptionDialog(null,
+							"File save error!", "Error",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null, null, null);
 
-				e.printStackTrace();
+					e.printStackTrace();
+				}
 			}
 			saveMRUHexFolder(filePath);
 		}
 	}
 	
+	public void fileSaveHex(int patchIndex, int[] codeListing, String fileName) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+		int i = -1;
+		String outputString = new String();
+		for(int ii = 0, index = 0; ii < 128; ii++) {
+			if(ii < codeListing.length) {
+				i = codeListing[ii];
+			} else {
+				i = 0;
+			}
+			if(i != -1) {
+				if(i == 0) { 	// do NOP conversion
+					i = 0x11;
+				}
+				outputString = String.format("04%04X00%08X", (patchIndex * 0x200) + index, i);
+//				outputString = String.format("04%04X00%08X", index, i);
+				long message = Long.parseLong(outputString, 16);
+				int checksum = 0;
+				for(int iii = 0; iii < 8; iii++) {
+					checksum = checksum + (int) (message & 0xff);
+					message = message >> 8;
+				}
+				checksum = (((~checksum) & 0xff) + 1) & 0xff;
+				writer.write(":" + outputString + String.format("%02X",  checksum));
+				writer.newLine();		
+				index += 4;
+			}
+		}
+		if(patchIndex == 7) {
+			writer.write(":00000001FF\n");	
+		}
+		writer.close();
+	}
+
+
 	//====================================================
 	// most-recently used file and folder methods
-	
+
 	private void saveMRUBankFolder(String path) {
 		Path pathE = Paths.get(path);
 
@@ -477,9 +484,9 @@ public class SpinCADFile {
 		prefs.put("MRUHexFolder", pathE.toString());
 	}
 
-//========================================================================	
-// recent file lists
-	
+	//========================================================================	
+	// recent file lists
+
 	private void saveRecentPatchFileList() {
 		StringBuilder sb = new StringBuilder(128);
 		if(recentPatchFileList != null) {

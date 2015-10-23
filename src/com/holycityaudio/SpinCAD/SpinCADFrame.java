@@ -450,7 +450,7 @@ public class SpinCADFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				getModel().sortAlignGen();
 				SpinCADFile f = new SpinCADFile();
-				f.fileSaveHex(getModel());
+				f.fileSaveHex(eeprom);
 			}
 		});
 
