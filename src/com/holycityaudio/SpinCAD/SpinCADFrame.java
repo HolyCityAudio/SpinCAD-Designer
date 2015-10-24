@@ -852,44 +852,43 @@ public class SpinCADFrame extends JFrame {
 
 	private class commentBlockPanel extends JFrame implements WindowListener {
 		JFrame commentFrame = new JFrame("Patch Information");
-
+		
 		JTextField fileNameText;
 		JTextField versionText;
+		JTextField line0text;
 		JTextField line1text;
 		JTextField line2text;
 		JTextField line3text;
 		JTextField line4text;
-		JTextField line5text;
-		JTextField line6text;
-		JTextField line7text;	
+
 		SpinCADCommentBlock spcb;
 
 		public commentBlockPanel(SpinCADCommentBlock cb) {
 
-			spcb = cb;
+			this.spcb = cb;
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 
 					commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
 
-					line1text = new JTextField(spcb.fileName, 64);
-					line2text = new JTextField(spcb.version, 64);
-					line3text = new JTextField(spcb.line[0], 64);
-					line4text = new JTextField(spcb.line[1], 64);
-					line5text = new JTextField(spcb.line[2], 64);
-					line6text = new JTextField(spcb.line[3], 64);
-					line7text = new JTextField(spcb.line[4], 64);
+					fileNameText = new JTextField(spcb.fileName, 64);
+					versionText = new JTextField(spcb.version, 64);
+					line0text = new JTextField(spcb.line[0], 64);
+					line1text = new JTextField(spcb.line[1], 64);
+					line2text = new JTextField(spcb.line[2], 64);
+					line3text = new JTextField(spcb.line[3], 64);
+					line4text = new JTextField(spcb.line[4], 64);
 
-					line1text.setEditable(false);
+					fileNameText.setEditable(false);
+					commentFrame.add(fileNameText);
+					versionText.setEditable(false);
+					commentFrame.add(versionText);
+
+					commentFrame.add(line0text);
 					commentFrame.add(line1text);
-					line2text.setEditable(false);
 					commentFrame.add(line2text);
-
 					commentFrame.add(line3text);
-					commentFrame.add(line4text);
-					commentFrame.add(line5text);
-					commentFrame.add(line6text);
-					commentFrame.add(line7text);	
+					commentFrame.add(line4text);	
 					commentFrame.setAlwaysOnTop(true);
 					commentFrame.pack();
 					commentFrame.setLocation(200, 150);
@@ -899,7 +898,6 @@ public class SpinCADFrame extends JFrame {
 			});
 			commentFrame.addWindowListener(this);
 		}
-
 
 		public void show() {
 			commentFrame.setAlwaysOnTop(true);
@@ -917,13 +915,16 @@ public class SpinCADFrame extends JFrame {
 		@Override
 		public void windowClosed(WindowEvent arg0) {
 			// TODO Auto-generated method stub
-			spcb.line[0] = "hey you";	
 		}
 
 		@Override
 		public void windowClosing(WindowEvent arg0) {
 			// TODO Auto-generated method stub
-			spcb.line[0] = line2text.getText();	
+			spcb.line[0] = line0text.getText();	
+			spcb.line[1] = line1text.getText();	
+			spcb.line[2] = line2text.getText();	
+			spcb.line[3] = line3text.getText();	
+			spcb.line[4] = line4text.getText();	
 		}
 
 		@Override

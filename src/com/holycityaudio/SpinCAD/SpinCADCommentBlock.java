@@ -10,7 +10,8 @@ public class SpinCADCommentBlock implements Serializable {
 	public String[] line;
 
 	SpinCADCommentBlock() {
-		line = new String[6];
+		fileName = "Untitled";
+		line = new String[5];
 		clearComments();
 	}
 	
@@ -20,17 +21,16 @@ public class SpinCADCommentBlock implements Serializable {
 		line[2] = "";
 		line[3] = "";
 		line[4] = "";
-		line[5] = "";
 	}
 	
 	public void setLine(int i, String s) {
-		if((i >= 0) && (i < 6)) {
+		if((i >= 0) && (i < 5)) {
 			line[i] = s;
 		}
 	}
 	
 	public String getLine(int i) {
-		if((i >= 0) && (i < 6)) {
+		if((i >= 0) && (i < 5)) {
 			return line[i];
 		}
 		else
@@ -62,8 +62,6 @@ public class SpinCADCommentBlock implements Serializable {
 				"; " + line[1] + "\n" +
 				"; " + line[2] + "\n" +
 				"; " + line[3] + "\n" +
-				"; " + line[4] + "\n" +
-				"; " + line[5] + "\n";
-
+				"; " + line[4] + "\n";
 	}
 }
