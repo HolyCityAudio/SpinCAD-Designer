@@ -8,6 +8,7 @@ public class SpinCADPatch implements Serializable {
 	SpinCADCommentBlock cb = new SpinCADCommentBlock();
 	private static final long serialVersionUID = -846192537905967897L;
 	private boolean changed = false;
+	private double[] potVal = new double[3];
 	
 	SpinCADPatch() {
 		patchModel = new SpinCADModel();
@@ -15,6 +16,9 @@ public class SpinCADPatch implements Serializable {
 		cb.line[0] = "Pot 0: ";
 		cb.line[1] = "Pot 1: ";
 		cb.line[2] = "Pot 2: ";
+		potVal[0] = 0;
+		potVal[1] = 0;
+		potVal[2] = 0;
 	}
 
 	void updateFileName(String n) {
@@ -27,5 +31,18 @@ public class SpinCADPatch implements Serializable {
 	
 	public boolean getChanged() {
 		return changed;
+	}
+	
+	public void setPotVal(int index, double newVal) {
+		if(index >= 0 && index < 3) {
+			potVal[index] = newVal;
+		}
+	}
+	
+	public double getPotVal(int index) {
+		if(index >= 0 && index < 3) {
+			return potVal[index];
+		} else
+			return -1;
 	}
 }

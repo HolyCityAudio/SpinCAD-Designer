@@ -115,7 +115,7 @@ public class SpinCADFrame extends JFrame {
 
 	//=============================================================
 	// Simulator display and control items
-	SpinCADSimulator simX = new SpinCADSimulator(this, new SpinCADModel());
+	SpinCADSimulator simX = new SpinCADSimulator(this, new SpinCADPatch());
 	private final simControlToolBar sctb = simX.sctb;
 	private final JPanel simPanel = new JPanel();
 
@@ -125,7 +125,7 @@ public class SpinCADFrame extends JFrame {
 	boolean bankMode = true;
 	int bankIndex = 0;
 
-	private static SpinCADBank eeprom = new SpinCADBank();
+	SpinCADBank eeprom = new SpinCADBank();
 
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
@@ -314,16 +314,14 @@ public class SpinCADFrame extends JFrame {
 					try {
 						SpinCADFile f = new SpinCADFile();
 						f.fileSavePatchAs(eeprom.patch[bankIndex]);
-						eeprom.patch[bankIndex].setChanged(false);
-						updateAll();
+						updateAll(false);
 					} finally {
 					}
 
 				} else {
 					SpinCADFile f = new SpinCADFile();
 					f.fileSavePatchAs(eeprom.patch[bankIndex]);
-					eeprom.patch[bankIndex].setChanged(false);
-					updateAll();
+					updateAll(false);
 				}
 			}
 		});
@@ -411,10 +409,10 @@ public class SpinCADFrame extends JFrame {
 						repaint();
 					}
 					eeprom = f.fileOpenBank();
-					updateAll();
+					updateAll(false);
 				}
 				eeprom = f.fileOpenBank();
-				updateAll();
+				updateAll(false);
 			}
 		});
 
@@ -1105,10 +1103,19 @@ public class SpinCADFrame extends JFrame {
 
 	public void updateAll() {
 		updateFrameTitle();
-		simX.setModel(eeprom.patch[bankIndex].patchModel);
+		simX.updateSliders(eeprom.patch[bankIndex]);
 		pb.update(eeprom.patch[bankIndex].patchModel);
 		contentPane.repaint();	
 	}
+	
+	public void updateAll(boolean isChanged) {
+		eeprom.patch[bankIndex].setChanged(isChanged);
+		updateFrameTitle();
+		simX.updateSliders(eeprom.patch[bankIndex]);
+		pb.update(eeprom.patch[bankIndex].patchModel);
+		contentPane.repaint();	
+	}
+
 	// ===================================================
 	// == Sample rate combo box
 	public class SampleRateComboBox extends JFrame {

@@ -32,19 +32,16 @@ public class SpinCADSimulator {
 
 	public boolean loggerIsVisible = false;
 	
-	private static double pot0Level = 0;
-	private static double pot1Level = 0;
-	private static double pot2Level = 0;
 	private SpinCADFrame frame;
-	
 	public simControlToolBar sctb;
-	private SpinCADModel model;
+
+	private SpinCADPatch patch;
 
 	// constructor
-	public SpinCADSimulator(SpinCADFrame f, SpinCADModel m) {
+	public SpinCADSimulator(SpinCADFrame f, SpinCADPatch p) {
 		frame = f;
-		model = m;
-		sctb = new simControlToolBar(frame);
+		patch = p;
+		this.sctb = new simControlToolBar(frame);
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
 	
@@ -59,6 +56,11 @@ public class SpinCADSimulator {
 		return simRunning;
 	}
 	
+	public void updateSliders(SpinCADPatch p) {
+		this.patch = p;
+		sctb.updateSimSliders();
+	}
+	
 	// if outputFile = null, then simulator goes thru speakers
 	public void setOutputFileMode(Boolean state) {
 		
@@ -68,12 +70,10 @@ public class SpinCADSimulator {
 		else {
 			outputFile = null;
 		}
-		
 	}
 
 	// ======================================================================================================
-	class simControlToolBar extends JToolBar implements ActionListener,
-	ChangeListener {
+	class simControlToolBar extends JToolBar implements ActionListener, ChangeListener {
 
 		/**
 		 * 
@@ -106,30 +106,34 @@ public class SpinCADSimulator {
 
 			// this.setVisible(true);
 			if (sim != null) {
-				pot0Slider.setValue((int) Math.round((sim.getPot(0) * 100.0)));
-				pot1Slider.setValue((int) Math.round((sim.getPot(1) * 100.0)));
-				pot2Slider.setValue((int) Math.round((sim.getPot(2) * 100.0)));
+				updateSimSliders();
 			}
 		}
 
+		public void updateSimSliders() {
+			pot0Slider.setValue((int) patch.getPotVal(0));
+			pot1Slider.setValue((int) patch.getPotVal(1));
+			pot2Slider.setValue((int) patch.getPotVal(2));
+		}
+		
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == pot0Slider) {
-				pot0Level = (double) pot0Slider.getValue() / 100.0;
-				pot0Slider.setToolTipText("Pot 0: " + pot0Level);
+				patch.setPotVal(0,(double) pot0Slider.getValue());
+				pot0Slider.setToolTipText("Pot 0: " + patch.getPotVal(0));
 				//				System.out.println("Pot 0: " + pot0Level);
 				if (sim != null)
-					sim.setPot(0, pot0Level);
+					sim.setPot(0, patch.getPotVal(0));
 			} else if (e.getSource() == pot1Slider) {
-				pot1Level = (double) pot1Slider.getValue() / 100.0;
-				pot1Slider.setToolTipText("Pot 1: " + pot1Level);
+				patch.setPotVal(1,(double) pot1Slider.getValue());
+				pot1Slider.setToolTipText("Pot 1: " + patch.getPotVal(1));
 				//				System.out.println("Pot 1: " + pot1Level);
 				if (sim != null)
-					sim.setPot(1, pot1Level);
+					sim.setPot(1, patch.getPotVal(1));
 			} else if (e.getSource() == pot2Slider) {
-				pot2Level = (double) pot2Slider.getValue() / 100.0;
-				pot2Slider.setToolTipText("Pot 2: " + pot2Level);
+				patch.setPotVal(2,(double) pot2Slider.getValue());
+				pot2Slider.setToolTipText("Pot 2: " + patch.getPotVal(2));
 				if (sim != null)
-					sim.setPot(2, pot2Level);
+					sim.setPot(2, patch.getPotVal(2));
 			}
 		}
 
@@ -148,9 +152,9 @@ public class SpinCADSimulator {
 						// create file
 						btnStartSimulation.setText("Stop Simulator");
 						frame.updateAll();
-						sim = new SpinSimulator(model.getRenderBlock(),
-								testWavFileName, outputFile, pot0Level, pot1Level,
-								pot2Level);
+						sim = new SpinSimulator(patch.patchModel.getRenderBlock(),
+								testWavFileName, outputFile, patch.getPotVal(0), patch.getPotVal(1),
+								patch.getPotVal(2));
 						// loggerPanel.setVisible(loggerIsVisible);
 						if(loggerIsVisible) {
 							sim.showLevelLogger(loggerPanel);
@@ -262,10 +266,5 @@ public class SpinCADSimulator {
 		} else {
 			System.out.println("Command cancelled by user." + newline);
 		}
-	}
-
-	public void setModel(SpinCADModel patchModel) {
-		// TODO Auto-generated method stub
-		model = patchModel;
 	}
 }
