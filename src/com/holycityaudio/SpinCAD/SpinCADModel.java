@@ -38,11 +38,11 @@ public class SpinCADModel implements Serializable {
 	private static final long serialVersionUID = -8461943977905967897L;
 	String name = "SpinCADModel";
 	ArrayList<SpinCADBlock> blockList = null;
-	private static SpinCADBlock currentBlock = null;
-	public static SpinFXBlock renderBlock = null;
+	private SpinCADBlock currentBlock = null;
+	public SpinFXBlock renderBlock = null;
 	boolean changed = false;
 	private int indexFB = 1;
-	static int nBlocks = 0;
+	private int nBlocks = 0;
 
 	public SpinCADModel() {
 		newModel();
@@ -286,8 +286,8 @@ public class SpinCADModel implements Serializable {
 
 	}
 
-	public static int countLFOReferences(String matchString) {
-		String list = getRenderBlock().getProgramListing();
+	public static int countLFOReferences(SpinCADModel m, String matchString) {
+		String list = m.getRenderBlock().getProgramListing();
 		int lastIndex = 0;
 		int count =0;
 
@@ -303,20 +303,20 @@ public class SpinCADModel implements Serializable {
 		return count;
 	}
 
-	public static SpinFXBlock getRenderBlock() {
+	public SpinFXBlock getRenderBlock() {
 		return renderBlock;
 	}
 
-	public static void setRenderBlock(SpinFXBlock renderBlock) {
-		SpinCADModel.renderBlock = renderBlock;
+	public void setRenderBlock(SpinFXBlock block) {
+		renderBlock = block;
 	}
 
-	public static SpinCADBlock getCurrentBlock() {
+	public SpinCADBlock getCurrentBlock() {
 		return currentBlock;
 	}
 
-	public static void setCurrentBlock(SpinCADBlock cB) {
-		SpinCADModel.currentBlock = cB;
+	public void setCurrentBlock(SpinCADBlock cB) {
+		currentBlock = cB;
 	}
 
 	public void setChanged(boolean b) {

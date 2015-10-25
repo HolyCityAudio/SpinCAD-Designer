@@ -402,7 +402,7 @@ public class SpinCADFile {
 			}
 			for(int i = 0; i < 8; i++) {
 				try {
-					fileSaveHex(i, bank.bank[i].patchModel.getRenderBlock().generateHex(), filePath);
+					fileSaveHex(i, bank.patch[i].patchModel.getRenderBlock().generateHex(), filePath);
 				} catch (IOException e) {
 					JOptionPane.showOptionDialog(null,
 							"File save error!", "Error",

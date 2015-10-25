@@ -38,10 +38,12 @@ public class SpinCADSimulator {
 	private SpinCADFrame frame;
 	
 	public simControlToolBar sctb;
+	private SpinCADModel model;
 
 	// constructor
-	public SpinCADSimulator(SpinCADFrame f) {
+	public SpinCADSimulator(SpinCADFrame f, SpinCADModel m) {
 		frame = f;
+		model = m;
 		sctb = new simControlToolBar(frame);
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
@@ -146,7 +148,7 @@ public class SpinCADSimulator {
 						// create file
 						btnStartSimulation.setText("Stop Simulator");
 						frame.updateAll();
-						sim = new SpinSimulator(SpinCADModel.getRenderBlock(),
+						sim = new SpinSimulator(model.getRenderBlock(),
 								testWavFileName, outputFile, pot0Level, pot1Level,
 								pot2Level);
 						// loggerPanel.setVisible(loggerIsVisible);
@@ -260,5 +262,10 @@ public class SpinCADSimulator {
 		} else {
 			System.out.println("Command cancelled by user." + newline);
 		}
+	}
+
+	public void setModel(SpinCADModel patchModel) {
+		// TODO Auto-generated method stub
+		model = patchModel;
 	}
 }

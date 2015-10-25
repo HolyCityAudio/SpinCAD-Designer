@@ -3,8 +3,8 @@ package com.holycityaudio.SpinCAD;
 import java.io.Serializable;
 
 public class SpinCADPatch implements Serializable {
-	SpinCADModel patchModel;
 	String patchFileName;
+	SpinCADModel patchModel = new SpinCADModel();
 	SpinCADCommentBlock cb = new SpinCADCommentBlock();
 	private static final long serialVersionUID = -846192537905967897L;
 

@@ -17,12 +17,15 @@
  */
 package org.andrewkilpatrick.elmGen;
 
+import java.io.Serializable;
+
 /**
  * This class represents a delay memory segment in the DSP.
  * 
  * @author andrew
  */
-public class MemSegment {
+public class MemSegment implements Serializable {
+	private static final long serialVersionUID = -8461943977923452457L;
 	final String name;
 	final int length;
 	final int start;

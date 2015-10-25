@@ -254,8 +254,7 @@ public class SpinCADPanel extends JPanel {
 									repaint();
 								}
 								else {
-									spdFrame.getModel();
-									SpinCADModel.setCurrentBlock(b);
+									spdFrame.getModel().setCurrentBlock(b);
 									b.selected = true;
 									dm = dragModes.DRAGMOVE;	
 									lastMouse = mouseAt;

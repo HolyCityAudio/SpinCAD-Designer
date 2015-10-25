@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class SpinCADBank implements Serializable {
 	Boolean changed = false;
 	String bankFileName = "Untitled";
-	SpinCADPatch[] bank = new SpinCADPatch[8];
+	SpinCADPatch[] patch = new SpinCADPatch[8];
 	SpinCADCommentBlock cb = new SpinCADCommentBlock();
 	private static final long serialVersionUID = -8461234577905967897L;
 
@@ -15,7 +15,7 @@ public class SpinCADBank implements Serializable {
 		cb.line[2] = "";
 
 		for (int i = 0; i < 8; i++) {
-			bank[i] = new SpinCADPatch();			
+			patch[i] = new SpinCADPatch();			
 		}
 	}
 }
