@@ -7,7 +7,8 @@ public class SpinCADPatch implements Serializable {
 	SpinCADModel patchModel = new SpinCADModel();
 	SpinCADCommentBlock cb = new SpinCADCommentBlock();
 	private static final long serialVersionUID = -846192537905967897L;
-
+	private boolean changed = false;
+	
 	SpinCADPatch() {
 		patchModel = new SpinCADModel();
 		patchFileName = "Untitled";
@@ -18,5 +19,13 @@ public class SpinCADPatch implements Serializable {
 
 	void updateFileName(String n) {
 		patchFileName = n;
+	}
+	
+	public void setChanged(boolean b) {
+		changed = b;
+	}
+	
+	public boolean getChanged() {
+		return changed;
 	}
 }

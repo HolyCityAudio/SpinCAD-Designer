@@ -277,7 +277,13 @@ public class SpinCADFile {
 					fileSave(p);
 					recentPatchFileList.add(fileToBeSaved);
 					saveMRUPatchFolder(filePath);
-				} finally {
+					
+				} catch (Exception e) {	// thrown over in SpinCADFile.java
+					e.printStackTrace();
+					//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
+				}
+				finally {
+					p.changed = false;
 				}
 			}
 		}

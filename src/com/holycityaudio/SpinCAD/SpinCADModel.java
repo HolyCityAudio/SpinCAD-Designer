@@ -40,7 +40,6 @@ public class SpinCADModel implements Serializable {
 	ArrayList<SpinCADBlock> blockList = null;
 	private SpinCADBlock currentBlock = null;
 	public SpinFXBlock renderBlock = null;
-	boolean changed = false;
 	private int indexFB = 1;
 	private int nBlocks = 0;
 
@@ -52,7 +51,6 @@ public class SpinCADModel implements Serializable {
 	public void newModel() {
 		nBlocks = 0;
 		blockList = new ArrayList<SpinCADBlock>();
-		changed = false;
 		indexFB = 1;
 		setRenderBlock(new SpinFXBlock("Render Block"));
 	}
@@ -62,7 +60,6 @@ public class SpinCADModel implements Serializable {
 		blockList.add(pCB);
 		pCB.setBlockNum(nBlocks);
 		setCurrentBlock(pCB);
-		changed = true;
 		return 0;
 	}
 
@@ -317,13 +314,6 @@ public class SpinCADModel implements Serializable {
 
 	public void setCurrentBlock(SpinCADBlock cB) {
 		currentBlock = cB;
-	}
-
-	public void setChanged(boolean b) {
-		changed = b;
-	}
-	public boolean getChanged() {
-		return changed;
 	}
 
 	public void setIndexFB(int ijk) {

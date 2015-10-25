@@ -110,9 +110,8 @@ public class SpinCADPanel extends JPanel {
 				mouseAt = e.getPoint();
 				// in mode DRAGMOVE, we have selected one or more blocks and are dragging them to a new location.
 				if(dm == dragModes.DRAGMOVE) {
-					spdFrame.getModel();
 					SpinCADBlock b = null;	
-					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
+					Iterator<SpinCADBlock> itr = spdFrame.getPatch().patchModel.blockList.iterator();
 
 					if(lastMouse == null) {
 						lastMouse = mouseAt;
@@ -147,7 +146,7 @@ public class SpinCADPanel extends JPanel {
 					// we're near a pin, so iterate through the model and see which one it is
 					// then show the pin name
 					SpinCADBlock b = null;	
-					Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
+					Iterator<SpinCADBlock> itr = spdFrame.getPatch().patchModel.blockList.iterator();
 					while(itr.hasNext()) {
 						b = itr.next();
 						Iterator<SpinCADPin> itrPin = b.pinList.iterator();
@@ -183,7 +182,7 @@ public class SpinCADPanel extends JPanel {
 				boolean hitSomething = false;
 				// drop a line or block if you were dragging it
 				if(dm == dragModes.DRAGMOVE) {
-					spdFrame.getModel().setChanged(true);
+					spdFrame.getPatch().setChanged(true);
 					unselectAll(spdFrame);
 					dm = dragModes.NODRAG;
 					dragLine = null;
@@ -212,7 +211,7 @@ public class SpinCADPanel extends JPanel {
 						Point point = getNearbyPoint();
 						if(point != null) {
 							SpinCADBlock b = null;	
-							Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
+							Iterator<SpinCADBlock> itr = spdFrame.getPatch().patchModel.blockList.iterator();
 							while(itr.hasNext()) {
 								b = itr.next();
 								Iterator<SpinCADPin> itrPin = b.pinList.iterator();
@@ -223,7 +222,7 @@ public class SpinCADPanel extends JPanel {
 									// bug here somewhere
 									if(hitPin(arg0, b, currentPin)) {
 										currentPin.deletePinConnection();
-										f.getModel().setChanged(true);
+										f.getPatch().setChanged(true);
 										f.updateFrameTitle();
 										return;
 									}
@@ -233,7 +232,7 @@ public class SpinCADPanel extends JPanel {
 					}
 				}
 				SpinCADBlock b = null;	
-				Iterator<SpinCADBlock> itr = spdFrame.getModel().blockList.iterator();
+				Iterator<SpinCADBlock> itr = spdFrame.getPatch().patchModel.blockList.iterator();
 				while(itr.hasNext()) {
 					b = itr.next();
 					// if we hit the block, we can either delete or drag it
@@ -254,7 +253,7 @@ public class SpinCADPanel extends JPanel {
 									repaint();
 								}
 								else {
-									spdFrame.getModel().setCurrentBlock(b);
+									spdFrame.getPatch().patchModel.setCurrentBlock(b);
 									b.selected = true;
 									dm = dragModes.DRAGMOVE;	
 									lastMouse = mouseAt;
@@ -310,7 +309,7 @@ public class SpinCADPanel extends JPanel {
 											dm = dragModes.NODRAG;
 											dragLine = null;
 											startBlock = null;
-											spdFrame.getModel().setChanged(true);
+											spdFrame.getPatch().setChanged(true);
 											f.updateAll();
 											repaint();
 											// made the connection, we can stop now
@@ -328,7 +327,7 @@ public class SpinCADPanel extends JPanel {
 											dm = dragModes.NODRAG;
 											dragLine = null;
 											startBlock = null;
-											spdFrame.getModel().setChanged(true);
+											spdFrame.getPatch().setChanged(true);
 											f.updateAll();
 											repaint();
 											// made the connection, we can stop now
@@ -412,7 +411,7 @@ public class SpinCADPanel extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		SpinCADBlock block;
-		Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+		Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
 			//			System.out.printf("X = %d y = %d\n", block.getX(), block.getY() );
@@ -463,7 +462,7 @@ public class SpinCADPanel extends JPanel {
 
 	protected Point getNearbyPoint() {
 		SpinCADBlock block;
-		Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+		Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
 			Iterator<SpinCADPin> itrPin = block.pinList.iterator();
@@ -484,7 +483,7 @@ public class SpinCADPanel extends JPanel {
 
 	public void deleteBlockConnection(SpinCADBlock b) {
 		SpinCADBlock block;
-		Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+		Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
 		// b is the block to delete
 		// iterate through each block in the model
 		while(itr.hasNext()) {
@@ -562,7 +561,7 @@ public class SpinCADPanel extends JPanel {
 		double y2 = Math.max(start.getY(), end.getY());
 		double targetX, targetY;
 
-		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
+		Iterator<SpinCADBlock> itr = fr.getPatch().patchModel.blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
 			targetX = block.x_pos + block.width/2;
@@ -583,7 +582,7 @@ public class SpinCADPanel extends JPanel {
 		SpinCADBlock block;
 		boolean retval = false;
 
-		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
+		Iterator<SpinCADBlock> itr = fr.getPatch().patchModel.blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
 			if(block.selected == true) {
@@ -596,7 +595,7 @@ public class SpinCADPanel extends JPanel {
 	public void unselectAll(SpinCADFrame fr) {
 		SpinCADBlock block;
 
-		Iterator<SpinCADBlock> itr = fr.getModel().blockList.iterator();
+		Iterator<SpinCADBlock> itr = fr.getPatch().patchModel.blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
 			block.selected = false;				
@@ -665,10 +664,10 @@ public class SpinCADPanel extends JPanel {
 				break;
 			case "Delete":
 				// do a model save just before delete
-				f.saveModel();
+				f.savePatch();
 				SpinCADBlock block;
 
-				Iterator<SpinCADBlock> itr = f.getModel().blockList.iterator();
+				Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
 				while(itr.hasNext()) {
 					block = itr.next();
 					if(block.selected == true) {
@@ -679,7 +678,7 @@ public class SpinCADPanel extends JPanel {
 					}
 				}
 
-				f.getModel().setChanged(true);
+				f.getPatch().setChanged(true);
 				f.updateAll();
 				repaint();
 				break;

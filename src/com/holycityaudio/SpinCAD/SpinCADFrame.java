@@ -259,7 +259,7 @@ public class SpinCADFrame extends JFrame {
 		mntmNewPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (getModel().getChanged() == true) {
+				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogButton = JOptionPane.YES_NO_OPTION;
 					int dialogResult = JOptionPane.showConfirmDialog(panel,
 							"You have unsaved changes!  Continue?", "Warning!",
@@ -280,17 +280,17 @@ public class SpinCADFrame extends JFrame {
 		mntmOpenPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADFile f = new SpinCADFile();
-				if (eeprom.patch[bankIndex].patchModel.getChanged() == true) {
+				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == 0) {
-						getModel().newModel();
+						eeprom.patch[bankIndex].patchModel.newModel();
 						repaint();
 					}
 					else {
 						eeprom.patch[bankIndex] = f.fileOpenPatch();
+						eeprom.patch[bankIndex].setChanged(false);						
 						eeprom.patch[bankIndex].patchModel.getIndexFB();
-						eeprom.patch[bankIndex].patchModel.setChanged(false);						
 						eeprom.patch[bankIndex].patchModel.presetIndexFB();
 						eeprom.changed = true;
 						updateAll();
@@ -298,7 +298,7 @@ public class SpinCADFrame extends JFrame {
 				}
 				eeprom.patch[bankIndex] = f.fileOpenPatch();
 				eeprom.patch[bankIndex].patchModel.getIndexFB();
-				eeprom.patch[bankIndex].patchModel.setChanged(false);						
+				eeprom.patch[bankIndex].setChanged(false);						
 				eeprom.patch[bankIndex].patchModel.presetIndexFB();
 				eeprom.changed = true;
 				updateAll();
@@ -314,7 +314,7 @@ public class SpinCADFrame extends JFrame {
 					try {
 						SpinCADFile f = new SpinCADFile();
 						f.fileSavePatchAs(eeprom.patch[bankIndex]);
-						eeprom.patch[bankIndex].patchModel.setChanged(false);
+						eeprom.patch[bankIndex].setChanged(false);
 						updateAll();
 					} finally {
 					}
@@ -322,7 +322,7 @@ public class SpinCADFrame extends JFrame {
 				} else {
 					SpinCADFile f = new SpinCADFile();
 					f.fileSavePatchAs(eeprom.patch[bankIndex]);
-					eeprom.patch[bankIndex].patchModel.setChanged(false);
+					eeprom.patch[bankIndex].setChanged(false);
 					updateAll();
 				}
 			}
@@ -336,7 +336,7 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].cb.setVersion("Patch saved from SpinCAD Designer version" + buildNum);
 				SpinCADFile f = new SpinCADFile();
 				f.fileSavePatchAs(eeprom.patch[bankIndex]);
-				eeprom.patch[bankIndex].patchModel.changed = false;
+				eeprom.patch[bankIndex].setChanged(false);
 			}
 		});
 		mnFileMenu.add(mntmSavePatchAs);
@@ -344,7 +344,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveAsm = new JMenuItem("Save Patch as ASM");
 		mntmSaveAsm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				getModel().sortAlignGen();
+				eeprom.patch[bankIndex].patchModel.sortAlignGen();
 				SpinCADFile f = new SpinCADFile();
 				f.fileSaveAsm(eeprom.patch[bankIndex]);
 			}
@@ -379,7 +379,7 @@ public class SpinCADFrame extends JFrame {
 		mntmNewBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (getModel().getChanged() == true) {
+				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogButton = JOptionPane.YES_NO_OPTION;
 					int dialogResult = JOptionPane.showConfirmDialog(panel,
 							"You have unsaved changes!  Continue?", "Warning!",
@@ -391,7 +391,7 @@ public class SpinCADFrame extends JFrame {
 				eeprom.bankFileName = "Untitled";
 				bankPanel.setVisible(true);
 				updateFrameTitle();
-				getModel().newModel();
+				eeprom.patch[bankIndex].patchModel.newModel();
 				eeprom = new SpinCADBank();
 				repaint();
 			}
@@ -403,11 +403,11 @@ public class SpinCADFrame extends JFrame {
 		mntmOpenBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADFile f= new SpinCADFile();
-				if (getModel().getChanged() == true) {
+				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == 0) {
-						getModel().newModel();
+						eeprom.patch[bankIndex].patchModel.newModel();
 						repaint();
 					}
 					eeprom = f.fileOpenBank();
@@ -448,7 +448,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveHex = new JMenuItem("Export Bank to Hex");
 		mntmSaveHex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				getModel().sortAlignGen();
+				eeprom.patch[bankIndex].patchModel.sortAlignGen();
 				SpinCADFile f = new SpinCADFile();
 				f.fileSaveHex(eeprom);
 			}
@@ -483,7 +483,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (eeprom.patch[bankIndex].patchModel.getChanged() == true) {
+				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogResult = yesNoBox(panel, "Warning!", 
 							"You have unsaved changes!  Save first?");				
 					if (dialogResult == JOptionPane.YES_OPTION) {
@@ -520,13 +520,13 @@ public class SpinCADFrame extends JFrame {
 		final JMenuItem mntm_AddFB = new JMenuItem("Add");
 		mntm_AddFB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int i =  getModel().getIndexFB();
+				int i =  eeprom.patch[bankIndex].patchModel.getIndexFB();
 				FBInputCADBlock pcB = new FBInputCADBlock(50, 100, i);
 				dropBlock(panel, pcB);
 
 				FBOutputCADBlock pcB1 = new FBOutputCADBlock(50, 300, i);
 				dropBlock(panel, pcB1);
-				getModel().setIndexFB(i + 1);
+				eeprom.patch[bankIndex].patchModel.setIndexFB(i + 1);
 			}
 		});
 		mn_io_mix.add(mntm_AddFB);
@@ -663,7 +663,7 @@ public class SpinCADFrame extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
 				String bankName = eeprom.bankFileName + (eeprom.changed ? " * ]" : "]");
-				String patchName = bankIndex + " [" + eeprom.patch[bankIndex].patchFileName + (eeprom.patch[bankIndex].patchModel.changed ? " * ]" : "]");
+				String patchName = bankIndex + " [" + eeprom.patch[bankIndex].patchFileName + (eeprom.patch[bankIndex].getChanged() ? " * ]" : "]");
 				setTitle("SpinCAD Designer - Bank [" + bankName + " Patch " + patchName);			
 			}
 		});
@@ -723,9 +723,9 @@ public class SpinCADFrame extends JFrame {
 								String filePath = files[index].getPath();
 								eeprom.bank[bankIndex] = SpinCADFile.fileReadPatch(filePath );
 								//cb.line2text.setText()
-								getModel().getIndexFB();
-								getModel().setChanged(false);						
-								getModel().sortAlignGen();
+								eeprom.patch[bankIndex].patchModel.getIndexFB();
+								eeprom.patch[bankIndex].patchModel.setChanged(false);						
+								eeprom.patch[bankIndex].patchModel.sortAlignGen();
 
 								spcFileName = files[index].getName();
 								String spnPath  = prefs.get("MRUSpnFolder", "") + "/" + spcFileName + ".spn";
@@ -768,25 +768,25 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	public void dropBlock(SpinCADPanel p, SpinCADBlock b) {
-		getModel().addBlock(b);
-		getModel().setChanged(true);
+		eeprom.patch[bankIndex].patchModel.addBlock(b);
+		eeprom.patch[bankIndex].setChanged(true);
 		p.unselectAll(this);
 		p.dropBlockPanel(b);
 	}
 
-	public SpinCADModel getModel() {
-		return eeprom.patch[bankIndex].patchModel;
+	public SpinCADPatch getPatch() {
+		return eeprom.patch[bankIndex];
 	}
 
 	private void setModel(SpinCADModel m) {
 		eeprom.patch[bankIndex].patchModel = m;
 	}
 
-	public void saveModel() {
+	public void savePatch() {
 		try { 
 			modelSave = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(modelSave); 
-			oos.writeObject(getModel()); 
+			oos.writeObject(getPatch()); 
 			oos.flush(); 
 			oos.close(); 
 		} 
