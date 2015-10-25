@@ -283,7 +283,7 @@ public class SpinCADFile {
 					//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
 				}
 				finally {
-					p.changed = false;
+					p.setChanged(false);
 				}
 			}
 		}
@@ -328,6 +328,7 @@ public class SpinCADFile {
 			b.changed = false;
 			recentBankFileList.add(fileToBeSaved);
 			saveMRUBankFolder(fileToBeSaved.getPath());
+			b.bankFileName = fileToBeSaved.getName();
 		}
 	}
 

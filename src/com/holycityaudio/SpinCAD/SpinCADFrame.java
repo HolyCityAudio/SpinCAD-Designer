@@ -98,7 +98,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 960;
+	int buildNum = 961;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -423,10 +423,9 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveBank = new JMenuItem("Save Bank");
 		mntmSaveBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				File fileToBeSaved = new File(eeprom.bankFileName);
 				SpinCADFile f = new SpinCADFile();
 				f.fileSaveBankAs(eeprom);
-				eeprom.bankFileName = fileToBeSaved.getName();
+				eeprom.changed = false;
 				updateAll();
 			}
 		});
@@ -440,6 +439,7 @@ public class SpinCADFrame extends JFrame {
 				SpinCADFile f = new SpinCADFile();
 				f.fileSaveBankAs(eeprom);
 				eeprom.changed = false;
+				updateAll();
 			}
 		});
 
