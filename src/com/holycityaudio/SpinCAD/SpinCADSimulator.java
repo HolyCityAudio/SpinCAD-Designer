@@ -119,21 +119,22 @@ public class SpinCADSimulator {
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == pot0Slider) {
 				patch.setPotVal(0,(double) pot0Slider.getValue());
-				pot0Slider.setToolTipText("Pot 0: " + patch.getPotVal(0));
-				//				System.out.println("Pot 0: " + pot0Level);
+				double simPot0 = patch.getPotVal(0) / 100.0;
+				pot0Slider.setToolTipText("Pot 0: " + simPot0);
 				if (sim != null)
-					sim.setPot(0, patch.getPotVal(0));
+					sim.setPot(0, simPot0);
 			} else if (e.getSource() == pot1Slider) {
 				patch.setPotVal(1,(double) pot1Slider.getValue());
-				pot1Slider.setToolTipText("Pot 1: " + patch.getPotVal(1));
-				//				System.out.println("Pot 1: " + pot1Level);
+				double simPot1 = patch.getPotVal(1) / 100.0;
+				pot1Slider.setToolTipText("Pot 1: " + simPot1);
 				if (sim != null)
-					sim.setPot(1, patch.getPotVal(1));
+					sim.setPot(1, patch.getPotVal(1) / 100.0);
 			} else if (e.getSource() == pot2Slider) {
 				patch.setPotVal(2,(double) pot2Slider.getValue());
-				pot2Slider.setToolTipText("Pot 2: " + patch.getPotVal(2));
+				double simPot2 = patch.getPotVal(2) / 100.0;
+				pot2Slider.setToolTipText("Pot 2: " + simPot2);
 				if (sim != null)
-					sim.setPot(2, patch.getPotVal(2));
+					sim.setPot(2, simPot2);
 			}
 		}
 
