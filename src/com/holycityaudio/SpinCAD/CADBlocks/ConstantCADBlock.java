@@ -19,7 +19,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class ConstantCADBlock extends ControlCADBlock{
 	/**
@@ -40,7 +40,7 @@ public class ConstantCADBlock extends ControlCADBlock{
 		setName("Constant");
 	}
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 
 		sfxb.comment(getName());
 		int value = sfxb.allocateReg();

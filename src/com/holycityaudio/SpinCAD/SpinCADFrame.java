@@ -57,15 +57,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-
-import org.andrewkilpatrick.elmGen.Debug;
-import org.andrewkilpatrick.elmGen.ElmProgram;
-
-import com.holycityaudio.SpinCAD.SpinCADSimulator.simControlToolBar;
-import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
-import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
-
 import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.GridLayout;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -76,13 +76,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.GridLayout;
-import java.awt.SystemColor;
-import java.awt.Toolkit;
+
+import org.andrewkilpatrick.elmGen.Debug;
+import org.andrewkilpatrick.elmGen.ElmProgram;
+
+import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
 
 public class SpinCADFrame extends JFrame {
 	/**
@@ -111,7 +110,7 @@ public class SpinCADFrame extends JFrame {
 	//=============================================================
 	// Simulator display and control items
 	SpinCADSimulator simX = new SpinCADSimulator(this, new SpinCADPatch());
-	private final simControlToolBar sctb = simX.sctb;
+
 	private final JPanel simPanel = new JPanel();
 
 	// BANK ========================================================
@@ -120,6 +119,7 @@ public class SpinCADFrame extends JFrame {
 	boolean bankMode = true;
 	int bankIndex = 0;
 
+	// eeprom is where ALL the data for 8 patches is stored
 	SpinCADBank eeprom = new SpinCADBank();
 
 	// modelSave is used to undo deletes
@@ -220,17 +220,17 @@ public class SpinCADFrame extends JFrame {
 		topPanel.add(bankPanel, BorderLayout.NORTH);
 		//----------------------------------------
 
-		sctb.setFloatable(false);
-		sctb.setBorder(border);
+		simX.sctb.setFloatable(false);
+		simX.sctb.setBorder(border);
 		simPanel.setLayout(new BoxLayout(simPanel, BoxLayout.Y_AXIS));
-		simPanel.add(sctb);
+		simPanel.add(simX.sctb);
 		simPanel.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(Color.blue),
 				simPanel.getBorder()));
 		topPanel.add(simPanel, BorderLayout.NORTH);
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
-
+		// level monitor is not currently used
 		contentPane.add(simX.levelMonitor, BorderLayout.WEST);
 
 		simPanel.add(simX.loggerPanel);
@@ -633,7 +633,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MessageBox("About SpinCAD Designer", "Version 0.97 Build " + buildNum + "\n"
+				MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
 						+ "Copyright 2015 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
@@ -840,6 +840,11 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	private class commentBlockPanel extends JFrame implements WindowListener {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7295329402087496031L;
+
 		JFrame commentFrame = new JFrame("Patch Information");
 		
 		JTextField fileNameText;
@@ -938,6 +943,10 @@ public class SpinCADFrame extends JFrame {
 	// ======================================================================================================
 	class bankPanel extends JPanel implements ActionListener {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 4962440927175195441L;
 		/**
 		 * 
 		 */
@@ -1042,6 +1051,10 @@ public class SpinCADFrame extends JFrame {
 		/**
 		 * 
 		 */
+		private static final long serialVersionUID = -7209732646570379290L;
+		/**
+		 * 
+		 */
 
 		final JLabel pinName = new JLabel("");
 
@@ -1122,7 +1135,7 @@ public class SpinCADFrame extends JFrame {
 		/** Listens to the combo box. */
 		class SampleRateListener implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
-				JComboBox<String> cb = (JComboBox<String>) e.getSource();
+				JComboBox<String> cb = ((JComboBox<String>) e.getSource());
 				String rate = (String) cb.getSelectedItem();
 				if (rate == "32768") {
 					ElmProgram.setSamplerate(32768);

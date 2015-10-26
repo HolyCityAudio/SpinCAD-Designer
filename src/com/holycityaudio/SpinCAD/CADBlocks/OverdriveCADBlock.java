@@ -20,7 +20,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class OverdriveCADBlock extends GainCADBlock{
 	/**
@@ -38,7 +38,7 @@ public class OverdriveCADBlock extends GainCADBlock{
 		setName("Overdrive");
 	}
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		SpinCADPin inputPin = this.getPin("Audio Input 1").getPinConnection();
 		int input = -1;
 		if(inputPin != null) {

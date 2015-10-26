@@ -21,7 +21,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class SVF2PVariableCADBlock extends FilterCADBlock{
 	/**
@@ -48,7 +48,7 @@ public class SVF2PVariableCADBlock extends FilterCADBlock{
 		new SVF2PVariableControlPanel(this);
 	}	
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 
 		int input = -1;
 

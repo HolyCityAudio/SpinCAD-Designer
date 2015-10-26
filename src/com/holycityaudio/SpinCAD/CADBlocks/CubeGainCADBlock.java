@@ -21,7 +21,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class CubeGainCADBlock extends GainCADBlock{
 
@@ -35,7 +35,7 @@ public class CubeGainCADBlock extends GainCADBlock{
 		setName("Cubed");
 	}
 	
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		int input = this.getPin("Audio Input 1").getPinConnection().getRegister();
 //		int Control1 = -1;
 		

@@ -22,7 +22,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class PotCADBlock extends SpinCADBlock{
 
@@ -42,7 +42,7 @@ public class PotCADBlock extends SpinCADBlock{
 	}
 	
 	// POT speedup code taken from Spin forum
-	public void generateCode(SpinFXBlock eP) {
+	public void generateCode(SpinCADProgram eP) {
 		eP.comment(getName());
 		if(getSpeedup() == true) {
 			eP.comment(" pot speedup high shelf filter");

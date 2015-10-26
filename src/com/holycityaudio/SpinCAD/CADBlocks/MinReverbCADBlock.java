@@ -24,7 +24,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class MinReverbCADBlock extends SpinCADBlock{
 	/**
@@ -46,7 +46,7 @@ public class MinReverbCADBlock extends SpinCADBlock{
 		setName("Min Reverb");
 	}
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		//		super(blockName);
 		int input;
 		int output = -1;

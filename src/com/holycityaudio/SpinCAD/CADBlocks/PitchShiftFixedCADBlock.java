@@ -28,7 +28,7 @@ import java.awt.Color;
 import org.andrewkilpatrick.elmGen.Debug;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 
 public class PitchShiftFixedCADBlock extends SpinCADBlock {
@@ -64,7 +64,7 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 	}
 
 	@SuppressWarnings("unused")
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		int input = -1;
 		int coefficient = 0;
 		double octaves = 0.0;

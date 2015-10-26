@@ -26,15 +26,15 @@ package com.holycityaudio.SpinCAD;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.MemSegment;
 
-public class SpinFXBlock extends ElmProgram {
+public class SpinCADProgram extends ElmProgram {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static int numBlocks = 0;
-	private static int numRegs = 0;		// allocation scheme for internal registers REG0 through REG31
+	private int numBlocks = 0;
+	private int numRegs = 0;		// allocation scheme for internal registers REG0 through REG31
 
-	public SpinFXBlock(String nameBlock) {
+	public SpinCADProgram(String nameBlock) {
 		super(nameBlock);
 		setNumBlocks(getNumBlocks() + 1);
 		setNumRegs(REG0);
@@ -88,20 +88,20 @@ public class SpinFXBlock extends ElmProgram {
 		chorusReadDelay(lfo, regs, getAddrFromSpinMem(memName, offset));
 	}  
 
-	public static int getNumRegs() {
+	public int getNumRegs() {
 		return numRegs;
 	}
 
-	public static void setNumRegs(int nRegs) {
-		SpinFXBlock.numRegs = nRegs;
+	public void setNumRegs(int nRegs) {
+		numRegs = nRegs;
 	}
 
-	public static int getNumBlocks() {
+	public int getNumBlocks() {
 //		System.out.println("getNumblocks = " + numBlocks);
 		return numBlocks;
 	}
 
-	public static void setNumBlocks(int num) {
+	public void setNumBlocks(int num) {
 		numBlocks = num;
 //		System.out.println("setNumblocks = " + numBlocks);
 	}

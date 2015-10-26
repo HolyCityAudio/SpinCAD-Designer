@@ -24,7 +24,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class LPF4PCADBlock extends SpinCADBlock{
 	/**
@@ -54,7 +54,7 @@ public class LPF4PCADBlock extends SpinCADBlock{
 		new LPF4PControlPanel(this);
 	}	
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 
 		int input = -1;
 

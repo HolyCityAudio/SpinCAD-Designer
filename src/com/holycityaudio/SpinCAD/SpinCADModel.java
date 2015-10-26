@@ -39,7 +39,9 @@ public class SpinCADModel implements Serializable {
 	String name = "SpinCADModel";
 	ArrayList<SpinCADBlock> blockList = null;
 	private SpinCADBlock currentBlock = null;
-	public SpinFXBlock renderBlock = null;
+	
+	// renderBlock is... what exactly???
+	private SpinCADProgram renderBlock = null;
 	private int indexFB = 1;
 	private int nBlocks = 0;
 
@@ -52,7 +54,7 @@ public class SpinCADModel implements Serializable {
 		nBlocks = 0;
 		blockList = new ArrayList<SpinCADBlock>();
 		indexFB = 1;
-		setRenderBlock(new SpinFXBlock("Render Block"));
+		setRenderBlock(new SpinCADProgram("Render Block"));
 	}
 
 	public int addBlock(SpinCADBlock pCB) {
@@ -186,7 +188,8 @@ public class SpinCADModel implements Serializable {
 	}
 
 	public int generateCode() {
-		setRenderBlock(new SpinFXBlock("Patch "));
+//  XXX debug for some reason, export to Hex spits out 8 of the same thing
+//		setRenderBlock(new SpinFXBlock("Patch "));
 		SpinCADBlock block = null;
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		int i = 0;
@@ -267,10 +270,9 @@ public class SpinCADModel implements Serializable {
 					}
 				}
 				i++;
-				getRenderBlock();
 				// TODO debug this, some problem with triple delay buffer assignments
 				// no there is a problem here
-				SpinFXBlock.setNumBlocks(block.getBlockNum());	// this is for keeping delay segments unique
+				getRenderBlock().setNumBlocks(block.getBlockNum());	// this is for keeping delay segments unique
 				block.generateCode(getRenderBlock());
 				// now blockMin is the block with the lowest number
 			}
@@ -280,7 +282,6 @@ public class SpinCADModel implements Serializable {
 			System.out.println(getRenderBlock().getProgramListing(1));
 			return ElmProgram.getCodeLen() - ElmProgram.getNumComments();
 		}
-
 	}
 
 	public static int countLFOReferences(SpinCADModel m, String matchString) {
@@ -300,11 +301,11 @@ public class SpinCADModel implements Serializable {
 		return count;
 	}
 
-	public SpinFXBlock getRenderBlock() {
+	public SpinCADProgram getRenderBlock() {
 		return renderBlock;
 	}
 
-	public void setRenderBlock(SpinFXBlock block) {
+	public void setRenderBlock(SpinCADProgram block) {
 		renderBlock = block;
 	}
 

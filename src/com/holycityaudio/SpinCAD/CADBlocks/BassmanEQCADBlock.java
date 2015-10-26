@@ -23,7 +23,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class BassmanEQCADBlock extends FilterCADBlock{
 	/**
@@ -52,7 +52,7 @@ public class BassmanEQCADBlock extends FilterCADBlock{
 		new BassmanEQControlPanel(this);
 	}	
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 
 		// ==================================
 		// http://www.docstoc.com/docs/53837224/Discretization-of-the-59-Fender-Bassman-Tone-Stack

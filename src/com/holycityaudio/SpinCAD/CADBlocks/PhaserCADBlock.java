@@ -22,7 +22,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class PhaserCADBlock extends SpinCADBlock{
 	/**
@@ -57,7 +57,7 @@ public class PhaserCADBlock extends SpinCADBlock{
 		}
 	}
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		//				equ	mono	reg0
 		int input = -1;
 		int wet = -1;
@@ -219,7 +219,7 @@ public class PhaserCADBlock extends SpinCADBlock{
 		System.out.println("Phaser code gen!"); 
 	}
 
-	private void PhaseShiftStage(SpinFXBlock sfxb, int delay, int control) {
+	private void PhaseShiftStage(SpinCADProgram sfxb, int delay, int control) {
 		int controlNum = getControlReg(control);
 		//					rdax	temp,1
 		sfxb.readRegister(temp, 1);

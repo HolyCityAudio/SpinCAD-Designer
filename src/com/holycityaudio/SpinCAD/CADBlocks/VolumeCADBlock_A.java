@@ -20,7 +20,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class VolumeCADBlock_A extends MixCADBlock{
 
@@ -37,7 +37,7 @@ public class VolumeCADBlock_A extends MixCADBlock{
 		setName("Volume");
 	}
 
-	public void generateCode(SpinFXBlock sfxb)
+	public void generateCode(SpinCADProgram sfxb)
 	{
 		int left = sfxb.allocateReg();
 //		int right = sfxb.allocateReg();

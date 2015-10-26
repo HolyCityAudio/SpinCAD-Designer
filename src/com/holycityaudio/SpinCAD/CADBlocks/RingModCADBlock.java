@@ -23,7 +23,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class RingModCADBlock extends SpinCADBlock{
 
@@ -48,7 +48,7 @@ public class RingModCADBlock extends SpinCADBlock{
 	}
 
 
-	public void generateCode(SpinFXBlock b) {
+	public void generateCode(SpinCADProgram b) {
 
 		int input;
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();

@@ -20,7 +20,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 
 public class ThreeTapCADBlock extends DelayCADBlock{
@@ -72,7 +72,7 @@ public class ThreeTapCADBlock extends DelayCADBlock{
 		new ThreeTapControlPanel(this);
 	}
 
-	public void generateCode(SpinFXBlock sfxb)
+	public void generateCode(SpinCADProgram sfxb)
 	{
 		int input = -1; 
 		int leftOut = -1;

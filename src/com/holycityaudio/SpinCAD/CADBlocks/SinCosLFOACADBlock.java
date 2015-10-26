@@ -19,7 +19,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class SinCosLFOACADBlock extends ControlCADBlock{
 	/**
@@ -45,7 +45,7 @@ public class SinCosLFOACADBlock extends ControlCADBlock{
 		setName("LFO " + lfoSel);
 	}
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 
 		sfxb.comment(getName());
 

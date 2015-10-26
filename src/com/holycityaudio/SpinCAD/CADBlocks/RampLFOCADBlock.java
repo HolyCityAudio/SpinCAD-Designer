@@ -19,7 +19,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 import com.holycityaudio.SpinCAD.ControlBlocks.RampLFOControlPanel;
 
 public class RampLFOCADBlock extends ControlCADBlock{
@@ -43,7 +43,7 @@ public class RampLFOCADBlock extends ControlCADBlock{
 		setName("Ramp LFO " + whichLFO);
 	}
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 
 		int ramp0 = sfxb.allocateReg();
 		int triangle = -1;

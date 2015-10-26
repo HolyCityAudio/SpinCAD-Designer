@@ -20,7 +20,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 import com.holycityaudio.SpinCAD.CADBlocks.ControlCADBlock;
 
 public class ScaleOffsetControlCADBlock extends ControlCADBlock{
@@ -46,7 +46,7 @@ public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 	}
 
 	//	takes a 0 to 1 input and makes it 1 to 0
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		int controlInput;
 
 		SpinCADPin p = this.getPin("Control Input 1").getPinConnection();

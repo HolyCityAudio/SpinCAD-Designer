@@ -1,6 +1,6 @@
 package com.holycityaudio.SpinCAD.ControlBlocks;
 
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class ExponentialControlCADBlock extends ControlCADBlock{
 
@@ -16,7 +16,7 @@ public class ExponentialControlCADBlock extends ControlCADBlock{
 		setName("Exp");
 	}
 	
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 
 		int Exp = sfxb.allocateReg();			//
 		sfxb.comment(getName());

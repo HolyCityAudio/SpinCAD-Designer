@@ -20,7 +20,7 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class LPFCADBlock extends FilterCADBlock{
 	/**
@@ -40,7 +40,7 @@ public class LPFCADBlock extends FilterCADBlock{
 		new LPFControlPanel(this);
 	}	
 	
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 
 		// coefficients
 

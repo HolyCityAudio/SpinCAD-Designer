@@ -23,7 +23,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class OneBandEQCADBlock extends SpinCADBlock{
 
@@ -50,7 +50,7 @@ public class OneBandEQCADBlock extends SpinCADBlock{
 		setBorderColor(new Color(0x24f26f));
 	}
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		// this code from Spin DSP crossover example by Keith Barr
 		//		;EQ params will depend on driver set.
 

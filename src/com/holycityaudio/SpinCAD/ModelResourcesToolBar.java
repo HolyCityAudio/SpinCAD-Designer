@@ -135,8 +135,7 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 		progressBar_2.setValue(codeLength);
 
 		// getModel();
-		model.getRenderBlock();
-		int nRegs = SpinFXBlock.getNumRegs() - 32;
+		int nRegs = model.getRenderBlock().getNumRegs() - 32;
 		if (nRegs < 20) {
 			progressBar.setForeground(Color.green);
 		} else if (nRegs < 26) {

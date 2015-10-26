@@ -23,7 +23,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class FBInputCADBlock extends SpinCADBlock{
 	/**
@@ -55,7 +55,7 @@ public class FBInputCADBlock extends SpinCADBlock{
 		setName("FB In " + getIndex());
 	}
 	
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 //		System.out.println("Output codegen!");
 		sfxb.comment(getName());
 		

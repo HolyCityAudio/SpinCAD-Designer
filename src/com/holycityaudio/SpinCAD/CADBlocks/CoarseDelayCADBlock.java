@@ -34,7 +34,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class CoarseDelayCADBlock extends SpinCADBlock {
 
@@ -55,7 +55,7 @@ public class CoarseDelayCADBlock extends SpinCADBlock {
 		setName("Coarse Delay");
 	}
 	
-	private void modDelay(SpinFXBlock sfxb, int chorusLength) {
+	private void modDelay(SpinCADProgram sfxb, int chorusLength) {
 		int input = -1;
 		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 		if (p != null) {
@@ -101,7 +101,7 @@ public class CoarseDelayCADBlock extends SpinCADBlock {
 		}
 	}
 
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		/**
 		 * @param sfxb
 		 *            is the handle of the calling program

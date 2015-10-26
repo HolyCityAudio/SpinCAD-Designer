@@ -1,6 +1,6 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import com.holycityaudio.SpinCAD.SpinFXBlock;
+import com.holycityaudio.SpinCAD.SpinCADProgram;
 
 public class HPFCADBlock extends FilterCADBlock{
 
@@ -23,7 +23,7 @@ public class HPFCADBlock extends FilterCADBlock{
 		new HPFControlPanel(this);
 	}
 	
-	public void generateCode(SpinFXBlock sfxb) {
+	public void generateCode(SpinCADProgram sfxb) {
 		
 		// as written this is just a copy of the LPF code, so it ain't an HPF yet
 
