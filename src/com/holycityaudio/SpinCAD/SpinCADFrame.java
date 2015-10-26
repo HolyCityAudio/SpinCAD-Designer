@@ -29,13 +29,11 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
@@ -45,7 +43,6 @@ import javax.swing.JToolBar;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JProgressBar;
 import javax.swing.JMenu;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -63,8 +60,6 @@ import java.awt.event.WindowListener;
 
 import org.andrewkilpatrick.elmGen.Debug;
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import org.andrewkilpatrick.elmGen.simulator.AudioFileReader;
-import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
 import com.holycityaudio.SpinCAD.SpinCADSimulator.simControlToolBar;
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
@@ -77,14 +72,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.prefs.Preferences;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -97,8 +88,12 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
 
-	int buildNum = 961;
+	int buildNum = 963;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -159,6 +154,7 @@ public class SpinCADFrame extends JFrame {
 		updateFrameTitle();
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
+		simX.updateSliders(eeprom.patch[0]);
 
 		final SpinCADPanel panel = new SpinCADPanel(this);
 		panel.setBackground(SystemColor.inactiveCaption);
@@ -289,19 +285,21 @@ public class SpinCADFrame extends JFrame {
 					}
 					else {
 						eeprom.patch[bankIndex] = f.fileOpenPatch();
-						eeprom.patch[bankIndex].setChanged(false);						
 						eeprom.patch[bankIndex].patchModel.getIndexFB();
 						eeprom.patch[bankIndex].patchModel.presetIndexFB();
+						eeprom.patch[bankIndex].setChanged(false);						
 						eeprom.changed = true;
 						updateAll();
+						repaint();
 					}
 				}
 				eeprom.patch[bankIndex] = f.fileOpenPatch();
 				eeprom.patch[bankIndex].patchModel.getIndexFB();
-				eeprom.patch[bankIndex].setChanged(false);						
 				eeprom.patch[bankIndex].patchModel.presetIndexFB();
+				eeprom.patch[bankIndex].setChanged(false);						
 				eeprom.changed = true;
 				updateAll();
+				repaint();
 			}
 		});
 
@@ -465,16 +463,9 @@ public class SpinCADFrame extends JFrame {
 		
 		mnFileMenu.addSeparator();
 
-
-
 		JMenuItem mntmBatch = new JMenuItem("Batch Convert");
 		// XXX 	    SpinCADFile.fileBatch(panel, mntmBatch);
 		mnFileMenu.add(mntmBatch);
-
-
-		mnFileMenu.addSeparator();
-
-
 
 		mnFileMenu.addSeparator();
 
@@ -907,12 +898,10 @@ public class SpinCADFrame extends JFrame {
 
 		@Override
 		public void windowActivated(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void windowClosed(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
@@ -927,25 +916,21 @@ public class SpinCADFrame extends JFrame {
 
 		@Override
 		public void windowDeactivated(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void windowDeiconified(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void windowIconified(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void windowOpened(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 
 		}	
 	}
@@ -1102,17 +1087,17 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	public void updateAll() {
-		updateFrameTitle();
 		simX.updateSliders(eeprom.patch[bankIndex]);
 		pb.update(eeprom.patch[bankIndex].patchModel);
+		updateFrameTitle();
 		contentPane.repaint();	
 	}
 	
 	public void updateAll(boolean isChanged) {
 		eeprom.patch[bankIndex].setChanged(isChanged);
-		updateFrameTitle();
 		simX.updateSliders(eeprom.patch[bankIndex]);
 		pb.update(eeprom.patch[bankIndex].patchModel);
+		updateFrameTitle();
 		contentPane.repaint();	
 	}
 
