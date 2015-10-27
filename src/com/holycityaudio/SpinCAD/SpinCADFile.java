@@ -123,6 +123,25 @@ public class SpinCADFile {
 		return p;
 	} 
 
+	// backwards compatibility with SpinCAD 952 patch file serialization
+	public SpinCADPatch fileReadPatch952(String fileName) throws IOException, ClassNotFoundException {
+		// Object deserialization 
+		SpinCADPatch p = new SpinCADPatch();
+		p.patchFileName = fileName;
+
+		FileInputStream fis = new FileInputStream(fileName); 
+		ObjectInputStream ois = new ObjectInputStream(fis); 
+
+		p.cb.line[0] = (String)ois.readObject();
+		p.cb.line[1] = (String)ois.readObject();
+		p.cb.line[2] = (String)ois.readObject();
+		p.cb.line[3] = (String)ois.readObject();
+		p.cb.line[4] = (String)ois.readObject();
+		p.patchModel = (SpinCADModel)ois.readObject(); 
+		ois.close(); 
+		return p;
+	} 
+
 	public SpinCADPatch fileOpenPatch() {
 
 		loadRecentPatchFileList();
@@ -138,22 +157,29 @@ public class SpinCADFile {
 
 		int returnVal = fc.showOpenDialog(new JFrame());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			String filePath = null;
 			File file = fc.getSelectedFile();
 
 			System.out.println("Opening: " + file.getName() + "."
 					+ newline);
+			filePath = file.getPath();
 			try {
-				String filePath = file.getPath();
 				p = fileReadPatch(filePath);
+			} catch (Exception e) {	
+//				e.printStackTrace();
+				try {
+					System.out.println("Trying version 952 format..." + newline);					
+					p = fileReadPatch952(filePath);
+				} catch (Exception exc) {	
+					exc.printStackTrace();
+				}
+// XXX			MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+			} finally {
 				saveMRUPatchFolder(filePath);
 				recentPatchFileList.add(file);
 				String fileName = file.getName();
 				p.patchFileName = fileName;
 				p.cb.setFileName(fileName);
-			} catch (Exception e) {	
-				e.printStackTrace();
-				// XXX				MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
-			} finally {
 			}
 		} else {
 			System.out.println("Open command cancelled by user."
@@ -217,7 +243,7 @@ public class SpinCADFile {
 	public void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
-/* 		XXX debug
+		/* 		XXX debug
 		writer.write("; " + p.cb.fileName);
 		writer.newLine();
 		writer.write("; " + p.cb.version);
@@ -234,7 +260,7 @@ public class SpinCADFile {
 		writer.newLine();
 		writer.write("; " + p.cb.line[5]);
 		writer.newLine();
-*/
+		 */
 		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
 		String[] words = codeListing.split("\n");
 		for (String word: words) {
@@ -277,7 +303,7 @@ public class SpinCADFile {
 					fileSave(p);
 					recentPatchFileList.add(fileToBeSaved);
 					saveMRUPatchFolder(filePath);
-					
+
 				} catch (Exception e) {	// thrown over in SpinCADFile.java
 					e.printStackTrace();
 					//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
@@ -422,7 +448,7 @@ public class SpinCADFile {
 			saveMRUHexFolder(filePath);
 		}
 	}
-	
+
 	public void fileSaveHex(int patchIndex, int[] codeListing, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 		int i = -1;
@@ -438,7 +464,7 @@ public class SpinCADFile {
 					i = 0x11;
 				}
 				outputString = String.format("04%04X00%08X", (patchIndex * 0x200) + index, i);
-//				outputString = String.format("04%04X00%08X", index, i);
+				//				outputString = String.format("04%04X00%08X", index, i);
 				long message = Long.parseLong(outputString, 16);
 				int checksum = 0;
 				for(int iii = 0; iii < 8; iii++) {

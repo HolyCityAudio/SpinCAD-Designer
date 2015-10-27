@@ -17,6 +17,8 @@
  */
 package org.andrewkilpatrick.elmGen.instructions;
 
+import java.io.Serializable;
+
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 
 /**
@@ -24,7 +26,11 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * 
  * @author andrew
  */
-public class Comment extends Instruction {
+public class Comment extends Instruction implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7982679767433623680L;
 	final String remark;
 	
 	/**
