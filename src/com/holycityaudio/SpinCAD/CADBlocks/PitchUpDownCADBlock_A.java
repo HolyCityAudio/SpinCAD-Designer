@@ -28,7 +28,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class PitchUpDownCADBlock_A extends SpinCADBlock {
 
@@ -50,7 +50,7 @@ public class PitchUpDownCADBlock_A extends SpinCADBlock {
 		addOutputPin(this);
 	}
 	
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		int input = -1;
 
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();

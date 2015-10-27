@@ -19,7 +19,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class ClipControlCADBlock extends ControlCADBlock{
 	/**
@@ -38,7 +38,7 @@ public class ClipControlCADBlock extends ControlCADBlock{
 		setName("Clip");
 	}
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 
 		int control = -1;
 		double scaledGain = gain;

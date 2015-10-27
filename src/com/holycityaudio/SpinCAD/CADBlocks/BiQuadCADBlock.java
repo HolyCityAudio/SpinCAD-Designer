@@ -21,7 +21,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class BiQuadCADBlock extends FilterCADBlock{
 	/**
@@ -49,7 +49,7 @@ public class BiQuadCADBlock extends FilterCADBlock{
 	}	
 
 	@Override
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		// coefficients
 		w0 = (2.0 * Math.PI * f0)/getSamplerate();	
 		//	    alpha = sin(w0)/(2*Q) (case: Q)

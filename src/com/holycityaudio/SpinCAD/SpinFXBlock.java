@@ -26,7 +26,7 @@ package com.holycityaudio.SpinCAD;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.MemSegment;
 
-public class SpinCADProgram extends ElmProgram {
+public class SpinFXBlock extends ElmProgram {
 	/**
 	 * 
 	 */
@@ -34,7 +34,7 @@ public class SpinCADProgram extends ElmProgram {
 	private int numBlocks = 0;
 	private int numRegs = 0;		// allocation scheme for internal registers REG0 through REG31
 
-	public SpinCADProgram(String nameBlock) {
+	public SpinFXBlock(String nameBlock) {
 		super(nameBlock);
 		setNumBlocks(getNumBlocks() + 1);
 		setNumRegs(REG0);

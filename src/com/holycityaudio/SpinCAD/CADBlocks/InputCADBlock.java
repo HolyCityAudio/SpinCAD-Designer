@@ -23,7 +23,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class InputCADBlock extends SpinCADBlock{
 
@@ -39,7 +39,7 @@ public class InputCADBlock extends SpinCADBlock{
 		setName("Input");
 	}
 	
-	public void generateCode(SpinCADProgram eP) {
+	public void generateCode(SpinFXBlock eP) {
 //		System.out.println("Input codegen!");
 		SpinCADPin p = this.getPin("Output 1");
 		p.setRegister(ADCL);

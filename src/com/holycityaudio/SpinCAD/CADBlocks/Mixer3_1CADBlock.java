@@ -23,7 +23,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class Mixer3_1CADBlock extends SpinCADBlock{
 
@@ -50,7 +50,7 @@ public class Mixer3_1CADBlock extends SpinCADBlock{
 		setBorderColor(Color.YELLOW);
 	}
 
-	public void generateCode(SpinCADProgram sfxb)
+	public void generateCode(SpinFXBlock sfxb)
 	{
 		int mix = -1;
 		int leftIn = -1;

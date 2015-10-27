@@ -21,7 +21,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class OscillatorCADBlock extends SpinCADBlock{
 
@@ -48,7 +48,7 @@ public class OscillatorCADBlock extends SpinCADBlock{
 		new OscillatorControlPanel(this);
 	}
 
-	public void generateCode(SpinCADProgram b) {
+	public void generateCode(SpinFXBlock b) {
 
 		int Control1 = -1;
 

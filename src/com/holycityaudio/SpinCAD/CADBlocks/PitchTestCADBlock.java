@@ -24,7 +24,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.PitchTestControlPanel;
 
@@ -71,7 +71,7 @@ public class PitchTestCADBlock extends SpinCADBlock {
 	}
 
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		int input = -1;
 		// pitchBufferSize should be 512, 1024, 2048, or 4096
 		int pitchBufferSize = amp;

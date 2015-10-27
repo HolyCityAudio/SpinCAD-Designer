@@ -19,7 +19,7 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class Pot0CADBlock extends PotCADBlock{
 

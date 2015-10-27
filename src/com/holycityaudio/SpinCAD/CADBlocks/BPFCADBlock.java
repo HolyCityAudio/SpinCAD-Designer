@@ -23,7 +23,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class BPFCADBlock extends SpinCADBlock{
 	/**
@@ -45,7 +45,7 @@ public class BPFCADBlock extends SpinCADBlock{
 		new BPFControlPanel(this);
 	}
 	
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		// at this moment, code implements a low pass.
 		// and not a very good one at that!
 		// coefficients

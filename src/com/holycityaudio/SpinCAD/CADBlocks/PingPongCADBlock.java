@@ -20,7 +20,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 
 public class PingPongCADBlock extends DelayCADBlock{
@@ -64,7 +64,7 @@ public class PingPongCADBlock extends DelayCADBlock{
 		new PingPongControlPanel(this);
 	}
 
-	public void generateCode(SpinCADProgram sfxb)
+	public void generateCode(SpinFXBlock sfxb)
 	{
 		int input = -1; 
 		int leftOut = -1;

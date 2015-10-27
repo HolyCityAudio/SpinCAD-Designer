@@ -24,7 +24,7 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class HPF2PCADBlock extends SpinCADBlock{
 	/**
@@ -49,7 +49,7 @@ public class HPF2PCADBlock extends SpinCADBlock{
 		new HPF2PControlPanel(this);
 	}	
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		// coefficients
 
 		int input = -1;

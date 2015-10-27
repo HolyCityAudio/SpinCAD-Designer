@@ -1,7 +1,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class DistortionCADBlock extends GainCADBlock{
 	/**
@@ -14,7 +14,7 @@ public class DistortionCADBlock extends GainCADBlock{
 		setName("Distortion");
 	}
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
 		int input = -1;
 		if(p != null) {

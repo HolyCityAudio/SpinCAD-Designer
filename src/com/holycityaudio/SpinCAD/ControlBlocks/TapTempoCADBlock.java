@@ -20,7 +20,7 @@
 package com.holycityaudio.SpinCAD.ControlBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 import com.holycityaudio.SpinCAD.ControlBlocks.ControlCADBlock;
 
 public class TapTempoCADBlock extends ControlCADBlock{
@@ -39,7 +39,7 @@ public class TapTempoCADBlock extends ControlCADBlock{
 		setName("Tap-Tempo");
 	}
 
-	public void generateCode(SpinCADProgram sfxb)
+	public void generateCode(SpinFXBlock sfxb)
 	{
 		int latch = -1;
 		int ramp = -1;

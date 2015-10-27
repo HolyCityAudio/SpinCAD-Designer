@@ -21,7 +21,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class QuantizerCADBlock extends GainCADBlock{
 
@@ -39,7 +39,7 @@ public class QuantizerCADBlock extends GainCADBlock{
 		setName("Quantizer");
 	}
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		int input = -1;
 		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
 		if(p != null) {

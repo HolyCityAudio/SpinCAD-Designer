@@ -21,7 +21,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class HPF1PCADBlock extends FilterCADBlock{
 	/**
@@ -40,7 +40,7 @@ public class HPF1PCADBlock extends FilterCADBlock{
 		new HPF1PControlPanel(this);
 	}	
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		// coefficients
 
 		double k1 = Math.exp((-6.283 * f0)/getSamplerate());

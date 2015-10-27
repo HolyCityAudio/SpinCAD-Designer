@@ -20,7 +20,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class PowerControlCADBlock extends ControlCADBlock{
 	/**
@@ -39,7 +39,7 @@ public class PowerControlCADBlock extends ControlCADBlock{
 		setName("Power");
 	}
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 
 		int control = -1;
 		SpinCADPin p = this.getPin("Control Input 1").getPinConnection();

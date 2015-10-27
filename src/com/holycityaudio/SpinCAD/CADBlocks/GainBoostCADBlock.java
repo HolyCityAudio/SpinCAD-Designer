@@ -22,7 +22,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class GainBoostCADBlock extends ControlCADBlock{
 
@@ -43,7 +43,7 @@ public class GainBoostCADBlock extends ControlCADBlock{
 		addOutputPin(this, "Audio Output");	
 	}
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		int input = -1;
 		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 		sfxb.comment(getName());

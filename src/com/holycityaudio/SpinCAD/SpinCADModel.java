@@ -41,7 +41,7 @@ public class SpinCADModel implements Serializable {
 	private SpinCADBlock currentBlock = null;
 	
 	// renderBlock is... what exactly???
-	private SpinCADProgram renderBlock = null;
+	private SpinFXBlock renderBlock = null;
 	private int indexFB = 1;
 	private int nBlocks = 0;
 
@@ -54,7 +54,7 @@ public class SpinCADModel implements Serializable {
 		nBlocks = 0;
 		blockList = new ArrayList<SpinCADBlock>();
 		indexFB = 1;
-		setRenderBlock(new SpinCADProgram("Render Block"));
+		renderBlock = new SpinFXBlock("Render Block");
 	}
 
 	public int addBlock(SpinCADBlock pCB) {
@@ -183,16 +183,20 @@ public class SpinCADModel implements Serializable {
 		}		
 		realign();
 		int i = generateCode();
-		ElmProgram.checkCodeLen();
+		renderBlock.checkCodeLen();
 		return i;
 	}
 
 	public int generateCode() {
 //  XXX debug for some reason, export to Hex spits out 8 of the same thing
-//		setRenderBlock(new SpinFXBlock("Patch "));
+		
+		// every time we generrate code, make a new FXBlock (program)
+		renderBlock = new SpinFXBlock("Patch ");
 		SpinCADBlock block = null;
+		
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		int i = 0;
+		int codeLength = 0;
 
 		// have to initialize FeedBack block registers to -1 or the next part doesn't work the second time!
 		try {
@@ -230,7 +234,7 @@ public class SpinCADModel implements Serializable {
 						{
 							int i2 = ((FBOutputCADBlock) blockSearch).getRegister();
 							if(i2 == -1) {
-								i2 = getRenderBlock().allocateReg();
+								i2 = renderBlock.allocateReg();
 								((FBOutputCADBlock) blockSearch).setRegister(i2);
 							}						
 							((FBInputCADBlock) block).setRegister(i2);
@@ -238,7 +242,7 @@ public class SpinCADModel implements Serializable {
 						}
 					}
 					if(found == false) {
-						int i1 = getRenderBlock().allocateReg();
+						int i1 = renderBlock.allocateReg();
 						((FBInputCADBlock) block).setRegister(i1);
 					}
 				}
@@ -257,7 +261,7 @@ public class SpinCADModel implements Serializable {
 						{
 							int i3 = ((FBInputCADBlock) blockSearch).getRegister();
 							if(i3 == -1) {
-								i3 = getRenderBlock().allocateReg();
+								i3 = renderBlock.allocateReg();
 								((FBInputCADBlock) blockSearch).setRegister(i3);
 							}
 							((FBOutputCADBlock) block).setRegister(i3);
@@ -265,23 +269,25 @@ public class SpinCADModel implements Serializable {
 						}
 					}
 					if(found == false) {
-						int i4 = getRenderBlock().allocateReg();
+						int i4 = renderBlock.allocateReg();
 						((FBOutputCADBlock) block).setRegister(i4);
 					}
 				}
 				i++;
 				// TODO debug this, some problem with triple delay buffer assignments
 				// no there is a problem here
-				getRenderBlock().setNumBlocks(block.getBlockNum());	// this is for keeping delay segments unique
-				block.generateCode(getRenderBlock());
+				renderBlock.setNumBlocks(block.getBlockNum());	// this is for keeping delay segments unique
+				block.generateCode(renderBlock);
 				// now blockMin is the block with the lowest number
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			System.out.println(getRenderBlock().getProgramListing(1));
-			return ElmProgram.getCodeLen() - ElmProgram.getNumComments();
+			codeLength = renderBlock.getCodeLen() - renderBlock.getNumComments();
 		}
+		
+		return codeLength;
 	}
 
 	public static int countLFOReferences(SpinCADModel m, String matchString) {
@@ -301,11 +307,11 @@ public class SpinCADModel implements Serializable {
 		return count;
 	}
 
-	public SpinCADProgram getRenderBlock() {
+	public SpinFXBlock getRenderBlock() {
 		return renderBlock;
 	}
 
-	public void setRenderBlock(SpinCADProgram block) {
+	public void setRenderBlock(SpinFXBlock block) {
 		renderBlock = block;
 	}
 

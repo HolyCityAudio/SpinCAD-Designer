@@ -68,8 +68,8 @@ public class ElmProgram implements Serializable {
 	private static final long serialVersionUID = 3718907348318020286L;
 	protected String name;
 	private List<MemSegment> memoryMap;
-	private static List<Instruction> instList;
-	private static int nComments = 0;
+	private List<Instruction> instList;
+	private int nComments = 0;
 
 	public static final int MAX_DELAY_MEM = 32767;
 	public static final int MAX_CODE_LEN = 128;
@@ -297,7 +297,7 @@ public class ElmProgram implements Serializable {
 	 * @throws ElmProgramException
 	 *             if the code length is max.
 	 */
-	public static void checkCodeLen() {
+	public void checkCodeLen() {
 		if ((getCodeLen() - getNumComments()) >= MAX_CODE_LEN) {
 
 			// throw new ElmProgramException("max program length reached: " +
@@ -314,11 +314,11 @@ public class ElmProgram implements Serializable {
 	 * 
 	 * @return the number of instructions in the program
 	 */
-	public static int getCodeLen() {
+	public int getCodeLen() {
 		return instList.size();
 	}
 
-	public static int getNumComments() {
+	public int getNumComments() {
 		return nComments;
 	}
 

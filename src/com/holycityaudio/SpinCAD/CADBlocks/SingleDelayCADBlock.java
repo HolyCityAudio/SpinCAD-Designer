@@ -25,7 +25,7 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class SingleDelayCADBlock extends SpinCADBlock {
 
@@ -67,7 +67,7 @@ public class SingleDelayCADBlock extends SpinCADBlock {
 		new SingleDelayControlPanel(this);
 	}
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		// only mono input supported
 		int input;
 		

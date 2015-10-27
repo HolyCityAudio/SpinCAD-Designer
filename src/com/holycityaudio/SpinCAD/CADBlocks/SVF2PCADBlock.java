@@ -22,7 +22,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class SVF2PCADBlock extends FilterCADBlock{
 	/**
@@ -50,7 +50,7 @@ public class SVF2PCADBlock extends FilterCADBlock{
 		new SVF2PControlPanel(this);
 	}	
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		// coefficients
 		int input = -1;
 

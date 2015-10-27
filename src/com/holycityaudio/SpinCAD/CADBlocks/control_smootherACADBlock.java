@@ -21,7 +21,7 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
-import com.holycityaudio.SpinCAD.SpinCADProgram;
+import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class control_smootherACADBlock extends SpinCADBlock {
 
@@ -54,7 +54,7 @@ public class control_smootherACADBlock extends SpinCADBlock {
 		cp = null;
 	}
 
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 
 		// Iterate through mem and equ statements, allocate accordingly
 		filtReg = sfxb.allocateReg();

@@ -37,7 +37,7 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
-public class SpinCADBlock extends SpinCADProgram {
+public class SpinCADBlock extends SpinFXBlock {
 
 	/**
 	 * SpinCADBlock class extends the idea of a functional block
@@ -327,7 +327,7 @@ public class SpinCADBlock extends SpinCADProgram {
 	 * Every real block needs to override this.
 	 * 
 	 */
-	public void generateCode(SpinCADProgram sfxb) {
+	public void generateCode(SpinFXBlock sfxb) {
 		System.out.println("Empty!!!!");
 	}
 

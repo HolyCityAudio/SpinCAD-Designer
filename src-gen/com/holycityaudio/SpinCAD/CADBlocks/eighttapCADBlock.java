@@ -22,7 +22,7 @@
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
-		import com.holycityaudio.SpinCAD.SpinCADProgram;
+		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.eighttapControlPanel;
 		
 		public class eighttapCADBlock extends SpinCADBlock {
@@ -94,7 +94,7 @@
 				cp = null;
 			}	
 				
-			public void generateCode(SpinCADProgram sfxb) {
+			public void generateCode(SpinFXBlock sfxb) {
 	
 			// Iterate through mem and equ statements, allocate accordingly
 
