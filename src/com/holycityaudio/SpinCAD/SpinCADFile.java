@@ -166,7 +166,7 @@ public class SpinCADFile {
 			try {
 				p = fileReadPatch(filePath);
 			} catch (Exception e) {	
-//				e.printStackTrace();
+				e.printStackTrace();
 				try {
 					System.out.println("Trying version 952 format..." + newline);					
 					p = fileReadPatch952(filePath);

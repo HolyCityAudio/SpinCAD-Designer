@@ -17,6 +17,8 @@
  */
 package org.andrewkilpatrick.elmGen.instructions;
 
+import java.io.Serializable;
+
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 
 /**
@@ -24,8 +26,12 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * 
  * @author andrew
  */
-public abstract class Instruction {
+public abstract class Instruction implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7070499813585484961L;
 	/**
 	 * Creates an instruction.
 	 */
