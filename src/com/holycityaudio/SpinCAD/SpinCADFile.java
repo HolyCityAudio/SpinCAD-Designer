@@ -243,7 +243,6 @@ public class SpinCADFile {
 	public void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
-		/* 		XXX debug
 		writer.write("; " + p.cb.fileName);
 		writer.newLine();
 		writer.write("; " + p.cb.version);
@@ -258,9 +257,7 @@ public class SpinCADFile {
 		writer.newLine();
 		writer.write("; " + p.cb.line[4]);
 		writer.newLine();
-		writer.write("; " + p.cb.line[5]);
-		writer.newLine();
-		 */
+		
 		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
 		String[] words = codeListing.split("\n");
 		for (String word: words) {
