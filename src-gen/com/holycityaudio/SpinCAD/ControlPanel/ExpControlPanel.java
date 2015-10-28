@@ -52,6 +52,8 @@ public class ExpControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider multiplierSlider;
 	JLabel  multiplierLabel;	
+	JSlider exp_offsetSlider;
+	JLabel  exp_offsetLabel;	
 
 public ExpControlPanel(ExpCADBlock genericCADBlock) {
 		
@@ -83,6 +85,25 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 				multiplierinnerPanel.setBorder(multiplierborder2);
 			
 				frame.add(multiplierinnerPanel);
+			
+			exp_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getexp_offset() * 1000.0));
+				exp_offsetSlider.addChangeListener(new ExpListener());
+				exp_offsetLabel = new JLabel();
+				Border exp_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				exp_offsetLabel.setBorder(exp_offsetBorder1);
+				updateexp_offsetLabel();
+				
+				Border exp_offsetborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel exp_offsetinnerPanel = new JPanel();
+					
+				exp_offsetinnerPanel.setLayout(new BoxLayout(exp_offsetinnerPanel, BoxLayout.Y_AXIS));
+				exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				exp_offsetinnerPanel.add(exp_offsetLabel);
+				exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				exp_offsetinnerPanel.add(exp_offsetSlider);		
+				exp_offsetinnerPanel.setBorder(exp_offsetborder2);
+			
+				frame.add(exp_offsetinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -99,6 +120,10 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 			if(ce.getSource() == multiplierSlider) {
 			gCB.setmultiplier((double) (multiplierSlider.getValue()/1000.0));
 				updatemultiplierLabel();
+			}
+			if(ce.getSource() == exp_offsetSlider) {
+			gCB.setexp_offset((double) (exp_offsetSlider.getValue()/1000.0));
+				updateexp_offsetLabel();
 			}
 			}
 		}
@@ -119,6 +144,9 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 		}
 		private void updatemultiplierLabel() {
 		multiplierLabel.setText("Exp_Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
+		}		
+		private void updateexp_offsetLabel() {
+		exp_offsetLabel.setText("Exp_Offset " + String.format("%4.3f", gCB.getexp_offset()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

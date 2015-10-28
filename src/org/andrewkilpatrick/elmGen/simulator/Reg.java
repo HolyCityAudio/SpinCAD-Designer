@@ -17,12 +17,19 @@
  */
 package org.andrewkilpatrick.elmGen.simulator;
 
+import java.io.Serializable;
+
 import org.andrewkilpatrick.elmGen.util.Util;
 
 /**
  * This class represents an internal 24 bit register.
  */
-public class Reg {
+public class Reg implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5197716260964881922L;
+	
 	int value;
 
 	/**

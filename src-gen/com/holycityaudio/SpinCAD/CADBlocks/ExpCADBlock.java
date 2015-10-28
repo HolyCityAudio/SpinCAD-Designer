@@ -31,6 +31,7 @@
 			private ExpControlPanel cp = null;
 			
 			private double multiplier = 0.5;
+			private double exp_offset = 0.5;
 			private int output1;
 
 			public ExpCADBlock(int x, int y) {
@@ -38,9 +39,10 @@
 				setName("Exp");					
 			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
-				addControlInputPin(this, "Control_Input");
-				addControlOutputPin(this, "Control_Output");
+				addControlInputPin(this, "Input");
+				addControlOutputPin(this, "Exp Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -67,7 +69,7 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("Control_Input").getPinConnection();
+			sp = this.getPin("Input").getPinConnection();
 			int input = -1;
 			if(sp != null) {
 				input = sp.getRegister();
@@ -77,9 +79,9 @@
 			output1 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, 1);
-			sfxb.exp(multiplier, 0.5);
+			sfxb.exp(multiplier, exp_offset);
 			sfxb.writeRegister(output1, 0);
-			this.getPin("Control_Output").setRegister(output1);
+			this.getPin("Exp Output").setRegister(output1);
 			}
 			
 
@@ -92,5 +94,12 @@
 			
 			public double getmultiplier() {
 				return multiplier;
+			}
+			public void setexp_offset(double __param) {
+				exp_offset = __param;	
+			}
+			
+			public double getexp_offset() {
+				return exp_offset;
 			}
 		}	

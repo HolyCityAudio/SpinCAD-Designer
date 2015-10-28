@@ -31,6 +31,7 @@
 			private LogControlPanel cp = null;
 			
 			private double multiplier = 0.5;
+			private double log_offset = 0.5;
 			private int output1;
 
 			public LogCADBlock(int x, int y) {
@@ -40,6 +41,7 @@
 				addControlInputPin(this, "Control Input");
 				addControlOutputPin(this, "Log Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -76,7 +78,7 @@
 			output1 = sfxb.allocateReg();
 			if(this.getPin("Control Input").isConnected() == true) {
 			sfxb.readRegister(input, 1);
-			sfxb.log(multiplier, 0);
+			sfxb.log(multiplier, log_offset);
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Log Output").setRegister(output1);
 			}
@@ -91,5 +93,12 @@
 			
 			public double getmultiplier() {
 				return multiplier;
+			}
+			public void setlog_offset(double __param) {
+				log_offset = __param;	
+			}
+			
+			public double getlog_offset() {
+				return log_offset;
 			}
 		}	

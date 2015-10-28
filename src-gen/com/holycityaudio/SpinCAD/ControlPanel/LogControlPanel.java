@@ -52,6 +52,8 @@ public class LogControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider multiplierSlider;
 	JLabel  multiplierLabel;	
+	JSlider log_offsetSlider;
+	JLabel  log_offsetLabel;	
 
 public LogControlPanel(LogCADBlock genericCADBlock) {
 		
@@ -83,6 +85,25 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 				multiplierinnerPanel.setBorder(multiplierborder2);
 			
 				frame.add(multiplierinnerPanel);
+			
+			log_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getlog_offset() * 1000.0));
+				log_offsetSlider.addChangeListener(new LogListener());
+				log_offsetLabel = new JLabel();
+				Border log_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				log_offsetLabel.setBorder(log_offsetBorder1);
+				updatelog_offsetLabel();
+				
+				Border log_offsetborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel log_offsetinnerPanel = new JPanel();
+					
+				log_offsetinnerPanel.setLayout(new BoxLayout(log_offsetinnerPanel, BoxLayout.Y_AXIS));
+				log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				log_offsetinnerPanel.add(log_offsetLabel);
+				log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				log_offsetinnerPanel.add(log_offsetSlider);		
+				log_offsetinnerPanel.setBorder(log_offsetborder2);
+			
+				frame.add(log_offsetinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -99,6 +120,10 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 			if(ce.getSource() == multiplierSlider) {
 			gCB.setmultiplier((double) (multiplierSlider.getValue()/1000.0));
 				updatemultiplierLabel();
+			}
+			if(ce.getSource() == log_offsetSlider) {
+			gCB.setlog_offset((double) (log_offsetSlider.getValue()/1000.0));
+				updatelog_offsetLabel();
 			}
 			}
 		}
@@ -119,6 +144,9 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 		}
 		private void updatemultiplierLabel() {
 		multiplierLabel.setText("Log Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
+		}		
+		private void updatelog_offsetLabel() {
+		log_offsetLabel.setText("Log_Offset " + String.format("%4.3f", gCB.getlog_offset()));		
 		}		
 		
 		class MyWindowListener implements WindowListener
