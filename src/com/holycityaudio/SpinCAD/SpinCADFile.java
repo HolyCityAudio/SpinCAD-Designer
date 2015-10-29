@@ -173,7 +173,7 @@ public class SpinCADFile {
 				} catch (Exception exc) {	
 					exc.printStackTrace();
 				}
-// XXX			MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+				SpinCADDialogs.MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
 			} finally {
 				saveMRUPatchFolder(filePath);
 				recentPatchFileList.add(file);
