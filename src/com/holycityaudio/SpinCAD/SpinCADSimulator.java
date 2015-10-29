@@ -165,7 +165,7 @@ public class SpinCADSimulator {
 						sim.start();
 					}
 					else { 
-						frame.MessageBox("Simulator file not found.", "Please set a simulator source file.");
+						SpinCADDialogs.MessageBox("Simulator file not found.", "Please set a simulator source file.");
 					} 
 				}
 			} else if (arg0.getSource() == btnSigGen) {

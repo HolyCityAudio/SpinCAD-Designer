@@ -303,7 +303,7 @@ public class SpinCADFile {
 
 				} catch (Exception e) {	// thrown over in SpinCADFile.java
 					e.printStackTrace();
-					//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
+					SpinCADDialogs.MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
 				}
 				finally {
 					p.setChanged(false);

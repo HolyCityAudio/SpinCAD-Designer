@@ -82,6 +82,7 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADDialogs;
 
 public class SpinCADFrame extends JFrame {
 	/**
@@ -92,7 +93,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 965;
+	int buildNum = 966;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -277,7 +278,7 @@ public class SpinCADFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADFile f = new SpinCADFile();
 				if (eeprom.patch[bankIndex].getChanged() == true) {
-					int dialogResult = yesNoBox(panel, "Warning!",
+					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == 0) {
 						eeprom.patch[bankIndex].patchModel.newModel();
@@ -309,12 +310,9 @@ public class SpinCADFrame extends JFrame {
 		mntmSavePatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(eeprom.patch[bankIndex].patchFileName != "Untitled") {
-					try {
-						SpinCADFile f = new SpinCADFile();
-						f.fileSavePatchAs(eeprom.patch[bankIndex]);
-						updateAll(false);
-					} finally {
-					}
+					SpinCADFile f = new SpinCADFile();
+					f.fileSavePatchAs(eeprom.patch[bankIndex]);
+					updateAll(false);
 
 				} else {
 					SpinCADFile f = new SpinCADFile();
@@ -346,7 +344,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnFileMenu.add(mntmSaveAsm);
-		
+
 		// XXX DEBUG
 		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy ASM to Clipboard");
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
@@ -367,7 +365,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnFileMenu.add(mntmInfo);
-		
+
 		mnFileMenu.addSeparator();
 
 		// Bank File operations
@@ -400,7 +398,7 @@ public class SpinCADFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADFile f= new SpinCADFile();
 				if (eeprom.patch[bankIndex].getChanged() == true) {
-					int dialogResult = yesNoBox(panel, "Warning!",
+					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == 0) {
 						eeprom.patch[bankIndex].patchModel.newModel();
@@ -460,7 +458,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnFileMenu.add(mntmBankInfo);
-		
+
 		mnFileMenu.addSeparator();
 
 		JMenuItem mntmBatch = new JMenuItem("Batch Convert");
@@ -473,7 +471,7 @@ public class SpinCADFrame extends JFrame {
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (eeprom.patch[bankIndex].getChanged() == true) {
-					int dialogResult = yesNoBox(panel, "Warning!", 
+					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!", 
 							"You have unsaved changes!  Save first?");				
 					if (dialogResult == JOptionPane.YES_OPTION) {
 						File fileToBeSaved = new File(eeprom.patch[bankIndex].patchFileName);
@@ -578,7 +576,7 @@ public class SpinCADFrame extends JFrame {
 				try {
 					simX.getSimulatorFile();
 				} catch (UnsupportedAudioFileException e) {
-					MessageBox("Simulator File Error", "Make sure that your simulator source\n"
+					SpinCADDialogs.MessageBox("Simulator File Error", "Make sure that your simulator source\n"
 							+ "file is a stereo 16 bit WAV file sampled \nat 32768, 44100, or 48000 Hz.");
 				}
 				catch (IOException e) {
@@ -608,7 +606,7 @@ public class SpinCADFrame extends JFrame {
 					try {
 						simX.setSimulatorDebugFile();
 					} catch (IOException e) {
-						MessageBox("Simulator Debug File Error", "Uhmmmm....");
+						SpinCADDialogs.MessageBox("Simulator Debug File Error", "Uhmmmm....");
 					}
 				}
 			});
@@ -633,7 +631,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
+				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
 						+ "Copyright 2015 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
@@ -804,23 +802,6 @@ public class SpinCADFrame extends JFrame {
 		}
 	}
 
-	// Swing dialog boxes.
-
-	public void MessageBox(String title, String message) {
-		JFrame frame = new JFrame();
-		JOptionPane.showMessageDialog(frame,
-				message, title,
-				JOptionPane.DEFAULT_OPTION);
-	}
-
-	static int yesNoBox(JPanel panel, String title, String question) {
-		int dialogButton = JOptionPane.YES_NO_OPTION;
-		int dialogResult = JOptionPane.showConfirmDialog(panel,
-				question,
-				title, dialogButton);
-		return dialogResult;
-	}
-
 	// ====== COMMENT BLOCK PATCH ==================================================
 	class commentBlockPatch {
 		commentBlockPanel cbPnl;
@@ -846,7 +827,7 @@ public class SpinCADFrame extends JFrame {
 		private static final long serialVersionUID = -7295329402087496031L;
 
 		JFrame commentFrame = new JFrame("Patch Information");
-		
+
 		JTextField fileNameText;
 		JTextField versionText;
 		JTextField line0text;
@@ -1105,7 +1086,7 @@ public class SpinCADFrame extends JFrame {
 		updateFrameTitle();
 		contentPane.repaint();	
 	}
-	
+
 	public void updateAll(boolean isChanged) {
 		eeprom.patch[bankIndex].setChanged(isChanged);
 		simX.updateSliders(eeprom.patch[bankIndex]);
