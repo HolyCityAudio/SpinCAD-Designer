@@ -446,6 +446,52 @@ public class SpinCADFile {
 		}
 	}
 
+	public void fileSavePrj(SpinCADBank bank) {
+		// Create a file chooser
+		String savedPath = prefs.get("MRUPrjFolder", "");
+
+		final JFileChooser fc = new JFileChooser(savedPath);
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Spin Project Files", "prj");
+		fc.setFileFilter(filter);
+		// XXX debug
+		fc.showSaveDialog(new JFrame());
+		File fileToBeSaved = fc.getSelectedFile();
+
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".prj")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".prj");
+		}
+		int n = JOptionPane.YES_OPTION;
+		if (fileToBeSaved.exists()) {
+			JFrame frame1 = new JFrame();
+			n = JOptionPane.showConfirmDialog(frame1,
+					"Would you like to overwrite it?", "File already exists!",
+					JOptionPane.YES_NO_OPTION);
+		}
+		if (n == JOptionPane.YES_OPTION) {
+			String filePath;
+			try {
+				filePath = fileToBeSaved.getPath();
+				fileToBeSaved.delete();
+			} finally {
+			}
+			for(int i = 0; i < 8; i++) {
+				try {
+					fileSaveHex(i, bank.patch[i].patchModel.getRenderBlock().generateHex(), filePath);
+				} catch (IOException e) {
+					JOptionPane.showOptionDialog(null,
+							"File save error!", "Error",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+					e.printStackTrace();
+				}
+			}
+			saveMRUPrjFolder(filePath);
+		}
+	}
+
 	public void fileSaveHex(int patchIndex, int[] codeListing, String fileName) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 		int i = -1;
@@ -514,6 +560,12 @@ public class SpinCADFile {
 		prefs.put("MRUHexFolder", pathE.toString());
 	}
 
+
+	private void saveMRUPrjFolder(String path) {
+		Path pathE = Paths.get(path);
+		prefs.put("MRUPrjFolder", pathE.toString());
+	}
+	
 	//========================================================================	
 	// recent file lists
 

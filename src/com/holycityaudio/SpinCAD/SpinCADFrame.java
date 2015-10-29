@@ -221,9 +221,7 @@ public class SpinCADFrame extends JFrame {
 		simX.sctb.setBorder(border);
 		simPanel.setLayout(new BoxLayout(simPanel, BoxLayout.Y_AXIS));
 		simPanel.add(simX.sctb);
-		simPanel.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(Color.blue),
-				simPanel.getBorder()));
+
 		topPanel.add(simPanel, BorderLayout.NORTH);
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
@@ -331,6 +329,17 @@ public class SpinCADFrame extends JFrame {
 		});
 		mnFileMenu.add(mntmSavePatchAs);
 
+		JMenuItem mntmInfo = new JMenuItem("Patch Information");
+		mntmInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				commentBlockPatch cbp = new commentBlockPatch(eeprom.patch[bankIndex]);
+				cbp.cbPnl.show();
+			}
+		});
+		mnFileMenu.add(mntmInfo);
+
+		mnFileMenu.addSeparator();
+
 		JMenuItem mntmSaveAsm = new JMenuItem("Save Patch as ASM");
 		mntmSaveAsm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -341,7 +350,6 @@ public class SpinCADFrame extends JFrame {
 		});
 		mnFileMenu.add(mntmSaveAsm);
 
-		// XXX DEBUG
 		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy ASM to Clipboard");
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -352,15 +360,6 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnFileMenu.add(mntmCopyToClipboard);
-
-		JMenuItem mntmInfo = new JMenuItem("Patch Information");
-		mntmInfo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				commentBlockPatch cbp = new commentBlockPatch(eeprom.patch[bankIndex]);
-				cbp.cbPnl.show();
-			}
-		});
-		mnFileMenu.add(mntmInfo);
 
 		mnFileMenu.addSeparator();
 
@@ -435,17 +434,6 @@ public class SpinCADFrame extends JFrame {
 
 		mnFileMenu.add(mntmSaveBankAs);
 
-		JMenuItem mntmSaveHex = new JMenuItem("Export Bank to Hex");
-		mntmSaveHex.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				eeprom.patch[bankIndex].patchModel.sortAlignGen();
-				SpinCADFile f = new SpinCADFile();
-				f.fileSaveHex(eeprom);
-			}
-		});
-
-		mnFileMenu.add(mntmSaveHex);
-
 		JMenuItem mntmBankInfo = new JMenuItem("Bank Information");
 		mntmBankInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -457,9 +445,25 @@ public class SpinCADFrame extends JFrame {
 
 		mnFileMenu.addSeparator();
 
-		JMenuItem mntmBatch = new JMenuItem("Batch Convert");
-		// XXX 	    SpinCADFile.fileBatch(panel, mntmBatch);
-		mnFileMenu.add(mntmBatch);
+		JMenuItem mntmSaveHex = new JMenuItem("Export Bank to Hex");
+		mntmSaveHex.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SpinCADFile f = new SpinCADFile();
+				f.fileSaveHex(eeprom);
+			}
+		});
+
+		mnFileMenu.add(mntmSaveHex);
+
+		JMenuItem mntmSavePrj = new JMenuItem("Export Bank to Spin Project");
+		mntmSaveHex.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SpinCADFile f = new SpinCADFile();
+				f.fileSavePrj(eeprom);
+			}
+		});
+
+		mnFileMenu.add(mntmSavePrj);
 
 		mnFileMenu.addSeparator();
 
