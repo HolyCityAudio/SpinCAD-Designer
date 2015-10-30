@@ -955,7 +955,7 @@ public class SpinCADFrame extends JFrame {
 			
 			for(int i = 0; i < 8; i++) {
 				if (source == btnPatch[i]) {
-					bankIndex = 0;
+					bankIndex = i;
 					btnPatch[i].setBorder(BorderFactory.createCompoundBorder(
 							BorderFactory.createLineBorder(Color.blue),
 							null));

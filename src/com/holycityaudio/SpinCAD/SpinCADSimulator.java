@@ -144,14 +144,14 @@ public class SpinCADSimulator {
 					setSimRunning(false);
 					loggerPanel.setVisible(false);
 					levelMonitor.setVisible(false);;
-					btnStartSimulation.setText("Start Simulator");
+					btnStartSimulation.setText(" Start Simulator");
 					sim.stopSimulator();
 				} else {
 					String testWavFileName = checkSimulatorFile();
 					if(testWavFileName != "Not found!") {
 						setSimRunning(true);
 						// create file
-						btnStartSimulation.setText("Stop Simulator");
+						btnStartSimulation.setText(" Stop Simulator ");
 						frame.updateAll();
 						sim = new SpinSimulator(patch.patchModel.getRenderBlock(),
 								testWavFileName, outputFile, patch.getPotVal(0), patch.getPotVal(1),
