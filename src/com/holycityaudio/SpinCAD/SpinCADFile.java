@@ -38,6 +38,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class SpinCADFile {
 	// PREFERENCES =====================================================
 	// following things are saved in the SpinCAD preferences
@@ -240,33 +242,6 @@ public class SpinCADFile {
 		return b;
 	}
 
-	public void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
-		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
-
-		writer.write("; " + p.cb.fileName);
-		writer.newLine();
-		writer.write("; " + p.cb.version);
-		writer.newLine();
-		writer.write("; " + p.cb.line[0]);
-		writer.newLine();
-		writer.write("; " + p.cb.line[1]);
-		writer.newLine();
-		writer.write("; " + p.cb.line[2]);
-		writer.newLine();
-		writer.write("; " + p.cb.line[3]);
-		writer.newLine();
-		writer.write("; " + p.cb.line[4]);
-		writer.newLine();
-		
-		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
-		String[] words = codeListing.split("\n");
-		for (String word: words) {
-			writer.write(word);
-			writer.newLine();
-		}
-		writer.close();
-	}
-
 	public void fileSavePatchAs(SpinCADPatch p) {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUPatchFolder", "");
@@ -355,6 +330,8 @@ public class SpinCADFile {
 		}
 	}
 
+	// File Save Asm =============================================
+	
 	public void fileSaveAsm(SpinCADPatch patch) {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUSpnFolder", "");
@@ -379,12 +356,8 @@ public class SpinCADFile {
 					JOptionPane.YES_NO_OPTION);
 		}
 		if (n == JOptionPane.YES_OPTION) {
-			String filePath;
-			try {
-				filePath = fileToBeSaved.getPath();
-				fileToBeSaved.delete();
-			} finally {
-			}
+			String filePath = fileToBeSaved.getPath();
+			fileToBeSaved.delete();
 
 			try {
 				fileSaveAsm(patch, filePath);
@@ -395,11 +368,39 @@ public class SpinCADFile {
 						JOptionPane.QUESTION_MESSAGE, null, null, null);
 				e.printStackTrace();
 			}
-
 			saveMRUSpnFolder(filePath);
 		}
 	}
 
+	public void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+
+		writer.write("; " + p.cb.fileName);
+		writer.newLine();
+		writer.write("; " + p.cb.version);
+		writer.newLine();
+		writer.write("; " + p.cb.line[0]);
+		writer.newLine();
+		writer.write("; " + p.cb.line[1]);
+		writer.newLine();
+		writer.write("; " + p.cb.line[2]);
+		writer.newLine();
+		writer.write("; " + p.cb.line[3]);
+		writer.newLine();
+		writer.write("; " + p.cb.line[4]);
+		writer.newLine();
+		
+		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
+		String[] words = codeListing.split("\n");
+		for (String word: words) {
+			writer.write(word);
+			writer.newLine();
+		}
+		writer.close();
+	}
+	
+	// File Save Hex =============================================
+	
 	public void fileSaveHex(SpinCADBank bank) {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUHexFolder", "");
@@ -446,21 +447,22 @@ public class SpinCADFile {
 		}
 	}
 
-	public void fileSavePrj(SpinCADBank bank) {
+	public void fileSaveSpj(SpinCADBank bank) {
 		// Create a file chooser
-		String savedPath = prefs.get("MRUPrjFolder", "");
-
+		String savedPath = prefs.get("MRUSpjFolder", "");
+		String[] spnFileNames = new String[8];
+		
 		final JFileChooser fc = new JFileChooser(savedPath);
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Spin Project Files", "prj");
+				"Spin Project Files", "spj");
 		fc.setFileFilter(filter);
 		// XXX debug
 		fc.showSaveDialog(new JFrame());
 		File fileToBeSaved = fc.getSelectedFile();
 
-		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".prj")) {
-			fileToBeSaved = new File(fc.getSelectedFile() + ".prj");
+		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spj")) {
+			fileToBeSaved = new File(fc.getSelectedFile() + ".spj");
 		}
 		int n = JOptionPane.YES_OPTION;
 		if (fileToBeSaved.exists()) {
@@ -470,15 +472,17 @@ public class SpinCADFile {
 					JOptionPane.YES_NO_OPTION);
 		}
 		if (n == JOptionPane.YES_OPTION) {
-			String filePath;
-			try {
-				filePath = fileToBeSaved.getPath();
-				fileToBeSaved.delete();
-			} finally {
-			}
+			// filePath points at the desired Spj file
+			String filePath = fileToBeSaved.getPath();
+			String folder = fileToBeSaved.getParent().toString();
+
+			// export the individual SPN files
 			for(int i = 0; i < 8; i++) {
 				try {
-					fileSaveHex(i, bank.patch[i].patchModel.getRenderBlock().generateHex(), filePath);
+					String asmFileNameRoot =  FilenameUtils.removeExtension(bank.patch[i].patchFileName);
+					String asmFileName = folder + "\\" +  asmFileNameRoot + ".spn";
+					fileSaveAsm(bank.patch[i], asmFileName);
+					spnFileNames[i] = asmFileName;
 				} catch (IOException e) {
 					JOptionPane.showOptionDialog(null,
 							"File save error!", "Error",
@@ -488,7 +492,53 @@ public class SpinCADFile {
 					e.printStackTrace();
 				}
 			}
-			saveMRUPrjFolder(filePath);
+			
+			// now create the Spin Project file
+			fileToBeSaved.delete();
+			BufferedWriter writer = null;
+			try {
+				writer = new BufferedWriter(new FileWriter(fileToBeSaved, true));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			try {
+				writer.write("NUMDOCS:8");
+				writer.newLine();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			for(int i = 0; i < 8; i++) {
+				try {
+					writer.write(spnFileNames[i] + ",1");
+					writer.newLine();				
+				} catch (IOException e) {
+					JOptionPane.showOptionDialog(null,
+							"File save error!\n" + filePath, "Error",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null, null, null);
+
+					e.printStackTrace();
+				}
+			}
+			// write the build flags
+			try {
+				writer.write(",1,1,1");
+				writer.newLine();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			saveMRUSpjFolder(filePath);
 		}
 	}
 
@@ -561,9 +611,9 @@ public class SpinCADFile {
 	}
 
 
-	private void saveMRUPrjFolder(String path) {
+	private void saveMRUSpjFolder(String path) {
 		Path pathE = Paths.get(path);
-		prefs.put("MRUPrjFolder", pathE.toString());
+		prefs.put("MRUSpjFolder", pathE.toString());
 	}
 	
 	//========================================================================	

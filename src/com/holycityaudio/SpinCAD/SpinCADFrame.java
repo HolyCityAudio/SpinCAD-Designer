@@ -321,7 +321,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSavePatchAs = new JMenuItem("Save Patch As");
 		mntmSavePatchAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				eeprom.patch[bankIndex].cb.setVersion("Patch saved from SpinCAD Designer version" + buildNum);
+				eeprom.patch[bankIndex].cb.setVersion("Patch saved from SpinCAD Designer version " + buildNum);
 				SpinCADFile f = new SpinCADFile();
 				f.fileSavePatchAs(eeprom.patch[bankIndex]);
 				eeprom.patch[bankIndex].setChanged(false);
@@ -424,7 +424,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveBankAs = new JMenuItem("Save Bank As");
 		mntmSaveBankAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				eeprom.cb.setVersion("Bank saved from SpinCAD Designer version" + buildNum);
+				eeprom.cb.setVersion("Bank saved from SpinCAD Designer version " + buildNum);
 				SpinCADFile f = new SpinCADFile();
 				f.fileSaveBankAs(eeprom);
 				eeprom.changed = false;
@@ -456,10 +456,10 @@ public class SpinCADFrame extends JFrame {
 		mnFileMenu.add(mntmSaveHex);
 
 		JMenuItem mntmSavePrj = new JMenuItem("Export Bank to Spin Project");
-		mntmSaveHex.addActionListener(new ActionListener() {
+		mntmSavePrj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADFile f = new SpinCADFile();
-				f.fileSavePrj(eeprom);
+				f.fileSaveSpj(eeprom);
 			}
 		});
 
