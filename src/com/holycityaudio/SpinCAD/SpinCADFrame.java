@@ -93,7 +93,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 967;
+	int buildNum = 968;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -261,8 +261,8 @@ public class SpinCADFrame extends JFrame {
 				}
 				eeprom.patch[bankIndex] = new SpinCADPatch();
 				//				bankPanel.setVisible(false);
-				updateFrameTitle();
-				repaint();
+				updateAll();
+				// repaint();
 			}
 		});
 		mnFileMenu.add(mntmNewPatch);
@@ -379,10 +379,9 @@ public class SpinCADFrame extends JFrame {
 				}
 				eeprom.bankFileName = "Untitled";
 				bankPanel.setVisible(true);
-				updateFrameTitle();
 				eeprom.patch[bankIndex].patchModel.newModel();
 				eeprom = new SpinCADBank();
-				repaint();
+				updateAll();
 			}
 		});
 
@@ -1044,10 +1043,7 @@ public class SpinCADFrame extends JFrame {
 
 	public void updateAll(boolean isChanged) {
 		eeprom.patch[bankIndex].setChanged(isChanged);
-		simX.updateSliders(eeprom.patch[bankIndex]);
-		pb.update(eeprom.patch[bankIndex].patchModel);
-		updateFrameTitle();
-		contentPane.repaint();	
+		updateAll();
 	}
 
 	// ===================================================
