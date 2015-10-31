@@ -86,6 +86,8 @@ public class SpinCADPanel extends JPanel {
 	private Line2D dragLine = null;
 	private Rectangle2D dragRect = null;
 	private static String keys = null;
+	
+	private SpinCADModel pasteBuffer = new SpinCADModel();
 
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
@@ -618,17 +620,27 @@ public class SpinCADPanel extends JPanel {
 	}
 
 	// popup menu handling
-	class PopUpDemo extends JPopupMenu {
+	class PopUpMenu extends JPopupMenu {
 		JMenuItem cPanel;
 		JMenuItem mov;
 		JMenuItem del;
+		JMenuItem cpy;
+		JMenuItem pst;
 
-		public PopUpDemo(SpinCADBlock b){
+		public PopUpMenu(SpinCADBlock b){
 			if(b.hasControlPanel()) {
 				cPanel = new JMenuItem("Control Panel");
 				add(cPanel);
 				cPanel.addActionListener(new MenuActionListener(b));				
 			}
+			cpy = new JMenuItem("Copy");
+			add(cpy);
+			cpy.addActionListener(new MenuActionListener(b));
+
+			pst = new JMenuItem("Paste");
+			add(pst);
+			pst.addActionListener(new MenuActionListener(b));
+
 			mov = new JMenuItem("Move");
 			add(mov);
 			mov.addActionListener(new MenuActionListener(b));
@@ -640,14 +652,15 @@ public class SpinCADPanel extends JPanel {
 	}
 
 	private void doPop(MouseEvent e, SpinCADBlock b){
-		PopUpDemo menu = new PopUpDemo(b);
+		PopUpMenu menu = new PopUpMenu(b);
 		menu.show(e.getComponent(), e.getX(), e.getY());
 	}
 
 	class MenuActionListener implements ActionListener {
 		SpinCADBlock spcb = null;
 		JFrame frame = null;
-
+		Iterator<SpinCADBlock> itr;
+		
 		public MenuActionListener(SpinCADBlock b) {
 			spcb = b;
 		}
@@ -667,7 +680,7 @@ public class SpinCADPanel extends JPanel {
 				f.savePatch();
 				SpinCADBlock block;
 
-				Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
+				itr = f.getPatch().patchModel.blockList.iterator();
 				while(itr.hasNext()) {
 					block = itr.next();
 					if(block.selected == true) {
@@ -678,10 +691,36 @@ public class SpinCADPanel extends JPanel {
 					}
 				}
 
-				f.getPatch().setChanged(true);
-				f.updateAll();
+			case "Copy":
+
+				itr = f.getPatch().patchModel.blockList.iterator();
+				while(itr.hasNext()) {
+					block = itr.next();
+					if(block.selected == true) {
+						// TODO need to think of a way to delete an open control panel
+						//						if(block.editBlock != null)
+						pasteBuffer.addBlock(block);
+					}
+				}
 				repaint();
 				break;
+
+			case "Paste":
+				// do a model save just before Paste
+				f.savePatch();
+
+				itr = pasteBuffer.blockList.iterator();
+// need to find a way to make COPIES of the old blocks 
+// rather than literal references
+				while(itr.hasNext()) {
+					block = itr.next();
+					SpinCADBlock newBlock = new SpinCADBlock(0,0);
+					newBlock = block;
+					f.getPatch().patchModel.addBlock(newBlock);
+				}
+				repaint();
+				break;
+
 			default: 
 				break;
 			}
