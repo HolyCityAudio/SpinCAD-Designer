@@ -331,7 +331,7 @@ public class SpinCADFile {
 	}
 
 	// File Save Asm =============================================
-	
+
 	public void fileSaveAsm(SpinCADPatch patch) {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUSpnFolder", "");
@@ -373,6 +373,14 @@ public class SpinCADFile {
 	}
 
 	public void fileSaveAsm(SpinCADPatch p, String fileName) throws IOException {
+
+		// automatically overwrite existing ASM files
+		File fileToBeSaved = new File(fileName);
+
+		if (fileToBeSaved.exists()) {
+			fileToBeSaved.delete();
+		}
+
 		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
 
 		writer.write("; " + p.cb.fileName);
@@ -389,7 +397,7 @@ public class SpinCADFile {
 		writer.newLine();
 		writer.write("; " + p.cb.line[4]);
 		writer.newLine();
-		
+
 		String codeListing = p.patchModel.getRenderBlock().getProgramListing(1);
 		String[] words = codeListing.split("\n");
 		for (String word: words) {
@@ -398,9 +406,9 @@ public class SpinCADFile {
 		}
 		writer.close();
 	}
-	
+
 	// File Save Hex =============================================
-	
+
 	public void fileSaveHex(SpinCADBank bank) {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUHexFolder", "");
@@ -433,7 +441,7 @@ public class SpinCADFile {
 			}
 			for(int i = 0; i < 8; i++) {
 				try {
-					fileSaveHex(i, bank.patch[i].patchModel.getRenderBlock().generateHex(), filePath);
+					fileSaveHex(i, bank.patch[i].patchModel.getRenderBlock().generateHex(), filePath);					
 				} catch (IOException e) {
 					JOptionPane.showOptionDialog(null,
 							"File save error!", "Error",
@@ -451,7 +459,7 @@ public class SpinCADFile {
 		// Create a file chooser
 		String savedPath = prefs.get("MRUSpjFolder", "");
 		String[] spnFileNames = new String[8];
-		
+
 		final JFileChooser fc = new JFileChooser(savedPath);
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -481,8 +489,10 @@ public class SpinCADFile {
 				try {
 					String asmFileNameRoot =  FilenameUtils.removeExtension(bank.patch[i].patchFileName);
 					String asmFileName = folder + "\\" +  asmFileNameRoot + ".spn";
-					fileSaveAsm(bank.patch[i], asmFileName);
-					spnFileNames[i] = asmFileName;
+					if(bank.patch[i].patchFileName != "Untitled") {
+						fileSaveAsm(bank.patch[i], asmFileName);
+						spnFileNames[i] = asmFileName;				
+					}
 				} catch (IOException e) {
 					JOptionPane.showOptionDialog(null,
 							"File save error!", "Error",
@@ -490,9 +500,10 @@ public class SpinCADFile {
 							JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 					e.printStackTrace();
+				} finally {
 				}
 			}
-			
+
 			// now create the Spin Project file
 			fileToBeSaved.delete();
 			BufferedWriter writer = null;
@@ -513,7 +524,12 @@ public class SpinCADFile {
 
 			for(int i = 0; i < 8; i++) {
 				try {
-					writer.write(spnFileNames[i] + ",1");
+					if(bank.patch[i].patchFileName != "Untitled") {
+						writer.write(spnFileNames[i] + ",1");
+					}
+					else {
+						writer.write(",0");						
+					}
 					writer.newLine();				
 				} catch (IOException e) {
 					JOptionPane.showOptionDialog(null,
@@ -615,7 +631,7 @@ public class SpinCADFile {
 		Path pathE = Paths.get(path);
 		prefs.put("MRUSpjFolder", pathE.toString());
 	}
-	
+
 	//========================================================================	
 	// recent file lists
 
