@@ -93,7 +93,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 966;
+	int buildNum = 967;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
