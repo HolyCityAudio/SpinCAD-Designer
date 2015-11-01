@@ -36,7 +36,6 @@ public class SpinCADModel implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -8461943977905967897L;
-	String name = "SpinCADModel";
 	ArrayList<SpinCADBlock> blockList = null;
 	private SpinCADBlock currentBlock = null;
 	

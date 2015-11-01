@@ -40,26 +40,12 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JSlider;
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import org.andrewkilpatrick.elmGen.Debug;
-import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
-
-import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
-
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.Iterator;
 
 // =======================================================================================================
@@ -483,27 +469,6 @@ public class SpinCADPanel extends JPanel {
 		return null; 
 	}
 
-	public void deleteBlockConnection(SpinCADBlock b) {
-		SpinCADBlock block;
-		Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
-		// b is the block to delete
-		// iterate through each block in the model
-		while(itr.hasNext()) {
-			block = itr.next();
-			Iterator<SpinCADPin> itrPin = block.pinList.iterator();
-			SpinCADPin currentPin;
-			// iterate through each pin in each block
-			while(itrPin.hasNext()) {
-				currentPin = itrPin.next();
-				// if the current pin's block connection is this block
-				// then we should delete it
-				if(currentPin.getBlockConnection() == b) {
-					currentPin.deletePinConnection();
-				}
-			}
-		}
-	}
-
 	public void moveBlock(SpinCADBlock block, int x, int y) {
 		int OFFSET = 1;
 		if ((block.x_pos !=x) || (block.y_pos !=y)) {
@@ -686,38 +651,20 @@ public class SpinCADPanel extends JPanel {
 					if(block.selected == true) {
 						// TODO need to think of a way to delete an open control panel
 						//						if(block.editBlock != null)
-						deleteBlockConnection(block);
+						f.deleteBlockConnection(block);
 						itr.remove();
 					}
 				}
 
 			case "Copy":
-
-				itr = f.getPatch().patchModel.blockList.iterator();
-				while(itr.hasNext()) {
-					block = itr.next();
-					if(block.selected == true) {
-						// TODO need to think of a way to delete an open control panel
-						//						if(block.editBlock != null)
-						pasteBuffer.addBlock(block);
-					}
-				}
-				repaint();
+				// save entire blockList
+				f.savePatch();
 				break;
 
 			case "Paste":
 				// do a model save just before Paste
-				f.savePatch();
-
-				itr = pasteBuffer.blockList.iterator();
-// need to find a way to make COPIES of the old blocks 
-// rather than literal references
-				while(itr.hasNext()) {
-					block = itr.next();
-					SpinCADBlock newBlock = new SpinCADBlock(0,0);
-					newBlock = block;
-					f.getPatch().patchModel.addBlock(newBlock);
-				}
+//				f.savePatch();
+				f.undo2();
 				repaint();
 				break;
 

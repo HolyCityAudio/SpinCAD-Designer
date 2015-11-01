@@ -16,9 +16,9 @@ public class SpinCADPatch implements Serializable {
 		cb.line[0] = "Pot 0: ";
 		cb.line[1] = "Pot 1: ";
 		cb.line[2] = "Pot 2: ";
-		potVal[0] = 0;
-		potVal[1] = 0;
-		potVal[2] = 0;
+		potVal[0] = 0.0;
+		potVal[1] = 0.0;
+		potVal[2] = 0.0;
 	}
 
 	void updateFileName(String n) {

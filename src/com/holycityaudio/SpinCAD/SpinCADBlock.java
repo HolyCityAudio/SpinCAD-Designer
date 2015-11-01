@@ -86,6 +86,33 @@ public class SpinCADBlock extends SpinFXBlock {
 		CADBlockInit(x, y);
 	}
 
+// clone constructor, for making copies
+	public SpinCADBlock(SpinCADBlock b) {
+		// used to sort the blocks, assigned during addBlock
+		super("SpinCADBlock");
+		this.blockNum = b.blockNum;
+
+		this.nInputs = b.nInputs;
+		this.nOutputs = b.nOutputs;
+		this.nControlInputs = b.nControlInputs;
+		this.nControlOutputs = b.nControlOutputs;
+		
+		this.pinList = b.pinList;
+		this.x_pos = b.x_pos;
+		this.width = b.width;
+		this.height = b.height;
+
+		this.pinList = b.pinList;
+		this.x_pos = b.x_pos;
+		this.width = b.width;
+		this.height = b.height;
+
+		this.index = b.index;
+		this.selected = b.selected;
+		this.name = b.name;
+		this.height = b.height;
+	}
+
 	/**
 	 * SpinCADBlock constructor
 	 * 

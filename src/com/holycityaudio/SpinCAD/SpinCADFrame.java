@@ -29,6 +29,9 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+
+import java.util.Iterator;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -65,7 +68,6 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -125,6 +127,10 @@ public class SpinCADFrame extends JFrame {
 
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
+	
+	// modelSave is used to undo deletes
+	ByteArrayOutputStream pasteBuffer;
+	
 	private int canUndo = 0;
 
 	// ------------------------------------------------------------
@@ -500,6 +506,14 @@ public class SpinCADFrame extends JFrame {
 		});
 		mn_edit.add(mntm_Undo);
 
+		final JMenuItem mntm_Undo2 = new JMenuItem("Undo 2");
+		mntm_Undo2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				undo2();
+			}
+		});
+		mn_edit.add(mntm_Undo2);
+		
 		JMenu mn_io_mix = new JMenu("Loop");
 		menuBar.add(mn_io_mix);
 
@@ -764,6 +778,10 @@ public class SpinCADFrame extends JFrame {
 		return eeprom.patch[bankIndex];
 	}
 
+	public void setPatch(SpinCADPatch p) {
+		eeprom.patch[bankIndex] = p;
+	}
+
 	private void setModel(SpinCADModel m) {
 		eeprom.patch[bankIndex].patchModel = m;
 	}
@@ -801,6 +819,59 @@ public class SpinCADFrame extends JFrame {
 		}
 	}
 
+	public void undo2() {
+		SpinCADPatch copyBuffer = new SpinCADPatch();
+		if(canUndo == 1) {
+			try { 
+				ByteArrayInputStream bais = new ByteArrayInputStream(modelSave.toByteArray());
+				ObjectInputStream is = new ObjectInputStream(bais);
+				copyBuffer = ((SpinCADPatch) is.readObject());
+				is.close(); 
+				// System.out.println("m: " + m); 
+			} 
+			catch(Exception e) { 
+				System.out.println("Exception during deserialization: " + 
+						e); 
+				System.exit(0); 
+			} 
+			canUndo = 0;		
+		}
+		Iterator<SpinCADBlock> itr = copyBuffer.patchModel.blockList.iterator();
+		SpinCADBlock b = new SpinCADBlock(0,0);
+		while(itr.hasNext()) {
+			b = itr.next();
+			if(b.selected == false) {
+				deleteBlockConnection(b);
+				itr.remove();
+			}
+			else {
+				eeprom.patch[bankIndex].patchModel.blockList.add(b);			
+			}
+		}
+		repaint();
+	}
+	
+	public void deleteBlockConnection(SpinCADBlock b) {
+		SpinCADBlock block;
+		Iterator<SpinCADBlock> itr = getPatch().patchModel.blockList.iterator();
+		// b is the block to delete
+		// iterate through each block in the model
+		while(itr.hasNext()) {
+			block = itr.next();
+			Iterator<SpinCADPin> itrPin = block.pinList.iterator();
+			SpinCADPin currentPin;
+			// iterate through each pin in each block
+			while(itrPin.hasNext()) {
+				currentPin = itrPin.next();
+				// if the current pin's block connection is this block
+				// then we should delete it
+				if(currentPin.getBlockConnection() == b) {
+					currentPin.deletePinConnection();
+				}
+			}
+		}
+	}
+	
 	// ====== COMMENT BLOCK PATCH ==================================================
 	class commentBlockPatch {
 		commentBlockPanel cbPnl;
