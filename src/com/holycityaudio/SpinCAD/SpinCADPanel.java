@@ -354,7 +354,7 @@ public class SpinCADPanel extends JPanel {
 		return (int) mouseAt.getY();
 	}
 
-	private void putMouseOnBlock(SpinCADBlock b) {
+	void putMouseOnBlock(SpinCADBlock b) {
 		Point p = new Point();
 		p.setLocation(b.getX() + b.width/2, b.getY() + b.height/2);
 		SwingUtilities.convertPointToScreen(p, this);

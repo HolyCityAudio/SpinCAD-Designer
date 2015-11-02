@@ -772,7 +772,10 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].patchModel.blockList.add(b);			
 			}
 		}
+		itr = copyBuffer.blockList.iterator();
+		b = itr.next();
 		canUndo = 1;
+		panel.putMouseOnBlock(b);
 		panel.setDragModeDragMove();
 		repaint();
 	}
