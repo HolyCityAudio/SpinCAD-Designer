@@ -640,9 +640,10 @@ public class SpinCADPanel extends JPanel {
 				syncMouse();
 				setDragMode(dragModes.DRAGMOVE);
 				break;
+				
 			case "Delete":
 				// do a model save just before delete
-				f.savePatch();
+				f.saveModel();
 				SpinCADBlock block;
 
 				itr = f.getPatch().patchModel.blockList.iterator();
@@ -655,16 +656,17 @@ public class SpinCADPanel extends JPanel {
 						itr.remove();
 					}
 				}
+				repaint();
+				break;
 
 			case "Copy":
 				// save entire blockList
-				f.savePatch();
+				f.saveModel();
 				break;
 
 			case "Paste":
 				// do a model save just before Paste
-//				f.savePatch();
-				f.undo2();
+				f.paste();
 				repaint();
 				break;
 

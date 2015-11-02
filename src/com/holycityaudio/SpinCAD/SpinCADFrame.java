@@ -128,7 +128,7 @@ public class SpinCADFrame extends JFrame {
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
 	
-	// modelSave is used to undo deletes
+	// pasteBuffer is used to paste after copying
 	ByteArrayOutputStream pasteBuffer;
 	
 	private int canUndo = 0;
@@ -506,13 +506,13 @@ public class SpinCADFrame extends JFrame {
 		});
 		mn_edit.add(mntm_Undo);
 
-		final JMenuItem mntm_Undo2 = new JMenuItem("Undo 2");
-		mntm_Undo2.addActionListener(new ActionListener() {
+		final JMenuItem mntm_Paste = new JMenuItem("Paste");
+		mntm_Paste.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				undo2();
+				paste();
 			}
 		});
-		mn_edit.add(mntm_Undo2);
+		mn_edit.add(mntm_Paste);
 		
 		JMenu mn_io_mix = new JMenu("Loop");
 		menuBar.add(mn_io_mix);
@@ -669,88 +669,6 @@ public class SpinCADFrame extends JFrame {
 		});
 	}
 
-	void fileBatch(final SpinCADPanel panel, JMenuItem mntmFile) {
-		mntmFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				// Create a file chooser
-				/*				String savedPath = prefs.get("MRUFolder", "");
-
-				final JFileChooser fc = new JFileChooser(savedPath);
-				fc.setDialogTitle("Choose files to convert...");
-				fc.setMultiSelectionEnabled(true);
-
-				final String newline = "\n";
-				// In response to a button click:
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						"SpinCAD Patch Files", "spcd");
-				fc.setFileFilter(filter);
-
-				int returnVal = fc.showOpenDialog(SpinCADFrame.this);
-
-				// returnVal is from the first file open dialog
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					// now ask user to enter converted file destination
-					/* XXX debug
-					savedPath = prefs.get("MRUSpnFolder", "");
-
-					final JFileChooser fc2 = new JFileChooser(savedPath); 
-					fc2.setDialogTitle("Choose destination...");
-					fc2.setMultiSelectionEnabled(false);
-					fc2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-					fc2.setAcceptAllFileFilterUsed(false);
-					// In response to a button click:
-					filter = new FileNameExtensionFilter("Spin ASM Files", "spn");
-					fc2.setFileFilter(filter);
-
-					int retVal2 = fc2.showSaveDialog(SpinCADFrame.this);
-
-					if(retVal2 == JFileChooser.APPROVE_OPTION) {
-						File myFile = fc2.getSelectedFile();
-						if(myFile.isDirectory() == true) {
-							saveMRUSpnFolder(myFile.getAbsolutePath());
-						}
-
-						int index = 0;
-						int failed = 0;
-
-						File files[] = fc.getSelectedFiles();
-						// This is where a real application would open the file.
-						saveMRUPatchFolder(files[0].getPath());
-						while(index < files.length) {
-							System.out.println("Opening: " + files[index].getName() + "."
-									+ newline);
-							try {
-								String filePath = files[index].getPath();
-								eeprom.bank[bankIndex] = SpinCADFile.fileReadPatch(filePath );
-								//cb.line2text.setText()
-								eeprom.patch[bankIndex].patchModel.getIndexFB();
-								eeprom.patch[bankIndex].patchModel.setChanged(false);						
-								eeprom.patch[bankIndex].patchModel.sortAlignGen();
-
-								spcFileName = files[index].getName();
-								String spnPath  = prefs.get("MRUSpnFolder", "") + "/" + spcFileName + ".spn";
-								// XXX debug
-								//								SpinCADFile.fileSaveAsm(cb, SpinCADModel.getRenderBlock().getProgramListing(1), spnPath.replace(".spcd.spn",  ".spn"));
-								updateFrameTitle();
-							} catch (Exception e) {	// thrown over in SpinCADFile.java
-								spcFileName = "Untitled";
-								//						e.printStackTrace();
-								failed++;
-								MessageBox("File convert failed! " + spcFileName, spcFileName + " may be from\nan incompatible version of \nSpinCAD Designer.");
-							}
-							index++;
-						}
-						MessageBox("Conversion completed", (index - failed) + " files were converted.\n" + failed + " files failed.");
-					} else {
-						System.out.println("Open command cancelled by user."
-								+ newline);
-					}
-				}
-				 */
-			}
-		});
-	}
-
 	private WindowListener window() {
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
@@ -786,16 +704,16 @@ public class SpinCADFrame extends JFrame {
 		eeprom.patch[bankIndex].patchModel = m;
 	}
 
-	public void savePatch() {
+	public void saveModel() {
 		try { 
 			modelSave = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(modelSave); 
-			oos.writeObject(getPatch()); 
+			oos.writeObject(getPatch().patchModel); 
 			oos.flush(); 
 			oos.close(); 
 		} 
 		catch(Exception e) { 
-			System.out.println("Exception during serialization: " + e); 
+			System.out.println("saveModel: Exception during serialization: " + e); 
 		} 
 		canUndo = 1;
 	}
@@ -807,36 +725,36 @@ public class SpinCADFrame extends JFrame {
 				ObjectInputStream is = new ObjectInputStream(bais);
 				setModel((SpinCADModel) is.readObject());
 				is.close(); 
-				contentPane.repaint();
 				// System.out.println("m: " + m); 
 			} 
 			catch(Exception e) { 
-				System.out.println("Exception during deserialization: " + 
+				System.out.println("Undo: Exception during deserialization: " + 
 						e); 
 				System.exit(0); 
 			} 
 			canUndo = 0;		
 		}
+		contentPane.repaint();
 	}
 
-	public void undo2() {
-		SpinCADPatch copyBuffer = new SpinCADPatch();
+	public void paste() {
+		SpinCADModel copyBuffer = new SpinCADModel();
 		if(canUndo == 1) {
 			try { 
 				ByteArrayInputStream bais = new ByteArrayInputStream(modelSave.toByteArray());
 				ObjectInputStream is = new ObjectInputStream(bais);
-				copyBuffer = ((SpinCADPatch) is.readObject());
+				copyBuffer = ((SpinCADModel) is.readObject());
 				is.close(); 
 				// System.out.println("m: " + m); 
 			} 
 			catch(Exception e) { 
-				System.out.println("Exception during deserialization: " + 
+				System.out.println("paste: Exception during deserialization: " + 
 						e); 
 				System.exit(0); 
 			} 
 			canUndo = 0;		
 		}
-		Iterator<SpinCADBlock> itr = copyBuffer.patchModel.blockList.iterator();
+		Iterator<SpinCADBlock> itr = copyBuffer.blockList.iterator();
 		SpinCADBlock b = new SpinCADBlock(0,0);
 		while(itr.hasNext()) {
 			b = itr.next();
