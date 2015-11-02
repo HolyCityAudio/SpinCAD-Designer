@@ -661,7 +661,7 @@ public class SpinCADPanel extends JPanel {
 
 			case "Copy":
 				// save entire blockList
-				f.saveModel();
+				f.saveModelToPasteBuffer();
 				break;
 
 			case "Paste":

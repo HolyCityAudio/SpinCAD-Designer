@@ -718,6 +718,20 @@ public class SpinCADFrame extends JFrame {
 		canUndo = 1;
 	}
 
+	public void saveModelToPasteBuffer() {
+		try { 
+			pasteBuffer = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(pasteBuffer); 
+			oos.writeObject(getPatch().patchModel); 
+			oos.flush(); 
+			oos.close(); 
+		} 
+		catch(Exception e) { 
+			System.out.println("saveModelToPasteBuffer: Exception during serialization: " + e); 
+		} 
+		canUndo = 1;
+	}
+	
 	public void undo() {
 		if(canUndo == 1) {
 			try { 
@@ -738,12 +752,13 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	public void paste() {
+		// save the previous state of this patch so you can undo it if desired
 		saveModel();
 		panel.unselectAll(this);
 		SpinCADModel copyBuffer = new SpinCADModel();
 
 		try { 
-			ByteArrayInputStream bais = new ByteArrayInputStream(modelSave.toByteArray());
+			ByteArrayInputStream bais = new ByteArrayInputStream(pasteBuffer.toByteArray());
 			ObjectInputStream is = new ObjectInputStream(bais);
 			copyBuffer = ((SpinCADModel) is.readObject());
 			is.close(); 
@@ -772,10 +787,17 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].patchModel.blockList.add(b);			
 			}
 		}
-		itr = copyBuffer.blockList.iterator();
-		b = itr.next();
+		// now just look for a selected block and put the mouse on it
+		itr = eeprom.patch[bankIndex].patchModel.blockList.iterator();
+		while(itr.hasNext()) {
+			b = itr.next();
+			if(b.selected == true) {
+				panel.putMouseOnBlock(b);
+				break;
+			}
+		}
+
 		canUndo = 1;
-		panel.putMouseOnBlock(b);
 		panel.setDragModeDragMove();
 		repaint();
 	}
