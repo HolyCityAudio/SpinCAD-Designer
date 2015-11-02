@@ -110,7 +110,7 @@ public class SpinCADFrame extends JFrame {
 	private final JPanel topPanel = new JPanel();
 	private final JPanel bankPanel = new bankPanel();
 	private final SpinCADPanel panel = new SpinCADPanel(this);
-	
+
 	//=============================================================
 	// Simulator display and control items
 	SpinCADSimulator simX = new SpinCADSimulator(this, new SpinCADPatch());
@@ -128,10 +128,10 @@ public class SpinCADFrame extends JFrame {
 
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
-	
+
 	// pasteBuffer is used to paste after copying
 	ByteArrayOutputStream pasteBuffer;
-	
+
 	private int canUndo = 0;
 
 	// ------------------------------------------------------------
@@ -513,7 +513,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mn_edit.add(mntm_Paste);
-		
+
 		JMenu mn_io_mix = new JMenu("Loop");
 		menuBar.add(mn_io_mix);
 
@@ -738,23 +738,22 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	public void paste() {
+		saveModel();
 		panel.unselectAll(this);
 		SpinCADModel copyBuffer = new SpinCADModel();
-		if(canUndo == 1) {
-			try { 
-				ByteArrayInputStream bais = new ByteArrayInputStream(modelSave.toByteArray());
-				ObjectInputStream is = new ObjectInputStream(bais);
-				copyBuffer = ((SpinCADModel) is.readObject());
-				is.close(); 
-				// System.out.println("m: " + m); 
-			} 
-			catch(Exception e) { 
-				System.out.println("paste: Exception during deserialization: " + 
-						e); 
-				System.exit(0); 
-			} 
-			canUndo = 0;		
-		}
+
+		try { 
+			ByteArrayInputStream bais = new ByteArrayInputStream(modelSave.toByteArray());
+			ObjectInputStream is = new ObjectInputStream(bais);
+			copyBuffer = ((SpinCADModel) is.readObject());
+			is.close(); 
+			// System.out.println("m: " + m); 
+		} 
+		catch(Exception e) { 
+			System.out.println("paste: Exception during deserialization: " + 
+					e); 
+			System.exit(0); 
+		} 
 		Iterator<SpinCADBlock> itr = copyBuffer.blockList.iterator();
 		SpinCADBlock b = new SpinCADBlock(0,0);
 		while(itr.hasNext()) {
@@ -773,13 +772,14 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].patchModel.blockList.add(b);			
 			}
 		}
+		canUndo = 1;
 		panel.setDragModeDragMove();
 		repaint();
 	}
-	
+
 	// deleteBlockConnection will delete all connections to a block as  
 	// part of removing it from the model
-	
+
 	public void deleteBlockConnection(SpinCADModel m, SpinCADBlock b) {
 		SpinCADBlock block;
 		Iterator<SpinCADBlock> itr = m.blockList.iterator();
@@ -800,7 +800,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		}
 	}
-	
+
 	// ====== COMMENT BLOCK PATCH ==================================================
 	class commentBlockPatch {
 		commentBlockPanel cbPnl;
@@ -930,14 +930,14 @@ public class SpinCADFrame extends JFrame {
 		/**
 		 * 
 		 */
-		
+
 		final JButton[] btnPatch = new JButton[8];
 
 		public bankPanel() {
 			super();
 			Dimension minButtonSize = new Dimension(100, 20);
 			Dimension buttonSize = new Dimension(180, 20);
-			
+
 			for(int i = 0; i < 8; i++) {
 				btnPatch[i] = new JButton("Patch " + i);
 				btnPatch[i].setPreferredSize(buttonSize);
@@ -949,9 +949,9 @@ public class SpinCADFrame extends JFrame {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-			
+
 			Object source = arg0.getSource(); 
-			
+
 			for(int i = 0; i < 8; i++) {
 				if (source == btnPatch[i]) {
 					bankIndex = i;
