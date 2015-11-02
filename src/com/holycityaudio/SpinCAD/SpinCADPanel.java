@@ -652,7 +652,7 @@ public class SpinCADPanel extends JPanel {
 					if(block.selected == true) {
 						// TODO need to think of a way to delete an open control panel
 						//						if(block.editBlock != null)
-						f.deleteBlockConnection(block);
+						f.deleteBlockConnection(f.getPatch().patchModel, block);
 						itr.remove();
 					}
 				}

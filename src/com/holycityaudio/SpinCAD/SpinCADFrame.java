@@ -759,7 +759,13 @@ public class SpinCADFrame extends JFrame {
 		while(itr.hasNext()) {
 			b = itr.next();
 			if(b.selected == false) {
-				deleteBlockConnection(b);
+				deleteBlockConnection(copyBuffer, b);
+			}
+		}
+		itr = copyBuffer.blockList.iterator();
+		while(itr.hasNext()) {
+			b = itr.next();
+			if(b.selected == false) {
 				itr.remove();
 			}
 			else {
@@ -769,9 +775,12 @@ public class SpinCADFrame extends JFrame {
 		repaint();
 	}
 	
-	public void deleteBlockConnection(SpinCADBlock b) {
+	// deleteBlockConnection will delete all connections to a block as  
+	// part of removing it from the model
+	
+	public void deleteBlockConnection(SpinCADModel m, SpinCADBlock b) {
 		SpinCADBlock block;
-		Iterator<SpinCADBlock> itr = getPatch().patchModel.blockList.iterator();
+		Iterator<SpinCADBlock> itr = m.blockList.iterator();
 		// b is the block to delete
 		// iterate through each block in the model
 		while(itr.hasNext()) {
