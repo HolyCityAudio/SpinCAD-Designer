@@ -109,7 +109,8 @@ public class SpinCADFrame extends JFrame {
 	// topPanel holds bankPanel and simPanel
 	private final JPanel topPanel = new JPanel();
 	private final JPanel bankPanel = new bankPanel();
-
+	private final SpinCADPanel panel = new SpinCADPanel(this);
+	
 	//=============================================================
 	// Simulator display and control items
 	SpinCADSimulator simX = new SpinCADSimulator(this, new SpinCADPatch());
@@ -163,7 +164,6 @@ public class SpinCADFrame extends JFrame {
 		setBounds(100, 100, 800, 600);
 		simX.updateSliders(eeprom.patch[0]);
 
-		final SpinCADPanel panel = new SpinCADPanel(this);
 		panel.setBackground(SystemColor.inactiveCaption);
 
 		EventQueue.invokeLater(new Runnable() {
@@ -738,6 +738,7 @@ public class SpinCADFrame extends JFrame {
 	}
 
 	public void paste() {
+		panel.unselectAll(this);
 		SpinCADModel copyBuffer = new SpinCADModel();
 		if(canUndo == 1) {
 			try { 
@@ -772,6 +773,7 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].patchModel.blockList.add(b);			
 			}
 		}
+		panel.setDragModeDragMove();
 		repaint();
 	}
 	
