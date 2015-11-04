@@ -57,6 +57,7 @@ import javax.swing.WindowConstants;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -95,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 969;
+	int buildNum = 970;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -500,13 +501,14 @@ public class SpinCADFrame extends JFrame {
 		JMenu mn_edit = new JMenu("Edit");
 		menuBar.add(mn_edit);
 
-		final JMenuItem mntm_Undo = new JMenuItem("Undo");
-		mntm_Undo.addActionListener(new ActionListener() {
+		final JMenuItem mntm_Copy = new JMenuItem("Copy");
+		mntm_Copy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				undo();
+				saveModelToPasteBuffer();
 			}
 		});
-		mn_edit.add(mntm_Undo);
+		mntm_Copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+		mn_edit.add(mntm_Copy);
 
 		final JMenuItem mntm_Paste = new JMenuItem("Paste");
 		mntm_Paste.addActionListener(new ActionListener() {
@@ -514,7 +516,28 @@ public class SpinCADFrame extends JFrame {
 				paste();
 			}
 		});
+		mntm_Paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
 		mn_edit.add(mntm_Paste);
+
+		final JMenuItem mntm_Cut = new JMenuItem("Cut");
+		mntm_Cut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				delete();
+				updateAll();
+			}
+		});
+		mntm_Cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+		mn_edit.add(mntm_Cut);
+
+		final JMenuItem mntm_Undo = new JMenuItem("Undo");
+		mntm_Undo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				undo();
+				updateAll();
+			}
+		});
+		mntm_Undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+		mn_edit.add(mntm_Undo);
 
 		JMenu mn_io_mix = new JMenu("Loop");
 		menuBar.add(mn_io_mix);
@@ -706,6 +729,8 @@ public class SpinCADFrame extends JFrame {
 		eeprom.patch[bankIndex].patchModel = m;
 	}
 
+	// edit functions cut/copy/paste/undo
+
 	public void saveModel() {
 		try { 
 			modelSave = new ByteArrayOutputStream();
@@ -732,6 +757,22 @@ public class SpinCADFrame extends JFrame {
 			System.out.println("saveModelToPasteBuffer: Exception during serialization: " + e); 
 		} 
 		canUndo = 1;
+	}
+
+	public void delete() {
+		saveModel();
+		SpinCADBlock block;
+
+		Iterator<SpinCADBlock> itr = getPatch().patchModel.blockList.iterator();
+		while(itr.hasNext()) {
+			block = itr.next();
+			if(block.selected == true) {
+				// TODO need to think of a way to delete an open control panel
+				//						if(block.editBlock != null)
+				deleteBlockConnection(getPatch().patchModel, block);
+				itr.remove();
+			}
+		}
 	}
 	
 	public void undo() {
@@ -780,7 +821,7 @@ public class SpinCADFrame extends JFrame {
 				deleteBlockConnection(copyBuffer, b);
 			}
 		}
-		
+
 		// now delete the unselected blocks themselves
 		// or if they are selected, add them to the current patch's
 		// block list
@@ -794,7 +835,7 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].patchModel.addBlock(b);	
 			}
 		}
-		
+
 		// to make sure that the mouse is on one of the new blocks
 		// just pick the first one it finds that is selected
 		itr = eeprom.patch[bankIndex].patchModel.blockList.iterator();
@@ -805,7 +846,7 @@ public class SpinCADFrame extends JFrame {
 				break;
 			}
 		}
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 	
 				// this gets the mouse sitting on the block!

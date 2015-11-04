@@ -651,19 +651,7 @@ public class SpinCADPanel extends JPanel {
 				
 			case "Delete":
 				// do a model save just before delete
-				f.saveModel();
-				SpinCADBlock block;
-
-				itr = f.getPatch().patchModel.blockList.iterator();
-				while(itr.hasNext()) {
-					block = itr.next();
-					if(block.selected == true) {
-						// TODO need to think of a way to delete an open control panel
-						//						if(block.editBlock != null)
-						f.deleteBlockConnection(f.getPatch().patchModel, block);
-						itr.remove();
-					}
-				}
+				f.delete();
 				repaint();
 				break;
 
