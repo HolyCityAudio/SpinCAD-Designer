@@ -95,7 +95,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 968;
+	int buildNum = 969;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -131,6 +131,8 @@ public class SpinCADFrame extends JFrame {
 
 	// pasteBuffer is used to paste after copying
 	ByteArrayOutputStream pasteBuffer;
+	// used in copy/paste
+	SpinCADBlock blk = new SpinCADBlock(0,0);
 
 	private int canUndo = 0;
 
@@ -771,12 +773,17 @@ public class SpinCADFrame extends JFrame {
 		} 
 		Iterator<SpinCADBlock> itr = copyBuffer.blockList.iterator();
 		SpinCADBlock b = new SpinCADBlock(0,0);
+		// delete all pin connections from unselected blocks
 		while(itr.hasNext()) {
 			b = itr.next();
 			if(b.selected == false) {
 				deleteBlockConnection(copyBuffer, b);
 			}
 		}
+		
+		// now delete the unselected blocks themselves
+		// or if they are selected, add them to the current patch's
+		// block list
 		itr = copyBuffer.blockList.iterator();
 		while(itr.hasNext()) {
 			b = itr.next();
@@ -784,22 +791,33 @@ public class SpinCADFrame extends JFrame {
 				itr.remove();
 			}
 			else {
-				eeprom.patch[bankIndex].patchModel.blockList.add(b);			
+				eeprom.patch[bankIndex].patchModel.addBlock(b);	
 			}
 		}
-		// now just look for a selected block and put the mouse on it
+		
+		// to make sure that the mouse is on one of the new blocks
+		// just pick the first one it finds that is selected
 		itr = eeprom.patch[bankIndex].patchModel.blockList.iterator();
 		while(itr.hasNext()) {
 			b = itr.next();
 			if(b.selected == true) {
-				panel.putMouseOnBlock(b);
+				blk = b;
 				break;
 			}
 		}
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() { 	
+				// this gets the mouse sitting on the block!
+				panel.nullMouse();
+				panel.putMouseOnBlock(blk);	
+				panel.setDragModeDragMove();
+			}
+		});
 
-		canUndo = 1;
-		panel.setDragModeDragMove();
+
 		repaint();
+		canUndo = 1;
 	}
 
 	// deleteBlockConnection will delete all connections to a block as  

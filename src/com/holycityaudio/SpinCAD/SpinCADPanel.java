@@ -346,6 +346,10 @@ public class SpinCADPanel extends JPanel {
 		lastMouse = mouseAt;
 	}
 
+	public void nullMouse() {
+		lastMouse = null;
+	}
+	
 	int getMouseX() {
 		return (int) mouseAt.getX();
 	}
@@ -519,6 +523,10 @@ public class SpinCADPanel extends JPanel {
 		dm = dragModes.DRAGMOVE;
 	}
 
+	public void setDragModeNoDrag() {
+		dm = dragModes.NODRAG;
+	}
+	
 	public boolean selectGroup(SpinCADFrame fr, Point start, Point end) {
 		SpinCADBlock block;
 		boolean retval = false;
