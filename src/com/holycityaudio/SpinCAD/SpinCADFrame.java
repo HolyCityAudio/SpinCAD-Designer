@@ -425,10 +425,10 @@ public class SpinCADFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if(eeprom.bankFileName != "Untitled") {
 					SpinCADFile f = new SpinCADFile();
-					f.fileSaveBankAs(eeprom);
+					f.fileSaveBank(eeprom);
 				} else {
 					SpinCADFile f = new SpinCADFile();
-					f.fileSaveBank(eeprom);
+					f.fileSaveBankAs(eeprom);
 				}
 				updateAll(false);
 			}
