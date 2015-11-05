@@ -88,7 +88,7 @@ public class SpinCADFile {
 		}
 	}
 
-	public void fileSave(SpinCADBank b) {
+	public void fileSaveBank(SpinCADBank b) {
 		File fileToBeSaved = new File(prefs.get("MRUBankFolder",  "") + "/" + b.bankFileName);
 		String filePath = fileToBeSaved.getPath();
 		loadRecentBankFileList();
@@ -315,13 +315,13 @@ public class SpinCADFile {
 						JOptionPane.YES_NO_OPTION);
 				if (n == JOptionPane.YES_OPTION) {
 					try {
-						fileSave(b);
+						fileSaveBank(b);
 					} finally {
 					}
 				}
 			}
 			else {
-				fileSave(b);
+				fileSaveBank(b);
 			}
 			b.changed = false;
 			recentBankFileList.add(fileToBeSaved);
@@ -329,7 +329,7 @@ public class SpinCADFile {
 			b.bankFileName = fileToBeSaved.getName();
 		}
 	}
-
+	
 	// File Save Asm =============================================
 
 	public void fileSaveAsm(SpinCADPatch patch) {
