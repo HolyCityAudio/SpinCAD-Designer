@@ -431,6 +431,7 @@ public class SpinCADFrame extends JFrame {
 					f.fileSaveBankAs(eeprom);
 				}
 				updateAll(false);
+				eeprom.changed = false;
 			}
 		});
 		mntmSaveBank.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));

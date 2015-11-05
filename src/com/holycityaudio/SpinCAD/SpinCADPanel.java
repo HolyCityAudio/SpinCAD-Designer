@@ -170,7 +170,8 @@ public class SpinCADPanel extends JPanel {
 				boolean hitSomething = false;
 				// drop a line or block if you were dragging it
 				if(dm == dragModes.DRAGMOVE) {
-					spdFrame.getPatch().setChanged(true);
+					spdFrame.eeprom.changed = true;
+					spdFrame.updateAll(true);
 					unselectAll(spdFrame);
 					dm = dragModes.NODRAG;
 					dragLine = null;
