@@ -54,7 +54,7 @@ public class SpinCADFile {
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
 
-	public void fileSave(SpinCADPatch m) {
+	public void fileSavePatch(SpinCADPatch m) {
 		File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + m.patchFileName);
 		String filePath = fileToBeSaved.getPath();
 		loadRecentPatchFileList();
@@ -272,7 +272,7 @@ public class SpinCADFile {
 					String filePath = fileToBeSaved.getPath();
 					String fileName = fileToBeSaved.getName();
 					p.patchFileName = fileName;
-					fileSave(p);
+					fileSavePatch(p);
 					recentPatchFileList.add(fileToBeSaved);
 					saveMRUPatchFolder(filePath);
 

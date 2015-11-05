@@ -96,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 970;
+	int buildNum = 971;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -274,6 +274,7 @@ public class SpinCADFrame extends JFrame {
 				// repaint();
 			}
 		});
+		mntmNewPatch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		mnFileMenu.add(mntmNewPatch);
 
 		JMenuItem mntmOpenPatch = new JMenuItem("Open Patch");
@@ -306,7 +307,7 @@ public class SpinCADFrame extends JFrame {
 				repaint();
 			}
 		});
-
+		mntmOpenPatch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		mnFileMenu.add(mntmOpenPatch);
 
 		JMenuItem mntmSavePatch = new JMenuItem("Save Patch");
@@ -314,7 +315,7 @@ public class SpinCADFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if(eeprom.patch[bankIndex].patchFileName != "Untitled") {
 					SpinCADFile f = new SpinCADFile();
-					f.fileSavePatchAs(eeprom.patch[bankIndex]);
+					f.fileSavePatch(eeprom.patch[bankIndex]);
 					updateAll(false);
 
 				} else {
@@ -324,7 +325,7 @@ public class SpinCADFrame extends JFrame {
 				}
 			}
 		});
-		mntmSavePatch.setAccelerator(KeyStroke.getKeyStroke("ctrl s"));
+		mntmSavePatch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		mnFileMenu.add(mntmSavePatch);
 
 		JMenuItem mntmSavePatchAs = new JMenuItem("Save Patch As");
@@ -336,6 +337,7 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].setChanged(false);
 			}
 		});
+		mntmSavePatchAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 		mnFileMenu.add(mntmSavePatchAs);
 
 		JMenuItem mntmInfo = new JMenuItem("Patch Information");
@@ -345,6 +347,7 @@ public class SpinCADFrame extends JFrame {
 				cbp.cbPnl.show();
 			}
 		});
+		mntmInfo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
 		mnFileMenu.add(mntmInfo);
 
 		mnFileMenu.addSeparator();
@@ -393,7 +396,7 @@ public class SpinCADFrame extends JFrame {
 				updateAll();
 			}
 		});
-
+		mntmNewBank.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK));
 		mnFileMenu.add(mntmNewBank);
 
 		JMenuItem mntmOpenBank = new JMenuItem("Open Bank");
@@ -414,7 +417,7 @@ public class SpinCADFrame extends JFrame {
 				updateAll(false);
 			}
 		});
-
+		mntmOpenBank.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
 		mnFileMenu.add(mntmOpenBank);
 
 		JMenuItem mntmSaveBank = new JMenuItem("Save Bank");
@@ -426,7 +429,7 @@ public class SpinCADFrame extends JFrame {
 				updateAll();
 			}
 		});
-
+		mntmSaveBank.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
 		mnFileMenu.add(mntmSaveBank);
 
 		JMenuItem mntmSaveBankAs = new JMenuItem("Save Bank As");
@@ -439,7 +442,7 @@ public class SpinCADFrame extends JFrame {
 				updateAll();
 			}
 		});
-
+		mntmSaveBankAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.ALT_MASK));
 		mnFileMenu.add(mntmSaveBankAs);
 
 		JMenuItem mntmBankInfo = new JMenuItem("Bank Information");
@@ -449,6 +452,7 @@ public class SpinCADFrame extends JFrame {
 				cbb.cbPnl.show();
 			}
 		});
+		mntmBankInfo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK));
 		mnFileMenu.add(mntmBankInfo);
 
 		mnFileMenu.addSeparator();
@@ -486,7 +490,7 @@ public class SpinCADFrame extends JFrame {
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
 							SpinCADFile f = new SpinCADFile();
-							f.fileSave(eeprom.patch[bankIndex]);
+							f.fileSavePatch(eeprom.patch[bankIndex]);
 						} else {
 							SpinCADFile f = new SpinCADFile();
 							f.fileSavePatchAs(eeprom.patch[bankIndex]);
@@ -890,7 +894,7 @@ public class SpinCADFrame extends JFrame {
 		commentBlockPanel cbPnl;
 
 		public commentBlockPatch(SpinCADPatch patch) {
-			cbPnl = new commentBlockPanel(patch.cb);
+			cbPnl = new commentBlockPanel(patch.cb, "Patch Information");
 		}
 	}
 
@@ -899,7 +903,7 @@ public class SpinCADFrame extends JFrame {
 		commentBlockPanel cbPnl;
 
 		public commentBlockBank(SpinCADBank bank) {
-			cbPnl = new commentBlockPanel(bank.cb);
+			cbPnl = new commentBlockPanel(bank.cb, "Bank Information");
 		}
 	}
 
@@ -909,7 +913,7 @@ public class SpinCADFrame extends JFrame {
 		 */
 		private static final long serialVersionUID = -7295329402087496031L;
 
-		JFrame commentFrame = new JFrame("Patch Information");
+		JFrame commentFrame = new JFrame();
 
 		JTextField fileNameText;
 		JTextField versionText;
@@ -921,14 +925,14 @@ public class SpinCADFrame extends JFrame {
 
 		SpinCADCommentBlock spcb;
 
-		public commentBlockPanel(SpinCADCommentBlock cb) {
+		public commentBlockPanel(SpinCADCommentBlock cb, String name) {
 
 			this.spcb = cb;
+			commentFrame.setTitle(name);
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 
 					commentFrame.setLayout(new BoxLayout(commentFrame.getContentPane(), BoxLayout.Y_AXIS));
-
 					fileNameText = new JTextField(spcb.fileName, 64);
 					versionText = new JTextField(spcb.version, 64);
 					line0text = new JTextField(spcb.line[0], 64);
