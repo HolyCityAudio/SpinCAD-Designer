@@ -88,15 +88,13 @@ import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADDialogs;
 
 public class SpinCADFrame extends JFrame {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	/**
 	 * 
 	 */
 
-	int buildNum = 972;
+	int buildNum = 973;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -309,6 +307,35 @@ public class SpinCADFrame extends JFrame {
 		});
 		mntmOpenPatch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		mnFileMenu.add(mntmOpenPatch);
+
+		JMenuItem mntmOpenHex = new JMenuItem("Open Hex");
+		mntmOpenHex.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SpinCADFile f = new SpinCADFile();
+				if (eeprom.patch[bankIndex].getChanged() == true) {
+					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
+							"You have unsaved changes!  Continue?");
+					if (dialogResult == 0) {
+						eeprom.patch[bankIndex].patchModel.newModel();
+						repaint();
+					}
+					else {
+						eeprom.patch[bankIndex] = f.fileOpenHex();
+						eeprom.patch[bankIndex].setChanged(false);						
+						eeprom.changed = true;
+						updateAll();
+						repaint();
+					}
+				}
+				eeprom.patch[bankIndex] = f.fileOpenHex();
+				eeprom.patch[bankIndex].setChanged(false);						
+				eeprom.changed = true;
+				updateAll();
+				repaint();
+			}
+		});
+		mntmOpenHex.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+		mnFileMenu.add(mntmOpenHex);
 
 		JMenuItem mntmSavePatch = new JMenuItem("Save Patch");
 		mntmSavePatch.addActionListener(new ActionListener() {
@@ -783,7 +810,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		}
 	}
-	
+
 	public void undo() {
 		if(canUndo == 1) {
 			try { 

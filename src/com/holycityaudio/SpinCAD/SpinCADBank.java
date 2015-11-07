@@ -7,6 +7,8 @@ public class SpinCADBank implements Serializable {
 	String bankFileName = "Untitled";
 	SpinCADPatch[] patch = new SpinCADPatch[8];
 	SpinCADCommentBlock cb = new SpinCADCommentBlock();
+	// in the case of loading a hew file to this patch position
+	
 	private static final long serialVersionUID = -8461234577905967897L;
 
 	SpinCADBank() {

@@ -20,11 +20,13 @@
 
 package com.holycityaudio.SpinCAD;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,6 +48,7 @@ public class SpinCADFile {
 	private Preferences prefs;
 	private RecentFileList recentBankFileList = null;
 	private RecentFileList recentPatchFileList = null;
+	private RecentFileList recentHexFileList = null;
 	// this next one is specific to file open, needs to be here for MRU file list operations
 	private JFileChooser fc;
 
@@ -143,6 +146,79 @@ public class SpinCADFile {
 		ois.close(); 
 		return p;
 	} 
+
+	// backwards compatibility with SpinCAD 952 patch file serialization
+	public SpinCADPatch fileReadHex(String fileName) throws IOException, ClassNotFoundException {
+		SpinCADPatch p = new SpinCADPatch();
+		p.patchFileName = fileName;
+		File file = new File(fileName);
+		int nComments = 0;
+		try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+			char c = 'c';
+			for(String line; (line = br.readLine()) != null; ) {
+				c = line.charAt(0);
+				switch (c) {
+				case ':':
+					// process 256 lines of hex file from beginning
+					break;
+				case ';':
+					// process up to 5 comment lines
+					if(nComments < 5) {
+						p.cb.line[nComments] = line;
+						nComments ++;
+					}
+					break;
+				default:
+					break;
+					// process the line.
+				}
+			}
+			// line is not visible here.
+		}
+		p.isHexFile = true;
+		return p;
+	} 
+
+	public SpinCADPatch fileOpenHex() {
+
+		loadRecentHexFileList();
+		final String newline = "\n";
+		SpinCADPatch p = new SpinCADPatch();
+
+		// In response to a button click:
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Spin Hex Files", "hex");
+		fc.setFileFilter(filter);
+		fc.setAccessory(recentHexFileList);
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		int returnVal = fc.showOpenDialog(new JFrame());
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			String filePath = null;
+			File file = fc.getSelectedFile();
+
+			System.out.println("Opening: " + file.getName() + "."
+					+ newline);
+			filePath = file.getPath();
+			try {
+				p = fileReadHex(filePath);
+			} catch (Exception e) {	
+				e.printStackTrace();
+				SpinCADDialogs.MessageBox("Hex File open failed!", "That's not supposed to happen!");
+			} finally {
+				saveMRUHexFolder(filePath);
+				recentHexFileList.add(file);
+				String fileName = file.getName();
+				p.patchFileName = fileName;
+				p.cb.setFileName(fileName);
+			}
+		} else {
+			System.out.println("Open command cancelled by user."
+					+ newline);
+		}
+		saveRecentHexFileList();
+		return p;
+	}
 
 	public SpinCADPatch fileOpenPatch() {
 
@@ -329,7 +405,7 @@ public class SpinCADFile {
 			b.bankFileName = fileToBeSaved.getName();
 		}
 	}
-	
+
 	// File Save Asm =============================================
 
 	public void fileSaveAsm(SpinCADPatch patch) {
@@ -710,5 +786,44 @@ public class SpinCADFile {
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		}
 	}
+
+	private void saveRecentHexFileList() {
+		StringBuilder sb = new StringBuilder(128);
+		if(recentHexFileList != null) {
+			int k = recentHexFileList.listModel.getSize() - 1;
+			for (int index = 0; index <= k; index++) {
+				File file = recentHexFileList.listModel.getElementAt(k - index);
+				if (sb.length() > 0) {
+					sb.append(File.pathSeparator);
+				}
+				sb.append(file.getPath());
+			}
+			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+			p.put("RecentHexFileList.fileList", sb.toString());
+		}
+	}
+
+	private void loadRecentHexFileList() {
+		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
+		String listOfFiles = p.get("RecentHexFileList.fileList", null);
+		if (fc == null) {
+			String savedPath = prefs.get("MRUHexFolder", "");
+			File MRUHexFolder = new File(savedPath);
+			fc = new JFileChooser(MRUHexFolder);
+			recentHexFileList = new RecentFileList(fc);
+			if (listOfFiles != null) {
+				String[] files = listOfFiles.split(File.pathSeparator);
+				for (String fileRef : files) {
+					File file = new File(fileRef);
+					if (file.exists()) {
+						recentHexFileList.listModel.add(file);
+					}
+				}
+			}
+			fc.setAccessory(recentHexFileList);
+			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		}
+	}
+
 }
 
