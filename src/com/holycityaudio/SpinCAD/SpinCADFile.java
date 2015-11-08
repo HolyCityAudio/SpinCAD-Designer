@@ -158,15 +158,15 @@ public class SpinCADFile {
 			int nLines = 0;
 			int address = 0;
 			int recordType = 0;
-			long data = 0L;
+			int data = 0;
 			for(String line; (line = br.readLine()) != null; ) {
 				c = line.charAt(0);
 				switch (c) {
 				case ':':
 					// process 64 lines of hex file from beginning
-					if(nLines < 64) {
-						System.out.println("================================");
-						System.out.println(line);
+					if(nLines < 128) {
+//						System.out.println("================================ " + nLines);
+//						System.out.println(line);
 						String byteString = line.substring(1, 3);
 						nBytes = Integer.parseInt(byteString, 16);
 //						System.out.println(byteString + " Bytes= " + nBytes);
@@ -176,12 +176,12 @@ public class SpinCADFile {
 //						System.out.println("recordType: " + line.substring(7,9));
 						recordType= Integer.parseInt(line.substring(7,9), 16);
 //						System.out.println("recordType: " + recordType);
-						data = Long.parseLong(line.substring(9,9 + (2 * nBytes)), 16);
-						System.out.println(line.substring(9,9 + (2 * nBytes)));
-						System.out.printf("data: %x\n", data);		
+						data = (int) Long.parseLong(line.substring(9,9 + (2 * nBytes)), 16);
+//						System.out.println(line.substring(9,9 + (2 * nBytes)));
+//						System.out.printf("data: %x\n", data);		
 						p.hexFile[nLines]= data;
-						nLines++;
 					}
+					nLines++;
 					break;
 				case ';':
 					// process up to 5 comment lines
@@ -537,7 +537,12 @@ public class SpinCADFile {
 			}
 			for(int i = 0; i < 8; i++) {
 				try {
-					fileSaveHex(i, bank.patch[i].patchModel.getRenderBlock().generateHex(), filePath);					
+					if(bank.patch[i].isHexFile) {
+						fileSaveHex(i, bank.patch[i].hexFile, filePath);						
+					}
+					else {
+						fileSaveHex(i, bank.patch[i].patchModel.getRenderBlock().generateHex(), filePath);										
+					}
 				} catch (IOException e) {
 					JOptionPane.showOptionDialog(null,
 							"File save error!", "Error",
@@ -606,7 +611,6 @@ public class SpinCADFile {
 			try {
 				writer = new BufferedWriter(new FileWriter(fileToBeSaved, true));
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
@@ -614,7 +618,6 @@ public class SpinCADFile {
 				writer.write("NUMDOCS:8");
 				writer.newLine();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
@@ -641,13 +644,11 @@ public class SpinCADFile {
 				writer.write(",1,1,1");
 				writer.newLine();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
 				writer.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			saveMRUSpjFolder(filePath);

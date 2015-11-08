@@ -1156,7 +1156,7 @@ public class SpinCADFrame extends JFrame {
 
 	public void updateAll() {
 		simX.updateSliders(eeprom.patch[bankIndex]);
-		pb.update(eeprom.patch[bankIndex].patchModel);
+		pb.update(eeprom.patch[bankIndex]);
 		updateFrameTitle();
 		contentPane.repaint();	
 	}

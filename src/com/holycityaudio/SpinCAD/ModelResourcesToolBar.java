@@ -19,6 +19,10 @@ import javax.swing.border.Border;
 // button
 public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3040642773216953900L;
 	final JProgressBar progressBar_2 = new JProgressBar();
 	final JProgressBar progressBar_1 = new JProgressBar();
 	final JProgressBar progressBar = new JProgressBar();
@@ -209,10 +213,15 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 		}
 	}
 
-	public void update(SpinCADModel m) {
-		model = m;
-		ActionEvent evt = null;
-		actionPerformed(evt);
+	public void update(SpinCADPatch p) {
+		model = p.patchModel;
+		if(p.isHexFile == false) {
+			this.setVisible(true);
+			ActionEvent evt = null;
+			actionPerformed(evt);
+		} else {
+			this.setVisible(false);
+		}
 	}
 }
 

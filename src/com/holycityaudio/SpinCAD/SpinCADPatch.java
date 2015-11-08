@@ -9,7 +9,7 @@ public class SpinCADPatch implements Serializable {
 	private static final long serialVersionUID = -846192537905967897L;
 	private boolean changed = false;
 	private double[] potVal = new double[3];
-	long[] hexFile = new long[64];
+	int[] hexFile = new int[128];
 	boolean isHexFile = false;
 	
 	SpinCADPatch() {
