@@ -75,7 +75,6 @@ public class SpinCADFile {
 		try {
 			oos.writeObject(m);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} 	
 		try {
@@ -155,11 +154,34 @@ public class SpinCADFile {
 		int nComments = 0;
 		try(BufferedReader br = new BufferedReader(new FileReader(file))) {
 			char c = 'c';
+			int nBytes= 0;
+			int nLines = 0;
+			int address = 0;
+			int recordType = 0;
+			long data = 0L;
 			for(String line; (line = br.readLine()) != null; ) {
 				c = line.charAt(0);
 				switch (c) {
 				case ':':
-					// process 256 lines of hex file from beginning
+					// process 64 lines of hex file from beginning
+					if(nLines < 64) {
+						System.out.println("================================");
+						System.out.println(line);
+						String byteString = line.substring(1, 3);
+						nBytes = Integer.parseInt(byteString, 16);
+//						System.out.println(byteString + " Bytes= " + nBytes);
+//						System.out.println("Address: " + line.substring(3,7));
+						address =  Integer.parseInt(line.substring(3,7), 16);
+//						System.out.printf("Address: %x\n", address);
+//						System.out.println("recordType: " + line.substring(7,9));
+						recordType= Integer.parseInt(line.substring(7,9), 16);
+//						System.out.println("recordType: " + recordType);
+						data = Long.parseLong(line.substring(9,9 + (2 * nBytes)), 16);
+						System.out.println(line.substring(9,9 + (2 * nBytes)));
+						System.out.printf("data: %x\n", data);		
+						p.hexFile[nLines]= data;
+						nLines++;
+					}
 					break;
 				case ';':
 					// process up to 5 comment lines
@@ -490,11 +512,9 @@ public class SpinCADFile {
 		String savedPath = prefs.get("MRUHexFolder", "");
 
 		final JFileChooser fc = new JFileChooser(savedPath);
-		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Hex Files", "hex");
 		fc.setFileFilter(filter);
-		// XXX debug
 		fc.showSaveDialog(new JFrame());
 		File fileToBeSaved = fc.getSelectedFile();
 
