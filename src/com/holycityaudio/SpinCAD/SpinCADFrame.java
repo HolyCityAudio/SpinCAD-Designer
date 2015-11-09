@@ -321,7 +321,8 @@ public class SpinCADFrame extends JFrame {
 					}
 					else {
 						eeprom.patch[bankIndex] = f.fileOpenHex();
-						eeprom.patch[bankIndex].setChanged(false);						
+						eeprom.patch[bankIndex].setChanged(false);		
+						eeprom.patch[bankIndex].isHexFile = true;						
 						eeprom.changed = true;
 						updateAll();
 						repaint();
@@ -329,6 +330,7 @@ public class SpinCADFrame extends JFrame {
 				}
 				eeprom.patch[bankIndex] = f.fileOpenHex();
 				eeprom.patch[bankIndex].setChanged(false);						
+				eeprom.patch[bankIndex].isHexFile = true;		
 				eeprom.changed = true;
 				updateAll();
 				repaint();
@@ -1157,6 +1159,13 @@ public class SpinCADFrame extends JFrame {
 	public void updateAll() {
 		simX.updateSliders(eeprom.patch[bankIndex]);
 		pb.update(eeprom.patch[bankIndex]);
+		if(eeprom.patch[bankIndex].isHexFile == true) {
+			simX.sctb.setVisible(false);
+			etb.pinName.setText("Hex file: " + eeprom.patch[bankIndex].patchFileName);
+		} else {
+			simX.sctb.setVisible(true);
+			etb.pinName.setText("");			
+		}
 		updateFrameTitle();
 		contentPane.repaint();	
 	}

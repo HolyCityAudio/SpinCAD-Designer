@@ -147,8 +147,8 @@ public class SpinCADPanel extends JPanel {
 							}
 						}
 					}
-					f.etb.pinName.setText("");
 				}
+				f.etb.pinName.setText("");
 			}
 		});
 
