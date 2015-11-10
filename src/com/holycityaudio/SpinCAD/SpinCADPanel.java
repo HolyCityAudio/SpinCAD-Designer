@@ -82,6 +82,10 @@ public class SpinCADPanel extends JPanel {
 			@Override
 
 			public void mouseDragged(MouseEvent e) {
+				// don't bother with any mouse processing if this is a hex file
+				if(f.getPatch().isHexFile) {
+					return;
+				}
 				mouseAt = e.getPoint();
 				if(dm == dragModes.DRAGBOX) {
 					// draw a rectangle
@@ -95,6 +99,10 @@ public class SpinCADPanel extends JPanel {
 			}
 			
 			public void mouseMoved(MouseEvent e) {
+				// don't bother with any mouse processing if this is a hex file
+				if(f.getPatch().isHexFile) {
+					return;
+				}
 				mouseAt = e.getPoint();
 				// in mode DRAGMOVE, we have selected one or more blocks and are dragging them to a new location.
 				if(dm == dragModes.DRAGMOVE) {
@@ -155,6 +163,10 @@ public class SpinCADPanel extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
+				// don't bother with any mouse processing if this is a hex file
+				if(f.getPatch().isHexFile) {
+					return;
+				}
 				if (dm == dragModes.DRAGBOX) {
 					if(arg0.getButton() == 1) {
 						dm = dragModes.NODRAG;
@@ -167,6 +179,10 @@ public class SpinCADPanel extends JPanel {
 				}
 			}
 			public void mousePressed(MouseEvent arg0) {
+				// don't bother with any mouse processing if this is a hex file
+				if(f.getPatch().isHexFile) {
+					return;
+				}
 				boolean hitSomething = false;
 				// drop a line or block if you were dragging it
 				if(dm == dragModes.DRAGMOVE) {

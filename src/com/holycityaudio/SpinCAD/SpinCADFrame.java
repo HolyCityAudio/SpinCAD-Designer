@@ -316,24 +316,22 @@ public class SpinCADFrame extends JFrame {
 					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == 0) {
-						eeprom.patch[bankIndex].patchModel.newModel();
+//						eeprom.patch[bankIndex].patchModel.newModel();
 						repaint();
 					}
 					else {
 						eeprom.patch[bankIndex] = f.fileOpenHex();
-						eeprom.patch[bankIndex].setChanged(false);		
-						eeprom.patch[bankIndex].isHexFile = true;						
 						eeprom.changed = true;
 						updateAll();
 						repaint();
 					}
+				} 
+				else {
+					eeprom.patch[bankIndex] = f.fileOpenHex();
+					eeprom.changed = true;
+					updateAll();
+					repaint();					
 				}
-				eeprom.patch[bankIndex] = f.fileOpenHex();
-				eeprom.patch[bankIndex].setChanged(false);						
-				eeprom.patch[bankIndex].isHexFile = true;		
-				eeprom.changed = true;
-				updateAll();
-				repaint();
 			}
 		});
 		mntmOpenHex.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
@@ -1162,10 +1160,12 @@ public class SpinCADFrame extends JFrame {
 		if(eeprom.patch[bankIndex].isHexFile == true) {
 			simX.sctb.setVisible(false);
 			etb.pinName.setText("Hex file: " + eeprom.patch[bankIndex].patchFileName);
+			etb.pinName.setVisible(true);
 		} else {
 			simX.sctb.setVisible(true);
 			etb.pinName.setText("");			
 		}
+		etb.update();
 		updateFrameTitle();
 		contentPane.repaint();	
 	}

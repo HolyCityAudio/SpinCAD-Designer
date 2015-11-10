@@ -233,6 +233,8 @@ public class SpinCADFile {
 				String fileName = file.getName();
 				p.patchFileName = fileName;
 				p.cb.setFileName(fileName);
+				p.isHexFile = true;
+				p.setChanged(false);
 			}
 		} else {
 			System.out.println("Open command cancelled by user."
