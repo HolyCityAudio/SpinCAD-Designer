@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 975;
+	int buildNum = 976;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -361,7 +361,7 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].cb.setVersion("Patch saved from SpinCAD Designer version " + buildNum);
 				SpinCADFile f = new SpinCADFile();
 				f.fileSavePatchAs(eeprom.patch[bankIndex]);
-				eeprom.patch[bankIndex].setChanged(false);
+				updateAll(false);
 			}
 		});
 		mntmSavePatchAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));

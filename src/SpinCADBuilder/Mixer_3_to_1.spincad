@@ -29,6 +29,7 @@ rdax    input1, gain1    ;read input signal
 mulx level_1
 @endif
 wrax output, 0.0
+
 @endif
 
 @isPinConnected 'Input 2'
