@@ -35,17 +35,18 @@ wrax output, 0.0
 rdax input2, gain2
 @isPinConnected 'Level 2'
 mulx level_2
+@endif
 @isPinConnected 'Input 1'
 rdax output, 1.0
 @endif
 wrax output, 0.0
-@endif
 @endif
 
 @isPinConnected 'Input 3'
 rdax input3, gain3
 @isPinConnected 'Level 3'
 mulx level_3
+@endif
 @isPinConnected 'Input 1'
 rdax output, 1.0
 @else
@@ -53,9 +54,7 @@ rdax output, 1.0
 rdax output, 1.0
 @endif
 @endif
-@endif
-@endif
-
 wrax output, 0.0
+@endif
 
 @setOutputPin Output output

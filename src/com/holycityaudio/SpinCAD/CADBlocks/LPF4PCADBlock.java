@@ -87,15 +87,9 @@ public class LPF4PCADBlock extends SpinCADBlock{
 				sfxb.scaleOffset(0.35,  -0.35);
 				sfxb.exp(1, 0);
 				sfxb.writeRegister(kfl, 0);
-				//				;now derive filter bypass function (at open condition)
-				sfxb.readRegister(control1,1);
-				sfxb.scaleOffset(1,  -0.999);
-				sfxb.exp(1, 0);
-				sfxb.writeRegister(lbyp,  0);
 			} else {
 				sfxb.scaleOffset(0, 0.25);	// set dummy value
 				sfxb.writeRegister(kfl,  0);
-				sfxb.writeRegister(lbyp,  0);
 			}
 			// ------------- start of filter code
 			sfxb.readRegister(lp1al,1);

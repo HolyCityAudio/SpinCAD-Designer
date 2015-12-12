@@ -31,7 +31,7 @@
 			private ExpControlPanel cp = null;
 			
 			private double multiplier = 0.5;
-			private double exp_offset = 0.5;
+			private double exp_offset = -0.5;
 			private int output1;
 
 			public ExpCADBlock(int x, int y) {

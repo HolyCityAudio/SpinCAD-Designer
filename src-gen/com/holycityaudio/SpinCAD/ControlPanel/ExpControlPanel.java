@@ -67,7 +67,7 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
+			multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
 				multiplierSlider.addChangeListener(new ExpListener());
 				multiplierLabel = new JLabel();
 				Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -86,7 +86,7 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 			
 				frame.add(multiplierinnerPanel);
 			
-			exp_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getexp_offset() * 1000.0));
+			exp_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getexp_offset() * 1000.0));
 				exp_offsetSlider.addChangeListener(new ExpListener());
 				exp_offsetLabel = new JLabel();
 				Border exp_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

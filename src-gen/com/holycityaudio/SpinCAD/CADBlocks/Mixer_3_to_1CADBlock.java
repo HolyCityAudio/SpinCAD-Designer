@@ -122,6 +122,8 @@
 			sfxb.readRegister(input2, gain2);
 			if(this.getPin("Level 2").isConnected() == true) {
 			sfxb.mulx(level_2);
+			}
+			
 			if(this.getPin("Input 1").isConnected() == true) {
 			sfxb.readRegister(output, 1.0);
 			}
@@ -129,12 +131,12 @@
 			sfxb.writeRegister(output, 0.0);
 			}
 			
-			}
-			
 			if(this.getPin("Input 3").isConnected() == true) {
 			sfxb.readRegister(input3, gain3);
 			if(this.getPin("Level 3").isConnected() == true) {
 			sfxb.mulx(level_3);
+			}
+			
 			if(this.getPin("Input 1").isConnected() == true) {
 			sfxb.readRegister(output, 1.0);
 			} else {
@@ -144,11 +146,9 @@
 			
 			}
 			
-			}
-			
-			}
-			
 			sfxb.writeRegister(output, 0.0);
+			}
+			
 			this.getPin("Output").setRegister(output);
 
 			}
