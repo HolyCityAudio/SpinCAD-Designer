@@ -65,6 +65,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.maxxCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MultiplyCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Half_WaveCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
@@ -703,6 +704,15 @@
 		}
 	});
 	mn_control.add(mntm_ClipControl);
+		
+	final JMenuItem mntm_maxx = new JMenuItem("Maximum");
+	mntm_maxx.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new maxxCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_maxx);
 		
 	final JMenuItem mntm_Multiply = new JMenuItem("Multiply");
 	mntm_Multiply.addActionListener(new ActionListener() {

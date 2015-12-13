@@ -109,6 +109,7 @@
 @menuitem "Invert" InvertControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl
+@menuitem "Maximum" maxx
 @menuitem "Multiply" Multiply
 @menuitem "Half Wave" Half_Wave
 @menuitem "Slicer" Slicer

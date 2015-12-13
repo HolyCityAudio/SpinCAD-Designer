@@ -1,0 +1,23 @@
+@name Maximum
+@color "0xf2f224"
+@controlInput input1 'Input 1'
+@controlInput input2 'Input 2'
+@controlOutput output Output
+
+equ gain 0.5 
+@sliderLabel gain Gain -1.0 1.0 0.5 1000.0 3 
+
+;REGISTERS 
+equ   output     reg0       
+
+@isPinConnected 'Input 1'
+rdax    input1, 1.0    ;read input signal
+@isPinConnected 'Input 2'
+maxx input2, gain
+@endif
+
+wrax    output,0    ;
+
+@setOutputPin Output output
+@endif
+
