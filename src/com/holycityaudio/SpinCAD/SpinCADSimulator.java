@@ -111,9 +111,19 @@ public class SpinCADSimulator {
 		}
 
 		public void updateSimSliders() {
+			double simPot0 = patch.getPotVal(0) / 100.0;
+			double simPot1 = patch.getPotVal(1) / 100.0;
+			double simPot2 = patch.getPotVal(2) / 100.0;
+			
 			pot0Slider.setValue((int) patch.getPotVal(0));
 			pot1Slider.setValue((int) patch.getPotVal(1));
 			pot2Slider.setValue((int) patch.getPotVal(2));
+			
+			if (sim != null) {
+				sim.setPot(0, simPot0);
+				sim.setPot(1, simPot1);
+				sim.setPot(2, simPot2);
+			}
 		}
 		
 		public void stateChanged(ChangeEvent e) {
