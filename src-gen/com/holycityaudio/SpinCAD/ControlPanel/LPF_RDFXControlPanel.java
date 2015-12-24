@@ -97,7 +97,7 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 		class LPF_RDFXListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-			gCB.setfreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
+			gCB.setfreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqSlider.getValue()), 1000.0)));
 				updatefreqLabel();
 			}
 			}
