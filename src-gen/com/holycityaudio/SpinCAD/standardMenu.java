@@ -62,6 +62,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
@@ -677,6 +678,15 @@
 		}
 	});
 	mn_control.add(mntm_EnvelopeControl);
+		
+	final JMenuItem mntm_New_Envelope = new JMenuItem("New Envelope");
+	mntm_New_Envelope.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new New_EnvelopeCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_New_Envelope);
 		
 	final JMenuItem mntm_InvertControl = new JMenuItem("Invert");
 	mntm_InvertControl.addActionListener(new ActionListener() {

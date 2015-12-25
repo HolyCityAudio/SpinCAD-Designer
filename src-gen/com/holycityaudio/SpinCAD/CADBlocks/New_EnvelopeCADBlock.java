@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * LPF_RDFXCADBlock.java
+ * New_EnvelopeCADBlock.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -23,26 +23,33 @@
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
- 		import com.holycityaudio.SpinCAD.ControlPanel.LPF_RDFXControlPanel;
+ 		import com.holycityaudio.SpinCAD.ControlPanel.New_EnvelopeControlPanel;
 		
-		public class LPF_RDFXCADBlock extends SpinCADBlock {
+		public class New_EnvelopeCADBlock extends SpinCADBlock {
 
 			private static final long serialVersionUID = 1L;
-			private LPF_RDFXControlPanel cp = null;
+			private New_EnvelopeControlPanel cp = null;
 			
-			private double freq = 0.15;
+			private double attackFreq = 0.015;
+			private double decayFreq = 0.015;
 			private int output;
 			private int lpf1;
+			private int lpf2;
+			private int rectified;
 
-			public LPF_RDFXCADBlock(int x, int y) {
+			public New_EnvelopeCADBlock(int x, int y) {
 				super(x, y);
-				setName("LPF 1P");					
-			setBorderColor(new Color(0x24f26f));
+				setName("New Envelope");					
+			setBorderColor(new Color(0x02f27f));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addControlInputPin(this, "Frequency");
-				addOutputPin(this, "Output");
+				addControlInputPin(this, "Attack");
+				addControlInputPin(this, "Decay");
+				addControlOutputPin(this, "Fast Output");
+				addControlOutputPin(this, "Slow Output");
+				addControlOutputPin(this, "Max Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -50,7 +57,7 @@
 			public void editBlock(){ 
 				if(cp == null) {
 					if(hasControlPanel == true) {
-						cp = new LPF_RDFXControlPanel(this);
+						cp = new New_EnvelopeControlPanel(this);
 					}
 				}
 			}
@@ -74,39 +81,71 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
-			sp = this.getPin("Frequency").getPinConnection();
-			int freqControl = -1;
+			sp = this.getPin("Attack").getPinConnection();
+			int attackControl = -1;
 			if(sp != null) {
-				freqControl = sp.getRegister();
+				attackControl = sp.getRegister();
+			}
+			sp = this.getPin("Decay").getPinConnection();
+			int decayControl = -1;
+			if(sp != null) {
+				decayControl = sp.getRegister();
 			}
 			
 			// finally, generate the instructions
 			output = sfxb.allocateReg();
 			lpf1 = sfxb.allocateReg();
+			lpf2 = sfxb.allocateReg();
+			rectified = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
-			if(this.getPin("Frequency").isConnected() == true) {
-			sfxb.readRegister(input, freq);
-			sfxb.readRegister(lpf1, -freq);
-			sfxb.mulx(freqControl);
+			sfxb.readRegister(input, 1);
+			sfxb.absa();
+			sfxb.writeRegister(rectified, 0);
+			if(this.getPin("Attack").isConnected() == true) {
+			sfxb.readRegister(rectified, attackFreq);
+			sfxb.readRegister(lpf1, -attackFreq);
+			sfxb.mulx(attackControl);
 			sfxb.readRegister(lpf1, 1.0);
 			} else {
 			sfxb.readRegister(input, 1.0);
-			sfxb.readRegisterFilter(lpf1, freq);
+			sfxb.readRegisterFilter(lpf1, attackFreq);
 			}
 			
 			sfxb.writeRegister(lpf1, 0);
-			this.getPin("Output").setRegister(lpf1);
+			if(this.getPin("Decay").isConnected() == true) {
+			sfxb.readRegister(rectified, decayFreq);
+			sfxb.readRegister(lpf2, -decayFreq);
+			sfxb.mulx(decayControl);
+			sfxb.readRegister(lpf2, 1.0);
+			} else {
+			sfxb.readRegister(input, 1.0);
+			sfxb.readRegisterFilter(lpf2, decayFreq);
+			}
+			
+			sfxb.writeRegister(lpf2, 1);
+			sfxb.maxx(lpf1, 1.0);
+			sfxb.writeRegister(output, 0);
+			this.getPin("Max Output").setRegister(output);
+			this.getPin("Fast Output").setRegister(lpf1);
+			this.getPin("Slow Output").setRegister(lpf2);
 			}
 			
 
 			}
 			
 			// create setters and getter for control panel variables
-			public void setfreq(double __param) {
-				freq = __param;	
+			public void setattackFreq(double __param) {
+				attackFreq = __param;	
 			}
 			
-			public double getfreq() {
-				return freq;
+			public double getattackFreq() {
+				return attackFreq;
+			}
+			public void setdecayFreq(double __param) {
+				decayFreq = __param;	
+			}
+			
+			public double getdecayFreq() {
+				return decayFreq;
 			}
 		}	

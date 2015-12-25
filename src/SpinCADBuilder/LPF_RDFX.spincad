@@ -13,12 +13,13 @@ equ lpf1 Reg1
 
 @isPinConnected Input
 
-rdax input, 1.0
 @isPinConnected Frequency
-rdax lpf1, -1.0
+rdax input, freq
+rdax lpf1, -freq
 mulx freqControl
 rdax lpf1, 1.0
 @else
+rdax input, 1.0
 rdfx lpf1, freq
 @endif
 wrax lpf1, 0
