@@ -47,6 +47,7 @@ public class control_smootherControlPanelA {
 
 	private control_smootherACADBlock gCB;
 	private boolean silentGUIChange = false;
+	
 	// declare the controls
 	JSlider filtSlider;
 	JLabel  filtLabel;	

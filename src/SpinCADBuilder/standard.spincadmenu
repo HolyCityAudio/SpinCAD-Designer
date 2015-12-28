@@ -102,6 +102,7 @@
 @menuitem "LFO Value" LFO_Value 
 @menuitem "Ramp LFO" RampLFO
 @menuitem "Oscillator" Oscillator
+@menuitem "New Oscillator" New_Oscillator
 @menuitem "Sample/Hold" SampleHold
 //@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer

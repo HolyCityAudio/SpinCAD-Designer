@@ -53,7 +53,7 @@ public class control_smootherControlPanel extends spinCADControlPanel {
 	JSlider filtSlider;
 	JLabel  filtLabel;
 	JSpinner  filtSpinner;	
-	private boolean silentGUIChange = false;	
+	private boolean filtsilentGUIChange = false;	
 
 public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 		
@@ -75,40 +75,40 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getfilt()) * 100, 0.51, 10000.00, 0.01);
 			
 				filtSpinner = new JSpinner(filtSpinnerNumberModel);
-				JSpinner.NumberEditor editor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
-				DecimalFormat format = editor.getFormat();  
-			 			format.setMinimumFractionDigits(2);  
-				format.setMaximumFractionDigits(2);  
-				editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
-				Dimension d = filtSpinner.getPreferredSize();  
-				d.width = 25;  
-				filtSpinner.setPreferredSize(d);  
+				JSpinner.NumberEditor filteditor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
+				DecimalFormat filtformat = filteditor.getFormat();  
+			 			filtformat.setMinimumFractionDigits(2);  
+				filtformat.setMaximumFractionDigits(2);  
+				filteditor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
+				Dimension filtd = filtSpinner.getPreferredSize();  
+				filtd.width = 25;  
+				filtSpinner.setPreferredSize(filtd);  
 				
 				updatefiltSpinner();
 				filtSpinner.addChangeListener(new control_smootherListener());
 				
-				JPanel topLine = new JPanel();
-				topLine.setLayout(new BoxLayout(topLine, BoxLayout.X_AXIS));
+				JPanel filttopLine = new JPanel();
+				filttopLine.setLayout(new BoxLayout(filttopLine, BoxLayout.X_AXIS));
 			
-				topLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				topLine.add(filtLabel);
-				topLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				topLine.add(filtSpinner);
+				filttopLine.add(Box.createRigidArea(new Dimension(35,4)));			
+				filttopLine.add(filtLabel);
+				filttopLine.add(Box.createRigidArea(new Dimension(35,4)));			
+				filttopLine.add(filtSpinner);
 				
-				Border border2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				topLine.setBorder(border2);
+				Border filtborder2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				filttopLine.setBorder(filtborder2);
 			
-				Border border1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel innerPanel = new JPanel();
+				Border filtborder1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel filtinnerPanel = new JPanel();
 					
-				innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
-				innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				innerPanel.add(topLine);
-				innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				innerPanel.add(filtSlider);		
-				innerPanel.setBorder(border1);
+				filtinnerPanel.setLayout(new BoxLayout(filtinnerPanel, BoxLayout.Y_AXIS));
+				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				filtinnerPanel.add(filttopLine);
+				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				filtinnerPanel.add(filtSlider);		
+				filtinnerPanel.setBorder(filtborder1);
 			
-				frame.add(innerPanel);
+				frame.add(filtinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -122,7 +122,7 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class control_smootherListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
-			if(silentGUIChange == true) 
+			if(filtsilentGUIChange == true) 
 				return;
 			
 			if(ce.getSource() == filtSlider) {
@@ -154,11 +154,11 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 			SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					silentGUIChange = true;
+					filtsilentGUIChange = true;
 		filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
 				}
 				finally {
-					silentGUIChange = false;   	    	  
+					filtsilentGUIChange = false;   	    	  
 				}
 			}
 		});
@@ -168,11 +168,11 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 			SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					silentGUIChange = true;
+					filtsilentGUIChange = true;
 		filtSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getfilt()))));		
 				}
 				finally {
-					silentGUIChange = false;   	    	  
+					filtsilentGUIChange = false;   	    	  
 				}
 			}
 		});

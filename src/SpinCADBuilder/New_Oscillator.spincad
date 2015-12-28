@@ -1,0 +1,63 @@
+@name "Oscillator II"
+@color "0xf2f224"
+@controlInput freq 'Frequency'
+@controlInput width 'Width'
+@controlOutput sineOutput "Sine Output"
+@controlOutput sqrOutput "Square Output"
+
+equ gain 0.5 
+@sliderLabel gain Gain -1.0 1.0 0.5 1000.0 3 
+
+;sine + square generator 
+; 
+; SIN = SIN + freq * COS 
+; COS = COS - freq * SIN 
+
+; POT0 is frequency control 
+; POT1 is amp 
+
+; Define a couple register 
+equ   s   reg0 
+equ   c   reg1 
+equ sineOutput reg3
+
+; Initialize SIN to 0.5, COS to 0 on start 
+skp   run, start 
+sof   0, 0.5      ;initialize SIN to 0.5 
+wrax   s,0 
+wrax   c,0      ;initialize COS to 0 
+
+start:
+;Normal program starts here 
+rdax   c,1      ;Read COS 
+mulx   freq      ;freq * COS 
+rdax   s,1      ;SIN + freq*COS 
+wrax   s,-1      ;Save SIN and mult by -1 
+mulx   freq      ;freq*(-SIN) 
+rdax   c,1      ;COS - freq*SIN 
+wrax   c,1      ;Save COS 
+
+@isPinConnected Width
+mulx   width      ;scale output 
+@endif
+
+wrax   sineOutput,1      ; write output 
+
+@isPinConnected "Square Output"
+equ sqrOutput reg4
+skp    NEG, out_low   ; If negative, then skip 
+sof    0,0.5    ; Positive output 
+skp    GEZ, scale_out   ;Skip to the output step 
+out_low: 
+sof 0,-0.5  ; Negative output 
+scale_out: 
+@isPinConnected Width
+mulx   width 
+@endif
+wrax   sqrOutput, 0
+@setOutputPin "Square Output" sqrOutput
+@endif
+
+@setOutputPin "Sine Output" sineOutput
+
+
