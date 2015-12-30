@@ -107,7 +107,7 @@ public class LPF4PCADBlock extends SpinCADBlock{
 				// to get adjustable resonance
 				sfxb.writeRegister(temp, 0);
 				sfxb.readRegister(lp1al,-kql);
-				mulx(control2);
+				sfxb.mulx(control2);
 				// then we add it back in later and everything's fine.
 				sfxb.readRegister(temp,1.0);
 			}

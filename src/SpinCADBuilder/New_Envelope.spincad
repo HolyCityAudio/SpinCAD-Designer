@@ -5,6 +5,10 @@
 @controlInput decayControl Decay
 @controlInput sens Sensitivity
 @controlOutput lpf1 "Fast Output"  
+
+
+
+
 @controlOutput lpf1 "Slow Output"
 @controlOutput outputMax "Max Output"  
 @controlOutput avg "avg"
