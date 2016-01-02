@@ -29,8 +29,10 @@ public class SpinCADSimulator {
 	private Preferences prefs;
 	public JPanel levelMonitor = new JPanel();
 	public JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
+	public JPanel scopePanel = new JPanel();		// see if we can display the logger panel within the main frame
 
 	public boolean loggerIsVisible = false;
+	public boolean scopeIsVisible = false;
 	
 	private SpinCADFrame frame;
 	public simControlToolBar sctb;
@@ -126,6 +128,18 @@ public class SpinCADSimulator {
 			}
 		}
 		
+		public void setSimPotValues() {
+			double simPot0 = patch.getPotVal(0) / 100.0;
+			double simPot1 = patch.getPotVal(1) / 100.0;
+			double simPot2 = patch.getPotVal(2) / 100.0;
+			
+			if (sim != null) {
+				sim.setPot(0, simPot0);
+				sim.setPot(1, simPot1);
+				sim.setPot(2, simPot2);
+			}
+		}
+		
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == pot0Slider) {
 				patch.setPotVal(0,(double) pot0Slider.getValue());
@@ -172,6 +186,7 @@ public class SpinCADSimulator {
 							//							sim.showLevelMeter(levelMonitor);
 						}
 						//					sim.showLevelMeter();
+						setSimPotValues();
 						sim.start();
 					}
 					else { 

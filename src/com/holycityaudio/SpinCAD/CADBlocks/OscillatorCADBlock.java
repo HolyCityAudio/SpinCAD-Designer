@@ -38,7 +38,7 @@ public class OscillatorCADBlock extends SpinCADBlock{
 		super(x, y);
 		hasControlPanel = true;
 		addControlInputPin(this, "LFO Speed");
-//		addControlInputPin(this, "LFO Width");
+		addControlInputPin(this, "LFO Width");
 		addControlOutputPin(this, "Sine Out");
 		addControlOutputPin(this, "Cosine Out");
 		setName("Oscillator");
@@ -51,11 +51,16 @@ public class OscillatorCADBlock extends SpinCADBlock{
 	public void generateCode(SpinFXBlock b) {
 
 		int Control1 = -1;
+		int Control2 = -1;
 
 		SpinCADPin p = this.getPin("LFO Speed").getPinConnection();
+		SpinCADPin p2 = this.getPin("LFO Width").getPinConnection();
 
 		if (p != null)
 			Control1 = p.getRegister();
+
+		if (p2 != null)
+			Control2 = p2.getRegister();
 
 		//		;POT0 : Control frequency 
 		//		; 
@@ -72,10 +77,19 @@ public class OscillatorCADBlock extends SpinCADBlock{
 		b.skip(RUN, 3);
 		//		wrax s,0 ;set s to 0, (acc should be zero) 
 		b.writeRegister(s, 0.0);
+
 		//		sof 0,-1 ;set accum to -1
 		b.scaleOffset(0, -1);
 		//		wrax c,0 ;write to c 
-		b.writeRegister(c, 0);
+		if(Control2 != -1) {
+			int c_output = b.allocateReg();
+			b.writeRegister(c, 1.0);
+			b.mulx(Control2);
+			b.writeRegister(c_output,  0.0);			
+		}
+		else {
+			b.writeRegister(c, 0);
+		}
 		//		endset: ;jump-to label 
 
 		//		;Now do the LFO, using pot0 as a control for frequency 
@@ -96,7 +110,18 @@ public class OscillatorCADBlock extends SpinCADBlock{
 		//		rdax s,1 ;read s reg
 		b.readRegister(s, 1);
 		//		wrax s,1 ;integrate the s value 
-		b.writeRegister(s, 0);
+		if(Control2 != -1) {
+			int s_output = b.allocateReg();
+			b.writeRegister(s, 1.0);
+			b.mulx(Control2);
+			b.writeRegister(s_output,  0.0);
+			
+		}
+		else {
+			b.writeRegister(s, 0);
+		}
+		
+		
 		//		;Either the s or c register will be producing s waveforms (just shifted in 
 		//		;phase), so either can be used as a modulation source. The maximum 
 		//		;frequency of this LFO is Fs/2pi, which should be high enough! 

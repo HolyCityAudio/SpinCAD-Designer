@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 982;
+	int buildNum = 983;
 	// Swing things
 	private JPanel contentPane;
 	//=========================================================================================
@@ -607,6 +607,19 @@ public class SpinCADFrame extends JFrame {
 				}
 				else {
 					simX.loggerIsVisible = true;
+				}
+			}
+		});
+		mnSimulator.add(mntmSimLogger);
+
+		final JMenuItem mntmSimScope = new JCheckBoxMenuItem("Enable Scope");
+		mntmSimScope.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(simX.scopeIsVisible == true) {
+					simX.scopeIsVisible = false;
+				}
+				else {
+					simX.scopeIsVisible = true;
 				}
 			}
 		});
