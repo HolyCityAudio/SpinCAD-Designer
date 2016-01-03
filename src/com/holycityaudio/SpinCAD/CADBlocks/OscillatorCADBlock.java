@@ -38,7 +38,8 @@ public class OscillatorCADBlock extends SpinCADBlock{
 		super(x, y);
 		hasControlPanel = true;
 		addControlInputPin(this, "LFO Speed");
-		addControlInputPin(this, "LFO Width");
+//debug, width control not working, probably due to output register setting when control connected
+//		addControlInputPin(this, "LFO Width");
 		addControlOutputPin(this, "Sine Out");
 		addControlOutputPin(this, "Cosine Out");
 		setName("Oscillator");
@@ -54,13 +55,13 @@ public class OscillatorCADBlock extends SpinCADBlock{
 		int Control2 = -1;
 
 		SpinCADPin p = this.getPin("LFO Speed").getPinConnection();
-		SpinCADPin p2 = this.getPin("LFO Width").getPinConnection();
+//		SpinCADPin p2 = this.getPin("LFO Width").getPinConnection();
 
 		if (p != null)
 			Control1 = p.getRegister();
 
-		if (p2 != null)
-			Control2 = p2.getRegister();
+		//if (p2 != null)
+		//	Control2 = p2.getRegister();
 
 		//		;POT0 : Control frequency 
 		//		; 

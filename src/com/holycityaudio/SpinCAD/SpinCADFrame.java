@@ -94,10 +94,10 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 983;
+	int buildNum = 984;
 	// Swing things
 	private JPanel contentPane;
-	//=========================================================================================
+	//=====================s====================================================================
 	// pb shows instructions, registers, and RAM used.  It also shows allocation state of LFOs
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
 	// etb is used to show the pin name when you hover
@@ -625,7 +625,8 @@ public class SpinCADFrame extends JFrame {
 				}
 			}
 		});
-		mnSimulator.add(mntmSimScope);
+// debug, just removing this to put out a beta release
+//		mnSimulator.add(mntmSimScope);
 
 		mnSimulator.addSeparator();
 		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");

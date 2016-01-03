@@ -44,7 +44,7 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 		this.setTitle("Oscillator");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
-		lfoSlider = new JSlider(JSlider.HORIZONTAL, 0, 10000, 0);
+		lfoSlider = new JSlider(JSlider.HORIZONTAL, 0, 60000, 0);
 		lfoSlider.addChangeListener(this);
 		
 		lfoLabel = new JLabel();
