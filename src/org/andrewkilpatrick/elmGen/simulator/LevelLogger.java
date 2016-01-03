@@ -42,9 +42,10 @@ public class LevelLogger implements AudioSink {
 	int oldR = -96;
 // GSW added options for linear or log display within SpinCAD
 // not exactly sure if linear works!
-	int logMode = 1;	// 0 for integer, 1 for log
+	private int logMode = 1;	// 0 for integer, 1 for log
 	double left = -1;
 	double right = -1;
+	int windowRatio = 512;	// update display every how many samples
 
 	AudioDelay delay;
 
@@ -104,10 +105,11 @@ public class LevelLogger implements AudioSink {
 			{
 				left = (double)Util.regToInt(dbuf[i]);
 				right = (double)Util.regToInt(dbuf[i + 1]);
+//				System.out.println(left);
 			}	
 
 			windowCount ++;
-			if(windowCount == 512) {
+			if(windowCount == windowRatio) {
 				panel.updateLevels();
 				windowCount = 0;
 				//				maxL = 0.0;
@@ -115,6 +117,7 @@ public class LevelLogger implements AudioSink {
 			}
 		}
 	}
+	
 // GSW Added LoggerPanel as a class
 	public class LoggerPanel {
 
@@ -151,12 +154,13 @@ public class LevelLogger implements AudioSink {
 				g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
 			}
 			else if (logMode == 0) {
-				newL = sampleToInt(left);
-				newR = sampleToInt(right);
+				newL = (int) (left/(32768) + 100);
+//				System.out.println("newL: " + newL);
+				newR = (int) (right/(32768) + 100);
 				g2.setColor(Color.MAGENTA);
-				g2.drawLine(xPos, (oldL * 200), xPos + 1, newL * 200);
+				g2.drawLine(xPos, (oldL), xPos + 1, newL);
 				g2.setColor(Color.CYAN);
-				g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
+				g2.drawLine(xPos, oldR, xPos + 1, newR);
 			}
 			oldL = newL;
 			oldR = newR;
@@ -170,9 +174,15 @@ public class LevelLogger implements AudioSink {
 	private double sampleToDB(double sampleLevel) {
 		return 20 * Math.log10(sampleLevel);
 	}
-// GSW added SampleToInt for use with integer mode logger
+
+	// GSW added SampleToInt for use with integer mode logger
 // as before, not sure if it works!
 	private int sampleToInt(double sampleLevel) {
 		return (int)(sampleLevel * 16384);
+	}
+	
+	public void setLogMode(int mode) {
+		if ((logMode == 0) || (logMode == 1))
+			logMode = mode;
 	}
 }

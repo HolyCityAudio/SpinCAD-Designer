@@ -237,6 +237,8 @@ public class SpinCADFrame extends JFrame {
 
 		simPanel.add(simX.loggerPanel);
 		simX.loggerPanel.setVisible(false);
+		simPanel.add(simX.scopePanel);
+		simX.scopePanel.setVisible(false);
 
 		// controlPanels.setFloatable(false);
 		contentPane.add(controlPanels, BorderLayout.EAST);
@@ -623,7 +625,7 @@ public class SpinCADFrame extends JFrame {
 				}
 			}
 		});
-		mnSimulator.add(mntmSimLogger);
+		mnSimulator.add(mntmSimScope);
 
 		mnSimulator.addSeparator();
 		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");

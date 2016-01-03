@@ -287,12 +287,23 @@ public class SpinSimulator extends Thread {
 
 	public void showLevelLogger() {
 		audioSinks.add(new LevelLogger());
+		System.out.print(audioSinks);
 	}
 
 	// GSW added this part to integrate into SpinCAD Designer
 	public void showLevelLogger(JPanel p) {
 		LevelLogger levelL = new LevelLogger(p);
 		audioSinks.add(levelL);
+		System.out.println(audioSinks);
+	}
+
+	// GSW added this part to integrate into SpinCAD Designer
+	public void showScope(JPanel p) {
+		LevelLogger scope = new LevelLogger(p);
+		scope.setLogMode(0);
+		scope.windowRatio = 8;
+		audioSinks.add(scope);
+		System.out.println(audioSinks);
 	}
 
 	public void showLevelMeter() {
