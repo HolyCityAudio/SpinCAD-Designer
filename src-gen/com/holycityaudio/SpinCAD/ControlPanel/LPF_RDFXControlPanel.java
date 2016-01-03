@@ -65,7 +65,7 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			freqSlider = gCB.LogFilterSlider(80,2500,gCB.getfreq());
+			freqSlider = gCB.LogFilterSlider(80,5000,gCB.getfreq());
 				freqSlider.addChangeListener(new LPF_RDFXListener());
 				freqLabel = new JLabel();
 				Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -97,7 +97,7 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 		class LPF_RDFXListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-			gCB.setfreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqSlider.getValue()), 1000.0)));
+			gCB.setfreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
 				updatefreqLabel();
 			}
 			}
