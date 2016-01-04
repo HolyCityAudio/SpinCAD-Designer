@@ -102,12 +102,12 @@
 @menuitem "LFO Value" LFO_Value 
 @menuitem "Ramp LFO" RampLFO
 @menuitem "Oscillator" Oscillator
-//@menuitem "New Oscillator" New_Oscillator
+@menuitem "New Oscillator" New_Oscillator
 @menuitem "Sample/Hold" SampleHold
 //@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
-//@menuitem "New Envelope" New_Envelope
+@menuitem "Envelope II" New_Envelope
 @menuitem "Invert" InvertControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl

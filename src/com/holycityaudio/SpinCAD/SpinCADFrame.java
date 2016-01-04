@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 984;
+	int buildNum = 986;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -297,7 +297,7 @@ public class SpinCADFrame extends JFrame {
 						updateAll();
 						repaint();
 					}
-				}
+				} else {
 				eeprom.patch[bankIndex] = f.fileOpenPatch();
 				eeprom.patch[bankIndex].patchModel.getIndexFB();
 				eeprom.patch[bankIndex].patchModel.presetIndexFB();
@@ -305,6 +305,7 @@ public class SpinCADFrame extends JFrame {
 				eeprom.changed = true;
 				updateAll();
 				repaint();
+				}
 			}
 		});
 		mntmOpenPatch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
@@ -625,8 +626,7 @@ public class SpinCADFrame extends JFrame {
 				}
 			}
 		});
-// debug, just removing this to put out a beta release
-//		mnSimulator.add(mntmSimScope);
+		mnSimulator.add(mntmSimScope);
 
 		mnSimulator.addSeparator();
 		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");

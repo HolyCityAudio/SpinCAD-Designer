@@ -5,8 +5,9 @@
 @controlOutput sineOutput "Sine Output"
 @controlOutput sqrOutput "Square Output"
 
-equ gain 0.5 
-@sliderLabel gain Gain -1.0 1.0 0.5 1000.0 3 
+equ freq 0.15
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq 'Frequency (Hz)' 20 5000 100.0 100.0 1 LOGFREQ 
 
 ;sine + square generator 
 ; 
@@ -30,10 +31,14 @@ wrax   c,0      ;initialize COS to 0
 start:
 ;Normal program starts here 
 rdax   c,1      ;Read COS 
+@isPinConnected "Frequency"
 mulx   freq      ;freq * COS 
+@endif
 rdax   s,1      ;SIN + freq*COS 
 wrax   s,-1      ;Save SIN and mult by -1 
+@isPinConnected "Frequency"
 mulx   freq      ;freq*(-SIN) 
+@endif
 rdax   c,1      ;COS - freq*SIN 
 wrax   c,1      ;Save COS 
 

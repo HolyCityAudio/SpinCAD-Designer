@@ -41,6 +41,14 @@ public class LevelLogger implements AudioSink {
 	int oldL = -96;
 	int oldR = -96;
 // GSW added options for linear or log display within SpinCAD
+// scope variables
+// display height is 
+	double refLeft = -0.5;
+	double refRight = 0.5;
+	double vDivLeft = 1.0;
+	double vDivRight = 1.0;
+//
+	
 // not exactly sure if linear works!
 	private int logMode = 1;	// 0 for integer, 1 for log
 	double left = -1;
@@ -154,11 +162,11 @@ public class LevelLogger implements AudioSink {
 				g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
 			}
 			else if (logMode == 0) {
-				newL = (int) (left/(32768) + 100);
+				newL = (int) (left/(65535) + (1 + refLeft) * 100);
 //				System.out.println("newL: " + newL);
-				newR = (int) (right/(32768) + 100);
+				newR = (int) (right/(65535) + (1 + refRight) * 100);
 				g2.setColor(Color.MAGENTA);
-				g2.drawLine(xPos, (oldL), xPos + 1, newL);
+				g2.drawLine(xPos, oldL, xPos + 1, newL);
 				g2.setColor(Color.CYAN);
 				g2.drawLine(xPos, oldR, xPos + 1, newR);
 			}

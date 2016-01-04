@@ -27,7 +27,6 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 public class spinCADControlPanel {
 	
 	protected double coeffToLFORate(double rate) {
-		 return (ElmProgram.getSamplerate() * rate) / (2 * Math.PI * Math.pow(2.0 ,17));
+		 return (ElmProgram.getSamplerate() * rate) / (2 * Math.PI * Math.pow(2.0, 17));
 	}
-
 }
