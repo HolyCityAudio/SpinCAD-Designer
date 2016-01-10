@@ -149,11 +149,11 @@ public class LevelLogger implements AudioSink {
 
 			int newL = -1;
 			int newR = -1;
-			if(xPos < 5) {
-				g2.setColor(Color.BLACK);
-				g2.fillRect(0, 0, panel.getWidth(), panel.getHeight());
-			}
 			if(logMode == 1) {
+				if(xPos < 1) {
+					g2.setColor(Color.BLACK);
+					g2.fillRect(0, 0, panel.getWidth(), panel.getHeight());
+				}
 				newL = (int)sampleToDB(maxL);
 				newR = (int)sampleToDB(maxR);
 				g2.setColor(Color.MAGENTA);
@@ -162,11 +162,16 @@ public class LevelLogger implements AudioSink {
 				g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
 			}
 			else if (logMode == 0) {
+				// clear a vertical slice at the current x position
+				g2.setColor(Color.BLACK);
+				g2.fillRect(xPos+1, 0, xPos+1, panel.getHeight());
+
 				newL = (int) (left/(65535) + (1 + refLeft) * 100);
-//				System.out.println("newL: " + newL);
 				newR = (int) (right/(65535) + (1 + refRight) * 100);
+				
 				g2.setColor(Color.MAGENTA);
 				g2.drawLine(xPos, oldL, xPos + 1, newL);
+				
 				g2.setColor(Color.CYAN);
 				g2.drawLine(xPos, oldR, xPos + 1, newR);
 			}

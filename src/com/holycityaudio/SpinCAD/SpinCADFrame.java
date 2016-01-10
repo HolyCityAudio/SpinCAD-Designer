@@ -100,9 +100,12 @@ public class SpinCADFrame extends JFrame {
 	//=====================s====================================================================
 	// pb shows instructions, registers, and RAM used.  It also shows allocation state of LFOs
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
+
 	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
 
+	final ScopeToolBar stb = new ScopeToolBar();
+	
 	private final JPanel controlPanels = new JPanel();
 	// 
 	// topPanel holds bankPanel and simPanel
@@ -239,6 +242,8 @@ public class SpinCADFrame extends JFrame {
 		simX.loggerPanel.setVisible(false);
 		simPanel.add(simX.scopePanel);
 		simX.scopePanel.setVisible(false);
+		simPanel.add(stb);
+		stb.setVisible(true);
 
 		// controlPanels.setFloatable(false);
 		contentPane.add(controlPanels, BorderLayout.EAST);
