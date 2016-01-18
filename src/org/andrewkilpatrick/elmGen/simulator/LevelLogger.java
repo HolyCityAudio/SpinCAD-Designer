@@ -171,7 +171,7 @@ public class LevelLogger implements AudioSink {
 				else if (logMode == 0) {
 					// clear a vertical slice at the current x position
 					g2.setColor(Color.BLACK);
-					g2.fillRect(xPos+1, 0, xPos+1, panel.getHeight());
+					g2.fillRect(xPos+1, 0, 2, panel.getHeight());
 
 					newL = (int) (((int) left >> scopeCh1Gain) + (1 + refLeft) * 100);
 					newR = (int) (((int) right >> scopeCh2Gain) + (1 + refRight) * 100);
