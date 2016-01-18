@@ -104,8 +104,6 @@ public class SpinCADFrame extends JFrame {
 	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
 
-	final ScopeToolBar stb = new ScopeToolBar();
-	
 	private final JPanel controlPanels = new JPanel();
 	// 
 	// topPanel holds bankPanel and simPanel
@@ -236,14 +234,15 @@ public class SpinCADFrame extends JFrame {
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
 		// level monitor is not currently used
-		contentPane.add(simX.levelMonitor, BorderLayout.WEST);
+//		contentPane.add(simX.levelMonitor, BorderLayout.WEST);
 
 		simPanel.add(simX.loggerPanel);
 		simX.loggerPanel.setVisible(false);
 		simPanel.add(simX.scopePanel);
 		simX.scopePanel.setVisible(false);
-		simPanel.add(stb);
-		stb.setVisible(true);
+		simPanel.add(simX.stb);
+		simX.stb.setFloatable(false);
+		simX.stb.setVisible(true);
 
 		// controlPanels.setFloatable(false);
 		contentPane.add(controlPanels, BorderLayout.EAST);

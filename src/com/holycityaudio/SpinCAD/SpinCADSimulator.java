@@ -1,5 +1,6 @@
 package com.holycityaudio.SpinCAD;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -7,12 +8,19 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.JToolBar;
+import javax.swing.SwingWorker;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -24,18 +32,20 @@ public class SpinCADSimulator {
 	private boolean simRunning = false;
 	public SpinSimulator sim;
 	// simulator output file
-	public String outputFile = null; // play out through the sound card
+	public String outputFile = null; 				// play out through the sound card
 
 	private Preferences prefs;
 	public JPanel levelMonitor = new JPanel();
-	public JPanel loggerPanel = new JPanel();		// see if we can display the logger panel within the main frame
-	public JPanel scopePanel = new JPanel();		// see if we can display the logger panel within the main frame
+	public JPanel loggerPanel = new JPanel();		// ame
+	public JPanel scopePanel = new JPanel();		// e
 
 	public boolean loggerIsVisible = false;
 	public boolean scopeIsVisible = false;
-	
+
 	private SpinCADFrame frame;
+
 	public simControlToolBar sctb;
+	public ScopeToolBar stb;
 
 	private SpinCADPatch patch;
 
@@ -44,9 +54,10 @@ public class SpinCADSimulator {
 		frame = f;
 		patch = p;
 		this.sctb = new simControlToolBar(frame);
+		this.stb = new ScopeToolBar();
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
-	
+
 	// check whether simulator is currently running
 	public boolean isSimRunning() {
 		return simRunning;
@@ -57,15 +68,15 @@ public class SpinCADSimulator {
 		this.simRunning = simRunning;
 		return simRunning;
 	}
-	
+
 	public void updateSliders(SpinCADPatch p) {
 		this.patch = p;
 		sctb.updateSimSliders();
 	}
-	
+
 	// if outputFile = null, then simulator goes thru speakers
 	public void setOutputFileMode(Boolean state) {
-		
+
 		if(state == true) {
 			outputFile = prefs.get("SIMULATOR_OUT_FILE", "");
 		}
@@ -117,19 +128,19 @@ public class SpinCADSimulator {
 			pot1Slider.setValue((int) patch.getPotVal(1));
 			pot2Slider.setValue((int) patch.getPotVal(2));
 		}
-		
+
 		public void setSimPotValues() {
 			double simPot0 = patch.getPotVal(0) / 100.0;
 			double simPot1 = patch.getPotVal(1) / 100.0;
 			double simPot2 = patch.getPotVal(2) / 100.0;
-			
+
 			if (sim != null) {
 				sim.setPot(0, simPot0);
 				sim.setPot(1, simPot1);
 				sim.setPot(2, simPot2);
 			}
 		}
-		
+
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == pot0Slider) {
 				patch.setPotVal(0,(double) pot0Slider.getValue());
@@ -202,7 +213,228 @@ public class SpinCADSimulator {
 			}
 		} 
 	}
-	
+
+	public class ScopeToolBar extends JToolBar implements ActionListener, ChangeListener {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3040642773216953900L;
+		final JLabel ch1_Vertical_Gain_Label = new JLabel(" Ch 1 Gain: ");
+
+		String[] gainLabels = new String[] {"1x", "2x", "4x", "8x"};
+		JComboBox<String> ch1_Vertical_Gain = new JComboBox<>(gainLabels);
+
+		final JLabel ch2_Vertical_Gain_Label = new JLabel(" Ch 2 Gain: ");
+		JComboBox<String> ch2_Vertical_Gain = new JComboBox<>(gainLabels);
+
+		String[] timebaseLabels = new String[] {"32", "64", "128", "256", "512", "1024"};
+		final JLabel timebaseLabel = new JLabel(" Time Base: ");
+		JComboBox<String> timebase = new JComboBox<>(timebaseLabels);
+
+		String[] triggerModeLabels = new String[] {"Auto", "Normal", "Single"};
+		final JLabel triggerModeLabel = new JLabel(" Trigger Mode: ");
+		final JComboBox<String> triggerMode = new JComboBox(triggerModeLabels);
+
+		final JLabel triggerLevelLabel = new JLabel(" Trigger Level: ");
+		final JSpinner triggerLevel = new JSpinner();
+
+		String[] triggerSlopeLabels = new String[] {"Pos", "Neg"};
+		final JLabel triggerSlopeLabel = new JLabel(" Trigger Slope: ");
+		final JComboBox<String> triggerSlope = new JComboBox(triggerSlopeLabels);
+
+		class Task extends SwingWorker<Void, Void> {
+			/*
+			 * Main task. Executed in background thread.
+			 */
+			@Override
+			public Void doInBackground() {
+				// Sleep for at least one second to simulate "startup".
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException ignore) {
+				}
+				done();
+				return null;
+			}
+
+			/*
+			 * Executed in event dispatch thread
+			 */
+			public void done() {
+			}
+		}
+
+		// ==============================================================
+		// == Resources toolbar
+		public ScopeToolBar() {
+			super();
+
+			// Call setStringPainted now so that the progress bar height
+			// stays the same whether or not the string is shown.
+
+			ch1_Vertical_Gain.setToolTipText(" Ch 1 Gain ");
+			//			ch1_Vertical_Gain.setPreferredSize(new Dimension(20,10));
+			ch1_Vertical_Gain.setMinimumSize(new Dimension(100,120));
+			ch1_Vertical_Gain.setMaximumSize(new Dimension(120,140));
+			ch1_Vertical_Gain.addActionListener(this);
+
+			Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+			ch1_Vertical_Gain.setBorder(border);
+
+			ch2_Vertical_Gain.setToolTipText(" Ch 2 Gain ");
+			//			ch2_Vertical_Gain.setPreferredSize(new Dimension(100,40));
+			ch2_Vertical_Gain.setMinimumSize(new Dimension(100,120));
+			ch2_Vertical_Gain.setMaximumSize(new Dimension(120,140));
+			//			ch2_Vertical_Gain.setMaximumSize(ch2_Vertical_Gain.getPreferredSize());
+			ch2_Vertical_Gain.setBorder(border);
+			ch2_Vertical_Gain.addActionListener(this);
+
+			triggerMode.add(new JLabel("Auto"));
+			triggerMode.add(new JLabel("Normal"));
+
+			add(ch1_Vertical_Gain_Label);
+			add(ch1_Vertical_Gain);
+			add(ch2_Vertical_Gain_Label);
+			add(ch2_Vertical_Gain);
+
+			add(timebaseLabel);
+
+			timebase.setMinimumSize(new Dimension(100,120));
+			timebase.setMaximumSize(new Dimension(120,140));
+			timebase.setBorder(border);
+			timebase.addActionListener(this);
+			add(timebase);
+
+			add(triggerModeLabel);
+			triggerMode.setMinimumSize(new Dimension(100,120));
+			triggerMode.setMaximumSize(new Dimension(120,140));
+			triggerMode.setBorder(border);
+			triggerMode.addActionListener(this);
+			add(triggerMode);
+
+			add(triggerLevelLabel);
+			triggerLevel.setMinimumSize(new Dimension(100,120));
+			triggerLevel.setMaximumSize(new Dimension(120,140));
+			triggerLevel.setBorder(border);
+			triggerLevel.addChangeListener(this);
+			add(triggerLevel);
+
+			add(triggerSlopeLabel);
+			triggerSlope.setMinimumSize(new Dimension(100,120));
+			triggerSlope.setMaximumSize(new Dimension(120,140));
+			triggerSlope.setBorder(border);
+			triggerSlope.addActionListener(this);
+			add(triggerSlope);
+		}
+
+
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if (arg0.getSource() == ch1_Vertical_Gain) {
+				JComboBox<?> cb = (JComboBox)arg0.getSource();
+				String gain = (String)cb.getSelectedItem();
+				switch(gain) {
+				case "1x":
+					if(sim != null) {
+						sim.scope.setScopeCh1Gain(16);
+					}
+					break;
+				case "2x":
+					if(sim != null) {
+						sim.scope.setScopeCh1Gain(15);
+					}
+					break;
+				case "4x":
+					if(sim != null) {
+						sim.scope.setScopeCh1Gain(14);
+					}
+					break;
+				case "8x":
+					if(sim != null) {
+						sim.scope.setScopeCh1Gain(13);
+					}
+					break;
+				}
+			} else if (arg0.getSource() == ch2_Vertical_Gain) {
+				JComboBox<?> cb = (JComboBox)arg0.getSource();
+				String gain = (String)cb.getSelectedItem();
+				switch(gain) {
+				case "1x":
+					if(sim != null) {
+						sim.scope.setScopeCh2Gain(16);
+					}
+					break;
+				case "2x":
+					if(sim != null) {
+						sim.scope.setScopeCh2Gain(15);
+					}
+					break;
+				case "4x":
+					if(sim != null) {
+						sim.scope.setScopeCh2Gain(14);
+					}
+					break;
+				case "8x":
+					if(sim != null) {
+						sim.scope.setScopeCh2Gain(13);
+					}
+					break;
+				}
+			} else if (arg0.getSource() == timebase) {
+				JComboBox<?> cb = (JComboBox)arg0.getSource();
+				String gain = (String)cb.getSelectedItem();
+				switch(gain) {
+				case "32":
+					if(sim != null) {
+						sim.scope.setWindowRatio(32);
+					}
+					break;
+				case "64":
+					if(sim != null) {
+						sim.scope.setWindowRatio(64);
+					}
+					break;
+				case "128":
+					if(sim != null) {
+						sim.scope.setWindowRatio(128);
+					}
+					break;
+				case "256":
+					if(sim != null) {
+						sim.scope.setWindowRatio(256);
+					}
+					break;
+				case "512":
+					if(sim != null) {
+						sim.scope.setWindowRatio(512);
+					}
+					break;
+				case "1024":
+					if(sim != null) {
+						sim.scope.setWindowRatio(1024);
+					}
+					break;
+				}
+			} else if (arg0.getSource() == triggerSlope) {
+				int j = 1;
+			} else if (arg0.getSource() == triggerMode) {
+				int j = 1;
+			}
+
+		}
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			// TODO Auto-generated method stub
+			if (e.getSource() == triggerLevel) {
+				int j = 1;
+			}		
+		}
+	}
+
+
 	public String checkSimulatorFile() {
 		File f = null;
 		String testWavFileName = prefs.get("SIMULATOR_FILE", "");

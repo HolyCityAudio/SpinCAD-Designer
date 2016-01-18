@@ -1,0 +1,56 @@
+@name 'Adjustable LPF'
+@color "0x02f27f"
+@audioInput input Input
+@controlInput attackControl Attack
+@controlInput decayControl Decay
+@controlInput sens Sensitivity
+@controlOutput lpf1 "Fast Output"  
+@controlOutput lpf1 "Slow Output"
+@controlOutput outputMax "Max Output"  
+
+equ attackFreq 0.00015
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabelSpinner attackFreq 'Attack Freq' 0.51 20 100.0 100.0 5 LOGFREQ 
+
+equ decayFreq 0.00015
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabelSpinner decayFreq 'Decay Freq' 0.51 10 100.0 100.0 5 LOGFREQ 
+
+equ output Reg0
+equ lpf1 Reg1
+equ lpf2 Reg2
+equ rectified reg3
+
+@isPinConnected Input
+rdax input, 1
+absa			; rectify
+wrax rectified, 0
+
+@isPinConnected Attack
+rdax rectified, attackFreq
+rdax lpf1, -attackFreq
+mulx attackControl
+rdax lpf1, 1.0
+@else
+rdax rectified, 1.0
+rdfx lpf1, attackFreq
+@endif
+wrax lpf1, 0
+
+@isPinConnected Decay
+rdax rectified, decayFreq
+rdax lpf2, -decayFreq
+mulx decayControl
+rdax lpf2, 1.0
+@else
+rdax rectified, 1.0
+rdfx lpf2, decayFreq
+@endif
+wrax lpf2, 1
+maxx lpf1, 1.0
+wrax output, 0
+
+@setOutputPin "Max Output" output
+@setOutputPin "Fast Output" lpf1
+@setOutputPin "Slow Output" lpf2
+@endif

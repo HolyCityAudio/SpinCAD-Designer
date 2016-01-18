@@ -33,7 +33,7 @@ import org.andrewkilpatrick.elmGen.util.Util;
 // GSW added extension to thread class, not 100% certain it was needed
 public class SpinSimulator extends Thread {
 	enum Port {
-		ADC, DAC
+		ADC, DAC, SCOPE1, SCOPE2
 	};
 
 	ElmProgram prog = null;
@@ -46,6 +46,7 @@ public class SpinSimulator extends Thread {
 	String inputFilename = null;
 	String outputFilename = null;
 	LinkedList<AudioSink> audioSinks = null;
+	public LevelLogger scope, levelL = null;
 
 	/**
 	 * Creates a simulator.
@@ -292,14 +293,14 @@ public class SpinSimulator extends Thread {
 
 	// GSW added this part to integrate into SpinCAD Designer
 	public void showLevelLogger(JPanel p) {
-		LevelLogger levelL = new LevelLogger(p);
+		levelL = new LevelLogger(p);
 		audioSinks.add(levelL);
 		System.out.println(audioSinks);
 	}
 
 	// GSW added this part to integrate into SpinCAD Designer
 	public void showScope(JPanel p) {
-		LevelLogger scope = new LevelLogger(p);
+		scope = new LevelLogger(p);
 		scope.setLogMode(0);
 		scope.windowRatio = 8;
 		audioSinks.add(scope);

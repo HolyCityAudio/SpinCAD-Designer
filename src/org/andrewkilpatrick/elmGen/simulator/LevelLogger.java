@@ -31,7 +31,7 @@ import org.andrewkilpatrick.elmGen.util.Util;
 
 public class LevelLogger implements AudioSink {
 	JFrame frame;
-// GSW changed from JPanel to LoggerPanel to integrate with SpinCAD Designer
+	// GSW changed from JPanel to LoggerPanel to integrate with SpinCAD Designer
 	public LoggerPanel panel;
 	int windowCount = 0;
 	double maxL = 0.0;
@@ -40,16 +40,22 @@ public class LevelLogger implements AudioSink {
 	int xPos = 0;
 	int oldL = -96;
 	int oldR = -96;
-// GSW added options for linear or log display within SpinCAD
-// scope variables
-// display height is 
+	// GSW added options for linear or log display within SpinCAD
+	// scope variables
+	// display height is 
 	double refLeft = -0.5;
 	double refRight = 0.5;
 	double vDivLeft = 1.0;
 	double vDivRight = 1.0;
-//
-	
-// not exactly sure if linear works!
+	// channel gain
+	private int scopeCh1Gain = 16;
+	private int scopeCh2Gain = 16;
+
+	//  GSW added trigger modes
+	enum triggerMode { AUTO, NORMAL, SINGLE };
+	triggerMode tm = triggerMode.AUTO;
+
+	// not exactly sure if linear works!
 	private int logMode = 1;	// 0 for integer, 1 for log
 	double left = -1;
 	double right = -1;
@@ -93,7 +99,7 @@ public class LevelLogger implements AudioSink {
 
 	public void writeDac(int[] buf, int len) {
 		int dbuf[] = delay.process(buf, 50000);
-// GSW Added some logic to discern between linear and log mode.
+		// GSW Added some logic to discern between linear and log mode.
 		for(int i = 0; i < len; i += 2) {	
 			if(logMode == 1) {
 				left = Math.abs(Util.regToDouble(dbuf[i]));
@@ -113,7 +119,7 @@ public class LevelLogger implements AudioSink {
 			{
 				left = (double)Util.regToInt(dbuf[i]);
 				right = (double)Util.regToInt(dbuf[i + 1]);
-//				System.out.println(left);
+				//				System.out.println(left);
 			}	
 
 			windowCount ++;
@@ -125,8 +131,8 @@ public class LevelLogger implements AudioSink {
 			}
 		}
 	}
-	
-// GSW Added LoggerPanel as a class
+
+	// GSW Added LoggerPanel as a class
 	public class LoggerPanel {
 
 		JPanel panel;
@@ -149,37 +155,48 @@ public class LevelLogger implements AudioSink {
 
 			int newL = -1;
 			int newR = -1;
-			if(logMode == 1) {
-				if(xPos < 1) {
-					g2.setColor(Color.BLACK);
-					g2.fillRect(0, 0, panel.getWidth(), panel.getHeight());
+			if((tm == triggerMode.AUTO) || (tm == triggerMode.SINGLE && xPos < panel.getWidth())) {
+				if(logMode == 1) {
+					if(xPos < 1) {
+						g2.setColor(Color.BLACK);
+						g2.fillRect(0, 0, panel.getWidth(), panel.getHeight());
+					}
+					newL = (int)sampleToDB(maxL);
+					newR = (int)sampleToDB(maxR);
+					g2.setColor(Color.MAGENTA);
+					g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
+					g2.setColor(Color.CYAN);
+					g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
 				}
-				newL = (int)sampleToDB(maxL);
-				newR = (int)sampleToDB(maxR);
-				g2.setColor(Color.MAGENTA);
-				g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
-				g2.setColor(Color.CYAN);
-				g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
-			}
-			else if (logMode == 0) {
-				// clear a vertical slice at the current x position
-				g2.setColor(Color.BLACK);
-				g2.fillRect(xPos+1, 0, xPos+1, panel.getHeight());
+				else if (logMode == 0) {
+					// clear a vertical slice at the current x position
+					g2.setColor(Color.BLACK);
+					g2.fillRect(xPos+1, 0, xPos+1, panel.getHeight());
 
-				newL = (int) (left/(65535) + (1 + refLeft) * 100);
-				newR = (int) (right/(65535) + (1 + refRight) * 100);
-				
-				g2.setColor(Color.MAGENTA);
-				g2.drawLine(xPos, oldL, xPos + 1, newL);
-				
-				g2.setColor(Color.CYAN);
-				g2.drawLine(xPos, oldR, xPos + 1, newR);
+					newL = (int) (((int) left >> scopeCh1Gain) + (1 + refLeft) * 100);
+					newR = (int) (((int) right >> scopeCh2Gain) + (1 + refRight) * 100);
+
+					g2.setColor(Color.MAGENTA);
+					g2.drawLine(xPos, oldL, xPos + 1, newL);
+
+					g2.setColor(Color.CYAN);
+					g2.drawLine(xPos, oldR, xPos + 1, newR);
+				}
 			}
 			oldL = newL;
 			oldR = newR;
 			xPos ++;
 			if(xPos == panel.getWidth()) {
-				xPos = 0;
+				switch(tm) {
+
+				case AUTO:
+					xPos = 0;
+					break;
+
+				case SINGLE:
+					break;		
+
+				}
 			}
 		}
 	}
@@ -189,13 +206,26 @@ public class LevelLogger implements AudioSink {
 	}
 
 	// GSW added SampleToInt for use with integer mode logger
-// as before, not sure if it works!
+	// as before, not sure if it works!
 	private int sampleToInt(double sampleLevel) {
 		return (int)(sampleLevel * 16384);
 	}
-	
+
 	public void setLogMode(int mode) {
 		if ((logMode == 0) || (logMode == 1))
 			logMode = mode;
 	}
+
+	public void setScopeCh1Gain(int gain) {
+		scopeCh1Gain = gain;
+	}
+
+	public void setWindowRatio(int ratio) {
+		windowRatio = ratio;
+	}
+
+	public void setScopeCh2Gain(int gain) {
+		scopeCh2Gain = gain;
+	}
+
 }
