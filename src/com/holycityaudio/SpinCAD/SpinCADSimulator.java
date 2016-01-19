@@ -222,13 +222,13 @@ public class SpinCADSimulator {
 		private static final long serialVersionUID = -3040642773216953900L;
 		final JLabel ch1_Vertical_Gain_Label = new JLabel(" Ch 1 Gain: ");
 
-		String[] gainLabels = new String[] {"1x", "2x", "4x", "8x"};
+		String[] gainLabels = new String[] {"1x", "2x", "4x", "8x", "16x"};
 		JComboBox<String> ch1_Vertical_Gain = new JComboBox<>(gainLabels);
 
 		final JLabel ch2_Vertical_Gain_Label = new JLabel(" Ch 2 Gain: ");
 		JComboBox<String> ch2_Vertical_Gain = new JComboBox<>(gainLabels);
 
-		String[] timebaseLabels = new String[] {"32", "64", "128", "256", "512", "1024"};
+		String[] timebaseLabels = new String[] {"8", "16", "32", "64", "128", "256", "512", "1024"};
 		final JLabel timebaseLabel = new JLabel(" Time Base: ");
 		JComboBox<String> timebase = new JComboBox<>(timebaseLabels);
 
@@ -328,8 +328,6 @@ public class SpinCADSimulator {
 			add(triggerSlope);
 		}
 
-
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if (arg0.getSource() == ch1_Vertical_Gain) {
@@ -338,22 +336,26 @@ public class SpinCADSimulator {
 				switch(gain) {
 				case "1x":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(16);
+						sim.scope.setScopeCh1Gain(18);
 					}
 					break;
 				case "2x":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(15);
+						sim.scope.setScopeCh1Gain(17);
 					}
 					break;
 				case "4x":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(14);
+						sim.scope.setScopeCh1Gain(16);
 					}
 					break;
 				case "8x":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(13);
+						sim.scope.setScopeCh1Gain(15);
+					}
+				case "16":
+					if(sim != null) {
+						sim.scope.setScopeCh1Gain(14);
 					}
 					break;
 				}
@@ -363,66 +365,86 @@ public class SpinCADSimulator {
 				switch(gain) {
 				case "1x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(16);
+						sim.scope.setScopeCh2Gain(18);
 					}
 					break;
 				case "2x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(15);
+						sim.scope.setScopeCh2Gain(17);
 					}
 					break;
 				case "4x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(14);
+						sim.scope.setScopeCh2Gain(16);
 					}
 					break;
 				case "8x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(13);
+						sim.scope.setScopeCh2Gain(15);
+					}
+				case "16x":
+					if(sim != null) {
+						sim.scope.setScopeCh2Gain(14);
 					}
 					break;
 				}
 			} else if (arg0.getSource() == timebase) {
 				JComboBox<?> cb = (JComboBox)arg0.getSource();
 				String gain = (String)cb.getSelectedItem();
-				switch(gain) {
-				case "32":
-					if(sim != null) {
-						sim.scope.setWindowRatio(32);
-					}
-					break;
-				case "64":
-					if(sim != null) {
-						sim.scope.setWindowRatio(64);
-					}
-					break;
-				case "128":
-					if(sim != null) {
-						sim.scope.setWindowRatio(128);
-					}
-					break;
-				case "256":
-					if(sim != null) {
-						sim.scope.setWindowRatio(256);
-					}
-					break;
-				case "512":
-					if(sim != null) {
-						sim.scope.setWindowRatio(512);
-					}
-					break;
-				case "1024":
-					if(sim != null) {
-						sim.scope.setWindowRatio(1024);
-					}
-					break;
-				}
+				setTimeBase(gain);
+				
 			} else if (arg0.getSource() == triggerSlope) {
 				int j = 1;
 			} else if (arg0.getSource() == triggerMode) {
 				int j = 1;
 			}
 
+		}
+		
+		void setTimeBase(String gain) {
+			switch(gain) {
+			case "8":
+				if(sim != null) {
+					sim.scope.setWindowRatio(8);
+				}
+				break;
+			case "16":
+				if(sim != null) {
+					sim.scope.setWindowRatio(16);
+				}
+				break;
+			case "32":
+				if(sim != null) {
+					sim.scope.setWindowRatio(32);
+				}
+				break;
+			case "64":
+				if(sim != null) {
+					sim.scope.setWindowRatio(64);
+				}
+				break;
+			case "128":
+				if(sim != null) {
+					sim.scope.setWindowRatio(128);
+				}
+				break;
+			case "256":
+				if(sim != null) {
+					sim.scope.setWindowRatio(256);
+				}
+				break;
+			case "512":
+				if(sim != null) {
+					sim.scope.setWindowRatio(512);
+				}
+				break;
+			case "1024":
+				if(sim != null) {
+					sim.scope.setWindowRatio(1024);
+				}
+				break;
+			}
+			
 		}
 
 		@Override
