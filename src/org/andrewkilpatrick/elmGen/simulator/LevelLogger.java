@@ -52,8 +52,12 @@ public class LevelLogger implements AudioSink {
 	private int scopeCh2Gain = 16;
 
 	//  GSW added trigger modes
-	enum triggerMode { AUTO, NORMAL, SINGLE };
-	triggerMode tm = triggerMode.AUTO;
+	public enum triggerMode { AUTO, NORMAL, SINGLE };
+	public triggerMode tm = triggerMode.AUTO;
+	boolean triggered = false;
+
+	// scope slope filter
+	private double[] filter = new double[3];
 
 	// not exactly sure if linear works!
 	private int logMode = 1;	// 0 for integer, 1 for log
@@ -87,6 +91,9 @@ public class LevelLogger implements AudioSink {
 			}
 		});
 		delay = new AudioDelay();
+		filter[0] = 0.0;
+		filter[1] = 0.0;
+		filter[2] = 0.0;
 	}
 
 	public void close() {
@@ -155,14 +162,31 @@ public class LevelLogger implements AudioSink {
 
 			int newL = -1;
 			int newR = -1;
-			if((tm == triggerMode.AUTO) || (tm == triggerMode.SINGLE && xPos < panel.getWidth())) {
+			if(logMode == 1) {
+				newL = (int)sampleToDB(maxL);
+				newR = (int)sampleToDB(maxR);
+			}
+			else if (logMode == 0) {
+				newL = (int) (((1 + refLeft) * 100) - ((int) left >> scopeCh1Gain));
+				newR = (int) (((1 + refRight) * 100) - ((int) right >> scopeCh2Gain));
+			}
+
+			filter[2] = filter[1];
+			filter[1] = filter[0];
+			filter[0] = newL;
+
+			double slope = filter[0] - filter[2];
+
+			if(slope > 0.0) {
+				triggered = true;
+			}
+
+			if(triggered && (tm == triggerMode.AUTO) || (tm == triggerMode.SINGLE)) {
 				if(logMode == 1) {
 					if(xPos < 1) {
 						g2.setColor(Color.BLACK);
 						g2.fillRect(0, 0, panel.getWidth(), panel.getHeight());
 					}
-					newL = (int)sampleToDB(maxL);
-					newR = (int)sampleToDB(maxR);
 					g2.setColor(Color.MAGENTA);
 					g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
 					g2.setColor(Color.CYAN);
@@ -173,14 +197,12 @@ public class LevelLogger implements AudioSink {
 					g2.setColor(Color.BLACK);
 					g2.fillRect(xPos+1, 0, 2, panel.getHeight());
 
-					newL = (int) (((1 + refLeft) * 100) - ((int) left >> scopeCh1Gain));
-					newR = (int) (((1 + refRight) * 100) - ((int) right >> scopeCh2Gain));
-
 					g2.setColor(Color.MAGENTA);
 					g2.drawLine(xPos, oldL, xPos + 1, newL);
 
 					g2.setColor(Color.CYAN);
 					g2.drawLine(xPos, oldR, xPos + 1, newR);
+
 				}
 			}
 			oldL = newL;
@@ -191,9 +213,11 @@ public class LevelLogger implements AudioSink {
 
 				case AUTO:
 					xPos = 0;
+					triggered = false;
 					break;
 
 				case SINGLE:
+					triggered = false;
 					break;		
 
 				}
@@ -226,6 +250,10 @@ public class LevelLogger implements AudioSink {
 
 	public void setScopeCh2Gain(int gain) {
 		scopeCh2Gain = gain;
+	}
+
+	public double getSignalSlope(int channel) {
+		return right;
 	}
 
 }

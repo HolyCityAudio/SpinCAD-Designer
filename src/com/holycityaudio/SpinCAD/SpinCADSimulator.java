@@ -26,6 +26,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.andrewkilpatrick.elmGen.simulator.AudioFileReader;
+import org.andrewkilpatrick.elmGen.simulator.LevelLogger.triggerMode;
 import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
 public class SpinCADSimulator {
@@ -213,6 +214,8 @@ public class SpinCADSimulator {
 			}
 		} 
 	}
+	
+	
 
 	public class ScopeToolBar extends JToolBar implements ActionListener, ChangeListener {
 
@@ -234,7 +237,7 @@ public class SpinCADSimulator {
 
 		String[] triggerModeLabels = new String[] {"Auto", "Normal", "Single"};
 		final JLabel triggerModeLabel = new JLabel(" Trigger Mode: ");
-		final JComboBox<String> triggerMode = new JComboBox(triggerModeLabels);
+		final JComboBox<String> triggerModeCB = new JComboBox(triggerModeLabels);
 
 		final JLabel triggerLevelLabel = new JLabel(" Trigger Level: ");
 		final JSpinner triggerLevel = new JSpinner();
@@ -290,8 +293,9 @@ public class SpinCADSimulator {
 			ch2_Vertical_Gain.setBorder(border);
 			ch2_Vertical_Gain.addActionListener(this);
 
-			triggerMode.add(new JLabel("Auto"));
-			triggerMode.add(new JLabel("Normal"));
+			triggerModeCB.add(new JLabel("Auto"));
+			triggerModeCB.add(new JLabel("Normal"));
+			triggerModeCB.add(new JLabel("Single"));
 
 			add(ch1_Vertical_Gain_Label);
 			add(ch1_Vertical_Gain);
@@ -307,11 +311,11 @@ public class SpinCADSimulator {
 			add(timebase);
 
 			add(triggerModeLabel);
-			triggerMode.setMinimumSize(new Dimension(100,120));
-			triggerMode.setMaximumSize(new Dimension(120,140));
-			triggerMode.setBorder(border);
-			triggerMode.addActionListener(this);
-			add(triggerMode);
+			triggerModeCB.setMinimumSize(new Dimension(100,120));
+			triggerModeCB.setMaximumSize(new Dimension(120,140));
+			triggerModeCB.setBorder(border);
+			triggerModeCB.addActionListener(this);
+			add(triggerModeCB);
 
 			add(triggerLevelLabel);
 			triggerLevel.setMinimumSize(new Dimension(100,120));
@@ -336,26 +340,26 @@ public class SpinCADSimulator {
 				switch(gain) {
 				case "1x":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(18);
+						sim.scope.setScopeCh1Gain(19);
 					}
 					break;
 				case "2x":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(17);
+						sim.scope.setScopeCh1Gain(18);
 					}
 					break;
 				case "4x":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(16);
+						sim.scope.setScopeCh1Gain(17);
 					}
 					break;
 				case "8x":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(15);
+						sim.scope.setScopeCh1Gain(16);
 					}
 				case "16":
 					if(sim != null) {
-						sim.scope.setScopeCh1Gain(14);
+						sim.scope.setScopeCh1Gain(15);
 					}
 					break;
 				}
@@ -365,26 +369,26 @@ public class SpinCADSimulator {
 				switch(gain) {
 				case "1x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(18);
+						sim.scope.setScopeCh2Gain(19);
 					}
 					break;
 				case "2x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(17);
+						sim.scope.setScopeCh2Gain(18);
 					}
 					break;
 				case "4x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(16);
+						sim.scope.setScopeCh2Gain(17);
 					}
 					break;
 				case "8x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(15);
+						sim.scope.setScopeCh2Gain(16);
 					}
 				case "16x":
 					if(sim != null) {
-						sim.scope.setScopeCh2Gain(14);
+						sim.scope.setScopeCh2Gain(15);
 					}
 					break;
 				}
@@ -395,8 +399,25 @@ public class SpinCADSimulator {
 				
 			} else if (arg0.getSource() == triggerSlope) {
 				int j = 1;
-			} else if (arg0.getSource() == triggerMode) {
-				int j = 1;
+			} else if (arg0.getSource() == triggerModeCB) {
+				JComboBox<?> cb = (JComboBox)arg0.getSource();
+				String gain = (String)cb.getSelectedItem();
+				switch(gain) {
+				case "Auto":
+					if(sim != null) {
+					sim.scope.tm = triggerMode.AUTO;
+					}
+					break;
+				case "Normal":
+					if(sim != null) {
+					}
+					break;
+				case "Single":
+					if(sim != null) {
+						sim.scope.tm = triggerMode.SINGLE;
+					}
+					break;
+				}
 			}
 
 		}
