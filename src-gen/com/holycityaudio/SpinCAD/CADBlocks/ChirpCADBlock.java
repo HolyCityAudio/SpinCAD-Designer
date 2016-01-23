@@ -81,6 +81,38 @@
 			
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();
+			if(nAPs > 19) {
+			sfxb.FXallocDelayMem("iap20", stretch); 
+			}
+			
+			if(nAPs > 18) {
+			sfxb.FXallocDelayMem("iap19", stretch); 
+			}
+			
+			if(nAPs > 17) {
+			sfxb.FXallocDelayMem("iap18", stretch); 
+			}
+			
+			if(nAPs > 16) {
+			sfxb.FXallocDelayMem("iap17", stretch); 
+			}
+			
+			if(nAPs > 15) {
+			sfxb.FXallocDelayMem("iap16", stretch); 
+			}
+			
+			if(nAPs > 14) {
+			sfxb.FXallocDelayMem("iap15", stretch); 
+			}
+			
+			if(nAPs > 13) {
+			sfxb.FXallocDelayMem("iap14", stretch); 
+			}
+			
+			if(nAPs > 12) {
+			sfxb.FXallocDelayMem("iap13", stretch); 
+			}
+			
 			if(nAPs > 11) {
 			sfxb.FXallocDelayMem("iap12", stretch); 
 			}
@@ -127,6 +159,46 @@
 			
 			sfxb.FXallocDelayMem("iap4", stretch); 
 			sfxb.readRegister(input, gain);
+			if(nAPs > 19) {
+			sfxb.FXreadDelay("iap20#", 0, kiap);
+			sfxb.FXwriteAllpass("iap20", 0, -kiap);
+			}
+			
+			if(nAPs > 18) {
+			sfxb.FXreadDelay("iap19#", 0, kiap);
+			sfxb.FXwriteAllpass("iap19", 0, -kiap);
+			}
+			
+			if(nAPs > 17) {
+			sfxb.FXreadDelay("iap18#", 0, kiap);
+			sfxb.FXwriteAllpass("iap18", 0, -kiap);
+			}
+			
+			if(nAPs > 16) {
+			sfxb.FXreadDelay("iap17#", 0, kiap);
+			sfxb.FXwriteAllpass("iap17", 0, -kiap);
+			}
+			
+			if(nAPs > 15) {
+			sfxb.FXreadDelay("iap16#", 0, kiap);
+			sfxb.FXwriteAllpass("iap16", 0, -kiap);
+			}
+			
+			if(nAPs > 14) {
+			sfxb.FXreadDelay("iap15#", 0, kiap);
+			sfxb.FXwriteAllpass("iap15", 0, -kiap);
+			}
+			
+			if(nAPs > 13) {
+			sfxb.FXreadDelay("iap14#", 0, kiap);
+			sfxb.FXwriteAllpass("iap14", 0, -kiap);
+			}
+			
+			if(nAPs > 12) {
+			sfxb.FXreadDelay("iap13#", 0, kiap);
+			sfxb.FXwriteAllpass("iap13", 0, -kiap);
+			}
+			
 			if(nAPs > 11) {
 			sfxb.FXreadDelay("iap12#", 0, kiap);
 			sfxb.FXwriteAllpass("iap12", 0, -kiap);
