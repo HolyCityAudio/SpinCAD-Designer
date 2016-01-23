@@ -91,7 +91,7 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 			
 				frame.add(gaininnerPanel);
 			
-			nAPsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (10 * 1.0), (int) (gCB.getnAPs() * 1.0));
+			nAPsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (12 * 1.0), (int) (gCB.getnAPs() * 1.0));
 				nAPsSlider.addChangeListener(new ChirpListener());
 				nAPsLabel = new JLabel();
 				Border nAPsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

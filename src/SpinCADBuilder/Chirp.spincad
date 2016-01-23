@@ -7,7 +7,7 @@ equ gain 0.5
 @sliderLabel gain 'Input Gain' -18 0 -6 1.0 1 DBLEVEL 
 
 equ nAPs 4
-@sliderLabel nAPs 'Stages' 2 10 4 1.0 1 
+@sliderLabel nAPs 'Stages' 2 12 4 1.0 1 
 
 equ stretch 4
 @sliderLabel stretch 'Stretch' 2 5000 4 1.0 1 
@@ -17,6 +17,30 @@ equ   kiap   0.5  ; input all pass filter
 
 equ output1 reg0
 
+@isGreaterThan nAPs 11
+mem   iap12   stretch  ; all-pass filters
+@endif
+@isGreaterThan nAPs 10
+mem   iap11   stretch  ; all-pass filters
+@endif
+@isGreaterThan nAPs 9
+mem   iap10   stretch  ; all-pass filters
+@endif
+@isGreaterThan nAPs 8 
+mem   iap9   stretch
+@endif
+@isGreaterThan nAPs 7 
+mem   iap8   stretch
+@endif
+@isGreaterThan nAPs 6
+mem   iap7   stretch  ; all-pass filters
+@endif
+@isGreaterThan nAPs 5 
+mem   iap6   stretch
+@endif
+@isGreaterThan nAPs 4 
+mem   iap5   stretch
+@endif
 @isGreaterThan nAPs 3
 mem   iap1   stretch  ; all-pass filters
 @endif
@@ -28,9 +52,45 @@ mem   iap3   stretch
 @endif
 mem   iap4   stretch
 
-;now run input signal into 4 all passes:
+;now run input signal into up to 12 all passes:
 
 rdax   input, gain      ;attenuate signal to avoid clipping   
+
+@isGreaterThan nAPs 11
+rda   iap12#,kiap   
+wrap   iap12,-kiap      
+@endif
+@isGreaterThan nAPs 10
+rda   iap11#,kiap   
+wrap   iap11,-kiap    
+@endif
+
+@isGreaterThan nAPs 9
+rda   iap10#,kiap   
+wrap   iap10,-kiap      
+@endif
+@isGreaterThan nAPs 8
+rda   iap9#,kiap   
+wrap   iap9,-kiap      
+@endif
+@isGreaterThan nAPs 7
+rda   iap8#,kiap   
+wrap   iap8,-kiap    
+@endif
+
+@isGreaterThan nAPs 6
+rda   iap7#,kiap   
+wrap   iap7,-kiap      
+@endif
+@isGreaterThan nAPs 5
+rda   iap6#,kiap   
+wrap   iap6,-kiap      
+@endif
+@isGreaterThan nAPs 4
+rda   iap5#,kiap   
+wrap   iap5,-kiap    
+@endif
+
 @isGreaterThan nAPs 3
 rda   iap1#,kiap   
 wrap   iap1,-kiap      
