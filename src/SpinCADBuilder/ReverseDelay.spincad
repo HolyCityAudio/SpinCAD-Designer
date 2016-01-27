@@ -1,0 +1,28 @@
+@name "Reverse Delay"
+@color "0x7100fc"
+@audioInput input Input
+@audioOutput output Output
+
+mem delay 32767 
+equ output reg0
+skp run, loop 
+
+sof 0, -0.25   ;clear acc and set -0.25
+wrax rmp0_rate, 0   ;ramp rate = -.25, clear to 0
+wrax RMP0_RANGE, 0 ;ramp range= 0
+
+loop: 
+
+; sof 0,0      ;clear acc
+
+rdax input, 1.0    ;read left adc
+wra delay#, 0.0    ;write to delay ram and clear
+cho rdal, rmp0    ;get ramp lfo
+wrax addr_ptr, 0    ;write data at delay ram address 
+rmpa 1.0       ;read data at delay ram address 1.0
+wrax output, 0.0
+
+@setOutputPin Output output
+
+
+

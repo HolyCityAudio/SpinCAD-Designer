@@ -51,6 +51,8 @@
 @menuitem "MN3011" MN3011a 
 @menuitem "6-Tap Stereo" sixtap 
 @menuitem "8-Tap" eighttap 
+@menuitem "Stutter" Stutter 
+@menuitem "Reverse" ReverseDelay 
 
 @menu "Reverb" 
 @menuitem "Allpass" allpass 

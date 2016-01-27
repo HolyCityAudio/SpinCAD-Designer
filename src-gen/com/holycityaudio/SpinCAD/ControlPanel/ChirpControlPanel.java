@@ -110,7 +110,7 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 			
 				frame.add(nAPsinnerPanel);
 			
-			stretchSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (100 * 1.0), (int) (gCB.getstretch() * 1.0));
+			stretchSlider = new JSlider(JSlider.HORIZONTAL, (int)(1 * 1.0),(int) (100 * 1.0), (int) (gCB.getstretch() * 1.0));
 				stretchSlider.addChangeListener(new ChirpListener());
 				stretchLabel = new JLabel();
 				Border stretchBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

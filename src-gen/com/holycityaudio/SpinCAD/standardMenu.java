@@ -37,6 +37,8 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.sixtapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.StutterCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ReverseDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.allpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChirpCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
@@ -444,6 +446,24 @@
 		}
 	});
 	mn_delay.add(mntm_eighttap);
+		
+	final JMenuItem mntm_Stutter = new JMenuItem("Stutter");
+	mntm_Stutter.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new StutterCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_delay.add(mntm_Stutter);
+		
+	final JMenuItem mntm_ReverseDelay = new JMenuItem("Reverse");
+	mntm_ReverseDelay.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ReverseDelayCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_delay.add(mntm_ReverseDelay);
 		
 	JMenu mn_reverb = new JMenu("Reverb");
 	menuBar.add(mn_reverb);
