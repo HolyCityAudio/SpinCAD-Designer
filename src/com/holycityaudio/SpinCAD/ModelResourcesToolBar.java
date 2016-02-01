@@ -130,7 +130,7 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 			progressBar_2.setForeground(Color.green);
 		} else if (codeLength < 105) {
 			progressBar_2.setForeground(Color.yellow);
-		} else if (codeLength < 128) {
+		} else if (codeLength <= 128) {
 			progressBar_2.setForeground(Color.orange);
 		} else {
 			progressBar_2.setForeground(Color.red);
@@ -144,7 +144,7 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 			progressBar.setForeground(Color.green);
 		} else if (nRegs < 26) {
 			progressBar.setForeground(Color.yellow);
-		} else if (nRegs < 32) {
+		} else if (nRegs <= 32) {
 			progressBar.setForeground(Color.orange);
 		} else {
 			progressBar.setForeground(Color.red);
@@ -157,7 +157,7 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 			progressBar_1.setForeground(Color.green);
 		} else if (ramUsed < 26000) {
 			progressBar_1.setForeground(Color.yellow);
-		} else if (ramUsed < 32768) {
+		} else if (ramUsed <= 32768) {
 			progressBar_1.setForeground(Color.orange);
 		} else {
 			progressBar_1.setForeground(Color.red);
