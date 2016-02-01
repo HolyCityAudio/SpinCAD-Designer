@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 990;
+	int buildNum = 991;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -128,6 +128,7 @@ public class SpinCADFrame extends JFrame {
 
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
+	
 
 	// pasteBuffer is used to paste after copying
 	ByteArrayOutputStream pasteBuffer;

@@ -31,6 +31,10 @@
 			private ReverseDelayControlPanel cp = null;
 			
 			private int output;
+			private int output2;
+			private int ramp;
+			private int ramp2;
+			private int xfade;
 
 			public ReverseDelayCADBlock(int x, int y) {
 				super(x, y);
@@ -39,6 +43,10 @@
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
+				addOutputPin(this, "Output2");
+				addControlOutputPin(this, "Ramp");
+				addControlOutputPin(this, "Ramp2");
+				addControlOutputPin(this, "Xfade");
 			// if any control panel elements declared, set hasControlPanel to true
 						}
 		
@@ -74,6 +82,11 @@
 			// finally, generate the instructions
 			sfxb.FXallocDelayMem("delay", 32767); 
 			output = sfxb.allocateReg();
+			output2 = sfxb.allocateReg();
+			ramp = sfxb.allocateReg();
+			ramp2 = sfxb.allocateReg();
+			xfade = sfxb.allocateReg();
+			if(this.getPin("Input").isConnected() == true) {
 			sfxb.skip(RUN, 3);
 			sfxb.scaleOffset(0, -0.25);
 			sfxb.writeRegister(RMP0_RATE, 0);
@@ -81,10 +94,34 @@
 			sfxb.readRegister(input, 1.0);
 			sfxb.FXwriteDelay("delay#", 0, 0.0);
 			sfxb.chorusReadValue(RMP0);
-			sfxb.writeRegister(ADDR_PTR, 0);
+			sfxb.writeRegister(ADDR_PTR, 1.0);
+			sfxb.writeRegister(ramp, 1.0);
+			sfxb.scaleOffset(1.0, -0.25);
+			sfxb.absa();
+			sfxb.scaleOffset(-2.0, 0.25);
+			sfxb.scaleOffset(-2.0, 0);
+			sfxb.scaleOffset(-2.0, 0);
+			sfxb.scaleOffset(-2.0, 0);
+			sfxb.scaleOffset(-2.0, 0);
+			sfxb.scaleOffset(0.5, 0.5);
+			sfxb.writeRegister(xfade, 0.0);
 			sfxb.readDelayPointer(1.0);
 			sfxb.writeRegister(output, 0.0);
+			sfxb.readRegister(ramp, 1.0);
+			sfxb.scaleOffset(1.0, -0.125);
+			sfxb.writeRegister(ramp2, 1.0);
+			sfxb.skip(GEZ, 1);
+			sfxb.scaleOffset(1.0, 0.325);
+			sfxb.writeRegister(ADDR_PTR, 0.0);
+			sfxb.readDelayPointer(1.0);
+			sfxb.writeRegister(output2, 0.0);
+			}
+			
 			this.getPin("Output").setRegister(output);
+			this.getPin("Output2").setRegister(output2);
+			this.getPin("Ramp").setRegister(ramp);
+			this.getPin("Ramp2").setRegister(ramp2);
+			this.getPin("Xfade").setRegister(xfade);
 
 			}
 			

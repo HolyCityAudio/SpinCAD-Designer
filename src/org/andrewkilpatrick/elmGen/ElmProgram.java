@@ -303,9 +303,9 @@ public class ElmProgram implements Serializable {
 			// throw new ElmProgramException("max program length reached: " +
 			// MAX_CODE_LEN);
 			JFrame frame = new JFrame();
-			JOptionPane.showMessageDialog(frame, "Too many instructions!\n"
-					+ "Please remove a block.",
-					"Ran out of instructions!", JOptionPane.OK_OPTION);
+//			JOptionPane.showMessageDialog(frame, "Too many instructions!\n"
+//					+ "Please remove a block.",
+//					"Ran out of instructions!", JOptionPane.OK_OPTION);
 		}
 	}
 

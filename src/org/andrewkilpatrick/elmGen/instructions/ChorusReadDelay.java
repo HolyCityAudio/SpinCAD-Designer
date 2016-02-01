@@ -109,12 +109,12 @@ public class ChorusReadDelay extends ChorusInstruction {
 				// get the delay memory value and scale it by the interpolation amount
 				if(compc) {
 					tempReg.setValue(state.getDelayVal(delayPos));
-					tempReg.mult((255 - inter) << 5);
+					tempReg.mult((255 - inter) << 6);
 					state.getACC().add(tempReg.getValue());
 				}
 				else {
 					tempReg.setValue(state.getDelayVal(delayPos));
-					tempReg.mult(inter << 5);
+					tempReg.mult(inter << 6);
 					state.getACC().add(tempReg.getValue());
 				}	
 			}
