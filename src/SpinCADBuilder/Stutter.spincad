@@ -1,0 +1,43 @@
+@name Stutter 
+@color "0xf2c214"  
+@audioInput input Input
+@audioOutput output Output
+@controlInput stutter Stutter  
+; @controlInput delay Delay
+
+;REGISTERS 
+equ   output     reg0       
+
+equ delayLength 32767 
+@sliderLabel delayLength 'Delay Time (ms): ' 0 32767 16384 1 0 lengthToTime
+
+// establish the base address for this module
+@getBaseAddress 
+// then allocate the buffer
+mem delayRam delayLength 
+
+
+@isPinConnected Input
+rdax    input,1    ;read input signal
+wra	delayRam, 0
+
+@isPinConnected Stutter
+rdax	stutter, 1.0
+sof		1.0, -0.5
+skp		neg, play
+rda delayRam#, 1.0
+skp		run, playDelay
+play:
+rda delayRam, 1.0
+playDelay:
+wrax output, 0.0
+@else
+rda delayRam#, 1.0
+wrax output, 0.0
+@endif
+
+@endif
+
+@setOutputPin Output output
+
+

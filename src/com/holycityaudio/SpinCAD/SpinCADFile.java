@@ -743,7 +743,10 @@ public class SpinCADFile {
 				if (sb.length() > 0) {
 					sb.append(File.pathSeparator);
 				}
+				String fp = file.getPath();
+				System.out.println(fp + " Path Length = " + fp.length());
 				sb.append(file.getPath());
+				System.out.println("RUFL Length = " + sb.length());
 			}
 			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 			p.put("RecentPatchFileList.fileList", sb.toString());

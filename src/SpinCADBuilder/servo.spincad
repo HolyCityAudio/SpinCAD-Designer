@@ -1,5 +1,5 @@
 @name 'Servo Flanger'
-@color "0x24f2f2"
+@color "0x243232"
 @audioInput input Input
 @audioInput feedback 'Feedback In'
 @audioOutput output Output  
@@ -39,7 +39,6 @@ equ output reg1
 @isPinConnected 'Delay Time'
 //equ servo reg2
 equ filt reg3
-//equ delta reg4
 //			;set up LFOs, only at start up
 @isEqualTo lfoSel 0
 skp run,START 
@@ -95,7 +94,6 @@ wrax output1, 0.0
 @endif
 
 //@setOutputPin Servo servo
-//@setOutputPin Delta delta
 @setOutputPin Output output
 @else
 // if control input is not connected just read from the middle of the delay

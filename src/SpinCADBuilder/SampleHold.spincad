@@ -50,7 +50,7 @@ rdax hold, 1
 wrax   output, 0 ; ACC to ADC
 skp zro, holding
 
-shftzrc:
+shftzrc: 
 ldax   input1 ; read the last control input value
 ; absa        ; make sure it's positive
 wrax hold, 0

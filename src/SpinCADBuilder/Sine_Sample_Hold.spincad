@@ -1,0 +1,88 @@
+@name "4-Phase Sample/Hold"
+@color "0xe2fe24"
+
+@controlInput input1 'Source'
+@controlInput rate 'LFO Rate'
+
+@controlOutput output1 "S/H Output 1"
+@controlOutput output2 "S/H Output 2"
+@controlOutput output3 "S/H Output 3"
+@controlOutput output4 "S/H Output 4"
+
+equ rateMax 511
+equ number6554000 6554000.0
+equ output1 reg0 
+equ output2 reg1 
+equ output3 reg2 
+equ output4 reg3 
+equ sin reg4
+
+// variable - Name - low - high - multiplier - precision - option 
+equ rate 20
+@sliderLabel rate 'LFO Max Rate' 0.0 511.0 20.0 100.0 2 SINLFOFREQ
+
+equ lfoSel 0
+@comboBox lfoSel 'LFO 0' 'LFO 1'
+
+@isEqualTo lfoSel 0
+skp run,START 
+wlds SIN0, 50, 32000
+START: 
+@else
+skp run,START1 
+wlds SIN1, 50, 32000
+START1: 
+@endif
+
+@isPinConnected 'LFO Rate'
+@divideDouble temp1 rate rateMax
+rdax	rate, temp1
+@isEqualTo lfoSel 0 
+wrax SIN0_RATE, 0
+@else
+wrax SIN1_RATE, 0
+@endif
+@endif
+
+@isEqualTo lfoSel 0 
+cho rdal, sin0
+wrax sin, 0
+cho rdal, 8
+@else
+cho rdal, SIN1
+wrax sin, 0
+cho rdal, 9
+@endif
+
+skp zrc, crossSine
+skp run, holding1
+
+crossSine:
+ldax   input1 ; read the last control input value
+wrax output1, 0
+
+holding1:
+clr
+rdax output1, 1.0
+wrax output1, 0
+
+rdax sin, 1.0
+skp zrc, crossCos
+skp run, holding2
+
+crossCos:
+ldax   input1 ; read the last control input value (update sample)
+wrax output2, 0
+skp run, finish
+
+holding2:
+clr
+rdax output2, 1.0
+wrax output2, 0
+finish:
+
+@setOutputPin "S/H Output 1" output1
+@setOutputPin "S/H Output 2" output2
+@setOutputPin "S/H Output 3" output3
+@setOutputPin "S/H Output 4" output4
+
