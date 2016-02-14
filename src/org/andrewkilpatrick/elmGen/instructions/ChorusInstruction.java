@@ -94,7 +94,7 @@ public class ChorusInstruction extends Instruction {
 				lfoval = state.getSinLFOVal(lfo);
 			}
 			// GSW attempting to debug SIN LFO
-			lfoPos = lfoval >> 8;
+			lfoPos = lfoval >> 9;
 		}
 		// RAMP LFOs
 		else if(lfo == 2 || lfo == 3) {
