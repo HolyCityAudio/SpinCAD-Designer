@@ -30,7 +30,7 @@
 			private static final long serialVersionUID = 1L;
 			private New_OscillatorControlPanel cp = null;
 			
-			private double freq = 0.15;
+			private double freqVar = 0.15;
 			private int s;
 			private int c;
 			private int sineOutput;
@@ -91,13 +91,13 @@
 			sfxb.scaleOffset(0, 0.5);
 			sfxb.writeRegister(s, 0);
 			sfxb.writeRegister(c, 0);
-			sfxb.readRegister(c, 1);
+			sfxb.readRegister(c, freqVar);
 			if(this.getPin("Frequency").isConnected() == true) {
 			sfxb.mulx(freq);
 			}
 			
 			sfxb.readRegister(s, 1);
-			sfxb.writeRegister(s, -1);
+			sfxb.writeRegister(s, -freqVar);
 			if(this.getPin("Frequency").isConnected() == true) {
 			sfxb.mulx(freq);
 			}
@@ -108,8 +108,8 @@
 			sfxb.mulx(width);
 			}
 			
-			sfxb.writeRegister(sineOutput, 1);
 			if(this.getPin("Square Output").isConnected() == true) {
+			sfxb.writeRegister(sineOutput, 1);
 			sqrOutput = sfxb.allocateReg();
 			sfxb.skip(NEG, 2);
 			sfxb.scaleOffset(0, 0.5);
@@ -121,6 +121,8 @@
 			
 			sfxb.writeRegister(sqrOutput, 0);
 			this.getPin("Square Output").setRegister(sqrOutput);
+			} else {
+			sfxb.writeRegister(sineOutput, 0);
 			}
 			
 			this.getPin("Sine Output").setRegister(sineOutput);
@@ -128,11 +130,11 @@
 			}
 			
 			// create setters and getter for control panel variables
-			public void setfreq(double __param) {
-				freq = __param;	
+			public void setfreqVar(double __param) {
+				freqVar = __param;	
 			}
 			
-			public double getfreq() {
-				return freq;
+			public double getfreqVar() {
+				return freqVar;
 			}
 		}	

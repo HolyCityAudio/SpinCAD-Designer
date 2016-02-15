@@ -5,9 +5,9 @@
 @controlOutput sineOutput "Sine Output"
 @controlOutput sqrOutput "Square Output"
 
-equ freq 0.15
+equ freqVar 0.15
 // variable - Name - low - high - multiplier - precision - option 
-@sliderLabel freq 'Frequency (Hz)' 20 5000 100.0 100.0 1 LOGFREQ 
+@sliderLabel freqVar 'Frequency (Hz)' 20 5000 100.0 100.0 1 LOGFREQ 
 
 ;sine + square generator 
 ; 
@@ -27,15 +27,15 @@ skp   run, start
 sof   0, 0.5      ;initialize SIN to 0.5 
 wrax   s,0 
 wrax   c,0      ;initialize COS to 0 
-
 start:
+
 ;Normal program starts here 
-rdax   c,1      ;Read COS 
+rdax   c,freqVar      ;Read COS 
 @isPinConnected "Frequency"
 mulx   freq      ;freq * COS 
 @endif
 rdax   s,1      ;SIN + freq*COS 
-wrax   s,-1      ;Save SIN and mult by -1 
+wrax   s,-freqVar      ;Save SIN and mult by -1 
 @isPinConnected "Frequency"
 mulx   freq      ;freq*(-SIN) 
 @endif
@@ -46,9 +46,8 @@ wrax   c,1      ;Save COS
 mulx   width      ;scale output 
 @endif
 
-wrax   sineOutput,1      ; write output 
-
 @isPinConnected "Square Output"
+wrax   sineOutput,1      ; write output 
 equ sqrOutput reg4
 skp    NEG, out_low   ; If negative, then skip 
 sof    0,0.5    ; Positive output 
@@ -61,6 +60,8 @@ mulx   width
 @endif
 wrax   sqrOutput, 0
 @setOutputPin "Square Output" sqrOutput
+@else
+wrax   sineOutput,0      ; write output 
 @endif
 
 @setOutputPin "Sine Output" sineOutput
