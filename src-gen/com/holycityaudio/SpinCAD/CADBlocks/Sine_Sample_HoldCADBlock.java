@@ -36,8 +36,10 @@
 			private int output2;
 			private int output3;
 			private int output4;
-			private int sin;
-			private double rate = 20;
+			private int sinreg;
+			private int cosreg;
+			private int testpoint;
+			private double rate = 50;
 			private double lfoSel = 0;
 
 			public Sine_Sample_HoldCADBlock(int x, int y) {
@@ -51,6 +53,7 @@
 				addControlOutputPin(this, "S/H Output 2");
 				addControlOutputPin(this, "S/H Output 3");
 				addControlOutputPin(this, "S/H Output 4");
+				addControlOutputPin(this, "Test Point");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -85,9 +88,9 @@
 				input1 = sp.getRegister();
 			}
 			sp = this.getPin("LFO Rate").getPinConnection();
-			int rate = -1;
+			int rateReg = -1;
 			if(sp != null) {
-				rate = sp.getRegister();
+				rateReg = sp.getRegister();
 			}
 			
 			// finally, generate the instructions
@@ -95,18 +98,20 @@
 			output2 = sfxb.allocateReg();
 			output3 = sfxb.allocateReg();
 			output4 = sfxb.allocateReg();
-			sin = sfxb.allocateReg();
+			sinreg = sfxb.allocateReg();
+			cosreg = sfxb.allocateReg();
+			testpoint = sfxb.allocateReg();
 			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO((int) SIN0,(int) 50, (int) 32000);
+			sfxb.loadSinLFO((int) SIN0,(int) rate, (int) 32000);
 			} else {
 			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO((int) SIN1,(int) 50, (int) 32000);
+			sfxb.loadSinLFO((int) SIN1,(int) rate, (int) 32000);
 			}
 			
 			if(this.getPin("LFO Rate").isConnected() == true) {
 			double temp1 = rate / rateMax;
-			sfxb.readRegister(rate, temp1);
+			sfxb.readRegister(rateReg, temp1);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RATE, 0);
 			} else {
@@ -116,35 +121,41 @@
 			}
 			
 			if(lfoSel == 0) {
+			sfxb.loadAccumulator(sinreg);
 			sfxb.chorusReadValue(SIN0);
-			sfxb.writeRegister(sin, 0);
+			sfxb.skip(ZRC, 3);
+			sfxb.writeRegister(testpoint, 1);
+			sfxb.writeRegister(sinreg, 0);
+			sfxb.skip(ZRO, 9);
+			sfxb.skip(NEG, 4);
+			sfxb.writeRegister(sinreg, 0);
+			sfxb.loadAccumulator(input1);
+			sfxb.writeRegister(output1, 0);
+			sfxb.skip(ZRO, 17);
+			sfxb.writeRegister(sinreg, 0);
+			sfxb.loadAccumulator(input1);
+			sfxb.writeRegister(output3, 0);
+			sfxb.skip(ZRO, 13);
+			sfxb.loadAccumulator(cosreg);
 			sfxb.chorusReadValue(8);
-			} else {
-			sfxb.chorusReadValue(SIN1);
-			sfxb.writeRegister(sin, 0);
-			sfxb.chorusReadValue(9);
+			sfxb.skip(ZRC, 2);
+			sfxb.writeRegister(cosreg, 0);
+			sfxb.skip(ZRO, 8);
+			sfxb.skip(NEG, 4);
+			sfxb.writeRegister(cosreg, 0);
+			sfxb.loadAccumulator(input1);
+			sfxb.writeRegister(output2, 0);
+			sfxb.skip(ZRO, 3);
+			sfxb.writeRegister(cosreg, 0);
+			sfxb.loadAccumulator(input1);
+			sfxb.writeRegister(output4, 0);
 			}
 			
-			sfxb.skip(ZRC, 1);
-			sfxb.skip(RUN, 2);
-			sfxb.loadAccumulator(input1);
-			sfxb.writeRegister(output1, 0);
-			sfxb.clear();
-			sfxb.readRegister(output1, 1.0);
-			sfxb.writeRegister(output1, 0);
-			sfxb.readRegister(sin, 1.0);
-			sfxb.skip(ZRC, 1);
-			sfxb.skip(RUN, 3);
-			sfxb.loadAccumulator(input1);
-			sfxb.writeRegister(output2, 0);
-			sfxb.skip(RUN, 3);
-			sfxb.clear();
-			sfxb.readRegister(output2, 1.0);
-			sfxb.writeRegister(output2, 0);
 			this.getPin("S/H Output 1").setRegister(output1);
 			this.getPin("S/H Output 2").setRegister(output2);
 			this.getPin("S/H Output 3").setRegister(output3);
 			this.getPin("S/H Output 4").setRegister(output4);
+			this.getPin("Test Point").setRegister(testpoint);
 
 			}
 			

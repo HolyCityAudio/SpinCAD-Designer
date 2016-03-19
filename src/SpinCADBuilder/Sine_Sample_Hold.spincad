@@ -2,12 +2,13 @@
 @color "0xe2fe24"
 
 @controlInput input1 'Source'
-@controlInput rate 'LFO Rate'
+@controlInput rateReg 'LFO Rate'
 
 @controlOutput output1 "S/H Output 1"
 @controlOutput output2 "S/H Output 2"
 @controlOutput output3 "S/H Output 3"
 @controlOutput output4 "S/H Output 4"
+@controlOutput testpoint "Test Point"
 
 equ rateMax 511
 equ number6554000 6554000.0
@@ -15,10 +16,12 @@ equ output1 reg0
 equ output2 reg1 
 equ output3 reg2 
 equ output4 reg3 
-equ sin reg4
+equ sinreg reg4
+equ cosreg reg5
+equ testpoint reg6
 
 // variable - Name - low - high - multiplier - precision - option 
-equ rate 20
+equ rate 50
 @sliderLabel rate 'LFO Max Rate' 0.0 511.0 20.0 100.0 2 SINLFOFREQ
 
 equ lfoSel 0
@@ -26,17 +29,17 @@ equ lfoSel 0
 
 @isEqualTo lfoSel 0
 skp run,START 
-wlds SIN0, 50, 32000
+wlds SIN0, rate, 32000
 START: 
 @else
 skp run,START1 
-wlds SIN1, 50, 32000
+wlds SIN1, rate, 32000
 START1: 
 @endif
 
 @isPinConnected 'LFO Rate'
 @divideDouble temp1 rate rateMax
-rdax	rate, temp1
+rdax	rateReg, temp1
 @isEqualTo lfoSel 0 
 wrax SIN0_RATE, 0
 @else
@@ -45,44 +48,49 @@ wrax SIN1_RATE, 0
 @endif
 
 @isEqualTo lfoSel 0 
+ldax sinreg
 cho rdal, sin0
-wrax sin, 0
-cho rdal, 8
-@else
-cho rdal, SIN1
-wrax sin, 0
-cho rdal, 9
-@endif
-
 skp zrc, crossSine
-skp run, holding1
+wrax testpoint, 1
+wrax sinreg, 0
+skp zro, nocrossing
 
 crossSine:
+skp neg, sinneg
+wrax sinreg, 0
 ldax   input1 ; read the last control input value
 wrax output1, 0
+skp zro, finish
+sinneg:
+wrax sinreg, 0
+ldax   input1 ; read the last control input value
+wrax output3, 0
+skp zro, finish
 
-holding1:
-clr
-rdax output1, 1.0
-wrax output1, 0
-
-rdax sin, 1.0
+nocrossing:
+ldax cosreg
+cho rdal, 8
 skp zrc, crossCos
-skp run, holding2
+wrax cosreg, 0
+skp zro, nocrossingCos
 
 crossCos:
-ldax   input1 ; read the last control input value (update sample)
+skp neg, cosneg
+wrax cosreg, 0
+ldax   input1 ; read the last control input value
 wrax output2, 0
-skp run, finish
+skp zro, nocrossingCos
+cosneg:
+wrax cosreg, 0
+ldax   input1 ; read the last control input value
+wrax output4, 0
 
-holding2:
-clr
-rdax output2, 1.0
-wrax output2, 0
+nocrossingCos:
 finish:
+@endif
 
 @setOutputPin "S/H Output 1" output1
 @setOutputPin "S/H Output 2" output2
 @setOutputPin "S/H Output 3" output3
 @setOutputPin "S/H Output 4" output4
-
+@setOutputPin "Test Point" testpoint

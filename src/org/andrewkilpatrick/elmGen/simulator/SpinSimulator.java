@@ -74,8 +74,7 @@ public class SpinSimulator extends Thread {
 		this.pot1 = Util.doubleToReg(pot1);
 		this.pot2 = Util.doubleToReg(pot2);
 		audioSinks = new LinkedList<AudioSink>();
-		System.out.println("SpinSimulator - starting up simulator for: "
-				+ prog.getName());
+//		System.out.println("SpinSimulator - starting up simulator for: " + prog.getName());
 	}
 
 	// GSW new class for integration into SpinCAD Designer
@@ -295,7 +294,7 @@ public class SpinSimulator extends Thread {
 	public void showLevelLogger(JPanel p) {
 		levelL = new LevelLogger(p);
 		audioSinks.add(levelL);
-		System.out.println(audioSinks);
+//		System.out.println(audioSinks);
 	}
 
 	// GSW added this part to integrate into SpinCAD Designer
@@ -304,7 +303,7 @@ public class SpinSimulator extends Thread {
 		scope.setLogMode(0);
 		scope.windowRatio = 8;
 		audioSinks.add(scope);
-		System.out.println(audioSinks);
+//		System.out.println(audioSinks);
 	}
 
 	public void showLevelMeter() {

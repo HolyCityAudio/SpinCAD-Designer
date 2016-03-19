@@ -93,6 +93,7 @@ public class Skip extends Instruction {
 	// GSW 02/01/2015, looks like Skip instruction only handles one flag at a time!
 	// Suggested remedy will be:
 	// match flags with current bit. if true, clear that bit and continue.
+	
 	@Override
 	public void simulate(SimulatorState state) {
 		boolean skip = false;
@@ -105,6 +106,9 @@ public class Skip extends Instruction {
 			}
 		}
 		else if((flags & ElmProgram.ZRC) > 0) {
+			int accv = state.getACCVal();
+			int paccv = state.getPACCVal();
+			
 			if((state.getACCVal() < 0 && state.getPACCVal() >= 0) ||
 					state.getACCVal() >= 0 && state.getPACCVal() < 0) {
 				skip = true;

@@ -8,6 +8,7 @@
 @menuitem "Gain Boost" GainBoost
 @menuitem "Phase Invert" Phase_Invert
 @menuitem "Crossfade" crossfade
+@menuitem "Crossfade 2" crossfade_2
 @menuitem "Panner" panner
 @menuitem "2:1 Mixer" Mixer_2_to_1
 @menuitem "2:1 (x2) Mixer" Mixer2_1x2

@@ -305,6 +305,21 @@ public class SpinCADModel implements Serializable {
 		}
 		return count;
 	}
+	
+	public static int optimize(SpinCADModel m) {
+		String list = m.getRenderBlock().getProgramListing();
+		int lastIndex = 0;
+		int count =0;
+		
+		SpinCADModel optimizedModel = new SpinCADModel();
+		SpinCADModel skpRun = new SpinCADModel();
+
+		for (count = 0; count < list.length(); count++){
+		}
+		return 0;
+	}
+
+	
 
 	public SpinFXBlock getRenderBlock() {
 		return renderBlock;
