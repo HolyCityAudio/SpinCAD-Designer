@@ -40,6 +40,7 @@
 			setBorderColor(new Color(0x24f26f));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addControlInputPin(this, "Frequency");
 				addOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
@@ -73,13 +74,26 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
+			sp = this.getPin("Frequency").getPinConnection();
+			int freqControl = -1;
+			if(sp != null) {
+				freqControl = sp.getRegister();
+			}
 			
 			// finally, generate the instructions
 			output = sfxb.allocateReg();
 			lpf1 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
+			if(this.getPin("Frequency").isConnected() == true) {
+			sfxb.readRegister(input, freq);
+			sfxb.readRegister(lpf1, -freq);
+			sfxb.mulx(freqControl);
+			sfxb.readRegister(lpf1, 1.0);
+			} else {
 			sfxb.readRegister(input, 1.0);
 			sfxb.readRegisterFilter(lpf1, freq);
+			}
+			
 			sfxb.writeRegister(lpf1, -1.0);
 			sfxb.readRegister(input, 1.0);
 			sfxb.writeRegister(output, 0);

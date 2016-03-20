@@ -65,7 +65,7 @@ public HPF_RDFXControlPanel(HPF_RDFXCADBlock genericCADBlock) {
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			freqSlider = gCB.LogFilterSlider(40,1500,gCB.getfreq());
+			freqSlider = gCB.LogFilterSlider(40,3500,gCB.getfreq());
 				freqSlider.addChangeListener(new HPF_RDFXListener());
 				freqLabel = new JLabel();
 				Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
