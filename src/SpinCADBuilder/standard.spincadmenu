@@ -108,7 +108,7 @@
 @menuitem "Oscillator" Oscillator
 @menuitem "New Oscillator" New_Oscillator
 @menuitem "Ramp Sample/Hold" SampleHold
-@menuitem "4-Phase Sample/Hold" Sine_Sample_Hold
+//@menuitem "4-Phase Sample/Hold" Sine_Sample_Hold
 //@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
