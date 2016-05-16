@@ -67,7 +67,7 @@ class QuantizerControlPanel {
 	}
 
 	public void updateBitLabel() {
-		// TODO Auto-generated method stub
+		// ---
 		bitLabel.setText("Bits: " + String.format("%d", BC.getBits()));		
 
 	}

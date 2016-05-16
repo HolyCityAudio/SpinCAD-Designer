@@ -74,7 +74,6 @@ public class ChorusReadDelay extends ChorusInstruction {
 
 	@Override
 	public void simulate(SimulatorState state) {
-		// XXX - finish/test ChorusReadDelay simulation
 		lfoPrepare(state);
 
 		// do crossfading only = GSW this is oversimplified but might work for simulation

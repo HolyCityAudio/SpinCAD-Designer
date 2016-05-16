@@ -39,7 +39,7 @@ public class MinReverbCADBlock extends SpinCADBlock{
 	private double kap = 0.325;  // AP coeff
 	public MinReverbCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		// ---
 		addInputPin(this);
 		addOutputPin(this);
 		addControlInputPin(this, "Reverb Time");

@@ -29,7 +29,7 @@ public class MonoDelayFBCADBlock extends DelayCADBlock{
 
 	public MonoDelayFBCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		// ---
 		setName("Mono Delay");
 	}
 }

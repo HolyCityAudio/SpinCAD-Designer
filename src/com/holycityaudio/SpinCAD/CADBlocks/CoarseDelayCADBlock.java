@@ -91,7 +91,6 @@ public class CoarseDelayCADBlock extends SpinCADBlock {
 				// haha but I just did anyway - or not
 //				sfxb.scaleOffset(1.0, 0);
 			}
-// 			XXX TODO this may require a sample rate conversion
 			sfxb.scaleOffset((double)(delayLength/32768.0), (double) (delayOffset/32768.0));
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readDelayPointer(1.0);

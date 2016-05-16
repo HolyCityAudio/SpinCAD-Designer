@@ -67,7 +67,7 @@ class BPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		// ---
 		
 	}
 

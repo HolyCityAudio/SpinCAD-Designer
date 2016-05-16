@@ -63,7 +63,7 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		// ---
 		
 	}
 

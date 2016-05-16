@@ -85,22 +85,22 @@ public class HPFCADBlock extends FilterCADBlock{
 	}
 
 	public double getFreq() {
-		// TODO Auto-generated method stub
+		// ---
 		return freq;
 	}
 	
 	public void setFreq(double f) {
-		// TODO Auto-generated method stub
+		// ---
 		freq = f;
 	}
 
 	public double getRes() {
-		// TODO Auto-generated method stub
+		// ---
 		return resonance;
 	}
 
 	public void setRes(double f) {
-		// TODO Auto-generated method stub
+		// ---
 		resonance = f;
 	}
 }

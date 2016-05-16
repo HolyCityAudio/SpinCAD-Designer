@@ -145,7 +145,7 @@ public abstract class Instruction implements Serializable {
 	}
 	// GSW added for integration with SpinCAD Designer
 	public String getInstructionString(int i) {
-		// TODO Auto-generated method stub
+		// ---
 		return null;
 	}
 }

@@ -69,7 +69,6 @@ public class ChorusScaleOffset extends ChorusInstruction {
 	
 	@Override
 	public void simulate(SimulatorState state) {
-		// XXX - finish/test ChorusScaleOffset simulation
 		int fadeVal = 0;
 		lfoPrepare(state);
 		if(na) {

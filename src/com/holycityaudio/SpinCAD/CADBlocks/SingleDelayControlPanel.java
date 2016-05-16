@@ -74,7 +74,7 @@ class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		// ---
 		
 	}
 

@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 999;
+	int buildNum = 1000;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -239,11 +239,13 @@ public class SpinCADFrame extends JFrame {
 
 		simPanel.add(simX.loggerPanel);
 		simX.loggerPanel.setVisible(false);
-		simPanel.add(simX.scopePanel);
-		simX.scopePanel.setVisible(false);
-		simPanel.add(simX.stb);
-		simX.stb.setFloatable(false);
-		simX.stb.setVisible(true);
+// disabling scope for the time being
+//		simPanel.add(simX.scopePanel);
+//		simX.scopePanel.setVisible(false);
+
+//		simPanel.add(simX.stb);
+//		simX.stb.setFloatable(false);
+//		simX.stb.setVisible(true);
 
 		// controlPanels.setFloatable(false);
 		contentPane.add(controlPanels, BorderLayout.EAST);
@@ -619,7 +621,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnSimulator.add(mntmSimLogger);
-
+/*
 		final JMenuItem mntmSimScope = new JCheckBoxMenuItem("Enable Scope");
 		mntmSimScope.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -632,7 +634,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnSimulator.add(mntmSimScope);
-
+*/
 		mnSimulator.addSeparator();
 		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");
 		mntmSimSendToFile.addActionListener(new ActionListener() {
@@ -1032,7 +1034,7 @@ public class SpinCADFrame extends JFrame {
 
 		@Override
 		public void windowClosing(WindowEvent arg0) {
-			// TODO Auto-generated method stub
+			// ---
 			spcb.line[0] = line0text.getText();	
 			spcb.line[1] = line1text.getText();	
 			spcb.line[2] = line2text.getText();	

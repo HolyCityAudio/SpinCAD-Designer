@@ -470,7 +470,7 @@ public class SpinCADSimulator {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			// TODO Auto-generated method stub
+			// ---
 			if (e.getSource() == triggerLevel) {
 				int j = 1;
 			}		

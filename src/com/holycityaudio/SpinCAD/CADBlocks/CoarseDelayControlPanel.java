@@ -91,13 +91,13 @@ class CoarseDelayControlPanel {
 	}
 
 	public void updateDelayLabelCoarse() {
-		// TODO Auto-generated method stub
+		// ---
 		delayLabelCoarse.setText("Delay (coarse): " + String.format("%d ms", calcDelayTimeCoarse(mD.getDelayLength())));		
 
 	}
 	
 	public void updateDelayLabelFine() {
-		// TODO Auto-generated method stub
+		// ---
 		delayLabelFine.setText("Delay (fine): " + String.format("%d ms", calcDelayTimeFine(mD.getDelayLength())));		
 
 	}

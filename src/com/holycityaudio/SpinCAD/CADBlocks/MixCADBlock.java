@@ -32,7 +32,7 @@ public class MixCADBlock extends SpinCADBlock{
 
 	public MixCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		// ---
 		addInputPin(this);
 		addOutputPin(this);
 		setBorderColor(Color.YELLOW);

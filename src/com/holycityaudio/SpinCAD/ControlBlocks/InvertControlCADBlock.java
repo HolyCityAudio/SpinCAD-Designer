@@ -32,7 +32,7 @@ public class InvertControlCADBlock extends ControlCADBlock{
 
 	public InvertControlCADBlock(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		// ---
 		addControlInputPin(this);	//	delay time
 		addControlOutputPin(this);	//	feedback
 		setName("Invert");

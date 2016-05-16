@@ -170,11 +170,11 @@ public class LPF4PCADBlock extends SpinCADBlock{
 	}
 
 	public void setQ(double value) {
-		kql = 10/(value); // TODO Auto-generated method stub
+		kql = 10/(value); // ---
 	}
 
 	public double getQ() {
-		// TODO Auto-generated method stub
+		// ---
 		return kql/10.0;
 	}
 }

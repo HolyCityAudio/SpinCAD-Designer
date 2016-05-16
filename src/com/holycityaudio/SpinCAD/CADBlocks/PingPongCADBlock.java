@@ -151,39 +151,39 @@ public class PingPongCADBlock extends DelayCADBlock{
 	}
 	//====================================================
 	public double getfbLevel() {
-		// TODO Auto-generated method stub
+		// ---
 		return fbLevel;
 	}
 
 	public void setfbLevel(double d) {
-		// TODO Auto-generated method stub
+		// ---
 		fbLevel = d;
 	}
 	//====================================================
 	public void setDelayGain(double d) {
-		// TODO Auto-generated method stub
+		// ---
 		delayLineGain = d;
 	}
 
 	public double getDelayGain() {
-		// TODO Auto-generated method stub
+		// ---
 		return delayLineGain;
 	}
 
 	//====================================================
 	public void setLength(double d) {
-		// TODO Auto-generated method stub
+		// ---
 		length = d;
 	}
 
 	public double getLength() {
-		// TODO Auto-generated method stub
+		// ---
 		return length;
 	}
 
 	//====================================================
 	public void setTapLevel(int i, double value) {
-		// TODO Auto-generated method stub
+		// ---
 		if(value < 0.0) {
 			value = 0.0;
 		}
@@ -200,7 +200,7 @@ public class PingPongCADBlock extends DelayCADBlock{
 	}
 
 	public double getTapLevel(int i) {
-		// TODO Auto-generated method stub
+		// ---
 		if(i == 0) {
 			return tap0level;
 		}
