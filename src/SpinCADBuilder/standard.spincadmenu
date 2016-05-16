@@ -43,6 +43,7 @@
 @menuitem "2P/4P Lowpass" LPF4P 
 @menuitem "2P/4P Highpass" HPF2P 
 @menuitem "Notch" Notch 
+@menuitem "4P L-R Crossover" Crossover_4P 
 @menuitem "1-Band EQ" OneBandEQ 
 @menuitem "6-Band EQ" SixBandEQ 
 

@@ -104,7 +104,6 @@ public class StraightDelayCADBlock extends SpinCADBlock {
 				// haha but I just did anyway - or not
 //				sfxb.scaleOffset(1.0, 0);
 			}
-// 			XXX TODO this may require a sample rate conversion
 //			sof maxlength/1000, buffer
 			sfxb.scaleOffset((double)(delayLength/32768.0), (double) (delayOffset/32768.0));
 //			wrax addr_ptr,0

@@ -31,6 +31,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF4PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF2PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.NotchCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Crossover_4PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OneBandEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SixBandEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SingleDelayCADBlock;
@@ -391,6 +392,15 @@
 		}
 	});
 	mn_filters.add(mntm_Notch);
+		
+	final JMenuItem mntm_Crossover_4P = new JMenuItem("4P L-R Crossover");
+	mntm_Crossover_4P.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Crossover_4PCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_filters.add(mntm_Crossover_4P);
 		
 	final JMenuItem mntm_OneBandEQ = new JMenuItem("1-Band EQ");
 	mntm_OneBandEQ.addActionListener(new ActionListener() {
