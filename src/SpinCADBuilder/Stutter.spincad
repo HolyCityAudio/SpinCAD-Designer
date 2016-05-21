@@ -9,7 +9,11 @@
 equ   output     reg0       
 
 equ delayLength 32767 
-@sliderLabel delayLength 'Delay Time (ms): ' 0 32767 16384 1 0 lengthToTime
+@sliderLabel delayLength 'Delay Time (ms): ' 32 32767 16384 1 0 lengthToTime
+
+; fadeTime is the filter value for a given fade Time
+equ fadeTime 0
+@sliderLabel fadeTime 'Fade Time (ms): ' 0 50 25 1 0 timeToFilt
 
 // establish the base address for this module
 @getBaseAddress 
@@ -21,20 +25,49 @@ mem delayRam delayLength
 rdax    input,1    ;read input signal
 wra	delayRam, 0
 
+@isEqualTo fadeTime 0
+; if fade time is zero, don't write crossfade code.  just glitch from end to end! 
 @isPinConnected Stutter
 rdax	stutter, 1.0
 sof		1.0, -0.5
 skp		neg, play
+clr
 rda delayRam#, 1.0
 skp		run, playDelay
 play:
+clr
 rda delayRam, 1.0
 playDelay:
 wrax output, 0.0
 @else
 rda delayRam#, 1.0
 wrax output, 0.0
-@endif
+@endif  ; isPinConnected Stutter
+
+; fade time is not zero, use smoother filter and crossfade
+@else 
+
+equ fadeFilt reg1
+
+rdax	stutter, 1.0
+sof		1.0, -0.5
+skp		neg, play1
+clr		
+skp run, playDelay1
+play1:
+sof 0.0, 0.9990234375
+playDelay1:
+; acc is now 0 or 1
+rdfx fadeFilt,0.0001500000
+wrax fadeFilt,0.0000000000
+;------ Crossfade
+rda  delayRam,-0.5000000000
+rda  delayRam#,0.5000000000
+mulx fadeFilt
+rda  delayRam,0.5000000000
+wrax output,0.0000000000
+
+@endif 	; isEqualTo fadeTime 0
 
 @endif
 

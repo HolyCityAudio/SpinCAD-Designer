@@ -93,7 +93,7 @@
 			lo_sig = sfxb.allocateReg();
 			hi_sig = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
-			sfxb.readRegister(input, 1.0);
+			sfxb.readRegister(input, 0.25);
 			sfxb.readRegister(flt_SV1, -2.00);
 			sfxb.readRegister(flt_SV2, -2.00);
 			sfxb.readRegister(flt_SV3, -1.00);

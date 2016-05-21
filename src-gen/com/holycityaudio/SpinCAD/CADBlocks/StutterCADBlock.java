@@ -32,6 +32,8 @@
 			
 			private int output;
 			private double delayLength = 32767;
+			private double fadeTime = 0;
+			private int fadeFilt;
 
 			public StutterCADBlock(int x, int y) {
 				super(x, y);
@@ -42,6 +44,7 @@
 				addOutputPin(this, "Output");
 				addControlInputPin(this, "Stutter");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -86,17 +89,37 @@
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, 1);
 			sfxb.FXwriteDelay("delayRam", 0, 0);
+			if(fadeTime == 0) {
 			if(this.getPin("Stutter").isConnected() == true) {
 			sfxb.readRegister(stutter, 1.0);
 			sfxb.scaleOffset(1.0, -0.5);
-			sfxb.skip(NEG, 2);
+			sfxb.skip(NEG, 3);
+			sfxb.clear();
 			sfxb.FXreadDelay("delayRam#", 0, 1.0);
-			sfxb.skip(RUN, 1);
+			sfxb.skip(RUN, 2);
+			sfxb.clear();
 			sfxb.FXreadDelay("delayRam", 0, 1.0);
 			sfxb.writeRegister(output, 0.0);
 			} else {
 			sfxb.FXreadDelay("delayRam#", 0, 1.0);
 			sfxb.writeRegister(output, 0.0);
+			}
+			
+			} else {
+			fadeFilt = sfxb.allocateReg();
+			sfxb.readRegister(stutter, 1.0);
+			sfxb.scaleOffset(1.0, -0.5);
+			sfxb.skip(NEG, 2);
+			sfxb.clear();
+			sfxb.skip(RUN, 1);
+			sfxb.scaleOffset(0.0, 0.9990234375);
+			sfxb.readRegisterFilter(fadeFilt, 0.0001500000);
+			sfxb.writeRegister(fadeFilt, 0.0000000000);
+			sfxb.FXreadDelay("delayRam", 0, -0.5000000000);
+			sfxb.FXreadDelay("delayRam#", 0, 0.5000000000);
+			sfxb.mulx(fadeFilt);
+			sfxb.FXreadDelay("delayRam", 0, 0.5000000000);
+			sfxb.writeRegister(output, 0.0000000000);
 			}
 			
 			}
@@ -112,5 +135,12 @@
 			
 			public double getdelayLength() {
 				return delayLength;
+			}
+			public void setfadeTime(double __param) {
+				fadeTime = __param;	
+			}
+			
+			public double getfadeTime() {
+				return fadeTime;
 			}
 		}	

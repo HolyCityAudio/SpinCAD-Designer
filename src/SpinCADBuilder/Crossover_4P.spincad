@@ -12,6 +12,7 @@ equ freq 0.15
 equ output Reg0
 equ flt_SV1 reg2
 equ flt_SV2 reg3
+
 equ flt_SV3 reg4
 equ lo_sig reg5
 equ hi_sig reg6
@@ -21,7 +22,7 @@ equ hi_sig reg6
 ; From Don Stavely:
 ; Here is the code for a tunable 4th-order Linkwitz_Riley state variable filter, which splits the input into high and low bands: 
 ; 
-rdax 	input, 1.0
+rdax 	input, 0.25
 rdax	flt_SV1, -2.00	; add 1st SV 
 rdax	flt_SV2, -2.00	; add 2nd SV 
 rdax	flt_SV3, -1.00	; add 3rd SV 
@@ -38,7 +39,7 @@ mulx	freqControl	; scale by frequency
 rdax	flt_SV3, 1	; add to third SV 
 wrax	flt_SV3, 1	; integrate it 
 mulx	freqControl	; scale by frequency 
-rdax	lo_sig, 1	; add to forth SV, which is lowpass 
+rdax	lo_sig, 1	; add to fourth SV, which is lowpass 
 wrax	lo_sig, 0	; integrate it, clear ACC	wrax lpf1, 0
 
 @setOutputPin "Low Output" lo_sig

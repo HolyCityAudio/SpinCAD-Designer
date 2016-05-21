@@ -52,6 +52,8 @@ public class StutterControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider delayLengthSlider;
 	JLabel  delayLengthLabel;	
+	JSlider fadeTimeSlider;
+	JLabel  fadeTimeLabel;	
 
 public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		
@@ -64,25 +66,48 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 				frame.setTitle("Stutter");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(32 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
+						delayLengthSlider.addChangeListener(new StutterListener());
+						delayLengthLabel = new JLabel();
+						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						delayLengthLabel.setBorder(delayLengthBorder1);
+						updatedelayLengthLabel();
+						
+						Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel delayLengthinnerPanel = new JPanel();
+							
+						delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						delayLengthinnerPanel.add(delayLengthLabel);
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						delayLengthinnerPanel.add(delayLengthSlider);		
+						delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
-			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
-				delayLengthSlider.addChangeListener(new StutterListener());
-				delayLengthLabel = new JLabel();
-				Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				delayLengthLabel.setBorder(delayLengthBorder1);
-				updatedelayLengthLabel();
-				
-				Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel delayLengthinnerPanel = new JPanel();
-					
-				delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
-				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				delayLengthinnerPanel.add(delayLengthLabel);
-				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				delayLengthinnerPanel.add(delayLengthSlider);		
-				delayLengthinnerPanel.setBorder(delayLengthborder2);
+						frame.add(delayLengthinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					fadeTimeSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (50 * 1), (int) (gCB.getfadeTime() * 1));
+						fadeTimeSlider.addChangeListener(new StutterListener());
+						fadeTimeLabel = new JLabel();
+						Border fadeTimeBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						fadeTimeLabel.setBorder(fadeTimeBorder1);
+						updatefadeTimeLabel();
+						
+						Border fadeTimeborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel fadeTimeinnerPanel = new JPanel();
+							
+						fadeTimeinnerPanel.setLayout(new BoxLayout(fadeTimeinnerPanel, BoxLayout.Y_AXIS));
+						fadeTimeinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						fadeTimeinnerPanel.add(fadeTimeLabel);
+						fadeTimeinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						fadeTimeinnerPanel.add(fadeTimeSlider);		
+						fadeTimeinnerPanel.setBorder(fadeTimeborder2);
 			
-				frame.add(delayLengthinnerPanel);
+						frame.add(fadeTimeinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -99,6 +124,10 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			if(ce.getSource() == delayLengthSlider) {
 			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
+			}
+			if(ce.getSource() == fadeTimeSlider) {
+			gCB.setfadeTime((double) (fadeTimeSlider.getValue()/1));
+				updatefadeTimeLabel();
 			}
 			}
 		}
@@ -119,6 +148,9 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		}
 		private void updatedelayLengthLabel() {
 		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
+		}		
+		private void updatefadeTimeLabel() {
+		fadeTimeLabel.setText("Fade Time (ms):  " + String.format("%4.0f", (gCB.getfadeTime())) + " ms");		
 		}		
 		
 		class MyWindowListener implements WindowListener

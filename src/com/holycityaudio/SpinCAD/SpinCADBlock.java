@@ -55,7 +55,7 @@ public class SpinCADBlock extends SpinFXBlock {
 	int nOutputs = 0;
 	int nControlInputs = 0;
 	int nControlOutputs = 0;
-	
+
 	// index currently used for resolving feedback loops
 	int index = 1;
 
@@ -86,7 +86,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		CADBlockInit(x, y);
 	}
 
-// clone constructor, for making copies
+	// clone constructor, for making copies
 	public SpinCADBlock(SpinCADBlock b) {
 		// used to sort the blocks, assigned during addBlock
 		super("SpinCADBlock");
@@ -96,7 +96,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		this.nOutputs = b.nOutputs;
 		this.nControlInputs = b.nControlInputs;
 		this.nControlOutputs = b.nControlOutputs;
-		
+
 		this.pinList = b.pinList;
 		this.x_pos = b.x_pos;
 		this.width = b.width;
@@ -222,7 +222,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		SpinCADPin pin = new SpinCADPin(b, s, pinType.CONTROL_IN, 0, nControlInputs * 10);
 		pinList.add(pin);
 	}
-	
+
 	public void removeAllControlInputs() {
 		nControlInputs = 0;
 	}
@@ -312,7 +312,7 @@ public class SpinCADBlock extends SpinFXBlock {
 			g2.setColor(borderColor);
 			g2.setStroke(new BasicStroke(4));			
 		}
-		
+
 		g2.draw(rect);
 		GradientPaint redtowhite = new GradientPaint(x_pos, y_pos,borderColor, x_pos + width, y_pos + height, Color.WHITE);
 		g2.setPaint(redtowhite);
@@ -441,44 +441,60 @@ public class SpinCADBlock extends SpinFXBlock {
 	 * @param c Set the Color of the current block's border
 	 * 
 	 */
-	
+
 	public void setBorderColor(Color c) {
 		borderColor = c;
 	}
-	
+
 	public boolean hasControlPanel() {
 		return hasControlPanel;
 	}
-	
+
 	public void deleteControlPanel() {
 		if (scCP != null) {
-//			scCP.delete();
+			//			scCP.delete();
 		}
 	}
 	// below are functions to translate parameters between CADBlocks and control panels
-	
+
 	public double freqToFilt(double freq) {
 		double omega = 2 * Math.PI * freq/ElmProgram.getSamplerate();
 		return 1 - Math.pow(Math.E, -omega); 
 	}
-	
+
 	public static double filtToFreq(double filt) {
 		return (-(Math.log(1 - filt)) * ElmProgram.getSamplerate()/(2 * Math.PI));	
 	}
-	
+
+	public double timeToFilt(double time) {
+		if (time != 0.0) {
+			double freq = 0.35/time;
+			double omega = 2 * Math.PI * freq/ElmProgram.getSamplerate();
+			return 1 - Math.pow(Math.E, -omega);
+		} else 
+		{
+			return -1.0;
+		}
+	}
+
+	public static double filtToTime(double filt) {
+		double freq = -(Math.log(1 - filt)) * ElmProgram.getSamplerate()/(2 * Math.PI);
+		return 0.35/freq;	
+	}
+
 	public static int logvalToSlider(double value, double multiplier) {
 		return (int) (multiplier * Math.log10(value));
 	}
-	
+
 	public double sliderToLogval(int pos, double multiplier) {
 		return Math.pow(10.0, pos/multiplier);
 	}
-	
+
 	public static JSlider LogFilterSlider(double fLow, double fHigh, double initVal) {
-		 int leftLimit = logvalToSlider(fLow, 100.0);
-		 int rightLimit = logvalToSlider(fHigh, 100.0);
-		 int initial = logvalToSlider(filtToFreq(initVal), 100.0);
-		 return new JSlider(JSlider.HORIZONTAL, leftLimit, rightLimit, initial);
+		int leftLimit = logvalToSlider(fLow, 100.0);
+		int rightLimit = logvalToSlider(fHigh, 100.0);
+		int initial = logvalToSlider(filtToFreq(initVal), 100.0);
+		return new JSlider(JSlider.HORIZONTAL, leftLimit, rightLimit, initial);
 	}
 
 }
