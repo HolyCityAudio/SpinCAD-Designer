@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -66,44 +67,48 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 				frame.setTitle("Exp");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
+						multiplierSlider.addChangeListener(new ExpListener());
+						multiplierLabel = new JLabel();
+						Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						multiplierLabel.setBorder(multiplierBorder1);
+						updatemultiplierLabel();
+						
+						Border multiplierborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel multiplierinnerPanel = new JPanel();
+							
+						multiplierinnerPanel.setLayout(new BoxLayout(multiplierinnerPanel, BoxLayout.Y_AXIS));
+						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						multiplierinnerPanel.add(multiplierLabel);
+						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						multiplierinnerPanel.add(multiplierSlider);		
+						multiplierinnerPanel.setBorder(multiplierborder2);
 			
-			multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
-				multiplierSlider.addChangeListener(new ExpListener());
-				multiplierLabel = new JLabel();
-				Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				multiplierLabel.setBorder(multiplierBorder1);
-				updatemultiplierLabel();
-				
-				Border multiplierborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel multiplierinnerPanel = new JPanel();
-					
-				multiplierinnerPanel.setLayout(new BoxLayout(multiplierinnerPanel, BoxLayout.Y_AXIS));
-				multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				multiplierinnerPanel.add(multiplierLabel);
-				multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				multiplierinnerPanel.add(multiplierSlider);		
-				multiplierinnerPanel.setBorder(multiplierborder2);
+						frame.add(multiplierinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					exp_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getexp_offset() * 1000.0));
+						exp_offsetSlider.addChangeListener(new ExpListener());
+						exp_offsetLabel = new JLabel();
+						Border exp_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						exp_offsetLabel.setBorder(exp_offsetBorder1);
+						updateexp_offsetLabel();
+						
+						Border exp_offsetborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel exp_offsetinnerPanel = new JPanel();
+							
+						exp_offsetinnerPanel.setLayout(new BoxLayout(exp_offsetinnerPanel, BoxLayout.Y_AXIS));
+						exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						exp_offsetinnerPanel.add(exp_offsetLabel);
+						exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						exp_offsetinnerPanel.add(exp_offsetSlider);		
+						exp_offsetinnerPanel.setBorder(exp_offsetborder2);
 			
-				frame.add(multiplierinnerPanel);
-			
-			exp_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getexp_offset() * 1000.0));
-				exp_offsetSlider.addChangeListener(new ExpListener());
-				exp_offsetLabel = new JLabel();
-				Border exp_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				exp_offsetLabel.setBorder(exp_offsetBorder1);
-				updateexp_offsetLabel();
-				
-				Border exp_offsetborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel exp_offsetinnerPanel = new JPanel();
-					
-				exp_offsetinnerPanel.setLayout(new BoxLayout(exp_offsetinnerPanel, BoxLayout.Y_AXIS));
-				exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				exp_offsetinnerPanel.add(exp_offsetLabel);
-				exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				exp_offsetinnerPanel.add(exp_offsetSlider);		
-				exp_offsetinnerPanel.setBorder(exp_offsetborder2);
-			
-				frame.add(exp_offsetinnerPanel);
+						frame.add(exp_offsetinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);

@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1000;
+	int buildNum = 1002;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -166,6 +166,8 @@ public class SpinCADFrame extends JFrame {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		simX.updateSliders(eeprom.patch[0]);
+		
+		double time = SpinCADBlock.filtToTime(SpinCADBlock.timeToFilt(0.356));
 
 		panel.setBackground(SystemColor.inactiveCaption);
 

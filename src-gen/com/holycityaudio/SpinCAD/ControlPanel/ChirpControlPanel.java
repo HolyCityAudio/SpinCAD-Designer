@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -70,83 +71,91 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 				frame.setTitle("Chirp");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
+						gainSlider.addChangeListener(new ChirpListener());
+						gainLabel = new JLabel();
+						Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						gainLabel.setBorder(gainBorder1);
+						updategainLabel();
+						
+						Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel gaininnerPanel = new JPanel();
+							
+						gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gaininnerPanel.add(gainLabel);
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gaininnerPanel.add(gainSlider);		
+						gaininnerPanel.setBorder(gainborder2);
 			
-			// dB level slider goes in steps of 1 dB
-				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
-				gainSlider.addChangeListener(new ChirpListener());
-				gainLabel = new JLabel();
-				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				gainLabel.setBorder(gainBorder1);
-				updategainLabel();
-				
-				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel gaininnerPanel = new JPanel();
-					
-				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainLabel);
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder2);
+						frame.add(gaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					nAPsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (20 * 1.0), (int) (gCB.getnAPs() * 1.0));
+						nAPsSlider.addChangeListener(new ChirpListener());
+						nAPsLabel = new JLabel();
+						Border nAPsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						nAPsLabel.setBorder(nAPsBorder1);
+						updatenAPsLabel();
+						
+						Border nAPsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel nAPsinnerPanel = new JPanel();
+							
+						nAPsinnerPanel.setLayout(new BoxLayout(nAPsinnerPanel, BoxLayout.Y_AXIS));
+						nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						nAPsinnerPanel.add(nAPsLabel);
+						nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						nAPsinnerPanel.add(nAPsSlider);		
+						nAPsinnerPanel.setBorder(nAPsborder2);
 			
-				frame.add(gaininnerPanel);
+						frame.add(nAPsinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					stretchSlider = new JSlider(JSlider.HORIZONTAL, (int)(1 * 1.0),(int) (100 * 1.0), (int) (gCB.getstretch() * 1.0));
+						stretchSlider.addChangeListener(new ChirpListener());
+						stretchLabel = new JLabel();
+						Border stretchBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						stretchLabel.setBorder(stretchBorder1);
+						updatestretchLabel();
+						
+						Border stretchborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel stretchinnerPanel = new JPanel();
+							
+						stretchinnerPanel.setLayout(new BoxLayout(stretchinnerPanel, BoxLayout.Y_AXIS));
+						stretchinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						stretchinnerPanel.add(stretchLabel);
+						stretchinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						stretchinnerPanel.add(stretchSlider);		
+						stretchinnerPanel.setBorder(stretchborder2);
 			
-			nAPsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (20 * 1.0), (int) (gCB.getnAPs() * 1.0));
-				nAPsSlider.addChangeListener(new ChirpListener());
-				nAPsLabel = new JLabel();
-				Border nAPsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				nAPsLabel.setBorder(nAPsBorder1);
-				updatenAPsLabel();
-				
-				Border nAPsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel nAPsinnerPanel = new JPanel();
-					
-				nAPsinnerPanel.setLayout(new BoxLayout(nAPsinnerPanel, BoxLayout.Y_AXIS));
-				nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				nAPsinnerPanel.add(nAPsLabel);
-				nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				nAPsinnerPanel.add(nAPsSlider);		
-				nAPsinnerPanel.setBorder(nAPsborder2);
+						frame.add(stretchinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
+						kiapSlider.addChangeListener(new ChirpListener());
+						kiapLabel = new JLabel();
+						Border kiapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						kiapLabel.setBorder(kiapBorder1);
+						updatekiapLabel();
+						
+						Border kiapborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel kiapinnerPanel = new JPanel();
+							
+						kiapinnerPanel.setLayout(new BoxLayout(kiapinnerPanel, BoxLayout.Y_AXIS));
+						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kiapinnerPanel.add(kiapLabel);
+						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kiapinnerPanel.add(kiapSlider);		
+						kiapinnerPanel.setBorder(kiapborder2);
 			
-				frame.add(nAPsinnerPanel);
-			
-			stretchSlider = new JSlider(JSlider.HORIZONTAL, (int)(1 * 1.0),(int) (100 * 1.0), (int) (gCB.getstretch() * 1.0));
-				stretchSlider.addChangeListener(new ChirpListener());
-				stretchLabel = new JLabel();
-				Border stretchBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				stretchLabel.setBorder(stretchBorder1);
-				updatestretchLabel();
-				
-				Border stretchborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel stretchinnerPanel = new JPanel();
-					
-				stretchinnerPanel.setLayout(new BoxLayout(stretchinnerPanel, BoxLayout.Y_AXIS));
-				stretchinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				stretchinnerPanel.add(stretchLabel);
-				stretchinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				stretchinnerPanel.add(stretchSlider);		
-				stretchinnerPanel.setBorder(stretchborder2);
-			
-				frame.add(stretchinnerPanel);
-			
-			kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
-				kiapSlider.addChangeListener(new ChirpListener());
-				kiapLabel = new JLabel();
-				Border kiapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				kiapLabel.setBorder(kiapBorder1);
-				updatekiapLabel();
-				
-				Border kiapborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel kiapinnerPanel = new JPanel();
-					
-				kiapinnerPanel.setLayout(new BoxLayout(kiapinnerPanel, BoxLayout.Y_AXIS));
-				kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				kiapinnerPanel.add(kiapLabel);
-				kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				kiapinnerPanel.add(kiapSlider);		
-				kiapinnerPanel.setBorder(kiapborder2);
-			
-				frame.add(kiapinnerPanel);
+						frame.add(kiapinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -161,7 +170,7 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 		class ChirpListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/1.0));
+			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
 				updategainLabel();
 			}
 			if(ce.getSource() == nAPsSlider) {

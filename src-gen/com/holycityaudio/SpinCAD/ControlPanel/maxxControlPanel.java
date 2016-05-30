@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -64,25 +65,27 @@ public maxxControlPanel(maxxCADBlock genericCADBlock) {
 				frame.setTitle("Maximum");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getgain() * 1000.0));
+						gainSlider.addChangeListener(new maxxListener());
+						gainLabel = new JLabel();
+						Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						gainLabel.setBorder(gainBorder1);
+						updategainLabel();
+						
+						Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel gaininnerPanel = new JPanel();
+							
+						gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gaininnerPanel.add(gainLabel);
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gaininnerPanel.add(gainSlider);		
+						gaininnerPanel.setBorder(gainborder2);
 			
-			gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getgain() * 1000.0));
-				gainSlider.addChangeListener(new maxxListener());
-				gainLabel = new JLabel();
-				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				gainLabel.setBorder(gainBorder1);
-				updategainLabel();
-				
-				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel gaininnerPanel = new JPanel();
-					
-				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainLabel);
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder2);
-			
-				frame.add(gaininnerPanel);
+						frame.add(gaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);

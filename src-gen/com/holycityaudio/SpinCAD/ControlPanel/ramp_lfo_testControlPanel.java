@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;

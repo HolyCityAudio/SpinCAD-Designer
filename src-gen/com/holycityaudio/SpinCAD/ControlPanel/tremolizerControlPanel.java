@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -64,25 +65,27 @@ public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
 				frame.setTitle("Tremolizer");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					depthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.5 * 100.0),(int) (0.999 * 100.0), (int) (gCB.getdepth() * 100.0));
+						depthSlider.addChangeListener(new tremolizerListener());
+						depthLabel = new JLabel();
+						Border depthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						depthLabel.setBorder(depthBorder1);
+						updatedepthLabel();
+						
+						Border depthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel depthinnerPanel = new JPanel();
+							
+						depthinnerPanel.setLayout(new BoxLayout(depthinnerPanel, BoxLayout.Y_AXIS));
+						depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						depthinnerPanel.add(depthLabel);
+						depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						depthinnerPanel.add(depthSlider);		
+						depthinnerPanel.setBorder(depthborder2);
 			
-			depthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.5 * 100.0),(int) (0.999 * 100.0), (int) (gCB.getdepth() * 100.0));
-				depthSlider.addChangeListener(new tremolizerListener());
-				depthLabel = new JLabel();
-				Border depthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				depthLabel.setBorder(depthBorder1);
-				updatedepthLabel();
-				
-				Border depthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel depthinnerPanel = new JPanel();
-					
-				depthinnerPanel.setLayout(new BoxLayout(depthinnerPanel, BoxLayout.Y_AXIS));
-				depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				depthinnerPanel.add(depthLabel);
-				depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				depthinnerPanel.add(depthSlider);		
-				depthinnerPanel.setBorder(depthborder2);
-			
-				frame.add(depthinnerPanel);
+						frame.add(depthinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);

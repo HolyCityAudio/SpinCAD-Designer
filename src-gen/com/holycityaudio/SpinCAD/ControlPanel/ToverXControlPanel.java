@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -64,25 +65,27 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 				frame.setTitle("ToverX");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					filterFactorSlider = SpinCADBlock.LogFilterSlider(350,5000,gCB.getfilterFactor());
+						filterFactorSlider.addChangeListener(new ToverXListener());
+						filterFactorLabel = new JLabel();
+						Border filterFactorBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						filterFactorLabel.setBorder(filterFactorBorder1);
+						updatefilterFactorLabel();
+						
+						Border filterFactorborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel filterFactorinnerPanel = new JPanel();
+							
+						filterFactorinnerPanel.setLayout(new BoxLayout(filterFactorinnerPanel, BoxLayout.Y_AXIS));
+						filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						filterFactorinnerPanel.add(filterFactorLabel);
+						filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						filterFactorinnerPanel.add(filterFactorSlider);		
+						filterFactorinnerPanel.setBorder(filterFactorborder2);
 			
-			filterFactorSlider = gCB.LogFilterSlider(350,5000,gCB.getfilterFactor());
-				filterFactorSlider.addChangeListener(new ToverXListener());
-				filterFactorLabel = new JLabel();
-				Border filterFactorBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				filterFactorLabel.setBorder(filterFactorBorder1);
-				updatefilterFactorLabel();
-				
-				Border filterFactorborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel filterFactorinnerPanel = new JPanel();
-					
-				filterFactorinnerPanel.setLayout(new BoxLayout(filterFactorinnerPanel, BoxLayout.Y_AXIS));
-				filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				filterFactorinnerPanel.add(filterFactorLabel);
-				filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				filterFactorinnerPanel.add(filterFactorSlider);		
-				filterFactorinnerPanel.setBorder(filterFactorborder2);
-			
-				frame.add(filterFactorinnerPanel);
+						frame.add(filterFactorinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -97,7 +100,7 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		class ToverXListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == filterFactorSlider) {
-			gCB.setfilterFactor((double) gCB.freqToFilt(gCB.sliderToLogval((int)(filterFactorSlider.getValue()), 100.0)));
+			gCB.setfilterFactor((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(filterFactorSlider.getValue()), 100.0)));
 				updatefilterFactorLabel();
 			}
 			}
@@ -118,8 +121,7 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefilterFactorLabel() {
-		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						filterFactorLabel.setText("Low Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getfilterFactor())) + " Hz");		
+		filterFactorLabel.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfilterFactor())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

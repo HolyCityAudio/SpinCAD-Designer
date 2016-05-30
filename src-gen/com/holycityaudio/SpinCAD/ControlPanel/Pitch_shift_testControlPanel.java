@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -67,25 +68,27 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 				frame.setTitle("Pitch Shift");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-16384 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
+						pitchCoeffSlider.addChangeListener(new Pitch_shift_testListener());
+						pitchCoeffLabel = new JLabel();
+						Border pitchCoeffBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						pitchCoeffLabel.setBorder(pitchCoeffBorder1);
+						updatepitchCoeffLabel();
+						
+						Border pitchCoeffborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel pitchCoeffinnerPanel = new JPanel();
+							
+						pitchCoeffinnerPanel.setLayout(new BoxLayout(pitchCoeffinnerPanel, BoxLayout.Y_AXIS));
+						pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						pitchCoeffinnerPanel.add(pitchCoeffLabel);
+						pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						pitchCoeffinnerPanel.add(pitchCoeffSlider);		
+						pitchCoeffinnerPanel.setBorder(pitchCoeffborder2);
 			
-			pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-16384 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
-				pitchCoeffSlider.addChangeListener(new Pitch_shift_testListener());
-				pitchCoeffLabel = new JLabel();
-				Border pitchCoeffBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				pitchCoeffLabel.setBorder(pitchCoeffBorder1);
-				updatepitchCoeffLabel();
-				
-				Border pitchCoeffborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel pitchCoeffinnerPanel = new JPanel();
-					
-				pitchCoeffinnerPanel.setLayout(new BoxLayout(pitchCoeffinnerPanel, BoxLayout.Y_AXIS));
-				pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				pitchCoeffinnerPanel.add(pitchCoeffLabel);
-				pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				pitchCoeffinnerPanel.add(pitchCoeffSlider);		
-				pitchCoeffinnerPanel.setBorder(pitchCoeffborder2);
-			
-				frame.add(pitchCoeffinnerPanel);
+						frame.add(pitchCoeffinnerPanel);
 				controlRangeComboBox = new JComboBox <String> ();
 				controlRangeComboBox.addItem("0 -> +1");
 				controlRangeComboBox.addItem("-1 -> +1");

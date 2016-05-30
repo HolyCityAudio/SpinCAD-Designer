@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -66,46 +67,50 @@ public crossfadeControlPanel(crossfadeCADBlock genericCADBlock) {
 				frame.setTitle("Crossfade");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+						gain1Slider.addChangeListener(new crossfadeListener());
+						gain1Label = new JLabel();
+						Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						gain1Label.setBorder(gain1Border1);
+						updategain1Label();
+						
+						Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel gain1innerPanel = new JPanel();
+							
+						gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gain1innerPanel.add(gain1Label);
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gain1innerPanel.add(gain1Slider);		
+						gain1innerPanel.setBorder(gain1border2);
 			
-			// dB level slider goes in steps of 1 dB
-				gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
-				gain1Slider.addChangeListener(new crossfadeListener());
-				gain1Label = new JLabel();
-				Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				gain1Label.setBorder(gain1Border1);
-				updategain1Label();
-				
-				Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel gain1innerPanel = new JPanel();
-					
-				gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
-				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gain1innerPanel.add(gain1Label);
-				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gain1innerPanel.add(gain1Slider);		
-				gain1innerPanel.setBorder(gain1border2);
+						frame.add(gain1innerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
+						gain2Slider.addChangeListener(new crossfadeListener());
+						gain2Label = new JLabel();
+						Border gain2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						gain2Label.setBorder(gain2Border1);
+						updategain2Label();
+						
+						Border gain2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel gain2innerPanel = new JPanel();
+							
+						gain2innerPanel.setLayout(new BoxLayout(gain2innerPanel, BoxLayout.Y_AXIS));
+						gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gain2innerPanel.add(gain2Label);
+						gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gain2innerPanel.add(gain2Slider);		
+						gain2innerPanel.setBorder(gain2border2);
 			
-				frame.add(gain1innerPanel);
-			
-			// dB level slider goes in steps of 1 dB
-				gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
-				gain2Slider.addChangeListener(new crossfadeListener());
-				gain2Label = new JLabel();
-				Border gain2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				gain2Label.setBorder(gain2Border1);
-				updategain2Label();
-				
-				Border gain2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel gain2innerPanel = new JPanel();
-					
-				gain2innerPanel.setLayout(new BoxLayout(gain2innerPanel, BoxLayout.Y_AXIS));
-				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gain2innerPanel.add(gain2Label);
-				gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gain2innerPanel.add(gain2Slider);		
-				gain2innerPanel.setBorder(gain2border2);
-			
-				frame.add(gain2innerPanel);
+						frame.add(gain2innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -120,11 +125,11 @@ public crossfadeControlPanel(crossfadeCADBlock genericCADBlock) {
 		class crossfadeListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-			gCB.setgain1((double) (gain1Slider.getValue()/1.0));
+			gCB.setgain1((double) (gain1Slider.getValue()/1.0));			    					
 				updategain1Label();
 			}
 			if(ce.getSource() == gain2Slider) {
-			gCB.setgain2((double) (gain2Slider.getValue()/1.0));
+			gCB.setgain2((double) (gain2Slider.getValue()/1.0));			    					
 				updategain2Label();
 			}
 			}

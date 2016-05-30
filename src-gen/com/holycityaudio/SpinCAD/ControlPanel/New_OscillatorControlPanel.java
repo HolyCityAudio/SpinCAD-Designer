@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -64,25 +65,27 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 				frame.setTitle("Oscillator II");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					freqVarSlider = SpinCADBlock.LogFilterSlider(20,5000,gCB.getfreqVar());
+						freqVarSlider.addChangeListener(new New_OscillatorListener());
+						freqVarLabel = new JLabel();
+						Border freqVarBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						freqVarLabel.setBorder(freqVarBorder1);
+						updatefreqVarLabel();
+						
+						Border freqVarborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel freqVarinnerPanel = new JPanel();
+							
+						freqVarinnerPanel.setLayout(new BoxLayout(freqVarinnerPanel, BoxLayout.Y_AXIS));
+						freqVarinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqVarinnerPanel.add(freqVarLabel);
+						freqVarinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqVarinnerPanel.add(freqVarSlider);		
+						freqVarinnerPanel.setBorder(freqVarborder2);
 			
-			freqVarSlider = gCB.LogFilterSlider(20,5000,gCB.getfreqVar());
-				freqVarSlider.addChangeListener(new New_OscillatorListener());
-				freqVarLabel = new JLabel();
-				Border freqVarBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				freqVarLabel.setBorder(freqVarBorder1);
-				updatefreqVarLabel();
-				
-				Border freqVarborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel freqVarinnerPanel = new JPanel();
-					
-				freqVarinnerPanel.setLayout(new BoxLayout(freqVarinnerPanel, BoxLayout.Y_AXIS));
-				freqVarinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				freqVarinnerPanel.add(freqVarLabel);
-				freqVarinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				freqVarinnerPanel.add(freqVarSlider);		
-				freqVarinnerPanel.setBorder(freqVarborder2);
-			
-				frame.add(freqVarinnerPanel);
+						frame.add(freqVarinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -97,7 +100,7 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 		class New_OscillatorListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqVarSlider) {
-			gCB.setfreqVar((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqVarSlider.getValue()), 100.0)));
+			gCB.setfreqVar((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(freqVarSlider.getValue()), 100.0)));
 				updatefreqVarLabel();
 			}
 			}
@@ -118,8 +121,7 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqVarLabel() {
-		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						freqVarLabel.setText("Frequency (Hz) " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreqVar())) + " Hz");		
+		freqVarLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreqVar())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

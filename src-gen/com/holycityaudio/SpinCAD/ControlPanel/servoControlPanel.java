@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -73,103 +74,113 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				frame.setTitle("Servo Flanger");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
+						inputGainSlider.addChangeListener(new servoListener());
+						inputGainLabel = new JLabel();
+						Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						inputGainLabel.setBorder(inputGainBorder1);
+						updateinputGainLabel();
+						
+						Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel inputGaininnerPanel = new JPanel();
+							
+						inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						inputGaininnerPanel.add(inputGainLabel);
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						inputGaininnerPanel.add(inputGainSlider);		
+						inputGaininnerPanel.setBorder(inputGainborder2);
 			
-			// dB level slider goes in steps of 1 dB
-				inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
-				inputGainSlider.addChangeListener(new servoListener());
-				inputGainLabel = new JLabel();
-				Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				inputGainLabel.setBorder(inputGainBorder1);
-				updateinputGainLabel();
-				
-				Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel inputGaininnerPanel = new JPanel();
-					
-				inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
-				inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				inputGaininnerPanel.add(inputGainLabel);
-				inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				inputGaininnerPanel.add(inputGainSlider);		
-				inputGaininnerPanel.setBorder(inputGainborder2);
+						frame.add(inputGaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+						fbkGainSlider.addChangeListener(new servoListener());
+						fbkGainLabel = new JLabel();
+						Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						fbkGainLabel.setBorder(fbkGainBorder1);
+						updatefbkGainLabel();
+						
+						Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel fbkGaininnerPanel = new JPanel();
+							
+						fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						fbkGaininnerPanel.add(fbkGainLabel);
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						fbkGaininnerPanel.add(fbkGainSlider);		
+						fbkGaininnerPanel.setBorder(fbkGainborder2);
 			
-				frame.add(inputGaininnerPanel);
+						frame.add(fbkGaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					servoGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.49 * 100.0), (int) (gCB.getservoGain() * 100.0));
+						servoGainSlider.addChangeListener(new servoListener());
+						servoGainLabel = new JLabel();
+						Border servoGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						servoGainLabel.setBorder(servoGainBorder1);
+						updateservoGainLabel();
+						
+						Border servoGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel servoGaininnerPanel = new JPanel();
+							
+						servoGaininnerPanel.setLayout(new BoxLayout(servoGaininnerPanel, BoxLayout.Y_AXIS));
+						servoGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						servoGaininnerPanel.add(servoGainLabel);
+						servoGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						servoGaininnerPanel.add(servoGainSlider);		
+						servoGaininnerPanel.setBorder(servoGainborder2);
 			
-			// dB level slider goes in steps of 1 dB
-				fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
-				fbkGainSlider.addChangeListener(new servoListener());
-				fbkGainLabel = new JLabel();
-				Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				fbkGainLabel.setBorder(fbkGainBorder1);
-				updatefbkGainLabel();
-				
-				Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel fbkGaininnerPanel = new JPanel();
-					
-				fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
-				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				fbkGaininnerPanel.add(fbkGainLabel);
-				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				fbkGaininnerPanel.add(fbkGainSlider);		
-				fbkGaininnerPanel.setBorder(fbkGainborder2);
+						frame.add(servoGaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					freqSlider = SpinCADBlock.LogFilterSlider(500,7500,gCB.getfreq());
+						freqSlider.addChangeListener(new servoListener());
+						freqLabel = new JLabel();
+						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						freqLabel.setBorder(freqBorder1);
+						updatefreqLabel();
+						
+						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel freqinnerPanel = new JPanel();
+							
+						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqinnerPanel.add(freqLabel);
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqinnerPanel.add(freqSlider);		
+						freqinnerPanel.setBorder(freqborder2);
 			
-				frame.add(fbkGaininnerPanel);
+						frame.add(freqinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.05 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
+						tap1RatioSlider.addChangeListener(new servoListener());
+						tap1RatioLabel = new JLabel();
+						Border tap1RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						tap1RatioLabel.setBorder(tap1RatioBorder1);
+						updatetap1RatioLabel();
+						
+						Border tap1Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel tap1RatioinnerPanel = new JPanel();
+							
+						tap1RatioinnerPanel.setLayout(new BoxLayout(tap1RatioinnerPanel, BoxLayout.Y_AXIS));
+						tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						tap1RatioinnerPanel.add(tap1RatioLabel);
+						tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						tap1RatioinnerPanel.add(tap1RatioSlider);		
+						tap1RatioinnerPanel.setBorder(tap1Ratioborder2);
 			
-			servoGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.49 * 100.0), (int) (gCB.getservoGain() * 100.0));
-				servoGainSlider.addChangeListener(new servoListener());
-				servoGainLabel = new JLabel();
-				Border servoGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				servoGainLabel.setBorder(servoGainBorder1);
-				updateservoGainLabel();
-				
-				Border servoGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel servoGaininnerPanel = new JPanel();
-					
-				servoGaininnerPanel.setLayout(new BoxLayout(servoGaininnerPanel, BoxLayout.Y_AXIS));
-				servoGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				servoGaininnerPanel.add(servoGainLabel);
-				servoGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				servoGaininnerPanel.add(servoGainSlider);		
-				servoGaininnerPanel.setBorder(servoGainborder2);
-			
-				frame.add(servoGaininnerPanel);
-			
-			freqSlider = gCB.LogFilterSlider(500,7500,gCB.getfreq());
-				freqSlider.addChangeListener(new servoListener());
-				freqLabel = new JLabel();
-				Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				freqLabel.setBorder(freqBorder1);
-				updatefreqLabel();
-				
-				Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel freqinnerPanel = new JPanel();
-					
-				freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
-				freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				freqinnerPanel.add(freqLabel);
-				freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				freqinnerPanel.add(freqSlider);		
-				freqinnerPanel.setBorder(freqborder2);
-			
-				frame.add(freqinnerPanel);
-			
-			tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.05 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
-				tap1RatioSlider.addChangeListener(new servoListener());
-				tap1RatioLabel = new JLabel();
-				Border tap1RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				tap1RatioLabel.setBorder(tap1RatioBorder1);
-				updatetap1RatioLabel();
-				
-				Border tap1Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel tap1RatioinnerPanel = new JPanel();
-					
-				tap1RatioinnerPanel.setLayout(new BoxLayout(tap1RatioinnerPanel, BoxLayout.Y_AXIS));
-				tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				tap1RatioinnerPanel.add(tap1RatioLabel);
-				tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				tap1RatioinnerPanel.add(tap1RatioSlider);		
-				tap1RatioinnerPanel.setBorder(tap1Ratioborder2);
-			
-				frame.add(tap1RatioinnerPanel);
+						frame.add(tap1RatioinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();
 				lfoSelComboBox.addItem("Ramp 0");
 				lfoSelComboBox.addItem("Ramp 1");
@@ -191,11 +202,11 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 		class servoListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));			    					
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));			    					
 				updatefbkGainLabel();
 			}
 			if(ce.getSource() == servoGainSlider) {
@@ -203,7 +214,7 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 				updateservoGainLabel();
 			}
 			if(ce.getSource() == freqSlider) {
-			gCB.setfreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
+			gCB.setfreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
 				updatefreqLabel();
 			}
 			if(ce.getSource() == tap1RatioSlider) {
@@ -240,8 +251,7 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 		servoGainLabel.setText("Servo Gain " + String.format("%4.2f", gCB.getservoGain()));		
 		}		
 		private void updatefreqLabel() {
-		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						freqLabel.setText("Low_Pass " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
+		freqLabel.setText("Low_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		private void updatetap1RatioLabel() {
 		tap1RatioLabel.setText("Tap Time Ratio " + String.format("%4.3f", gCB.gettap1Ratio()));		

@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -64,26 +65,28 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 				frame.setTitle("Slow_gear");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						threshSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getthresh())));
+						threshSlider.addChangeListener(new slow_gearListener());
+						threshLabel = new JLabel();
+						Border threshBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						threshLabel.setBorder(threshBorder1);
+						updatethreshLabel();
+						
+						Border threshborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel threshinnerPanel = new JPanel();
+							
+						threshinnerPanel.setLayout(new BoxLayout(threshinnerPanel, BoxLayout.Y_AXIS));
+						threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						threshinnerPanel.add(threshLabel);
+						threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						threshinnerPanel.add(threshSlider);		
+						threshinnerPanel.setBorder(threshborder2);
 			
-			// dB level slider goes in steps of 1 dB
-				threshSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getthresh())));
-				threshSlider.addChangeListener(new slow_gearListener());
-				threshLabel = new JLabel();
-				Border threshBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				threshLabel.setBorder(threshBorder1);
-				updatethreshLabel();
-				
-				Border threshborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel threshinnerPanel = new JPanel();
-					
-				threshinnerPanel.setLayout(new BoxLayout(threshinnerPanel, BoxLayout.Y_AXIS));
-				threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				threshinnerPanel.add(threshLabel);
-				threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				threshinnerPanel.add(threshSlider);		
-				threshinnerPanel.setBorder(threshborder2);
-			
-				frame.add(threshinnerPanel);
+						frame.add(threshinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -98,7 +101,7 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 		class slow_gearListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == threshSlider) {
-			gCB.setthresh((double) (threshSlider.getValue()/1.0));
+			gCB.setthresh((double) (threshSlider.getValue()/1.0));			    					
 				updatethreshLabel();
 			}
 			}

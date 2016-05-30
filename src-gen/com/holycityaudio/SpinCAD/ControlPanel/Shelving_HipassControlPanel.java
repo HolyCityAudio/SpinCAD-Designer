@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -66,45 +67,49 @@ public Shelving_HipassControlPanel(Shelving_HipassCADBlock genericCADBlock) {
 				frame.setTitle("Shelving Hipass");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					freqSlider = SpinCADBlock.LogFilterSlider(80,2500,gCB.getfreq());
+						freqSlider.addChangeListener(new Shelving_HipassListener());
+						freqLabel = new JLabel();
+						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						freqLabel.setBorder(freqBorder1);
+						updatefreqLabel();
+						
+						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel freqinnerPanel = new JPanel();
+							
+						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqinnerPanel.add(freqLabel);
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqinnerPanel.add(freqSlider);		
+						freqinnerPanel.setBorder(freqborder2);
 			
-			freqSlider = gCB.LogFilterSlider(80,2500,gCB.getfreq());
-				freqSlider.addChangeListener(new Shelving_HipassListener());
-				freqLabel = new JLabel();
-				Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				freqLabel.setBorder(freqBorder1);
-				updatefreqLabel();
-				
-				Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel freqinnerPanel = new JPanel();
-					
-				freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
-				freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				freqinnerPanel.add(freqLabel);
-				freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				freqinnerPanel.add(freqSlider);		
-				freqinnerPanel.setBorder(freqborder2);
+						frame.add(freqinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						shelfSlider = new JSlider(JSlider.HORIZONTAL, (int)(-40),(int) (-3), (int) (20 * Math.log10(gCB.getshelf())));
+						shelfSlider.addChangeListener(new Shelving_HipassListener());
+						shelfLabel = new JLabel();
+						Border shelfBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						shelfLabel.setBorder(shelfBorder1);
+						updateshelfLabel();
+						
+						Border shelfborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel shelfinnerPanel = new JPanel();
+							
+						shelfinnerPanel.setLayout(new BoxLayout(shelfinnerPanel, BoxLayout.Y_AXIS));
+						shelfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						shelfinnerPanel.add(shelfLabel);
+						shelfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						shelfinnerPanel.add(shelfSlider);		
+						shelfinnerPanel.setBorder(shelfborder2);
 			
-				frame.add(freqinnerPanel);
-			
-			// dB level slider goes in steps of 1 dB
-				shelfSlider = new JSlider(JSlider.HORIZONTAL, (int)(-40),(int) (-3), (int) (20 * Math.log10(gCB.getshelf())));
-				shelfSlider.addChangeListener(new Shelving_HipassListener());
-				shelfLabel = new JLabel();
-				Border shelfBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				shelfLabel.setBorder(shelfBorder1);
-				updateshelfLabel();
-				
-				Border shelfborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel shelfinnerPanel = new JPanel();
-					
-				shelfinnerPanel.setLayout(new BoxLayout(shelfinnerPanel, BoxLayout.Y_AXIS));
-				shelfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				shelfinnerPanel.add(shelfLabel);
-				shelfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				shelfinnerPanel.add(shelfSlider);		
-				shelfinnerPanel.setBorder(shelfborder2);
-			
-				frame.add(shelfinnerPanel);
+						frame.add(shelfinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -119,11 +124,11 @@ public Shelving_HipassControlPanel(Shelving_HipassCADBlock genericCADBlock) {
 		class Shelving_HipassListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-			gCB.setfreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
+			gCB.setfreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
 				updatefreqLabel();
 			}
 			if(ce.getSource() == shelfSlider) {
-			gCB.setshelf((double) (shelfSlider.getValue()/1.0));
+			gCB.setshelf((double) (shelfSlider.getValue()/1.0));			    					
 				updateshelfLabel();
 			}
 			}
@@ -144,8 +149,7 @@ public Shelving_HipassControlPanel(Shelving_HipassCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqLabel() {
-		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						freqLabel.setText("Frequency " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
+		freqLabel.setText("Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		private void updateshelfLabel() {
 		shelfLabel.setText("Shelf Depth " + String.format("%4.1f dB", (20 * Math.log10(gCB.getshelf()))));		

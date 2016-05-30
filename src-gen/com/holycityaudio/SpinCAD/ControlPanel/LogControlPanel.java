@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -66,44 +67,48 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 				frame.setTitle("Log");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
+						multiplierSlider.addChangeListener(new LogListener());
+						multiplierLabel = new JLabel();
+						Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						multiplierLabel.setBorder(multiplierBorder1);
+						updatemultiplierLabel();
+						
+						Border multiplierborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel multiplierinnerPanel = new JPanel();
+							
+						multiplierinnerPanel.setLayout(new BoxLayout(multiplierinnerPanel, BoxLayout.Y_AXIS));
+						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						multiplierinnerPanel.add(multiplierLabel);
+						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						multiplierinnerPanel.add(multiplierSlider);		
+						multiplierinnerPanel.setBorder(multiplierborder2);
 			
-			multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
-				multiplierSlider.addChangeListener(new LogListener());
-				multiplierLabel = new JLabel();
-				Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				multiplierLabel.setBorder(multiplierBorder1);
-				updatemultiplierLabel();
-				
-				Border multiplierborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel multiplierinnerPanel = new JPanel();
-					
-				multiplierinnerPanel.setLayout(new BoxLayout(multiplierinnerPanel, BoxLayout.Y_AXIS));
-				multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				multiplierinnerPanel.add(multiplierLabel);
-				multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				multiplierinnerPanel.add(multiplierSlider);		
-				multiplierinnerPanel.setBorder(multiplierborder2);
+						frame.add(multiplierinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					log_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getlog_offset() * 1000.0));
+						log_offsetSlider.addChangeListener(new LogListener());
+						log_offsetLabel = new JLabel();
+						Border log_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						log_offsetLabel.setBorder(log_offsetBorder1);
+						updatelog_offsetLabel();
+						
+						Border log_offsetborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel log_offsetinnerPanel = new JPanel();
+							
+						log_offsetinnerPanel.setLayout(new BoxLayout(log_offsetinnerPanel, BoxLayout.Y_AXIS));
+						log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						log_offsetinnerPanel.add(log_offsetLabel);
+						log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						log_offsetinnerPanel.add(log_offsetSlider);		
+						log_offsetinnerPanel.setBorder(log_offsetborder2);
 			
-				frame.add(multiplierinnerPanel);
-			
-			log_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getlog_offset() * 1000.0));
-				log_offsetSlider.addChangeListener(new LogListener());
-				log_offsetLabel = new JLabel();
-				Border log_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				log_offsetLabel.setBorder(log_offsetBorder1);
-				updatelog_offsetLabel();
-				
-				Border log_offsetborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel log_offsetinnerPanel = new JPanel();
-					
-				log_offsetinnerPanel.setLayout(new BoxLayout(log_offsetinnerPanel, BoxLayout.Y_AXIS));
-				log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				log_offsetinnerPanel.add(log_offsetLabel);
-				log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				log_offsetinnerPanel.add(log_offsetSlider);		
-				log_offsetinnerPanel.setBorder(log_offsetborder2);
-			
-				frame.add(log_offsetinnerPanel);
+						frame.add(log_offsetinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);

@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -65,26 +66,28 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 				frame.setTitle("Noise_AMZ");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
+						gainSlider.addChangeListener(new noise_amzListener());
+						gainLabel = new JLabel();
+						Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						gainLabel.setBorder(gainBorder1);
+						updategainLabel();
+						
+						Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel gaininnerPanel = new JPanel();
+							
+						gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gaininnerPanel.add(gainLabel);
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gaininnerPanel.add(gainSlider);		
+						gaininnerPanel.setBorder(gainborder2);
 			
-			// dB level slider goes in steps of 1 dB
-				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
-				gainSlider.addChangeListener(new noise_amzListener());
-				gainLabel = new JLabel();
-				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				gainLabel.setBorder(gainBorder1);
-				updategainLabel();
-				
-				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel gaininnerPanel = new JPanel();
-					
-				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainLabel);
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder2);
-			
-				frame.add(gaininnerPanel);
+						frame.add(gaininnerPanel);
 				controlRangeComboBox = new JComboBox <String> ();
 				controlRangeComboBox.addItem("0 -> +1");
 				controlRangeComboBox.addItem("-1 -> +1");
@@ -106,7 +109,7 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 		class noise_amzListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/1.0));
+			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
 				updategainLabel();
 			}
 			}

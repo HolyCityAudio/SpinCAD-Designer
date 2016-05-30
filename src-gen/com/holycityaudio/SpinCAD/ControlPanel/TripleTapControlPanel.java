@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -74,122 +75,134 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 				frame.setTitle("ThreeTap");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
+						inputGainSlider.addChangeListener(new TripleTapListener());
+						inputGainLabel = new JLabel();
+						Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						inputGainLabel.setBorder(inputGainBorder1);
+						updateinputGainLabel();
+						
+						Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel inputGaininnerPanel = new JPanel();
+							
+						inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						inputGaininnerPanel.add(inputGainLabel);
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						inputGaininnerPanel.add(inputGainSlider);		
+						inputGaininnerPanel.setBorder(inputGainborder2);
 			
-			// dB level slider goes in steps of 1 dB
-				inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
-				inputGainSlider.addChangeListener(new TripleTapListener());
-				inputGainLabel = new JLabel();
-				Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				inputGainLabel.setBorder(inputGainBorder1);
-				updateinputGainLabel();
-				
-				Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel inputGaininnerPanel = new JPanel();
-					
-				inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
-				inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				inputGaininnerPanel.add(inputGainLabel);
-				inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				inputGaininnerPanel.add(inputGainSlider);		
-				inputGaininnerPanel.setBorder(inputGainborder2);
+						frame.add(inputGaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+						fbkGainSlider.addChangeListener(new TripleTapListener());
+						fbkGainLabel = new JLabel();
+						Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						fbkGainLabel.setBorder(fbkGainBorder1);
+						updatefbkGainLabel();
+						
+						Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel fbkGaininnerPanel = new JPanel();
+							
+						fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						fbkGaininnerPanel.add(fbkGainLabel);
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						fbkGaininnerPanel.add(fbkGainSlider);		
+						fbkGaininnerPanel.setBorder(fbkGainborder2);
 			
-				frame.add(inputGaininnerPanel);
+						frame.add(fbkGaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
+						delayLengthSlider.addChangeListener(new TripleTapListener());
+						delayLengthLabel = new JLabel();
+						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						delayLengthLabel.setBorder(delayLengthBorder1);
+						updatedelayLengthLabel();
+						
+						Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel delayLengthinnerPanel = new JPanel();
+							
+						delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						delayLengthinnerPanel.add(delayLengthLabel);
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						delayLengthinnerPanel.add(delayLengthSlider);		
+						delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
-			// dB level slider goes in steps of 1 dB
-				fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
-				fbkGainSlider.addChangeListener(new TripleTapListener());
-				fbkGainLabel = new JLabel();
-				Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				fbkGainLabel.setBorder(fbkGainBorder1);
-				updatefbkGainLabel();
-				
-				Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel fbkGaininnerPanel = new JPanel();
-					
-				fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
-				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				fbkGaininnerPanel.add(fbkGainLabel);
-				fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				fbkGaininnerPanel.add(fbkGainSlider);		
-				fbkGaininnerPanel.setBorder(fbkGainborder2);
+						frame.add(delayLengthinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
+						tap1RatioSlider.addChangeListener(new TripleTapListener());
+						tap1RatioLabel = new JLabel();
+						Border tap1RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						tap1RatioLabel.setBorder(tap1RatioBorder1);
+						updatetap1RatioLabel();
+						
+						Border tap1Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel tap1RatioinnerPanel = new JPanel();
+							
+						tap1RatioinnerPanel.setLayout(new BoxLayout(tap1RatioinnerPanel, BoxLayout.Y_AXIS));
+						tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						tap1RatioinnerPanel.add(tap1RatioLabel);
+						tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						tap1RatioinnerPanel.add(tap1RatioSlider);		
+						tap1RatioinnerPanel.setBorder(tap1Ratioborder2);
 			
-				frame.add(fbkGaininnerPanel);
+						frame.add(tap1RatioinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					tap2RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
+						tap2RatioSlider.addChangeListener(new TripleTapListener());
+						tap2RatioLabel = new JLabel();
+						Border tap2RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						tap2RatioLabel.setBorder(tap2RatioBorder1);
+						updatetap2RatioLabel();
+						
+						Border tap2Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel tap2RatioinnerPanel = new JPanel();
+							
+						tap2RatioinnerPanel.setLayout(new BoxLayout(tap2RatioinnerPanel, BoxLayout.Y_AXIS));
+						tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						tap2RatioinnerPanel.add(tap2RatioLabel);
+						tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						tap2RatioinnerPanel.add(tap2RatioSlider);		
+						tap2RatioinnerPanel.setBorder(tap2Ratioborder2);
 			
-			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
-				delayLengthSlider.addChangeListener(new TripleTapListener());
-				delayLengthLabel = new JLabel();
-				Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				delayLengthLabel.setBorder(delayLengthBorder1);
-				updatedelayLengthLabel();
-				
-				Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel delayLengthinnerPanel = new JPanel();
-					
-				delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
-				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				delayLengthinnerPanel.add(delayLengthLabel);
-				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				delayLengthinnerPanel.add(delayLengthSlider);		
-				delayLengthinnerPanel.setBorder(delayLengthborder2);
+						frame.add(tap2RatioinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					tap3RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
+						tap3RatioSlider.addChangeListener(new TripleTapListener());
+						tap3RatioLabel = new JLabel();
+						Border tap3RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						tap3RatioLabel.setBorder(tap3RatioBorder1);
+						updatetap3RatioLabel();
+						
+						Border tap3Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel tap3RatioinnerPanel = new JPanel();
+							
+						tap3RatioinnerPanel.setLayout(new BoxLayout(tap3RatioinnerPanel, BoxLayout.Y_AXIS));
+						tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						tap3RatioinnerPanel.add(tap3RatioLabel);
+						tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						tap3RatioinnerPanel.add(tap3RatioSlider);		
+						tap3RatioinnerPanel.setBorder(tap3Ratioborder2);
 			
-				frame.add(delayLengthinnerPanel);
-			
-			tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
-				tap1RatioSlider.addChangeListener(new TripleTapListener());
-				tap1RatioLabel = new JLabel();
-				Border tap1RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				tap1RatioLabel.setBorder(tap1RatioBorder1);
-				updatetap1RatioLabel();
-				
-				Border tap1Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel tap1RatioinnerPanel = new JPanel();
-					
-				tap1RatioinnerPanel.setLayout(new BoxLayout(tap1RatioinnerPanel, BoxLayout.Y_AXIS));
-				tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				tap1RatioinnerPanel.add(tap1RatioLabel);
-				tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				tap1RatioinnerPanel.add(tap1RatioSlider);		
-				tap1RatioinnerPanel.setBorder(tap1Ratioborder2);
-			
-				frame.add(tap1RatioinnerPanel);
-			
-			tap2RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
-				tap2RatioSlider.addChangeListener(new TripleTapListener());
-				tap2RatioLabel = new JLabel();
-				Border tap2RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				tap2RatioLabel.setBorder(tap2RatioBorder1);
-				updatetap2RatioLabel();
-				
-				Border tap2Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel tap2RatioinnerPanel = new JPanel();
-					
-				tap2RatioinnerPanel.setLayout(new BoxLayout(tap2RatioinnerPanel, BoxLayout.Y_AXIS));
-				tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				tap2RatioinnerPanel.add(tap2RatioLabel);
-				tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				tap2RatioinnerPanel.add(tap2RatioSlider);		
-				tap2RatioinnerPanel.setBorder(tap2Ratioborder2);
-			
-				frame.add(tap2RatioinnerPanel);
-			
-			tap3RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
-				tap3RatioSlider.addChangeListener(new TripleTapListener());
-				tap3RatioLabel = new JLabel();
-				Border tap3RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				tap3RatioLabel.setBorder(tap3RatioBorder1);
-				updatetap3RatioLabel();
-				
-				Border tap3Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel tap3RatioinnerPanel = new JPanel();
-					
-				tap3RatioinnerPanel.setLayout(new BoxLayout(tap3RatioinnerPanel, BoxLayout.Y_AXIS));
-				tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				tap3RatioinnerPanel.add(tap3RatioLabel);
-				tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				tap3RatioinnerPanel.add(tap3RatioSlider);		
-				tap3RatioinnerPanel.setBorder(tap3Ratioborder2);
-			
-				frame.add(tap3RatioinnerPanel);
+						frame.add(tap3RatioinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -204,15 +217,15 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 		class TripleTapListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));			    					
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));			    					
 				updatefbkGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1RatioSlider) {
@@ -251,7 +264,7 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 		fbkGainLabel.setText("Feedback Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
 		}		
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
+		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
 		private void updatetap1RatioLabel() {
 		tap1RatioLabel.setText("Tap 1 Time (%):  " + String.format("%4.2f", gCB.gettap1Ratio()));		

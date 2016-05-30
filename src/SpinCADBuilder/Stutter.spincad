@@ -6,16 +6,20 @@
 ; @controlInput delay Delay
 
 ;REGISTERS 
-equ   output     reg0       
+equ   output  reg0       
 
 equ delayLength 32767 
 @sliderLabel delayLength 'Delay Time (ms): ' 32 32767 16384 1 0 lengthToTime
 
-; fadeTime is the filter value for a given fade Time
-equ fadeTime 0
-@sliderLabel fadeTime 'Fade Time (ms): ' 0 50 25 1 0 timeToFilt
+; fadeTimeFilt is the filter value for a given fade Time 
+equ fadeTimeFilt 0.0015
+@sliderLabel fadeTimeFilt 'Fade Time (ms): ' 0 50 25 1.0 0 filtToTime
 
-// establish the base address for this module
+equ freq 0.15
+// variable - Name - low - high - initial - multiplier - precision - option 
+@sliderLabel freq 'Frequency (Hz)' 80 5000 100.0 100.0 1 LOGFREQ 
+
+// establish the base address for this module 
 @getBaseAddress 
 // then allocate the buffer
 mem delayRam delayLength 
@@ -25,8 +29,8 @@ mem delayRam delayLength
 rdax    input,1    ;read input signal
 wra	delayRam, 0
 
-@isEqualTo fadeTime 0
-; if fade time is zero, don't write crossfade code.  just glitch from end to end! 
+@isEqualTo fadeTimeFilt 0
+; if fade time filter is zero, don't write crossfade code.  just glitch from end to end! 
 @isPinConnected Stutter
 rdax	stutter, 1.0
 sof		1.0, -0.5
@@ -58,7 +62,7 @@ play1:
 sof 0.0, 0.9990234375
 playDelay1:
 ; acc is now 0 or 1
-rdfx fadeFilt,0.0001500000
+rdfx fadeFilt, fadeTimeFilt
 wrax fadeFilt,0.0000000000
 ;------ Crossfade
 rda  delayRam,-0.5000000000

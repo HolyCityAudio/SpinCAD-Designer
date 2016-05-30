@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -64,26 +65,28 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 				frame.setTitle("Panner");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+						gain1Slider.addChangeListener(new pannerListener());
+						gain1Label = new JLabel();
+						Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						gain1Label.setBorder(gain1Border1);
+						updategain1Label();
+						
+						Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel gain1innerPanel = new JPanel();
+							
+						gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gain1innerPanel.add(gain1Label);
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gain1innerPanel.add(gain1Slider);		
+						gain1innerPanel.setBorder(gain1border2);
 			
-			// dB level slider goes in steps of 1 dB
-				gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
-				gain1Slider.addChangeListener(new pannerListener());
-				gain1Label = new JLabel();
-				Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				gain1Label.setBorder(gain1Border1);
-				updategain1Label();
-				
-				Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel gain1innerPanel = new JPanel();
-					
-				gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
-				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gain1innerPanel.add(gain1Label);
-				gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gain1innerPanel.add(gain1Slider);		
-				gain1innerPanel.setBorder(gain1border2);
-			
-				frame.add(gain1innerPanel);
+						frame.add(gain1innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -98,7 +101,7 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 		class pannerListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-			gCB.setgain1((double) (gain1Slider.getValue()/1.0));
+			gCB.setgain1((double) (gain1Slider.getValue()/1.0));			    					
 				updategain1Label();
 			}
 			}

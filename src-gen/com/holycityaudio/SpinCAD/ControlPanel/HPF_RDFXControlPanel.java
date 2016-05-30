@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -64,25 +65,27 @@ public HPF_RDFXControlPanel(HPF_RDFXCADBlock genericCADBlock) {
 				frame.setTitle("HPF 1P");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					freqSlider = SpinCADBlock.LogFilterSlider(40,3500,gCB.getfreq());
+						freqSlider.addChangeListener(new HPF_RDFXListener());
+						freqLabel = new JLabel();
+						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						freqLabel.setBorder(freqBorder1);
+						updatefreqLabel();
+						
+						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel freqinnerPanel = new JPanel();
+							
+						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqinnerPanel.add(freqLabel);
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqinnerPanel.add(freqSlider);		
+						freqinnerPanel.setBorder(freqborder2);
 			
-			freqSlider = gCB.LogFilterSlider(40,3500,gCB.getfreq());
-				freqSlider.addChangeListener(new HPF_RDFXListener());
-				freqLabel = new JLabel();
-				Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				freqLabel.setBorder(freqBorder1);
-				updatefreqLabel();
-				
-				Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel freqinnerPanel = new JPanel();
-					
-				freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
-				freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				freqinnerPanel.add(freqLabel);
-				freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				freqinnerPanel.add(freqSlider);		
-				freqinnerPanel.setBorder(freqborder2);
-			
-				frame.add(freqinnerPanel);
+						frame.add(freqinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -97,7 +100,7 @@ public HPF_RDFXControlPanel(HPF_RDFXCADBlock genericCADBlock) {
 		class HPF_RDFXListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-			gCB.setfreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
+			gCB.setfreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
 				updatefreqLabel();
 			}
 			}
@@ -118,8 +121,7 @@ public HPF_RDFXControlPanel(HPF_RDFXCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqLabel() {
-		//				kflLabel.setText("HF damping freq 1:" + String.format("%4.1f", gCB.filtToFreq(gCB.getkfl())) + " Hz");		
-						freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", gCB.filtToFreq(gCB.getfreq())) + " Hz");		
+		freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

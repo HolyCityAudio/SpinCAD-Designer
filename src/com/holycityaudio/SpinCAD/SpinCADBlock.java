@@ -457,19 +457,22 @@ public class SpinCADBlock extends SpinFXBlock {
 	}
 	// below are functions to translate parameters between CADBlocks and control panels
 
-	public double freqToFilt(double freq) {
+	// frequency in Hz gets converted to filter coefficient for first order filter
+	public static double freqToFilt(double freq) {
 		double omega = 2 * Math.PI * freq/ElmProgram.getSamplerate();
 		return 1 - Math.pow(Math.E, -omega); 
 	}
 
+	// filter coefficient gets converted to frequency in Hz for first order filter
 	public static double filtToFreq(double filt) {
 		return (-(Math.log(1 - filt)) * ElmProgram.getSamplerate()/(2 * Math.PI));	
 	}
 
-	public double timeToFilt(double time) {
+//	This takes rise time in seconds and converts to filter coefficient
+	public static double timeToFilt(double time) {
 		if (time != 0.0) {
 			double freq = 0.35/time;
-			double omega = 2 * Math.PI * freq/ElmProgram.getSamplerate();
+			double omega = (2 * Math.PI * freq)/ElmProgram.getSamplerate();
 			return 1 - Math.pow(Math.E, -omega);
 		} else 
 		{
@@ -477,6 +480,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		}
 	}
 
+//	This takes filter coefficient and converts to rise time in seconds 
 	public static double filtToTime(double filt) {
 		double freq = -(Math.log(1 - filt)) * ElmProgram.getSamplerate()/(2 * Math.PI);
 		return 0.35/freq;	
@@ -486,7 +490,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		return (int) (multiplier * Math.log10(value));
 	}
 
-	public double sliderToLogval(int pos, double multiplier) {
+	public static double sliderToLogval(int pos, double multiplier) {
 		return Math.pow(10.0, pos/multiplier);
 	}
 

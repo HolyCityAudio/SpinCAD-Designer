@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -68,64 +69,70 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 				frame.setTitle("Reverb_Plate");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// dB level slider goes in steps of 1 dB
+						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
+						gainSlider.addChangeListener(new reverb_plateListener());
+						gainLabel = new JLabel();
+						Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						gainLabel.setBorder(gainBorder1);
+						updategainLabel();
+						
+						Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel gaininnerPanel = new JPanel();
+							
+						gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gaininnerPanel.add(gainLabel);
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gaininnerPanel.add(gainSlider);		
+						gaininnerPanel.setBorder(gainborder2);
 			
-			// dB level slider goes in steps of 1 dB
-				gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
-				gainSlider.addChangeListener(new reverb_plateListener());
-				gainLabel = new JLabel();
-				Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				gainLabel.setBorder(gainBorder1);
-				updategainLabel();
-				
-				Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel gaininnerPanel = new JPanel();
-					
-				gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainLabel);
-				gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				gaininnerPanel.add(gainSlider);		
-				gaininnerPanel.setBorder(gainborder2);
+						frame.add(gaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
+						rate1Slider.addChangeListener(new reverb_plateListener());
+						rate1Label = new JLabel();
+						Border rate1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						rate1Label.setBorder(rate1Border1);
+						updaterate1Label();
+						
+						Border rate1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel rate1innerPanel = new JPanel();
+							
+						rate1innerPanel.setLayout(new BoxLayout(rate1innerPanel, BoxLayout.Y_AXIS));
+						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate1innerPanel.add(rate1Label);
+						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate1innerPanel.add(rate1Slider);		
+						rate1innerPanel.setBorder(rate1border2);
 			
-				frame.add(gaininnerPanel);
+						frame.add(rate1innerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					rate2Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate2()) * 100.0));
+						rate2Slider.addChangeListener(new reverb_plateListener());
+						rate2Label = new JLabel();
+						Border rate2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						rate2Label.setBorder(rate2Border1);
+						updaterate2Label();
+						
+						Border rate2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel rate2innerPanel = new JPanel();
+							
+						rate2innerPanel.setLayout(new BoxLayout(rate2innerPanel, BoxLayout.Y_AXIS));
+						rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate2innerPanel.add(rate2Label);
+						rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate2innerPanel.add(rate2Slider);		
+						rate2innerPanel.setBorder(rate2border2);
 			
-			rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
-				rate1Slider.addChangeListener(new reverb_plateListener());
-				rate1Label = new JLabel();
-				Border rate1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				rate1Label.setBorder(rate1Border1);
-				updaterate1Label();
-				
-				Border rate1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel rate1innerPanel = new JPanel();
-					
-				rate1innerPanel.setLayout(new BoxLayout(rate1innerPanel, BoxLayout.Y_AXIS));
-				rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				rate1innerPanel.add(rate1Label);
-				rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				rate1innerPanel.add(rate1Slider);		
-				rate1innerPanel.setBorder(rate1border2);
-			
-				frame.add(rate1innerPanel);
-			
-			rate2Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate2()) * 100.0));
-				rate2Slider.addChangeListener(new reverb_plateListener());
-				rate2Label = new JLabel();
-				Border rate2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				rate2Label.setBorder(rate2Border1);
-				updaterate2Label();
-				
-				Border rate2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel rate2innerPanel = new JPanel();
-					
-				rate2innerPanel.setLayout(new BoxLayout(rate2innerPanel, BoxLayout.Y_AXIS));
-				rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				rate2innerPanel.add(rate2Label);
-				rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				rate2innerPanel.add(rate2Slider);		
-				rate2innerPanel.setBorder(rate2border2);
-			
-				frame.add(rate2innerPanel);
+						frame.add(rate2innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -140,15 +147,15 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 		class reverb_plateListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/1.0));
+			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
 				updategainLabel();
 			}
 			if(ce.getSource() == rate1Slider) {
-			gCB.setrate1((double) (rate1Slider.getValue()/100.0));
+			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
 				updaterate1Label();
 			}
 			if(ce.getSource() == rate2Slider) {
-			gCB.setrate2((double) (rate2Slider.getValue()/100.0));
+			gCB.setrate2((double) (rate2Slider.getValue()/100.0));			    					
 				updaterate2Label();
 			}
 			}

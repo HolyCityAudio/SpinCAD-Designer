@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -69,63 +70,69 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 				frame.setTitle("Chorus");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(128 * 1),(int) (2048 * 1), (int) (gCB.getdelayLength() * 1));
+						delayLengthSlider.addChangeListener(new ChorusListener());
+						delayLengthLabel = new JLabel();
+						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						delayLengthLabel.setBorder(delayLengthBorder1);
+						updatedelayLengthLabel();
+						
+						Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel delayLengthinnerPanel = new JPanel();
+							
+						delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						delayLengthinnerPanel.add(delayLengthLabel);
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						delayLengthinnerPanel.add(delayLengthSlider);		
+						delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
-			delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(128 * 1),(int) (2048 * 1), (int) (gCB.getdelayLength() * 1));
-				delayLengthSlider.addChangeListener(new ChorusListener());
-				delayLengthLabel = new JLabel();
-				Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				delayLengthLabel.setBorder(delayLengthBorder1);
-				updatedelayLengthLabel();
-				
-				Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel delayLengthinnerPanel = new JPanel();
-					
-				delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
-				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				delayLengthinnerPanel.add(delayLengthLabel);
-				delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				delayLengthinnerPanel.add(delayLengthSlider);		
-				delayLengthinnerPanel.setBorder(delayLengthborder2);
+						frame.add(delayLengthinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
+						rateSlider.addChangeListener(new ChorusListener());
+						rateLabel = new JLabel();
+						Border rateBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						rateLabel.setBorder(rateBorder1);
+						updaterateLabel();
+						
+						Border rateborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel rateinnerPanel = new JPanel();
+							
+						rateinnerPanel.setLayout(new BoxLayout(rateinnerPanel, BoxLayout.Y_AXIS));
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rateinnerPanel.add(rateLabel);
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rateinnerPanel.add(rateSlider);		
+						rateinnerPanel.setBorder(rateborder2);
 			
-				frame.add(delayLengthinnerPanel);
+						frame.add(rateinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					widthSlider = new JSlider(JSlider.HORIZONTAL, (int)(5.0 * 100.0),(int) (100.0 * 100.0), (int) (gCB.getwidth() * 100.0));
+						widthSlider.addChangeListener(new ChorusListener());
+						widthLabel = new JLabel();
+						Border widthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						widthLabel.setBorder(widthBorder1);
+						updatewidthLabel();
+						
+						Border widthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel widthinnerPanel = new JPanel();
+							
+						widthinnerPanel.setLayout(new BoxLayout(widthinnerPanel, BoxLayout.Y_AXIS));
+						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						widthinnerPanel.add(widthLabel);
+						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						widthinnerPanel.add(widthSlider);		
+						widthinnerPanel.setBorder(widthborder2);
 			
-			rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
-				rateSlider.addChangeListener(new ChorusListener());
-				rateLabel = new JLabel();
-				Border rateBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				rateLabel.setBorder(rateBorder1);
-				updaterateLabel();
-				
-				Border rateborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel rateinnerPanel = new JPanel();
-					
-				rateinnerPanel.setLayout(new BoxLayout(rateinnerPanel, BoxLayout.Y_AXIS));
-				rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				rateinnerPanel.add(rateLabel);
-				rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				rateinnerPanel.add(rateSlider);		
-				rateinnerPanel.setBorder(rateborder2);
-			
-				frame.add(rateinnerPanel);
-			
-			widthSlider = new JSlider(JSlider.HORIZONTAL, (int)(5.0 * 100.0),(int) (100.0 * 100.0), (int) (gCB.getwidth() * 100.0));
-				widthSlider.addChangeListener(new ChorusListener());
-				widthLabel = new JLabel();
-				Border widthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				widthLabel.setBorder(widthBorder1);
-				updatewidthLabel();
-				
-				Border widthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel widthinnerPanel = new JPanel();
-					
-				widthinnerPanel.setLayout(new BoxLayout(widthinnerPanel, BoxLayout.Y_AXIS));
-				widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				widthinnerPanel.add(widthLabel);
-				widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				widthinnerPanel.add(widthSlider);		
-				widthinnerPanel.setBorder(widthborder2);
-			
-				frame.add(widthinnerPanel);
+						frame.add(widthinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();
 				lfoSelComboBox.addItem("LFO 0");
 				lfoSelComboBox.addItem("LFO 1");
@@ -147,11 +154,11 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 		class ChorusListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == rateSlider) {
-			gCB.setrate((double) (rateSlider.getValue()/100.0));
+			gCB.setrate((double) (rateSlider.getValue()/100.0));			    					
 				updaterateLabel();
 			}
 			if(ce.getSource() == widthSlider) {
@@ -179,7 +186,7 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 			}
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Chorus Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
+		delayLengthLabel.setText("Chorus Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
 		private void updaterateLabel() {
 		rateLabel.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		

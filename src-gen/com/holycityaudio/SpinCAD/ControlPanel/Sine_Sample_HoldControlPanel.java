@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -65,25 +66,27 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 				frame.setTitle("4-Phase Sample/Hold");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
+						rateSlider.addChangeListener(new Sine_Sample_HoldListener());
+						rateLabel = new JLabel();
+						Border rateBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						rateLabel.setBorder(rateBorder1);
+						updaterateLabel();
+						
+						Border rateborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel rateinnerPanel = new JPanel();
+							
+						rateinnerPanel.setLayout(new BoxLayout(rateinnerPanel, BoxLayout.Y_AXIS));
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rateinnerPanel.add(rateLabel);
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rateinnerPanel.add(rateSlider);		
+						rateinnerPanel.setBorder(rateborder2);
 			
-			rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
-				rateSlider.addChangeListener(new Sine_Sample_HoldListener());
-				rateLabel = new JLabel();
-				Border rateBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				rateLabel.setBorder(rateBorder1);
-				updaterateLabel();
-				
-				Border rateborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel rateinnerPanel = new JPanel();
-					
-				rateinnerPanel.setLayout(new BoxLayout(rateinnerPanel, BoxLayout.Y_AXIS));
-				rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				rateinnerPanel.add(rateLabel);
-				rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				rateinnerPanel.add(rateSlider);		
-				rateinnerPanel.setBorder(rateborder2);
-			
-				frame.add(rateinnerPanel);
+						frame.add(rateinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();
 				lfoSelComboBox.addItem("LFO 0");
 				lfoSelComboBox.addItem("LFO 1");
@@ -105,7 +108,7 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 		class Sine_Sample_HoldListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == rateSlider) {
-			gCB.setrate((double) (rateSlider.getValue()/100.0));
+			gCB.setrate((double) (rateSlider.getValue()/100.0));			    					
 				updaterateLabel();
 			}
 			}

@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -65,25 +66,27 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 				frame.setTitle("Slicer");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					sliceSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getslice() * 100.0));
+						sliceSlider.addChangeListener(new SlicerListener());
+						sliceLabel = new JLabel();
+						Border sliceBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						sliceLabel.setBorder(sliceBorder1);
+						updatesliceLabel();
+						
+						Border sliceborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel sliceinnerPanel = new JPanel();
+							
+						sliceinnerPanel.setLayout(new BoxLayout(sliceinnerPanel, BoxLayout.Y_AXIS));
+						sliceinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						sliceinnerPanel.add(sliceLabel);
+						sliceinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						sliceinnerPanel.add(sliceSlider);		
+						sliceinnerPanel.setBorder(sliceborder2);
 			
-			sliceSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getslice() * 100.0));
-				sliceSlider.addChangeListener(new SlicerListener());
-				sliceLabel = new JLabel();
-				Border sliceBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				sliceLabel.setBorder(sliceBorder1);
-				updatesliceLabel();
-				
-				Border sliceborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel sliceinnerPanel = new JPanel();
-					
-				sliceinnerPanel.setLayout(new BoxLayout(sliceinnerPanel, BoxLayout.Y_AXIS));
-				sliceinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				sliceinnerPanel.add(sliceLabel);
-				sliceinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				sliceinnerPanel.add(sliceSlider);		
-				sliceinnerPanel.setBorder(sliceborder2);
-			
-				frame.add(sliceinnerPanel);
+						frame.add(sliceinnerPanel);
 				controlRangeComboBox = new JComboBox <String> ();
 				controlRangeComboBox.addItem("0 -> +1");
 				controlRangeComboBox.addItem("-1 -> +1");

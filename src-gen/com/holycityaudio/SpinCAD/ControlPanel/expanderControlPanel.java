@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -66,44 +67,48 @@ public expanderControlPanel(expanderCADBlock genericCADBlock) {
 				frame.setTitle("Expander");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					ripLowSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.015 * 1000.0), (int) (gCB.getripLow() * 1000.0));
+						ripLowSlider.addChangeListener(new expanderListener());
+						ripLowLabel = new JLabel();
+						Border ripLowBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						ripLowLabel.setBorder(ripLowBorder1);
+						updateripLowLabel();
+						
+						Border ripLowborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel ripLowinnerPanel = new JPanel();
+							
+						ripLowinnerPanel.setLayout(new BoxLayout(ripLowinnerPanel, BoxLayout.Y_AXIS));
+						ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ripLowinnerPanel.add(ripLowLabel);
+						ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ripLowinnerPanel.add(ripLowSlider);		
+						ripLowinnerPanel.setBorder(ripLowborder2);
 			
-			ripLowSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.015 * 1000.0), (int) (gCB.getripLow() * 1000.0));
-				ripLowSlider.addChangeListener(new expanderListener());
-				ripLowLabel = new JLabel();
-				Border ripLowBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				ripLowLabel.setBorder(ripLowBorder1);
-				updateripLowLabel();
-				
-				Border ripLowborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel ripLowinnerPanel = new JPanel();
-					
-				ripLowinnerPanel.setLayout(new BoxLayout(ripLowinnerPanel, BoxLayout.Y_AXIS));
-				ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				ripLowinnerPanel.add(ripLowLabel);
-				ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				ripLowinnerPanel.add(ripLowSlider);		
-				ripLowinnerPanel.setBorder(ripLowborder2);
+						frame.add(ripLowinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					ripHighSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.02 * 1000.0),(int) (0.2 * 1000.0), (int) (gCB.getripHigh() * 1000.0));
+						ripHighSlider.addChangeListener(new expanderListener());
+						ripHighLabel = new JLabel();
+						Border ripHighBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						ripHighLabel.setBorder(ripHighBorder1);
+						updateripHighLabel();
+						
+						Border ripHighborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel ripHighinnerPanel = new JPanel();
+							
+						ripHighinnerPanel.setLayout(new BoxLayout(ripHighinnerPanel, BoxLayout.Y_AXIS));
+						ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ripHighinnerPanel.add(ripHighLabel);
+						ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ripHighinnerPanel.add(ripHighSlider);		
+						ripHighinnerPanel.setBorder(ripHighborder2);
 			
-				frame.add(ripLowinnerPanel);
-			
-			ripHighSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.02 * 1000.0),(int) (0.2 * 1000.0), (int) (gCB.getripHigh() * 1000.0));
-				ripHighSlider.addChangeListener(new expanderListener());
-				ripHighLabel = new JLabel();
-				Border ripHighBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				ripHighLabel.setBorder(ripHighBorder1);
-				updateripHighLabel();
-				
-				Border ripHighborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel ripHighinnerPanel = new JPanel();
-					
-				ripHighinnerPanel.setLayout(new BoxLayout(ripHighinnerPanel, BoxLayout.Y_AXIS));
-				ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				ripHighinnerPanel.add(ripHighLabel);
-				ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				ripHighinnerPanel.add(ripHighSlider);		
-				ripHighinnerPanel.setBorder(ripHighborder2);
-			
-				frame.add(ripHighinnerPanel);
+						frame.add(ripHighinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);

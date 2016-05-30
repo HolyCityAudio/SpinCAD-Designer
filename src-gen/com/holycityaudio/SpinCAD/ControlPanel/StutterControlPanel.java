@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -52,8 +53,10 @@ public class StutterControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider delayLengthSlider;
 	JLabel  delayLengthLabel;	
-	JSlider fadeTimeSlider;
-	JLabel  fadeTimeLabel;	
+	JSlider fadeTimeFiltSlider;
+	JLabel  fadeTimeFiltLabel;	
+	JSlider freqSlider;
+	JLabel  freqLabel;	
 
 public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		
@@ -90,24 +93,45 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					fadeTimeSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (50 * 1), (int) (gCB.getfadeTime() * 1));
-						fadeTimeSlider.addChangeListener(new StutterListener());
-						fadeTimeLabel = new JLabel();
-						Border fadeTimeBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						fadeTimeLabel.setBorder(fadeTimeBorder1);
-						updatefadeTimeLabel();
+					fadeTimeFiltSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (50 * 1.0), (int) gCB.filtToTime(gCB.getfadeTimeFilt() * 1.0));
+						fadeTimeFiltSlider.addChangeListener(new StutterListener());
+						fadeTimeFiltLabel = new JLabel();
+						Border fadeTimeFiltBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						fadeTimeFiltLabel.setBorder(fadeTimeFiltBorder1);
+						updatefadeTimeFiltLabel();
 						
-						Border fadeTimeborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel fadeTimeinnerPanel = new JPanel();
+						Border fadeTimeFiltborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel fadeTimeFiltinnerPanel = new JPanel();
 							
-						fadeTimeinnerPanel.setLayout(new BoxLayout(fadeTimeinnerPanel, BoxLayout.Y_AXIS));
-						fadeTimeinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						fadeTimeinnerPanel.add(fadeTimeLabel);
-						fadeTimeinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						fadeTimeinnerPanel.add(fadeTimeSlider);		
-						fadeTimeinnerPanel.setBorder(fadeTimeborder2);
+						fadeTimeFiltinnerPanel.setLayout(new BoxLayout(fadeTimeFiltinnerPanel, BoxLayout.Y_AXIS));
+						fadeTimeFiltinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						fadeTimeFiltinnerPanel.add(fadeTimeFiltLabel);
+						fadeTimeFiltinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						fadeTimeFiltinnerPanel.add(fadeTimeFiltSlider);		
+						fadeTimeFiltinnerPanel.setBorder(fadeTimeFiltborder2);
 			
-						frame.add(fadeTimeinnerPanel);
+						frame.add(fadeTimeFiltinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					freqSlider = SpinCADBlock.LogFilterSlider(80,5000,gCB.getfreq());
+						freqSlider.addChangeListener(new StutterListener());
+						freqLabel = new JLabel();
+						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						freqLabel.setBorder(freqBorder1);
+						updatefreqLabel();
+						
+						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel freqinnerPanel = new JPanel();
+							
+						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqinnerPanel.add(freqLabel);
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						freqinnerPanel.add(freqSlider);		
+						freqinnerPanel.setBorder(freqborder2);
+			
+						frame.add(freqinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -122,12 +146,16 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		class StutterListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
 				updatedelayLengthLabel();
 			}
-			if(ce.getSource() == fadeTimeSlider) {
-			gCB.setfadeTime((double) (fadeTimeSlider.getValue()/1));
-				updatefadeTimeLabel();
+			if(ce.getSource() == fadeTimeFiltSlider) {
+			gCB.setfadeTimeFilt((double) SpinCADBlock.timeToFilt(fadeTimeFiltSlider.getValue()/1000.0));
+				updatefadeTimeFiltLabel();
+			}
+			if(ce.getSource() == freqSlider) {
+			gCB.setfreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
+				updatefreqLabel();
 			}
 			}
 		}
@@ -147,10 +175,13 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			}
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/gCB.getSamplerate()));		
+		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
-		private void updatefadeTimeLabel() {
-		fadeTimeLabel.setText("Fade Time (ms):  " + String.format("%4.0f", (gCB.getfadeTime())) + " ms");		
+		private void updatefadeTimeFiltLabel() {
+		fadeTimeFiltLabel.setText("Fade Time (ms):  " + String.format("%4.0f", 1000.0 * SpinCADBlock.filtToTime(gCB.getfadeTimeFilt())) + " ms");		
+		}		
+		private void updatefreqLabel() {
+		freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener
