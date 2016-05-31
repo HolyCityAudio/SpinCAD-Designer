@@ -68,7 +68,8 @@ public HPF_RDFXControlPanel(HPF_RDFXCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					freqSlider = SpinCADBlock.LogFilterSlider(40,3500,gCB.getfreq());
+					// multiplier is points per decade here
+						freqSlider = SpinCADBlock.LogSlider(40,3500,gCB.getfreq(), "LOGFREQ", 100.0);
 						freqSlider.addChangeListener(new HPF_RDFXListener());
 						freqLabel = new JLabel();
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

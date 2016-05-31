@@ -68,7 +68,8 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					filterFactorSlider = SpinCADBlock.LogFilterSlider(350,5000,gCB.getfilterFactor());
+					// multiplier is points per decade here
+						filterFactorSlider = SpinCADBlock.LogSlider(350,5000,gCB.getfilterFactor(), "LOGFREQ", 100.0);
 						filterFactorSlider.addChangeListener(new ToverXListener());
 						filterFactorLabel = new JLabel();
 						Border filterFactorBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

@@ -38,7 +38,7 @@ equ   klap   0.6  ;  delay ring all pass filter
 @sliderLabel klap 'Loop All Pass' 0.25 0.95 0.6 100.0 2 
 
 equ   kfl   0.4  ; low pass filter
-@sliderLabel kfl 'Low Pass' 500 5000 400.0 100.0 1 LOGFREQ
+@sliderLabel kfl 'Low Pass' 500 5000 800.0 100.0 1 LOGFREQ
 
 equ   kfh   0.01  ; high pass filter
 @sliderLabel kfh 'High Pass' 40 1000 400.0 100.0 1 LOGFREQ

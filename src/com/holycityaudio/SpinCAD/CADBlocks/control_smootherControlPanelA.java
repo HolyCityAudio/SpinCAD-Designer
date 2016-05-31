@@ -99,7 +99,7 @@ public class control_smootherControlPanelA {
 				// with the FV-1's coefficient resolution.
 				// 100 => 10^(100/100) = 10 Hz.
 
-				filtSlider = gCB.LogFilterSlider(0.5129,10.0,gCB.getfilt());
+				filtSlider = gCB.LogSlider(0.5129,10.0,gCB.getfilt(), "LOGFREQ", 100.0);
 
 				filtSlider.addChangeListener(new control_smootherListener());
 				frame.getContentPane().add(filtSlider);		

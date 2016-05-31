@@ -68,7 +68,8 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					freqVarSlider = SpinCADBlock.LogFilterSlider(20,5000,gCB.getfreqVar());
+					// multiplier is points per decade here
+						freqVarSlider = SpinCADBlock.LogSlider(20,5000,gCB.getfreqVar(), "LOGFREQ", 100.0);
 						freqVarSlider.addChangeListener(new New_OscillatorListener());
 						freqVarLabel = new JLabel();
 						Border freqVarBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

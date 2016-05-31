@@ -72,7 +72,8 @@ public Adjustable_LPF_1PControlPanel(Adjustable_LPF_1PCADBlock genericCADBlock) 
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			attackFreqSlider = SpinCADBlock.LogFilterSlider(0.51,20,gCB.getattackFreq());
+			// multiplier is points per decade here
+				attackFreqSlider = SpinCADBlock.LogSlider(0.51,20,gCB.getattackFreq(), "LOGFREQ", 100.0);
 				attackFreqSlider.addChangeListener(new Adjustable_LPF_1PListener());
 				
 				attackFreqLabel = new JLabel("Attack Freq");
@@ -115,7 +116,8 @@ public Adjustable_LPF_1PControlPanel(Adjustable_LPF_1PCADBlock genericCADBlock) 
 			
 				frame.add(attackFreqinnerPanel);
 			
-			decayFreqSlider = SpinCADBlock.LogFilterSlider(0.51,10,gCB.getdecayFreq());
+			// multiplier is points per decade here
+				decayFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getdecayFreq(), "LOGFREQ", 100.0);
 				decayFreqSlider.addChangeListener(new Adjustable_LPF_1PListener());
 				
 				decayFreqLabel = new JLabel("Decay Freq");

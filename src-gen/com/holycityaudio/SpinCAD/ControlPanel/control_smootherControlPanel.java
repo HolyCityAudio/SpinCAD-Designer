@@ -68,7 +68,8 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			filtSlider = SpinCADBlock.LogFilterSlider(0.51,15.00,gCB.getfilt());
+			// multiplier is points per decade here
+				filtSlider = SpinCADBlock.LogSlider(0.51,15.00,gCB.getfilt(), "LOGFREQ", 100.0);
 				filtSlider.addChangeListener(new control_smootherListener());
 				
 				filtLabel = new JLabel("Frequency (Hz)");

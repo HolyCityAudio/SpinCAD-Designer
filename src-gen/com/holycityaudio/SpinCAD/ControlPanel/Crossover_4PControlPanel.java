@@ -68,7 +68,8 @@ public Crossover_4PControlPanel(Crossover_4PCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					freqSlider = SpinCADBlock.LogFilterSlider(80,5000,gCB.getfreq());
+					// multiplier is points per decade here
+						freqSlider = SpinCADBlock.LogSlider(80,5000,gCB.getfreq(), "LOGFREQ", 100.0);
 						freqSlider.addChangeListener(new Crossover_4PListener());
 						freqLabel = new JLabel();
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

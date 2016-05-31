@@ -468,7 +468,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		return (-(Math.log(1 - filt)) * ElmProgram.getSamplerate()/(2 * Math.PI));	
 	}
 
-//	This takes rise time in seconds and converts to filter coefficient
+	//	This takes rise time in seconds and converts to filter coefficient
 	public static double timeToFilt(double time) {
 		if (time != 0.0) {
 			double freq = 0.35/time;
@@ -480,7 +480,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		}
 	}
 
-//	This takes filter coefficient and converts to rise time in seconds 
+	//	This takes filter coefficient and converts to rise time in seconds 
 	public static double filtToTime(double filt) {
 		double freq = -(Math.log(1 - filt)) * ElmProgram.getSamplerate()/(2 * Math.PI);
 		return 0.35/freq;	
@@ -494,10 +494,23 @@ public class SpinCADBlock extends SpinFXBlock {
 		return Math.pow(10.0, pos/multiplier);
 	}
 
-	public static JSlider LogFilterSlider(double fLow, double fHigh, double initVal) {
-		int leftLimit = logvalToSlider(fLow, 100.0);
-		int rightLimit = logvalToSlider(fHigh, 100.0);
-		int initial = logvalToSlider(filtToFreq(initVal), 100.0);
+	public static JSlider LogSlider(double fLow, double fHigh, double initVal, String mode, double pointsPerDecade) {
+		int initial = -1;
+		int leftLimit = logvalToSlider(fLow, pointsPerDecade);
+		int rightLimit = logvalToSlider(fHigh, pointsPerDecade);
+
+		switch (mode)
+		{
+		case "LOGFREQ":
+			initial = logvalToSlider(filtToFreq(initVal), pointsPerDecade);
+			break;
+		case "filtToTime":
+			initial = logvalToSlider(filtToTime(initVal), pointsPerDecade);
+			break;
+		default:
+			initial = leftLimit;
+		}
+
 		return new JSlider(JSlider.HORIZONTAL, leftLimit, rightLimit, initial);
 	}
 

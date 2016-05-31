@@ -114,7 +114,8 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					freqSlider = SpinCADBlock.LogFilterSlider(80,5000,gCB.getfreq());
+					// multiplier is points per decade here
+						freqSlider = SpinCADBlock.LogSlider(80,5000,gCB.getfreq(), "LOGFREQ", 100.0);
 						freqSlider.addChangeListener(new StutterListener());
 						freqLabel = new JLabel();
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -150,7 +151,7 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == fadeTimeFiltSlider) {
-			gCB.setfadeTimeFilt((double) SpinCADBlock.timeToFilt(fadeTimeFiltSlider.getValue()/1000.0));
+			gCB.setfadeTimeFilt((double) SpinCADBlock.timeToFilt(fadeTimeFiltSlider.getValue()/1.0));
 				updatefadeTimeFiltLabel();
 			}
 			if(ce.getSource() == freqSlider) {
@@ -178,7 +179,7 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
 		private void updatefadeTimeFiltLabel() {
-		fadeTimeFiltLabel.setText("Fade Time (ms):  " + String.format("%4.0f", 1000.0 * SpinCADBlock.filtToTime(gCB.getfadeTimeFilt())) + " ms");		
+		fadeTimeFiltLabel.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt())) + " ms");		
 		}		
 		private void updatefreqLabel() {
 		freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		

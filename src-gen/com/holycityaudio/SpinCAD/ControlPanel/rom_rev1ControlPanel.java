@@ -163,7 +163,8 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					kflSlider = SpinCADBlock.LogFilterSlider(500,5000,gCB.getkfl());
+					// multiplier is points per decade here
+						kflSlider = SpinCADBlock.LogSlider(500,5000,gCB.getkfl(), "LOGFREQ", 100.0);
 						kflSlider.addChangeListener(new rom_rev1Listener());
 						kflLabel = new JLabel();
 						Border kflBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -184,7 +185,8 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					kfhSlider = SpinCADBlock.LogFilterSlider(40,1000,gCB.getkfh());
+					// multiplier is points per decade here
+						kfhSlider = SpinCADBlock.LogSlider(40,1000,gCB.getkfh(), "LOGFREQ", 100.0);
 						kfhSlider.addChangeListener(new rom_rev1Listener());
 						kfhLabel = new JLabel();
 						Border kfhBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

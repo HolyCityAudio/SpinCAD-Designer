@@ -76,7 +76,8 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			
-			attackFreqSlider = SpinCADBlock.LogFilterSlider(0.51,20,gCB.getattackFreq());
+			// multiplier is points per decade here
+				attackFreqSlider = SpinCADBlock.LogSlider(0.51,20,gCB.getattackFreq(), "LOGFREQ", 100.0);
 				attackFreqSlider.addChangeListener(new New_EnvelopeListener());
 				
 				attackFreqLabel = new JLabel("Attack Freq");
@@ -119,7 +120,8 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			
 				frame.add(attackFreqinnerPanel);
 			
-			decayFreqSlider = SpinCADBlock.LogFilterSlider(0.51,10,gCB.getdecayFreq());
+			// multiplier is points per decade here
+				decayFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getdecayFreq(), "LOGFREQ", 100.0);
 				decayFreqSlider.addChangeListener(new New_EnvelopeListener());
 				
 				decayFreqLabel = new JLabel("Decay Freq");
@@ -162,7 +164,8 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			
 				frame.add(decayFreqinnerPanel);
 			
-			postFreqSlider = SpinCADBlock.LogFilterSlider(0.51,10,gCB.getpostFreq());
+			// multiplier is points per decade here
+				postFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getpostFreq(), "LOGFREQ", 100.0);
 				postFreqSlider.addChangeListener(new New_EnvelopeListener());
 				
 				postFreqLabel = new JLabel("Post freq");
