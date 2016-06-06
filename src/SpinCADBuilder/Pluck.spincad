@@ -5,14 +5,13 @@
 
 ; Declare constants
 equ threshold 0.015
-@sliderLabel threshold 'Threshold' 0.001 0.015 0.9 1000.0 3
+@sliderLabel threshold 'Threshold' 0.001 0.5 0.25 1000.0 3
 
 equ pulseLevel -0.9
 @sliderLabel pulseLevel 'Pulse Amplitude' -1.0 1.0 0.5 100.0 2
 
 equ pulseWidth 3277 
 @sliderLabel pulseWidth 'Pulse Width' 0 5000 2500 1 0 LENGTHTOTIME
-
 
 @isPinConnected Input
 
@@ -28,26 +27,31 @@ wrax count, 0		; Count = 0
 wrax pulse, 0		; Pulse level = 0
 end_init:
 
-; Is count = 0? (either following init or after countdown from previous pulse)
+; Is count <= 0? (either following init or after countdown from previous pulse)
 rdax count, 1.0
+skp neg, neg_decay
 skp zro, trig_decay
+neg_decay:
+clr
+wrax count, 0.0
+skp run, trig_decay
 ; No:
 dec_pulse:  ;	Decrement Pulse width counter
-clr
+sof 1.0, -0.0005
+wrax count, 0
 rdax pulse, 1.0
 skp run, writeOutput
 ; Yes:
 trig_decay:
-
+clr
+; wrax count, 0.0		; reset count so can trigger again
 rdax input, 1.0	 	; Read audio input
 absa		 		; Take absolute value
 sof 1.0, -threshold ; subtract threshold. If input > threshold then result is positive
 skp neg, decayFilter 	; skip if negative
 sof 0.0, pulseLevel
-wrax pulse, 0		; set Pulse level.
-sof 0.0, pulseWidth
-wrax pulse, 1.0		; Pulse width counter = Pulse width, leave in acc to write to output
-skp run, writeOutput
+wrax pulse, 1		; set Pulse level and leave value in accumulator
+skp run, writeOutput; acc = pulseLevel, now write it to output
 decayFilter: 	; skip here if input is below threshold.   
 ; decay Pulse through low pass filter
 rdfx pulse, 0.002
@@ -55,7 +59,5 @@ wrlx pulse, -1.0
 writeOutput:
 wrax output, 0.0
 
-
 @setOutputPin "Pulse Output" output
 @endif
-
