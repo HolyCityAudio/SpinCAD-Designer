@@ -12,7 +12,7 @@ equ output1 reg0
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
 equ delayLength 512 
-@sliderLabel delayLength 'Chorus Time' 128 2048 128 1 0 lengthToTime
+@sliderLabel delayLength 'Chorus Time' 128 2048 128 1 0 LENGTHTOTIME
 
 equ tap1Center 0.5 
 ; @sliderLabel tap1Center Tap_1_Center 0.25 0.75 0.5 1000.0 2

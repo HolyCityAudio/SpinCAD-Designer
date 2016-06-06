@@ -504,7 +504,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		case "LOGFREQ":
 			initial = logvalToSlider(filtToFreq(initVal), pointsPerDecade);
 			break;
-		case "filtToTime":
+		case "FILTTOTIME":
 			initial = logvalToSlider(filtToTime(initVal), pointsPerDecade);
 			break;
 		default:

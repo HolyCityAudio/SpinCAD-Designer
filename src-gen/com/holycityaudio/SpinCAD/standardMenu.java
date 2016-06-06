@@ -67,10 +67,12 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.New_OscillatorCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.PluckCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Peak_EnvelopeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
@@ -732,6 +734,15 @@
 	});
 	mn_control.add(mntm_New_Oscillator);
 		
+	final JMenuItem mntm_Pluck = new JMenuItem("Pluck");
+	mntm_Pluck.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new PluckCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Pluck);
+		
 	final JMenuItem mntm_SampleHold = new JMenuItem("Ramp Sample/Hold");
 	mntm_SampleHold.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -767,6 +778,15 @@
 		}
 	});
 	mn_control.add(mntm_New_Envelope);
+		
+	final JMenuItem mntm_Peak_Envelope = new JMenuItem("Peak/Envelope");
+	mntm_Peak_Envelope.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Peak_EnvelopeCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Peak_Envelope);
 		
 	final JMenuItem mntm_InvertControl = new JMenuItem("Invert");
 	mntm_InvertControl.addActionListener(new ActionListener() {

@@ -39,6 +39,7 @@ public class SVF2PCADBlock extends FilterCADBlock{
 		hasControlPanel = true;
 		setBorderColor(new Color(0x24f26f));
 		addInputPin(this, "Audio Input");
+		addControlInputPin(this, "Frequency");
 		addOutputPin(this, "Lowpass Out");
 		addOutputPin(this, "Bandpass Out");
 		addOutputPin(this, "Hipass Out");
@@ -67,13 +68,23 @@ public class SVF2PCADBlock extends FilterCADBlock{
 			sfxb.comment(getName());
 
 			sfxb.scaleOffset(0, 0);
-			
+	
 			sfxb.readRegister(input, 1.0);
 			sfxb.readRegister(lowPass,  -1);
 			sfxb.readRegister(bandPass,  -q1);
 			sfxb.writeRegister(highPass, fZ);
+			SpinCADPin p2 = this.getPin("Frequency").getPinConnection();
+
+			if(p2 != null) {
+				sfxb.mulx(p2.getRegister());
+			}
+
 			sfxb.readRegister(bandPass, 1.0);
 			sfxb.writeRegister(bandPass, fZ);
+			if(p2 != null) {
+				sfxb.mulx(p2.getRegister());
+			}
+			
 			sfxb.readRegister(lowPass,  1);
 			sfxb.writeRegister(lowPass, 0);
 			this.getPin("Lowpass Out").setRegister(lowPass);	

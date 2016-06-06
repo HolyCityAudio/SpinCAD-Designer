@@ -86,15 +86,6 @@ public class HPF2PCADBlock extends SpinCADBlock{
 				//				wrax	kfl,0		;write to LP filter control
 				sfxb.writeRegister(kfh, 0);
 				//				;now derive filter bypass function (at open condition)
-
-				//				rdax	pot2,1		;read pot2 (LP) again
-				sfxb.readRegister(control1,1);
-				//				sof	1,-0.999
-				sfxb.scaleOffset(1,  -0.999);
-				//				exp	1,0
-				sfxb.exp(1, 0);
-				//				wrax	lbyp,0
-				sfxb.writeRegister(byp,  0);
 			} else {
 				sfxb.scaleOffset(0, 0.25);	// set dummy value
 				sfxb.writeRegister(kfh,  0);

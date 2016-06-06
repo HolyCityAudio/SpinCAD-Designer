@@ -9,11 +9,11 @@
 equ   output  reg0       
 
 equ delayLength 32767 
-@sliderLabel delayLength 'Delay Time (ms): ' 32 32767 16384 1 0 lengthToTime
+@sliderLabel delayLength 'Delay Time (ms): ' 32 32767 16384 1 0 LENGTHTOTIME
 
 ; fadeTimeFilt is the filter value for a given fade Time 
 equ fadeTimeFilt 0.0015
-@sliderLabel fadeTimeFilt 'Fade Time (ms): ' 0 50 25 1.0 0 filtToTime
+@sliderLabel fadeTimeFilt 'Fade Time (ms): ' 0 50 25 1.0 0 FILTTOTIME
 
 equ freq 0.15
 // variable - Name - low - high - initial - multiplier - precision - option 

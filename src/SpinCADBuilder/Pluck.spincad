@@ -1,0 +1,61 @@
+@name Pluck 
+@color "0xf2f224"  
+@audioInput input Input
+@controlOutput output "Pulse Output"  
+
+; Declare constants
+equ threshold 0.015
+@sliderLabel threshold 'Threshold' 0.001 0.015 0.9 1000.0 3
+
+equ pulseLevel -0.9
+@sliderLabel pulseLevel 'Pulse Amplitude' -1.0 1.0 0.5 100.0 2
+
+equ pulseWidth 3277 
+@sliderLabel pulseWidth 'Pulse Width' 0 5000 2500 1 0 LENGTHTOTIME
+
+
+@isPinConnected Input
+
+; Declare registers
+equ count reg0
+equ pulse reg1
+equ output reg2
+
+; Initialize:
+skp run, end_init
+clr
+wrax count, 0		; Count = 0
+wrax pulse, 0		; Pulse level = 0
+end_init:
+
+; Is count = 0? (either following init or after countdown from previous pulse)
+rdax count, 1.0
+skp zro, trig_decay
+; No:
+dec_pulse:  ;	Decrement Pulse width counter
+clr
+rdax pulse, 1.0
+skp run, writeOutput
+; Yes:
+trig_decay:
+
+rdax input, 1.0	 	; Read audio input
+absa		 		; Take absolute value
+sof 1.0, -threshold ; subtract threshold. If input > threshold then result is positive
+skp neg, decayFilter 	; skip if negative
+sof 0.0, pulseLevel
+wrax pulse, 0		; set Pulse level.
+sof 0.0, pulseWidth
+wrax pulse, 1.0		; Pulse width counter = Pulse width, leave in acc to write to output
+skp run, writeOutput
+decayFilter: 	; skip here if input is below threshold.   
+; decay Pulse through low pass filter
+rdfx pulse, 0.002
+wrlx pulse, -1.0
+writeOutput:
+wrax output, 0.0
+
+
+@setOutputPin "Pulse Output" output
+@endif
+

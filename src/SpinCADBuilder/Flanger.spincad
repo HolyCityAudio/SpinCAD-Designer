@@ -21,7 +21,7 @@ equ fbkGain 0.5
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
 equ delayLength 64 
-@sliderLabel delayLength 'Delay Time' 16 512 64 1 2 lengthToTime
+@sliderLabel delayLength 'Delay Time' 16 512 64 1 2 LENGTHTOTIME
 
 equ rate 20
 @sliderLabel rate 'LFO Rate' 0.0 511.0 20.0 100.0 2 SINLFOFREQ
