@@ -1,7 +1,7 @@
 @name Pluck 
 @color "0xf2f224"  
 @audioInput input Input
-@controlOutput output "Pulse Output"  
+@controlOutput output "Pluck Output"  
 
 ; Declare constants
 equ threshold 0.015
@@ -15,49 +15,63 @@ equ pulseWidth 3277
 
 @isPinConnected Input
 
-; Declare registers
-equ count reg0
-equ pulse reg1
-equ output reg2
+; pluck generator Gary Worsham Holy City Audio June 9, 2016
 
-; Initialize:
-skp run, end_init
-clr
-wrax count, 0		; Count = 0
-wrax pulse, 0		; Pulse level = 0
-end_init:
+equ retrigger reg0 
+equ pulsecount reg1
+equ pulsevalue reg2
+equ output reg4
 
-; Is count <= 0? (either following init or after countdown from previous pulse)
-rdax count, 1.0
-skp neg, neg_decay
-skp zro, trig_decay
-neg_decay:
+equ pulse_width 155
+equ retrigger_width 1655
+equ filt 0.0018
+equ pulseHeight -0.55
+equ vcffreq 0.45
+
+; skip if we are already counting
+rdax retrigger, -1.0	; get negative value of retrigger counter
+skp neg, inc_retrigger ; skp if the original value was positive
+; otherwise look for trigger threshold
+clr		; clear acc
+rdax input, 1.0	; read audio in
+absa		; absolute value
+sof 1.0, -threshold; subtract threshold.  if result is positive then audio is over threshold so trigger
+skp neg, decay	; if result is negative then continue to decay pulse towards zero
+;-----------------------------------
+triggered:	; trigger was detected
 clr
-wrax count, 0.0
-skp run, trig_decay
-; No:
-dec_pulse:  ;	Decrement Pulse width counter
-sof 1.0, -0.0005
-wrax count, 0
-rdax pulse, 1.0
-skp run, writeOutput
-; Yes:
-trig_decay:
-clr
-; wrax count, 0.0		; reset count so can trigger again
-rdax input, 1.0	 	; Read audio input
-absa		 		; Take absolute value
-sof 1.0, -threshold ; subtract threshold. If input > threshold then result is positive
-skp neg, decayFilter 	; skip if negative
-sof 0.0, pulseLevel
-wrax pulse, 1		; set Pulse level and leave value in accumulator
-skp run, writeOutput; acc = pulseLevel, now write it to output
-decayFilter: 	; skip here if input is below threshold.   
-; decay Pulse through low pass filter
-rdfx pulse, 0.002
-wrlx pulse, -1.0
+or $1
+wrax pulsecount, 1	; set both pulsecount and retrigger to 1
+wrax retrigger, 0
+sof 0, pulseHeight		; set pulse value to pulseHeight
+wrax pulsevalue, 0
+;-----------------------------------
+inc_retrigger:	; now we are counting up until retrigger_width == retrigger_width
+clr 
+or $1 
+rdax retrigger, 1.0 
+wrax retrigger, 1.0 
+; xor retrigger_width 	; this will be all zeroes if retrigger == retrigger_width 
+skp zro, reset_trig 
+;-----------------------------------
+ldax retrigger
+skp run, pulseHigh
+;-----------------------------------
+reset_trig: 
+wrax retrigger, 0 		; acc was zero when we jumped here, so counter1=0 
+skp run, decay
+;-----------------------------------
+pulseHigh:
+rdax pulsevalue, 1.0
+skp run, filter
+;---------------------------
+decay:
+rdfx pulsevalue, filt
+wrlx pulsevalue, -1.0
+;-----------------------------
+filter:
 writeOutput:
 wrax output, 0.0
 
-@setOutputPin "Pulse Output" output
+@setOutputPin "Pluck Output" output
 @endif

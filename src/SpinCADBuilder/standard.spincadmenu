@@ -108,14 +108,14 @@
 @menuitem "Ramp LFO" RampLFO
 @menuitem "Oscillator" Oscillator
 @menuitem "New Oscillator" New_Oscillator
-@menuitem "Pluck" Pluck
+//@menuitem "Pluck" Pluck
 @menuitem "Ramp Sample/Hold" SampleHold
 //@menuitem "4-Phase Sample/Hold" Sine_Sample_Hold
 //@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Envelope II" New_Envelope
-@menuitem "Peak/Envelope" Peak_Envelope
+//@menuitem "Peak/Envelope" Peak_Envelope
 @menuitem "Invert" InvertControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl
