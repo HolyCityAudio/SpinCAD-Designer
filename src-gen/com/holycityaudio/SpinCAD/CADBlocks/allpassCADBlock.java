@@ -78,6 +78,7 @@
 			}
 			
 			// finally, generate the instructions
+			if(this.getPin("Input").isConnected() == true) {
 			output1 = sfxb.allocateReg();
 			if(nAPs > 3) {
 			sfxb.FXallocDelayMem("iap1", 156); 
@@ -112,6 +113,8 @@
 			sfxb.FXwriteAllpass("iap4", 0, -kiap);
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Output").setRegister(output1);
+			}
+			
 
 			}
 			

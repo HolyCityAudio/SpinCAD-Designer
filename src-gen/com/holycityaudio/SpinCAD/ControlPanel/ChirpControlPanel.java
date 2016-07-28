@@ -138,7 +138,7 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
+					kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(-0.98 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
 						kiapSlider.addChangeListener(new ChirpListener());
 						kiapLabel = new JLabel();
 						Border kiapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

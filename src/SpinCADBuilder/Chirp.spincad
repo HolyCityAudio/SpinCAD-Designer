@@ -17,6 +17,8 @@ equ   kiap   0.5  ; input all pass filter
 
 equ output1 reg0
 
+@isPinConnected Input
+
 @isGreaterThan nAPs 19
 mem   iap20   stretch  ; all-pass filters
 @endif
@@ -168,6 +170,7 @@ wrap   iap4,-kiap
 wrax   output1,0      ;write to register for ring injection
 
 @setOutputPin Output output1
+@endif
 
 
 
