@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 
+@SuppressWarnings("unused")
 public class rms_lim_expControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private rms_lim_expCADBlock gCB;
 	// declare the controls
 

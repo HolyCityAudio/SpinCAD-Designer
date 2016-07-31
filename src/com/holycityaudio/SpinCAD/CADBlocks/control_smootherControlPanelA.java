@@ -24,7 +24,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.Dimension;
-import java.awt.event.ItemEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.text.DecimalFormat;
@@ -39,8 +38,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
-import com.holycityaudio.SpinCAD.SpinSliderSpinner;
-
 
 public class control_smootherControlPanelA {
 	private JFrame frame;
@@ -99,7 +96,7 @@ public class control_smootherControlPanelA {
 				// with the FV-1's coefficient resolution.
 				// 100 => 10^(100/100) = 10 Hz.
 
-				filtSlider = gCB.LogSlider(0.5129,10.0,gCB.getfilt(), "LOGFREQ", 100.0);
+				filtSlider = SpinCADBlock.LogSlider(0.5129,10.0,gCB.getfilt(), "LOGFREQ", 100.0);
 
 				filtSlider.addChangeListener(new control_smootherListener());
 				frame.getContentPane().add(filtSlider);		
@@ -123,11 +120,11 @@ public class control_smootherControlPanelA {
 			if(silentGUIChange == true) 
 				return;
 			if(ce.getSource() == filtSlider) {
-				gCB.setfilt(gCB.freqToFilt(gCB.sliderToLogval(filtSlider.getValue(), 100.0)));
+				gCB.setfilt(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(filtSlider.getValue(), 100.0)));
 				updatefiltSpinner();
 			}
 			if(ce.getSource() == filtSpinner) {
-				gCB.setfilt(gCB.freqToFilt((double) filtSpinner.getValue()));
+				gCB.setfilt(SpinCADBlock.freqToFilt((double) filtSpinner.getValue()));
 				updatefiltSlider();
 			}
 		}
@@ -139,7 +136,7 @@ public class control_smootherControlPanelA {
 			public void run() {
 				try {
 					silentGUIChange = true;
-					filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
+					filtSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getfilt()));
 				}
 				finally {
 					silentGUIChange = false;   	    	  
@@ -153,7 +150,7 @@ public class control_smootherControlPanelA {
 			public void run() {
 				try {
 					silentGUIChange = true;
-					filtSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getfilt()))));
+					filtSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getfilt()))));
 				}
 				finally {
 					silentGUIChange = false;   	    	  

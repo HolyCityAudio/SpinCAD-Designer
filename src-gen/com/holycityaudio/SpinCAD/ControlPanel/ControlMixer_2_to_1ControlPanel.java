@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_2_to_1CADBlock;
 
+@SuppressWarnings("unused")
 public class ControlMixer_2_to_1ControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private ControlMixer_2_to_1CADBlock gCB;
 	// declare the controls
 	JSlider gain1Slider;

@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.crossfade_2ControlPanel;
 		
-		public class crossfade_2CADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class crossfade_2CADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private crossfade_2ControlPanel cp = null;
 			

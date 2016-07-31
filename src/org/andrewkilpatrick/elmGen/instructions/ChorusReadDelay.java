@@ -17,8 +17,6 @@
  */
 package org.andrewkilpatrick.elmGen.instructions;
 
-import org.andrewkilpatrick.elmGen.Debug;
-import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.simulator.Reg;
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 

@@ -29,6 +29,8 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+
 class OscillatorControlPanel extends JFrame implements ChangeListener, ActionListener {
 	/**
 	 * 
@@ -75,6 +77,6 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 	}
 	
 	private void updateLFOLabel() {
-		lfoLabel.setText("LFO "	+ String.format("%2.2f Hz", this.outBlock.filtToFreq(outBlock.getLFO())));		
+		lfoLabel.setText("LFO "	+ String.format("%2.2f Hz", SpinCADBlock.filtToFreq(outBlock.getLFO())));		
 	}
 }

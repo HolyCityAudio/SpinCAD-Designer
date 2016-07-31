@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.Glitch_shiftControlPanel;
 		
-		public class Glitch_shiftCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class Glitch_shiftCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private Glitch_shiftControlPanel cp = null;
 			

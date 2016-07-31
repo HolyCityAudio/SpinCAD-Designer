@@ -28,6 +28,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.andrewkilpatrick.elmGen.ElmProgram;
+
 class ServoDelayControlPanel {
 
 	private CoarseDelayCADBlock mD;
@@ -75,7 +77,7 @@ class ServoDelayControlPanel {
 	class bitSliderListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 // XXX this needs to be reworks, it is not accurate
-			int totalDelay = (int)(((delaySliderCoarse.getValue()+ delaySliderFine.getValue()) * mD.getSamplerate())/1000.0);
+			int totalDelay = (int)(((delaySliderCoarse.getValue()+ delaySliderFine.getValue()) * ElmProgram.getSamplerate())/1000.0);
 			if(ce.getSource() == delaySliderCoarse) {
 				mD.setDelayLength(totalDelay);
 				updateDelayLabelCoarse();
@@ -100,12 +102,12 @@ class ServoDelayControlPanel {
 	}
 	
 	private int calcDelayTimeCoarse(int length) {
-		int l = (int) ((length * 1000)/mD.getSamplerate()/25) * 25;
+		int l = (int) ((length * 1000)/ElmProgram.getSamplerate()/25) * 25;
 		return l;
 	}
 	
 	private int calcDelayTimeFine(int length) {
-		int l = (int) (((length * 1000)/mD.getSamplerate()) % 25);
+		int l = (int) (((length * 1000)/ElmProgram.getSamplerate()) % 25);
 		return l;
 	}
 }

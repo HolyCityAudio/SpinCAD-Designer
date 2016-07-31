@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.LFO_ValueCADBlock;
 
+@SuppressWarnings("unused")
 public class LFO_ValueControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private LFO_ValueCADBlock gCB;
 	// declare the controls
 	private JComboBox <String> lfoSelComboBox; 

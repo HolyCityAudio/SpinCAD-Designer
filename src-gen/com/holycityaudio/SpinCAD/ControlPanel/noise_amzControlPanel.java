@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock;
 
+@SuppressWarnings("unused")
 public class noise_amzControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private noise_amzCADBlock gCB;
 	// declare the controls
 	JSlider gainSlider;

@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_echo_repeatCADBlock;
 
+@SuppressWarnings("unused")
 public class ga_demo_echo_repeatControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private ga_demo_echo_repeatCADBlock gCB;
 	// declare the controls
 

@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.ga_demo_echo_repeatControlPanel;
 		
-		public class ga_demo_echo_repeatCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class ga_demo_echo_repeatCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private ga_demo_echo_repeatControlPanel cp = null;
 			

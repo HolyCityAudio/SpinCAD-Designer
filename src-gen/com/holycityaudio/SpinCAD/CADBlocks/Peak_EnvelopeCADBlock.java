@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.Peak_EnvelopeControlPanel;
 		
-		public class Peak_EnvelopeCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class Peak_EnvelopeCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private Peak_EnvelopeControlPanel cp = null;
 			

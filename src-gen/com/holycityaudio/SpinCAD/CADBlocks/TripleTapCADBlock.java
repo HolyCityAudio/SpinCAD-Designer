@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.TripleTapControlPanel;
 		
-		public class TripleTapCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class TripleTapCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private TripleTapControlPanel cp = null;
 			

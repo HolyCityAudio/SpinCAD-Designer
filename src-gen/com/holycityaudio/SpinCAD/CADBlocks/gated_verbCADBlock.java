@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.gated_verbControlPanel;
 		
-		public class gated_verbCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class gated_verbCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private gated_verbControlPanel cp = null;
 			

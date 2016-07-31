@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.ControlMixer_3_to_1ControlPanel;
 		
-		public class ControlMixer_3_to_1CADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class ControlMixer_3_to_1CADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private ControlMixer_3_to_1ControlPanel cp = null;
 			

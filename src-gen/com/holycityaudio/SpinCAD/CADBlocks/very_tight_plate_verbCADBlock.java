@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.very_tight_plate_verbControlPanel;
 		
-		public class very_tight_plate_verbCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class very_tight_plate_verbCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private very_tight_plate_verbControlPanel cp = null;
 			

@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.HPF_RDFXControlPanel;
 		
-		public class HPF_RDFXCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class HPF_RDFXCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private HPF_RDFXControlPanel cp = null;
 			

@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
 
+@SuppressWarnings("unused")
 public class New_EnvelopeControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private New_EnvelopeCADBlock gCB;
 	// declare the controls
 	JSlider attackFreqSlider;
@@ -224,33 +225,33 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 				return;
 			
 			if(ce.getSource() == attackFreqSlider) {
-			gCB.setattackFreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(attackFreqSlider.getValue()), 100.0)));
+			gCB.setattackFreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(attackFreqSlider.getValue()), 100.0)));
 				updateattackFreqSpinner();
 			}
 			if(ce.getSource() == attackFreqSpinner) {
-			gCB.setattackFreq(gCB.freqToFilt((double)(attackFreqSpinner.getValue())));
+			gCB.setattackFreq(SpinCADBlock.freqToFilt((double)(attackFreqSpinner.getValue())));
 				updateattackFreqSlider();
 			}
 			if(decayFreqsilentGUIChange == true) 
 				return;
 			
 			if(ce.getSource() == decayFreqSlider) {
-			gCB.setdecayFreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(decayFreqSlider.getValue()), 100.0)));
+			gCB.setdecayFreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(decayFreqSlider.getValue()), 100.0)));
 				updatedecayFreqSpinner();
 			}
 			if(ce.getSource() == decayFreqSpinner) {
-			gCB.setdecayFreq(gCB.freqToFilt((double)(decayFreqSpinner.getValue())));
+			gCB.setdecayFreq(SpinCADBlock.freqToFilt((double)(decayFreqSpinner.getValue())));
 				updatedecayFreqSlider();
 			}
 			if(postFreqsilentGUIChange == true) 
 				return;
 			
 			if(ce.getSource() == postFreqSlider) {
-			gCB.setpostFreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(postFreqSlider.getValue()), 100.0)));
+			gCB.setpostFreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(postFreqSlider.getValue()), 100.0)));
 				updatepostFreqSpinner();
 			}
 			if(ce.getSource() == postFreqSpinner) {
-			gCB.setpostFreq(gCB.freqToFilt((double)(postFreqSpinner.getValue())));
+			gCB.setpostFreq(SpinCADBlock.freqToFilt((double)(postFreqSpinner.getValue())));
 				updatepostFreqSlider();
 			}
 			}
@@ -275,7 +276,7 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void run() {
 				try {
 					attackFreqsilentGUIChange = true;
-		attackFreqSpinner.setValue(gCB.filtToFreq(gCB.getattackFreq()));
+		attackFreqSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getattackFreq()));
 				}
 				finally {
 					attackFreqsilentGUIChange = false;   	    	  
@@ -289,7 +290,7 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void run() {
 				try {
 					attackFreqsilentGUIChange = true;
-		attackFreqSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getattackFreq()))));		
+		attackFreqSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getattackFreq()))));		
 				}
 				finally {
 					attackFreqsilentGUIChange = false;   	    	  
@@ -303,7 +304,7 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void run() {
 				try {
 					decayFreqsilentGUIChange = true;
-		decayFreqSpinner.setValue(gCB.filtToFreq(gCB.getdecayFreq()));
+		decayFreqSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getdecayFreq()));
 				}
 				finally {
 					decayFreqsilentGUIChange = false;   	    	  
@@ -317,7 +318,7 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void run() {
 				try {
 					decayFreqsilentGUIChange = true;
-		decayFreqSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getdecayFreq()))));		
+		decayFreqSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getdecayFreq()))));		
 				}
 				finally {
 					decayFreqsilentGUIChange = false;   	    	  
@@ -331,7 +332,7 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void run() {
 				try {
 					postFreqsilentGUIChange = true;
-		postFreqSpinner.setValue(gCB.filtToFreq(gCB.getpostFreq()));
+		postFreqSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getpostFreq()));
 				}
 				finally {
 					postFreqsilentGUIChange = false;   	    	  
@@ -345,7 +346,7 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void run() {
 				try {
 					postFreqsilentGUIChange = true;
-		postFreqSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getpostFreq()))));		
+		postFreqSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getpostFreq()))));		
 				}
 				finally {
 					postFreqsilentGUIChange = false;   	    	  

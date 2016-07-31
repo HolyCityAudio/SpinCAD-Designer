@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 
+@SuppressWarnings("unused")
 public class control_smootherControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private control_smootherCADBlock gCB;
 	// declare the controls
 	JSlider filtSlider;
@@ -128,11 +129,11 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 				return;
 			
 			if(ce.getSource() == filtSlider) {
-			gCB.setfilt((double) gCB.freqToFilt(gCB.sliderToLogval((int)(filtSlider.getValue()), 100.0)));
+			gCB.setfilt((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(filtSlider.getValue()), 100.0)));
 				updatefiltSpinner();
 			}
 			if(ce.getSource() == filtSpinner) {
-			gCB.setfilt(gCB.freqToFilt((double)(filtSpinner.getValue())));
+			gCB.setfilt(SpinCADBlock.freqToFilt((double)(filtSpinner.getValue())));
 				updatefiltSlider();
 			}
 			}
@@ -157,7 +158,7 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 			public void run() {
 				try {
 					filtsilentGUIChange = true;
-		filtSpinner.setValue(gCB.filtToFreq(gCB.getfilt()));
+		filtSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getfilt()));
 				}
 				finally {
 					filtsilentGUIChange = false;   	    	  
@@ -171,7 +172,7 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 			public void run() {
 				try {
 					filtsilentGUIChange = true;
-		filtSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getfilt()))));		
+		filtSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getfilt()))));		
 				}
 				finally {
 					filtsilentGUIChange = false;   	    	  

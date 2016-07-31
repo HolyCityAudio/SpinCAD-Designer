@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.Half_WaveCADBlock;
 
+@SuppressWarnings("unused")
 public class Half_WaveControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private Half_WaveCADBlock gCB;
 	// declare the controls
 

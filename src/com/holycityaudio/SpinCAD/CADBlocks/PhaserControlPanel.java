@@ -32,13 +32,11 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-@SuppressWarnings("serial")
 class PhaserControlPanel implements ChangeListener, ActionListener {
 	JSlider stagesSlider = new JSlider(JSlider.HORIZONTAL, 1, 5, 4);
 	JLabel stagesLabel = new JLabel();

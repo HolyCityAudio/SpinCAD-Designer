@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.pitch_fourCADBlock;
 
+@SuppressWarnings("unused")
 public class pitch_fourControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private pitch_fourCADBlock gCB;
 	// declare the controls
 	JSlider pitch1Slider;

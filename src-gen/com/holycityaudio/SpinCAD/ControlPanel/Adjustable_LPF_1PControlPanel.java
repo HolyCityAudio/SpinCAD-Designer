@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.Adjustable_LPF_1PCADBlock;
 
+@SuppressWarnings("unused")
 public class Adjustable_LPF_1PControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private Adjustable_LPF_1PCADBlock gCB;
 	// declare the controls
 	JSlider attackFreqSlider;
@@ -176,22 +177,22 @@ public Adjustable_LPF_1PControlPanel(Adjustable_LPF_1PCADBlock genericCADBlock) 
 				return;
 			
 			if(ce.getSource() == attackFreqSlider) {
-			gCB.setattackFreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(attackFreqSlider.getValue()), 100.0)));
+			gCB.setattackFreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(attackFreqSlider.getValue()), 100.0)));
 				updateattackFreqSpinner();
 			}
 			if(ce.getSource() == attackFreqSpinner) {
-			gCB.setattackFreq(gCB.freqToFilt((double)(attackFreqSpinner.getValue())));
+			gCB.setattackFreq(SpinCADBlock.freqToFilt((double)(attackFreqSpinner.getValue())));
 				updateattackFreqSlider();
 			}
 			if(decayFreqsilentGUIChange == true) 
 				return;
 			
 			if(ce.getSource() == decayFreqSlider) {
-			gCB.setdecayFreq((double) gCB.freqToFilt(gCB.sliderToLogval((int)(decayFreqSlider.getValue()), 100.0)));
+			gCB.setdecayFreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(decayFreqSlider.getValue()), 100.0)));
 				updatedecayFreqSpinner();
 			}
 			if(ce.getSource() == decayFreqSpinner) {
-			gCB.setdecayFreq(gCB.freqToFilt((double)(decayFreqSpinner.getValue())));
+			gCB.setdecayFreq(SpinCADBlock.freqToFilt((double)(decayFreqSpinner.getValue())));
 				updatedecayFreqSlider();
 			}
 			}
@@ -216,7 +217,7 @@ public Adjustable_LPF_1PControlPanel(Adjustable_LPF_1PCADBlock genericCADBlock) 
 			public void run() {
 				try {
 					attackFreqsilentGUIChange = true;
-		attackFreqSpinner.setValue(gCB.filtToFreq(gCB.getattackFreq()));
+		attackFreqSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getattackFreq()));
 				}
 				finally {
 					attackFreqsilentGUIChange = false;   	    	  
@@ -230,7 +231,7 @@ public Adjustable_LPF_1PControlPanel(Adjustable_LPF_1PCADBlock genericCADBlock) 
 			public void run() {
 				try {
 					attackFreqsilentGUIChange = true;
-		attackFreqSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getattackFreq()))));		
+		attackFreqSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getattackFreq()))));		
 				}
 				finally {
 					attackFreqsilentGUIChange = false;   	    	  
@@ -244,7 +245,7 @@ public Adjustable_LPF_1PControlPanel(Adjustable_LPF_1PCADBlock genericCADBlock) 
 			public void run() {
 				try {
 					decayFreqsilentGUIChange = true;
-		decayFreqSpinner.setValue(gCB.filtToFreq(gCB.getdecayFreq()));
+		decayFreqSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getdecayFreq()));
 				}
 				finally {
 					decayFreqsilentGUIChange = false;   	    	  
@@ -258,7 +259,7 @@ public Adjustable_LPF_1PControlPanel(Adjustable_LPF_1PCADBlock genericCADBlock) 
 			public void run() {
 				try {
 					decayFreqsilentGUIChange = true;
-		decayFreqSlider.setValue((int) (100 * Math.log10(gCB.filtToFreq(gCB.getdecayFreq()))));		
+		decayFreqSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getdecayFreq()))));		
 				}
 				finally {
 					decayFreqsilentGUIChange = false;   	    	  

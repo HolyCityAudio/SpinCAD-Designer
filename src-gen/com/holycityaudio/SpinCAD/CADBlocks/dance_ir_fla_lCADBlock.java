@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.dance_ir_fla_lControlPanel;
 		
-		public class dance_ir_fla_lCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class dance_ir_fla_lCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private dance_ir_fla_lControlPanel cp = null;
 			

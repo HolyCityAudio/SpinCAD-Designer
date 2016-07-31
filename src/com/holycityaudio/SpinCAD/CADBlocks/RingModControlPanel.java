@@ -29,6 +29,8 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+
 @SuppressWarnings("serial")
 class RingModControlPanel extends JFrame implements ChangeListener, ActionListener {
 	JSlider lfoSlider;
@@ -71,7 +73,7 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 	}
 	
 	private void updateLFOLabel() {
-		lfoLabel.setText("LFO "	+ String.format("%2.2f Hz", this.outBlock.filtToFreq(outBlock.getLFO())));		
+		lfoLabel.setText("LFO "	+ String.format("%2.2f Hz", SpinCADBlock.filtToFreq(outBlock.getLFO())));		
 	}
 
 }

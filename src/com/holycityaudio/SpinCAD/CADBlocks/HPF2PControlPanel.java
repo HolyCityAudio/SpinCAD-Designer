@@ -24,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -36,6 +35,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 
 
 class HPF2PControlPanel extends JFrame implements ActionListener {
@@ -130,7 +131,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == nPoles) {
-	        JComboBox cb = (JComboBox)arg0.getSource();
+	        JComboBox<?> cb = (JComboBox<?>)arg0.getSource();
 	        String range = (String)cb.getSelectedItem();
 	        if (range == listOptions[0]) {
 	        	hPF.setIs4Pole(false);
@@ -147,6 +148,6 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 	}
 
 	private void updateFreqLabel() {
-		freqLabel.setText("Frequency " + String.format("%2.2f", hPF.filtToFreq(hPF.getFreq())));		
+		freqLabel.setText("Frequency " + String.format("%2.2f", SpinCADBlock.filtToFreq(hPF.getFreq())));		
 	}
 }

@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
 
+@SuppressWarnings("unused")
 public class Shelving_lowpassControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private Shelving_lowpassCADBlock gCB;
 	// declare the controls
 	JSlider freqSlider;

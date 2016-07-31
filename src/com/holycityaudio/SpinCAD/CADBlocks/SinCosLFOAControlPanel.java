@@ -41,9 +41,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import org.andrewkilpatrick.elmGen.ElmProgram;
-
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 
 public class SinCosLFOAControlPanel extends spinCADControlPanel implements ChangeListener, ActionListener, ItemListener {

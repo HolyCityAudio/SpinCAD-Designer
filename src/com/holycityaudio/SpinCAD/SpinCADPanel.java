@@ -71,9 +71,9 @@ public class SpinCADPanel extends JPanel {
 
 	private Line2D dragLine = null;
 	private Rectangle2D dragRect = null;
-	private static String keys = null;
+//	private static String keys = null;
 	
-	private SpinCADModel pasteBuffer = new SpinCADModel();
+//	private SpinCADModel pasteBuffer = new SpinCADModel();
 
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;

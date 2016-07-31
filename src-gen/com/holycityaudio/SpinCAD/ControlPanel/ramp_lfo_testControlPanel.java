@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ramp_lfo_testCADBlock;
 
+@SuppressWarnings("unused")
 public class ramp_lfo_testControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private ramp_lfo_testCADBlock gCB;
 	// declare the controls
 

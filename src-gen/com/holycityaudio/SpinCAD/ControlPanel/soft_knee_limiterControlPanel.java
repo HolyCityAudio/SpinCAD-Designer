@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
 
+@SuppressWarnings("unused")
 public class soft_knee_limiterControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private soft_knee_limiterCADBlock gCB;
 	// declare the controls
 

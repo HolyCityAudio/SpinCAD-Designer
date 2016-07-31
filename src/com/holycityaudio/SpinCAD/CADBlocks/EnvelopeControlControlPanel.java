@@ -30,6 +30,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+
 public class EnvelopeControlControlPanel implements ChangeListener, ActionListener {
 
 	private JSlider gainSlider = new JSlider(JSlider.HORIZONTAL, 1, 8, 2);
@@ -53,8 +55,8 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 		// -29 => 10^(-29/100) = 0.5129 Hz which determined is the lowest practical frequency possible
 		// with the FV-1's coefficient resolution.
 		// 100 => 10^(100/100) = 10 Hz.
-		attackSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (125), pC.logvalToSlider(pC.filtToFreq(pC.getAttack()), 100.0));
-		decaySlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (50), pC.logvalToSlider(pC.filtToFreq(pC.getDecay()), 100.0));
+		attackSlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (125), SpinCADBlock.logvalToSlider(SpinCADBlock.filtToFreq(pC.getAttack()), 100.0));
+		decaySlider = new JSlider(JSlider.HORIZONTAL, (int)(-29),(int) (50), SpinCADBlock.logvalToSlider(SpinCADBlock.filtToFreq(pC.getDecay()), 100.0));
 		
 		attackSlider.addChangeListener(this);
 		decaySlider.addChangeListener(this);
@@ -79,10 +81,10 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 				gainSlider.setValue((int) Math.round(pC.getGain()));
 				updateGainLabel();
 
-				attackSlider.setValue((int) pC.logvalToSlider(pC.filtToFreq(pC.getAttack()), 100.0));
+				attackSlider.setValue((int) SpinCADBlock.logvalToSlider(SpinCADBlock.filtToFreq(pC.getAttack()), 100.0));
 				updateAttackLabel();
 
-				decaySlider.setValue((int) pC.logvalToSlider(pC.filtToFreq(pC.getDecay()), 100.0));
+				decaySlider.setValue((int) SpinCADBlock.logvalToSlider(SpinCADBlock.filtToFreq(pC.getDecay()), 100.0));
 				updateDecayLabel();
 
 				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
@@ -105,12 +107,12 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 			updateGainLabel();
 		}
 		else if (e.getSource() == attackSlider) {
-			pC.setAttack(pC.freqToFilt(pC.sliderToLogval(attackSlider.getValue(), 100.0)));
+			pC.setAttack(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(attackSlider.getValue(), 100.0)));
 //			pC.setAttack((double) attackSlider.getValue()/100000.0);
 			updateAttackLabel();
 		}
 		else if (e.getSource() == decaySlider) {
-			pC.setDecay(pC.freqToFilt(pC.sliderToLogval(decaySlider.getValue(), 100.0)));
+			pC.setDecay(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(decaySlider.getValue(), 100.0)));
 //			pC.setDecay((double) decaySlider.getValue()/1000000.0);
 			updateDecayLabel();
 		}
@@ -121,10 +123,10 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 	}
 	
 	private void updateAttackLabel() {
-		attackLabel.setText(String.format("Attack: %4.2f", pC.filtToFreq(pC.getAttack())));		
+		attackLabel.setText(String.format("Attack: %4.2f", SpinCADBlock.filtToFreq(pC.getAttack())));		
 	}
 
 	private void updateDecayLabel() {
-		decayLabel.setText(String.format("Decay: %4.2f", pC.filtToFreq(pC.getDecay())));		
+		decayLabel.setText(String.format("Decay: %4.2f", SpinCADBlock.filtToFreq(pC.getDecay())));		
 	}
 }

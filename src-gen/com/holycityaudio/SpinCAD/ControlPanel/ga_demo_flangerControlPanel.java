@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ga_demo_flangerCADBlock;
 
+@SuppressWarnings("unused")
 public class ga_demo_flangerControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private ga_demo_flangerCADBlock gCB;
 	// declare the controls
 

@@ -18,15 +18,15 @@
  *     
  */ 
 		package com.holycityaudio.SpinCAD.CADBlocks;
-	
+
 		import java.awt.Color;
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
  		import com.holycityaudio.SpinCAD.ControlPanel.rms_lim_expControlPanel;
 		
-		public class rms_lim_expCADBlock extends SpinCADBlock {
-
+	    @SuppressWarnings("unused")
+	    public class rms_lim_expCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
 			private rms_lim_expControlPanel cp = null;
 			

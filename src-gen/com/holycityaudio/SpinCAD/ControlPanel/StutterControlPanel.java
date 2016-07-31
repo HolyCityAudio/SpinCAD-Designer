@@ -18,6 +18,7 @@
  *     
  */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -46,9 +47,9 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.StutterCADBlock;
 
+@SuppressWarnings("unused")
 public class StutterControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-
 	private StutterCADBlock gCB;
 	// declare the controls
 	JSlider delayLengthSlider;
@@ -93,7 +94,7 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					fadeTimeFiltSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (50 * 1.0), (int) gCB.filtToTime(gCB.getfadeTimeFilt() * 1.0));
+					fadeTimeFiltSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (50 * 1.0), (int) SpinCADBlock.filtToTime(gCB.getfadeTimeFilt() * 1.0));
 						fadeTimeFiltSlider.addChangeListener(new StutterListener());
 						fadeTimeFiltLabel = new JLabel();
 						Border fadeTimeFiltBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

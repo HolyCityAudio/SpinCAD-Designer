@@ -18,7 +18,6 @@
  */ 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
 public class ConstantCADBlock extends ControlCADBlock{
