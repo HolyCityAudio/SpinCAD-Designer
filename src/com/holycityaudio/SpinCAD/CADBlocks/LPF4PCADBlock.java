@@ -64,7 +64,6 @@ public class LPF4PCADBlock extends SpinCADBlock{
 			input = p.getRegister();
 
 			int kfl = sfxb.allocateReg();
-			int lbyp = sfxb.allocateReg();
 			int lp1bl = sfxb.allocateReg();
 			int lp1al = sfxb.allocateReg();
 			int hipass = sfxb.allocateReg();

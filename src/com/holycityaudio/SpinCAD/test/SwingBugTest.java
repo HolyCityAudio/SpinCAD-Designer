@@ -2,7 +2,6 @@ package com.holycityaudio.SpinCAD.test;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.text.DecimalFormat;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;

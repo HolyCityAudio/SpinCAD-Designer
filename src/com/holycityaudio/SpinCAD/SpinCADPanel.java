@@ -611,6 +611,10 @@ public class SpinCADPanel extends JPanel {
 
 	// popup menu handling
 	class PopUpMenu extends JPopupMenu {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3333357417403694456L;
 		JMenuItem cPanel;
 		JMenuItem mov;
 		JMenuItem del;

@@ -172,10 +172,9 @@ public class SpinCADModel implements Serializable {
 	}
 
 	public int sortAlignGen() {
-		SpinCADBlock block = null;
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		while (itr.hasNext()) {
-			block = itr.next();
+			itr.next();
 			if(modelSort() == 0)
 				break;
 		}		

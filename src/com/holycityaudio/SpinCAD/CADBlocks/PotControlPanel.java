@@ -33,7 +33,6 @@ public class PotControlPanel implements ItemListener {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4717076120154216169L;
 
 	private JCheckBox speedupCB = new JCheckBox();
 	private JFrame frame;

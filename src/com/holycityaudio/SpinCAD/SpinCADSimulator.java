@@ -92,6 +92,10 @@ public class SpinCADSimulator {
 		/**
 		 * 
 		 */
+		private static final long serialVersionUID = 7552645224196206164L;
+		/**
+		 * 
+		 */
 		final JButton btnStartSimulation = new JButton("Start Simulation");
 		final JButton btnSigGen = new JButton("Sig Gen Sim");
 

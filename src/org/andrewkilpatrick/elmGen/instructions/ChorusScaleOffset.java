@@ -17,10 +17,7 @@
  */
 package org.andrewkilpatrick.elmGen.instructions;
 
-import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
-import org.andrewkilpatrick.elmGen.util.Util;
-
 
 /**
  * This class represents the CHO SOF instruction.
