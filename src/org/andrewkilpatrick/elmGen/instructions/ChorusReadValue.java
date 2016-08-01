@@ -25,6 +25,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class ChorusReadValue extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6799053097694006359L;
 	final int lfo;
 	
 	/**

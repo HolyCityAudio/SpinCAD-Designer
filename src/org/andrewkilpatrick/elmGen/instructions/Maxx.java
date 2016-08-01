@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class Maxx extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3019449994065041234L;
 	final int addr;
 	final double scale;
 	

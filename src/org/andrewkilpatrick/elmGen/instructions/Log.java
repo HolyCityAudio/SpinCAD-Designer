@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class Log extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1816352714163493234L;
 	final double scale;
 	final double offset;
 	

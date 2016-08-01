@@ -26,6 +26,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class ReadDelay extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5874533024600749458L;
 	final int addr;
 	final double scale;
 	

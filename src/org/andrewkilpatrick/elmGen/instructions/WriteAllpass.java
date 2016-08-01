@@ -26,6 +26,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class WriteAllpass extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1609543469507398104L;
 	final int addr;
 	final double scale;
 	

@@ -28,6 +28,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * 
  */
 public class ChorusInstruction extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7762816709250158092L;
 	int lfo;
 	int flags;
 	int addr;

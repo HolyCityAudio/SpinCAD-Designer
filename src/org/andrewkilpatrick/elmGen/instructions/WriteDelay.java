@@ -25,6 +25,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class WriteDelay extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7594162401835224762L;
 	final int addr;
 	final double scale;
 	

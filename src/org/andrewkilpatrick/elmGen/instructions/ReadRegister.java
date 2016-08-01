@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class ReadRegister extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5725695398631154403L;
 	final int addr;
 	final double scale;
 	

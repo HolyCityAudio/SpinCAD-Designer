@@ -28,6 +28,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class ChorusScaleOffset extends ChorusInstruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6563114802960302412L;
 	final double offset;
 	
 	/**

@@ -27,6 +27,11 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 public class Clear extends Instruction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -439677389815337250L;
+
+	/**
 	 * Clears ACC.
 	 */
 	public Clear() {

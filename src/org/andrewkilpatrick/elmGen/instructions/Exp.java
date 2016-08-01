@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class Exp extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7277446895732166937L;
 	final double scale;
 	final double offset;
 	

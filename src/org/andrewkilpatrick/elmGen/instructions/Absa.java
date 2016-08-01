@@ -27,6 +27,11 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 public class Absa extends Instruction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7441163369408334307L;
+
+	/**
 	 * Makes ACC positive.
 	 */
 	public Absa() {

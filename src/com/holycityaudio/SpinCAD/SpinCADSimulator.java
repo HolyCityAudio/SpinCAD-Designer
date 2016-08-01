@@ -237,14 +237,14 @@ public class SpinCADSimulator {
 
 		String[] triggerModeLabels = new String[] {"Auto", "Normal", "Single"};
 		final JLabel triggerModeLabel = new JLabel(" Trigger Mode: ");
-		final JComboBox<String> triggerModeCB = new JComboBox(triggerModeLabels);
+		final JComboBox<String> triggerModeCB = new JComboBox<String>(triggerModeLabels);
 
 		final JLabel triggerLevelLabel = new JLabel(" Trigger Level: ");
 		final JSpinner triggerLevel = new JSpinner();
 
 		String[] triggerSlopeLabels = new String[] {"Pos", "Neg"};
 		final JLabel triggerSlopeLabel = new JLabel(" Trigger Slope: ");
-		final JComboBox<String> triggerSlope = new JComboBox(triggerSlopeLabels);
+		final JComboBox<String> triggerSlope = new JComboBox<String>(triggerSlopeLabels);
 
 		class Task extends SwingWorker<Void, Void> {
 			/*
@@ -335,7 +335,7 @@ public class SpinCADSimulator {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if (arg0.getSource() == ch1_Vertical_Gain) {
-				JComboBox<?> cb = (JComboBox)arg0.getSource();
+				JComboBox<?> cb = (JComboBox<?>)arg0.getSource();
 				String gain = (String)cb.getSelectedItem();
 				switch(gain) {
 				case "1x":
@@ -364,7 +364,7 @@ public class SpinCADSimulator {
 					break;
 				}
 			} else if (arg0.getSource() == ch2_Vertical_Gain) {
-				JComboBox<?> cb = (JComboBox)arg0.getSource();
+				JComboBox<?> cb = (JComboBox<?>)arg0.getSource();
 				String gain = (String)cb.getSelectedItem();
 				switch(gain) {
 				case "1x":
@@ -393,14 +393,14 @@ public class SpinCADSimulator {
 					break;
 				}
 			} else if (arg0.getSource() == timebase) {
-				JComboBox<?> cb = (JComboBox)arg0.getSource();
+				JComboBox<?> cb = (JComboBox<?>)arg0.getSource();
 				String gain = (String)cb.getSelectedItem();
 				setTimeBase(gain);
 				
 			} else if (arg0.getSource() == triggerSlope) {
 				int j = 1;
 			} else if (arg0.getSource() == triggerModeCB) {
-				JComboBox<?> cb = (JComboBox)arg0.getSource();
+				JComboBox<?> cb = (JComboBox<?>)arg0.getSource();
 				String gain = (String)cb.getSelectedItem();
 				switch(gain) {
 				case "Auto":

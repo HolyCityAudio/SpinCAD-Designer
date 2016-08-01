@@ -25,6 +25,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class Jam extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4055052897428773349L;
 	final int lfo;
 	
 	/**

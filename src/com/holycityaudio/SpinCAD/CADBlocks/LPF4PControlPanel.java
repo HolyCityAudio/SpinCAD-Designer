@@ -129,7 +129,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == nPoles) {
-	        JComboBox cb = (JComboBox)arg0.getSource();
+	        JComboBox<?> cb = (JComboBox<?>)arg0.getSource();
 	        String range = (String)cb.getSelectedItem();
 	        if (range == listOptions[0]) {
 	        	LPF.setIs4Pole(false);

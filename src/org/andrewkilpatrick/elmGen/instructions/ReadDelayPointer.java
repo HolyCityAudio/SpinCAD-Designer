@@ -29,6 +29,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class ReadDelayPointer extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6429963690910982586L;
 	final double scale;
 	
 	/**

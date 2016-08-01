@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class LoadRampLFO extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8115761130650996548L;
 	final int lfo;
 	final int freq;
 	final int amp;

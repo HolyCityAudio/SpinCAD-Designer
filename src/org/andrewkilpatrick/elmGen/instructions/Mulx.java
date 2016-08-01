@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class Mulx extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1553893954601390192L;
 	final int addr;
 	
 	/**

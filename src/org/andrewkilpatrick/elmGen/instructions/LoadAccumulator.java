@@ -26,6 +26,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class LoadAccumulator extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7115324980695238044L;
 	final int addr;
 	
 	/**

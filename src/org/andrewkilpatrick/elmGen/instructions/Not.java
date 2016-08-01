@@ -27,6 +27,11 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 public class Not extends Instruction {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6213696545438641764L;
+
+	/**
 	 * Negate all bit in ACC.
 	 */
 	public Not() {

@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class LoadSinLFO extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4087410593486074646L;
 	final int lfo;
 	final int freq;
 	final int amp;

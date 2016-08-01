@@ -107,7 +107,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == controlType) {
-			JComboBox cb = (JComboBox)arg0.getSource();
+			JComboBox<?> cb = (JComboBox<?>)arg0.getSource();
 			String range = (String)cb.getSelectedItem();
 			if (range == listOptions[0]) {
 				pong.setControlMode(0);

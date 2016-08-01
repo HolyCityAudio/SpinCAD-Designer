@@ -24,11 +24,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.andrewkilpatrick.elmGen.ElmProgram;
+// import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
-import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
 public class SpinCADModel implements Serializable {
 

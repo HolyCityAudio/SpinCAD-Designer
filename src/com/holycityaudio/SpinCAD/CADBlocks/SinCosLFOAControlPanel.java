@@ -117,7 +117,7 @@ public class SinCosLFOAControlPanel extends spinCADControlPanel implements Chang
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == outputRange) {
-	        JComboBox cb = (JComboBox)arg0.getSource();
+	        JComboBox<?> cb = (JComboBox<?>)arg0.getSource();
 	        String range = (String)cb.getSelectedItem();
 	        if (range == listOptions[0]) {
 	        	pC.setRange(0);

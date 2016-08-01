@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class Skip extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2634092684212169338L;
 	final int flags;
 	final int nskip;
 	

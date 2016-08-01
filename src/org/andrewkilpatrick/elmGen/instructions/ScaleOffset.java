@@ -26,6 +26,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class ScaleOffset extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1901768076087913530L;
 	final double scale;
 	final double offset;
 	

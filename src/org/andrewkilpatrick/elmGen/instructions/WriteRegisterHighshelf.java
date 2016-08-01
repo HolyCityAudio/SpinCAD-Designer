@@ -27,6 +27,10 @@ import org.andrewkilpatrick.elmGen.util.Util;
  * @author andrew
  */
 public class WriteRegisterHighshelf extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8779448583438929513L;
 	final int addr;
 	final double scale;
 	

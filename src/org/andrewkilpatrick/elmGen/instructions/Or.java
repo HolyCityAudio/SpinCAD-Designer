@@ -25,6 +25,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class Or extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5326618890081261096L;
 	final int mask;
 	
 	/**

@@ -29,6 +29,11 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 public class ChorusReadDelay extends ChorusInstruction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4557383048214102025L;
+
+	/**
 	 * Read delay RAM based on chorus position.
 	 * 
 	 * @param lfo the LFO to use (0 = SIN0, 1 = SIN1, 2 = RMP0, 3 = RMP1)

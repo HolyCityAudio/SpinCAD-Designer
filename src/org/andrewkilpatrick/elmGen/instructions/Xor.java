@@ -25,6 +25,10 @@ import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
  * @author andrew
  */
 public class Xor extends Instruction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4013904125096710959L;
 	final int  mask;
 	
 	/**
