@@ -2,7 +2,6 @@
 
 @menu "I/O - Mix"
 @menuitem "Input" Input
-//@menuitem "Output" Output 
 @menuitem "Output" Output 
 @menuitem "Volume" Volume
 @menuitem "Gain Boost" GainBoost
@@ -12,7 +11,6 @@
 @menuitem "Panner" panner
 @menuitem "2:1 Mixer" Mixer_2_to_1
 @menuitem "2:1 (x2) Mixer" Mixer2_1x2
-//@menuitem "3:1 Mixer" Mixer3_1
 @menuitem "3:1 Mixer" Mixer_3_to_1
 @menuitem "4:1 Mixer" Mixer_4_to_1
 
@@ -61,10 +59,11 @@
 @menuitem "Allpass" allpass 
 @menuitem "Chirp" Chirp 
 @menuitem "Small Reverb" MinReverb 
+@menuitem "Hall Reverb" reverb_hall 
+@menuitem "Plate Reverb" reverb_plate 
 // @menuitem "Gated Reverb" gated_verb 
 @menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
-//@menuitem "Plate Reverb" reverb_plate 
 @menuitem "Adjustable Reverb" reverb
 //@menuitem "Shimmer Reverb" shimmer_verb 
 
