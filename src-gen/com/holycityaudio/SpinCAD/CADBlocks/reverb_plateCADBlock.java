@@ -31,8 +31,12 @@
 			private reverb_plateControlPanel cp = null;
 			
 			private double gain = 0.5;
+			private double krt = 0.5;
+			private double hpdf = 0.02;
+			private double inputkap = 0.5;
+			private double dlkap = 0.5;
 			private int temp;
-			private int krt;
+			private int krtreg;
 			private int ksh;
 			private int ksl;
 			private int lap;
@@ -64,6 +68,10 @@
 				addControlInputPin(this, "LF_Loss");
 				addControlInputPin(this, "HF_Loss");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -129,7 +137,7 @@
 			sfxb.FXallocDelayMem("del3", 4387); 
 			sfxb.FXallocDelayMem("del4", 3679); 
 			temp = sfxb.allocateReg();
-			krt = sfxb.allocateReg();
+			krtreg = sfxb.allocateReg();
 			ksh = sfxb.allocateReg();
 			ksl = sfxb.allocateReg();
 			lap = sfxb.allocateReg();
@@ -147,7 +155,7 @@
 			sfxb.log(0.5, 0);
 			sfxb.exp(1, 0);
 			sfxb.scaleOffset(0.6, 0.3);
-			sfxb.writeRegister(krt, 0);
+			sfxb.writeRegister(krtreg, 0);
 			sfxb.readRegister(input1, 1);
 			sfxb.scaleOffset(1, -0.999);
 			sfxb.writeRegister(ksh, 0);
@@ -179,7 +187,7 @@
 			sfxb.writeRegisterHighshelf(lp1, -1);
 			sfxb.mulx(ksl);
 			sfxb.readRegister(temp, 1);
-			sfxb.mulx(krt);
+			sfxb.mulx(krtreg);
 			sfxb.readRegister(lap, 1);
 			sfxb.FXreadDelay("apd2#", 0, kap);
 			sfxb.FXwriteAllpass("apd2", 0, -kap);
@@ -195,7 +203,7 @@
 			sfxb.writeRegisterHighshelf(lp2, -1);
 			sfxb.mulx(ksl);
 			sfxb.readRegister(temp, 1);
-			sfxb.mulx(krt);
+			sfxb.mulx(krtreg);
 			sfxb.readRegister(lap, 1);
 			sfxb.FXreadDelay("apd4#", 0, kap);
 			sfxb.FXwriteAllpass("apd4", 0, -kap);
@@ -211,7 +219,7 @@
 			sfxb.writeRegisterHighshelf(lp4, -1);
 			sfxb.mulx(ksl);
 			sfxb.readRegister(temp, 1);
-			sfxb.mulx(krt);
+			sfxb.mulx(krtreg);
 			sfxb.writeRegister(lup, 0);
 			sfxb.FXreadDelay("del1+", (int)(201 * 1.0), 0.6);
 			sfxb.FXreadDelay("del2+", (int)(1345 * 1.0), 0.5);
@@ -246,6 +254,34 @@
 			
 			public double getgain() {
 				return gain;
+			}
+			public void setkrt(double __param) {
+				krt = __param;	
+			}
+			
+			public double getkrt() {
+				return krt;
+			}
+			public void sethpdf(double __param) {
+				hpdf = __param;	
+			}
+			
+			public double gethpdf() {
+				return hpdf;
+			}
+			public void setinputkap(double __param) {
+				inputkap = __param;	
+			}
+			
+			public double getinputkap() {
+				return inputkap;
+			}
+			public void setdlkap(double __param) {
+				dlkap = __param;	
+			}
+			
+			public double getdlkap() {
+				return dlkap;
 			}
 			public void setrate1(double __param) {
 				rate1 = __param;	

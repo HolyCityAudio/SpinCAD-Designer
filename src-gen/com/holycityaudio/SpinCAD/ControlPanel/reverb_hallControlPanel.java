@@ -54,14 +54,16 @@ public class reverb_hallControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider gainSlider;
 	JLabel  gainLabel;	
-	JSlider rate1Slider;
-	JLabel  rate1Label;	
 	JSlider krtSlider;
 	JLabel  krtLabel;	
+	JSlider hpdfSlider;
+	JLabel  hpdfLabel;	
 	JSlider inputkapSlider;
 	JLabel  inputkapLabel;	
 	JSlider dlkapSlider;
 	JLabel  dlkapLabel;	
+	JSlider rate1Slider;
+	JLabel  rate1Label;	
 
 public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 		
@@ -99,27 +101,6 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
-						rate1Slider.addChangeListener(new reverb_hallListener());
-						rate1Label = new JLabel();
-						Border rate1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						rate1Label.setBorder(rate1Border1);
-						updaterate1Label();
-						
-						Border rate1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel rate1innerPanel = new JPanel();
-							
-						rate1innerPanel.setLayout(new BoxLayout(rate1innerPanel, BoxLayout.Y_AXIS));
-						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rate1innerPanel.add(rate1Label);
-						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rate1innerPanel.add(rate1Slider);		
-						rate1innerPanel.setBorder(rate1border2);
-			
-						frame.add(rate1innerPanel);
-			//
-			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
-			//
 					krtSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.05 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkrt() * 100.0));
 						krtSlider.addChangeListener(new reverb_hallListener());
 						krtLabel = new JLabel();
@@ -138,6 +119,28 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 						krtinnerPanel.setBorder(krtborder2);
 			
 						frame.add(krtinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					// multiplier is points per decade here
+						hpdfSlider = SpinCADBlock.LogSlider(40,1000,gCB.gethpdf(), "LOGFREQ", 100.0);
+						hpdfSlider.addChangeListener(new reverb_hallListener());
+						hpdfLabel = new JLabel();
+						Border hpdfBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						hpdfLabel.setBorder(hpdfBorder1);
+						updatehpdfLabel();
+						
+						Border hpdfborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel hpdfinnerPanel = new JPanel();
+							
+						hpdfinnerPanel.setLayout(new BoxLayout(hpdfinnerPanel, BoxLayout.Y_AXIS));
+						hpdfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						hpdfinnerPanel.add(hpdfLabel);
+						hpdfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						hpdfinnerPanel.add(hpdfSlider);		
+						hpdfinnerPanel.setBorder(hpdfborder2);
+			
+						frame.add(hpdfinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
@@ -180,6 +183,27 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 						dlkapinnerPanel.setBorder(dlkapborder2);
 			
 						frame.add(dlkapinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
+						rate1Slider.addChangeListener(new reverb_hallListener());
+						rate1Label = new JLabel();
+						Border rate1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						rate1Label.setBorder(rate1Border1);
+						updaterate1Label();
+						
+						Border rate1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel rate1innerPanel = new JPanel();
+							
+						rate1innerPanel.setLayout(new BoxLayout(rate1innerPanel, BoxLayout.Y_AXIS));
+						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate1innerPanel.add(rate1Label);
+						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate1innerPanel.add(rate1Slider);		
+						rate1innerPanel.setBorder(rate1border2);
+			
+						frame.add(rate1innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -197,13 +221,13 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
 				updategainLabel();
 			}
-			if(ce.getSource() == rate1Slider) {
-			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
-				updaterate1Label();
-			}
 			if(ce.getSource() == krtSlider) {
 			gCB.setkrt((double) (krtSlider.getValue()/100.0));
 				updatekrtLabel();
+			}
+			if(ce.getSource() == hpdfSlider) {
+			gCB.sethpdf((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(hpdfSlider.getValue()), 100.0)));
+				updatehpdfLabel();
 			}
 			if(ce.getSource() == inputkapSlider) {
 			gCB.setinputkap((double) (inputkapSlider.getValue()/100.0));
@@ -212,6 +236,10 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 			if(ce.getSource() == dlkapSlider) {
 			gCB.setdlkap((double) (dlkapSlider.getValue()/100.0));
 				updatedlkapLabel();
+			}
+			if(ce.getSource() == rate1Slider) {
+			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
+				updaterate1Label();
 			}
 			}
 		}
@@ -233,17 +261,20 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 		private void updategainLabel() {
 		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
-		private void updaterate1Label() {
-		rate1Label.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
-		}		
 		private void updatekrtLabel() {
 		krtLabel.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));		
+		}		
+		private void updatehpdfLabel() {
+		hpdfLabel.setText("Damping Freq Low " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.gethpdf())) + " Hz");		
 		}		
 		private void updateinputkapLabel() {
 		inputkapLabel.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getinputkap()));		
 		}		
 		private void updatedlkapLabel() {
 		dlkapLabel.setText("Delay All-Pass Coefficient " + String.format("%4.2f", gCB.getdlkap()));		
+		}		
+		private void updaterate1Label() {
+		rate1Label.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
 		}		
 		
 		class MyWindowListener implements WindowListener

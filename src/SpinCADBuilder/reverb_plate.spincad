@@ -9,6 +9,18 @@
 equ gain 0.5 
 @sliderLabel gain Input_Gain -24 0 -6 1.0 1 DBLEVEL 
 
+equ krt 0.5
+@sliderLabel krt "Reverb Time Coefficient" 0.05 0.95 0.5 100.0 2
+
+equ hpdf 0.02
+@sliderLabel hpdf "Low Freq Damping Frequency" 0.001 0.15 0.02 100.0 2
+
+equ inputkap 0.5
+@sliderLabel inputkap "Input All-Pass Coefficient" 0.05 0.95 0.5 100.0 2
+
+equ dlkap 0.5
+@sliderLabel dlkap "Delay All-Pass Coefficient" 0.05 0.95 0.5 100.0 2
+
 ;plate reverb, lush (large), stereo
 ;characterized by very high density,
 ;explosive initial sound, large
@@ -36,7 +48,7 @@ mem	del3	4387
 mem	del4	3679
 
 equ	temp	reg0
-equ	krt	reg1
+equ	krtreg	reg1
 equ	ksh	reg2
 equ	ksl	reg3
 equ	lap	reg4
@@ -62,7 +74,7 @@ rdax	input0,1
 log	0.5,0
 exp	1,0		;square root pot0
 sof	0.6,0.3		;ranges 0.3 to 0.9
-wrax	krt,0		;write for later use
+wrax	krtreg,0		;write for later use
 
 rdax	input1,1		;control low freq loss (high pass filter)
 sof	1,-0.999	;make from -1 to 0
@@ -102,7 +114,7 @@ rdfx	lp1,kfl		;do high pass filter
 wrhx	lp1,-1		;infinite shelf HPF
 mulx	ksl		;prepare to subtract from temp
 rdax	temp,1		;subtract HP signal from input (LPF shelf)
-mulx	krt		;scale by reverb time
+mulx	krtreg		;scale by reverb time
 			;continue to next stage of loop		
 rdax	lap,1		
 rda	apd2#,kap
@@ -119,7 +131,7 @@ rdfx	lp2,kfl
 wrhx	lp2,-1		
 mulx	ksl		
 rdax	temp,1		
-mulx	krt
+mulx	krtreg
 
 rdax	lap,1		
 rda	apd4#,kap
@@ -136,7 +148,7 @@ rdfx	lp4,kfl
 wrhx	lp4,-1		
 mulx	ksl		
 rdax	temp,1		
-mulx	krt
+mulx	krtreg
 wrax	lup,0
 
 ;now gather outputs from loop delays:

@@ -31,10 +31,11 @@
 			private reverb_hallControlPanel cp = null;
 			
 			private double gain = 0.5;
-			private double rate1 = 20;
 			private double krt = 0.5;
+			private double hpdf = 0.02;
 			private double inputkap = 0.5;
 			private double dlkap = 0.5;
+			private double rate1 = 20;
 			private int pout;
 			private int apout;
 			private int temp;
@@ -58,6 +59,7 @@
 				addControlInputPin(this, "Reverb_Time");
 				addControlInputPin(this, "HF_Loss");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -111,22 +113,23 @@
 			
 			// finally, generate the instructions
 			if(this.getPin("Input").isConnected() == true) {
+			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("pdel", 3276); 
 			sfxb.FXallocDelayMem("tdel", 7000); 
-			sfxb.FXallocDelayMem("ap1", 273); 
-			sfxb.FXallocDelayMem("ap2", 436); 
-			sfxb.FXallocDelayMem("ap3", 767); 
+			sfxb.FXallocDelayMem("ap1", 271); 
+			sfxb.FXallocDelayMem("ap2", 433); 
+			sfxb.FXallocDelayMem("ap3", 769); 
 			sfxb.FXallocDelayMem("ap4", 991); 
-			sfxb.FXallocDelayMem("tap1", 245); 
-			sfxb.FXallocDelayMem("tap2", 458); 
-			sfxb.FXallocDelayMem("lap1a", 1078); 
-			sfxb.FXallocDelayMem("lap1b", 1287); 
-			sfxb.FXallocDelayMem("lap1c", 2241); 
-			sfxb.FXallocDelayMem("d1", 2336); 
-			sfxb.FXallocDelayMem("lap2a", 968); 
+			sfxb.FXallocDelayMem("tap1", 241); 
+			sfxb.FXallocDelayMem("tap2", 457); 
+			sfxb.FXallocDelayMem("lap1a", 1069); 
+			sfxb.FXallocDelayMem("lap1b", 1289); 
+			sfxb.FXallocDelayMem("lap1c", 2243); 
+			sfxb.FXallocDelayMem("d1", 2337); 
+			sfxb.FXallocDelayMem("lap2a", 967); 
 			sfxb.FXallocDelayMem("lap2b", 1367); 
-			sfxb.FXallocDelayMem("lap2c", 2067); 
-			sfxb.FXallocDelayMem("d2", 2391); 
+			sfxb.FXallocDelayMem("lap2c", 2069); 
+			sfxb.FXallocDelayMem("d2", 2393); 
 			pout = sfxb.allocateReg();
 			apout = sfxb.allocateReg();
 			temp = sfxb.allocateReg();
@@ -176,7 +179,7 @@
 			sfxb.FXwriteAllpass("lap1b", 0, dlkap);
 			sfxb.FXreadDelay("lap1c#", 0, dlkap);
 			sfxb.FXwriteAllpass("lap1c", 0, -dlkap);
-			sfxb.readRegisterFilter(hp1, 0.02);
+			sfxb.readRegisterFilter(hp1, hpdf);
 			sfxb.writeRegisterHighshelf(hp1, -0.5);
 			sfxb.writeRegister(temp, -1);
 			sfxb.readRegisterFilter(lp1, 0.5);
@@ -196,7 +199,7 @@
 			sfxb.FXwriteAllpass("lap2b", 0, -dlkap);
 			sfxb.FXreadDelay("lap2c#", 0, -dlkap);
 			sfxb.FXwriteAllpass("lap2c", 0, dlkap);
-			sfxb.readRegisterFilter(hp2, 0.02);
+			sfxb.readRegisterFilter(hp2, hpdf);
 			sfxb.writeRegisterHighshelf(hp2, -0.5);
 			sfxb.writeRegister(temp, -1);
 			sfxb.readRegisterFilter(lp2, 0.5);
@@ -259,19 +262,19 @@
 			public double getgain() {
 				return gain;
 			}
-			public void setrate1(double __param) {
-				rate1 = __param;	
-			}
-			
-			public double getrate1() {
-				return rate1;
-			}
 			public void setkrt(double __param) {
 				krt = __param;	
 			}
 			
 			public double getkrt() {
 				return krt;
+			}
+			public void sethpdf(double __param) {
+				hpdf = __param;	
+			}
+			
+			public double gethpdf() {
+				return hpdf;
 			}
 			public void setinputkap(double __param) {
 				inputkap = __param;	
@@ -286,5 +289,12 @@
 			
 			public double getdlkap() {
 				return dlkap;
+			}
+			public void setrate1(double __param) {
+				rate1 = __param;	
+			}
+			
+			public double getrate1() {
+				return rate1;
 			}
 		}	
