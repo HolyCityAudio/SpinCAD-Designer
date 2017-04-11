@@ -59,6 +59,7 @@
 @menuitem "Allpass" allpass 
 @menuitem "Chirp" Chirp 
 @menuitem "Small Reverb" MinReverb 
+@menuitem "Room Reverb" reverb_room 
 @menuitem "Hall Reverb" reverb_hall 
 @menuitem "Plate Reverb" reverb_plate 
 // @menuitem "Gated Reverb" gated_verb 
