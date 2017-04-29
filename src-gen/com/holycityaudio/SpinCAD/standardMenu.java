@@ -61,6 +61,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchupdownCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffset1_2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
@@ -677,6 +678,15 @@
 		}
 	});
 	mn_pitch.add(mntm_pitchoffset);
+		
+	final JMenuItem mntm_pitchoffset1_2 = new JMenuItem("Dual Output Pitch Offset");
+	mntm_pitchoffset1_2.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new pitchoffset1_2CADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_pitch.add(mntm_pitchoffset1_2);
 		
 	JMenu mn_control = new JMenu("Control");
 	menuBar.add(mn_control);

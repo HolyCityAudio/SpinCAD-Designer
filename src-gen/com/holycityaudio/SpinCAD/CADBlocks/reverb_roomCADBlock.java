@@ -136,7 +136,7 @@
 			sfxb.FXallocDelayMem("d3", 1936); 
 			sfxb.FXallocDelayMem("lap4a", 1263); 
 			sfxb.FXallocDelayMem("lap4b", 1198); 
-			sfxb.FXallocDelayMem("d4", 1891); 
+			sfxb.FXallocDelayMem("d4", 1781); 
 			pout = sfxb.allocateReg();
 			apout = sfxb.allocateReg();
 			temp = sfxb.allocateReg();
@@ -225,10 +225,10 @@
 			}
 			
 			sfxb.readRegister(apout, 1);
-			sfxb.FXreadDelay("lap3a#", 0, 0.5);
-			sfxb.FXwriteAllpass("lap3a", 0, -0.5);
-			sfxb.FXreadDelay("lap3b#", 0, 0.5);
-			sfxb.FXwriteAllpass("lap3b", 0, -0.5);
+			sfxb.FXreadDelay("lap3a#", 0, dlkap);
+			sfxb.FXwriteAllpass("lap3a", 0, -dlkap);
+			sfxb.FXreadDelay("lap3b#", 0, dlkap);
+			sfxb.FXwriteAllpass("lap3b", 0, -dlkap);
 			sfxb.readRegisterFilter(hp2, 0.05);
 			sfxb.writeRegisterHighshelf(hp2, -0.5);
 			sfxb.writeRegister(temp, -1);
@@ -243,10 +243,10 @@
 			}
 			
 			sfxb.readRegister(apout, 1);
-			sfxb.FXreadDelay("lap4a#", 0, 0.5);
-			sfxb.FXwriteAllpass("lap4a", 0, -0.5);
-			sfxb.FXreadDelay("lap4b#", 0, 0.5);
-			sfxb.FXwriteAllpass("lap4b", 0, -0.5);
+			sfxb.FXreadDelay("lap4a#", 0, dlkap);
+			sfxb.FXwriteAllpass("lap4a", 0, -dlkap);
+			sfxb.FXreadDelay("lap4b#", 0, dlkap);
+			sfxb.FXwriteAllpass("lap4b", 0, -dlkap);
 			sfxb.writeRegister(temp, -1);
 			sfxb.readRegisterFilter(lp4, 0.5);
 			sfxb.writeRegisterHighshelf(lp4, -1);

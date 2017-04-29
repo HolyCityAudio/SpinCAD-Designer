@@ -60,7 +60,7 @@ mem	lap3b	1127
 mem	d3	1936
 mem	lap4a	1263
 mem	lap4b	1198
-mem	d4	1891
+mem	d4	1781
 
 ;declare registers:
 
@@ -187,10 +187,10 @@ mulx	input1		;scale by Krt
 
 ; mulx	krt
 rdax	apout,1
-rda	lap3a#,0.5
-wrap	lap3a,-0.5
-rda	lap3b#,0.5
-wrap	lap3b,-0.5
+rda	lap3a#,dlkap
+wrap	lap3a,-dlkap
+rda	lap3b#,dlkap
+wrap	lap3b,-dlkap
 rdfx	hp2,0.05
 wrhx	hp2,-0.5
 wrax	temp,-1
@@ -201,15 +201,17 @@ rdax	temp,1
 wra	d3,0
 
 rda	d3#,-1
+
 @isPinConnected Reverb_Time
 mulx	input1		;scale by Krt
 @endif
+
 ;mulx	krt
 rdax	apout,1
-rda	lap4a#,0.5
-wrap	lap4a,-0.5
-rda	lap4b#,0.5
-wrap	lap4b,-0.5
+rda	lap4a#,dlkap
+wrap	lap4a,-dlkap
+rda	lap4b#,dlkap
+wrap	lap4b,-dlkap
 wrax	temp,-1
 rdfx	lp4,0.5
 wrhx	lp4,-1
