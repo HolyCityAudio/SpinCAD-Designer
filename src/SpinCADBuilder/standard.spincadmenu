@@ -70,7 +70,7 @@
 
 @menu "Modulation"  
 @menuitem "LFO Chorus" Chorus 
-//@menuitem "Quad Chorus" ChorusQuad 
+@menuitem "4-voice Chorus" ChorusQuad 
 @menuitem "LFO Flanger" Flanger 
 @menuitem "Servo Flanger" servo
 @menuitem "Phaser" Phaser 

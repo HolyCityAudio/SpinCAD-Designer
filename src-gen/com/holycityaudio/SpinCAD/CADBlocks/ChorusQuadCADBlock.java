@@ -39,6 +39,7 @@
 			private double tap4Center = 0.75;
 			private double rate = 20;
 			private double width = 64;
+			private double lfoSel = 0;
 			private double delayOffset = -1;
 			private int output1;
 			private int output2;
@@ -47,7 +48,7 @@
 
 			public ChorusQuadCADBlock(int x, int y) {
 				super(x, y);
-				setName("Chorus");					
+				setName("4-voice Chorus");					
 			setBorderColor(new Color(0x24f2f2));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
@@ -58,6 +59,7 @@
 				addControlInputPin(this, "LFO_Rate");
 				addControlInputPin(this, "LFO_Width");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -110,18 +112,34 @@
 			if(this.getPin("Input").isConnected() == true) {
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayl", delayLength); 
+			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
 			sfxb.loadSinLFO((int) SIN0,(int) 50, (int) 64);
+			} else {
+			sfxb.skip(RUN, 1);
+			sfxb.loadSinLFO((int) SIN1,(int) 50, (int) 64);
+			}
+			
 			if(this.getPin("LFO_Width").isConnected() == true) {
 			double temp = width / widthMax;
 			sfxb.readRegister(widthIn, temp);
+			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RANGE, 0);
+			} else {
+			sfxb.writeRegister(SIN1_RANGE, 0);
+			}
+			
 			}
 			
 			if(this.getPin("LFO_Rate").isConnected() == true) {
 			double temp1 = rate / rateMax;
 			sfxb.readRegister(rateIn, temp1);
+			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RATE, 0);
+			} else {
+			sfxb.writeRegister(SIN1_RATE, 0);
+			}
+			
 			}
 			
 			sfxb.loadAccumulator(input);
@@ -130,9 +148,11 @@
 			output1 = sfxb.allocateReg();
 			{
 				int chorusCenter = (int) (delayOffset + (0.5 * tap1Center * delayLength) +  0.25 * delayLength); 
-				sfxb.chorusReadDelay(0, SIN|REG|COMPC, chorusCenter );
-				sfxb.chorusReadDelay(0, SIN, chorusCenter + 1);
+			// need to allow 4 phases of LFO
+			sfxb.chorusReadDelay((int)lfoSel, SIN|REG|COMPC, chorusCenter );
+			sfxb.chorusReadDelay((int)lfoSel, SIN, chorusCenter + 1);
 			}
+			sfxb.writeRegister(output1, 0);
 			this.getPin("Output_1").setRegister(output1);
 			}
 			
@@ -140,9 +160,11 @@
 			output2 = sfxb.allocateReg();
 			{
 				int chorusCenter = (int) (delayOffset + (0.5 * tap2Center * delayLength) +  0.25 * delayLength); 
-				sfxb.chorusReadDelay(0, SIN|REG|COMPC, chorusCenter );
-				sfxb.chorusReadDelay(0, SIN, chorusCenter + 1);
+			// need to allow 4 phases of LFO
+			sfxb.chorusReadDelay((int)lfoSel, SIN|REG|COMPC|COMPA, chorusCenter );
+			sfxb.chorusReadDelay((int)lfoSel, SIN|COMPA, chorusCenter + 1);
 			}
+			sfxb.writeRegister(output2, 0);
 			this.getPin("Output_2").setRegister(output2);
 			}
 			
@@ -150,9 +172,11 @@
 			output3 = sfxb.allocateReg();
 			{
 				int chorusCenter = (int) (delayOffset + (0.5 * tap3Center * delayLength) +  0.25 * delayLength); 
-				sfxb.chorusReadDelay(0, SIN|REG|COMPC, chorusCenter );
-				sfxb.chorusReadDelay(0, SIN, chorusCenter + 1);
+			// need to allow 4 phases of LFO
+			sfxb.chorusReadDelay((int)lfoSel, COS|REG|COMPC, chorusCenter );
+			sfxb.chorusReadDelay((int)lfoSel, COS, chorusCenter + 1);
 			}
+			sfxb.writeRegister(output3, 0);
 			this.getPin("Output_3").setRegister(output3);
 			}
 			
@@ -160,13 +184,14 @@
 			output4 = sfxb.allocateReg();
 			{
 				int chorusCenter = (int) (delayOffset + (0.5 * tap4Center * delayLength) +  0.25 * delayLength); 
-				sfxb.chorusReadDelay(0, SIN|REG|COMPC, chorusCenter );
-				sfxb.chorusReadDelay(0, SIN, chorusCenter + 1);
+			// need to allow 4 phases of LFO
+			sfxb.chorusReadDelay((int)lfoSel, COS|REG|COMPC|COMPA, chorusCenter );
+			sfxb.chorusReadDelay((int)lfoSel, COS|COMPA, chorusCenter + 1);
 			}
+			sfxb.writeRegister(output4, 0);
 			this.getPin("Output_4").setRegister(output4);
 			}
 			
-			sfxb.writeRegister(output1, 0);
 			}
 			
 
@@ -221,5 +246,12 @@
 			
 			public double getwidth() {
 				return width;
+			}
+			public void setlfoSel(int __param) {
+				lfoSel = (double) __param;	
+			}
+			
+			public int getlfoSel() {
+				return (int) lfoSel;
 			}
 		}	

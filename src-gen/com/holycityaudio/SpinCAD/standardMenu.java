@@ -52,6 +52,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ChorusQuadCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.servoCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PhaserCADBlock;
@@ -594,6 +595,15 @@
 		}
 	});
 	mn_modulation.add(mntm_Chorus);
+		
+	final JMenuItem mntm_ChorusQuad = new JMenuItem("4-voice Chorus");
+	mntm_ChorusQuad.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ChorusQuadCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_modulation.add(mntm_ChorusQuad);
 		
 	final JMenuItem mntm_Flanger = new JMenuItem("LFO Flanger");
 	mntm_Flanger.addActionListener(new ActionListener() {

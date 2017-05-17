@@ -66,6 +66,7 @@ public class ChorusQuadControlPanel extends spinCADControlPanel {
 	JLabel  rateLabel;	
 	JSlider widthSlider;
 	JLabel  widthLabel;	
+	private JComboBox <String> lfoSelComboBox; 
 
 public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 		
@@ -75,13 +76,13 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Chorus");
+				frame.setTitle("4-voice Chorus");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (1024 * 1), (int) (gCB.getdelayLength() * 1));
+					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (2048 * 1), (int) (gCB.getdelayLength() * 1));
 						delayLengthSlider.addChangeListener(new ChorusQuadListener());
 						delayLengthLabel = new JLabel();
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -225,6 +226,13 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 						widthinnerPanel.setBorder(widthborder2);
 			
 						frame.add(widthinnerPanel);
+				lfoSelComboBox = new JComboBox <String> ();
+				lfoSelComboBox.addItem("LFO 0");
+				lfoSelComboBox.addItem("LFO 1");
+				lfoSelComboBox.setSelectedIndex(gCB.getlfoSel());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(lfoSelComboBox);
+				lfoSelComboBox.addActionListener(new ChorusQuadActionListener());
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -281,6 +289,9 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 		class ChorusQuadActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+			if(arg0.getSource() == lfoSelComboBox) {
+				gCB.setlfoSel((lfoSelComboBox.getSelectedIndex()));
+			}
 			}
 		}
 		private void updatedelayLengthLabel() {

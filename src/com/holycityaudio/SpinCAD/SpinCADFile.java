@@ -794,6 +794,8 @@ public class SpinCADFile {
 	private void loadRecentBankFileList() {
 		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 		String listOfFiles = p.get("RecentBankFileList.fileList", null);
+		Integer listLength = listOfFiles.length();
+		
 		if (fc == null) {
 			String savedPath = prefs.get("MRUBankFolder", "");
 			File MRUBankFolder = new File(savedPath);
