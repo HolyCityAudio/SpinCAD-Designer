@@ -132,20 +132,13 @@
 			
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayl", 0, 0);
-			if(lfoSel == 0) {
 			{
-				int chorusCenter = (int) (delayOffset + (0.5 * tap1Center * delayLength) +  0.25 * delayLength); 
-				sfxb.chorusReadDelay(0, SIN|REG|COMPC, chorusCenter );
-				sfxb.chorusReadDelay(0, SIN, chorusCenter + 1);
+				// careful to not put center point too close to the end or beginning
+				int chorusCenter = (int) (delayOffset + (0.9 * tap1Center * delayLength) +  0.05 * delayLength); 
+			// need to allow 4 phases of LFO
+			sfxb.chorusReadDelay((int)lfoSel, SIN|REG|COMPC, chorusCenter );
+			sfxb.chorusReadDelay((int)lfoSel, SIN, chorusCenter + 1);
 			}
-			} else {
-			{
-				int chorusCenter = (int) (delayOffset + (0.5 * tap1Center * delayLength) +  0.25 * delayLength); 
-				sfxb.chorusReadDelay(1, SIN|REG|COMPC, chorusCenter );
-				sfxb.chorusReadDelay(1, SIN, chorusCenter + 1);
-			}
-			}
-			
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Output").setRegister(output1);
 			}

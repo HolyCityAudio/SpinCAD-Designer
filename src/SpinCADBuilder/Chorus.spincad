@@ -102,11 +102,7 @@ ldax input
 ; Write it to delay and clear ACC
 wra delayl,0
 
-@isEqualTo lfoSel 0
-@readChorusTap 0 0 tap1Center delayLength delayOffset 
-@else
-@readChorusTap 1 0 tap1Center delayLength delayOffset 
-@endif
+@readChorusTap lfoSel 0 tap1Center delayLength delayOffset 
 
 ; @readChorusTap 0 1 tap2Center delayLength delayOffset 
 

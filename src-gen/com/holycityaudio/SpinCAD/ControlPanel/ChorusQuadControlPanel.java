@@ -52,6 +52,8 @@ public class ChorusQuadControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private ChorusQuadCADBlock gCB;
 	// declare the controls
+	JSlider gain1Slider;
+	JLabel  gain1Label;	
 	JSlider delayLengthSlider;
 	JLabel  delayLengthLabel;	
 	JSlider tap1CenterSlider;
@@ -82,6 +84,28 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					// dB level slider goes in steps of 1 dB
+						gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+						gain1Slider.addChangeListener(new ChorusQuadListener());
+						gain1Label = new JLabel();
+						Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						gain1Label.setBorder(gain1Border1);
+						updategain1Label();
+						
+						Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel gain1innerPanel = new JPanel();
+							
+						gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gain1innerPanel.add(gain1Label);
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						gain1innerPanel.add(gain1Slider);		
+						gain1innerPanel.setBorder(gain1border2);
+			
+						frame.add(gain1innerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
 					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (2048 * 1), (int) (gCB.getdelayLength() * 1));
 						delayLengthSlider.addChangeListener(new ChorusQuadListener());
 						delayLengthLabel = new JLabel();
@@ -103,7 +127,7 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap1CenterSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 1000.0),(int) (0.75 * 1000.0), (int) (gCB.gettap1Center() * 1000.0));
+					tap1CenterSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Center() * 1000.0));
 						tap1CenterSlider.addChangeListener(new ChorusQuadListener());
 						tap1CenterLabel = new JLabel();
 						Border tap1CenterBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -208,7 +232,7 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					widthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (100.0 * 100.0), (int) (gCB.getwidth() * 100.0));
+					widthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (200.0 * 100.0), (int) (gCB.getwidth() * 100.0));
 						widthSlider.addChangeListener(new ChorusQuadListener());
 						widthLabel = new JLabel();
 						Border widthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -246,6 +270,10 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class ChorusQuadListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == gain1Slider) {
+			gCB.setgain1((double) (gain1Slider.getValue()/1.0));			    					
+				updategain1Label();
+			}
 			if(ce.getSource() == delayLengthSlider) {
 			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
 				updatedelayLengthLabel();
@@ -294,6 +322,9 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 			}
 			}
 		}
+		private void updategain1Label() {
+		gain1Label.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
+		}		
 		private void updatedelayLengthLabel() {
 		delayLengthLabel.setText("Chorus_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
@@ -301,13 +332,13 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 		tap1CenterLabel.setText("Tap_1_Center " + String.format("%4.3f", gCB.gettap1Center()));		
 		}		
 		private void updatetap2CenterLabel() {
-		tap2CenterLabel.setText("Tap_2_Center " + String.format("%4.2f", gCB.gettap2Center()));		
+		tap2CenterLabel.setText("Tap_2_Center " + String.format("%4.3f", gCB.gettap2Center()));		
 		}		
 		private void updatetap3CenterLabel() {
-		tap3CenterLabel.setText("Tap_3_Center " + String.format("%4.2f", gCB.gettap3Center()));		
+		tap3CenterLabel.setText("Tap_3_Center " + String.format("%4.3f", gCB.gettap3Center()));		
 		}		
 		private void updatetap4CenterLabel() {
-		tap4CenterLabel.setText("Tap_4_Center " + String.format("%4.2f", gCB.gettap4Center()));		
+		tap4CenterLabel.setText("Tap_4_Center " + String.format("%4.3f", gCB.gettap4Center()));		
 		}		
 		private void updaterateLabel() {
 		rateLabel.setText("LFO_Rate " + String.format("%4.1f", coeffToLFORate(gCB.getrate())));		

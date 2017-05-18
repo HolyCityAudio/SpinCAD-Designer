@@ -32,6 +32,7 @@
 			
 			private double rateMax = 511;
 			private double widthMax = 16384;
+			private double gain1 = 1.0;
 			private double delayLength = 512;
 			private double tap1Center = 0.25;
 			private double tap2Center = 0.33;
@@ -52,13 +53,14 @@
 			setBorderColor(new Color(0x24f2f2));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
-				addOutputPin(this, "Output_1");
-				addOutputPin(this, "Output_2");
-				addOutputPin(this, "Output_3");
-				addOutputPin(this, "Output_4");
+				addOutputPin(this, "Voice_1");
+				addOutputPin(this, "Voice_2");
+				addOutputPin(this, "Voice_3");
+				addOutputPin(this, "Voice_4");
 				addControlInputPin(this, "LFO_Rate");
 				addControlInputPin(this, "LFO_Width");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -142,54 +144,58 @@
 			
 			}
 			
-			sfxb.loadAccumulator(input);
+			sfxb.readRegister(input, gain1);
 			sfxb.FXwriteDelay("delayl", 0, 0);
-			if(this.getPin("Output_1").isConnected() == true) {
+			if(this.getPin("Voice_1").isConnected() == true) {
 			output1 = sfxb.allocateReg();
 			{
-				int chorusCenter = (int) (delayOffset + (0.5 * tap1Center * delayLength) +  0.25 * delayLength); 
+				// careful to not put center point too close to the end or beginning
+				int chorusCenter = (int) (delayOffset + (0.9 * tap1Center * delayLength) +  0.05 * delayLength); 
 			// need to allow 4 phases of LFO
 			sfxb.chorusReadDelay((int)lfoSel, SIN|REG|COMPC, chorusCenter );
 			sfxb.chorusReadDelay((int)lfoSel, SIN, chorusCenter + 1);
 			}
 			sfxb.writeRegister(output1, 0);
-			this.getPin("Output_1").setRegister(output1);
+			this.getPin("Voice_1").setRegister(output1);
 			}
 			
-			if(this.getPin("Output_2").isConnected() == true) {
+			if(this.getPin("Voice_2").isConnected() == true) {
 			output2 = sfxb.allocateReg();
 			{
-				int chorusCenter = (int) (delayOffset + (0.5 * tap2Center * delayLength) +  0.25 * delayLength); 
+				// careful to not put center point too close to the end or beginning
+				int chorusCenter = (int) (delayOffset + (0.9 * tap2Center * delayLength) +  0.05 * delayLength); 
 			// need to allow 4 phases of LFO
-			sfxb.chorusReadDelay((int)lfoSel, SIN|REG|COMPC|COMPA, chorusCenter );
-			sfxb.chorusReadDelay((int)lfoSel, SIN|COMPA, chorusCenter + 1);
+			sfxb.chorusReadDelay((int)lfoSel, SIN|REG|COMPA, chorusCenter );
+			sfxb.chorusReadDelay((int)lfoSel, SIN|COMPC|COMPA, chorusCenter + 1);
 			}
 			sfxb.writeRegister(output2, 0);
-			this.getPin("Output_2").setRegister(output2);
+			this.getPin("Voice_2").setRegister(output2);
 			}
 			
-			if(this.getPin("Output_3").isConnected() == true) {
+			if(this.getPin("Voice_3").isConnected() == true) {
 			output3 = sfxb.allocateReg();
 			{
-				int chorusCenter = (int) (delayOffset + (0.5 * tap3Center * delayLength) +  0.25 * delayLength); 
+				// careful to not put center point too close to the end or beginning
+				int chorusCenter = (int) (delayOffset + (0.9 * tap3Center * delayLength) +  0.05 * delayLength); 
 			// need to allow 4 phases of LFO
 			sfxb.chorusReadDelay((int)lfoSel, COS|REG|COMPC, chorusCenter );
 			sfxb.chorusReadDelay((int)lfoSel, COS, chorusCenter + 1);
 			}
 			sfxb.writeRegister(output3, 0);
-			this.getPin("Output_3").setRegister(output3);
+			this.getPin("Voice_3").setRegister(output3);
 			}
 			
-			if(this.getPin("Output_4").isConnected() == true) {
+			if(this.getPin("Voice_4").isConnected() == true) {
 			output4 = sfxb.allocateReg();
 			{
-				int chorusCenter = (int) (delayOffset + (0.5 * tap4Center * delayLength) +  0.25 * delayLength); 
+				// careful to not put center point too close to the end or beginning
+				int chorusCenter = (int) (delayOffset + (0.9 * tap4Center * delayLength) +  0.05 * delayLength); 
 			// need to allow 4 phases of LFO
-			sfxb.chorusReadDelay((int)lfoSel, COS|REG|COMPC|COMPA, chorusCenter );
-			sfxb.chorusReadDelay((int)lfoSel, COS|COMPA, chorusCenter + 1);
+			sfxb.chorusReadDelay((int)lfoSel, COS|REG|COMPA, chorusCenter );
+			sfxb.chorusReadDelay((int)lfoSel, COS|COMPC|COMPA, chorusCenter + 1);
 			}
 			sfxb.writeRegister(output4, 0);
-			this.getPin("Output_4").setRegister(output4);
+			this.getPin("Voice_4").setRegister(output4);
 			}
 			
 			}
@@ -198,6 +204,13 @@
 			}
 			
 			// create setters and getter for control panel variables
+			public void setgain1(double __param) {
+				gain1 = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getgain1() {
+				return gain1;
+			}
 			public void setdelayLength(double __param) {
 				delayLength = __param;	
 			}
