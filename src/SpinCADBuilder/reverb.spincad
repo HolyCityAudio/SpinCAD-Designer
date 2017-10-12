@@ -7,6 +7,11 @@
 @controlInput revTime Reverb_Time
 @controlInput filter Filter
 
+bool LFOAIs0 false
+bool LFOBIs0 false
+bool LFOAIs1 false
+bool LFOBIs1 false
+
 equ gain 0.5 
 @sliderLabel gain 'Input Gain' -18 0 -6 1.0 1 DBLEVEL 
 
@@ -43,6 +48,19 @@ equ   kfl   0.4  ; low pass filter
 equ   kfh   0.01  ; high pass filter
 @sliderLabel kfh 'High Pass' 40 1000 400.0 100.0 1 LOGFREQ
 
+equ lfoSelA 0
+@comboBox lfoSelA 'LFO 0' 'LFO 1'
+
+equ lfoSelB 0
+@comboBox lfoSelB 'LFO 0' 'LFO 1'
+
+equ rate1 20
+@sliderLabel rate1 LFO_Rate_1 0.0 51.0 20.0 100.0 2 SINLFOFREQ
+
+equ rate2 20
+@sliderLabel rate2 LFO_Rate_2 0.0 51.0 20.0 100.0 2 SINLFOFREQ
+
+
 @isGreaterThan nAPs 3
 mem   iap1   156  ; all-pass filters
 @endif
@@ -77,6 +95,8 @@ equ   lpf3   reg7
 @endif
 
 ;prepare decay time pot:
+@isPinConnected Input
+@getBaseAddress 
 
 @isPinConnected Reverb_Time
 rdax   revTime,1
@@ -254,11 +274,36 @@ wrax   outputR,0
 
 ;set up lfo, 1Hz to 2Hz, +/-100 samples, for smearing loop all passes:
 
-skp   run,smear
-wlds   sin0,35,50
-wlds   sin1,23,50
+@isEqualTo lfoSelA 0
+@equalsBool LFOAIs0 true
+@equalsBool LFOAIs1 false
+@else
+@equalsBool LFOAIs0 false
+@equalsBool LFOAIs1 true
+@endif
 
-smear:
+@isEqualTo lfoSelB 0
+@equalsBool LFOBIs0 true
+@equalsBool LFOBIs1 false
+@else
+@equalsBool LFOBIs0 false
+@equalsBool LFOBIs1 true
+@endif
+
+; if either LFO A or LFO B is set to 0, initialize LFO 0, but only once
+@isOr LFOAIs0 LFOBIs0 true 
+skp   run,smear0
+wlds   sin0,35,50
+smear0:
+@endif
+
+; if either LFO A or LFO B is set to 1, initialize LFO 1, but only once
+@isOr LFOAIs1 LFOBIs1 true 
+skp   run,smear1
+wlds   sin1,23,50
+smear1:
+@endif
+
 ;smear 4 allpass filters in reverb ring:
 
 ; this is a chorus on the all pass stages, to simulate how echoes get bounced around in the real world by air 
@@ -266,21 +311,40 @@ smear:
 ; or an input for an LFO.  Maybe if no LFO is connected, skip these lines.
 
 @isGreaterThan nDLs 3 
+@isEqualTo lfoSelA 0 
 cho rda,sin0,reg|compc,ap1+50   ;sin0
 cho rda,sin0,0,ap1+51
+@else
+cho rda,sin1,reg|compc,ap1+50   ;sin1
+cho rda,sin1,0,ap1+51
+@endif
 wra   ap1+100,0
 @endif
+
 @isGreaterThan nDLs 2 
+@isEqualTo lfoSelA 0 
 cho rda,sin0,cos|compc,ap2+50   ;cos0
-cho rda,sin0,cos,ap2+51   
+cho rda,sin0,cos,ap2+51  
+@else
+cho rda,sin1,cos|compc,ap2+50   ;cos1
+cho rda,sin1,cos,ap2+51  
+@endif 
 wra   ap2+100,0
 @endif
+
 @isGreaterThan nDLs 1 
+@isEqualTo lfoSelB 0 
+cho rda,sin0,reg|compc,ap3+50   ;sin0
+cho rda,sin0,0,ap3+51
+@else
 cho rda,sin1,reg|compc,ap3+50   ;sin1
 cho rda,sin1,0,ap3+51
+@endif
 wra   ap3+100,0
 @endif
 
 cho rda,sin1,cos|compc,ap4+50   ;cos1
 cho rda,sin1,cos,ap4+51   
 wra   ap4+100,0
+
+@endif

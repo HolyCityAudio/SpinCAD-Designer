@@ -30,6 +30,10 @@
 			private static final long serialVersionUID = 1L;
 			private reverbControlPanel cp = null;
 			
+			boolean LFOAIs0 = false;
+			boolean LFOBIs0 = false;
+			boolean LFOAIs1 = false;
+			boolean LFOBIs1 = false;
 			private double gain = 0.5;
 			private int hpf4;
 			private int lpf4;
@@ -43,6 +47,10 @@
 			private double klap = 0.6;
 			private double kfl = 0.4;
 			private double kfh = 0.01;
+			private double lfoSelA = 0;
+			private double lfoSelB = 0;
+			private double rate1 = 20;
+			private double rate2 = 20;
 			private int hpf1;
 			private int lpf1;
 			private int hpf2;
@@ -68,6 +76,10 @@
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -86,6 +98,10 @@
 			public void generateCode(SpinFXBlock sfxb) {
 	
 			// Iterate through mem and equ statements, allocate accordingly
+			//		LFOAIs0 = false;
+			//		LFOBIs0 = false;
+			//		LFOAIs1 = false;
+			//		LFOBIs1 = false;
 
 			
 			sfxb.comment(getName());
@@ -156,6 +172,8 @@
 			lpf3 = sfxb.allocateReg();
 			}
 			
+			if(this.getPin("Input").isConnected() == true) {
+			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			if(this.getPin("Reverb_Time").isConnected() == true) {
 			sfxb.readRegister(revTime, 1);
 			sfxb.scaleOffset(0.55, 0.3);
@@ -314,30 +332,73 @@
 			this.getPin("Output_Right").setRegister(outputR);
 			}
 			
-			sfxb.skip(RUN, 2);
+			if(lfoSelA == 0) {
+			LFOAIs0 = true;
+			LFOAIs1 = false;
+			} else {
+			LFOAIs0 = false;
+			LFOAIs1 = true;
+			}
+			
+			if(lfoSelB == 0) {
+			LFOBIs0 = true;
+			LFOBIs1 = false;
+			} else {
+			LFOBIs0 = false;
+			LFOBIs1 = true;
+			}
+			
+			if(LFOAIs0 || LFOBIs0 == true) {
+			sfxb.skip(RUN, 1);
 			sfxb.loadSinLFO((int) SIN0,(int) 35, (int) 50);
+			}
+			
+			if(LFOAIs1 || LFOBIs1 == true) {
+			sfxb.skip(RUN, 1);
 			sfxb.loadSinLFO((int) SIN1,(int) 23, (int) 50);
+			}
+			
 			if(nDLs > 3) {
+			if(lfoSelA == 0) {
 			sfxb.FXchorusReadDelay(SIN0, REG|COMPC, "ap1+", 50);
 			sfxb.FXchorusReadDelay(SIN0, 0, "ap1+", 51);
+			} else {
+			sfxb.FXchorusReadDelay(SIN1, REG|COMPC, "ap1+", 50);
+			sfxb.FXchorusReadDelay(SIN1, 0, "ap1+", 51);
+			}
+			
 			sfxb.FXwriteDelay("ap1+", (int)(100 * 1.0), 0);
 			}
 			
 			if(nDLs > 2) {
+			if(lfoSelA == 0) {
 			sfxb.FXchorusReadDelay(SIN0, COS|COMPC, "ap2+", 50);
 			sfxb.FXchorusReadDelay(SIN0, COS, "ap2+", 51);
+			} else {
+			sfxb.FXchorusReadDelay(SIN1, COS|COMPC, "ap2+", 50);
+			sfxb.FXchorusReadDelay(SIN1, COS, "ap2+", 51);
+			}
+			
 			sfxb.FXwriteDelay("ap2+", (int)(100 * 1.0), 0);
 			}
 			
 			if(nDLs > 1) {
+			if(lfoSelB == 0) {
+			sfxb.FXchorusReadDelay(SIN0, REG|COMPC, "ap3+", 50);
+			sfxb.FXchorusReadDelay(SIN0, 0, "ap3+", 51);
+			} else {
 			sfxb.FXchorusReadDelay(SIN1, REG|COMPC, "ap3+", 50);
 			sfxb.FXchorusReadDelay(SIN1, 0, "ap3+", 51);
+			}
+			
 			sfxb.FXwriteDelay("ap3+", (int)(100 * 1.0), 0);
 			}
 			
 			sfxb.FXchorusReadDelay(SIN1, COS|COMPC, "ap4+", 50);
 			sfxb.FXchorusReadDelay(SIN1, COS, "ap4+", 51);
 			sfxb.FXwriteDelay("ap4+", (int)(100 * 1.0), 0);
+			}
+			
 
 			}
 			
@@ -383,5 +444,33 @@
 			
 			public double getkfh() {
 				return kfh;
+			}
+			public void setlfoSelA(int __param) {
+				lfoSelA = (double) __param;	
+			}
+			
+			public int getlfoSelA() {
+				return (int) lfoSelA;
+			}
+			public void setlfoSelB(int __param) {
+				lfoSelB = (double) __param;	
+			}
+			
+			public int getlfoSelB() {
+				return (int) lfoSelB;
+			}
+			public void setrate1(double __param) {
+				rate1 = __param;	
+			}
+			
+			public double getrate1() {
+				return rate1;
+			}
+			public void setrate2(double __param) {
+				rate2 = __param;	
+			}
+			
+			public double getrate2() {
+				return rate2;
 			}
 		}	

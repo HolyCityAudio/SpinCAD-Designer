@@ -30,8 +30,6 @@
 			private static final long serialVersionUID = 1L;
 			private gated_verbControlPanel cp = null;
 			
-			private int p0;
-			private int p1;
 			private int kd;
 			private int mono;
 			private int krt;
@@ -118,8 +116,6 @@
 			sfxb.FXallocDelayMem("ap4", 477); 
 			sfxb.FXallocDelayMem("rdel", 1203); 
 			sfxb.FXallocDelayMem("ldel", 1457); 
-			p0 = sfxb.allocateReg();
-			p1 = sfxb.allocateReg();
 			kd = sfxb.allocateReg();
 			mono = sfxb.allocateReg();
 			krt = sfxb.allocateReg();
@@ -130,18 +126,14 @@
 			output1 = sfxb.allocateReg();
 			output2 = sfxb.allocateReg();
 			if(this.getPin("Input_Left").isConnected() == true) {
-			sfxb.or(0b00000000_00000000_00000000);
-			sfxb.writeRegister(p0, 0);
-			sfxb.or(0b01000000_00000000_00000000);
-			sfxb.writeRegister(p1, 0);
-			sfxb.or(0b00000000_00000000_00000000);
+			sfxb.clear();
 			sfxb.writeRegister(kd, 0);
 			sfxb.skip(RUN, 4);
 			sfxb.writeRegister(lf2, 0);
 			sfxb.writeRegister(lf3, 0);
 			sfxb.writeRegister(lf4, 0);
 			sfxb.writeRegister(lf5, 0);
-			sfxb.readRegister(p0, 0.1);
+			sfxb.readRegister(input0, 0.1);
 			sfxb.and(0b01111110_00000000_00000000);
 			sfxb.writeRegister(ADDR_PTR, 0);
 			sfxb.readRegister(adcl, 0.25);
@@ -182,7 +174,7 @@
 			sfxb.mulx(kd);
 			sfxb.FXreadDelay("gdel+", (int)(14000 * 1.0), 1);
 			sfxb.FXwriteDelay("gdel+", (int)(14000 * 1.0), 0);
-			sfxb.readRegister(p1, 1);
+			sfxb.readRegister(input1, 1);
 			sfxb.and(0b01111000_00000000_00000000);
 			sfxb.skip(ZRO, 50);
 			sfxb.scaleOffset(1, -0.5625);

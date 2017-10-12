@@ -62,10 +62,11 @@
 @menuitem "Room Reverb" reverb_room 
 @menuitem "Hall Reverb" reverb_hall 
 @menuitem "Plate Reverb" reverb_plate 
-// @menuitem "Gated Reverb" gated_verb 
+@menuitem "Gated Reverb" gated_verb 
 @menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
 @menuitem "Adjustable Reverb" reverb
+@menuitem "Reverb Delay Line 01" reverb_delay_line_01
 //@menuitem "Shimmer Reverb" shimmer_verb 
 
 @menu "Modulation"  

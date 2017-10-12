@@ -64,6 +64,12 @@ public class reverbControlPanel extends spinCADControlPanel {
 	JLabel  kflLabel;	
 	JSlider kfhSlider;
 	JLabel  kfhLabel;	
+	private JComboBox <String> lfoSelAComboBox; 
+	private JComboBox <String> lfoSelBComboBox; 
+	JSlider rate1Slider;
+	JLabel  rate1Label;	
+	JSlider rate2Slider;
+	JLabel  rate2Label;	
 
 public reverbControlPanel(reverbCADBlock genericCADBlock) {
 		
@@ -205,6 +211,62 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 						kfhinnerPanel.setBorder(kfhborder2);
 			
 						frame.add(kfhinnerPanel);
+				lfoSelAComboBox = new JComboBox <String> ();
+				lfoSelAComboBox.addItem("LFO 0");
+				lfoSelAComboBox.addItem("LFO 1");
+				lfoSelAComboBox.setSelectedIndex(gCB.getlfoSelA());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(lfoSelAComboBox);
+				lfoSelAComboBox.addActionListener(new reverbActionListener());
+				lfoSelBComboBox = new JComboBox <String> ();
+				lfoSelBComboBox.addItem("LFO 0");
+				lfoSelBComboBox.addItem("LFO 1");
+				lfoSelBComboBox.setSelectedIndex(gCB.getlfoSelB());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(lfoSelBComboBox);
+				lfoSelBComboBox.addActionListener(new reverbActionListener());
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
+						rate1Slider.addChangeListener(new reverbListener());
+						rate1Label = new JLabel();
+						Border rate1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						rate1Label.setBorder(rate1Border1);
+						updaterate1Label();
+						
+						Border rate1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel rate1innerPanel = new JPanel();
+							
+						rate1innerPanel.setLayout(new BoxLayout(rate1innerPanel, BoxLayout.Y_AXIS));
+						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate1innerPanel.add(rate1Label);
+						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate1innerPanel.add(rate1Slider);		
+						rate1innerPanel.setBorder(rate1border2);
+			
+						frame.add(rate1innerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					rate2Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate2()) * 100.0));
+						rate2Slider.addChangeListener(new reverbListener());
+						rate2Label = new JLabel();
+						Border rate2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						rate2Label.setBorder(rate2Border1);
+						updaterate2Label();
+						
+						Border rate2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel rate2innerPanel = new JPanel();
+							
+						rate2innerPanel.setLayout(new BoxLayout(rate2innerPanel, BoxLayout.Y_AXIS));
+						rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate2innerPanel.add(rate2Label);
+						rate2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						rate2innerPanel.add(rate2Slider);		
+						rate2innerPanel.setBorder(rate2border2);
+			
+						frame.add(rate2innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -242,6 +304,14 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 			gCB.setkfh((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(kfhSlider.getValue()), 100.0)));
 				updatekfhLabel();
 			}
+			if(ce.getSource() == rate1Slider) {
+			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
+				updaterate1Label();
+			}
+			if(ce.getSource() == rate2Slider) {
+			gCB.setrate2((double) (rate2Slider.getValue()/100.0));			    					
+				updaterate2Label();
+			}
 			}
 		}
 
@@ -257,6 +327,12 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 		class reverbActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+			if(arg0.getSource() == lfoSelAComboBox) {
+				gCB.setlfoSelA((lfoSelAComboBox.getSelectedIndex()));
+			}
+			if(arg0.getSource() == lfoSelBComboBox) {
+				gCB.setlfoSelB((lfoSelBComboBox.getSelectedIndex()));
+			}
 			}
 		}
 		private void updategainLabel() {
@@ -276,6 +352,12 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 		}		
 		private void updatekfhLabel() {
 		kfhLabel.setText("High Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
+		}		
+		private void updaterate1Label() {
+		rate1Label.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
+		}		
+		private void updaterate2Label() {
+		rate2Label.setText("LFO_Rate_2 " + String.format("%4.2f", coeffToLFORate(gCB.getrate2())));		
 		}		
 		
 		class MyWindowListener implements WindowListener

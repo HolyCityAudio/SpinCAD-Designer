@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1009;
+	int buildNum = 1012;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -731,7 +731,7 @@ public class SpinCADFrame extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
-						+ "Copyright 2015 Gary Worsham, Holy City Audio\n" + 
+						+ "Copyright 2017 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");

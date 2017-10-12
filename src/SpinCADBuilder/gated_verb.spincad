@@ -35,8 +35,8 @@ mem	ldel	1457
 
 ;write-first registers:
 
-equ	p0	reg0
-equ	p1	reg1
+;equ	p0	reg0
+;equ	p1	reg1
 equ	kd	reg2
 equ	mono	reg3
 equ	krt	reg4
@@ -54,11 +54,12 @@ equ output2 reg26
 
 @isPinConnected Input_Left
 
-or	%00000000_00000000_00000000
-wrax	p0,0
-or	%01000000_00000000_00000000
-wrax	p1,0
-or	%00000000_00000000_00000000
+;or	%00000000_00000000_00000000
+;wrax	p0,0
+;or	%01000000_00000000_00000000
+;wrax	p1,0
+; or	%00000000_00000000_00000000
+clr
 wrax	kd,0
 
 ;clear read-first registers:
@@ -72,7 +73,7 @@ endclr:
 
 ;obtain predelay pointer from pot0:
 
-rdax	p0,0.1		;limit to 1/10th total memory (100mS)
+rdax	input0,0.1		;limit to 1/10th total memory (100mS)
 and	%01111110_00000000_00000000	;in 64 steps
 wrax	addr_ptr,0		;write to address pointer.
 
@@ -128,7 +129,7 @@ wra	gdel+14000,0
 
 ;now select the point to jump to with pot1:
 
-rdax	p1,1
+rdax	input1,1
 and	%01111000_00000000_00000000
 skp	zro, t0
 sof	1,-0.5625
