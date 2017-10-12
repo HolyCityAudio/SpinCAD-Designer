@@ -187,7 +187,7 @@ public class SpinCADModel implements Serializable {
 	public int generateCode() {
 //  XXX debug for some reason, export to Hex spits out 8 of the same thing
 		
-		// every time we generrate code, make a new FXBlock (program)
+		// every time we generate code, make a new FXBlock (program)
 		renderBlock = new SpinFXBlock("Patch ");
 		SpinCADBlock block = null;
 		

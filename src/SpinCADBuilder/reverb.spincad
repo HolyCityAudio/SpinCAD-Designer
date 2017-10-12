@@ -293,14 +293,14 @@ wrax   outputR,0
 ; if either LFO A or LFO B is set to 0, initialize LFO 0, but only once
 @isOr LFOAIs0 LFOBIs0 true 
 skp   run,smear0
-wlds   sin0,35,50
+wlds   sin0,rate1,50
 smear0:
 @endif
 
 ; if either LFO A or LFO B is set to 1, initialize LFO 1, but only once
 @isOr LFOAIs1 LFOBIs1 true 
 skp   run,smear1
-wlds   sin1,23,50
+wlds   sin1,rate2,50
 smear1:
 @endif
 
@@ -343,8 +343,13 @@ cho rda,sin1,0,ap3+51
 wra   ap3+100,0
 @endif
 
+@isEqualTo lfoSelB 0 
+cho rda,sin0,cos|compc,ap4+50   ;cos1
+cho rda,sin0,cos,ap4+51   
+@else
 cho rda,sin1,cos|compc,ap4+50   ;cos1
 cho rda,sin1,cos,ap4+51   
+@endif
 wra   ap4+100,0
 
 @endif

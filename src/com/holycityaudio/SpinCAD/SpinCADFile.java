@@ -75,6 +75,7 @@ public class SpinCADFile {
 		try {
 			oos.writeObject(m);
 		} catch (IOException e1) {
+			// XXX debug this is currently triggered when a block control panel is open and you save the patch
 			e1.printStackTrace();
 		} 	
 		try {

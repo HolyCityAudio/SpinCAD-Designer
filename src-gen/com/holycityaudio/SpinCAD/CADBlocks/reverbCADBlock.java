@@ -350,12 +350,12 @@
 			
 			if(LFOAIs0 || LFOBIs0 == true) {
 			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO((int) SIN0,(int) 35, (int) 50);
+			sfxb.loadSinLFO((int) SIN0,(int) rate1, (int) 50);
 			}
 			
 			if(LFOAIs1 || LFOBIs1 == true) {
 			sfxb.skip(RUN, 1);
-			sfxb.loadSinLFO((int) SIN1,(int) 23, (int) 50);
+			sfxb.loadSinLFO((int) SIN1,(int) rate2, (int) 50);
 			}
 			
 			if(nDLs > 3) {
@@ -394,8 +394,14 @@
 			sfxb.FXwriteDelay("ap3+", (int)(100 * 1.0), 0);
 			}
 			
+			if(lfoSelB == 0) {
+			sfxb.FXchorusReadDelay(SIN0, COS|COMPC, "ap4+", 50);
+			sfxb.FXchorusReadDelay(SIN0, COS, "ap4+", 51);
+			} else {
 			sfxb.FXchorusReadDelay(SIN1, COS|COMPC, "ap4+", 50);
 			sfxb.FXchorusReadDelay(SIN1, COS, "ap4+", 51);
+			}
+			
 			sfxb.FXwriteDelay("ap4+", (int)(100 * 1.0), 0);
 			}
 			

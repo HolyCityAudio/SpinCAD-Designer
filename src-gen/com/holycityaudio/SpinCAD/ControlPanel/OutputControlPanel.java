@@ -46,8 +46,10 @@ import java.text.DecimalFormat;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
+import java.io.Serializable;
 
 @SuppressWarnings("unused")
+// public class OutputControlPanel extends spinCADControlPanel implements Serializable {
 public class OutputControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private OutputCADBlock gCB;
