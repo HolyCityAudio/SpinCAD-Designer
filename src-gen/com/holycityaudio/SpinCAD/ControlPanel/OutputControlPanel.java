@@ -46,10 +46,8 @@ import java.text.DecimalFormat;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
-import java.io.Serializable;
 
 @SuppressWarnings("unused")
-// public class OutputControlPanel extends spinCADControlPanel implements Serializable {
 public class OutputControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private OutputCADBlock gCB;
@@ -59,6 +57,7 @@ public class OutputControlPanel extends spinCADControlPanel {
 	JSlider gain2Slider;
 	JLabel  gain2Label;	
 	JCheckBox monoCheckBox;
+	JCheckBox offset0CheckBox;
 
 public OutputControlPanel(OutputCADBlock genericCADBlock) {
 		
@@ -119,6 +118,10 @@ public OutputControlPanel(OutputCADBlock genericCADBlock) {
 			monoCheckBox = new JCheckBox("Mono", gCB.getmono());
 			monoCheckBox.addItemListener(new OutputItemListener());
 			frame.getContentPane().add(monoCheckBox);		
+			
+			offset0CheckBox = new JCheckBox("Offset", gCB.getoffset0());
+			offset0CheckBox.addItemListener(new OutputItemListener());
+			frame.getContentPane().add(offset0CheckBox);		
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -150,6 +153,9 @@ public OutputControlPanel(OutputCADBlock genericCADBlock) {
 			public void itemStateChanged(ItemEvent arg0) {
 			if(arg0.getSource() == monoCheckBox) {
 				gCB.setmono((boolean) (monoCheckBox.isSelected()));
+			}
+			if(arg0.getSource() == offset0CheckBox) {
+				gCB.setoffset0((boolean) (offset0CheckBox.isSelected()));
 			}
 			}
 		}

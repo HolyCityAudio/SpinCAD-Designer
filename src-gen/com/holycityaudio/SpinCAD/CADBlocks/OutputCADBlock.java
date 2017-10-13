@@ -31,6 +31,7 @@
 			private OutputControlPanel cp = null;
 			
 			boolean mono = false;
+			boolean offset0 = false;
 			private double gain1 = 1.0;
 			private double gain2 = 1.0;
 
@@ -41,6 +42,7 @@
 				addInputPin(this, "Input 1");
 				addInputPin(this, "Input 2");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -63,6 +65,7 @@
 	
 			// Iterate through mem and equ statements, allocate accordingly
 			//		mono = false;
+			//		offset0 = false;
 
 			
 			sfxb.comment(getName());
@@ -91,16 +94,28 @@
 			sfxb.readRegister(input2, gain2);
 			}
 			
+			if(offset0 == true) {
+			sfxb.scaleOffset(1.0, 0.02);
+			}
+			
 			sfxb.writeRegister(DACL, 1);
 			sfxb.writeRegister(DACR, 0);
 			} else {
 			if(this.getPin("Input 1").isConnected() == true) {
 			sfxb.readRegister(input1, gain1);
+			if(offset0 == true) {
+			sfxb.scaleOffset(1.0, 0.02);
+			}
+			
 			sfxb.writeRegister(DACL, 0);
 			}
 			
 			if(this.getPin("Input 2").isConnected() == true) {
 			sfxb.readRegister(input2, gain2);
+			if(offset0 == true) {
+			sfxb.scaleOffset(1.0, 0.02);
+			}
+			
 			sfxb.writeRegister(DACR, 0);
 			}
 			
@@ -130,5 +145,12 @@
 			
 			public boolean getmono() {
 				return mono;
+			}
+			public void setoffset0(boolean __param) {
+				offset0 = __param;	
+			}
+			
+			public boolean getoffset0() {
+				return offset0;
 			}
 		}	
