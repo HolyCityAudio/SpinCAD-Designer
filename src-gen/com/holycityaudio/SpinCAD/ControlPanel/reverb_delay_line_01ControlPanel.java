@@ -68,8 +68,6 @@ public class reverb_delay_line_01ControlPanel extends spinCADControlPanel {
 	JLabel  ap2LengthLabel;	
 	JSlider ap2kapSlider;
 	JLabel  ap2kapLabel;	
-	JSlider rate1Slider;
-	JLabel  rate1Label;	
 
 public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADBlock) {
 		
@@ -85,6 +83,11 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 						gainSlider.addChangeListener(new reverb_delay_line_01Listener());
@@ -108,6 +111,11 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (5000 * 1), (int) (gCB.getdelayLength() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new reverb_delay_line_01Listener());
 						delayLengthLabel = new JLabel();
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -149,8 +157,13 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
 						lpdfSlider = SpinCADBlock.LogSlider(500,2500,gCB.getlpdf(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						lpdfSlider.addChangeListener(new reverb_delay_line_01Listener());
 						lpdfLabel = new JLabel();
 						Border lpdfBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -172,6 +185,11 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					ap1LengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (1500 * 1), (int) (gCB.getap1Length() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						ap1LengthSlider.addChangeListener(new reverb_delay_line_01Listener());
 						ap1LengthLabel = new JLabel();
 						Border ap1LengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -214,6 +232,11 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					ap2LengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (1500 * 1), (int) (gCB.getap2Length() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						ap2LengthSlider.addChangeListener(new reverb_delay_line_01Listener());
 						ap2LengthLabel = new JLabel();
 						Border ap2LengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -252,27 +275,6 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 						ap2kapinnerPanel.setBorder(ap2kapborder2);
 			
 						frame.add(ap2kapinnerPanel);
-			//
-			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
-			//
-					rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
-						rate1Slider.addChangeListener(new reverb_delay_line_01Listener());
-						rate1Label = new JLabel();
-						Border rate1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						rate1Label.setBorder(rate1Border1);
-						updaterate1Label();
-						
-						Border rate1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel rate1innerPanel = new JPanel();
-							
-						rate1innerPanel.setLayout(new BoxLayout(rate1innerPanel, BoxLayout.Y_AXIS));
-						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rate1innerPanel.add(rate1Label);
-						rate1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rate1innerPanel.add(rate1Slider);		
-						rate1innerPanel.setBorder(rate1border2);
-			
-						frame.add(rate1innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -318,10 +320,6 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 			gCB.setap2kap((double) (ap2kapSlider.getValue()/100.0));
 				updateap2kapLabel();
 			}
-			if(ce.getSource() == rate1Slider) {
-			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
-				updaterate1Label();
-			}
 			}
 		}
 
@@ -362,9 +360,6 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 		}		
 		private void updateap2kapLabel() {
 		ap2kapLabel.setText("All-Pass #2 Coefficient " + String.format("%4.2f", gCB.getap2kap()));		
-		}		
-		private void updaterate1Label() {
-		rate1Label.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
 		}		
 		
 		class MyWindowListener implements WindowListener

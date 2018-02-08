@@ -128,7 +128,7 @@ public class SpinCADFrame extends JFrame {
 
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
-	
+
 
 	// pasteBuffer is used to paste after copying
 	ByteArrayOutputStream pasteBuffer;
@@ -166,7 +166,7 @@ public class SpinCADFrame extends JFrame {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		simX.updateSliders(eeprom.patch[0]);
-		
+
 		double time = SpinCADBlock.filtToTime(SpinCADBlock.timeToFilt(0.356));
 
 		panel.setBackground(SystemColor.inactiveCaption);
@@ -237,11 +237,11 @@ public class SpinCADFrame extends JFrame {
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
 		// level monitor is not currently used
-//		contentPane.add(simX.levelMonitor, BorderLayout.WEST);
+		//		contentPane.add(simX.levelMonitor, BorderLayout.WEST);
 
 		simPanel.add(simX.loggerPanel);
 		simX.loggerPanel.setVisible(false);
-// re-enabling scope for the time being
+		// re-enabling scope for the time being
 		simPanel.add(simX.scopePanel);
 		simX.scopePanel.setVisible(false);
 
@@ -298,13 +298,16 @@ public class SpinCADFrame extends JFrame {
 						repaint();
 					}
 					else {
-						eeprom.patch[bankIndex] = f.fileOpenPatch();
-						eeprom.patch[bankIndex].patchModel.getIndexFB();
-						eeprom.patch[bankIndex].patchModel.presetIndexFB();
-						eeprom.patch[bankIndex].setChanged(false);						
-						eeprom.changed = true;
-						updateAll();
-						repaint();
+						SpinCADPatch p = f.fileOpenPatch();
+						if (p != null) {
+							eeprom.patch[bankIndex] = p;
+							eeprom.patch[bankIndex].patchModel.getIndexFB();
+							eeprom.patch[bankIndex].patchModel.presetIndexFB();
+							eeprom.patch[bankIndex].setChanged(false);						
+							eeprom.changed = true;
+							updateAll();
+							repaint();
+						}
 					}
 				} else {
 					eeprom.patch[bankIndex] = f.fileOpenPatch();
@@ -312,8 +315,8 @@ public class SpinCADFrame extends JFrame {
 					eeprom.patch[bankIndex].patchModel.presetIndexFB();
 					eeprom.patch[bankIndex].setChanged(false);						
 					eeprom.changed = true;
-				updateAll();
-				repaint();
+					updateAll();
+					repaint();
 				}
 			}
 		});
@@ -328,14 +331,17 @@ public class SpinCADFrame extends JFrame {
 					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == JOptionPane.NO_OPTION) {
-//						eeprom.patch[bankIndex].patchModel.newModel();
+						//						eeprom.patch[bankIndex].patchModel.newModel();
 						repaint();
 					}
 					else {
-						eeprom.patch[bankIndex] = f.fileOpenHex();
-						eeprom.changed = true;
-						updateAll();
-						repaint();
+						SpinCADPatch p = f.fileOpenHex();
+						if (p != null) {
+							eeprom.patch[bankIndex] = p;
+							eeprom.changed = true;
+							updateAll();
+							repaint();
+						}
 					}
 				} 
 				else {
@@ -449,8 +455,11 @@ public class SpinCADFrame extends JFrame {
 						return;
 					}
 					else {
-						eeprom = f.fileOpenBank();
-						updateAll(false);
+						SpinCADBank b = f.fileOpenBank();
+						if (b != null) {
+							eeprom = b;
+							updateAll(false);
+						}
 					}
 				}
 				else

@@ -38,7 +38,6 @@
 			private double ap1kap = 0.5;
 			private double ap2Length = 231;
 			private double ap2kap = 0.5;
-			private double rate1 = 20;
 			private double KRS = -1;
 			private int dlOut;
 			private int lp1;
@@ -54,7 +53,6 @@
 				addOutputPin(this, "Delay Line Out");
 				addOutputPin(this, "Low Pass Out");
 			// if any control panel elements declared, set hasControlPanel to true
-						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -108,8 +106,6 @@
 			dlOut = sfxb.allocateReg();
 			lp1 = sfxb.allocateReg();
 			hp1 = sfxb.allocateReg();
-			sfxb.skip(RUN, 1);
-			sfxb.clear();
 			if(this.getPin("Feedback Input").isConnected() == true) {
 			sfxb.readRegister(fbInput, krt);
 			}
@@ -187,12 +183,5 @@
 			
 			public double getap2kap() {
 				return ap2kap;
-			}
-			public void setrate1(double __param) {
-				rate1 = __param;	
-			}
-			
-			public double getrate1() {
-				return rate1;
 			}
 		}	

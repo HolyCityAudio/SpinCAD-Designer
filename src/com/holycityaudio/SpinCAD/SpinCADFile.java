@@ -237,12 +237,14 @@ public class SpinCADFile {
 				p.isHexFile = true;
 				p.setChanged(false);
 			}
+			saveRecentHexFileList();
+			return p;
 		} else {
 			System.out.println("Open command cancelled by user."
 					+ newline);
+			return null;
 		}
-		saveRecentHexFileList();
-		return p;
+
 	}
 
 	public SpinCADPatch fileOpenPatch() {
@@ -284,12 +286,13 @@ public class SpinCADFile {
 				p.patchFileName = fileName;
 				p.cb.setFileName(fileName);
 			}
+			saveRecentPatchFileList();
+			return p;
 		} else {
 			System.out.println("Open command cancelled by user."
 					+ newline);
+			return null;
 		}
-		saveRecentPatchFileList();
-		return p;
 	}
 
 	public SpinCADBank fileReadBank(File fileName) throws IOException, ClassNotFoundException {
@@ -327,20 +330,21 @@ public class SpinCADFile {
 				e.printStackTrace();
 				//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
 			}
+			String filePath = file.getPath();
+			String fileName = file.getName();
+			saveMRUBankFolder(filePath);
+			recentBankFileList.add(file);
+			// XXX debug looks like we kinda have the same info in 2 places
+			b.bankFileName = fileName;
+			b.cb.setFileName(fileName);
+			b.changed = false;
+			saveRecentBankFileList();
+			return b;
 		} else {
 			System.out.println("Open command cancelled by user."
 					+ newline);
+			return null;
 		}
-		String filePath = file.getPath();
-		String fileName = file.getName();
-		saveMRUBankFolder(filePath);
-		recentBankFileList.add(file);
-		// XXX debug looks like we kinda have the same info in 2 places
-		b.bankFileName = fileName;
-		b.cb.setFileName(fileName);
-		b.changed = false;
-		saveRecentBankFileList();
-		return b;
 	}
 
 	public void fileSavePatchAs(SpinCADPatch p) {

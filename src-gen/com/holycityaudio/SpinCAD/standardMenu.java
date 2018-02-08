@@ -28,6 +28,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_HipassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SVF2PCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.SVF_2P_adjustableCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF4PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF2PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.NotchCADBlock;
@@ -47,12 +48,9 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_roomCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_hallCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.reverb_plateCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.gated_verbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.reverb_delay_line_01CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusQuadCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
@@ -364,7 +362,7 @@
 	});
 	mn_filters.add(mntm_Shelving_Hipass);
 		
-	final JMenuItem mntm_SVF2P = new JMenuItem("2P SVF Fixed");
+	final JMenuItem mntm_SVF2P = new JMenuItem("2P SVF Fixed Q");
 	mntm_SVF2P.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new SVF2PCADBlock(50, 100);
@@ -372,6 +370,15 @@
 		}
 	});
 	mn_filters.add(mntm_SVF2P);
+		
+	final JMenuItem mntm_SVF_2P_adjustable = new JMenuItem("2P SVF Adjustable");
+	mntm_SVF_2P_adjustable.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new SVF_2P_adjustableCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_filters.add(mntm_SVF_2P_adjustable);
 		
 	final JMenuItem mntm_LPF4P = new JMenuItem("2P/4P Lowpass");
 	mntm_LPF4P.addActionListener(new ActionListener() {
@@ -550,24 +557,6 @@
 	});
 	mn_reverb.add(mntm_reverb_hall);
 		
-	final JMenuItem mntm_reverb_plate = new JMenuItem("Plate Reverb");
-	mntm_reverb_plate.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new reverb_plateCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_reverb.add(mntm_reverb_plate);
-		
-	final JMenuItem mntm_gated_verb = new JMenuItem("Gated Reverb");
-	mntm_gated_verb.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new gated_verbCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_reverb.add(mntm_gated_verb);
-		
 	final JMenuItem mntm_rom_rev1 = new JMenuItem("ROM Reverb 1");
 	mntm_rom_rev1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -594,15 +583,6 @@
 		}
 	});
 	mn_reverb.add(mntm_reverb);
-		
-	final JMenuItem mntm_reverb_delay_line_01 = new JMenuItem("Reverb Delay Line 01");
-	mntm_reverb_delay_line_01.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new reverb_delay_line_01CADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_reverb.add(mntm_reverb_delay_line_01);
 		
 	JMenu mn_modulation = new JMenu("Modulation");
 	menuBar.add(mn_modulation);
