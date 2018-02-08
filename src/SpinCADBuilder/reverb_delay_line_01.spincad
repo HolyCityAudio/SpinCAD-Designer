@@ -34,9 +34,6 @@ equ ap2Length 231
 equ ap2kap 0.5
 @sliderLabel ap2kap "All-Pass #2 Coefficient" 0.05 0.95 0.5 100.0 2
 
-equ rate1 20
-@sliderLabel rate1 LFO_Rate_1 0.0 51.0 20.0 100.0 2 SINLFOFREQ
-
 @getBaseAddress 
 mem		lap1a		ap1Length
 mem	   	lap1b		ap2Length
@@ -54,12 +51,6 @@ equ	lp1	reg1
 equ	hp1	reg2
 
 ;program:
-
-;first clear read-first registers:
-
-skp	run,endclr
-clr
-endclr:
 
 @isPinConnected "Feedback Input"
 rdax   	fbInput, krt ; take external input from previous delay line or feedback loop

@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1014;
+	int buildNum = 1019;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -241,13 +241,13 @@ public class SpinCADFrame extends JFrame {
 
 		simPanel.add(simX.loggerPanel);
 		simX.loggerPanel.setVisible(false);
-// disabling scope for the time being
-//		simPanel.add(simX.scopePanel);
-//		simX.scopePanel.setVisible(false);
+// re-enabling scope for the time being
+		simPanel.add(simX.scopePanel);
+		simX.scopePanel.setVisible(false);
 
-//		simPanel.add(simX.stb);
-//		simX.stb.setFloatable(false);
-//		simX.stb.setVisible(true);
+		simPanel.add(simX.stb);
+		simX.stb.setFloatable(false);
+		simX.stb.setVisible(true);
 
 		// controlPanels.setFloatable(false);
 		contentPane.add(controlPanels, BorderLayout.EAST);
@@ -293,8 +293,8 @@ public class SpinCADFrame extends JFrame {
 				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
-					if (dialogResult == 0) {
-						eeprom.patch[bankIndex].patchModel.newModel();
+					if (dialogResult == JOptionPane.NO_OPTION) {
+						// eeprom.patch[bankIndex].patchModel.newModel();
 						repaint();
 					}
 					else {
@@ -307,11 +307,11 @@ public class SpinCADFrame extends JFrame {
 						repaint();
 					}
 				} else {
-				eeprom.patch[bankIndex] = f.fileOpenPatch();
-				eeprom.patch[bankIndex].patchModel.getIndexFB();
-				eeprom.patch[bankIndex].patchModel.presetIndexFB();
-				eeprom.patch[bankIndex].setChanged(false);						
-				eeprom.changed = true;
+					eeprom.patch[bankIndex] = f.fileOpenPatch();
+					eeprom.patch[bankIndex].patchModel.getIndexFB();
+					eeprom.patch[bankIndex].patchModel.presetIndexFB();
+					eeprom.patch[bankIndex].setChanged(false);						
+					eeprom.changed = true;
 				updateAll();
 				repaint();
 				}
@@ -327,7 +327,7 @@ public class SpinCADFrame extends JFrame {
 				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
-					if (dialogResult == 0) {
+					if (dialogResult == JOptionPane.NO_OPTION) {
 //						eeprom.patch[bankIndex].patchModel.newModel();
 						repaint();
 					}
@@ -445,15 +445,19 @@ public class SpinCADFrame extends JFrame {
 				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
 							"You have unsaved changes!  Continue?");
-					if (dialogResult == 0) {
-						eeprom.patch[bankIndex].patchModel.newModel();
-						repaint();
+					if (dialogResult == JOptionPane.NO_OPTION) {
+						return;
 					}
+					else {
+						eeprom = f.fileOpenBank();
+						updateAll(false);
+					}
+				}
+				else
+				{
 					eeprom = f.fileOpenBank();
 					updateAll(false);
 				}
-				eeprom = f.fileOpenBank();
-				updateAll(false);
 			}
 		});
 		mntmOpenBank.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
@@ -623,7 +627,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnSimulator.add(mntmSimLogger);
-/*
+
 		final JMenuItem mntmSimScope = new JCheckBoxMenuItem("Enable Scope");
 		mntmSimScope.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -636,7 +640,7 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnSimulator.add(mntmSimScope);
-*/
+
 		mnSimulator.addSeparator();
 		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");
 		mntmSimSendToFile.addActionListener(new ActionListener() {

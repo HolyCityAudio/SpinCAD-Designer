@@ -55,19 +55,19 @@ class Mixer2_1x2ControlPanel {
 				frame.setTitle("Mixer 2-1 (x2)");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
-				gain1aSlider = new JSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain1a() * 100));
+				gain1aSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, (int) (spbMix.getGain1a() * 100));
 				gain1aSlider.addChangeListener(new volumeSliderListener());
 				gain1aLabel = new JLabel();
 				
-				gain1bSlider = new JSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain1b() * 100));
+				gain1bSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, (int) (spbMix.getGain1b() * 100));
 				gain1bSlider.addChangeListener(new volumeSliderListener());
 				gain1bLabel = new JLabel();
 
-				gain2aSlider = new JSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain2a() * 100));
+				gain2aSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, (int) (spbMix.getGain2a() * 100));
 				gain2aSlider.addChangeListener(new volumeSliderListener());
 				gain2aLabel = new JLabel();
 				
-				gain2bSlider = new JSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain2b() * 100));
+				gain2bSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, (int) (spbMix.getGain2b() * 100));
 				gain2bSlider.addChangeListener(new volumeSliderListener());
 				gain2bLabel = new JLabel();
 				

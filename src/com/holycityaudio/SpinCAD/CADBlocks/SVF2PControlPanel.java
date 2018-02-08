@@ -30,6 +30,8 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.SpinCADBlock;
+
 
 class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener {
 	/**

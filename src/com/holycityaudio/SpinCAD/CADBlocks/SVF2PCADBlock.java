@@ -29,7 +29,7 @@ public class SVF2PCADBlock extends FilterCADBlock{
 	 * 
 	 */
 	private static final long serialVersionUID = 5711126291575876825L;
-	double f0 = 740;
+	double f0 = 740.0;
 	double q0 = 1;
 	double fZ;
 	double q1;
@@ -71,8 +71,11 @@ public class SVF2PCADBlock extends FilterCADBlock{
 	
 			sfxb.readRegister(input, 1.0);
 			sfxb.readRegister(lowPass,  -1);
+
 			sfxb.readRegister(bandPass,  -q1);
+
 			sfxb.writeRegister(highPass, fZ);
+			
 			SpinCADPin p2 = this.getPin("Frequency").getPinConnection();
 
 			if(p2 != null) {

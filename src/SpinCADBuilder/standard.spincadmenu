@@ -37,7 +37,8 @@
 @menuitem "Shelving Lowpass" Shelving_lowpass 
 @menuitem "1P Hipass" HPF_RDFX
 @menuitem "Shelving Hipass" Shelving_Hipass 
-@menuitem "2P SVF Fixed" SVF2P 
+@menuitem "2P SVF Fixed Q" SVF2P 
+@menuitem "2P SVF Adjustable" SVF_2P_adjustable 
 @menuitem "2P/4P Lowpass" LPF4P 
 @menuitem "2P/4P Highpass" HPF2P 
 @menuitem "Notch" Notch 
@@ -61,12 +62,12 @@
 @menuitem "Small Reverb" MinReverb 
 @menuitem "Room Reverb" reverb_room 
 @menuitem "Hall Reverb" reverb_hall 
-@menuitem "Plate Reverb" reverb_plate 
-@menuitem "Gated Reverb" gated_verb 
+// @menuitem "Plate Reverb" reverb_plate 
+// @menuitem "Gated Reverb" gated_verb 
 @menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
 @menuitem "Adjustable Reverb" reverb
-@menuitem "Reverb Delay Line 01" reverb_delay_line_01
+// @menuitem "Reverb Delay Line 01" reverb_delay_line_01
 //@menuitem "Shimmer Reverb" shimmer_verb 
 
 @menu "Modulation"  

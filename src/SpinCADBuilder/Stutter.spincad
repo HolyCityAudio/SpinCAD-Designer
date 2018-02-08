@@ -25,6 +25,7 @@ equ freq 0.15
 mem delayRam delayLength 
 
 
+
 @isPinConnected Input
 rdax    input,1    ;read input signal
 wra	delayRam, 0

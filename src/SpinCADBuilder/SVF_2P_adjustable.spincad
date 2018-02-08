@@ -1,0 +1,35 @@
+@name 'SVF 2 Pole'
+@color "0x24f26f"
+@audioInput input Input
+@controlInput freqControl Frequency
+@controlInput qControl Q
+@audioOutput lpf1 "Low Pass Output"  
+@audioOutput bpf1 "Band Pass Output"  
+@audioOutput hpf1 "Hi Pass Output"
+
+equ freq 0.15 
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq 'Frequency (Hz)' 20 8000 100.0 100.0 1 LOGFREQ2 
+
+equ q 0.15
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel q 'Resonance' 0.10 1.0 100.0 1000.0 1 
+
+equ output Reg0
+equ lpf1 Reg1
+
+@isPinConnected Input
+
+@isPinConnected Frequency
+rdax input, freq
+rdax lpf1, -freq
+mulx freqControl
+rdax lpf1, 1.0
+@else
+rdax input, 1.0
+rdfx lpf1, freq
+@endif
+wrax lpf1, 0
+
+@setOutputPin Output lpf1
+@endif

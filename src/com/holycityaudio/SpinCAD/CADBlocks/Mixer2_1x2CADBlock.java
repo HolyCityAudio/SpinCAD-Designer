@@ -31,10 +31,10 @@ public class Mixer2_1x2CADBlock extends SpinCADBlock{
 	 * 
 	 */
 	private static final long serialVersionUID = 4676526418848384621L;
-	private double gain1a = 1.0/2;
-	private double gain1b = 1.0/2;
-	private double gain2a = 1.0/2;
-	private double gain2b = 1.0/2;
+	private double gain1a = 1.0;
+	private double gain1b = 1.0;
+	private double gain2a = 1.0;
+	private double gain2b = 1.0;
 
 	// three to one mixer, default 0.33 per input no controls
 	public Mixer2_1x2CADBlock(int x, int y) {
