@@ -742,16 +742,16 @@ public class SpinCADFile {
 	private void saveRecentPatchFileList() {
 		StringBuilder sb = new StringBuilder(128);
 		if(recentPatchFileList != null) {
-			int k = recentPatchFileList.listModel.getSize() - 1;
+			int k = Math.min(20,recentPatchFileList.listModel.getSize() - 1);
 			for (int index = 0; index <= k; index++) {
 				File file = recentPatchFileList.listModel.getElementAt(k - index);
 				if (sb.length() > 0) {
 					sb.append(File.pathSeparator);
 				}
 				String fp = file.getPath();
-				System.out.println(fp + " Path Length = " + fp.length());
+//				System.out.println(fp + " Path Length = " + fp.length());
 				sb.append(file.getPath());
-				System.out.println("RUFL Length = " + sb.length());
+//				System.out.println("RUFL Length = " + sb.length());
 			}
 			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 			p.put("RecentPatchFileList.fileList", sb.toString());
@@ -783,7 +783,7 @@ public class SpinCADFile {
 	private void saveRecentBankFileList() {
 		StringBuilder sb = new StringBuilder(128);
 		if(recentBankFileList != null) {
-			int k = recentBankFileList.listModel.getSize() - 1;
+			int k = Math.min(20, recentBankFileList.listModel.getSize() - 1);
 			for (int index = 0; index <= k; index++) {
 				File file = recentBankFileList.listModel.getElementAt(k - index);
 				if (sb.length() > 0) {
@@ -823,7 +823,7 @@ public class SpinCADFile {
 	private void saveRecentHexFileList() {
 		StringBuilder sb = new StringBuilder(128);
 		if(recentHexFileList != null) {
-			int k = recentHexFileList.listModel.getSize() - 1;
+			int k = Math.min(20, recentHexFileList.listModel.getSize() - 1);
 			for (int index = 0; index <= k; index++) {
 				File file = recentHexFileList.listModel.getElementAt(k - index);
 				if (sb.length() > 0) {
