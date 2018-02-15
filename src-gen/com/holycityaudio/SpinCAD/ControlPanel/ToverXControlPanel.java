@@ -69,8 +69,13 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
 						filterFactorSlider = SpinCADBlock.LogSlider(350,5000,gCB.getfilterFactor(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						filterFactorSlider.addChangeListener(new ToverXListener());
 						filterFactorLabel = new JLabel();
 						Border filterFactorBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

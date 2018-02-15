@@ -74,6 +74,11 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(32 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new StutterListener());
 						delayLengthLabel = new JLabel();
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -95,6 +100,11 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					fadeTimeFiltSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (50 * 1.0), (int) SpinCADBlock.filtToTime(gCB.getfadeTimeFilt() * 1.0));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						fadeTimeFiltSlider.addChangeListener(new StutterListener());
 						fadeTimeFiltLabel = new JLabel();
 						Border fadeTimeFiltBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -115,8 +125,13 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
 						freqSlider = SpinCADBlock.LogSlider(80,5000,gCB.getfreq(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						freqSlider.addChangeListener(new StutterListener());
 						freqLabel = new JLabel();
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

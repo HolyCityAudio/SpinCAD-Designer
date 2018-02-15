@@ -78,6 +78,11 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 						inputGainSlider.addChangeListener(new FlangerListener());
@@ -100,6 +105,11 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
 						fbkGainSlider.addChangeListener(new FlangerListener());
@@ -123,6 +133,11 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(16 * 1),(int) (512 * 1), (int) (gCB.getdelayLength() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new FlangerListener());
 						delayLengthLabel = new JLabel();
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -143,6 +158,11 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new FlangerListener());
 						rateLabel = new JLabel();

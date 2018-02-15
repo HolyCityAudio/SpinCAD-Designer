@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * LPF_RDFXControlPanel.java
+ * SVF_2P_adjustableControlPanel.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -45,17 +45,21 @@ import java.awt.Dimension;
 import java.text.DecimalFormat;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
-import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.SVF_2P_adjustableCADBlock;
 
 @SuppressWarnings("unused")
-public class LPF_RDFXControlPanel extends spinCADControlPanel {
+public class SVF_2P_adjustableControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-	private LPF_RDFXCADBlock gCB;
+	private SVF_2P_adjustableCADBlock gCB;
 	// declare the controls
 	JSlider freqSlider;
 	JLabel  freqLabel;	
+	JSlider qMaxSlider;
+	JLabel  qMaxLabel;	
+	JSlider qMinSlider;
+	JLabel  qMinLabel;	
 
-public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
+public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -63,7 +67,7 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("LPF 1P");
+				frame.setTitle("SVF 2 Pole");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
@@ -71,12 +75,12 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 			//
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
-					// multiplier is points per decade here
-						freqSlider = SpinCADBlock.LogSlider(80,5000,gCB.getfreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
+					// multiplier is points per decade here
+						freqSlider = SpinCADBlock.LogSlider(20,5000,gCB.getfreq(), "LOGFREQ2", 100.0);
 					// ---------------------------------------------						
-						freqSlider.addChangeListener(new LPF_RDFXListener());
+						freqSlider.addChangeListener(new SVF_2P_adjustableListener());
 						freqLabel = new JLabel();
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 						freqLabel.setBorder(freqBorder1);
@@ -93,6 +97,48 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 						freqinnerPanel.setBorder(freqborder2);
 			
 						frame.add(freqinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					qMaxSlider = new JSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (200.0 * 1000.0), (int) (gCB.getqMax() * 1000.0));
+						qMaxSlider.addChangeListener(new SVF_2P_adjustableListener());
+						qMaxLabel = new JLabel();
+						Border qMaxBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						qMaxLabel.setBorder(qMaxBorder1);
+						updateqMaxLabel();
+						
+						Border qMaxborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel qMaxinnerPanel = new JPanel();
+							
+						qMaxinnerPanel.setLayout(new BoxLayout(qMaxinnerPanel, BoxLayout.Y_AXIS));
+						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						qMaxinnerPanel.add(qMaxLabel);
+						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						qMaxinnerPanel.add(qMaxSlider);		
+						qMaxinnerPanel.setBorder(qMaxborder2);
+			
+						frame.add(qMaxinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					qMinSlider = new JSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (50.0 * 1000.0), (int) (gCB.getqMin() * 1000.0));
+						qMinSlider.addChangeListener(new SVF_2P_adjustableListener());
+						qMinLabel = new JLabel();
+						Border qMinBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						qMinLabel.setBorder(qMinBorder1);
+						updateqMinLabel();
+						
+						Border qMinborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel qMininnerPanel = new JPanel();
+							
+						qMininnerPanel.setLayout(new BoxLayout(qMininnerPanel, BoxLayout.Y_AXIS));
+						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						qMininnerPanel.add(qMinLabel);
+						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						qMininnerPanel.add(qMinSlider);		
+						qMininnerPanel.setBorder(qMinborder2);
+			
+						frame.add(qMininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -104,17 +150,25 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 		}
 
 		// add change listener for Sliders, Spinners 
-		class LPF_RDFXListener implements ChangeListener { 
+		class SVF_2P_adjustableListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-			gCB.setfreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
+			gCB.setfreq((double) SpinCADBlock.freqToFiltSVF(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
 				updatefreqLabel();
+			}
+			if(ce.getSource() == qMaxSlider) {
+			gCB.setqMax((double) (qMaxSlider.getValue()/1000.0));
+				updateqMaxLabel();
+			}
+			if(ce.getSource() == qMinSlider) {
+			gCB.setqMin((double) (qMinSlider.getValue()/1000.0));
+				updateqMinLabel();
 			}
 			}
 		}
 
 		// add item state changed listener for Checkbox
-		class LPF_RDFXItemListener implements java.awt.event.ItemListener { 
+		class SVF_2P_adjustableItemListener implements java.awt.event.ItemListener { 
 			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
@@ -122,13 +176,19 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class LPF_RDFXActionListener implements java.awt.event.ActionListener { 
+		class SVF_2P_adjustableActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqLabel() {
-		freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
+		freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");		
+		}		
+		private void updateqMaxLabel() {
+		qMaxLabel.setText("Max Resonance " + String.format("%4.1f", gCB.getqMax()));		
+		}		
+		private void updateqMinLabel() {
+		qMinLabel.setText("Min Resonance " + String.format("%4.1f", gCB.getqMin()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

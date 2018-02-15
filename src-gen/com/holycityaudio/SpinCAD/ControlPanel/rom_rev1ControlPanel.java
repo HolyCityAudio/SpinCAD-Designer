@@ -79,6 +79,11 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
 						gainSlider.addChangeListener(new rom_rev1Listener());
@@ -164,8 +169,13 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
 						kflSlider = SpinCADBlock.LogSlider(500,5000,gCB.getkfl(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						kflSlider.addChangeListener(new rom_rev1Listener());
 						kflLabel = new JLabel();
 						Border kflBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -186,8 +196,13 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
 						kfhSlider = SpinCADBlock.LogSlider(40,1000,gCB.getkfh(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						kfhSlider.addChangeListener(new rom_rev1Listener());
 						kfhLabel = new JLabel();
 						Border kfhBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

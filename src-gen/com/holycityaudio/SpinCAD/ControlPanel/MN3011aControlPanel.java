@@ -85,6 +85,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 						inputGainSlider.addChangeListener(new MN3011aListener());
@@ -107,6 +112,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
 						fbkGainSlider.addChangeListener(new MN3011aListener());
@@ -130,6 +140,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new MN3011aListener());
 						delayLengthLabel = new JLabel();
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -150,6 +165,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						tap1GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap1Gain())));
 						tap1GainSlider.addChangeListener(new MN3011aListener());
@@ -172,6 +192,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						tap2GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap2Gain())));
 						tap2GainSlider.addChangeListener(new MN3011aListener());
@@ -194,6 +219,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						tap3GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap3Gain())));
 						tap3GainSlider.addChangeListener(new MN3011aListener());
@@ -216,6 +246,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						tap4GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap4Gain())));
 						tap4GainSlider.addChangeListener(new MN3011aListener());
@@ -238,6 +273,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						tap5GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap5Gain())));
 						tap5GainSlider.addChangeListener(new MN3011aListener());
@@ -260,6 +300,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						tap6GainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap6Gain())));
 						tap6GainSlider.addChangeListener(new MN3011aListener());

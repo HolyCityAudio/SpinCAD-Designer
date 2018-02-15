@@ -78,6 +78,11 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 						inputGainSlider.addChangeListener(new servoListener());
@@ -100,6 +105,11 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
 						fbkGainSlider.addChangeListener(new servoListener());
@@ -143,8 +153,13 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
 						freqSlider = SpinCADBlock.LogSlider(500,7500,gCB.getfreq(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						freqSlider.addChangeListener(new servoListener());
 						freqLabel = new JLabel();
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);

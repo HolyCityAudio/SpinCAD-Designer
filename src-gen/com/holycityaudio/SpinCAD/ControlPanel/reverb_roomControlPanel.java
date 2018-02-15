@@ -79,6 +79,11 @@ public reverb_roomControlPanel(reverb_roomCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 						gainSlider.addChangeListener(new reverb_roomListener());
@@ -122,8 +127,13 @@ public reverb_roomControlPanel(reverb_roomCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
 						hpdfSlider = SpinCADBlock.LogSlider(40,1000,gCB.gethpdf(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						hpdfSlider.addChangeListener(new reverb_roomListener());
 						hpdfLabel = new JLabel();
 						Border hpdfBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -186,6 +196,11 @@ public reverb_roomControlPanel(reverb_roomCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					rate1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
 						rate1Slider.addChangeListener(new reverb_roomListener());
 						rate1Label = new JLabel();

@@ -470,11 +470,11 @@ public class SpinCADBlock extends SpinFXBlock {
 
 	// frequency in Hz gets converted to filter coefficient for 2 pole SVF
 	public static double freqToFiltSVF(double freq) {
-	    return 2 * Math.sin(Math.PI * freq/getSamplerate());
+	    return 2 * Math.sin(Math.PI * freq/ElmProgram.getSamplerate());
 	}
 	// filter coefficient gets converted to frequency in Hz for 2 pole SVF
 	public static double filtToFreqSVF(double filt) {
-	    return Math.asin(filt/2)* getSamplerate()/Math.PI ;
+	    return Math.asin(filt/2)* ElmProgram.getSamplerate()/Math.PI ;
 	}
 	
 	//	This takes rise time in seconds and converts to filter coefficient
@@ -510,6 +510,9 @@ public class SpinCADBlock extends SpinFXBlock {
 
 		switch (mode)
 		{
+		case "LOGFREQ2":
+			initial = logvalToSlider(filtToFreqSVF(initVal), pointsPerDecade);
+			break;
 		case "LOGFREQ":
 			initial = logvalToSlider(filtToFreq(initVal), pointsPerDecade);
 			break;

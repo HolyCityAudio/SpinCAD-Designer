@@ -139,8 +139,10 @@ public class SingleDelayCADBlock extends SpinCADBlock {
 			if(Control1 == -1) {
 				sfxb.scaleOffset(0, defaultFeedback);
 			}
-			else
+			else {
 				sfxb.readRegister(Control1, defaultFeedback);
+			}
+			
 			// wrax kfbk,0
 			sfxb.writeRegister(feedback, 0);
 

@@ -71,8 +71,13 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
 						freqSlider = SpinCADBlock.LogSlider(80,2500,gCB.getfreq(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						freqSlider.addChangeListener(new Shelving_lowpassListener());
 						freqLabel = new JLabel();
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -93,6 +98,11 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
 						shelfSlider = new JSlider(JSlider.HORIZONTAL, (int)(-40),(int) (-3), (int) (20 * Math.log10(gCB.getshelf())));
 						shelfSlider.addChangeListener(new Shelving_lowpassListener());

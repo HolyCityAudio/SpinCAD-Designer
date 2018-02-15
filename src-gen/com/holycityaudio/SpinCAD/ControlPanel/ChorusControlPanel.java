@@ -75,6 +75,11 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(128 * 1),(int) (2048 * 1), (int) (gCB.getdelayLength() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new ChorusListener());
 						delayLengthLabel = new JLabel();
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -95,6 +100,11 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 					rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new ChorusListener());
 						rateLabel = new JLabel();

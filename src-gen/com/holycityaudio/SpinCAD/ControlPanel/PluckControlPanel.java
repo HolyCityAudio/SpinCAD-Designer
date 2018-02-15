@@ -116,6 +116,11 @@ public PluckControlPanel(PluckCADBlock genericCADBlock) {
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
 					pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (5000 * 1), (int) (gCB.getpulseWidth() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
 						pulseWidthSlider.addChangeListener(new PluckListener());
 						pulseWidthLabel = new JLabel();
 						Border pulseWidthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
