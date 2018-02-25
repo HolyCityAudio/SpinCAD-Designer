@@ -33,7 +33,6 @@
 			private int output;
 			private double delayLength = 32767;
 			private double fadeTimeFilt = 0.0015;
-			private double freq = 0.15;
 			private int fadeFilt;
 
 			public StutterCADBlock(int x, int y) {
@@ -45,7 +44,6 @@
 				addOutputPin(this, "Output");
 				addControlInputPin(this, "Stutter");
 			// if any control panel elements declared, set hasControlPanel to true
-						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						}
@@ -144,12 +142,5 @@
 			
 			public double getfadeTimeFilt() {
 				return fadeTimeFilt;
-			}
-			public void setfreq(double __param) {
-				freq = __param;	
-			}
-			
-			public double getfreq() {
-				return freq;
 			}
 		}	

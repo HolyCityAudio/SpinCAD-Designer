@@ -56,8 +56,6 @@ public class StutterControlPanel extends spinCADControlPanel {
 	JLabel  delayLengthLabel;	
 	JSlider fadeTimeFiltSlider;
 	JLabel  fadeTimeFiltLabel;	
-	JSlider freqSlider;
-	JLabel  freqLabel;	
 
 public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		
@@ -122,33 +120,6 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 						fadeTimeFiltinnerPanel.setBorder(fadeTimeFiltborder2);
 			
 						frame.add(fadeTimeFiltinnerPanel);
-			//
-			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
-			//
-					//---------------------------------------------
-					// LOGFREQ is used for single pole filters
-					// multiplier is points per decade here
-						freqSlider = SpinCADBlock.LogSlider(80,5000,gCB.getfreq(), "LOGFREQ", 100.0);
-					//---------------------------------------------
-					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
-						freqSlider.addChangeListener(new StutterListener());
-						freqLabel = new JLabel();
-						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						freqLabel.setBorder(freqBorder1);
-						updatefreqLabel();
-						
-						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel freqinnerPanel = new JPanel();
-							
-						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
-						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						freqinnerPanel.add(freqLabel);
-						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						freqinnerPanel.add(freqSlider);		
-						freqinnerPanel.setBorder(freqborder2);
-			
-						frame.add(freqinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -169,10 +140,6 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			if(ce.getSource() == fadeTimeFiltSlider) {
 			gCB.setfadeTimeFilt((double) SpinCADBlock.timeToFilt(fadeTimeFiltSlider.getValue()/1.0));
 				updatefadeTimeFiltLabel();
-			}
-			if(ce.getSource() == freqSlider) {
-			gCB.setfreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
-				updatefreqLabel();
 			}
 			}
 		}
@@ -196,9 +163,6 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		}		
 		private void updatefadeTimeFiltLabel() {
 		fadeTimeFiltLabel.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt())) + " ms");		
-		}		
-		private void updatefreqLabel() {
-		freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

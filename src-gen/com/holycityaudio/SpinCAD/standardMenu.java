@@ -7,6 +7,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Phase_InvertCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.crossfade_2CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.crossfade_3CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pannerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Mixer2_1x2CADBlock;
@@ -172,6 +173,15 @@
 		}
 	});
 	mn_io_mix.add(mntm_crossfade_2);
+		
+	final JMenuItem mntm_crossfade_3 = new JMenuItem("Crossfade 3");
+	mntm_crossfade_3.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new crossfade_3CADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_io_mix.add(mntm_crossfade_3);
 		
 	final JMenuItem mntm_panner = new JMenuItem("Panner");
 	mntm_panner.addActionListener(new ActionListener() {

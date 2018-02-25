@@ -124,8 +124,8 @@
 			double q = x1 - y;
 			temp = sfxb.allocateReg();
 			scaledQ = sfxb.allocateReg();
-			sfxb.readRegister(qControl, -1);
-			sfxb.scaleOffset(-q, -x1);
+			sfxb.readRegister(qControl, 1);
+			sfxb.scaleOffset(-q, -y);
 			sfxb.writeRegister(scaledQ, 0);
 			sfxb.readRegister(z1, 1);
 			sfxb.mulx(scaledQ);

@@ -52,8 +52,8 @@ wrax temp, 0
 equ temp reg5
 equ scaledQ reg6
 
-rdax qControl, -1
-sof -q, -x1
+rdax qControl, 1
+sof -q, -y
 wrax scaledQ, 0
 
 rdax z1, 1

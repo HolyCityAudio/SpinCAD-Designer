@@ -21,6 +21,7 @@ equ temp reg3
 @isPinConnected 'Audio In 1'
 rdax controlIn, -1.0
 sof -2.0, 0
+
 ;wrax gain2, 1.0
 mulx inputTwo
 wrax    temp,0    ; 

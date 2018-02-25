@@ -15,16 +15,10 @@ equ delayLength 32767
 equ fadeTimeFilt 0.0015
 @sliderLabel fadeTimeFilt 'Fade Time (ms): ' 0 50 25 1.0 0 FILTTOTIME
 
-equ freq 0.15
-// variable - Name - low - high - initial - multiplier - precision - option 
-@sliderLabel freq 'Frequency (Hz)' 80 5000 100.0 100.0 1 LOGFREQ 
-
 // establish the base address for this module 
 @getBaseAddress 
 // then allocate the buffer
 mem delayRam delayLength 
-
-
 
 @isPinConnected Input
 rdax    input,1    ;read input signal
@@ -37,7 +31,7 @@ rdax	stutter, 1.0
 sof		1.0, -0.5
 skp		neg, play
 clr
-rda delayRam#, 1.0
+rda    delayRam#, 1.0
 skp		run, playDelay
 play:
 clr
