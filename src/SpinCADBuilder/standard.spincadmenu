@@ -8,7 +8,7 @@
 @menuitem "Phase Invert" Phase_Invert
 @menuitem "Crossfade" crossfade
 @menuitem "Crossfade 2" crossfade_2
-@menuitem "Crossfade 3" crossfade_3
+// @menuitem "Crossfade 3" crossfade_3
 @menuitem "Panner" panner
 @menuitem "2:1 Mixer" Mixer_2_to_1
 @menuitem "2:1 (x2) Mixer" Mixer2_1x2
@@ -43,7 +43,7 @@
 @menuitem "2P/4P Lowpass" LPF4P 
 @menuitem "2P/4P Highpass" HPF2P 
 @menuitem "Notch" Notch 
-@menuitem "4P L-R Crossover" Crossover_4P 
+// @menuitem "4P L-R Crossover" Crossover_4P 
 @menuitem "1-Band EQ" OneBandEQ 
 @menuitem "6-Band EQ" SixBandEQ 
 
