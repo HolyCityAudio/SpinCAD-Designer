@@ -11,7 +11,7 @@ I use the Java and DSL (Doman Specific Language) version of the IDE.  SpinCAD De
 
 You'll also have to get the commons-io-2.4-bin.zip file here: http://commons.apache.org/proper/commons-io/download_io.cgi
 
-And the elmgen-05.jar file here: http://www.andrewkilpatrick.org/projects/elmgen/elmGen-0.5.jar
+And the elmgen-05.jar file here: https://github.com/HolyCityAudio/SpinCAD-Designer/tree/master/src/org/andrewkilpatrick/elmGen
 
 The jar files should be extracted from the ZIPs, if necessary, and placed in a folder somewhere on your compouter.  Then, add these files to the Build Path for this project.  At the same time, you'll need to delete the erroneous Build Path entries which loaded with the project.
 
