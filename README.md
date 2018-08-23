@@ -13,6 +13,6 @@ You'll also have to get the commons-io-2.4-bin.zip file here: http://commons.apa
 
 And the elmgen-05.jar file here: https://github.com/HolyCityAudio/SpinCAD-Designer/tree/master/src/org/andrewkilpatrick/elmGen
 
-The jar files should be extracted from the ZIPs, if necessary, and placed in a folder somewhere on your compouter.  Then, add these files to the Build Path for this project.  At the same time, you'll need to delete the erroneous Build Path entries which loaded with the project.
+The jar files should be extracted from the ZIPs, if necessary, and placed in a folder somewhere on your computer.  Then, add these files to the Build Path for this project.  At the same time, you'll need to delete the erroneous Build Path entries which loaded with the project.
 
 More to come!  I haven't described how to get the code from Github into Eclipse yet!
