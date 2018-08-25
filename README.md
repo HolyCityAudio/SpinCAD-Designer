@@ -15,4 +15,4 @@ And the elmgen-05.jar file here: https://github.com/HolyCityAudio/SpinCAD-Design
 
 The jar files should be extracted from the ZIPs, if necessary, and placed in a folder somewhere on your computer.  Then, add these files to the Build Path for this project.  At the same time, you'll need to delete the erroneous Build Path entries which loaded with the project.
 
-More to come!  I haven't described how to get the code from Github into Eclipse yet!
+Instructions on using this code with Eclipse can be found here: https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/Installing_and_configuring_Eclipse_to_compile_SpinCAD_Designer.zip
