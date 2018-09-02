@@ -25,7 +25,7 @@ package com.holycityaudio.SpinCAD;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import java.io.Serializable;
 
-public class spinCADControlPanel implements Serializable{
+public class spinCADControlPanel implements Serializable {
 	
 	protected double coeffToLFORate(double rate) {
 		 return (ElmProgram.getSamplerate() * rate) / (2 * Math.PI * Math.pow(2.0, 17));
