@@ -72,6 +72,7 @@ public class SpinCADFile {
 		init_pref("MRUPatchFolder", s);
 		init_pref("MRUBankFolder", s);
 		init_pref("MRUSpnFolder", s);
+		init_pref("MRUSpjFolder", s);
 		init_pref("MRUHexFolder", s);
 		init_pref("RecentPatchFileList.fileList", "");
 		init_pref("RecentBankFileList.fileList", "");
@@ -742,7 +743,6 @@ public class SpinCADFile {
 		String nameS = pathE.getFileName().toString();
 
 		prefs.put("MRUBankFolder", pathS);
-		prefs.put("MRUBankFileName", nameS);
 	}
 
 	private void saveMRUPatchFolder(String path) {
@@ -752,7 +752,6 @@ public class SpinCADFile {
 		String nameS = pathE.getFileName().toString();
 
 		prefs.put("MRUPatchFolder", pathS);
-//		prefs.put("MRUPatchFileName", nameS);
 	}
 
 	private void saveMRUSpnFolder(String path) {
