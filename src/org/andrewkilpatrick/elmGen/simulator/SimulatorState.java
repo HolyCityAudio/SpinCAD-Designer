@@ -19,8 +19,6 @@ package org.andrewkilpatrick.elmGen.simulator;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import org.andrewkilpatrick.elmGen.Debug;
-
 public class SimulatorState {
 	private int pc = 0;
 	private Reg acc;

@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import org.andrewkilpatrick.elmGen.instructions.Absa;
 import org.andrewkilpatrick.elmGen.instructions.And;

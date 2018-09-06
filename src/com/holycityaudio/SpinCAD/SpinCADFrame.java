@@ -94,7 +94,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1023;
+	int buildNum = 1025;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -252,7 +252,11 @@ public class SpinCADFrame extends JFrame {
 		// controlPanels.setFloatable(false);
 		contentPane.add(controlPanels, BorderLayout.EAST);
 		controlPanels.setLayout(new BoxLayout(controlPanels, BoxLayout.Y_AXIS));
-		// Then on your component(s)
+		
+		// initialize file paths in preferences
+		SpinCADFile fsp = new SpinCADFile();
+		fsp.init_prefs();
+		
 		// ======================================================
 		// ; ==================== menu bar and items ==========
 
@@ -744,7 +748,7 @@ public class SpinCADFrame extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
-						+ "Copyright 2017 Gary Worsham, Holy City Audio\n" + 
+						+ "Copyright 2018 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");

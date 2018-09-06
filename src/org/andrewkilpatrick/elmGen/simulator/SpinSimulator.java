@@ -25,7 +25,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JPanel;
 
-import org.andrewkilpatrick.elmGen.Debug;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.instructions.Instruction;
 import org.andrewkilpatrick.elmGen.util.Util;

@@ -57,6 +57,27 @@ public class SpinCADFile {
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
 
+	private void init_pref(String prefName, String initValue){
+		String value = prefs.get(prefName,  "");
+		if (value == "") {
+			prefs.put(prefName, initValue);
+		}
+	}
+	
+	public void init_prefs() {
+    	Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+		System.out.println("Current relative path is: " + s);
+	
+		init_pref("MRUPatchFolder", s);
+		init_pref("MRUBankFolder", s);
+		init_pref("MRUSpnFolder", s);
+		init_pref("MRUHexFolder", s);
+		init_pref("RecentPatchFileList.fileList", "");
+		init_pref("RecentBankFileList.fileList", "");
+		init_pref("RecentHexFileList.fileList", "");
+	}
+	
 	public void fileSavePatch(SpinCADPatch m) {
 		File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + m.patchFileName);
 		String filePath = fileToBeSaved.getPath();
@@ -92,8 +113,15 @@ public class SpinCADFile {
 	}
 
 	public void fileSaveBank(SpinCADBank b) {
-		File fileToBeSaved = new File(prefs.get("MRUBankFolder",  "") + "/" + b.bankFileName);
+		
+		String Folder = prefs.get("MRUBankFolder",  "");
+		
+		File fileToBeSaved = new File( Folder + "/" + b.bankFileName);
+		System.out.println("fileToBeSaved " + fileToBeSaved);
+
 		String filePath = fileToBeSaved.getPath();
+		System.out.println("filepath " + filePath);
+		
 		loadRecentBankFileList();
 
 		try { 
@@ -111,7 +139,9 @@ public class SpinCADFile {
 		} 
 		finally {
 			saveMRUBankFolder(filePath);
-			recentBankFileList.add(fileToBeSaved);		
+			if(recentBankFileList != null) {
+				recentBankFileList.add(fileToBeSaved);
+			}
 			saveRecentBankFileList();
 		}
 	}
@@ -166,20 +196,20 @@ public class SpinCADFile {
 				case ':':
 					// process 64 lines of hex file from beginning
 					if(nLines < 128) {
-//						System.out.println("================================ " + nLines);
-//						System.out.println(line);
+						//						System.out.println("================================ " + nLines);
+						//						System.out.println(line);
 						String byteString = line.substring(1, 3);
 						nBytes = Integer.parseInt(byteString, 16);
-//						System.out.println(byteString + " Bytes= " + nBytes);
-//						System.out.println("Address: " + line.substring(3,7));
+						//						System.out.println(byteString + " Bytes= " + nBytes);
+						//						System.out.println("Address: " + line.substring(3,7));
 						address =  Integer.parseInt(line.substring(3,7), 16);
-//						System.out.printf("Address: %x\n", address);
-//						System.out.println("recordType: " + line.substring(7,9));
+						//						System.out.printf("Address: %x\n", address);
+						//						System.out.println("recordType: " + line.substring(7,9));
 						recordType= Integer.parseInt(line.substring(7,9), 16);
-//						System.out.println("recordType: " + recordType);
+						//						System.out.println("recordType: " + recordType);
 						data = (int) Long.parseLong(line.substring(9,9 + (2 * nBytes)), 16);
-//						System.out.println(line.substring(9,9 + (2 * nBytes)));
-//						System.out.printf("data: %x\n", data);		
+						//						System.out.println(line.substring(9,9 + (2 * nBytes)));
+						//						System.out.printf("data: %x\n", data);		
 						p.hexFile[nLines]= data;
 					}
 					nLines++;
@@ -313,6 +343,7 @@ public class SpinCADFile {
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"SpinCAD Bank Files", "spbk");
+		System.out.println("\nfilter=" + filter);
 		fc.setFileFilter(filter);
 		fc.setAccessory(recentBankFileList);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -375,11 +406,13 @@ public class SpinCADFile {
 			if (n == JOptionPane.YES_OPTION) {
 				try {
 					String filePath = fileToBeSaved.getPath();
+					saveMRUPatchFolder(filePath);
+
 					String fileName = fileToBeSaved.getName();
 					p.patchFileName = fileName;
+
 					fileSavePatch(p);
 					recentPatchFileList.add(fileToBeSaved);
-					saveMRUPatchFolder(filePath);
 
 				} catch (Exception e) {	// thrown over in SpinCADFile.java
 					e.printStackTrace();
@@ -429,7 +462,9 @@ public class SpinCADFile {
 				fileSaveBank(b);
 			}
 			b.changed = false;
-			recentBankFileList.add(fileToBeSaved);
+			if(recentBankFileList != null){
+				recentBankFileList.add(fileToBeSaved);
+			}
 			saveMRUBankFolder(fileToBeSaved.getPath());
 			b.bankFileName = fileToBeSaved.getName();
 		}
@@ -717,7 +752,7 @@ public class SpinCADFile {
 		String nameS = pathE.getFileName().toString();
 
 		prefs.put("MRUPatchFolder", pathS);
-		prefs.put("MRUPatchFileName", nameS);
+//		prefs.put("MRUPatchFileName", nameS);
 	}
 
 	private void saveMRUSpnFolder(String path) {
@@ -727,7 +762,8 @@ public class SpinCADFile {
 
 	private void saveMRUHexFolder(String path) {
 		Path pathE = Paths.get(path);
-		prefs.put("MRUHexFolder", pathE.toString());
+		String pathS = pathE.getParent().toString();
+		prefs.put("MRUHexFolder", pathS);
 	}
 
 
@@ -749,9 +785,9 @@ public class SpinCADFile {
 					sb.append(File.pathSeparator);
 				}
 				String fp = file.getPath();
-//				System.out.println(fp + " Path Length = " + fp.length());
+				//				System.out.println(fp + " Path Length = " + fp.length());
 				sb.append(file.getPath());
-//				System.out.println("RUFL Length = " + sb.length());
+				//				System.out.println("RUFL Length = " + sb.length());
 			}
 			Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 			p.put("RecentPatchFileList.fileList", sb.toString());
@@ -799,24 +835,30 @@ public class SpinCADFile {
 	private void loadRecentBankFileList() {
 		Preferences p = Preferences.userNodeForPackage(RecentFileList.class);
 		String listOfFiles = p.get("RecentBankFileList.fileList", null);
-		Integer listLength = listOfFiles.length();
+		System.out.println(listOfFiles);
+		System.out.print(listOfFiles);
 		
-		if (fc == null) {
-			String savedPath = prefs.get("MRUBankFolder", "");
-			File MRUBankFolder = new File(savedPath);
-			fc = new JFileChooser(MRUBankFolder);
-			recentBankFileList = new RecentFileList(fc);
-			if (listOfFiles != null) {
-				String[] files = listOfFiles.split(File.pathSeparator);
-				for (String fileRef : files) {
-					File file = new File(fileRef);
-					if (file.exists()) {
-						recentBankFileList.listModel.add(file);
+		if (listOfFiles != null ) {
+
+			Integer listLength = listOfFiles.length();
+
+			if (fc == null) {
+				String savedPath = prefs.get("MRUBankFolder", "");
+				File MRUBankFolder = new File(savedPath);
+				fc = new JFileChooser(MRUBankFolder);
+				recentBankFileList = new RecentFileList(fc);
+				if (listOfFiles != null) {
+					String[] files = listOfFiles.split(File.pathSeparator);
+					for (String fileRef : files) {
+						File file = new File(fileRef);
+						if (file.exists()) {
+							recentBankFileList.listModel.add(file);
+						}
 					}
 				}
+				fc.setAccessory(recentBankFileList);
+				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			}
-			fc.setAccessory(recentBankFileList);
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		}
 	}
 

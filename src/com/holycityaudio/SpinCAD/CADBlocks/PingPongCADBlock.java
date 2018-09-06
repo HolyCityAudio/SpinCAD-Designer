@@ -48,7 +48,6 @@ public class PingPongCADBlock extends DelayCADBlock{
 	private double fbLevel = 0.05;
 	private double defaultGain = 1.0;
 	private double delayLineGain = 0.85;
-	private double delayFactor = 1.0;
 
 	public PingPongCADBlock(int x, int y) {
 		//		super("MultiTap");
