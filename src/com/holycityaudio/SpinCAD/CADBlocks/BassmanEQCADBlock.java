@@ -57,7 +57,7 @@ public class BassmanEQCADBlock extends FilterCADBlock{
 		// ==================================
 		// http://www.docstoc.com/docs/53837224/Discretization-of-the-59-Fender-Bassman-Tone-Stack
 
-		double b0 = 1.0;
+		// double b0 = 1.0;
 		double b1 = t * c1 * r1 + m * c3 * r3 + l * (c1 * r2 + c2 * r2) + (c1 * r3 + c2 * r3);
 		double b2 = t * (c1 * c2 * r1 *r4 + c1 * c3 * r1 * r4) - m * m * (c1 *c3 * r3 * r3 + c2 * c3 * r3 * r3) +
 				m * (c1 * c3 * r1 *r3 + c1 * c3* r3 * r3 + c2 * c3 * r2 *r2);
