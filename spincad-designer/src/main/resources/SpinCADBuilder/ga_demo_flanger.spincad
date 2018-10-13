@@ -1,0 +1,125 @@
+@name Flanger
+@audioInput adcl Input_Left 
+@audioOutput output Audio_Output_1 
+@controlOutput tri Triangle_LFO
+@controlOutput servo Servo
+
+@controlInput input1 Flange_Rate
+@controlInput input2 Effect_Level_Feedback
+
+;GA_DEMO	Flanger
+
+;input1 = Flange rate
+;input2 = Effect level w/ feedback
+
+;memory declarations:
+@isPinConnected Input_Left
+
+mem	fladel	512
+
+;register equates:
+
+equ	mono	reg0
+equ	flaout	reg5
+equ	fbk	reg6
+equ	flamix	reg7
+equ	tri	reg8
+equ	fhp	reg9
+equ output reg10
+equ servo reg1
+
+;declare constants:
+
+equ	fbkmax	0.9	;maximum flange feedback
+
+;clear registers and initialize LFOs:
+
+skp	run,endclr
+wldr	0,10,4096	;for making triangle
+wldr	1,0,512	;servo LFO
+endclr:
+
+;sum inputs to mono:
+
+rdax	adcl,1.0
+wrax	mono,0.5	;attenuate into reverb
+
+;now do flange, begin by adding feedabck to delay
+
+rdax	flaout,fbkmax
+mulx	fbk
+rdax	mono,1
+wra	fladel,0
+
+;prepare a flamix and fbk values from input2:
+
+@isPinConnected Effect_Level_Feedback
+rdax	input2,1
+sof	1.99,0		;clip function so we mix from 0 to max in 1st half of pot rotation
+@else
+sof 0.0, 0.9990
+@endif
+
+wrax	flamix,0		;write flange mix value
+
+
+@isPinConnected Effect_Level_Feedback
+rdax	input2,1
+sof	1,-1		;goes from -1 to 0
+sof	1.999,0		;goes -1 to -1 at half point, then on to 0
+sof	1,0.999		;goes from zero to 1 beginning at midpoint
+@else
+clr
+@endif
+
+wrax	fbk,0		;wrtie to feedback register
+
+;now prepare triangle with input1:
+
+@isPinConnected Flange_Rate
+rdax	input1,1
+mulx	input1
+mulx	input1
+sof	0.4,0.01		;40:1 rate range
+@else
+sof 0.0, 0.2
+@endif
+wrax	rmp0_rate,0	;control rmp0 rate
+
+cho rdal, rmp0
+sof	1,-0.25
+absa
+wrax	tri,0
+
+;now servo rmp1 with the tri signal:
+
+cho rdal,rmp1	;read ramp
+wrax servo, 1.0	
+rdax	tri,-0.16		;subtract tri
+sof	0.25,0
+wrax	rmp1_rate,0	;write ramp rate
+
+cho rda,rmp1,reg|compc,fladel
+cho rda,rmp1,0,fladel+1
+;rdfx	fhp,0.02
+;wrhx	fhp,-1
+wrax	flaout,0
+
+;now sum outputs:
+
+rdax	flaout,1
+mulx	flamix
+rdax	mono,1
+wrax	output,0
+
+@setOutputPin Audio_Output_1 output
+@setOutputPin Triangle_LFO tri
+@setOutputPin Servo servo
+@endif
+
+
+
+
+
+
+

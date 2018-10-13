@@ -1,0 +1,187 @@
+@name 'Six Tap'
+@color "0x6060c4"
+@audioInput input Input 
+@audioInput feedback 'Feedback In'
+@audioOutput mix1 'Mix L Out'
+@audioOutput mix2 'Mix R Out'
+@audioOutput output1 Delay_Out_End 
+@controlInput cIn1 Delay_Time_1 
+@controlInput fbk 'Feedback Gain'
+
+equ inputGain 0.45
+@sliderLabel inputGain 'Input Gain'  0.0 1.0 0.5 1000.0 2
+
+equ fbkGain 0.5
+@sliderLabel fbkGain 'Feedback Gain' -24 0 -6 1.0 1 DBLEVEL 
+
+// total allocated memory buffer for this delay
+// create a Control Panel with a Slider Label
+equ delayLength 32767 
+@sliderLabel delayLength 'Delay Time' 0 32767 16384 1 0 LENGTHTOTIME
+		
+// tap 1 length in % (control panel value) 
+// 'equ' ename = ID value = SPINDOUBLE (controlType = ID controlName = ID max = SPINDOUBLE multiplier = SPINDOUBLE)?;
+// tap1 
+
+equ tap1Ratio 0.10 
+@sliderLabel tap1Ratio 'Tap 1 Time'  0.0 1.0 0.1 1000.0 2
+
+// tap 2
+equ tap2Ratio 0.20
+@sliderLabel tap2Ratio 'Tap 2 Time'  0.0 1.0 0.2 1000.0 2
+
+// tap 3 
+equ tap3Ratio 0.30
+@sliderLabel tap3Ratio 'Tap 3 Time'  0.0 1.0 0.5 1000.0 2
+
+// tap 4
+equ tap4Ratio 0.4
+@sliderLabel tap4Ratio 'Tap 4 Time'  0.0 1.0 0.5 1000.0 2
+
+equ tap5Ratio 0.5
+@sliderLabel tap5Ratio 'Tap 5 Time'  0.0 1.0 0.5 1000.0 2
+
+equ tap6Ratio 0.6
+@sliderLabel tap6Ratio Tap_6_Time  0.0 1.0 0.5 1000.0 2
+ 
+equ tap1Gain 0.5
+@sliderLabel tap1Gain 'Tap 1 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+
+equ tap2Gain 0.5
+@sliderLabel tap2Gain 'Tap 2 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+
+equ tap3Gain 0.5
+@sliderLabel tap3Gain 'Tap 3 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+
+equ tap4Gain 0.5
+@sliderLabel tap4Gain 'Tap 4 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+  
+equ tap5Gain 0.5
+@sliderLabel tap5Gain 'Tap 5 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+  
+equ tap6Gain 0.8
+@sliderLabel tap6Gain 'Tap 6 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+  
+equ delayOffset -1
+
+// establish the base address for this module
+@getBaseAddress 
+// then allocate the buffer
+mem delay delayLength 
+
+// input connection must be there for any code to be generated
+// read the input and write to base of delay line
+@isPinConnected Input
+
+@isPinConnected 'Feedback In'
+rdax feedback,fbkGain
+@isPinConnected 'Feedback Gain'
+mulx fbk
+@endif
+
+@endif
+
+rdax input,inputGain
+wra delay, 0.0
+
+// tap 1 -----------------------------------------------------------
+
+@isPinConnected Delay_Time_1
+equ   mix1  reg0      
+equ   mix2  reg1      
+equ max reg1
+
+clr
+or $7FFF00
+mulx cIn1
+// max now holds the value of the POT sacled by max ADDR_PTR
+wrax max,0.0
+
+@getDelayScaleControl tap1Ratio delayLength delayOffset 
+wrax ADDR_PTR, 0
+rmpa tap1Gain
+wrax mix1, 0.0 
+
+// tap 2 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap2Ratio delayLength delayOffset 
+wrax ADDR_PTR, 0
+rmpa tap2Gain
+rdax mix1, 1.0
+wrax mix1, 0.0
+
+// tap 3 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap3Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap3Gain
+rdax mix1, 1.0
+wrax mix1, 0.0
+
+// tap 4 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap4Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap4Gain
+rdax mix1, 1.0
+wrax mix1, 0.0
+
+// tap 5 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap5Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap5Gain
+rdax mix1, 1.0
+wrax mix1, 0.0 
+
+// tap 6 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap6Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap6Gain
+wrax mix2, 0.0
+
+// fixed delay spacing below
+@else
+offset ratio 1   
+ 
+@getSamplesFromRatio ratio tap1Ratio delayLength 
+rda delay+ratio, tap1Gain
+
+@getSamplesFromRatio ratio tap2Ratio delayLength 
+rda delay+ratio, tap2Gain
+
+@getSamplesFromRatio ratio tap3Ratio delayLength 
+rda delay+ratio, tap3Gain
+
+wrax mix1, 0.0
+
+@getSamplesFromRatio ratio tap4Ratio delayLength 
+rda delay+ratio, tap4Gain
+
+@getSamplesFromRatio ratio tap5Ratio delayLength 
+rda delay+ratio, tap5Gain
+
+@getSamplesFromRatio ratio tap6Ratio delayLength 
+rda delay+ratio, tap6Gain
+
+wrax mix2, 0.0
+
+@endif
+
+// set the end tap regardless if the control input is connected
+equ output5 reg5
+rda delay#, 1.0
+wrax output5, 0.0
+@setOutputPin Delay_Out_End output5
+
+@endif
+
+@setOutputPin 'Mix L Out' mix1
+@setOutputPin 'Mix R Out' mix2
+

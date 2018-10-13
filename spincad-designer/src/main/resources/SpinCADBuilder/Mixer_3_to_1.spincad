@@ -1,0 +1,61 @@
+@name 'Mixer 3:1'
+@color "0x2468f2"
+@audioInput input1 'Input 1'
+@audioInput input2 'Input 2'
+@audioInput input3 'Input 3'
+
+@audioOutput output Output
+@controlInput level_1 'Level 1'
+@controlInput level_2 'Level 2'
+@controlInput level_3 'Level 3'
+
+equ gain1 1.0 
+@sliderLabel gain1 'Input Gain 1' -24 0 -6 1.0 1 DBLEVEL 
+
+equ gain2 1.0 
+@sliderLabel gain2 'Input Gain 2' -24 0 -6 1.0 1 DBLEVEL 
+
+equ gain3 1.0 
+@sliderLabel gain3 'Input Gain 3' -24 0 -6 1.0 1 DBLEVEL 
+
+;REGISTERS 
+equ   output     reg0       
+
+// we dont read input 1 unless it's connected
+@isPinConnected 'Input 1'
+rdax    input1, gain1    ;read input signal
+// if level 1 is connected we multiply by level 1
+@isPinConnected 'Level 1'
+mulx level_1
+@endif
+wrax output, 0.0
+
+@endif
+
+@isPinConnected 'Input 2'
+rdax input2, gain2
+@isPinConnected 'Level 2'
+mulx level_2
+@endif
+@isPinConnected 'Input 1'
+rdax output, 1.0
+@endif
+wrax output, 0.0
+@endif
+
+@isPinConnected 'Input 3'
+rdax input3, gain3
+@isPinConnected 'Level 3'
+mulx level_3
+@endif
+@isPinConnected 'Input 1'
+rdax output, 1.0
+@else
+@isPinConnected 'Input 2'
+rdax output, 1.0
+@endif
+@endif
+wrax output, 0.0
+@endif
+
+@setOutputPin Output output

@@ -1,0 +1,40 @@
+@name 'Shelving Hipass'
+@color "0x24f26f"
+@audioInput input Input
+@audioOutput output Output  
+//@controlInput freqIn Frequency
+@controlInput shelfIn Shelf
+
+equ freq 0.15
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq Frequency 80 2500 100.0 100.0 1 LOGFREQ 
+
+equ shelf 0.5
+@sliderLabel shelf 'Shelf Depth' -40 -3 -6 1.0 1 DBLEVEL
+
+equ output Reg0
+equ hpf1 Reg1 
+equ temp Reg2 
+
+@isPinConnected Input
+
+rdax input, 1.0
+
+equ one 1.0
+@minusDouble oneMinusShelf one shelf
+
+@isPinConnected Shelf
+wrax  	temp,-oneMinusShelf	;save filter input in temp, and pass on in negated form
+rdfx	hpf1,freq	;do an RDFX operation on FIL, 
+wrlx	hpf1,-1	;causes a high pass filter at this frequency, with an infinite shelf
+mulx	shelfIn	;scale HPF filter output by FCON, (which ranges 0 to 1.0)
+rdax	temp,1  	;add back the signal at the filter inputwrax output, 0
+@else
+rdfx hpf1, freq
+wrhx hpf1, -oneMinusShelf
+@endif
+
+wrax output, 0
+
+@setOutputPin Output output
+@endif

@@ -1,0 +1,207 @@
+@name 'Eight Tap'
+@color "0x6060c4"
+@audioInput adcl Input 
+@audioInput feedback Feedback
+@audioOutput mix1 'Mix 1 Out'
+@audioOutput mix2 'Mix 2 Out'
+@audioOutput tap8 'Tap 8 Out'
+@controlInput cIn1 'Delay Time 1' 
+@controlInput fbk 'Feedback Gain'
+
+equ inputGain 1.0
+@sliderLabel inputGain 'Input Gain'  -24 0 0 1.0 1 DBLEVEL
+
+equ fbkGain 0.5
+@sliderLabel fbkGain 'Feedback Gain' -24 0 -6 1.0 1 DBLEVEL 
+
+// total allocated memory buffer for this delay
+// create a Control Panel with a Slider Label
+equ delayLength 32767 
+@sliderLabel delayLength 'Delay Time' 0 32767 16384 1 0 LENGTHTOTIME
+		
+// tap 1 length in % (control panel value) 
+
+// tap1 
+equ tap1Ratio 0.1250 
+equ tap1Gain 0.5
+@sliderLabel tap1Gain 'Tap 1 Gain'  -24 0 -6 1.0 1 DBLEVEL
+  
+// tap 2
+equ tap2Ratio 0.25
+equ tap2Gain 0.5
+@sliderLabel tap2Gain 'Tap 2 Gain'  -24 0 -6 1.0 1 DBLEVEL
+
+// tap 3 
+equ tap3Ratio 0.375
+equ tap3Gain 0.5
+@sliderLabel tap3Gain 'Tap 3 Gain' -24 0 -6 1.0 1 DBLEVEL
+
+// tap 4
+equ tap4Ratio 0.5
+equ tap4Gain 0.5
+@sliderLabel tap4Gain 'Tap 4 Gain' -24 0 -6 1.0 1 DBLEVEL
+  
+equ tap5Ratio 0.625
+equ tap5Gain 0.5
+@sliderLabel tap5Gain 'Tap 5 Gain'  -24 0 -6 1.0 1 DBLEVEL
+  
+equ tap6Ratio 0.750
+equ tap6Gain 0.8
+@sliderLabel tap6Gain 'Tap 6 Gain'  -24 0 -6 1.0 1 DBLEVEL
+  
+equ tap7Ratio 0.875
+equ tap7Gain 0.5
+@sliderLabel tap7Gain 'Tap 7 Gain' -24 0 -6 1.0 1 DBLEVEL
+
+equ tap8Ratio 1.0
+equ tap8Gain 0.5
+@sliderLabel tap8Gain 'Tap 8 Gain'  -24 0 -6 1.0 1 DBLEVEL
+
+equ delayOffset -1
+
+// establish the base address for this module
+@getBaseAddress 
+// then allocate the buffer
+mem eight_tap delayLength 
+
+// input connection must be there for any code to be generated
+@isPinConnected Input
+// read the input and write to base of delay line
+@isPinConnected 'Feedback Gain'
+rdax feedback,fbkGain
+@isPinConnected Feedback
+mulx fbk
+@endif
+@endif
+
+rdax adcl, inputGain
+wra eight_tap, 0.0
+
+// tap 1 -----------------------------------------------------------
+
+@isPinConnected 'Delay Time 1'
+equ   mix1  reg0      
+equ   mix2  reg1      
+equ max reg2
+
+clr
+or $7FFF00
+mulx cIn1
+// tap 1
+wrax max,0.0
+// max now holds the value of the POT scaled by max ADDR_PTR
+// so we don't need to calculate it for each tap
+
+@getDelayScaleControl tap1Ratio delayLength delayOffset 
+wrax ADDR_PTR, 0
+rmpa tap1Gain
+wrax mix1, 0.0 
+
+// tap 3 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap3Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap3Gain
+rdax mix1, 1.0
+wrax mix1, 0.0
+
+// tap 5 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap5Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap5Gain
+rdax mix1, 1.0
+wrax mix1, 0.0 
+
+// tap 7 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap7Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap7Gain
+rdax mix1, 1.0
+wrax mix1, 0.0 
+
+// tap 2 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap2Ratio delayLength delayOffset 
+wrax ADDR_PTR, 0
+rmpa tap2Gain
+wrax mix2, 0.0
+
+// tap 4 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap4Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap4Gain
+rdax mix2, 1.0
+wrax mix2, 0.0
+
+// tap 6 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap6Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap6Gain
+rdax mix2, 1.0
+wrax mix2, 0.0
+
+// tap 8 -----------------------------------------------------------
+rdax max, 1.0
+
+@getDelayScaleControl tap8Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa tap8Gain
+rdax mix2, 1.0
+wrax mix2, 0.0 
+
+// fixed delay spacing below
+@else
+offset ratio 1   
+
+@getSamplesFromRatio ratio tap1Ratio delayLength 
+rda eight_tap+ratio, tap1Gain
+
+@getSamplesFromRatio ratio tap3Ratio delayLength 
+rda eight_tap+ratio, tap3Gain
+
+@getSamplesFromRatio ratio tap5Ratio delayLength 
+rda eight_tap+ratio, tap5Gain
+
+@getSamplesFromRatio ratio tap7Ratio delayLength  
+rda eight_tap+ratio, tap7Gain
+
+wrax mix1, 0.0
+
+@getSamplesFromRatio ratio tap2Ratio delayLength 
+rda eight_tap+ratio, tap2Gain
+
+@getSamplesFromRatio ratio tap4Ratio delayLength 
+rda eight_tap+ratio, tap4Gain
+
+@getSamplesFromRatio ratio tap6Ratio delayLength 
+rda eight_tap+ratio, tap6Gain
+
+@getSamplesFromRatio ratio tap8Ratio delayLength 
+rda eight_tap+ratio, tap8Gain
+wrax mix2, 0.0
+@endif
+
+@isPinConnected 'Tap 8 Out'
+equ tap8 reg10
+@getSamplesFromRatio ratio tap8Ratio delayLength 
+rda eight_tap+ratio, 1.0
+wrax tap8,0
+@setOutputPin 'Tap 8 Out' tap8
+@endif
+
+@setOutputPin 'Mix 1 Out' mix1
+@setOutputPin 'Mix 2 Out' mix2
+
+@endif
+
+

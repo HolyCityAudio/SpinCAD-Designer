@@ -1,0 +1,46 @@
+@name RMS_Limiter
+@color "0x009595" 
+@audioInput input Input
+@audioInput sidechain 'Side Chain'
+@audioOutput output Output
+@controlOutput rms RMS
+@controlOutput square Square
+@controlOutput logPin Log
+@controlOutput avg Avg
+
+; rms limiter, approx 10dB limiting range.
+
+equ	sigin reg0 
+equ	avg	reg1
+equ	rms	reg2  
+equ output reg3 
+equ square reg4
+equ logPin reg5
+
+equ inGain 0.1  
+@sliderLabel inGain Input_Gain 0.1 1.0 0.1 100.0 2
+
+equ filt 0.1 
+//@sliderLabel filt  Filter 10 100 20 10.0 1 LOGFREQ
+
+@isPinConnected Input
+rdax	input, inGain 
+wrax	sigin,1		;write mono input signal
+mulx	sigin		;square input
+wrax square, 1.0
+rdfx	avg, filt	;average squared result
+wrax	avg,1		;avg stored and in ACC
+log	-0.5,-0.125	;square root and 1/x combined
+wrax logPin, 1.0	; debug, write log value to output
+exp	1,0		;
+wrax	rms,1
+mulx	sidechain
+sof	1.5,0		;restore gain, but avoid output clipping
+wrax	output,0
+@setOutputPin Output output
+@setOutputPin RMS rms
+@setOutputPin Square square
+@setOutputPin Log logPin
+@setOutputPin Avg avg
+@endif
+

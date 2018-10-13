@@ -1,0 +1,233 @@
+@name Gated_reverb
+@audioInput adcl Input_Left
+@audioInput adcr Input_Right
+@audioOutput output1 Audio_Output_1  
+@audioOutput output2 Audio_Output_2
+
+@controlInput input0 Pre_delay
+@controlInput input1 Gate_Time
+@controlInput input2 Damping
+
+;Gate program for A16_24 progam set.
+;variables written as byte values to:
+ 
+;reg0 = predelay (0-127)
+;reg1 = gate time (0-127)
+;reg2 = damping (0-127)
+
+mem	pdel	3277	;100ms predelay
+
+mem	gdel	22938	;gate delay (700mS)
+
+mem	inap1	127
+mem	inap2	191
+mem	inap3	374
+mem	inap4	573
+
+mem	ap1	454
+mem	ap3	355
+mem	ap2	307
+mem	ap4	477
+
+
+mem	rdel	1203
+mem	ldel	1457
+
+;write-first registers:
+
+;equ	p0	reg0
+;equ	p1	reg1
+equ	kd	reg2
+equ	mono	reg3
+equ	krt	reg4
+
+;read first registers:
+
+equ	lf2	reg21
+equ	lf3	reg22
+equ	lf4	reg23
+equ	lf5	reg24
+equ output1 reg25
+equ output2 reg26
+
+;mandatory first 6 lines:
+
+@isPinConnected Input_Left
+
+;or	%00000000_00000000_00000000
+;wrax	p0,0
+;or	%01000000_00000000_00000000
+;wrax	p1,0
+; or	%00000000_00000000_00000000
+clr
+wrax	kd,0
+
+;clear read-first registers:
+
+skp	run,endclr
+wrax	lf2,0
+wrax	lf3,0
+wrax	lf4,0
+wrax	lf5,0
+endclr:
+
+;obtain predelay pointer from pot0:
+
+rdax	input0,0.1		;limit to 1/10th total memory (100mS)
+and	%01111110_00000000_00000000	;in 64 steps
+wrax	addr_ptr,0		;write to address pointer.
+
+;write inputs to predelay:
+
+rdax	adcl,0.25
+rdax	adcr,0.25
+wra	pdel,0
+
+;read predelay using address pointer:
+
+rmpa	1			;read predelay
+rda	gdel+2340,0.2
+rda	inap1#,0.5
+wrap	inap1,-0.5
+rda	inap2#,-0.5
+wrap	inap2,0.5
+rda	inap3#,0.5
+wrap	inap3,-0.5
+rda	inap4#,-0.5
+wrap	inap4,0.5
+wra	gdel,0			;write to gate delay
+
+;filter points within the gate delay:
+
+rda	gdel+2000,-1
+rdfx	lf2,0.5
+wrhx	lf2,-1
+mulx	kd
+rda	gdel+2000,1
+wra	gdel+2000,0
+
+rda	gdel+4000,-1
+rdfx	lf3,0.5
+wrhx	lf3,-1
+mulx	kd
+rda	gdel+4000,1
+wra	gdel+4000,0 
+
+rda	gdel+8000,-1
+rdfx	lf4,0.5
+wrhx	lf4,-1
+mulx	kd
+rda	gdel+8000,1
+wra	gdel+8000,0
+
+rda	gdel+14000,-1
+rdfx	lf5,0.5
+wrhx	lf5,-1
+mulx	kd
+rda	gdel+14000,1
+wra	gdel+14000,0
+
+;now select the point to jump to with pot1:
+
+rdax	input1,1
+and	%01111000_00000000_00000000
+skp	zro, t0
+sof	1,-0.5625
+skp	zro,t1
+sof	1,-0.5625
+skp	zro,t2
+sof	1,-0.5625
+skp	zro,t3
+sof	1,-0.5625
+skp	zro,t4
+sof	1,-0.5625
+skp	zro,t5
+sof	1,-0.5625
+skp	zro,t6
+sof	1,-0.5625
+skp	zro,t7
+sof	1,-0.5625
+skp	zro,t8
+sof	1,-0.5625
+skp	zro,t9
+sof	1,-0.5625
+skp	zro,t10
+sof	1,-0.5625
+skp	zro,t11
+sof	1,-0.5625
+skp	zro,t12
+sof	1,-0.5625
+skp	zro,t13
+sof	1,-0.5625
+skp	zro,t14
+clr
+
+t15:
+rda	gdel+22937,0.45	
+t14:
+rda	gdel+21879,0.5	
+t13:
+rda	gdel+20502,0.45	
+t12:
+rda	gdel+19770,0.4	
+rda	gdel+18723,0.4	
+t11:
+rda	gdel+18143,0.5	
+t10:
+rda	gdel+17134,0.5	
+rda	gdel+15832,0.55	
+t9:
+rda	gdel+15045,0.5	
+t8:
+rda	gdel+13881,0.5	
+rda	gdel+13056,0.55
+t7:	
+rda	gdel+12196,0.6
+t6:	
+rda	gdel+11397,0.6
+t5:	
+rda	gdel+10008,0.6
+rda	gdel+9023,0.55	
+t4:
+rda	gdel+7856,0.4	
+t3:
+rda	gdel+7087,0.65	
+rda	gdel+6243,0.6	
+t2:
+rda	gdel+5194,0.7	
+rda	gdel+4023,0.6	
+t1:
+rda	gdel+3101,0.5	
+t0:
+rda	gdel+1885,0.7	
+rda	gdel+1156,0.5	
+rda	gdel,0.5
+
+wrax	mono,1
+rda	ldel#,-0.3
+rda	ap1#,0.5
+wrap	ap1,-0.5
+rda	ap2#,-0.5
+wrap	ap2,0.5
+wra	ldel,1
+wrax	output1,0
+
+rdax	mono,1
+rda	rdel#,-0.3
+rda	ap3#,0.5
+wrap	ap3,-0.5
+rda	ap4#,-0.5
+wrap	ap4,0.5
+wra	rdel,1
+wrax	output2,0
+
+@setOutputPin Audio_Output_1 output1
+@setOutputPin Audio_Output_2 output2
+@endif
+
+
+
+
+
+
+

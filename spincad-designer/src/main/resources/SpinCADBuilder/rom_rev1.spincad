@@ -1,0 +1,287 @@
+@name ROM_Reverb_1 
+@audioInput adcl Input_Left
+@audioInput adcr Input_Right 
+@audioOutput dacl Output_Left   
+@audioOutput dacr Output_Right
+
+@controlInput input0 Reverb_Time
+@controlInput input1 Low_Freq
+@controlInput input2 High_Freq
+
+;reverb program
+;large reverb, stereo in and out
+;for mixers, uneven (for vocals)
+;pot0=reverb time
+;pot1=low freq response
+;pot2=high freq response
+;
+
+equ gain 0.5 
+@sliderLabel gain Input_Gain -18 0.0 -6 1.0 1 DBLEVEL 
+
+equ   kiap   0.5  ; all pass filter
+@sliderLabel kiap Input_All_Pass 0.25 0.95 100.0 100.0 2 
+
+equ nDLs 3 
+@sliderLabel nDLs Delay_Stages 2 4 4 1.0 0 
+
+equ kapd1 0.6 
+@sliderLabel kapd1 Delay_All_Pass_1_Gain 0.3 0.8 0.6 100.0 2 
+
+equ kapd2 0.5 
+; @sliderLabel kapd2 Delay_All_Pass_2_Gain 0.3 0.8 0.5 100.0 2 
+
+equ   kfl   0.4  ; low pass filter
+@sliderLabel kfl Low_Pass 500 5000 400.0 100.0 1 LOGFREQ
+
+equ   kfh   0.01  ; high pass filter
+@sliderLabel kfh High_Pass 40 1000 400.0 100.0 1 LOGFREQ
+
+
+@isPinConnected Input_Right
+mem	rap1	186
+mem	rap2	253
+mem	rap3	302
+mem	rap4	498
+@endif
+
+@isPinConnected Input_Left
+mem	lap1	156
+mem	lap2	223
+mem	lap3	332
+mem	lap4	548
+;
+mem	ap1	1251
+mem	ap1b	1751
+mem	ap2	1443
+mem	ap2b	1343
+mem	ap3	1582
+mem	ap3b	1981
+mem	ap4	1274
+mem	ap4b	1382
+;
+@isGreaterThan nDLs 3
+mem	del1	5859
+equ	lpf1	reg1
+equ	hpf1	reg5
+@endif
+
+@isGreaterThan nDLs 2
+equ	lpf2	reg2
+equ	hpf2	reg6
+mem	del2	4145
+@endif
+
+@isGreaterThan nDLs 1
+mem	del3	3476
+equ	lpf3	reg3
+equ	hpf3	reg7
+@endif
+
+mem	del4	4568
+equ	lpf4	reg4
+equ	hpf4	reg8
+
+equ 	temp	reg0
+equ	rt	reg9
+equ	hf	reg10
+equ	lf	reg11
+equ	lapout	reg12
+equ dacl reg14
+
+@isPinConnected Output_Right
+equ	rapout	reg13
+equ dacr reg15
+@endif
+
+;set up lfo, 0.5Hz, +/-20 samples:
+skp	run,	loop 
+wlds	sin0,	12,	160
+loop:
+
+; smear 2 allpass filters in reverb ring: 
+
+cho rda, sin0, 6, ap1+50 
+cho rda,	sin0,	0,	ap1+51
+wra	ap1+100,	0
+cho rda,	sin0,	7,	ap3+50
+cho rda,	sin0,	1,	ap3+51	
+wra	ap3+100,	0
+
+;prepare pots for control:
+@isPinConnected Reverb_Time
+rdax	input0,	1.0
+sof 	0.8, 	0.1
+@else
+sof 0.0, 0.76
+@endif
+wrax	rt,	0		;rt ranges 0.1 to 0.9
+;
+;shelving controls are negative:
+rdax	POT1,	1.0
+sof	0.8, 	-0.8
+wrax 	hf,0			;hf ranges -0.8 to 0
+;
+rdax	POT2,	1.0
+sof 	0.8,	-0.8
+wrax 	lf,0			;lf ranges -0.8 to 0
+;
+;get inputs and process with three APs each
+;
+rdax	adcl,	gain		
+rda	lap1#,	-kiap	
+wrap	lap1,	kiap		
+rda	lap2#,	-kiap	
+wrap	lap2,	kiap		
+rda	lap3#,	-kiap	
+wrap	lap3,	kiap		
+rda	lap4#,	-kiap	
+wrap	lap4,	kiap		
+wrax	lapout,	0		
+;
+@isPinConnected Input_Right
+rdax	adcr,	gain		
+rda	rap1#,	-kiap	
+wrap	rap1,	kiap		
+rda	rap2#,	-kiap	
+wrap	rap2,	kiap		
+rda	rap3#,	-kiap	
+wrap	rap3,	kiap		
+rda	rap4#,	-kiap	
+wrap	rap4,	kiap		
+wrax	rapout,	0		
+@endif
+;
+;now do reverb ring, use temp as temp reg for filtering:
+;
+;delay ap into 1:
+rda	del4#,	1.0	;read previous delay	
+@isGreaterThan nDLs 3 
+mulx	rt		;multiply by reverb time coefficient
+rdax	lapout,	1.0	;read left input from input allpass filter bank
+rda	ap1#,	-kapd1	;do an allpass filter
+wrap	ap1,	kapd1
+rda	ap1b#,	-kapd1	;do second all pass filter
+wrap	ap1b,	kapd1	
+wrax	temp,	1.0	;write to temp, keep in acc	
+rdfx	lpf1,	kfl	
+wrhx	lpf1,	-1.0	;filter done
+mulx	lf		;scale by lf
+rdax	temp,	1.0	;add to temp
+wrax	temp,	1.0	;write to temp again
+rdfx	hpf1,	kfh	
+wrlx	hpf1,	-1.0	;filter done
+mulx	hf		;scale by hf
+rdax	temp,	1.0	;add temp
+wra	del1,	0.0	;write to next delay
+;
+;delay ap into 2:
+rda	del1#,	1.0		
+@endif
+
+@isGreaterThan nDLs 2 
+mulx	rt
+rda	ap2#,	-kapd1	
+wrap	ap2,	kapd1		
+rda	ap2b#,	-kapd1	
+wrap	ap2b,	kapd1		
+wrax	temp,	1.0		
+rdfx	lpf2,	kfl		
+wrhx	lpf2,	-1.0	
+mulx	hf
+rdax	temp,	1.0		
+wrax	temp,	1.0		
+rdfx	hpf2,	kfh	
+wrlx	hpf2,	-1.0	
+mulx	lf
+rdax	temp,	1.0		
+wra	del2,	0.0		
+;
+;delay ap into 3:
+rda	del2#,	1.0		
+@endif
+
+@isGreaterThan nDLs  1
+mulx	rt
+rdax	lapout,	1.0		
+rda	ap3#,	-kapd1	
+wrap	ap3,	kapd1		
+rda	ap3b#,	-kapd1	
+wrap	ap3b,	kapd1		
+wrax	temp,	1.0		
+rdfx	lpf3,	kfl		
+wrhx	lpf3,	-1.0	
+mulx	hf
+rdax	temp,	1.0		
+wrax	temp,	1.0		
+rdfx	hpf3,	kfh	
+wrlx	hpf3,	-1.0	
+mulx	lf
+rdax	temp,	1.0		
+wra	del3,	0.0
+;
+;delay ap into 4:
+rda	del3#,	1.0
+@endif
+		
+mulx	rt
+rda	ap4#,	-kapd1	
+wrap	ap4,	kapd1		
+rda	ap4b#,	-kapd1	
+wrap	ap4b,	kapd1		
+wrax	temp,	1.0		
+rdfx	lpf4,	kfl		
+wrhx	lpf4,	-1.0	
+mulx	hf
+rdax	temp,	1.0		
+wrax	temp,	1.0		
+rdfx	hpf4,	kfh	
+wrlx	hpf4,	-1.0	
+mulx	lf
+rdax	temp,	1.0		
+wra	del4,	0.0		
+; 
+@isGreaterThan nDLs  3
+rda	del1+2630,	1.5	;sum outputs as taps from reverb ring
+@endif
+@isGreaterThan nDLs  2
+rda	del2+1943,	1.2	
+@endif
+@isGreaterThan nDLs  1
+rda	del3+3200,	1.0	
+@endif
+rda	del4+4016,	0.8	
+wrax	dacl,	0.0	
+;		
+;
+@endif
+
+@isPinConnected Output_Right
+@isGreaterThan nDLs  3
+rda	del1+2420,	1.0	
+@endif
+@isGreaterThan nDLs  2
+rda	del2+2631,	0.8	
+@endif
+@isGreaterThan nDLs  1
+rda	del3+1163,	1.5	
+@endif
+rda	del4+3330,	1.2	
+wrax	dacr,	0.0	
+@endif
+
+@setOutputPin Output_Left dacl
+@setOutputPin Output_Right dacr
+
+
+
+
+
+
+
+
+
+
+
+
+

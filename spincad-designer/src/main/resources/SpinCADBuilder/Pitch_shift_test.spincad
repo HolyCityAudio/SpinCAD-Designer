@@ -1,0 +1,129 @@
+@name 'Pitch Shift'
+@audioInput input Input
+@audioOutput pitch 'Pitch Out'
+@controlInput pitchControl 'Pitch Control'
+
+//@audioOutput pitch1 Pitch_1_Out
+//@audioOutput pitch2 Pitch_2_Out
+//@audioOutput pitch3 Pitch_3_Out
+
+equ pitchCoeff 8192 
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel pitchCoeff 'Pitch Coefficient' -16384 32767 8192 1.0 0  
+
+equ controlRange 0
+@comboBox controlRange '0 -> +1' '-1 -> +1'
+
+equ lfoSel 0
+@comboBox lfoSel 'Ramp 0' 'Ramp 1'
+
+equ lfoWidth 0
+@comboBox lfoWidth '4096' '2048' '1024' '512'
+
+equ length 1
+
+@isEqualTo lfoWidth 0
+@equals length 4096
+@endif
+
+@isEqualTo lfoWidth 1
+@equals length 2048
+@endif
+
+@isEqualTo lfoWidth 2
+@equals length 1024
+@endif
+
+@isEqualTo lfoWidth 3
+@equals length 512
+@endif
+
+
+@isPinConnected Input
+equ pitch reg0
+//equ pitch1 reg2
+//equ pitch2 reg3
+//equ pitch3 reg4
+
+// establish the base address for this module
+@getBaseAddress
+// then allocate memory
+mem delayd length
+mem temp 1
+
+// these are here to test scaling factor between direct load of RMP0_RATE via WLDR and
+// on the flip side, setting the RATE register with a "double" value determined from a POT or something
+
+equ sixteen 32768
+@divideDouble scaledPitch pitchCoeff sixteen
+
+@isEqualTo lfoSel 0
+skp run, START 
+wldr 0,pitchCoeff, length 
+START: 
+@else
+skp run, START1 
+wldr 1,pitchCoeff, length 
+START1: 
+@endif
+
+ldax input
+wra delayd,0
+
+equ two 2.0
+@divideDouble halfPitch scaledPitch two
+
+@isPinConnected 'Pitch Control'
+// scale negative pitch shift coefficients by 0.5
+@isEqualTo controlRange 1
+rdax pitchControl, 1.0
+sof 1.0, -0.5
+skp gez, positive1
+sof 0.5, 0
+positive1:
+@else
+rdax pitchControl, scaledPitch
+@endif
+
+@isEqualTo lfoSel 0
+wrax RMP0_RATE, 0
+@endif
+
+@isEqualTo lfoSel 1
+wrax RMP1_RATE, 0
+@endif
+@endif
+
+@isEqualTo lfoSel 0
+cho rda,RMP0,REG|COMPC,delayd 
+cho rda,RMP0,0,delayd+ 1 
+//wrax pitch3,1 
+wra temp,0 
+cho rda,RMP0,RPTR2|COMPC,delayd 
+cho rda,RMP0,RPTR2,delayd+ 1
+//wrax pitch1,1 
+cho sof,RMP0,NA|COMPC,0
+//wrax pitch2, 0
+cho rda,RMP0,NA,temp
+@else
+cho rda,RMP1,REG|COMPC,delayd 
+cho rda,RMP1,0,delayd+ 1 
+//wrax pitch3,1 
+wra temp,0 
+cho rda,RMP1,RPTR2|COMPC,delayd 
+cho rda,RMP1,RPTR2,delayd+ 1
+//wrax pitch1,1 
+cho sof,RMP1,NA|COMPC,0
+//wrax pitch2, 0
+cho rda,RMP1,NA,temp
+@endif
+
+wrax pitch,0
+
+@setOutputPin 'Pitch Out' pitch
+//@setOutputPin Pitch_1_Out pitch1 
+//@setOutputPin Pitch_2_Out pitch2 
+//@setOutputPin Pitch_3_Out pitch3 
+
+@endif
+

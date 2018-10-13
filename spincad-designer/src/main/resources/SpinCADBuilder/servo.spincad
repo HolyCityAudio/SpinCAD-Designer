@@ -1,0 +1,107 @@
+@name 'Servo Flanger'
+@color "0x243232"
+@audioInput input Input
+@audioInput feedback 'Feedback In'
+@audioOutput output Output  
+@audioOutput output1 'Tap Output'
+@controlInput control1 'Delay Time'
+@controlInput fbk 'Feedback Gain'
+//@controlOutput servo Servo
+//@controlOutput delta Delta 
+
+equ inputGain 1.0
+@sliderLabel inputGain 'Input Gain' -24 0 0 1.0 1 DBLEVEL 
+
+equ fbkGain 0.5
+@sliderLabel fbkGain 'Feedback Gain' -24 0 -6 1.0 1 DBLEVEL 
+
+equ servoGain 0.25
+@sliderLabel servoGain 'Servo Gain' 0.0 0.49 0.25 100.0 2
+
+equ freq 0.25
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq Low_Pass 500 7500 100.0 100.0 1 LOGFREQ 
+
+equ delayLength 4096 
+equ tap1Ratio 0.025 
+@sliderLabel tap1Ratio 'Tap Time Ratio'  0.001 0.05 0.025 1000.0 3  
+
+equ lfoSel 0
+@comboBox lfoSel 'Ramp 0' 'Ramp 1'
+
+@isPinConnected Input
+equ delayOffset -1
+// establish the base address for this module
+@getBaseAddress 
+
+mem moddel 4096
+equ output reg1
+@isPinConnected 'Delay Time'
+//equ servo reg2
+equ filt reg3
+//			;set up LFOs, only at start up
+@isEqualTo lfoSel 0
+skp run,START 
+wldr 0,0,4096      ;ramp0 used for modulation operations
+START: 
+@else
+skp run,START1 
+wldr 1,0,4096      ;ramp0 used for modulation operations
+START1: 
+@endif
+
+clr
+
+@isPinConnected 'Feedback In'
+rdax feedback,fbkGain
+@isPinConnected 'Feedback Gain'
+mulx fbk
+@endif
+@endif
+rdax input,inputGain
+
+wra moddel,0      ;write to head of delay
+@isEqualTo lfoSel 0
+cho rdal,rmp0      ;servo ramp0 to correct position using value in control
+@else
+cho rdal,rmp1      ;servo ramp0 to correct position using value in control
+@endif
+//wrax servo, 1.0
+rdax control1,-servoGain    ;scaled so that 0 - 1 sweeps full range
+//wrax delta, 1.0
+@isEqualTo lfoSel 0
+wrax rmp0_rate,0
+cho rda,rmp0,reg|compc,moddel   ;read from delay
+cho rda,rmp0,0,moddel+1
+@else
+wrax rmp1_rate,0
+cho rda,rmp1,reg|compc,moddel   ;read from delay
+cho rda,rmp1,0,moddel+1
+@endif
+rdfx filt, freq
+wrlx filt, -1
+wrax output,0
+
+@isPinConnected 'Tap Output'
+equ   output1     reg0      
+clr
+or $7FFF00
+@getDelayScaleControl tap1Ratio delayLength delayOffset 
+wrax ADDR_PTR, 0
+rmpa 1.0
+wrax output1, 0.0 
+@setOutputPin 'Tap Output' output1
+@endif
+
+//@setOutputPin Servo servo
+@setOutputPin Output output
+@else
+// if control input is not connected just read from the middle of the delay
+rdax input,1
+wra moddel,0      ;write to head of delay
+rda moddel^, 1.0
+wrax output,0
+@setOutputPin Output output
+@endif
+@endif
+

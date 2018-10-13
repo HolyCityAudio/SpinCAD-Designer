@@ -1,0 +1,120 @@
+@name "4-voice Chorus"
+@color "0x24f2f2"
+@audioInput input Input
+@audioOutput output1 "Voice_1"
+@audioOutput output2 "Voice_2" 
+@audioOutput output3 "Voice_3" 
+@audioOutput output4 "Voice_4" 
+@controlInput rateIn LFO_Rate 
+@controlInput widthIn LFO_Width
+
+equ rateMax 511
+equ widthMax 16384
+
+equ gain1 1.0 
+@sliderLabel gain1 'Input Gain 1' -24 0 -6 1.0 1 DBLEVEL 
+
+// total allocated memory buffer for this delay
+// create a Control Panel with a Slider Label
+equ delayLength 512 
+@sliderLabel delayLength Chorus_Time 0 2048 1024 1 0 LENGTHTOTIME
+
+equ tap1Center 0.25 
+@sliderLabel tap1Center Tap_1_Center 0.0 1.0 0.5 1000.0 3
+
+equ tap2Center 0.33 
+@sliderLabel tap2Center Tap_2_Center 0.0 1.0 0.5 1000.0 3 
+
+equ tap3Center 0.63 
+@sliderLabel tap3Center Tap_3_Center 0.0 1.0 0.5 1000.0 3 
+
+equ tap4Center 0.75 
+@sliderLabel tap4Center Tap_4_Center 0.0 1.0 0.5 1000.0 3 
+
+equ rate 20
+@sliderLabel rate LFO_Rate 0.0 511.0 20.0 100.0 1 SINLFOFREQ
+
+equ width 64	// double value of width
+@sliderLabel width LFO_Width 0.0 200.0 3.0 100.0 1
+
+equ lfoSel 0
+@comboBox lfoSel 'LFO 0' 'LFO 1'
+
+@isPinConnected Input
+;
+; Memory declarations
+equ delayOffset -1
+@getBaseAddress 
+mem delayl delayLength ; delay should actually be delay * 2 as panel setting is sweep center
+
+@isEqualTo lfoSel 0
+skp run,START
+wlds SIN0, 50, 64
+START: 
+@else
+skp run,START1
+wlds SIN1, 50, 64
+START1: 
+@endif
+
+@isPinConnected LFO_Width
+@divideDouble temp width widthMax
+rdax	widthIn, temp
+@isEqualTo lfoSel 0
+wrax SIN0_RANGE, 0
+@else
+wrax SIN1_RANGE, 0
+@endif
+@endif
+
+// Here's the expression for scaling the LFO rate by the control input.
+// we read the control and scale it by the slider setting/511 which is max.
+// sfxb.readRegister(speedIn, lfoRate/511.0);	
+
+@isPinConnected LFO_Rate
+@divideDouble temp1 rate rateMax
+rdax	rateIn, temp1
+@isEqualTo lfoSel 0
+wrax SIN0_RATE, 0
+@else
+wrax SIN1_RATE, 0
+@endif
+@endif
+
+rdax input, gain1
+; Write it to delay and clear ACC
+wra delayl,0
+
+@isPinConnected "Voice_1"
+equ output1 reg0
+@readChorusTap lfoSel 0 tap1Center delayLength delayOffset 
+wrax output1, 0
+@setOutputPin "Voice_1" output1
+@endif
+
+@isPinConnected "Voice_2"
+equ output2 reg1
+@readChorusTap lfoSel 1 tap2Center delayLength delayOffset 
+wrax output2, 0
+@setOutputPin "Voice_2" output2
+@endif
+
+@isPinConnected "Voice_3"
+equ output3 reg2
+@readChorusTap lfoSel 2 tap3Center delayLength delayOffset 
+wrax output3, 0
+@setOutputPin "Voice_3" output3 
+@endif
+
+@isPinConnected "Voice_4"
+equ output4 reg3
+@readChorusTap lfoSel 3 tap4Center delayLength delayOffset 
+wrax output4, 0
+@setOutputPin "Voice_4" output4
+@endif
+
+; Interpolated sample in ACC, write it to DACL and clear ACC
+; wrax output1,0
+; That's it!
+@endif
+

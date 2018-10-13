@@ -1,0 +1,28 @@
+@name Panner
+@color "0x2468f2"
+@audioInput inp1 'Input'
+@audioOutput output1 'Output 1'  
+@audioOutput output2 'Output 2'  
+@controlInput pan Pan
+
+equ gain1 0.5 
+@sliderLabel gain1 'Input Gain' -12 0 -6 1.0 1 DBLEVEL 
+
+equ output1 REG01
+equ output2 REG02
+;-
+@isPinConnected 'Input'
+;--
+rdax	inp1,gain1
+
+@isPinConnected Pan 
+mulx	pan
+@endif
+wrax output2, -1
+rdax	inp1,gain1
+wrax output1, 0
+
+@endif
+
+@setOutputPin 'Output 1' output1
+@setOutputPin 'Output 2' output2

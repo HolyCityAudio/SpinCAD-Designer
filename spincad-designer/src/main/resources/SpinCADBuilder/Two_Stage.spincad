@@ -1,0 +1,31 @@
+@name 'Two Stage'
+@color "0xf2f224"
+@controlInput input Input
+@controlOutput output1 'Stage 1'
+@controlOutput output2 'Stage 2'
+
+;REGISTERS 
+
+@isPinConnected Input
+@isPinConnected 'Stage 1'
+equ   output1     reg0
+rdax input, -1.0
+sof -2.0, 0
+wrax    output1,0    ; 
+@endif
+       
+@isPinConnected 'Stage 2'
+equ   output2     reg1
+sof 0, 0.99902
+rdax input, -0.99902
+sof -1.99804, 0.99902
+skp gez, pos
+clr
+pos:
+wrax    output2,0    ; 
+@endif
+
+@setOutputPin 'Stage 1' output1
+@setOutputPin 'Stage 2' output2
+@endif
+

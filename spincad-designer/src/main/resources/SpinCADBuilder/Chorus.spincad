@@ -1,0 +1,114 @@
+@name Chorus
+@color "0x24f2f2"
+@audioInput input Input
+@audioOutput output1 Output
+@controlInput rateIn LFO_Rate 
+@controlInput widthIn LFO_Width 
+
+equ rateMax 511
+equ number6554000 6554000.0
+equ output1 reg0 
+
+// total allocated memory buffer for this delay
+// create a Control Panel with a Slider Label
+equ delayLength 512 
+@sliderLabel delayLength 'Chorus Time' 128 2048 128 1 0 LENGTHTOTIME
+
+equ tap1Center 0.5 
+; @sliderLabel tap1Center Tap_1_Center 0.25 0.75 0.5 1000.0 2
+
+equ rate 20
+@sliderLabel rate 'LFO Rate' 0.0 511.0 20.0 100.0 2 SINLFOFREQ
+
+// max width (in samples) of LFO = delayLength/2.
+// this allows the center to be placed from 25% to 75%
+// From AN-001:
+// The equation to calculate the coefficient for the amplitude for a given delay length for use in a WLDS instruction is:
+// Ka = (N * 32767)/16385
+
+equ width 30	// double value of width %
+@sliderLabel width 'LFO Width' 5.0 100.0 30.0 100.0 1
+
+// ComboBox needs to show LFO 0 or LFO 1
+// in block code, need to select between SIN0 or SIN1 parameter
+// setter/getter passes index of combobox item, for now
+// let's see if we can make it work.
+
+equ lfoSel 0
+@comboBox lfoSel 'LFO 0' 'LFO 1'
+
+@isPinConnected Input
+;
+; Memory declarations
+//equ delayOffset -1 
+@getBaseAddress 
+mem delayl delayLength ; delay should actually be delay * 2 as panel setting is sweep center
+
+@isEqualTo lfoSel 0
+skp run,START 
+wlds SIN0, 50, 64
+START: 
+@else
+skp run,START1 
+wlds SIN1, 50, 64
+START1: 
+@endif
+
+// want to try to get to this:
+// From AN-001:
+// The equation to calculate the coefficient for the amplitude for a given delay length for use in a WLDS instruction is:
+// Ka = (N * 32767)/16385
+// Where:
+// N: Delay length in samples, 16385 max( or length of delay buffer).
+// back to SpinCAD =============================
+// Then there is the width factor, 5% to 100%
+// Valid values are in the range of 0 to 32767 for Ka.
+// Ka = (scale * ( N * 32767))/16385
+// Finally if needed it is all scaled by the control input
+// double x1 = delayLength * 32767
+// double x2 = x1 * scale 
+// double x3 = x2 / 16385
+
+@isPinConnected LFO_Width
+//@divideDouble temp delayLength width  
+// @setChorusWidth temp delayLength width  
+
+@multiplyDouble x1 delayLength width
+@divideDouble x3 x1 number6554000
+
+rdax	widthIn, x3
+@isEqualTo lfoSel 0 
+wrax SIN0_RANGE, 0
+@else
+wrax SIN1_RANGE, 0
+@endif
+@endif
+
+// Here's the expression for scaling the LFO rate by the control input.
+// we read the control and scale it by the slider setting/511 which is max.
+// sfxb.readRegister(speedIn, lfoRate/511.0);	
+
+@isPinConnected LFO_Rate
+@divideDouble temp1 rate rateMax
+rdax	rateIn, temp1
+@isEqualTo lfoSel 0 
+wrax SIN0_RATE, 0
+@else
+wrax SIN1_RATE, 0
+@endif
+@endif
+
+ldax input
+; Write it to delay and clear ACC
+wra delayl,0
+
+@readChorusTap lfoSel 0 tap1Center delayLength delayOffset 
+
+; @readChorusTap 0 1 tap2Center delayLength delayOffset 
+
+; Interpolated sample in ACC, write it to DACL and clear ACC
+wrax output1,0
+; That's it!
+@setOutputPin Output output1
+@endif
+

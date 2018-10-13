@@ -1,0 +1,195 @@
+@name Reverb_Plate 
+@color "0x7100fc"
+@audioInput input Input 
+@audioOutput output Output 
+@controlInput input0 Reverb_Time
+@controlInput input1 LF_Loss
+@controlInput input2 HF_Loss
+
+equ gain 0.5 
+@sliderLabel gain Input_Gain -24 0 -6 1.0 1 DBLEVEL 
+
+equ krt 0.5
+@sliderLabel krt "Reverb Time Coefficient" 0.05 0.95 0.5 100.0 2
+
+equ hpdf 0.02
+@sliderLabel hpdf "Low Freq Damping Frequency" 0.001 0.15 0.02 100.0 2
+
+equ inputkap 0.5
+@sliderLabel inputkap "Input All-Pass Coefficient" 0.05 0.95 0.5 100.0 2
+
+equ dlkap 0.5
+@sliderLabel dlkap "Delay All-Pass Coefficient" 0.05 0.95 0.5 100.0 2
+
+;plate reverb, lush (large), stereo
+;characterized by very high density,
+;explosive initial sound, large
+;pot0 = reverb time
+;pot1 = lf loss
+;pot2 = hf loss
+
+@isPinConnected Input
+
+@getBaseAddress 
+
+mem	api1l	224	;left input all passes
+mem	api2l	430
+mem	api3l	856
+mem	api4l	1089
+
+mem	apd1	2301	;loop all passes
+mem	apd2	2902
+mem	apd3	3171
+mem	apd4	2401
+
+mem	del1	3620	;loop delays
+mem	del2	4591
+mem	del3	4387
+mem	del4	3679
+
+equ	temp	reg0
+equ	krtreg	reg1
+equ	ksh	reg2
+equ	ksl	reg3
+equ	lap	reg4
+equ	output	reg5
+equ	hp1	reg6
+equ	hp2	reg7
+equ	hp3	reg8
+equ	hp4	reg9
+equ	lp1	reg10
+equ	lp2	reg11
+equ	lp3	reg12
+equ	lp4	reg13
+equ	lup	reg14
+
+equ	kapi	0.6	;input AP coefficients
+equ	kap	0.6	;loop AP coefficients
+equ	kfl	0.8	;loop filter LPF freq
+equ	kfh	0.02	;loop filter HPF freq
+
+;now derive control coefficients from pots:
+
+rdax	input0,1
+log	0.5,0
+exp	1,0		;square root pot0
+sof	0.6,0.3		;ranges 0.3 to 0.9
+wrax	krtreg,0		;write for later use
+
+rdax	input1,1		;control low freq loss (high pass filter)
+sof	1,-0.999	;make from -1 to 0
+wrax	ksh,0		;high pass shelf
+
+rdax	input2,1		;control high freq loss (low pass filter)
+sof	1,-0.999	;make from -1 to 0
+wrax	ksl,0		;low pass shelf
+
+;now do input all passes, leave headroom:
+
+rdax	input, gain	
+rda	api1l#,kapi
+wrap	api1l,-kapi
+rda	api2l#,kapi
+wrap	api2l,-kapi
+rda	api3l#,kapi
+wrap	api3l,-kapi
+rda	api4l#,kapi
+wrap	api4l,-kapi
+wrax	lap,0
+
+;all passed inputs in place, now process the loop, with filtering:
+
+rdax	lup,1		;get signal from end of loop
+rda	apd1#,kap
+wrap	apd1,-kap	;do loop all pass
+wra	del1,0		;write delay
+rda	del1#,1		;read delay
+wrax	temp,1		;save in temp reg
+rdfx	hp1,kfh		;do low pass filter
+wrlx	hp1,-1		;infinite shelf LPF
+mulx	ksh		;prepare to subtract from temp
+rdax	temp,1		;subtract LPF from input (becomes HPF)
+wrax	temp,1		;save in temp reg
+rdfx	lp1,kfl		;do high pass filter
+wrhx	lp1,-1		;infinite shelf HPF
+mulx	ksl		;prepare to subtract from temp
+rdax	temp,1		;subtract HP signal from input (LPF shelf)
+mulx	krtreg		;scale by reverb time
+			;continue to next stage of loop		
+rdax	lap,1		
+rda	apd2#,kap
+wrap	apd2,-kap	
+wra	del2,0		
+rda	del2#,1		
+wrax	temp,1		
+rdfx	hp2,kfh		
+wrlx	hp2,-1		
+mulx	ksh		
+rdax	temp,1		
+wrax	temp,1		
+rdfx	lp2,kfl		
+wrhx	lp2,-1		
+mulx	ksl		
+rdax	temp,1		
+mulx	krtreg
+
+rdax	lap,1		
+rda	apd4#,kap
+wrap	apd4,-kap	
+wra	del4,0		
+rda	del4#,1		
+wrax	temp,1		
+rdfx	hp4,kfh		
+wrlx	hp4,-1		
+mulx	ksh		
+rdax	temp,1		
+wrax	temp,1		
+rdfx	lp4,kfl		
+wrhx	lp4,-1		
+mulx	ksl		
+rdax	temp,1		
+mulx	krtreg
+wrax	lup,0
+
+;now gather outputs from loop delays:
+
+rda	del1+201,0.6
+rda	del2+1345,0.5
+rda	del3+897,0.6
+rda	del4+1780,0.5
+wrax	output,0
+@setOutputPin Output output
+
+;now generate a pair of LFOs to modulate the APs in the loop:
+
+equ rate1 20
+@sliderLabel rate1 LFO_Rate_1 0.0 51.0 20.0 100.0 2 SINLFOFREQ
+
+equ rate2 20
+@sliderLabel rate2 LFO_Rate_2 0.0 51.0 10.0 100.0 2 SINLFOFREQ
+
+skp	run,smear
+wlds 0, rate1, 37
+wlds 1, rate2, 33
+smear:
+;now affect each delay:
+
+cho rda,sin0,reg|sin|compc,apd1+40
+cho rda,sin0,sin,apd1+41
+wra	apd1+80,0
+
+cho rda,sin0,cos|compc,apd2+40
+cho rda,sin0,cos,apd2+41
+wra	apd2+80,0
+
+cho rda,sin1,reg|sin|compc,apd3+40
+cho rda,sin0,sin,apd3+41
+wra	apd3+80,0
+
+cho rda,sin1,cos|compc,apd4+40
+cho rda,sin0,cos,apd4+41
+wra	apd4+80,0
+
+
+
+@endif

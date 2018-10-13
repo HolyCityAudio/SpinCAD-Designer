@@ -1,0 +1,62 @@
+@name SampleHold
+
+@controlInput input1 Control_In
+@controlInput rate Rate
+@controlOutput output Sample_Hold
+;@controlOutput ramp Ramp_LFO
+
+
+; Sample and Hold Demo
+; Samples the control input and puts the sampled/held signal
+; at the output
+equ output reg0
+equ hold reg1
+;equ ramp reg2
+equ symmetry 0.25
+
+equ lfoSel 0
+@comboBox lfoSel 'Ramp 0' 'Ramp 1'
+
+// variable - Name - low - high - multiplier - precision - option 
+//@sliderLabel symmetry Symmetry 10.0 50.0 200.0 1.0 1 LINEAR 
+
+@isPinConnected Control_In
+@isPinConnected Rate
+
+skp    run, start
+wldr    lfoSel,20,4096
+
+start:
+
+samplehold:
+ldax    rate   ;sets sample and hold speed
+mulx    rate   ;make the taper a bit nicer 
+mulx    rate
+sof    0.5, 0.1 ; limit the pot to get a nice range of speeds
+@isEqualTo lfoSel 0
+wrax    rmp0_rate,0   ;write to ramp 1 rate to set speed 
+cho rdal, rmp0   ;get current value of rmp0
+@else
+wrax    rmp1_rate,0   ;write to ramp 1 rate to set speed 
+cho rdal, rmp1   ;get current value of rmp0
+@endif
+
+;wrax ramp, 1
+sof    1.0, -symmetry ; make ramp go from -0.25 to 0.25
+
+skp    ZRC, shftzrc  ; if the ramp is less than 0, skip past this part
+clr
+rdax hold, 1
+wrax   output, 0 ; ACC to ADC
+skp zro, holding
+
+shftzrc: 
+ldax   input1 ; read the last control input value
+; absa        ; make sure it's positive
+wrax hold, 0
+
+holding:
+@setOutputPin Sample_Hold output
+@endif
+@endif
+

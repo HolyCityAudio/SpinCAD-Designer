@@ -1,0 +1,270 @@
+@name Shimmer_reverb
+@color "0x7100fc"
+@audioInput revin Input
+@audioOutput output1 Output  
+
+@controlInput input0 Damping
+@controlInput input1 Feedback
+@controlInput input2 Decay
+
+equ gain 0.5 
+@sliderLabel gain Input_Gain -18 0.0 -6 1.0 1 DBLEVEL 
+
+
+; Hall reverb w/shimmer 
+; Jan 2012 
+;  
+; Mono input, Stereo output
+; POT0: Damping
+; POT1: Feedback 
+; POT2: Decay
+; 
+; by Sweetalk 
+
+;MEMORY 
+@isPinConnected Input
+
+mem   delayl   4096      ; Pitch Shift mem 
+mem   iap2   223 
+mem   iap3   332 
+mem   iap4   448 
+mem   temp1   1        
+
+mem   iap1   156      ; Reverb mem declarations
+
+mem   ap1   1251 
+mem   ap1b   1751 
+mem   ap2   1443 
+mem   ap2b   1343 
+mem   ap3   1582 
+mem   ap3b   1981 
+mem   ap4   1274 
+mem   ap4b   1382 
+
+mem   del1   3559 
+mem   del2   2945 
+mem   del3   3976 
+mem   del4   4445 
+
+
+;REGISTERS 
+equ   revin      reg0      ;Reverb In 
+equ   revout      reg1      ;Reverb Out 
+equ   pitchout   reg2      ;Pitch Shift Out. (really it's Reverb->Pitch out)    
+equ   LPF      reg3      ;LPF reg 
+
+equ   temp   reg4      ;Temp register 
+equ   hpf1   reg5      ;High pass filters for reverb registers 
+equ   hpf2   reg6 
+equ   hpf3   reg7 
+equ   hpf4   reg8 
+equ   lpf1   reg9      ;Low pass filters for reverb registers 
+equ   lpf2   reg10
+equ   lpf3   reg11 
+equ   lpf4   reg12 
+equ   rt   reg13      ;Reverb Time register 
+equ   iapout   reg14     
+equ output1 reg15
+equ output2 reg16   
+
+
+;CONSTANTS 
+equ   LPFF   0.3      ;LPF coefficent for LPF after pitch shifting 
+equ   LPFSH   -0.5      ;Shelving coefficent for LPF -6dB. 
+equ   kfh   0.01  
+equ   kfl   0.4  
+equ   kiap   0.5 
+equ   klap   0.6  
+
+
+;PITCH SHIFTER RAMP0 INIT 
+skp   run,   START 
+wldr   0,   16384,   4096   ;Init RAMP0 for +1 octave pitch shifting 
+START:
+
+;PreparePOT2 for Decay
+
+@isPinConnected Decay
+rdax   pot2,1 
+sof   0.65,0.3   ;Scale by 0.65 and add 0.3  
+@else
+sof 0.0, 0.65
+@endif
+
+wrax   rt, 0          ;rt ranges 0.3 to 0.95 
+
+;REVERB 
+rdax   revin,   gain   ;Read reverb in   
+rda   iap1#,   kiap 
+wrap   iap1,   -kiap      
+rda   iap2#,   kiap    
+wrap   iap2,   -kiap      
+rda   iap3#,   kiap    
+wrap   iap3,   -kiap      
+rda   iap4#,   kiap    
+wrap   iap4,   -kiap      
+wrax   iapout,   0   ;write to register for ring injection 
+
+;now do reverb ring, use temp as reg for filtering: 
+
+;aps into delay1: 
+
+rda   del4#,   1   ;read previous delay    
+mulx   rt      ;multiply by reverb time coefficient 
+rdax  iapout, 1   ;read left input from input allpass filter bank 
+rda   ap1#,   klap   ;do an allpass filter 
+wrap   ap1,   -klap 
+rda   ap1b#,   klap   ;do second all pass filter 
+wrap   ap1b,   -klap    
+wrax   temp,   1.0   ;write to temp, keep in acc 
+rdfx   lpf1,   kfl   ;low pass filter 
+wrlx   lpf1,   -1 
+rdfx   hpf1,   kfh   ;high pass filter 
+wrhx   hpf1,   -1.0 
+
+@isPinConnected Damping
+rdax   temp,   -1.0 
+mulx   pot0      ;crossfade between filter and no filter 
+@else
+rdax temp, -0.5
+@endif
+rdax   temp,   1.0 
+
+wra   del1,   0.0   ;write to next delay, clear accumulator 
+
+;aps into delay2: 
+
+rda   del1#,   1      
+mulx   rt 
+rda   ap2#,   klap    
+wrap   ap2,   -klap      
+rda   ap2b#,   klap    
+wrap   ap2b,   -klap      
+wrax   temp,   1      
+rdfx   lpf2,   kfl 
+wrlx   lpf2,   -1.0 
+rdfx   hpf2,   kfh 
+wrhx   hpf2,   -1.0 
+rdax   temp,   -1.0 
+
+@isPinConnected Damping
+mulx   pot0 
+@else
+rdax temp, -0.5
+@endif
+
+rdax   temp,   1 
+wra   del2,   0      
+
+;aps into delay3: 
+
+rda   del2#,   1      
+mulx   rt 
+rdax   iapout,   1      
+rda   ap3#,   klap    
+wrap   ap3,   -klap      
+rda   ap3b#,   klap    
+wrap   ap3b,   -klap      
+wrax   temp,   1      
+rdfx   lpf3,   kfl 
+wrlx   lpf3,   -1.0 
+rdfx   hpf3,   kfh 
+wrhx   hpf3,   -1.0 
+
+@isPinConnected Damping
+rdax   temp,   -1.0 
+mulx   pot0 
+@else
+rdax temp, -0.5
+@endif
+
+rdax   temp,   1    
+wra   del3,   0 
+
+;aps into delay4: 
+
+rda   del3#,   1.0      
+mulx   rt 
+rda   ap4#,   klap    
+wrap   ap4,   -klap      
+rda   ap4b#,   klap    
+wrap   ap4b,   -klap      
+wrax   temp,   1      
+rdfx   lpf4,   kfl 
+wrlx   lpf4,   -1.0 
+rdfx   hpf4,   kfh 
+wrhx   hpf4,   -1.0 
+
+@isPinConnected Damping
+rdax   temp,   -1.0 
+mulx   pot0 
+@else
+rdax temp, -0.5
+@endif
+
+rdax   temp,   1    
+wra   del4,   0      
+
+;take outputs as taps from reverb ring: 
+rda   del1,      0.8 
+rda   del2,      0.8 
+rda   del3+2876,   1.5 
+rda   del1+2093,   1.1          
+rda   del4+1234,   1.1 
+wrax   revout,      1   ;Write to revout register, keep in ACC for pitch shifting 
+
+;PITCH SHIFT +1 OCTAVE 
+
+wra delayl, 0
+
+cho rda,   RMP0,   REG|COMPC,   delayl 
+cho rda,   RMP0,   0,   delayl+1 
+wra   temp1,   0 
+cho rda,   RMP0,   RPTR2|COMPC,   delayl  
+cho rda,   RMP0,   RPTR2,   delayl+1
+cho sof,   RMP0,   NA|COMPC,   0 
+cho rda,   RMP0,   NA,   temp1 
+
+;LPF to smooth out a little of the high end
+rdfx   LPF,   LPFF      ;Freq coef 
+wrhx   LPF,   LPFSH      ;Shelving coef. 
+
+@isPinConnected Feedback
+wrax   pitchout,   1   ;Write the pitch + reverb out on pitchout and keep it in acc. ACC = Pitch + Reverb 
+mulx   pot1         ;Multily by Feedback pot (POT2). ACC = (Pitch + Reverb) * POT2 
+@else
+wrax   pitchout,   0.5   ;Write the pitch + reverb out on pitchout and keep it in acc. ACC = Pitch + Reverb 
+@endif
+
+;Making mono output 
+rdax   revout,   1      ;Read output from Reverb (revout) and write it to ACC. 
+wrax   output1,1         ;Write the ACC on DACL and keep it.    
+
+;set up lfo, 1Hz to 2Hz, +/-100 samples, for smearing loop all passes: 
+ 
+skp   run,   SMEAR
+wlds   sin0,   30,   50 
+wlds   sin1,   41,   50 
+
+SMEAR:
+;smear 4 allpass filters in reverb ring: 
+
+cho rda,   sin0,   reg|compc,   ap1+50   ;sin0 
+cho rda,   sin0,  0 ,   ap1+51 
+wra   ap1+100,   0 
+
+cho rda,   sin0,   cos|compc,   ap2+50   ;cos0
+cho rda,   sin0,   cos,   ap2+51    
+wra   ap2+100,   0 
+
+cho rda,   sin1,   reg|compc,   ap3+50   ;sin1 
+cho rda,   sin1,   0,   ap3+51 
+wra   ap3+100,   0 
+
+cho rda,   sin1,   cos|compc,   ap4+50   ;cos1 
+cho rda,   sin1,   cos,   ap4+51    
+wra   ap4+100,   0.0
+
+@setOutputPin Output output1  
+
+@endif

@@ -1,0 +1,58 @@
+@name ToverX
+@audioInput adcl Input
+@audioOutput lf4 Audio_Output  
+
+;REGISTERS 
+equ   tovrx     reg0       
+equ   lf1		reg1       
+equ   lf2   	reg2          
+equ   lf3      	reg3       
+equ   lf4 	reg4       
+
+;CONSTANTS 
+equ   threshold   -0.1875       
+equ   filterFactor   0.4  ; low pass filter
+@sliderLabel filterFactor 'Low Pass' 350 5000 1400.0 100.0 1 LOGFREQ
+
+@isPinConnected Input
+rdax    adcl,1    ;read input signal
+
+log    -1,threshold
+exp    1,0    ;provides t/X 
+wrax    tovrx,1    ;save t/X, we'll need it later...
+mulx    tovrx    ;(t/X)^2
+rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
+mulx    adcl    ;multiply by the input signal 
+rdax    lf1, filterFactor    ;restore gain and filter
+wrax    lf1,1    ;output in ACC and lf1 
+
+log    -1,threshold
+exp    1,0    ;provides t/X 
+wrax    tovrx,1    ;save t/X, we'll need it later...
+mulx    tovrx    ;(t/X)^2
+rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
+mulx    adcl    ;multiply by the input signal 
+rdax    lf2, filterFactor    ;restore gain and filter
+wrax    lf2,1    ;output in ACC and lf1 
+
+log    -1,threshold
+exp    1,0    ;provides t/X 
+wrax    tovrx,1    ;save t/X, we'll need it later...
+mulx    tovrx    ;(t/X)^2
+rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
+mulx    adcl    ;multiply by the input signal 
+rdax    lf3, filterFactor    ;restore gain and filter
+wrax    lf3,1    ;output in ACC and lf1 
+
+log    -1,threshold
+exp    1,0    ;provides t/X 
+wrax    tovrx,1    ;save t/X, we'll need it later...
+mulx    tovrx    ;(t/X)^2
+rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
+mulx    adcl    ;multiply by the input signal 
+rdax    lf4, filterFactor    ;restore gain and filter
+wrax    lf4,0    ;output in ACC and lf1 
+@setOutputPin Audio_Output lf4
+
+@endif
+

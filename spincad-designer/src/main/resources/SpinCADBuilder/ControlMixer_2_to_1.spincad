@@ -1,0 +1,33 @@
+@name 'Mixer 2:1'
+@color "0xf2f224"  
+@controlInput input1 'Input 1'
+@controlInput input2 'Input 2'
+
+@controlOutput output Output
+
+equ gain1 1.0 
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel gain1 'Gain 1' 0.001 1.0 1.0 1000.0 3  
+
+equ gain2 1.0 
+@sliderLabel gain2 'Gain 2' 0.001 1.0 1.0 1000.0 3 
+
+;REGISTERS 
+equ   output     reg0       
+
+// we dont read input 1 unless it's connected
+@isPinConnected 'Input 1'
+rdax    input1, gain1    ;read input signal
+// if level 1 is connected we multiply by level 1
+wrax output, 0.0
+@endif
+
+@isPinConnected 'Input 2'
+rdax input2, gain2
+@isPinConnected 'Input 1'
+rdax output, 1.0
+@endif
+wrax output, 0.0
+@endif
+
+@setOutputPin Output output

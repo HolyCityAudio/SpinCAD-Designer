@@ -1,0 +1,67 @@
+@name Distortion
+@audioInput adcl Audio_Input
+@audioOutput output Audio_Output  
+
+;distortion module   
+;begin distorting signal at -18dB (input referred).
+;At the output, the signal will begin to distort at half
+;of full scale, and further increase of input signal will
+;cause increasingly 'flattened' signal peaks.
+
+;This is an ideal module to be driven by a compressor, 
+;where sustained notes can be on the edge of distortion,
+;and actual signal clipping can be prohibited.
+;mono in, mono out, no controls, 24 ticks
+
+equ	mono	reg0 
+equ	abs	reg1
+equ	sign	reg2
+equ output reg4
+
+@isPinConnected Input
+
+sof	0,-1		;load ACC with -1
+wrax	sign,0		;set sign to negative
+
+rdax	adcl,1.0
+wrax	mono,1		;sum inputs to mono
+
+skp	neg,sgnset	;skip if mono input is negative
+sof	0,0.999		;set sign to +1 if input is pos (close enough)
+wrax	sign,0		;set sign to pos if signal is pos. 
+sgnset:			;jump here if negative input, sign is now set
+
+ldax	mono		;get input signal again
+absa			;positive only
+wrax	abs,1		;store absolute signal in abs, keep in ACC
+
+sof	1,-0.125	;subtract 1/8
+skp	neg,nodist	;if signal is below this limit, 
+			;then no distortion is required
+
+;distort signal because it is above 1/8th of full scale.
+;do this by obtaining the 1/X of the signal, and subtracting
+;this value (scaled) from 1/4. The result is the distorted
+;portion of the overall DC transfer function
+;at the transition between clean and distorted audio (+/-0.125),
+;the LOG of the abs signal, after inverting (-1) to cause the 1/X
+;function, must be scaled (-0.375) so that after the EXP function,
+;the value is also equal to 0.125. Otherwise, the clean and the
+;distorted waveforms will not meet properly.
+
+ldax	abs 
+log	-1,-0.375	;1/x, displace result
+exp	1,0
+sof	-1,0.25		;subtract 1/x from 0.25
+skp	run,distout	;skip always
+
+nodist:
+sof	1,0.125		;add threshold value back
+distout:
+mulx	sign		;put sign back
+sof	-2,0
+sof	-2,0		;bring up gain (12dB)
+wrax	output,0		;write outputs
+;KB 07/03/06
+@endif
+

@@ -1,0 +1,143 @@
+@name Pitch_Four
+@color "0x00fc82"
+@audioInput input Input
+@audioOutput pitchout Pitch_Out 
+@controlInput select Pitch_Select 
+
+equ pitch1 -12 
+@sliderLabel pitch1 'Pitch 1' -12 17 7 1.0 0
+
+equ pitch2 -7  
+@sliderLabel pitch2 'Pitch 2' -12 17 7 1.0 0
+
+equ pitch3 7 
+@sliderLabel pitch3 'Pitch 3' -12 17 7 1.0 0
+
+equ pitch4 12  
+@sliderLabel pitch4 'Pitch 4' -12 17 7 1.0 0
+
+equ lfoSel 0
+@comboBox lfoSel 'Ramp 0' 'Ramp 1' 
+
+
+@isPinConnected Input
+equ pitchout reg0
+; equ select reg1 
+// establish the base address for this module
+@getBaseAddress
+// then allocate memory 
+mem delayd 4096
+mem temp 1 
+
+// I need WLDR to take a variable for lfoSel and LFO rate and probably width too
+skp run, START 
+wldr lfoSel,16384,4096 
+rdax RMP0_RATE, 1.0 ; this is only here for testing
+START: 
+// do the Pot skip routine
+
+
+@isPinConnected Pitch_Select
+;skp RUN, SHIFT
+ldax select
+and	%01100000_00000000_00000000
+@isEqualTo lfoSel 0
+; this should be 13 
+skp ZRO, slot3
+sof 1.0, -0.25 
+; this should be 8
+skp ZRO, slot2
+sof 1.0, -0.25  
+; this should be 3  
+skp ZRO, slot1 
+slot0: 
+; function to convert semitones to LFO coefficient
+@semitonesToRmpRate shift4 pitch4 
+sof 0.0, shift4
+wrax RMP0_RATE, 0
+; this should be 8
+skp RUN, SHIFT
+slot1:
+@semitonesToRmpRate shift1 pitch3
+sof 0.0, shift1
+wrax RMP0_RATE, 0 
+; this should be 5
+skp RUN, SHIFT
+slot2:
+@semitonesToRmpRate shift2 pitch2
+sof 0.0, shift2
+wrax RMP0_RATE, 0
+; this should be 2
+skp RUN, SHIFT
+slot3:
+@semitonesToRmpRate shift3 pitch1
+sof 0.0, shift3
+wrax RMP0_RATE, 0
+
+SHIFT:
+
+// read the input and do the pitch shift
+ldax input
+wra delayd,0
+			
+cho rda,RMP0,REG|COMPC,delayd 
+cho rda,RMP0,0,delayd+ 1 
+wra temp,0 
+cho rda,RMP0,RPTR2|COMPC,delayd 
+cho rda,RMP0,RPTR2,delayd+ 1 
+cho sof,RMP0,NA|COMPC,0 
+cho rda,RMP0,NA,temp
+
+; Ramp 1 -----------------------
+@else
+; this should be 13 
+skp ZRO, slot3_1
+sof 1.0, -0.25 
+; this should be 8
+skp ZRO, slot2_1
+sof 1.0, -0.25  
+; this should be 3  
+skp ZRO, slot1_1 
+slot0: 
+; function to convert semitones to LFO coefficient
+@semitonesToRmpRate shift4 pitch4 
+sof 0.0, shift4
+wrax RMP1_RATE, 0
+; this should be 8
+skp RUN, SHIFT1
+slot1_1:
+@semitonesToRmpRate shift1 pitch3
+sof 0.0, shift1
+wrax RMP1_RATE, 0 
+; this should be 5 
+skp RUN, SHIFT1
+slot2_1:
+@semitonesToRmpRate shift2 pitch2
+sof 0.0, shift2
+wrax RMP1_RATE, 0
+; this should be 2
+skp RUN, SHIFT1
+slot3_1:
+@semitonesToRmpRate shift3 pitch1
+sof 0.0, shift3
+wrax RMP1_RATE, 0
+
+SHIFT1:
+
+// read the input and do the pitch shift
+ldax input
+wra delayd,0
+			
+cho rda,RMP1,REG|COMPC,delayd 
+cho rda,RMP1,0,delayd+ 1 
+wra temp,0 
+cho rda,RMP1,RPTR2|COMPC,delayd 
+cho rda,RMP1,RPTR2,delayd+ 1 
+cho sof,RMP1,NA|COMPC,0 
+cho rda,RMP1,NA,temp
+@endif
+
+wrax pitchout,0
+@endif
+@endif
+@setOutputPin Pitch_Out pitchout

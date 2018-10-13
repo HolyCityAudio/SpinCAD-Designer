@@ -1,0 +1,56 @@
+@name Crossfade
+@color "0x2468f2"
+@audioInput inp1 'Input 1'
+@audioInput inp2 'Input 2' 
+@audioOutput output1 'Audio Output'  
+@controlInput input0 Fade
+
+; from Spin Knowledge base
+; http://www.spinsemi.com/knowledge_base/coding_examples.html#Cross_fading
+
+equ gain1 0.5 
+@sliderLabel gain1 'Input 1 Gain' -12 0 -6 1.0 1 DBLEVEL 
+
+equ gain2 0.5 
+@sliderLabel gain2 'Input 2 Gain' -12 0 -6 1.0 1 DBLEVEL 
+
+equ output1 REG01
+
+;-
+@isPinConnected 'Input 1'
+;--
+@isPinConnected 'Input 2'
+rdax	inp1,-gain1
+rdax	inp2,gain2
+
+;---
+@isPinConnected Fade 
+mulx	input0
+;-- end of isPinConnected Fade
+@endif
+rdax	inp1,gain1
+
+; -- end of isPinConnected 'Input 2'
+@else
+rdax	inp1,gain1
+
+;--
+@isPinConnected Fade 
+mulx	input0
+;--
+@endif
+;-
+@endif
+@else
+rdax	inp2,gain2
+
+;---
+@isPinConnected Fade 
+mulx	input0
+;-- end of isPinConnected Fade
+@endif
+@endif
+
+wrax	output1,0
+
+@setOutputPin 'Audio Output' output1

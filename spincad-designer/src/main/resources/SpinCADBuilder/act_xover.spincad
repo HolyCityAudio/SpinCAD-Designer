@@ -1,0 +1,277 @@
+@name "L-R Crossover"
+@color "0x24f26f"
+@audioInput adcl Input_Left
+@audioInput adcr Input_Right 
+@audioOutput output1 Output_L 
+@audioOutput output2 Output_R 
+
+;XOVER and response compensation for powered loudspeaker
+;Crossover for 2-way system
+;Mono input, HF and LF outputs
+; 24dB/oct crossover (Linkwitz-Riley)
+;Tweeter delay in ~1/4" increments (Fs=48KHz)  
+;7 band parametric EQ for speaker matching
+;Shelving low pass for bass boosting 
+
+;Equations for setting EQ bands:
+
+;kp(x) = peak/dip; range from -1 (inf notch) to +1.9999 (+6dB)
+;kf(x) = sqrt((4*kts)/(1+(kt/q)+kts))
+;kq(x) = (1-(kt/q)+kts)/(1+(kt/q)+kts)
+;kg(x) = (kt/q)/(1+(kt/q)+kts)
+
+;where:
+;kt=tan(pi*f/Fs) 
+;kts=kt^2
+;f=center frequency 
+;Fs=sample rate
+;q=Q of filter peak
+
+@isPinConnected Input_Left
+mem	del1	1000	;tweeter delay, floating point storage
+mem	del2	1000	;tweeter delay, FP error storage
+
+equ	lf1a	reg0	;reg for low freq XOVER
+equ	lf1b	reg1	;reg for low freq XOVER
+equ	lf2a	reg2	;reg for low freq XOVER
+equ	lf2b	reg3	;reg for low freq XOVER (output)
+equ	hf1a	reg4	;reg for high freq XOVER
+equ	hf1b	reg5	;reg for high freq XOVER
+equ	hf2a	reg6	;reg for high freq XOVER
+equ	hf2b	reg7	;reg for high freq XOVER
+equ	temp	reg8	;reg high freq XOVER output and temp store
+equ	delout	reg9	;reg for tweeter delay output
+equ	eqin	reg10	;mono input signal to EQ section
+equ	b1a	reg11
+equ	b1b	reg12
+equ	b2a	reg13
+equ	b2b	reg14
+equ	b3a	reg15
+equ	b3b	reg16
+equ	b4a	reg17
+equ	b4b	reg18
+equ	b5a	reg19 
+equ	b5b	reg20
+equ	b6a	reg21
+equ	b6b	reg22
+equ	b7a	reg23
+equ	b7b	reg24
+equ	loext	reg25		;extend low end with shelving low pass
+equ output1 reg26
+equ output2 reg27
+
+;standard system setup variables:
+
+offset	del	0	;samples of delay in tweeter path
+equ	kfl	0.48	;XOVER low freq
+equ	kql	0.5	;XOVER low q
+equ	kfh	0.6	;XOVER high freq 
+equ	kqh	0.85	;XOVER high q
+equ	kflext	0.01	;bass extension frequency
+equ	kshext	-0.5	;bass extension shelf
+
+;custom EQ variables:
+
+equ	ampl	1.0	;woofer amplitude
+equ	amph	1.0	;tweeter amplitude
+			;EQ params will depend on driver set.
+equ	kf1	0	;band frequency
+equ	kq1	0	;band Q
+equ	kp1	0	;band peak (+6dB max), dip (-inf)
+equ	kg1	0
+
+equ	kf2	0
+equ	kq2	0
+equ	kp2	0
+equ	kg2	0
+
+equ	kf3	0
+equ	kq3	0 
+equ	kp3	0
+equ	kg3	0
+
+equ	kf4	0 
+equ	kq4	0
+equ	kp4	0
+equ	kg4	0
+
+equ	kf5	0
+equ	kq5	0
+equ	kp5	0
+equ	kg5	0
+
+equ	kf6	0
+equ	kq6	0
+equ	kp6	0
+equ	kg6	0
+
+equ	kf7	0
+equ	kq7	0
+equ	kp7	0
+equ	kg7	0
+
+;sum inputs to temp register:
+
+rdax	adcr,0.5
+rdax	adcl,0.5
+wrax	eqin,0
+
+;Equalizer to correct amplitude variations.
+;input to filter bank is in toeq, output will be input
+;plus fractions of each band filter:
+
+;EQ band 1:
+
+rdax	eqin,kg1
+rdax	b1b,-kf1
+rdax	b1a,1
+wrax	temp,kq1
+rdax	eqin,kg1
+wrax	b1a,0
+rdax	temp,kf1
+rdax	b1b,1
+wrax	b1b,0
+rdax	eqin,1
+rdax	temp,kp1
+wrax	eqin,kg2
+
+rdax	b2b,-kf2
+rdax	b2a,1
+wrax	temp,kq2
+rdax	eqin,kg2
+wrax	b2a,0
+rdax	temp,kf2
+rdax	b2b,1
+wrax	b2b,0
+rdax	eqin,1
+rdax	temp,kp2
+wrax	eqin,kg3
+
+rdax	b3b,-kf3
+rdax	b3a,1
+wrax	temp,kq3
+rdax	eqin,kg3
+wrax	b3a,0
+rdax	temp,kf3
+rdax	b3b,1
+wrax	b3b,0
+rdax	eqin,1
+rdax	temp,kp3
+wrax	eqin,kg4
+
+rdax	b4b,-kf4
+rdax	b4a,1
+wrax	temp,kq4
+rdax	eqin,kg4
+wrax	b4a,0
+rdax	temp,kf4
+rdax	b4b,1 
+wrax	b4b,0
+rdax	eqin,1
+rdax	temp,kp4
+wrax	eqin,kg5
+
+rdax	b5b,-kf5
+rdax	b5a,1
+wrax	temp,kq5
+rdax	eqin,kg5
+wrax	b5a,0
+rdax	temp,kf5
+rdax	b5b,1
+wrax	b5b,0
+rdax	eqin,1
+rdax	temp,kp5
+wrax	eqin,kg6
+
+rdax	b6b,-kf6
+rdax	b6a,1
+wrax	temp,kq6
+rdax	eqin,kg6
+wrax	b6a,0
+rdax	temp,kf6
+rdax	b6b,1
+wrax	b6b,0
+rdax	eqin,1
+rdax	temp,kp6
+wrax	eqin,kg7
+
+rdax	b7b,-kf7
+rdax	b7a,1
+wrax	temp,kq7
+rdax	eqin,kg7
+wrax	b7a,0
+rdax	temp,kf7
+rdax	b7b,1
+wrax	b7b,0
+rdax	eqin,1
+rdax	temp,kp7
+wrax	eqin,1		;keep value in accumulator
+
+
+;write to delay (for tweeter) and get delayed output:
+
+wra	del1,1		;write fp value to del1
+rda	del1,-1		;subtract FP value from real value
+wra	del2,0		;write error value to del2  
+
+rda	del1+del,1	;read delayed FP value   
+rda	del2+del,1	;add delayed error value 
+wrax	delout,0	;wrtie value to delay output register.
+
+;do crossover, 24dB Linkwitz-Riley alignment
+;Low pass filter for woofer:
+
+rdax	lf1a,kfl
+rdax	lf1b,1
+wrax	lf1b,-kfl
+rdax	lf1a,kql
+rdax	eqin,0.05
+wrax	lf1a,0
+
+rdax	lf2a,kfl
+rdax	lf2b,1
+wrax	lf2b,-kfl
+rdax	lf2a,kql
+rdax	lf1b,1
+wrax	lf2a,0
+
+;high pass filter for tweeter:
+
+rdax	hf1a,kfh
+rdax	hf1b,1
+wrax	hf1b,1
+rdax	delout,0.25
+rdax	hf1a,kqh
+wrax	delout,1
+sof	-kfh,0
+rdax	hf1a,1
+wrax	hf1a,0
+
+rdax	hf2a,kfh
+rdax	hf2b,1
+wrax	hf2b,1
+rdax	delout,0.3
+rdax	hf2a,kqh
+wrax	delout,1
+sof	-kfh,0
+rdax	hf2a,1
+wrax	hf2a,0
+
+;take outputs from crossover:
+
+rdax	lf2b,-2
+rdfx	loext,kflext	;bass extension shelving filter
+wrlx	loext,kshext	;shelf
+sof	-2,0	
+sof	ampl,0		;scale woofer amplitude 
+wrax	output1,0		;output woofer through left channel
+
+rdax	delout,-2	
+sof	-2,0
+sof	amph,0		;scale tweeter amplitude
+wrax	output2,0		;output tweeter through right channel
+@endif
+
+
+
+

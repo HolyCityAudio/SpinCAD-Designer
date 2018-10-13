@@ -1,0 +1,285 @@
+@name Reverb_Room
+@color "0x7100fc"
+@audioInput input Input 
+@audioOutput outputL "OutputL" 
+@audioOutput outputR "OutputR" 
+
+@controlInput input0 Pre_Delay
+@controlInput input1 Reverb_Time
+@controlInput input2 HF_Loss
+
+equ gain 0.5 
+@sliderLabel gain Input_Gain -24 0 -6 1.0 1 DBLEVEL 
+
+;now generate a pair of LFOs to modulate the APs in the loop:
+
+equ krt 0.5
+@sliderLabel krt "Reverb Time Coefficient" 0.05 0.95 0.5 100.0 2
+
+equ hpdf 0.02
+@sliderLabel hpdf "Damping Freq Low" 40 1000 100.0 100.0 1 LOGFREQ
+
+equ inputkap 0.5
+@sliderLabel inputkap "Input All-Pass Coefficient" 0.05 0.95 0.5 100.0 2
+
+equ dlkap 0.5
+@sliderLabel dlkap "Delay All-Pass Coefficient" 0.05 0.95 0.5 100.0 2
+
+equ rate1 20
+@sliderLabel rate1 LFO_Rate_1 0.0 51.0 20.0 100.0 2 SINLFOFREQ
+
+;Hall program for A16_24 progam set.
+;variables written as byte values to:
+ 
+;reg0 = predelay (0-127)
+;reg1 = RT (0-127)
+;reg2 = damping (0-127)
+
+@isPinConnected Input
+@getBaseAddress 
+
+mem	pdel	3276
+mem	tdel	4000
+
+mem	ap1	473
+mem	ap2	536
+mem	ap3	667
+mem	ap4	791
+
+mem	tap1	452
+mem	tap2	561
+
+mem	lap1a	878
+mem	lap1b	1287
+mem	d1	1536
+mem	lap2a	968
+mem	lap2b	1367
+mem	d2	1891
+mem	lap3a	678
+mem	lap3b	1127
+mem	d3	1936
+mem	lap4a	1263
+mem	lap4b	1198
+mem	d4	1781
+
+;declare registers:
+
+equ	pout	reg3
+equ	apout	reg4
+equ	temp	reg5
+equ outputL reg6
+equ outputR reg7
+
+;equ	del	reg0
+;equ	krt	reg1
+equ	kd	reg2
+
+;read-first registers:
+
+equ	lp1	reg20
+equ	lp2	reg21
+equ	lp3	reg22
+equ	lp4	reg23
+equ	hp1	reg24
+equ	hp2	reg25
+equ	tlp	reg26
+
+;program:
+
+;first clear read-first registers:
+
+skp	run,endclr
+wrax	lp1,0
+wrax	lp2,0
+wrax	hp1,0
+wrax	hp2,0
+wrax	tlp,0
+wlds	sin0,rate1,100
+
+endclr:
+
+;calculate an address pointer for predelay:
+; input0 is pre-delay time
+@isPinConnected Pre_Delay
+rdax	input0,0.1		;limit to 1/10th of space, this corresponds to pdel 3276, multiplied by control 0 input value
+@else
+sof 0, 0.025	; default pre-delay, something greater than zero
+@endif
+
+wrax	addr_ptr,0
+
+;feed inputs to predelay:
+
+rdax	input, gain
+; rdax	adcr,0.25	;leave headroom
+wra	pdel,0		;write to predelay
+
+;read predelay output and write to tdel input:
+
+rmpa	1
+wra	tdel,1		;pass through	
+
+;now do reverb:
+
+rda	ap1#,inputkap
+wrap	ap1,-inputkap
+rda	ap2#,inputkap
+wrap	ap2,-inputkap
+rda	ap3#,inputkap
+wrap	ap3,-inputkap
+rda	ap4#,inputkap
+wrap	ap4,-inputkap
+wrax	apout,0
+
+rda	d4#, krt		;read last delay output
+
+@isPinConnected Reverb_Time
+mulx	input1		;scale by Krt
+@endif
+
+rdax	apout,1		;read apout
+rda	lap1a#,dlkap	;do loop all passes
+wrap	lap1a,-dlkap
+rda	lap1b#,-dlkap
+wrap	lap1b,dlkap
+rdfx	hp1,hpdf	;high pass filter (fixed)
+wrhx	hp1,-0.5
+wrax	temp,-1		;write to temp (for shelving LP)
+rdfx	lp1,0.5		;do the LP as a HP
+wrhx	lp1,-1
+
+@isPinConnected HF_Loss
+mulx	input2		;kd is a shelf (neg number)
+@endif
+
+rdax	temp,1		;add filter input
+wra	d1,0		;write to next delay input
+
+rda	d1#,-krt
+
+@isPinConnected Reverb_Time
+mulx	input1
+@endif
+
+rdax	apout,1
+rda	lap2a#,dlkap
+wrap	lap2a,-dlkap
+rda	lap2b#,dlkap
+wrap	lap2b,-dlkap
+rdfx	hp2,hpdf
+wrhx	hp2,-0.5
+wrax	temp,-1
+rdfx	lp2,0.5
+wrhx	lp2,-1
+
+@isPinConnected HF_Loss
+mulx	input2
+@endif
+
+rdax	temp,1
+wra	d2,0
+
+rda	d2#,-1
+
+@isPinConnected Reverb_Time
+mulx	input1		;scale by Krt
+@endif
+
+; mulx	krt
+rdax	apout,1
+rda	lap3a#,dlkap
+wrap	lap3a,-dlkap
+rda	lap3b#,dlkap
+wrap	lap3b,-dlkap
+rdfx	hp2,0.05
+wrhx	hp2,-0.5
+wrax	temp,-1
+rdfx	lp3,0.5
+wrhx	lp3,-1
+mulx	kd
+rdax	temp,1
+wra	d3,0
+
+rda	d3#,-1
+
+@isPinConnected Reverb_Time
+mulx	input1		;scale by Krt
+@endif
+
+;mulx	krt
+rdax	apout,1
+rda	lap4a#,dlkap
+wrap	lap4a,-dlkap
+rda	lap4b#,dlkap
+wrap	lap4b,-dlkap
+wrax	temp,-1
+rdfx	lp4,0.5
+wrhx	lp4,-1
+mulx	kd
+rdax	temp,1
+wra	d4,0
+
+;do all passes within tdel, and filter tdel input:
+
+rda	tdel+100,1
+rda	tap1#,0.5
+wrap	tap1,-0.5
+wrax	temp,1
+rdfx	tlp,0.1
+wrhx	tlp,-1
+
+@isPinConnected HF_Loss
+mulx	input2
+@endif
+
+rdax	temp,1
+wra	tdel+101,0
+
+rda	tdel+1000,1
+rda	tap2#,0.5
+wrap	tap2,-0.5
+wra	tdel+1001,0
+
+;now combine initial sound with reverb out to DACs:
+
+rda	tdel+701,0.7
+rda	tdel+956,0.6
+rda	tdel+409,0.5
+rda	tdel+1323,0.4
+@isPinConnected OutputR
+rda	d1,1.5
+@else
+rda	d1#,0.7
+rda	d2#,0.8
+@endif
+
+;rdax input, 1
+wrax	outputL,0
+
+@isPinConnected OutputR
+rda	tdel+582,0.7
+rda	tdel+956,0.6
+rda	tdel+1047,0.5
+rda	tdel+1323,0.4
+rda	d3,1.5
+;rdax input, 1
+wrax	outputR,0
+@endif
+
+;finally, put 'air' in lap(x)c elements:
+
+dochorus:
+cho rda, sin0,sin|reg|compc,lap1b+100
+cho rda,sin0,sin,lap1b+101
+wra	lap1b+200,0
+
+cho rda,sin0,cos|reg|compc,lap3b+100
+cho rda,sin0,cos,lap3b+101
+wra	lap3b+200,0
+
+@setOutputPin OutputL outputL
+@setOutputPin OutputR outputR
+
+@endif
+
+

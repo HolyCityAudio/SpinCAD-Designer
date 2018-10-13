@@ -1,0 +1,21 @@
+@name Exp
+@color "0xf2f224"  
+@controlInput input Input
+@controlOutput output1 'Exp Output'  
+
+equ multiplier 0.5 
+@sliderLabel multiplier Exp_Multiplier -1.0 1.0 0.5 1000.0 3 
+
+equ exp_offset -0.5 
+@sliderLabel exp_offset Exp_Offset -1.0 1.0 -0.5 1000.0 3 
+
+;REGISTERS 
+equ   output1     reg0       
+
+@isPinConnected Input
+rdax    input,1    ;read input signal
+exp multiplier, exp_offset 
+wrax    output1,0    ;output  
+@setOutputPin 'Exp Output' output1
+@endif
+

@@ -1,0 +1,28 @@
+@name 'LPF 1P'
+@color "0x24f26f"
+@audioInput input Input
+@controlInput freqControl Frequency
+@audioOutput lpf1 Output  
+
+equ freq 0.15
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq 'Frequency (Hz)' 80 5000 100.0 100.0 1 LOGFREQ 
+
+equ output Reg0
+equ lpf1 Reg1
+
+@isPinConnected Input
+
+@isPinConnected Frequency
+rdax input, freq
+rdax lpf1, -freq
+mulx freqControl
+rdax lpf1, 1.0
+@else
+rdax input, 1.0
+rdfx lpf1, freq
+@endif
+wrax lpf1, 0
+
+@setOutputPin Output lpf1
+@endif

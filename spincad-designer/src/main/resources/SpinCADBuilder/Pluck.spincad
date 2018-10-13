@@ -1,0 +1,77 @@
+@name Pluck 
+@color "0xf2f224"  
+@audioInput input Input
+@controlOutput output "Pluck Output"  
+
+; Declare constants
+equ threshold 0.015
+@sliderLabel threshold 'Threshold' 0.001 0.5 0.25 1000.0 3
+
+equ pulseLevel -0.9
+@sliderLabel pulseLevel 'Pulse Amplitude' -1.0 1.0 0.5 100.0 2
+
+equ pulseWidth 3277 
+@sliderLabel pulseWidth 'Pulse Width' 0 5000 2500 1 0 LENGTHTOTIME
+
+@isPinConnected Input
+
+; pluck generator Gary Worsham Holy City Audio June 9, 2016
+
+equ retrigger reg0 
+equ pulsecount reg1
+equ pulsevalue reg2
+equ output reg4
+
+equ pulse_width 155
+equ retrigger_width 1655
+equ filt 0.0018
+equ pulseHeight -0.55
+equ vcffreq 0.45
+
+; skip if we are already counting
+rdax retrigger, -1.0	; get negative value of retrigger counter
+skp neg, inc_retrigger ; skp if the original value was positive
+; otherwise look for trigger threshold
+clr		; clear acc
+rdax input, 1.0	; read audio in
+absa		; absolute value
+sof 1.0, -threshold; subtract threshold.  if result is positive then audio is over threshold so trigger
+skp neg, decay	; if result is negative then continue to decay pulse towards zero
+;-----------------------------------
+triggered:	; trigger was detected
+clr
+or $1
+wrax pulsecount, 1	; set both pulsecount and retrigger to 1
+wrax retrigger, 0
+sof 0, pulseHeight		; set pulse value to pulseHeight
+wrax pulsevalue, 0
+;-----------------------------------
+inc_retrigger:	; now we are counting up until retrigger_width == retrigger_width
+clr 
+or $1 
+rdax retrigger, 1.0 
+wrax retrigger, 1.0 
+; xor retrigger_width 	; this will be all zeroes if retrigger == retrigger_width 
+skp zro, reset_trig 
+;-----------------------------------
+ldax retrigger
+skp run, pulseHigh
+;-----------------------------------
+reset_trig: 
+wrax retrigger, 0 		; acc was zero when we jumped here, so counter1=0 
+skp run, decay
+;-----------------------------------
+pulseHigh:
+rdax pulsevalue, 1.0
+skp run, filter
+;---------------------------
+decay:
+rdfx pulsevalue, filt
+wrlx pulsevalue, -1.0
+;-----------------------------
+filter:
+writeOutput:
+wrax output, 0.0
+
+@setOutputPin "Pluck Output" output
+@endif

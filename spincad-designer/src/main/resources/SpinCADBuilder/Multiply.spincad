@@ -1,0 +1,20 @@
+@name Multiply
+@color "0xf2f224"
+@controlInput input1 'Input 1'
+@controlInput input2 'Input 2'
+@controlOutput output Output
+
+;REGISTERS 
+equ   output     reg0       
+
+@isPinConnected 'Input 1'
+rdax    input1, 1.0    ;read input signal
+@isPinConnected 'Input 2'
+mulx input2
+@endif
+
+wrax    output,0    ;
+
+@setOutputPin Output output
+@endif
+
