@@ -1,0 +1,30 @@
+@name Expander
+@audioInput input Input
+@audioOutput output Smooth  
+@audioOutput old Raw  
+@controlInput crusher Crush
+
+equ ripLow 0.002
+@sliderLabel ripLow Rip_Low 0.001 0.015 0.01 1000.0 3
+
+equ ripHigh 0.1
+@sliderLabel ripHigh Rip_High 0.02 0.2 0.1 1000.0 3
+
+equ old reg0 
+equ new_val reg1 
+equ fptr reg2 
+equ temp2 reg4 
+equ output reg5
+
+@isPinConnected Input
+equ   temp   reg0
+equ   gate   reg1
+         
+wrax   temp,0.02   ;save accum, scale by sensitivity
+absa       ;take absolute value of accumulator
+rdax   gate,0.9998   ;recursive gain in register
+wrax   gate,1.999   ;save recursive register, double to sat limit
+mulx   temp   ;scale temp by saturated gate value
+
+@setOutputPin Raw old
+@endif

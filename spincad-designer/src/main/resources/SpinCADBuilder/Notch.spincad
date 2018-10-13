@@ -1,0 +1,72 @@
+@name Notch
+@color "0x24f26f"
+@audioInput input Input
+@audioOutput notch Output_Notch  
+@audioOutput bp_dly Output_Bandpass  
+@controlInput freq Freqeuncy
+@controlInput res Resonance
+
+@isPinConnected Input 
+; Pot0 is frequency
+; Pot1 is Q
+;
+equ sqrt2 1.4142135623730
+//;equ f1scale 0.05482427 * 8   ;3 times oversampled?  should this be a factor of four?
+equ f1scale 0.43859416   ;3 times oversampled?  should this be a factor of four?
+
+equ lp_dly      reg0
+equ bp_dly   reg1
+equ f1 reg2   ;raw frequency coeff (needs to be scaled up appropriately)
+equ  q1     reg3   ;raw Q coeff (will be scaled and negative)
+equ hp      reg4   ;high pass
+equ notch      reg5   ;notch output
+equ p0fil      reg6
+equ p1fil      reg7
+
+;Frequency control
+   rdax   freq,1      ;get freq control
+   sof    0.2,0	; reduce range of freq select
+   rdfx   p0fil,0.01   ;average with filter
+   wrax   p0fil,1   
+   wrax   f1,0
+;Q control
+  rdax   res,1      ;get Q control
+  sof   1,-1      ;flip control to go from 1 to 0
+  absa
+   rdfx   p1fil,0.01   ;average with filter
+  wrax   p1fil,1
+    wrax   q1,0
+
+
+; LP = LP_DLY + F1 * BP_DLY
+
+   ldax   bp_dly
+   mulx   f1      ; frequency coefficient    sof   f1scale,0
+   rdax   lp_dly, 1.0
+   wrax   lp_dly, -1.0   ; low-pass delay is not referenced any more, so safe to directly write LP value here
+; HP = Input - LP - Q1 * BP_DLY
+; ACC has -LP in it from preceeding WRAX
+   rdax   input,1      ; sample the input and add to ACC
+   wrax   hp,1      ; store (input - lp) temporarily
+   ldax   bp_dly
+;  sof -1,0
+   mulx   q1      ; Q coefficent, should be negative and go from -2 to 0 for Q of 0.5 to infinity
+   sof   sqrt2,0
+   sof   -sqrt2,0      ; scale and make negative the Q1
+   rdax   hp,1
+   wrax   hp,1
+; BP = F1 * HP + BP_DLY
+; ACC has HP in it already
+   mulx   f1
+   sof   f1scale,0
+   rdax   bp_dly,1
+   wrax   bp_dly,0      ; store the BP output... bp_dly is o.k. as it is no longer referenced by the equations, clr ACC
+; NOTCH = HP + LP
+   ldax   lp_dly
+   rdax   hp,1
+
+;Output:
+   wrax   notch,1            ;write outputs
+@setOutputPin Output_Bandpass bp_dly
+@setOutputPin Output_Notch notch
+@endif

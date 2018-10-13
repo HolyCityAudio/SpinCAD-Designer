@@ -1,0 +1,239 @@
+@name Phaser
+@audioInput adcl Input_Left 
+@audioInput adcr Input_Right
+@audioOutput output1 Audio_Output_1 
+@audioOutput output1 Audio_Output_2
+
+@controlInput input0 Reverb_Level
+@controlInput input1 Phase_Rate
+@controlInput input2 Phase_Width
+
+;GA_DEMO	Phase shifter 
+
+;Pot0 = Reverb level 
+;Pot1 = Phase rate 
+;pot2 = Sweep width 
+
+;memory declarations:
+@isPinConnected Input_Left
+
+mem	ap1	334
+mem	ap2	556
+mem	ap3	871
+
+mem	lap1a	808
+mem	lap1b	1934
+mem	d1	2489
+
+mem	lap2a	1016
+mem	lap2b	1787
+mem	d2	2287
+
+;register equates:
+
+equ	mono	reg0
+equ	apout	reg1
+equ	lp1	reg2
+equ	lp2	reg3
+equ	revout	reg4
+equ	phase	reg5
+equ	pout	reg6
+equ	p1	reg7
+equ	p2	reg8
+equ	p3	reg9
+equ	p4	reg10
+equ	p5	reg11
+equ	p6	reg12
+equ	p7	reg13
+equ	p8	reg14
+equ	temp	reg15
+equ	temp1	reg16
+equ	bypass	reg17
+equ output0 reg18
+equ output1 reg19
+
+;declare constants:
+
+equ	kap	0.6	;all pass coefficient
+equ	krt	0.55	;reverb time
+equ	krf	0.5	;reverb lpf freq
+equ	krs	-0.6	;reverb lpf shelf
+
+;clear registers and initialize LFOs:
+
+skp	run,endclr
+wrax	lp1,0
+wrax	lp2,0
+wlds	sin0,12,100
+wlds	sin1,0,32767
+endclr:
+
+;sum inputs to mono:
+
+rdax	adcl,0.5
+rdax	adcr,0.5
+wrax	mono,0
+
+;do reverb and put result in revout (after pot0 control):
+
+rdax	pout,0.5		;drive reverb with phase output
+rda	ap1#,kap
+wrap	ap1,-kap
+rda	ap2#,kap
+wrap	ap2,-kap
+rda	ap3#,kap
+wrap	ap3,-kap
+wrax	apout,0
+
+rda	d2#,krt
+rdax	apout,1
+rda	lap1a#,kap
+wrap	lap1a,-kap
+rda	lap1b#,kap
+wrap	lap1b,-kap
+rdfx	lp1,krf
+wrlx	lp1,krs
+wra	d1,0
+
+rda	d1#,krt
+rdax	apout,1
+rda	lap2a#,kap
+wrap	lap2a,-kap
+rda	lap2b#,kap
+wrap	lap2b,-kap
+rdfx	lp2,krf
+wrlx	lp2,krs
+wra	d2,1.99
+
+@isPinConnected Reverb_Level
+rda	d1,1.99
+mulx	pot0
+mulx	pot0 
+@else
+rda d1, 0.75
+@endif
+
+wrax	revout,0
+
+;smooth reverb:
+
+cho rda, sin0,sin|reg|compc,lap1b+100
+cho rda,sin0,sin,lap1b+101
+wra	lap1b+200,0
+cho rda,sin0,sin|reg|compc,lap2b+100
+cho rda,sin0,sin,lap2b+101
+wra	lap2b+200,0
+
+;Do phase shifter from sin1:
+
+@isPinConnected Phase_Width
+rdax	pot2,1
+rdax	bypass,0.9
+@else
+sof 0.0, 0.5	; default value
+@endif
+
+wrax	bypass,0
+
+@isPinConnected Phase_Rate
+rdax	pot1,1
+mulx	pot1
+sof	0.2,0.02
+@else
+sof 0.0, 0.1	; default value
+@endif
+
+wrax	sin1_rate,0
+
+cho rdal,sin1		;read sin1 as +/-1
+sof	0.5,0.5		;make positive only sin ranges 0 to 1
+log	0.5,0
+exp	1,0		;square root function
+sof	1,-0.5		;make +/-0.5
+
+@isPinConnected Phase_Width
+sof	1.999,0		;make +/-1 again
+mulx	pot2		;pot2 controls width and mix
+@else
+sof 0.0, 0.75	; default value
+@endif
+
+sof	0.1,0.85
+wrax	phase,0		;phase variable ranges 0.8 to 0.95
+
+rdax	p1,1
+wrax	temp,1
+mulx	phase
+rdax	mono,0.015625	;input to phase shift network
+wrax	p1,-1
+mulx	phase
+rdax	temp,1
+wrax	temp1,0
+
+rdax	p2,1
+wrax	temp,1
+mulx	phase
+rdax	temp1,1
+wrax	p2,-1
+mulx	phase
+rdax	temp,1
+wrax	temp1,0
+
+rdax	p3,1
+wrax	temp,1
+mulx	phase
+rdax	temp1,1
+wrax	p3,-1
+mulx	phase
+rdax	temp,1
+wrax	temp1,0
+
+rdax	p4,1
+wrax	temp,1
+mulx	phase
+rdax	temp1,1
+wrax	p4,-1
+mulx	phase
+rdax	temp,1
+wrax	temp1,0
+
+rdax	p5,1
+wrax	temp,1
+mulx	phase
+rdax	temp1,1
+wrax	p5,-1
+mulx	phase
+rdax	temp,1
+wrax	temp1,0
+
+rdax	p6,1
+wrax	temp,1
+mulx	phase
+rdax	temp1,1
+wrax	p6,-1
+mulx	phase
+rdax	temp,1
+
+sof	-2,0
+sof	-2,0
+sof	-2,0
+sof	-2,0
+sof	-2,0
+sof	-2,0	;output of phase shifter in acc
+
+mulx	bypass
+rdax	mono,1
+wrax	pout,1
+rdax	revout,1
+sof	1,0.02
+wrax	output0,1
+sof	1,-0.04
+wrax	output1,0
+@endif
+
+
+
+
+
+
+

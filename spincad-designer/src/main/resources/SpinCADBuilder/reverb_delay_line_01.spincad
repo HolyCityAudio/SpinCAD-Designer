@@ -1,0 +1,75 @@
+@name Reverb_Delay_Line_01
+@color "0x7100fc"
+@audioInput input Input 
+@audioInput fbInput "Feedback Input" 
+@audioOutput dlOut "Delay Line Out" 
+@audioOutput lpOut "Low Pass Out" 
+
+equ gain 0.5 
+@sliderLabel gain Input_Gain -24 0 -6 1.0 1 DBLEVEL 
+
+;now generate a pair of LFOs to modulate the APs in the loop:
+
+// create a Control Panel with a Slider Label
+equ delayLength 2500 
+@sliderLabel delayLength 'Delay Line Time' 0 5000 2500 1 0 LENGTHTOTIME
+
+equ krt 0.5
+@sliderLabel krt "Reverb Time Coefficient" 0.05 0.95 0.5 100.0 2
+
+equ lpdf 0.12
+@sliderLabel lpdf "Damping Freq Hi" 500 2500 100.0 100.0 1 LOGFREQ
+
+// create a Control Panel with a Slider Label
+equ ap1Length 231 
+@sliderLabel ap1Length 'Allpass #1 Time' 0 1500 1250 1 0 LENGTHTOTIME
+
+equ ap1kap 0.5
+@sliderLabel ap1kap "All-Pass #1 Coefficient" 0.05 0.95 0.5 100.0 2
+
+// create a Control Panel with a Slider Label
+equ ap2Length 231 
+@sliderLabel ap2Length 'Allpass #2 Time' 0 1500 1250 1 0 LENGTHTOTIME
+
+equ ap2kap 0.5
+@sliderLabel ap2kap "All-Pass #2 Coefficient" 0.05 0.95 0.5 100.0 2
+
+@getBaseAddress 
+mem		lap1a		ap1Length
+mem	   	lap1b		ap2Length
+mem   	delay		delayLength
+
+@isPinConnected Input
+
+equ KRS -1
+
+;declare registers:
+equ dlOut reg6
+
+;read-first registers:
+equ	lp1	reg1
+equ	hp1	reg2
+
+;program:
+
+@isPinConnected "Feedback Input"
+rdax   	fbInput, krt ; take external input from previous delay line or feedback loop
+@endif
+
+rdfx   	lp1, lpdf    ; shelving lowpass (high freq damping) 
+wrlx   	lp1, KRS 
+rda   	lap1a#, ap1kap	; all pass #1
+wrap   	lap1a, -ap1kap 
+rda   	lap1b#, ap2kap 	; all pass #2
+wrap   	lap1b, -ap2kap 
+rdax   	input, 1      	; mix input 
+wra 	delay, 0.0			; write that all to the head of this delay
+rda    	delay#, 1.0		; now get tail end of this delay and
+wrax   	dlOut, 0      ; write to delay line output register
+
+@setOutputPin "Delay Line Out" dlOut
+@setOutputPin "Low Pass Out" lp1
+
+@endif
+
+

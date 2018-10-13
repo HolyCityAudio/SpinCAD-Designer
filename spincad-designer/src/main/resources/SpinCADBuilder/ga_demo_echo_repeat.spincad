@@ -1,0 +1,156 @@
+@name Repeat_echo
+@audioInput adcl Input_Left 
+@audioInput adcr Input_Right
+@audioOutput dacl Audio_Output_1  
+@audioOutput dacr Audio_Output_2
+
+@controlInput input0 Reverb_Level
+@controlInput input1 Delay_Time
+@controlInput input2 Delay_Level
+
+;GA_DEMO	Echo with repeats 
+
+;Pot0 = Reverb level
+;Pot1 = Delay
+;pot2 = Echo level 
+
+;memory declarations:
+
+@isPinConnected Input_Left
+mem	edel	20000
+
+mem	ap1	334
+mem	ap2	556
+mem	ap3	871
+
+mem	lap1a	808
+mem	lap1b	1934
+mem	d1	2489
+
+mem	lap2a	1016
+mem	lap2b	1787
+mem	d2	2287
+
+;register equates:
+
+equ	mono	reg0
+equ	apout	reg1
+equ	lp1	reg2 
+equ	lp2	reg3
+equ	revout	reg4
+equ	dout	reg5
+equ	dx	reg6
+equ	efil	reg7
+equ dacl REG8
+equ dacr REG9
+
+;declare constants:
+
+equ	kap	0.6	;all pass coefficient
+equ	krt	0.55	;reverb time
+equ	krf	0.5	;reverb lpf freq
+equ	krs	-0.6	;reverb lpf shelf
+equ	fbk	0.25
+
+;clear registers and initialize LFOs:
+
+skp	run,endclr
+wrax	lp1,0
+wrax	lp2,0
+wrax	efil,0
+wlds	sin0,12,100
+endclr:
+
+;sum inputs to mono:
+
+rdax	adcl,0.5
+rdax	adcr,0.5
+wrax	mono,0	
+
+rdax	dout,fbk
+rdax	mono,1
+wra	edel,0
+
+;do reverb and put result in revout (after pot0 control):
+
+rdax	mono,0.5
+rdax	dx,0.5
+
+rda	ap1#,kap
+wrap	ap1,-kap
+rda	ap2#,kap
+wrap	ap2,-kap
+rda	ap3#,kap
+wrap	ap3,-kap
+wrax	apout,0
+
+rda		d2#,krt
+rdax	apout,1
+rda		lap1a#,kap
+wrap	lap1a,-kap
+rda		lap1b#,kap
+wrap	lap1b,-kap
+rdfx	lp1,krf
+wrlx	lp1,krs
+wra		d1,0
+
+rda		d1#,krt
+rdax	apout,1
+rda		lap2a#,kap
+wrap	lap2a,-kap
+rda		lap2b#,kap
+wrap	lap2b,-kap
+rdfx	lp2,krf
+wrlx	lp2,krs
+wra		d2,1.99
+rda		d1,1.99
+
+@isPinConnected Reverb_Level
+mulx	pot0 
+mulx	pot0
+wrax	revout,0
+@else
+sof		0.5, 0.0
+wrax 	revout, 0
+@endif
+
+;smooth reverb:
+
+cho rda,sin0,sin|reg|compc,lap1b+100
+cho rda,sin0,sin,lap1b+101
+wra	lap1b+200,0
+cho rda,sin0,sin|reg|compc,lap2b+100
+cho rda,sin0,sin,lap2b+101
+wra	lap2b+200,0
+
+;now get delay output, controlled by pot1:
+
+@isPinConnected Delay_Time
+rdax	pot1,1 
+and	%01111110_00000000_00000000	 ;10mS increments
+sof	0.55,0.05	;range 50mS to 600mS
+@else
+sof 0.0, 0.3
+@endif
+
+wrax	addr_ptr,0	;write address pointer
+rmpa	1		;read pointer
+rdfx	efil,0.3
+wrlx	efil,-1
+wrax	dout,1
+
+@isPinConnected Delay_Level
+mulx	pot2		;adjust level with pot2
+mulx	pot2		;square  function
+@else
+sof	0.0, 0.25		; default level if nothing connected
+@endif
+
+wrax	dx,1		;write level adjusted delay out
+rdax	mono,1		;pass input
+rdax	revout,1		;add reverb
+sof	1,0.02
+wrax	dacl,1
+sof	1,-0.04
+wrax	dacr,0
+@endif

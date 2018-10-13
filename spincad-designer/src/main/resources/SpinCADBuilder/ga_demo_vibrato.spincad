@@ -1,0 +1,206 @@
+@name Vibrato
+@audioInput adcl Input_Left 
+@audioInput adcr Input_Right
+@audioOutput dacl Audio_Output_1 
+@audioOutput dacr Audio_Output_2
+
+@controlInput input0 Reverb_Level 
+@controlInput input1 Vibrato_Rate
+@controlInput input2 Vibrato_Width
+
+;GA_DEMO	Vibrato (after strike)
+
+;Pot0 = Reverb level
+;Pot1 = Vibrato rate
+;pot2 = Vibrato width
+
+;memory declarations:
+@isPinConnected Input_Left
+
+mem	ap1	334
+mem	ap2	556
+mem	ap3	871
+
+mem	lap1a	808
+mem	lap1b	1934
+mem	d1	2489
+
+mem	lap2a	1016
+mem	lap2b	1787
+mem	d2	2287
+
+mem	vdel	1000
+
+;register equates:
+
+equ	mono	reg0
+equ	apout	reg1
+equ	lp1	reg2
+equ	lp2	reg3
+equ	revout	reg4
+equ	fvib	reg5
+equ	lev	reg6
+equ	strike	reg7
+equ	widfil	reg8
+equ	vib	reg9
+equ	peak	reg10
+equ	bypass	reg11
+equ	sum	reg12
+equ dacl reg13
+equ dacr reg14
+
+;declare constants:
+
+equ	kap	0.6	;all pass coefficient
+equ	krt	0.55	;reverb time
+equ	krf	0.5	;reverb lpf freq
+equ	krs	-0.6	;reverb lpf shelf
+
+;clear registers and initialize LFOs:
+
+skp	run,endclr
+wrax	lp1,0
+wrax	lp2,0
+wlds	sin0,12,100
+wlds	sin1,0,0
+endclr:
+
+;sum inputs to mono:
+
+rdax	adcl,0.5
+rdax	adcr,0.5
+wra	vdel,1		;write to vibrato delay, pass on
+wrax	mono,0
+
+;do reverb and put result in revout (after pot0 control):
+
+rdax	sum,0.5
+rda	ap1#,kap
+wrap	ap1,-kap
+rda	ap2#,kap
+wrap	ap2,-kap
+rda	ap3#,kap
+wrap	ap3,-kap
+wrax	apout,0
+
+rda	d2#,krt
+rdax	apout,1
+rda	lap1a#,kap
+wrap	lap1a,-kap
+rda	lap1b#,kap
+wrap	lap1b,-kap
+rdfx	lp1,krf
+wrlx	lp1,krs
+wra	d1,0
+
+rda	d1#,krt
+rdax	apout,1
+rda	lap2a#,kap
+wrap	lap2a,-kap
+rda	lap2b#,kap
+wrap	lap2b,-kap
+rdfx	lp2,krf
+wrlx	lp2,krs
+wra	d2,1.99
+
+@isPinConnected Reverb_Level
+rda	d1,1.99
+mulx	pot0
+mulx	pot0 
+@else
+rda d1, 0.75
+@endif
+
+wrax	revout,0
+
+;smooth reverb:
+
+cho rda,sin0,sin|reg|compc,lap1b+100
+cho rda,sin0,sin,lap1b+101
+wra	lap1b+200,0
+cho rda,sin0,sin|reg|compc,lap2b+100
+cho rda,sin0,sin,lap2b+101
+wra	lap2b+200,0
+
+;Now create an after-vibrato effect:
+;first, come up with a vibrato frequency using sin0:
+
+@isPinConnected Vibrato_Rate
+rdax	pot1,1
+sof	0.3,0.1
+@else
+sof 0.0, 0.35	; default value
+@endif
+
+mulx	strike
+wrax	sin1_rate,0
+
+;now derive a sweep width with pot2, which will be modified by strike:
+
+@isPinConnected Vibrato_Width
+rdax	pot2,0.01
+rdfx	widfil,0.001	;+/-5mS
+wrlx	widfil,-1
+@else
+sof 0.0, -0.01
+@endif
+
+wrax	sin1_range,0
+
+;get vibrato signal into vib
+
+cho rda,sin1,sin|reg|compc,vdel+170
+cho rda,sin1,sin,vdel+171
+wrax	vib,0
+
+;now make up a 'strike' envelope:
+
+rdax	mono,1
+absa
+wrax	peak,0.8
+rdax	lev,-1
+skp	neg,nostrike
+clr
+wrax	strike,0
+nostrike:
+clr
+rdax	peak,1
+maxx	lev,0.999
+wrax	lev,0
+
+// or	%00000000_00000001_00000000
+rdax	strike,1		;ramp strike if not a peak signal
+wrax	strike,0
+
+;create bypass from pot2:
+
+@isPinConnected Vibrato_Width
+rdax	pot2,1
+rdax	bypass,0.9
+@else
+sof 0.0, 0.5
+@endif
+
+wrax	bypass,0
+
+;create output:
+
+rdax	vib,1
+rdax	mono,-1
+mulx	bypass
+rdax	mono,1
+wrax	sum,1
+rdax	revout,1
+sof	1,0.02
+wrax	dacl,1
+sof	1,-0.04
+wrax	dacr,0
+
+@endif
+
+
+
+
+
+
+

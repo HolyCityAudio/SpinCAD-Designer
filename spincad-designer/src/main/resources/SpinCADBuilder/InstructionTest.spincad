@@ -1,0 +1,229 @@
+@name Instruction_Test 
+@audioInput adcl Input_Left
+@audioInput adcr Input_Right
+@audioOutput dacl Audio_Output_1  
+@audioOutput dacr Audio_Output_2  
+ 
+@controlInput pot0 Reverb 
+@controlInput pot1 Phase_Rate 
+@controlInput pot2 Phase_Width
+
+; mem test  
+mem buffer 1000 
+mem delay1 6000
+mem delay2 2000
+mem delay3 3000
+mem delay_line 5000
+mem ap1 500
+mem fdell 1500
+
+offset del 250
+equ factor 0.56789
+equ s_dot_ten 0.998
+
+@isPinConnected Input_Left
+; rdfx test  
+rdfx input, kq0
+rdfx input, -kq0
+rdfx adcl, 0.00001
+
+; skip test
+; skip GEZ, 1
+skp GEZ, gez_label
+jam RMP1
+gez_label:
+
+; skip ZRC, 4
+skp ZRC, zrc_label
+jam RMP1
+jam RMP0
+absa
+not
+zrc_label:
+
+; this should generate a Skip(RUN, 4) statement
+skp RUN, label123 
+; label test   
+not
+label:
+absa
+; this should generate a Skip(NEG, 2) statement
+skp NEG, label_123
+jam RMP1
+label123:
+; another comment
+clr
+label_123:
+
+;wrap tests
+wrap delay_line, 1.0
+wrap delay_line+75, factor
+wrap delay2+del, 0.3123
+wrap delay2#, factor
+wrap delay1^+375, 0.33215
+wrap delay1^+del, 0.33215
+wrap delay1^, factor
+wrap delay3^-450, 0.34445533
+wrap delay3^-del, 0.34445533
+wrap delay3#-450, 0.44553378
+
+; wra tests 
+wra buffer+del, -1.08 
+wra buffer^+del, 0.78 
+wra buffer^-del, 0.36 
+wra buffer#-del, 0.91
+wra buffer+50, -1.0
+wra buffer^+25, 1.0 
+wra buffer^+250, 0.77 
+wra buffer^-75, 0.9 
+wra buffer#-350, 0.89
+wra buffer#-35, 0.99
+wra buffer#, 0.96
+wra buffer^, 0.85
+wra buffer, 0.5
+
+; rda tests 
+rda buffer+del, -1.08 
+rda buffer^+del, 0.78 
+rda buffer^-del, 0.36 
+rda buffer#-del, 0.91
+rda buffer+50, -1.0
+rda buffer^+25, 1.0 
+rda buffer^+250, 0.77 
+rda buffer^-75, 0.9 
+rda buffer#-350, 0.89
+rda buffer#-35, 0.99
+rda buffer#, 0.96
+rda buffer^, 0.85
+rda buffer, 0.5
+
+; and, or, xor
+
+and %1010101
+and %10001001_1001000_00000001 
+and %1001_1100_1011_0110
+and $55AA
+
+or %101101
+or %1000110011_01_01
+or %10001001_1001000_00000001
+or $FEEEEE
+or $15
+or $AA55
+or $55AA
+
+xor %101010101  
+xor %1000110011_01_01
+xor $15
+xor $AA55
+xor $55AA
+
+// template equates 
+equ dacl REG2
+equ dacr REG31
+
+
+// isPinConnected test
+@isPinConnected Reverb
+and $FEEEEE 
+and $15
+and $AA55
+@else
+xor %10001100_10101010_01011110
+xor %10001001_10010010_00000001
+xor $FEEEEE
+@endif 
+
+@isPinConnected Phase_Rate
+; rmpa tests
+	rmpa 1.0
+	rmpa -2.0
+@else
+	rmpa factor
+@endif
+
+; rmpa tests
+rmpa 1.0
+rmpa -2.0
+rmpa factor
+
+; cho rda tests 
+cho rda,   sin0,   reg | compc,   ap1+50 ; sin0 
+cho rda,   sin0,   reg | compc,   ap1+50   ;sin0 
+cho rda,   sin0,   reg ,   ap1+51
+cho rda, rmp0, reg|compc, fdell#
+
+; Equate tests
+equ input REG0  
+equ Output REG1 
+equ kq0 0.43598
+equ one 1.0
+equ two 1.999
+
+
+
+; jam tests
+jam RMP0
+jam RMP1
+
+; no arguments
+clr    
+not 
+absa
+
+; comment test
+
+; log tests
+log one, s_dot_ten 
+log 1, 0.99
+log 1.0, 0.799  
+log -1.0, -1.0
+
+; exp tests
+exp 1.0, s_dot_ten
+
+; cho rdal tests 
+cho rdal, rmp0	
+cho rdal, rmp1
+
+; wlds tests 
+wlds sin0, 30, 50 
+wlds sin1, 134, 4096
+
+; wldr tests 
+wldr 0,   30,   512 
+wldr 1, 134, 4096
+
+
+; register tests
+; rdax test 
+rdax input, kq0
+rdax input, -kq0
+rdax input, 0.45
+rdax input, 1
+rdax input, 0
+rdax input, -2
+rdax input, 1.45
+rdax 45, -2.0
+
+; wrax test 
+wrax input, kq0
+wrax input, -kq0
+wrax input, 1
+
+
+
+; maxx test 
+maxx input, kq0
+maxx 34, -kq0
+maxx adcr, 0.45
+
+; wrlx test 
+wrlx input, kq0
+wrlx 34, -kq0
+wrlx input, 0.45
+
+; wrhx test 
+wrhx input, -2
+wrhx input, 0.45
+@endif

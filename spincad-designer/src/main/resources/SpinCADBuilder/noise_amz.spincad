@@ -1,0 +1,54 @@
+@name Noise_AMZ  
+@audioOutput output1 Output 
+
+equ gain 1.0 
+@sliderLabel gain 'Output Level' -24 0 -6 1.0 1 DBLEVEL 
+
+equ controlRange 0
+@comboBox controlRange '0 -> +1' '-1 -> +1'
+
+; 24 bit maximal period Galois LFSR 
+; Example by Jack Orman 
+; http://www.muzique.com 
+; March 5, 2015 
+
+; REG 0 : LFSR NOISE REGISTER 
+; REG 1 : OUTPUT BIT 
+; 
+@isPinConnected Output
+equ LFSR REG0 
+equ TEMP REG1 
+equ output1 REG2
+
+; 
+; SEED THE LFSR WITH A NON-ZERO VALUE 
+skp RUN,START 
+sof 0,0.666      ; JUST TO ENSURE IT IS REALLY NON-ZERO 
+wrax LFSR,0 
+START: 
+ldax LFSR        ; GET LFSR REGISTER 
+and $000001     ; GET LSB OF THE NOISE REGISTER 
+wrax TEMP,0      ; SAVE BIT 
+rdax LFSR,0.5    ; GET LFSR REG and SHIFT RIGHT 1 PLACE 
+and $7FFFFF     ; CLEAR MSB 
+wrax LFSR,0      ; SAVE RESULT 
+ldax TEMP        ; GET THE OUTPUT BIT 
+skp ZRO,SHFTZRO   ; IF 0 THEN JUMP, IF LSB WAS SET THEN PROCESS 
+clr              ; CLEAR ACC 
+ldax LFSR        ; GET THE SAVED LFSR 
+xor $D80000     ; TOGGLE THE MASK BITS 
+wrax LFSR,0       ; SAVE IT 
+SHFTZRO: 
+; rdax LFSR, gain 
+ldax LFSR
+
+@isEqualTo controlRange 0 ; 0 - 1
+absa
+@endif
+
+wrax output1,0 
+
+@setOutputPin Output output1
+@endif
+
+

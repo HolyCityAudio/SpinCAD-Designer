@@ -1,0 +1,47 @@
+@name Slicer
+@color "0xf2f224"  
+@controlInput input1 'Control In'
+@controlInput level 'Slice Level'
+@controlOutput output 'Slicer Out'
+
+equ slice 0.5
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel slice 'Slice Level' 0.0 0.95 0.5 100.0 2
+
+equ controlRange 0
+@comboBox controlRange '0 -> +1' '-1 -> +1'
+
+equ output reg0 
+equ hold reg1
+
+@isPinConnected 'Control In'
+
+sof 0.0, slice
+
+@isPinConnected 'Slice Level'
+mulx level
+@endif
+
+rdax    input1, -1.0   ;negate input level
+
+@isEqualTo controlRange 0
+skp neg, below
+sof 0, 0.9990234275
+skp run, writeIt
+below:
+clr
+writeIt:
+wrax output, 0
+@else
+skp neg, below1
+sof 0, 0.9990234275
+skp run, writeIt1
+below1:
+sof 0, -0.9990234275
+writeIt1:
+wrax output, 0
+@endif
+
+@endif
+
+@setOutputPin 'Slicer Out' output

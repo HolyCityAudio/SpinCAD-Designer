@@ -1,0 +1,14 @@
+@name Octave
+@audioInput adcl Input
+@audioOutput output1 Audio_Output  
+
+;REGISTERS 
+equ   output1     reg0       
+
+@isPinConnected Input
+rdax    adcl,1    ;read input signal
+absa
+wrax    output1,0    ;output in ACC and lf1 
+@setOutputPin Audio_Output output1
+@endif
+

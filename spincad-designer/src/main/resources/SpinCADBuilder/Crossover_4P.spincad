@@ -1,0 +1,48 @@
+@name 'Crossover 4P'
+@color "0x24f26f"
+@audioInput input Input
+@controlInput freqControl Frequency
+@audioOutput lo_sig "Low Output"  
+@audioOutput hi_sig "High Output"  
+
+equ freq 0.15
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq 'Frequency (Hz)' 80 5000 100.0 100.0 1 LOGFREQ 
+
+equ output Reg0
+equ flt_SV1 reg2
+equ flt_SV2 reg3
+
+equ flt_SV3 reg4
+equ lo_sig reg5
+equ hi_sig reg6
+
+@isPinConnected Input
+
+; From Don Stavely:
+; Here is the code for a tunable 4th-order Linkwitz_Riley state variable filter, which splits the input into high and low bands: 
+; 
+rdax 	input, 0.25
+rdax	flt_SV1, -2.00	; add 1st SV 
+rdax	flt_SV2, -2.00	; add 2nd SV 
+rdax	flt_SV3, -1.00	; add 3rd SV 
+rdax	lo_sig, -0.25	; add 4th SV 
+sof		1.999, 0	; recover some gain 
+wrax	hi_sig, 0.5	; save highpass, back to filter gain 
+mulx	freqControl	; scale by frequency 
+rdax	flt_SV1, 1	; add to first SV 
+wrax	flt_SV1, 1	; integrate it 
+mulx	freqControl	; scale by frequency 
+rdax	flt_SV2, 1	; add to second SV 
+wrax	flt_SV2, 1	; integrate it 
+mulx	freqControl	; scale by frequency 
+rdax	flt_SV3, 1	; add to third SV 
+wrax	flt_SV3, 1	; integrate it 
+mulx	freqControl	; scale by frequency 
+rdax	lo_sig, 1	; add to fourth SV, which is lowpass 
+wrax	lo_sig, 0	; integrate it, clear ACC	wrax lpf1, 0
+
+@setOutputPin "Low Output" lo_sig
+@setOutputPin "High Output" hi_sig
+
+@endif

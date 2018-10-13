@@ -1,0 +1,52 @@
+@name Pitch_Up_Down
+@color "0x00fc82"
+@audioInput input Input
+@audioOutput pitch1 Pitch_Down_Out 
+@audioOutput pitch2 Pitch_Up_Out
+
+@isPinConnected Input
+
+// establish the base address for this module
+@getBaseAddress
+// then allocate memory
+mem delayd 4096
+mem temp 1 
+
+skp run, START 
+wldr 1,16384,4096 
+wldr 0, -8192,4096 
+START: 
+ldax input
+wra delayd,0
+			
+@isPinConnected Pitch_Down_Out
+equ pitch1 reg0
+cho rda,RMP0,REG|COMPC,delayd 
+cho rda,RMP0,0,delayd+ 1 
+wra temp,0 
+cho rda,RMP0,RPTR2|COMPC,delayd 
+cho rda,RMP0,RPTR2,delayd+ 1 
+cho sof,RMP0,NA|COMPC,0 
+cho rda,RMP0,NA,temp
+wrax pitch1,0
+@endif
+
+@setOutputPin Pitch_Down_Out pitch1
+	
+@isPinConnected Pitch_Up_Out
+//second pitch shift
+equ pitch2 reg1 
+cho rda,RMP1,REG|COMPC,delayd 
+cho rda,RMP1,0,delayd+ 1 
+wra temp,0 
+cho rda,RMP1,RPTR2|COMPC,delayd 
+cho rda,RMP1,RPTR2,delayd+ 1 
+cho sof,RMP1,NA|COMPC,0 
+cho rda,RMP1,NA,temp
+wrax pitch2,0 
+
+@setOutputPin Pitch_Up_Out pitch2
+@endif
+
+@endif
+

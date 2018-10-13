@@ -1,0 +1,63 @@
+@name "Reverse Delay"
+@color "0x7100fc"
+@audioInput input Input
+@audioOutput output Output
+@audioOutput output2 Output2
+@controlOutput ramp Ramp
+@controlOutput ramp2 Ramp2
+@controlOutput xfade Xfade
+
+mem delay 32767 
+equ output reg0
+equ output2 reg3
+equ ramp reg1
+equ ramp2 reg4
+equ xfade reg2
+
+@isPinConnected Input
+skp run, loop 
+sof 0, -0.25   ;clear acc and set -0.25
+wrax rmp0_rate, 0   ;ramp rate = -.25, clear to 0
+wrax RMP0_RANGE, 0 ;ramp range= 0
+
+loop: 
+
+; sof 0,0      ;clear acc
+
+rdax input, 1.0    ;read left adc
+wra delay#, 0.0    ;write to delay ram and clear
+cho rdal, rmp0    ;get ramp lfo
+wrax addr_ptr, 1.0    ;write data at delay ram address 
+wrax ramp, 1.0		; just for debugging
+sof 1.0, -0.25
+absa
+sof -2.0, 0.25
+sof -2.0, 0
+sof -2.0, 0
+sof -2.0, 0
+sof -2.0, 0
+sof 0.5, 0.5
+wrax xfade, 0.0		; just for debugging
+;-----------------------
+rmpa 1.0       ;read data at delay ram address (ADDR_PTR) 1.0
+wrax output, 0.0
+;-----------------------
+rdax ramp, 1.0
+sof 1.0, -0.125
+wrax ramp2, 1.0
+skp  gez, secondhalf  	; if > zero then past half way, waveform already in position as starting from 0
+sof 1.0, 0.325			; otherwise shift it back 0.125 to compensate for previous offset and 0.25 more
+secondhalf:
+wrax addr_ptr, 0.0		
+rmpa 1.0
+wrax output2, 0.0
+
+@endif
+
+@setOutputPin Output output
+@setOutputPin Output2 output2
+@setOutputPin Ramp ramp
+@setOutputPin Ramp2 ramp2
+@setOutputPin Xfade xfade
+
+

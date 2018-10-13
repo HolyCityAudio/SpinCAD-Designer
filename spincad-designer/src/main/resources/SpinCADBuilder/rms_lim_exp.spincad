@@ -1,0 +1,49 @@
+@name RMS_Lim_Exp 
+@audioInput adcl Input_Left
+@audioOutput output Audio_Output
+
+;rms limiter, approx 10dB limiting range. 
+
+equ	sigin	reg0
+equ	avg	reg1
+equ	gain	reg2
+// equ	expg	reg3
+equ	expavg	reg4
+// equ	test	reg5
+equ output reg6
+// equ dacr reg7
+@isPinConnected Input_Left
+
+rdax	adcl,1.0
+
+wrax	sigin,1		;write mono input signal  
+mulx	sigin		;square input
+rdfx	avg,0.001	;average squared result 
+wrax	avg,1		;avg stored and in ACC
+log	-0.5,-0.125	;square root and 1/x combined
+exp	1,0		
+wrax	gain,0
+			;now create an expansion value to
+			;modify the gain value
+rdax	sigin,1		;read input common input signal
+sof	-2,0		;and provide lots of gain
+sof	-2,0		
+sof	-2,0
+sof	-2,0		;add more gain and insert
+sof	-2,0		;pot function here to vary
+sof	-2,0		;expansion threshold
+sof	-2,0
+sof	-2,0
+absa			;get abs value
+rdfx	expavg,0.001	;average result
+wrax	expavg,1	;avg stored and in ACC
+log	0.5,0		;take square root; this will
+exp	1,0		;cause gain to be reduced more gracelfully
+mulx	gain		;multiply by gain
+wrax	gain,1
+
+mulx	adcl		;use final gain value to affect output
+sof	1.5,0		;restore gain, to avoid output clipping
+wrax	output,0
+@setOutputPin Audio_Output output
+@endif

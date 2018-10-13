@@ -1,0 +1,108 @@
+@name 'New Envelope'
+@color "0x02f27f"
+@audioInput input Input
+@controlInput attackControl Attack
+@controlInput decayControl Decay
+@controlInput sens Sensitivity
+@controlOutput lpf1 "Fast Output"  
+
+
+
+
+@controlOutput lpf1 "Slow Output"
+@controlOutput outputMax "Max Output"  
+@controlOutput avg "avg"
+@controlOutput lavg "lavg"
+
+
+equ attackFreq 0.00015
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabelSpinner attackFreq 'Attack Freq' 0.51 20 100.0 100.0 5 LOGFREQ 
+
+equ decayFreq 0.00015
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabelSpinner decayFreq 'Decay Freq' 0.51 10 100.0 100.0 5 LOGFREQ 
+
+ equ postFreq 0.00015
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabelSpinner postFreq  'Post freq' 0.51 10 100.0 100.0 5 LOGFREQ 
+
+equ output Reg0
+equ lpf1 Reg1
+equ lpf2 Reg2
+equ rectified reg3
+equ avg reg4
+equ lavg reg5
+equ temp reg6
+equ ffil reg7
+
+@isPinConnected Input
+
+; Spin auto-wah envelope detector
+
+rdax   input,1      ;get input
+absa         ;absolute value
+
+rdfx   avg,attackFreq      ;average input level
+wrax   avg,0      ;write avg level, pass on
+rdax   lavg,0.001
+sof   -0.01,0   
+rdax   lavg,1   
+wrax   temp,0
+rdax   avg,1
+maxx   temp,1      ;filter a long average
+wrax   lavg,0
+
+;now set up a means by which the sensitivity control can affect the filter frequency:
+
+rdax   lavg,1
+sof    1,0.002      ;never let lavg go to zero
+log   1,0
+wrax   temp,0
+rdax   avg,1
+log   1,0
+rdax   temp,-1
+
+@isPinConnected Sensitivity
+	mulx    sens
+@endif
+
+exp   1,0
+rdfx   ffil,postFreq
+wrax   ffil,1      
+sof   0.7,0.02      ;limit frequency range
+wrax   output,0
+
+@isPinConnected Attack
+rdax input, attackFreq
+rdax lpf1, -attackFreq
+mulx attackControl
+rdax lpf1, 1.0
+@else
+rdax input, 1.0
+rdfx lpf1, attackFreq
+@endif
+wrax lpf1, 0
+
+@isPinConnected Decay
+rdax input, decayFreq
+rdax lpf2, -decayFreq
+mulx decayControl
+rdax lpf2, 1.0
+@else
+rdax input, 1.0
+rdfx lpf2, decayFreq
+@endif
+
+wrax lpf2, 1
+maxx lpf1, 1.0
+
+; # wrax output, 0
+
+@setOutputPin "Max Output" output
+@setOutputPin "Fast Output" lpf1
+@setOutputPin "Slow Output" lpf2
+@setOutputPin "avg" avg 
+@setOutputPin "lavg" lavg 
+
+@endif

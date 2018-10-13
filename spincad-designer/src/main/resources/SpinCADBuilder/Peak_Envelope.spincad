@@ -1,0 +1,42 @@
+@name 'Peak/Envelope'
+@color "0x02f27f"
+@audioInput input Input
+@controlInput sens Sensitivity
+@controlOutput env "Envelope"
+
+
+equ attackFreq 0.00015
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabelSpinner attackFreq 'Attack Freq' 0.51 20 100.0 100.0 5 LOGFREQ 
+
+equ decayFreq 0.00015
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabelSpinner decayFreq 'Decay Freq' 0.51 10 100.0 100.0 5 LOGFREQ 
+
+equ env Reg0
+
+@isPinConnected Input
+
+rdax   input,1      ;get input
+absa         ;absolute value
+
+@isPinConnected Sensitivity
+	mulx    sens
+@endif
+
+; now subtract envelope value
+rdax	env, -1
+; if it's negative, then envelope was higher than signal so we should decay.
+skp 	neg, decay
+rdax	env, 1	; acc now holds input again (input - env + env)
+wrax	env, 0  ; write to env (instant attack)
+skp		zro, write_out
+decay:
+clr
+rdfx	env, decayFreq
+wrlx	env, 0
+write_out:
+
+@setOutputPin "Envelope" env
+
+@endif

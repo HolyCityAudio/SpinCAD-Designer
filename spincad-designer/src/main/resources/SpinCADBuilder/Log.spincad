@@ -1,0 +1,20 @@
+@name Log
+@controlInput input 'Control Input'
+@controlOutput output1 'Log Output'  
+
+equ multiplier 0.5 
+@sliderLabel multiplier 'Log Multiplier' 0.001 0.99999 0.5 1000.0 3 
+
+equ log_offset 0.5 
+@sliderLabel log_offset 'Log_Offset' 0.001 0.99999 0.5 1000.0 3 
+
+;REGISTERS 
+equ   output1     reg0       
+
+@isPinConnected 'Control Input'
+rdax    input,1    ;read input signal
+log multiplier, log_offset
+wrax    output1,0    ;output  
+@setOutputPin 'Log Output' output1
+@endif
+

@@ -1,0 +1,256 @@
+@name Infinite_Rev_Flange
+@audioInput adcl Input_L
+@audioOutput dacl Audio_Output_1  
+@audioOutput dacr Audio_Output_2
+@controlInput input0 Reverb_Time
+@controlInput input1 Flange
+@controlInput input2 Low_Pass
+  
+;disco mixer program 
+;pot0 = reverb to infinity
+;pot1 = flange; zero delay at full counter clockwise
+;pot2 = low pass filter (4 pole)
+
+equ	krt	reg0 
+equ	kin	reg1
+equ	kmix	reg2
+equ	lp1al	reg3
+equ	lp1bl	reg4
+equ	lp1ar	reg5
+equ	lp1br	reg6
+equ	lp2al	reg7
+equ	lp2bl	reg8
+equ	lp2ar	reg9
+equ	lp2br	reg10
+equ	stop	reg11
+equ	pbyp	reg12
+equ	fol	reg13
+equ	forx	reg14
+equ	rol	reg15
+equ	ror	reg16
+equ	kfl	reg17
+equ	temp	reg18
+equ	rmixl	reg19
+equ	rmixr	reg20
+equ	lbyp	reg21
+equ dacl reg22
+equ dacr reg23
+
+mem	ap1	202
+mem	ap2	541
+
+mem	dap1a	2204
+mem	dap1b	2701
+mem	del1	4456
+mem	dap2a	2532
+mem	dap2b	2201
+mem	del2	6325
+
+mem	fdell	512
+mem	fdelr	512
+
+equ	kap	0.6
+equ	kql	-0.4
+
+@isPinConnected Input_L
+;prepare flange delay pointer:
+
+skp	run, label1
+wldr	0,0,512
+
+;prepare pots to affect control variables:
+;pot0 controls reverb time, but also affects input drive level;
+;reveb time is moderate up to about mid position, then increases
+;to infinity (or nearly) at full position.
+;input drive is constant, but decreases at the full pot0 position.
+;output mix is varied over the first half of pot0, then remains
+;high to the end of pot0's range.
+
+label1:
+@isPinConnected Reverb_Time
+rdax	pot0,1.999	;get pot0, clip the upper half of pot0's range.
+@else
+sof 0.0, 0.8
+@endif
+
+wrax	kmix,0		;write the output mix value
+
+@isPinConnected Reverb_Time
+rdax	pot0,-1		;get pot0 again, 0 to -1
+@else
+sof 0.0, 0.8
+@endif
+
+sof	1,0.999		;now +1 to 0
+sof	1.999,0		;now +1 until midpint, then decreases to 0
+wrax	kin,0		;write the input attenuator value
+
+@isPinConnected Reverb_Time
+rdax	pot0,1		;get pot0 again
+@else
+sof 0.0, 0.8
+@endif
+
+wrax	krt,1		;save in krt, keep in ACC
+sof	1,-0.5		;subtract 1/2
+skp	gez,okpot2		;skp if pot is in upper half of range
+sof	0,0.5		;load accumulator with +0.5
+wrax	krt,0		;overwrite if pot is in lower half of range
+
+okpot2:
+;prepare pot2 for low pass frequency control:
+
+@isPinConnected Low_Pass
+rdax	pot2,1		;get pot2
+@else
+sof 0.0, 0.5
+@endif
+
+sof	0.35,-0.35	;ranges -0.3 to 0
+exp	1,0
+wrax	kfl,0		;write to LP filter control
+
+;now derive filter bypass function (at open condition)
+
+@isPinConnected Low_Pass
+rdax	pot2,1		;read pot2 (LP) again
+@else
+sof 0.0, 0.5
+@endif
+
+sof	1,-0.999
+exp	1,0
+wrax	lbyp,0
+
+;now do reverb, simple, twin loop, mono drive:
+
+rdax	adcl,0.5
+mulx	kin		;scale by input attenuator
+rda	ap1#,kap	;4 all passes:
+wrap	ap1,-kap
+rda	ap2#,kap
+wrap	ap2,-kap
+wrax	temp,0		;write ap output to temp reg
+
+rda	del2#,1		;do reverb loop:
+mulx	krt
+rdax	temp,1
+rda	dap1a#,kap
+wrap	dap1a,-kap
+rda	dap1b#,kap
+wrap	dap1b,-kap
+wra	del1,0
+rda	del1#,1
+mulx	krt
+rdax	temp,1
+rda	dap2a#,kap
+wrap	dap2a,-kap
+rda	dap2b#,kap
+wrap	dap2b,-kap
+wra	del2,0
+
+;now mix the inputs with the reverb:
+
+rdax	adcl,-1
+@isPinConnected Reverb_Time
+rda	del1,1
+mulx	pot0
+@else
+rda del1, 0.5
+@endif
+
+rdax	adcl,1
+wra	fdell,0		;write temp reverb output
+
+rdax	adcl,-1
+@isPinConnected Reverb_Time
+rda	del2,1
+mulx	pot0
+@else
+rda del1, 0.5
+@endif
+rdax	adcl,1
+wra	fdelr,0
+
+;Reverb outputs are in flange delays.
+;now do flange:
+
+cho rda, rmp0,reg|compc,fdell
+cho rda, rmp0, 0, fdell+1
+sof	0.707,0
+rda	fdell,0.707
+wrax	fol,0
+
+cho rda, rmp0, compc, fdelr
+cho rda,rmp0, 0, fdelr+1
+sof	0.707,0
+rda	fdelr,0.707
+wrax	forx,0
+
+;get LFO pointer position and control with pot1:
+
+cho rdal, rmp0	; get pointer from ramp 0
+@isPinConnected Flange
+rdax	pot1,-0.03	;add in pot 1
+@else
+sof 0.0, -0.01
+@endif
+
+wrax	rmp0_rate,1	;write difference to ramp so that
+			;pointer will track pot1
+;now do low pass filter, stereo:
+
+rdax	lp1al,1
+mulx	kfl
+rdax	lp1bl,1
+wrax	lp1bl,-1
+rdax	lp1al,kql
+rdax	fol,1
+mulx	kfl
+rdax	lp1al,1
+wrax	lp1al,0
+
+rdax	lp2al,1
+mulx	kfl
+rdax	lp2bl,1
+wrax	lp2bl,-1
+rdax	lp2al,kql
+rdax	lp1bl,1
+mulx	kfl
+rdax	lp2al,1
+wrax	lp2al,0
+
+rdax	lp1ar,1
+mulx	kfl
+rdax	lp1br,1
+wrax	lp1br,-1
+rdax	lp1ar,kql
+rdax	forx,1
+mulx	kfl
+rdax	lp1ar,1
+wrax	lp1ar,0
+
+rdax	lp2ar,1
+mulx	kfl
+rdax	lp2br,1
+wrax	lp2br,-1
+rdax	lp2ar,kql
+rdax	lp1br,1
+mulx	kfl
+rdax	lp2ar,1
+wrax	lp2ar,0
+
+;mix around filter at extremes:
+
+rdax	lp2bl,-1
+rdax	fol,1
+mulx	lbyp
+rdax	lp2bl,1
+wrax	dacl,0
+	
+rdax	lp2br,-1
+rdax	forx,1
+mulx	lbyp
+rdax	lp2br,1
+wrax	dacr,0
+@endif

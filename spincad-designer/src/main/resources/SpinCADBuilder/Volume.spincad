@@ -1,0 +1,23 @@
+@name Volume
+@color "0x2468f2"
+@audioInput input Input
+@audioOutput output Output
+@controlInput volume Volume
+
+equ gain 1.0 
+@sliderLabel gain 'Input Gain' -24 0 -6 1.0 1 DBLEVEL 
+
+;REGISTERS 
+equ   output     reg0       
+
+@isPinConnected Input
+rdax    input, gain    ;read input signal
+@isPinConnected Volume
+mulx volume
+@endif
+
+wrax    output,0    ;output in ACC and lf1 
+
+@setOutputPin Output output
+@endif
+

@@ -1,0 +1,107 @@
+@name PitchOffset
+@color "0x00fc82"
+@audioInput adcl Input_Left
+@audioOutput output1 Output
+@controlInput input0 Pitch_Offset
+
+;Program to demonstrate pitch shifting, mono in, mono out
+;For demo only, could benefit from better bandstop filters
+;and a larger all pass filter bank
+;shifts by about +/-370 Hz (set by POT0 scaling).
+;51 instructions total, ~40% of instruction space.
+;http://www.spinsemi.com/knowledge_base/pitch_sft.html
+
+mem ap1 1
+mem ap2 1
+mem ap3 1
+mem ap4 1
+mem ap5 1
+mem ap6 1 ;declare all pass memory locations
+;
+equ sigs reg0 ;sin output from allpass filter bank
+equ sigc reg1 ;cos output from allpass filter bank
+equ lpf reg2 ;register for single pole LPF
+equ hpf reg3 ;register for single pole LPF
+equ sigfil reg4 ;register to hold filtered signal
+equ sinosc reg5 ;sin oscillator register
+equ cososc reg6 ;cos oscillator register
+equ temp reg7 ;temp register
+equ shift reg8 ;shift amount from pot0
+equ potfil reg9 ;filter for pot control
+equ output1 reg10
+
+;initialize sinosc and cososc, sinosc is zeroed by FV-1 on start:
+
+skp run, label
+or $7fffff ;load accumulator with pos max
+wrax cososc,0 ;initialize cosine register
+label:
+
+;prepare pot0 for controlling pitch shift:
+
+rdax pot0,0.1 ;read pot *0.1
+rdfx potfil,0.001 ;filter to remove jumps between pot codes
+wrlx potfil,-1 ;write potfil with infinite shelf
+sof 1,-0.05 ;offset pot val by half
+wrax shift,0 ;shift varies from -0.05 to +0.05 
+
+;get inputs and filter:
+
+rdax adcl,1.0
+rdfx hpf,0.04 ;do HPF, about 300Hz
+wrhx hpf,-1
+rdfx lpf,0.4 ;do LPF, about 3KHz
+wrlx lpf,-1
+wrax sigfil,0.0039 ;write to sigfil and attenuate to keep
+;allpass filters from clipping
+
+;continue through all pass filter bank:
+
+rda ap1+1,0.995 ;44Hz
+wrap ap1,-0.995
+rda ap2+1,0.937 ;488Hz
+wrap ap2,-0.937
+rda ap3+1,0.61 ;3531Hz
+wrap ap3,-0.61
+wrax sigs,0 ;write bank result to sigs, clear accumulator
+
+rdax sigfil,0.0039 ;read sigfil and attenuate again
+rda ap4+1,0.978 ;178Hz
+wrap ap4,-0.978
+rda ap5+1,0.84 ;1289Hz
+wrap ap5,-0.84
+rda ap6+1,0 ;simple delay (90 deg @ Fs/4)
+wrap ap6,-0
+wrax sigc,0 ;write bank result to sigc, clear accumulator
+
+;do oscillator:
+
+rdax cososc,1 ;read COS reg
+mulx shift ;multiply by shift control value
+rdax sinosc,1 ;add SIN reg
+wrax sinosc,-1 ;write SIN reg, invert phase
+mulx shift ;multiply by shift control value
+rdax cososc,1 ;add COS reg
+wrax cososc,0 ;write COS reg, clear ACC
+;
+;now do the multiplies between oscilator terms and phase shifted input:
+
+rdax sigc,-2 ;read sigc, start to scale up
+mulx cososc ;multiply by COS from oscillator
+wrax temp,0 ;write to product to temp reg
+rdax sigs,-2 ;read sigs, start to scale up
+mulx sinosc ;multiply by SIN from oscillator
+rdax temp,1 ;add in temp reg from previous multiply
+
+;now scale result back up to full gain:
+
+sof -2,0 ;only negative coef provides a full 2.0
+sof -2,0
+sof -2,0
+sof -2,0
+sof -2,0
+sof -2,0
+sof -2,0 ;multiply by 256 to recover signal level
+wrax output1,0 ;write dacr, keep sig in ACC
+@setOutputPin Output output1
+

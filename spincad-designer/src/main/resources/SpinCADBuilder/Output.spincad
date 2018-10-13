@@ -1,0 +1,70 @@
+@name Output
+@audioInput input1 'Input 1'
+@audioInput input2 'Input 2' 
+//@controlInput level1 'Level 1'
+//@controlInput level2 'Level 2'
+
+
+// mono = sum inputs together and present equally to both outputs
+bool mono false
+// offset0 adds 0.02 to value prior to writing to DAC, 
+// supposedly can help FV-1 noise characteristics
+bool offset0 false
+
+equ gain1 1.0 
+@sliderLabel gain1 'Input Gain 1' -12 0 0 1.0 1 DBLEVEL 
+
+equ gain2 1.0 
+@sliderLabel gain2 'Input Gain 2' -12 0 0 1.0 1 DBLEVEL 
+
+@checkbox mono Mono 
+@checkbox offset0 Offset 
+
+@isTrue mono
+@isPinConnected 'Input 1'
+rdax    input1,gain1    ;read input signal
+//@isPinConnected "Level 1"
+//mulx level1
+//@endif
+@endif
+
+@isPinConnected 'Input 2'
+rdax    input2,gain2    ;read input signal
+//@isPinConnected 'Level 2'
+//mulx level2
+//@endif
+@endif
+
+@isTrue offset0
+sof 1.0, 0.02
+@endif
+
+wrax    DACL,1    ;
+wrax    DACR,0    ;
+
+@else
+// Stereo 
+@isPinConnected 'Input 1'
+rdax    input1,gain1    ;read input signal
+//@isPinConnected "Level 1"
+//mulx level1
+//@endif
+@isTrue offset0
+sof 1.0, 0.02
+@endif
+
+wrax    DACL,0    ; 
+@endif
+
+@isPinConnected 'Input 2'
+rdax    input2,gain2    ;read input signal
+//@isPinConnected "Level 2"
+//mulx level2
+//@endif
+@isTrue offset0
+sof 1.0, 0.02
+@endif
+
+wrax    DACR,0    ; 
+@endif
+@endif

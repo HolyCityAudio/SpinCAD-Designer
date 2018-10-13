@@ -1,0 +1,33 @@
+@name 'LFO Value'
+@controlOutput output1 Output
+
+equ lfoSel 0
+@comboBox lfoSel 'Sin 0' 'Cos 0' 'Sin 1' 'Cos 1' 'Ramp 0' 'Ramp 1' 
+
+; valid values: 0 = SIN0, 1 = SIN1, 2 = RMP0, 3 = RMP1, 8 = COS0, 9 = COS1)
+@isPinConnected Output
+equ output1 reg0
+;
+@isEqualTo lfoSel 0
+cho rdal,0
+@endif
+@isEqualTo lfoSel 1
+cho rdal,8
+@endif
+@isEqualTo lfoSel 2
+cho rdal,1
+@endif
+@isEqualTo lfoSel 3
+cho rdal,9
+@endif
+@isEqualTo lfoSel 4
+cho rdal,2
+@endif
+@isEqualTo lfoSel 5
+cho rdal,3
+@endif
+
+wrax output1,0
+@setOutputPin Output output1
+@endif
+

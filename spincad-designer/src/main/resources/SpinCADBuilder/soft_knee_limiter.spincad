@@ -1,0 +1,32 @@
+@name Soft_Knee_Limiter 
+@audioInput adcl Input
+@audioOutput dacl Audio_Output 
+
+;rms limiter, approx 10dB limiting range,
+;soft knee, variable comp ratio.
+
+equ	sigin	reg0
+equ	avg	reg1
+equ	gain	reg2
+equ dacl reg3
+equ dacr reg4
+
+@isPinConnected Input
+rdax	adcl,1.0
+wrax	sigin,1		;write mono input signal
+mulx	sigin		;square input
+rdfx	avg,0.001	;average squared result
+wrax	avg,0		;avg stored, ACC cleared
+
+sof	0,0.125		;put 1/8 in acc
+rdax	avg,1		;add our averaged input level
+log	-0.4,-0.25	;square root and 1/x combined
+exp	1,0		;
+wrax	gain,1
+mulx	adcl
+sof	-2,0		;restore gain, to avoid output clipping
+sof	-2,0
+sof	1.5,0
+wrax	dacl,0
+@setOutputPin Audio_Output dacl
+@endif

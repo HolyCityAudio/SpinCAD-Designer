@@ -1,0 +1,322 @@
+@name 'ROM Reverb 2'
+@color "0x7100fc"
+@audioInput input Input
+@audioOutput output Output
+@controlInput revTime 'Reverb Time'
+@controlInput lfRespInput 'LF Response'
+@controlInput hfRespInput 'HF Response'
+
+;reverb program
+;for mixers
+;pot0=reverb time
+;pot1=low freq response
+;pot2=high freq response
+;
+
+
+equ gain 0.5 
+@sliderLabel gain 'Input Gain' -18 0.0 -6 1.0 1 DBLEVEL 
+
+equ revTimeMax 0.6 
+@sliderLabel revTimeMax 'Reverb Time' 0.0 0.9 0.6 100.0 2 
+ 
+equ kapi 0.6 
+@sliderLabel kapi 'Input AP Gain' 0.3 0.8 0.6 100.0 2 
+
+equ kapd1 0.6 
+@sliderLabel kapd1 'Delay AP 1 Gain' 0.3 0.8 0.6 100.0 2 
+
+equ kapd2 0.5 
+@sliderLabel kapd2 'Delay AP 2 Gain' 0.3 0.8 0.5 100.0 2 
+
+equ   kfl   0.4  ; low pass filter
+@sliderLabel kfl 'Low Pass' 500 5000 400.0 100.0 1 LOGFREQ
+
+equ   kfh   0.01  ; high pass filter
+@sliderLabel kfh 'High Pass' 40 1000 400.0 100.0 1 LOGFREQ
+
+equ memscale 0.98 
+@sliderLabel memscale 'Delay Scale' 0.5 1.0 0.8 10.0 1 
+
+@isPinConnected Input
+
+@getBaseAddress 
+mem	lap1	156
+mem	lap2	223
+mem	lap3	332
+mem	lap4	548
+;
+equ ap1length 1251
+@multiplyDouble ap1scaled memscale ap1length 
+mem	ap1	ap1scaled
+
+equ ap1blength 1551
+@multiplyDouble ap1bscaled memscale ap1blength 
+mem	ap1b ap1bscaled	
+
+equ ap2length 943
+@multiplyDouble ap2scaled memscale ap2length 
+mem	ap2	ap2scaled
+
+equ ap2blength 1343
+@multiplyDouble ap2bscaled memscale ap2blength 
+mem	ap2b ap2bscaled	
+
+equ ap3length 1282
+@multiplyDouble ap3scaled memscale ap3length 
+mem	ap3	ap2scaled
+
+equ ap3blength 1381
+@multiplyDouble ap3bscaled memscale ap3blength 
+mem	ap3b ap3bscaled	
+
+equ ap4length 1174
+@multiplyDouble ap4scaled memscale ap4length 
+mem	ap4	ap4scaled
+
+equ ap4blength 1382
+@multiplyDouble ap4bscaled memscale ap4blength 
+mem	ap4b ap4bscaled	
+;
+
+equ delay1length 2859
+@multiplyDouble delay1scaled memscale delay1length 
+mem	del1	delay1scaled
+
+equ delay2length 3145
+@multiplyDouble delay2scaled memscale delay2length 
+mem	del2	delay2scaled
+
+equ delay3length 2476
+@multiplyDouble delay3scaled memscale delay3length 
+mem	del3	delay3scaled
+
+equ delay4length 3568
+@multiplyDouble delay4scaled memscale delay4length 
+mem	del4	delay3scaled
+;
+equ ldellength 3000
+@multiplyDouble ldelscaled memscale ldellength 
+mem	ldel ldelscaled	
+
+equ output reg21
+;
+// these equ structures not supported in SpinCAD, substitutions made in 
+// rda statements below
+// equ	lout1	del1 + 2630
+// equ	lout2	del2 + 1943
+// equ	lout3	del3 //+1200
+// equ	lout4	del4 // +2016
+;
+;set up lfo, ~0.5Hz:
+skp	run,start
+wlds	sin0,12,	160
+
+start:
+;do ap smearing to ap1 and ap3:
+
+cho rda, 0,	6,	ap1+50
+cho rda,	sin0,	0,	ap1+51
+wra	ap1+100,	0
+cho rda,	sin0,	7,	ap3+50
+cho rda,	sin0,	01,	ap3+51
+wra	ap3+100,	0
+
+;prepare pots for control:
+
+equ rt REG0
+@isPinConnected 'Reverb Time'
+rdax	revTime,	revTimeMax
+sof 	0.9, 	0.1
+@else
+sof 	0.0, 	revTimeMax
+@endif
+wrax	rt,	0
+;
+;shelving controls are negative:
+equ hfResp REG2
+@isPinConnected 'LF Response'
+rdax	lfRespInput,	1.0
+sof	0.8, 	-0.8
+@else
+sof	0.0, 	-0.6
+@endif
+wrax 	hfResp,	0
+;
+equ lfResp REG1
+@isPinConnected 'HF Response'
+rdax	hfRespInput,	1.0
+sof 	0.8,	-0.8
+@else
+sof	0.0, 	-0.6
+@endif
+wrax 	lfResp,0
+;
+;get inputs and process with three APs each
+;
+equ ap1Out REG10
+
+rdax	input,	gain 		
+rda	lap1#,	-kapi	
+wrap	lap1,	kapi		
+rda	lap2#,	-kapi	
+wrap	lap2,	kapi		
+wra	ldel,	1.0		
+rda	lap3#,	-kapi	
+wrap	lap3,	kapi		
+rda	lap4#,	-kapi	
+wrap	lap4,	kapi		
+wrax	ap1Out,	0		
+;
+//rdax	adcr,	0.6		
+//rda	rap1#,	-0.6	
+//wrap	rap1,	0.6		
+//rda	rap2#,	-0.6	
+//wrap	rap2,	0.6		
+//wra	rdel,	1.0		
+//rda	rap3#,	-0.6	
+//wrap	rap3,	0.6		
+//rda	rap4#,	-0.6	
+//wrap	rap4,	0.6		
+//wrax	REG11,	0		
+;
+;now do loop, use temp as temp reg for filtering:
+;
+;delay ap into 1:
+equ loFilt1 REG12
+equ hiFilt1 REG13
+equ temp REG9
+
+rda	del4#,	1.0		
+mulx	rt		
+rdax	ap1Out,	1.0		
+rda	ap1#,	-kapd1	
+wrap	ap1,	kapd1		
+rda	ap1b#,	-kapd2	
+wrap	ap1b,	kapd2		
+wrax	temp,	1.0		
+rdfx	loFilt1,	kfl		
+wrhx	loFilt1,	-1.0	
+mulx	lfResp		
+rdax	temp,	1.0		
+wrax	temp,	1.0		
+rdfx	hiFilt1,	kfh	
+wrlx	hiFilt1,	-1.0	
+mulx	hfResp		
+rdax	temp,	1.0		
+wra	del1,	0.0		
+;
+;delay ap into 2:
+equ loFilt2 REG14
+equ hiFilt2 REG15
+
+rda	del1#,	1.0		
+mulx	rt		
+rdax	ap1Out,	1.0		
+rda	ap2#,	-kapd1	
+wrap	ap2,	kapd1		
+rda	ap2b#,	-kapd2	
+wrap	ap2b,	kapd2		
+wrax	temp,	1.0		
+rdfx	loFilt2,	kfl		
+wrhx	loFilt2,	-1.0	
+mulx	lfResp		
+rdax	temp,	1.0		
+wrax	temp,	1.0		
+rdfx	hiFilt2,	kfh	
+wrlx	hiFilt2,	-1.0	
+mulx	hfResp		
+rdax	temp,	1.0		
+wra	del2,	0.0		
+;
+;delay ap into 3:
+equ loFilt3 REG16
+equ hiFilt3 REG17
+
+rda	del2#,	1.0		
+mulx	rt		
+rdax	ap1Out,	1.0		
+rda	ap3#,	-kapd1	
+wrap	ap3,	kapd1		
+rda	ap3b#,	-kapd2	
+wrap	ap3b,	kapd2		
+wrax	temp,	1.0		
+rdfx	loFilt3,	kfl		
+wrhx	loFilt3,	-1.0	
+mulx	lfResp		
+rdax	temp,	1.0		
+wrax	temp,	1.0		
+rdfx	hiFilt3,	kfh	
+wrlx	hiFilt3,	-1.0	
+mulx	hfResp		
+rdax	temp,	1.0		
+wra	del3,	0.0		
+;
+;delay ap into 4:
+equ loFilt4 REG18
+equ hiFilt4 REG19
+rda	del3#,	1.0		
+mulx	rt		
+rdax	ap1Out,	1.0		
+rda	ap4#,	-kapd1	
+wrap	ap4,	kapd1		
+rda	ap4b#,	-kapd2	
+wrap	ap4b,	kapd2		
+wrax	temp,	1.0		
+rdfx	loFilt4,	kfl		
+wrhx	loFilt4,	-1.0	
+mulx	lfResp		
+rdax	temp,	1.0		
+wrax	temp,	1.0
+rdfx	hiFilt4,	kfh	
+wrlx	hiFilt4,	-1.0	
+mulx	hfResp		
+rdax	temp,	1.0		
+wra	del4,	0.0		
+;
+
+// should probably scale the readout points also
+// this is a total hack
+
+rda	del1+2630 * memscale,	0.8	
+rda	del2+1943 * memscale,	0.7	
+rda	del3+1200 * memscale,	0.6	
+rda	del4+2106 * memscale,	0.5	
+
+rda	ldel+180 * memscale,	0.8	
+rda	ldel+1194 * memscale,	0.7	
+rda	ldel+2567 * memscale,	0.6	
+rda	ldel+2945 * memscale,	0.5	
+wrax	output, 0.0
+
+@setOutputPin Output output
+@endif
+
+;		
+//rda	rout3,	0.8	
+//rda	rout4,	0.7	
+//rda	rout1,	0.6	
+//rda	rout2,	0.5	
+//rda	rdel+265,	0.8	
+//rda	rdel+1265,	0.7	
+//rda	rdel+2265,	0.6	
+//wrax	dacr, 0.0
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

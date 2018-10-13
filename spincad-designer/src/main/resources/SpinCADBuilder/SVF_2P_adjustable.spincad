@@ -1,0 +1,88 @@
+@name 'SVF 2 Pole'
+@color "0x24f26f"
+@audioInput input Input
+@controlInput freqControl Frequency
+@controlInput qControl Q
+@audioOutput lpf "Low Pass Output"  
+@audioOutput z1 "Band Pass Output"  
+@audioOutput brf "Notch Output"  
+@audioOutput hpf "High Pass Output"
+
+equ freq 0.15 
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel freq 'Frequency (Hz)' 20 5000 100.0 100.0 1 LOGFREQ2 
+
+equ qMax 50
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel qMax 'Max Resonance' 1.0 200.0 100.0 1000.0 1 
+
+equ qMin 1
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel qMin 'Min Resonance' 1.0 50.0 100.0 1000.0 1 
+
+equ output Reg0
+equ z1 Reg1
+equ z2 Reg1
+equ lpf reg2
+equ hpf reg3
+equ brf reg4
+
+// number1 is used in q calculations
+equ number1 1.0
+
+@isPinConnected Input
+
+clr
+rdax z1, freq
+@isPinConnected Frequency
+mulx freqControl
+@endif
+rdax z2, 1
+// if pin connected for lp or br
+wrax lpf, 1
+wrax z2, -1
+
+// save intermediate result if we are doing knob control of Q
+@isPinConnected Q
+wrax temp, 0
+
+@divideDouble y number1 qMin 
+@divideDouble x1 number1 qMax 
+@minusDouble q x1 y
+equ temp reg5
+equ scaledQ reg6
+
+rdax qControl, 1
+sof -q, -y
+wrax scaledQ, 0
+
+rdax z1, 1
+
+mulx scaledQ
+rdax temp, 1
+@else
+@divideDouble q number1 qMax 
+rdax z1, -q
+@endif
+
+rdax input, 1
+// if pin connected for hp or br
+wrax hpf, freq
+@isPinConnected Frequency
+mulx freqControl
+@endif
+
+rdax z1, 1
+wrax z1,0
+
+@isPinConnected "Notch Output"
+@setOutputPin "Notch Output" brf
+rdax lpf, 1
+rdax hpf, 1
+wrax brf, 0
+@endif
+
+@setOutputPin "Low Pass Output" lpf
+@setOutputPin "Band Pass Output" z1
+@setOutputPin "High Pass Output" hpf
+@endif

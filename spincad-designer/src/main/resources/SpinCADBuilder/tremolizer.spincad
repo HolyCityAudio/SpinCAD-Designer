@@ -1,0 +1,29 @@
+// This control block takes a signal (usually an LFO) that goes from 0.0 to 1.0 and 
+// allows you to adjust the width via a control input.
+// There is also a control panel setting for maximum depth
+
+@name Tremolizer
+@color "0xf2f224"
+@controlInput input 'LFO Input'
+@controlInput width 'LFO Width'
+@controlOutput output 'Control Output'
+
+equ depth 0.75 
+equ output reg0
+
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel depth Depth 0.5 0.999 1.0 100.0 2  
+
+@isPinConnected 'LFO Input'
+rdax input, depth
+
+@isPinConnected 'LFO Width'
+mulx width
+@endif
+
+sof -0.999, 0.999
+wrax output, 0.0
+
+@setOutputPin 'Control Output' output
+@endif
+

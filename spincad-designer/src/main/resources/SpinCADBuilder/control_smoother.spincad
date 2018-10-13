@@ -1,0 +1,18 @@
+@name Smoother
+@color "0xf2f224"  
+@controlInput input 'Control Input'
+@controlOutput output 'Control Output' 
+
+equ	filtReg reg0 
+
+equ filt 0.00015 
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabelSpinner filt 'Frequency (Hz)' 0.51 15.00 100.0 100.0 5 LOGFREQ 
+
+@isPinConnected 'Control Input'
+rdax input, 1.0
+rdfx filtReg, filt
+wrax filtReg, 0.0
+@endif
+@setOutputPin 'Control Output' filtReg
+

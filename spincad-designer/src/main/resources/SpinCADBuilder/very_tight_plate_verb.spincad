@@ -1,0 +1,223 @@
+@name Plate_Verb_3
+@color "0x7100fc"
+@audioInput adcl Input_Left
+@audioInput adcr Input_Right
+@audioOutput dacl 'Output 1'  
+@audioOutput dacr 'Output 2'
+
+@controlInput input0 Reverb_Time
+@controlInput input1 LF_Loss 
+@controlInput input2 HF_Loss
+
+;plate reverb, very tight, stereo
+;characterized by extreme density,
+;slight tinnyness,
+;explosive initial sound
+;pot0 = reverb time
+;pot1 = lf loss
+;pot2 = hf loss
+
+mem	api1l	123	;left input all passes
+mem	api2l	264
+mem	api3l	606
+mem	api4l	768
+
+mem	api1r	163	;right input all passes
+mem	api2r	322
+mem	api3r	591
+mem	api4r	778
+
+mem	apd1	1201	;loop all passes
+mem	apd2	782
+mem	apd3	1071
+mem	apd4	947
+
+mem	del1	1190	;loop delays
+mem	del2	1091
+mem	del3	1287
+mem	del4	1379
+
+equ	temp	reg0
+equ	krt	reg1
+equ	ksh	reg2
+equ	ksl	reg3
+equ	lap	reg4
+equ	rap	reg5
+equ	hp1	reg6
+equ	hp2	reg7
+equ	hp3	reg8
+equ	hp4	reg9
+equ	lp1	reg10
+equ	lp2	reg11
+equ	lp3	reg12
+equ	lp4	reg13 
+equ	lup	reg14 
+equ dacl reg15
+equ dacr reg16
+
+equ	kapi	0.65	;input AP coefficients
+equ	kap	0.65	;loop AP coefficients
+equ	kfl	0.8	;loop filter LPF freq
+equ	kfh	0.02	;loop filter HPF freq
+
+@isPinConnected Input_Left
+;now derive control coefficients from pots:
+
+;rdax	pot0,1
+@getInputDefault Reverb_Time input0 1.0 0.5
+
+log	0.5,0
+exp	1,0		;square root pot0
+sof	0.53,0.4	;ranges 0.4 to 0.93
+wrax	krt,0		;write for later use
+
+;rdax	pot1,1		;control low freq loss (high pass filter)
+@getInputDefault LF_Loss input1 1.0 0.2
+sof	1,-0.999	;make from -1 to 0
+wrax	ksh,0		;high pass shelf
+
+;rdax	pot2,1		;control high freq loss (low pass filter)
+@getInputDefault HF_Loss input2 1.0 0.7 
+
+sof	1,-0.999	;make from -1 to 0
+wrax	ksl,0		;low pass shelf
+
+;now do input all passes, leave headroom:
+
+rdax	adcl,0.25	
+rda	api1l#,kapi
+wrap	api1l,-kapi
+rda	api2l#,kapi
+wrap	api2l,-kapi
+rda	api3l#,kapi
+wrap	api3l,-kapi
+rda	api4l#,kapi
+wrap	api4l,-kapi
+wrax	lap,0
+
+rdax	adcr,0.25	
+rda	api1r#,kapi
+wrap	api1r,-kapi
+rda	api2r#,kapi
+wrap	api2r,-kapi
+rda	api3r#,kapi
+wrap	api3r,-kapi
+rda	api4r#,kapi
+wrap	api4r,-kapi
+wrax	rap,1
+
+;all passed inputs in place, now process the loop, with filtering:
+
+rdax	lup,1		;get signal from end of loop
+rda	apd1#,kap
+wrap	apd1,-kap	;do loop all pass
+wra	del1,0		;write delay
+rda	del1#,1		;read delay
+wrax	temp,1		;save in temp reg
+rdfx	hp1,kfh		;do low pass filter
+wrlx	hp1,-1		;infinite shelf LPF
+mulx	ksh		;prepare to subtract from temp
+rdax	temp,1		;subtract LPF from input (becomes HPF)
+wrax	temp,1		;save in temp reg
+rdfx	lp1,kfl		;do high pass filter
+wrhx	lp1,-1		;infinite shelf HPF
+mulx	ksl		;prepare to subtract from temp
+rdax	temp,1		;subtract HP signal from input (LPF shelf)
+mulx	krt		;scale by reverb time
+			;continue to next stage of loop		
+rdax	lap,1		
+rda	apd2#,kap
+wrap	apd2,-kap	
+wra	del2,0		
+rda	del2#,1		
+wrax	temp,1		
+rdfx	hp2,kfh		
+wrlx	hp2,-1		
+mulx	ksh		
+rdax	temp,1		
+wrax	temp,1		
+rdfx	lp2,kfl		
+wrhx	lp2,-1		
+mulx	ksl		
+rdax	temp,1		
+mulx	krt
+
+rdax	rap,1		
+rda	apd3#,kap
+wrap	apd3,-kap	
+wra	del3,0		
+rda	del3#,1		
+wrax	temp,1		
+rdfx	hp3,kfh		
+wrlx	hp3,-1		
+mulx	ksh		
+rdax	temp,1		
+wrax	temp,1		
+rdfx	lp3,kfl		
+wrhx	lp3,-1		
+mulx	ksl		
+rdax	temp,1		
+mulx	krt
+
+rdax	lap,1		
+rda	apd4#,kap
+wrap	apd4,-kap	
+wra	del4,0		
+rda	del4#,1		
+wrax	temp,1		
+rdfx	hp4,kfh		
+wrlx	hp4,-1		
+mulx	ksh		
+rdax	temp,1		
+wrax	temp,1		
+rdfx	lp4,kfl		
+wrhx	lp4,-1		
+mulx	ksl		
+rdax	temp,1		
+mulx	krt
+wrax	lup,0
+
+;now gather outputs from loop delays:
+
+rda	del1+201,0.8
+rda	del2+145,0.7
+rda	del3+697,0.6
+rda	del4+580,0.5
+wrax	dacl,0
+
+
+rda	del1+697,0.8
+rda	del2+845,0.7
+rda	del3+487,0.6
+rda	del4+780,0.5
+wrax	dacr,0
+
+;now generate a pair of LFOs to modulate the APs in the loop:
+
+skp	run,ok
+wlds	0,12,37
+wlds	1,15,33
+ok:
+
+;now affect each delay
+
+cho rda, sin0,reg|sin|compc,apd1+40
+cho rda,sin0,sin,apd1+41
+wra	apd1+80,0
+
+cho rda,sin0,cos|compc,apd2+40
+cho rda,sin0,cos,apd2+41
+wra	apd2+80,0
+
+cho rda,sin1,reg|sin|compc,apd3+40
+cho rda,sin0,sin,apd3+41
+wra	apd3+80,0
+
+cho rda,sin1,cos|compc,apd4+40
+cho rda,sin0,cos,apd4+41
+wra	apd4+80,0
+
+@endif
+
+@setOutputPin 'Output 1' dacl
+@setOutputPin 'Output 2' dacr

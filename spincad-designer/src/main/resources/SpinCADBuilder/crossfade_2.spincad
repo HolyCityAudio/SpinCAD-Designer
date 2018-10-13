@@ -1,0 +1,44 @@
+@name 'Crossfade 2'
+@color "0xf2f224"
+@audioInput inputOne "Audio In 1"
+@audioInput inputTwo "Audio In 2"
+@controlInput controlIn 'Control Input'
+@audioOutput output1 'Audio Output'
+
+;@controlOutput gain1 "Gain 1"
+;@controlOutput gain2 "Gain 2"
+
+
+
+;REGISTERS 
+;equ gain1 reg0
+;equ gain2 reg1
+
+@isPinConnected "Control Input"
+equ   output1     reg2
+equ temp reg3
+
+@isPinConnected 'Audio In 1'
+rdax controlIn, -1.0
+sof -2.0, 0
+
+;wrax gain2, 1.0
+mulx inputTwo
+wrax    temp,0    ; 
+@endif
+       
+@isPinConnected 'Audio In 2'
+rdax controlIn, 1.0
+sof 1.0, -1.0
+sof -2.0, 0.0
+;wrax gain1, 1.0
+mulx inputOne 
+@endif
+rdax temp, 1
+wrax output1,0    ; 
+
+@setOutputPin 'Audio Output' output1
+;@setOutputPin 'Gain 1' gain1
+;@setOutputPin 'Gain 2' gain2
+@endif
+

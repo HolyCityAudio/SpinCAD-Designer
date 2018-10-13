@@ -1,0 +1,90 @@
+@name Aliaser
+@audioInput input Input
+@audioOutput output Smooth  
+@audioOutput old Raw  
+@controlInput ripper Rip
+
+equ ripLow 0.002
+@sliderLabel ripLow 'Rip Low' 0.001 0.015 0.01 1000.0 3
+
+equ ripHigh 0.1
+@sliderLabel ripHigh 'Rip High' 0.02 0.2 0.1 1000.0 3
+
+equ old reg0 
+equ new_val reg1 
+equ fptr reg2 
+equ temp reg3 
+equ temp2 reg4 
+equ output reg5
+
+@isPinConnected Input
+; aliaser.spn 
+; Frank Thomson 
+; OCT Distribution
+; (c) 2010 OCT Distribution 
+; 
+; Input: Left 
+; Output: Left 
+; POT0 : set "sample" rate 
+; POT 1 and POT2 not used 
+; 
+
+skp   run, start 
+clr 
+wrax   old,0 
+wrax   new_val,0 
+wrax   fptr,0 
+
+start: 
+clr 
+@isPinConnected Rip
+rdax   ripper, 1.0 
+@minusDouble ripScale ripHigh ripLow 
+sof   ripScale, ripLow 
+@else
+sof	0.0, ripHigh
+@endif
+rdax   fptr,1 
+wrax   fptr,1 
+sof   1,-0.5 
+skp   neg,interp 
+wrax   fptr,0 
+rdax   new_val,1 
+wrax   old,0 
+rdax   input,1.0 
+wrax   new_val,0 
+interp: 
+clr 
+@isPinConnected Smooth
+rdax   new_val,1.0  
+mulx   fptr 
+wrax   temp,1 
+rdax   temp,1 
+wrax   temp,0 
+rdax   fptr,-1.0    
+sof   1.0,0.5 
+wrax   temp2,0 
+rdax   old,1 
+mulx   temp2 
+wrax   temp2,1 
+rdax   temp2,1 
+rdax   temp,1.0    
+wrax   temp2,1 
+absa 
+wrax   temp,0 
+; 
+rdax   temp2,1.0 
+skp   gez, gogo 
+clr 
+rdax   temp,1.0 
+sof   -1.0,0 
+wrax   temp,0 
+gogo: 
+clr 
+rdax   temp,1.0 
+wrax   output,0.0 
+@setOutputPin Smooth output
+@endif
+
+@setOutputPin Raw old
+@endif
