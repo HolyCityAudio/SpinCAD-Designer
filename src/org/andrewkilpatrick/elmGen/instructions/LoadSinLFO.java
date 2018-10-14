@@ -73,7 +73,7 @@ public class LoadSinLFO extends Instruction {
 					" - valid values: 0 or 1");
 		}
 		this.lfo = lfo;
-		if(this.freq > 511 || this.freq < 0) {
+		if(freq > 511 || freq < 0) {
 			throw new IllegalArgumentException("frequency out of range: " + freq +
 					" - valid range: 0 - 511");
 		}
