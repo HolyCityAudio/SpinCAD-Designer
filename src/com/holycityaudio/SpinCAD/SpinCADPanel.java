@@ -86,12 +86,13 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 		f = spdFrame;
 
 		drawingPane = new DrawingPane();
+		drawingPane.setPreferredSize(new Dimension(3840,2160));
 		drawingPane.addMouseListener(this);
 		drawingPane.addMouseMotionListener(this);
 		
 		JScrollPane scroller = new JScrollPane(drawingPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
 				, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scroller.setPreferredSize(new Dimension(400,400));
+		setLayout(new BorderLayout(0,0));
 		add(scroller, BorderLayout.CENTER);
 	}
 
