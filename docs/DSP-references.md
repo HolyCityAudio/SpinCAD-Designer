@@ -1,31 +1,23 @@
 List of online references for Audio DSP taken from the Holy City Audio Forum
 ------------------------------
-[Filter Design Reference] 
-(https://www.native-instruments.com/fileadmin/ni_media/downloads/pdf/VAFilterDesign_1.1.1.pdf)
+[Filter Design Reference](https://www.native-instruments.com/fileadmin/ni_media/downloads/pdf/VAFilterDesign_1.1.1.pdf)
 ------------------------------
 MIT DSP Lectures by Alan Oppenheim
 [MIT Lecture 1](https://www.youtube.com/watch?v=rkvEM5Y3N60)
 
-MIT Lecture 2
-https://www.youtube.com/watch?v=TuCYGjp7WKU
+[MIT Lecture 2](https://www.youtube.com/watch?v=TuCYGjp7WKU)
 
-MIT Lecture 3
-https://www.youtube.com/watch?v=XT6o4IRTcLk
+[MIT Lecture 3](https://www.youtube.com/watch?v=XT6o4IRTcLk)
 
-MIT Lecture 4
-https://www.youtube.com/watch?v=dHveJh0UbY8
+[MIT Lecture 4](https://www.youtube.com/watch?v=dHveJh0UbY8)
 
-MIT Lecture 5
-https://www.youtube.com/watch?v=I9u15zdgJvI
+[MIT Lecture 5](https://www.youtube.com/watch?v=I9u15zdgJvI)
 
-MIT Lecture 6
-https://www.youtube.com/watch?v=SMnPZzlgtXU
+[MIT Lecture 6](https://www.youtube.com/watch?v=SMnPZzlgtXU)
 
-MIT Lecture 7
-https://www.youtube.com/watch?v=LrNXtw0E7Dk
+[MIT Lecture 7](https://www.youtube.com/watch?v=LrNXtw0E7Dk)
 ------------------------------
-DSP Modeling of Spring Reverb
-http://asp.eurasipjournals.com/content/pdf/1687-6180-2011-646134.pdf
+[DSP Modeling of Spring Reverb](http://asp.eurasipjournals.com/content/pdf/1687-6180-2011-646134.pdf)
 ------------------------------
 DSP Modeling a Rotary Speaker
 http://www.willpirkle.com/Downloads/Rotary%20Speaker%20Sim%20App%20Note.pdf
