@@ -1,8 +1,8 @@
 Square Wave Tremolo with envelope controlled aliaser and reverb.  Because why not?
 
-Pot 0 = LFO speed
-Pot 1 = LFO depth
-Pot 2 = Reverb level and aliaser envelope sensitivity
+- Pot 0 = LFO speed
+- Pot 1 = LFO depth
+- Pot 2 = Reverb level and aliaser envelope sensitivity
 
 ```;  Program: Render Block exported from SpinCAD Designer
 ;------ Pot 0
