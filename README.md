@@ -5,9 +5,11 @@ SpinCAD Designer is an open source Java project which allows creation of patches
 It should be used with the Eclipse Java development package, or with the Eclipse DSL development package if you 
 wish to explore SpinCAD-Builder.
 
+![SpinCAD Designer](/spincad.png)
+
 If you simply want to use SpinCAD Designer, download the SpinCAD-whatever.jar file and run it on your computer.  You'll need JRE/JDK 1.8 or later.
 
-Initially I developed SpinCAD Designer in Eclipse for Java, Juno and Kepler Versions.  Now, after transferring the code from an SVN account into Github, I have also moved to Eclipse Luna.  I think I'm using Mars now.  Time flies!
+Initially I developed SpinCAD Designer in Eclipse for Java, Juno and Kepler Versions.  Now, after transferring the code from an SVN account into Github, I have also moved to Eclipse Luna.  I think I'm using Mars now.  Time flies!  As of 2020 I am no longer actively developing SpinCAD Designer.
 
 I use the Java and DSL (Doman Specific Language) version of the IDE.  SpinCAD Designer itself can be compiled strictly from the Java source supplied.
 
