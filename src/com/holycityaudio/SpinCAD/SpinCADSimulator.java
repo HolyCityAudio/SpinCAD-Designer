@@ -197,6 +197,108 @@ public class SpinCADSimulator {
 							//							sim.showLevelMeter(levelMonitor);
 						}
 						//					sim.showLevelMeter();
+						// restore scope settings
+						String gain = prefs.get("CH2_VERT_GAIN", "");
+						switch(gain) {
+						case "1x":
+							if(sim != null) {
+								sim.scope.setScopeCh2Gain(19);
+							}
+							break;
+						case "2x":
+							if(sim != null) {
+								sim.scope.setScopeCh2Gain(18);
+							}
+							break;
+						case "4x":
+							if(sim != null) {
+								sim.scope.setScopeCh2Gain(17);
+							}
+							break;
+						case "8x":
+							if(sim != null) {
+								sim.scope.setScopeCh2Gain(16);
+							}
+						case "16x":
+							if(sim != null) {
+								sim.scope.setScopeCh2Gain(15);
+							}
+							break;
+						}	
+
+						gain = prefs.get("CH1_VERT_GAIN", "");
+						switch(gain) {
+						case "1x":
+							if(sim != null) {
+								sim.scope.setScopeCh1Gain(19);
+							}
+							break;
+						case "2x":
+							if(sim != null) {
+								sim.scope.setScopeCh1Gain(18);
+							}
+							break;
+						case "4x":
+							if(sim != null) {
+								sim.scope.setScopeCh1Gain(17);
+							}
+							break;
+						case "8x":
+							if(sim != null) {
+								sim.scope.setScopeCh1Gain(16);
+							}
+						case "16x":
+							if(sim != null) {
+								sim.scope.setScopeCh1Gain(15);
+							}
+							break;
+						}	
+						
+
+						String timeBase = prefs.get("TimeBase", "");
+
+						switch(timeBase) {
+						case "8":
+							if(sim != null) {
+								sim.scope.setWindowRatio(8);
+							}
+							break;
+						case "16":
+							if(sim != null) {
+								sim.scope.setWindowRatio(16);
+							}
+							break;
+						case "32":
+							if(sim != null) {
+								sim.scope.setWindowRatio(32);
+							}
+							break;
+						case "64":
+							if(sim != null) {
+								sim.scope.setWindowRatio(64);
+							}
+							break;
+						case "128":
+							if(sim != null) {
+								sim.scope.setWindowRatio(128);
+							}
+							break;
+						case "256":
+							if(sim != null) {
+								sim.scope.setWindowRatio(256);
+							}
+							break;
+						case "512":
+							if(sim != null) {
+								sim.scope.setWindowRatio(512);
+							}
+							break;
+						case "1024":
+							if(sim != null) {
+								sim.scope.setWindowRatio(1024);
+							}
+							break;
+						}
 						setSimPotValues();
 						sim.start();
 					}
@@ -345,25 +447,30 @@ public class SpinCADSimulator {
 				case "1x":
 					if(sim != null) {
 						sim.scope.setScopeCh1Gain(19);
+						prefs.put("CH1_VERT_GAIN", "1x");
 					}
 					break;
 				case "2x":
 					if(sim != null) {
 						sim.scope.setScopeCh1Gain(18);
+						prefs.put("CH1_VERT_GAIN", "2x");
 					}
 					break;
 				case "4x":
 					if(sim != null) {
 						sim.scope.setScopeCh1Gain(17);
+						prefs.put("CH1_VERT_GAIN", "4x");
 					}
 					break;
 				case "8x":
 					if(sim != null) {
 						sim.scope.setScopeCh1Gain(16);
+						prefs.put("CH1_VERT_GAIN", "8x");
 					}
 				case "16":
 					if(sim != null) {
 						sim.scope.setScopeCh1Gain(15);
+						prefs.put("CH1_VERT_GAIN", "16x");
 					}
 					break;
 				}
@@ -374,25 +481,30 @@ public class SpinCADSimulator {
 				case "1x":
 					if(sim != null) {
 						sim.scope.setScopeCh2Gain(19);
+						prefs.put("CH2_VERT_GAIN", "1x");
 					}
 					break;
 				case "2x":
 					if(sim != null) {
 						sim.scope.setScopeCh2Gain(18);
+						prefs.put("CH2_VERT_GAIN", "2x");
 					}
 					break;
 				case "4x":
 					if(sim != null) {
 						sim.scope.setScopeCh2Gain(17);
+						prefs.put("CH2_VERT_GAIN", "4x");
 					}
 					break;
 				case "8x":
 					if(sim != null) {
 						sim.scope.setScopeCh2Gain(16);
+						prefs.put("CH2_VERT_GAIN", "8x");
 					}
 				case "16x":
 					if(sim != null) {
 						sim.scope.setScopeCh2Gain(15);
+						prefs.put("CH2_VERT_GAIN", "16x");
 					}
 					break;
 				}
@@ -410,15 +522,18 @@ public class SpinCADSimulator {
 				case "Auto":
 					if(sim != null) {
 					sim.scope.tm = triggerMode.AUTO;
+					prefs.put("TRIGGER_MODE", "Auto");
 					}
 					break;
 				case "Normal":
 					if(sim != null) {
+						prefs.put("TRIGGER_MODE", "Normal");
 					}
 					break;
 				case "Single":
 					if(sim != null) {
 						sim.scope.tm = triggerMode.SINGLE;
+						prefs.put("TRIGGER_MODE", "Single");
 					}
 					break;
 				}
@@ -431,41 +546,49 @@ public class SpinCADSimulator {
 			case "8":
 				if(sim != null) {
 					sim.scope.setWindowRatio(8);
+					prefs.put("TimeBase", "8");
 				}
 				break;
 			case "16":
 				if(sim != null) {
 					sim.scope.setWindowRatio(16);
+					prefs.put("TimeBase", "16");
 				}
 				break;
 			case "32":
 				if(sim != null) {
 					sim.scope.setWindowRatio(32);
+					prefs.put("TimeBase", "32");
 				}
 				break;
 			case "64":
 				if(sim != null) {
 					sim.scope.setWindowRatio(64);
+					prefs.put("TimeBase", "64");
 				}
 				break;
 			case "128":
 				if(sim != null) {
 					sim.scope.setWindowRatio(128);
+					prefs.put("TimeBase", "128");
 				}
 				break;
 			case "256":
 				if(sim != null) {
 					sim.scope.setWindowRatio(256);
+					prefs.put("TimeBase", "256");
 				}
 				break;
 			case "512":
 				if(sim != null) {
 					sim.scope.setWindowRatio(512);
+					prefs.put("TimeBase", "512");
 				}
 				break;
 			case "1024":
 				if(sim != null) {
 					sim.scope.setWindowRatio(1024);
+					prefs.put("TimeBase", "1024");
 				}
 				break;
 			}
