@@ -11,6 +11,7 @@ If you simply want to use SpinCAD Designer, download the SpinCAD-whatever.jar fi
 
 New as of July 2022, I am developing video and written tutorials for SpinCAD to help you get the most out of it.
 https://www.patreon.com/holycityaudio
+<a href="https://www.patreon.com/bePatron?u=76241777" data-patreon-widget-type="become-patron-button">Become a Patron!</a><script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
 
 Initially I developed SpinCAD Designer in Eclipse for Java, Juno and Kepler Versions.  Now, after transferring the code from an SVN account into Github, I have also moved to Eclipse Luna.  I think I'm using Mars now.  Time flies!  As of 2020 I am no longer actively developing SpinCAD Designer.
 
