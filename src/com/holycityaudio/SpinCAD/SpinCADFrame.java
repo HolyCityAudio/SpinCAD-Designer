@@ -51,7 +51,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import java.awt.datatransfer.Clipboard;
@@ -65,7 +64,6 @@ import java.awt.event.ActionListener;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
@@ -85,7 +83,6 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
-import com.holycityaudio.SpinCAD.SpinCADDialogs;
 
 public class SpinCADFrame extends JFrame {
 
@@ -94,7 +91,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1028;
+	int buildNum = 1029;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -712,7 +709,7 @@ public class SpinCADFrame extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
-						+ "Copyright 2018 Gary Worsham, Holy City Audio\n" + 
+						+ "Copyright 2022 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
