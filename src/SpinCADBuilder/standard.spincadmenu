@@ -60,6 +60,8 @@
 @menu "Reverb" 
 @menuitem "Allpass" allpass 
 @menuitem "Chirp" Chirp 
+// @menuitem "Chirp2" Chirp2 
+@menuitem "Stretched Chirp" StretchChirp 
 @menuitem "Small Reverb" MinReverb 
 @menuitem "Room Reverb" reverb_room 
 @menuitem "Hall Reverb" reverb_hall 
