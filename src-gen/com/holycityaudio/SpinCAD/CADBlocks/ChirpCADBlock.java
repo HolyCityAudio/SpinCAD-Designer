@@ -82,6 +82,46 @@
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
+			if(nAPs > 29) {
+			sfxb.FXallocDelayMem("iap30", stretch); 
+			}
+			
+			if(nAPs > 28) {
+			sfxb.FXallocDelayMem("iap29", stretch); 
+			}
+			
+			if(nAPs > 27) {
+			sfxb.FXallocDelayMem("iap28", stretch); 
+			}
+			
+			if(nAPs > 26) {
+			sfxb.FXallocDelayMem("iap27", stretch); 
+			}
+			
+			if(nAPs > 25) {
+			sfxb.FXallocDelayMem("iap26", stretch); 
+			}
+			
+			if(nAPs > 24) {
+			sfxb.FXallocDelayMem("iap25", stretch); 
+			}
+			
+			if(nAPs > 23) {
+			sfxb.FXallocDelayMem("iap24", stretch); 
+			}
+			
+			if(nAPs > 22) {
+			sfxb.FXallocDelayMem("iap23", stretch); 
+			}
+			
+			if(nAPs > 21) {
+			sfxb.FXallocDelayMem("iap22", stretch); 
+			}
+			
+			if(nAPs > 20) {
+			sfxb.FXallocDelayMem("iap21", stretch); 
+			}
+			
 			if(nAPs > 19) {
 			sfxb.FXallocDelayMem("iap20", stretch); 
 			}
@@ -160,6 +200,56 @@
 			
 			sfxb.FXallocDelayMem("iap4", stretch); 
 			sfxb.readRegister(input, gain);
+			if(nAPs > 29) {
+			sfxb.FXreadDelay("iap30#", 0, kiap);
+			sfxb.FXwriteAllpass("iap30", 0, -kiap);
+			}
+			
+			if(nAPs > 28) {
+			sfxb.FXreadDelay("iap29#", 0, kiap);
+			sfxb.FXwriteAllpass("iap29", 0, -kiap);
+			}
+			
+			if(nAPs > 27) {
+			sfxb.FXreadDelay("iap28#", 0, kiap);
+			sfxb.FXwriteAllpass("iap28", 0, -kiap);
+			}
+			
+			if(nAPs > 26) {
+			sfxb.FXreadDelay("iap27#", 0, kiap);
+			sfxb.FXwriteAllpass("iap27", 0, -kiap);
+			}
+			
+			if(nAPs > 25) {
+			sfxb.FXreadDelay("iap26#", 0, kiap);
+			sfxb.FXwriteAllpass("iap26", 0, -kiap);
+			}
+			
+			if(nAPs > 24) {
+			sfxb.FXreadDelay("iap25#", 0, kiap);
+			sfxb.FXwriteAllpass("iap25", 0, -kiap);
+			}
+			
+			if(nAPs > 23) {
+			sfxb.FXreadDelay("iap24#", 0, kiap);
+			sfxb.FXwriteAllpass("iap24", 0, -kiap);
+			}
+			
+			if(nAPs > 22) {
+			sfxb.FXreadDelay("iap23#", 0, kiap);
+			sfxb.FXwriteAllpass("iap23", 0, -kiap);
+			}
+			
+			if(nAPs > 21) {
+			sfxb.FXreadDelay("iap22#", 0, kiap);
+			sfxb.FXwriteAllpass("iap22", 0, -kiap);
+			}
+			
+			if(nAPs > 20) {
+			sfxb.FXreadDelay("iap21#", 0, kiap);
+			sfxb.FXwriteAllpass("iap21", 0, -kiap);
+			}
+			
 			if(nAPs > 19) {
 			sfxb.FXreadDelay("iap20#", 0, kiap);
 			sfxb.FXwriteAllpass("iap20", 0, -kiap);
