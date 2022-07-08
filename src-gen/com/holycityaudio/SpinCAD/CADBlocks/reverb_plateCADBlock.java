@@ -151,15 +151,30 @@
 			lp3 = sfxb.allocateReg();
 			lp4 = sfxb.allocateReg();
 			lup = sfxb.allocateReg();
-			sfxb.readRegister(input0, 1);
+			if(this.getPin("Reverb_Time").isConnected() == true) {
+			sfxb.readRegister(input1, krt);
 			sfxb.log(0.5, 0);
 			sfxb.exp(1, 0);
 			sfxb.scaleOffset(0.6, 0.3);
+			} else {
+			sfxb.scaleOffset(0, krt);
+			}
+			
 			sfxb.writeRegister(krtreg, 0);
+			if(this.getPin("LF_Loss").isConnected() == true) {
 			sfxb.readRegister(input1, 1);
+			} else {
+			sfxb.scaleOffset(0, 0.5);
+			}
+			
 			sfxb.scaleOffset(1, -0.999);
 			sfxb.writeRegister(ksh, 0);
+			if(this.getPin("HF_Loss").isConnected() == true) {
 			sfxb.readRegister(input2, 1);
+			} else {
+			sfxb.scaleOffset(0, 0.5);
+			}
+			
 			sfxb.scaleOffset(1, -0.999);
 			sfxb.writeRegister(ksl, 0);
 			sfxb.readRegister(input, gain);
