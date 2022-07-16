@@ -204,7 +204,6 @@ public class SpinCADSimulator {
 						if(scopeIsVisible) {
 							sim.showScope(scopePanel);
 							//							sim.showLevelMeter(levelMonitor);
-						}
 						//					sim.showLevelMeter();
 						// restore scope settings
 						String gain = prefs.get("CH2_VERT_GAIN", "");
@@ -310,6 +309,7 @@ public class SpinCADSimulator {
 						}
 						setSimPotValues();
 						sim.start();
+					}
 					}
 					else { 
 						SpinCADDialogs.MessageBox("Simulator file not found.", "Please set a simulator source file.");
