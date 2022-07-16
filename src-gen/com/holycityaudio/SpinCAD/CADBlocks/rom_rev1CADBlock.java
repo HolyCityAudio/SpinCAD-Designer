@@ -192,10 +192,10 @@
 			}
 			
 			sfxb.writeRegister(rt, 0);
-			sfxb.readRegister(POT1, 1.0);
+			sfxb.readRegister(input1, 1.0);
 			sfxb.scaleOffset(0.8, -0.8);
 			sfxb.writeRegister(hf, 0);
-			sfxb.readRegister(POT2, 1.0);
+			sfxb.readRegister(input2, 1.0);
 			sfxb.scaleOffset(0.8, -0.8);
 			sfxb.writeRegister(lf, 0);
 			sfxb.readRegister(adcl, gain);

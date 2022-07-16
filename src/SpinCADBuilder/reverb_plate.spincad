@@ -10,16 +10,19 @@ equ gain 0.5
 @sliderLabel gain Input_Gain -24 0 -6 1.0 1 DBLEVEL 
 
 equ krt 0.5
-@sliderLabel krt "Reverb Time Coefficient" 0.05 0.95 0.5 100.0 2
+@sliderLabel krt "Reverb Time Coefficient" 0.15 0.95 0.5 100.0 2
 
-equ hpdf 0.02
-@sliderLabel hpdf "Low Freq Damping Frequency" 0.001 0.15 0.02 100.0 2
+equ kfh 0.02
+@sliderLabel kfh "Low Freq Damping Frequency" 40 500 100.0 100.0 1 LOGFREQ
 
-equ inputkap 0.5
-@sliderLabel inputkap "Input All-Pass Coefficient" 0.05 0.95 0.5 100.0 2
+equ kfl 0.8
+@sliderLabel kfl "High Freq Damping Frequency" 1000 8000 100.0 100.0 1 LOGFREQ
 
-equ dlkap 0.5
-@sliderLabel dlkap "Delay All-Pass Coefficient" 0.05 0.95 0.5 100.0 2
+equ kapi 0.5
+@sliderLabel kapi "Input All-Pass Coefficient" -0.90 0.90 0.5 100.0 2
+
+equ kap 0.5
+@sliderLabel kap "Loop All-Pass Coefficient" -0.90 0.95 0.5 100.0 2
 
 ;plate reverb, lush (large), stereo
 ;characterized by very high density,
@@ -63,24 +66,38 @@ equ	lp3	reg12
 equ	lp4	reg13
 equ	lup	reg14
 
-equ	kapi	0.6	;input AP coefficients
-equ	kap	0.6	;loop AP coefficients
-equ	kfl	0.8	;loop filter LPF freq
-equ	kfh	0.02	;loop filter HPF freq
+; equ	kapi	0.6	;input AP coefficients
+; equ	kap	0.6	;loop AP coefficients
+; equ	kfl	0.8	;loop filter LPF freq
+; equ	kfh	0.02	;loop filter HPF freq
 
 ;now derive control coefficients from pots:
 
-rdax	input0,1
+@isPinConnected Reverb_Time
+rdax	input1, krt
 log	0.5,0
 exp	1,0		;square root pot0
 sof	0.6,0.3		;ranges 0.3 to 0.9
+@else
+sof 0, krt
+@endif
 wrax	krtreg,0		;write for later use
 
+@isPinConnected LF_Loss
 rdax	input1,1		;control low freq loss (high pass filter)
+@else
+sof 0, 0.5
+@endif
+
 sof	1,-0.999	;make from -1 to 0
 wrax	ksh,0		;high pass shelf
 
+@isPinConnected HF_Loss
 rdax	input2,1		;control high freq loss (low pass filter)
+@else
+sof 0, 0.5
+@endif
+
 sof	1,-0.999	;make from -1 to 0
 wrax	ksl,0		;low pass shelf
 

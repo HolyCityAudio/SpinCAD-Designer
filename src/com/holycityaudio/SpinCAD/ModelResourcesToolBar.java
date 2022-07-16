@@ -135,7 +135,8 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 		} else {
 			progressBar_2.setForeground(Color.red);
 		}
-
+		
+		progressBar_2.setToolTipText("Code Length: " + codeLength);
 		progressBar_2.setValue(codeLength);
 
 		// getModel();
@@ -149,6 +150,7 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 		} else {
 			progressBar.setForeground(Color.red);
 		}
+		progressBar.setToolTipText("Registers used: " + nRegs);
 		progressBar.setValue(nRegs);
 
 		// getModel();
@@ -162,6 +164,8 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 		} else {
 			progressBar_1.setForeground(Color.red);
 		}
+
+		progressBar_1.setToolTipText("RAM Used: " + ramUsed);
 		progressBar_1.setValue(ramUsed);
 
 		int rampLFO_0 = SpinCADModel.countLFOReferences(model,"LoadRampLFO(0");

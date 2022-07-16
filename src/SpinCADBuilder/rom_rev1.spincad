@@ -7,6 +7,9 @@
 @controlInput input0 Reverb_Time
 @controlInput input1 Low_Freq
 @controlInput input2 High_Freq
+@comment "Spin ROM Reverb 1 written by Keith Barr"
+@comment "Spin Semiconductor Open Reverb License"
+@comment "http://www.spinsemi.com/programs.php"
 
 ;reverb program
 ;large reverb, stereo in and out
@@ -118,11 +121,11 @@ sof 0.0, 0.76
 wrax	rt,	0		;rt ranges 0.1 to 0.9
 ;
 ;shelving controls are negative:
-rdax	POT1,	1.0
+rdax	input1,	1.0
 sof	0.8, 	-0.8
 wrax 	hf,0			;hf ranges -0.8 to 0
 ;
-rdax	POT2,	1.0
+rdax	input2,	1.0
 sof 	0.8,	-0.8
 wrax 	lf,0			;lf ranges -0.8 to 0
 ;

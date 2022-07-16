@@ -112,14 +112,23 @@ public class SpinCADSimulator {
 
 			this.add(pot0Slider);
 			pot0Slider.addChangeListener(this);
+			pot0Slider.setMajorTickSpacing(10);
+			pot0Slider.setMinorTickSpacing(5);
+			pot0Slider.setPaintTicks(true);
 			pot0Slider.setToolTipText("Pot 0");
 
 			this.add(pot1Slider);
 			pot1Slider.addChangeListener(this);
+			pot1Slider.setMajorTickSpacing(10);
+			pot1Slider.setMinorTickSpacing(5);
+			pot1Slider.setPaintTicks(true);
 			pot1Slider.setToolTipText("Pot 1");
 
 			this.add(pot2Slider);
 			pot2Slider.addChangeListener(this);
+			pot2Slider.setMajorTickSpacing(10);
+			pot2Slider.setMinorTickSpacing(5);
+			pot2Slider.setPaintTicks(true);
 			pot2Slider.setToolTipText("Pot 2");
 
 			// this.setVisible(true);
@@ -195,7 +204,6 @@ public class SpinCADSimulator {
 						if(scopeIsVisible) {
 							sim.showScope(scopePanel);
 							//							sim.showLevelMeter(levelMonitor);
-						}
 						//					sim.showLevelMeter();
 						// restore scope settings
 						String gain = prefs.get("CH2_VERT_GAIN", "");
@@ -211,7 +219,7 @@ public class SpinCADSimulator {
 							}
 							break;
 						case "4x":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setScopeCh2Gain(17);
 							}
 							break;
@@ -220,7 +228,7 @@ public class SpinCADSimulator {
 								sim.scope.setScopeCh2Gain(16);
 							}
 						case "16x":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setScopeCh2Gain(15);
 							}
 							break;
@@ -229,26 +237,26 @@ public class SpinCADSimulator {
 						gain = prefs.get("CH1_VERT_GAIN", "");
 						switch(gain) {
 						case "1x":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setScopeCh1Gain(19);
 							}
 							break;
 						case "2x":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setScopeCh1Gain(18);
 							}
 							break;
 						case "4x":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setScopeCh1Gain(17);
 							}
 							break;
 						case "8x":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setScopeCh1Gain(16);
 							}
 						case "16x":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setScopeCh1Gain(15);
 							}
 							break;
@@ -259,48 +267,49 @@ public class SpinCADSimulator {
 
 						switch(timeBase) {
 						case "8":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setWindowRatio(8);
 							}
 							break;
 						case "16":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setWindowRatio(16);
 							}
 							break;
 						case "32":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setWindowRatio(32);
 							}
 							break;
 						case "64":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setWindowRatio(64);
 							}
 							break;
 						case "128":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setWindowRatio(128);
 							}
 							break;
 						case "256":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setWindowRatio(256);
 							}
 							break;
 						case "512":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setWindowRatio(512);
 							}
 							break;
 						case "1024":
-							if(sim != null) {
+							if(sim.scope != null) {
 								sim.scope.setWindowRatio(1024);
 							}
 							break;
 						}
 						setSimPotValues();
 						sim.start();
+					}
 					}
 					else { 
 						SpinCADDialogs.MessageBox("Simulator file not found.", "Please set a simulator source file.");

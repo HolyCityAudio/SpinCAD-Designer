@@ -32,9 +32,10 @@
 			
 			private double gain = 0.5;
 			private double krt = 0.5;
-			private double hpdf = 0.02;
-			private double inputkap = 0.5;
-			private double dlkap = 0.5;
+			private double kfh = 0.02;
+			private double kfl = 0.8;
+			private double kapi = 0.5;
+			private double kap = 0.5;
 			private int temp;
 			private int krtreg;
 			private int ksh;
@@ -50,10 +51,6 @@
 			private int lp3;
 			private int lp4;
 			private int lup;
-			private double kapi = 0.6;
-			private double kap = 0.6;
-			private double kfl = 0.8;
-			private double kfh = 0.02;
 			private double rate1 = 20;
 			private double rate2 = 20;
 
@@ -68,6 +65,7 @@
 				addControlInputPin(this, "LF_Loss");
 				addControlInputPin(this, "HF_Loss");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -151,15 +149,30 @@
 			lp3 = sfxb.allocateReg();
 			lp4 = sfxb.allocateReg();
 			lup = sfxb.allocateReg();
-			sfxb.readRegister(input0, 1);
+			if(this.getPin("Reverb_Time").isConnected() == true) {
+			sfxb.readRegister(input1, krt);
 			sfxb.log(0.5, 0);
 			sfxb.exp(1, 0);
 			sfxb.scaleOffset(0.6, 0.3);
+			} else {
+			sfxb.scaleOffset(0, krt);
+			}
+			
 			sfxb.writeRegister(krtreg, 0);
+			if(this.getPin("LF_Loss").isConnected() == true) {
 			sfxb.readRegister(input1, 1);
+			} else {
+			sfxb.scaleOffset(0, 0.5);
+			}
+			
 			sfxb.scaleOffset(1, -0.999);
 			sfxb.writeRegister(ksh, 0);
+			if(this.getPin("HF_Loss").isConnected() == true) {
 			sfxb.readRegister(input2, 1);
+			} else {
+			sfxb.scaleOffset(0, 0.5);
+			}
+			
 			sfxb.scaleOffset(1, -0.999);
 			sfxb.writeRegister(ksl, 0);
 			sfxb.readRegister(input, gain);
@@ -262,26 +275,33 @@
 			public double getkrt() {
 				return krt;
 			}
-			public void sethpdf(double __param) {
-				hpdf = __param;	
+			public void setkfh(double __param) {
+				kfh = __param;	
 			}
 			
-			public double gethpdf() {
-				return hpdf;
+			public double getkfh() {
+				return kfh;
 			}
-			public void setinputkap(double __param) {
-				inputkap = __param;	
-			}
-			
-			public double getinputkap() {
-				return inputkap;
-			}
-			public void setdlkap(double __param) {
-				dlkap = __param;	
+			public void setkfl(double __param) {
+				kfl = __param;	
 			}
 			
-			public double getdlkap() {
-				return dlkap;
+			public double getkfl() {
+				return kfl;
+			}
+			public void setkapi(double __param) {
+				kapi = __param;	
+			}
+			
+			public double getkapi() {
+				return kapi;
+			}
+			public void setkap(double __param) {
+				kap = __param;	
+			}
+			
+			public double getkap() {
+				return kap;
 			}
 			public void setrate1(double __param) {
 				rate1 = __param;	

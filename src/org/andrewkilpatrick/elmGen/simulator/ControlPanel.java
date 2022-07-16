@@ -30,7 +30,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 // Added by GSW to integrate into SpinCAD Designer
-import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
 @SuppressWarnings("serial")
 class ControlPanel extends JFrame implements ChangeListener, ActionListener {
