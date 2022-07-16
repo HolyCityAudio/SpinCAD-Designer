@@ -97,9 +97,9 @@
 			sfxb.scaleOffset(1.0, 0.414);
 			sfxb.mulx(inputTwo);
 			sfxb.writeRegister(temp, 0);
-			sfxb.readRegister(controlIn, -1);
-			sfxb.scaleOffset(0.999, 0.999);
-			sfxb.scaleOffset(1.414, 0);
+			sfxb.readRegister(controlIn, 1);
+			sfxb.scaleOffset(0.707, -0.707);
+			sfxb.scaleOffset(-2.0, 0);
 			sfxb.mulx(inputOne);
 			sfxb.readRegister(temp, 1);
 			sfxb.skip(RUN, 7);

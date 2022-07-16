@@ -56,12 +56,14 @@ public class reverb_plateControlPanel extends spinCADControlPanel {
 	JLabel  gainLabel;	
 	JSlider krtSlider;
 	JLabel  krtLabel;	
-	JSlider hpdfSlider;
-	JLabel  hpdfLabel;	
-	JSlider inputkapSlider;
-	JLabel  inputkapLabel;	
-	JSlider dlkapSlider;
-	JLabel  dlkapLabel;	
+	JSlider kfhSlider;
+	JLabel  kfhLabel;	
+	JSlider kflSlider;
+	JLabel  kflLabel;	
+	JSlider kapiSlider;
+	JLabel  kapiLabel;	
+	JSlider kapSlider;
+	JLabel  kapLabel;	
 	JSlider rate1Slider;
 	JLabel  rate1Label;	
 	JSlider rate2Slider;
@@ -108,7 +110,7 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					krtSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.05 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkrt() * 100.0));
+					krtSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.15 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkrt() * 100.0));
 						krtSlider.addChangeListener(new reverb_plateListener());
 						krtLabel = new JLabel();
 						Border krtBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -129,66 +131,99 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					hpdfSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 100.0),(int) (0.15 * 100.0), (int) (gCB.gethpdf() * 100.0));
-						hpdfSlider.addChangeListener(new reverb_plateListener());
-						hpdfLabel = new JLabel();
-						Border hpdfBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						hpdfLabel.setBorder(hpdfBorder1);
-						updatehpdfLabel();
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					// multiplier is points per decade here
+						kfhSlider = SpinCADBlock.LogSlider(40,500,gCB.getkfh(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
+						kfhSlider.addChangeListener(new reverb_plateListener());
+						kfhLabel = new JLabel();
+						Border kfhBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						kfhLabel.setBorder(kfhBorder1);
+						updatekfhLabel();
 						
-						Border hpdfborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel hpdfinnerPanel = new JPanel();
+						Border kfhborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel kfhinnerPanel = new JPanel();
 							
-						hpdfinnerPanel.setLayout(new BoxLayout(hpdfinnerPanel, BoxLayout.Y_AXIS));
-						hpdfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						hpdfinnerPanel.add(hpdfLabel);
-						hpdfinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						hpdfinnerPanel.add(hpdfSlider);		
-						hpdfinnerPanel.setBorder(hpdfborder2);
+						kfhinnerPanel.setLayout(new BoxLayout(kfhinnerPanel, BoxLayout.Y_AXIS));
+						kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kfhinnerPanel.add(kfhLabel);
+						kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kfhinnerPanel.add(kfhSlider);		
+						kfhinnerPanel.setBorder(kfhborder2);
 			
-						frame.add(hpdfinnerPanel);
+						frame.add(kfhinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					inputkapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.05 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getinputkap() * 100.0));
-						inputkapSlider.addChangeListener(new reverb_plateListener());
-						inputkapLabel = new JLabel();
-						Border inputkapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						inputkapLabel.setBorder(inputkapBorder1);
-						updateinputkapLabel();
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					// multiplier is points per decade here
+						kflSlider = SpinCADBlock.LogSlider(1000,8000,gCB.getkfl(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
+						kflSlider.addChangeListener(new reverb_plateListener());
+						kflLabel = new JLabel();
+						Border kflBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						kflLabel.setBorder(kflBorder1);
+						updatekflLabel();
 						
-						Border inputkapborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel inputkapinnerPanel = new JPanel();
+						Border kflborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel kflinnerPanel = new JPanel();
 							
-						inputkapinnerPanel.setLayout(new BoxLayout(inputkapinnerPanel, BoxLayout.Y_AXIS));
-						inputkapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputkapinnerPanel.add(inputkapLabel);
-						inputkapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputkapinnerPanel.add(inputkapSlider);		
-						inputkapinnerPanel.setBorder(inputkapborder2);
+						kflinnerPanel.setLayout(new BoxLayout(kflinnerPanel, BoxLayout.Y_AXIS));
+						kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kflinnerPanel.add(kflLabel);
+						kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kflinnerPanel.add(kflSlider);		
+						kflinnerPanel.setBorder(kflborder2);
 			
-						frame.add(inputkapinnerPanel);
+						frame.add(kflinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					dlkapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.05 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getdlkap() * 100.0));
-						dlkapSlider.addChangeListener(new reverb_plateListener());
-						dlkapLabel = new JLabel();
-						Border dlkapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						dlkapLabel.setBorder(dlkapBorder1);
-						updatedlkapLabel();
+					kapiSlider = new JSlider(JSlider.HORIZONTAL, (int)(-0.90 * 100.0),(int) (0.90 * 100.0), (int) (gCB.getkapi() * 100.0));
+						kapiSlider.addChangeListener(new reverb_plateListener());
+						kapiLabel = new JLabel();
+						Border kapiBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						kapiLabel.setBorder(kapiBorder1);
+						updatekapiLabel();
 						
-						Border dlkapborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel dlkapinnerPanel = new JPanel();
+						Border kapiborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel kapiinnerPanel = new JPanel();
 							
-						dlkapinnerPanel.setLayout(new BoxLayout(dlkapinnerPanel, BoxLayout.Y_AXIS));
-						dlkapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						dlkapinnerPanel.add(dlkapLabel);
-						dlkapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						dlkapinnerPanel.add(dlkapSlider);		
-						dlkapinnerPanel.setBorder(dlkapborder2);
+						kapiinnerPanel.setLayout(new BoxLayout(kapiinnerPanel, BoxLayout.Y_AXIS));
+						kapiinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kapiinnerPanel.add(kapiLabel);
+						kapiinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kapiinnerPanel.add(kapiSlider);		
+						kapiinnerPanel.setBorder(kapiborder2);
 			
-						frame.add(dlkapinnerPanel);
+						frame.add(kapiinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					kapSlider = new JSlider(JSlider.HORIZONTAL, (int)(-0.90 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkap() * 100.0));
+						kapSlider.addChangeListener(new reverb_plateListener());
+						kapLabel = new JLabel();
+						Border kapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						kapLabel.setBorder(kapBorder1);
+						updatekapLabel();
+						
+						Border kapborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel kapinnerPanel = new JPanel();
+							
+						kapinnerPanel.setLayout(new BoxLayout(kapinnerPanel, BoxLayout.Y_AXIS));
+						kapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kapinnerPanel.add(kapLabel);
+						kapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						kapinnerPanel.add(kapSlider);		
+						kapinnerPanel.setBorder(kapborder2);
+			
+						frame.add(kapinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
@@ -262,17 +297,21 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 			gCB.setkrt((double) (krtSlider.getValue()/100.0));
 				updatekrtLabel();
 			}
-			if(ce.getSource() == hpdfSlider) {
-			gCB.sethpdf((double) (hpdfSlider.getValue()/100.0));
-				updatehpdfLabel();
+			if(ce.getSource() == kfhSlider) {
+			gCB.setkfh((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(kfhSlider.getValue()), 100.0)));
+				updatekfhLabel();
 			}
-			if(ce.getSource() == inputkapSlider) {
-			gCB.setinputkap((double) (inputkapSlider.getValue()/100.0));
-				updateinputkapLabel();
+			if(ce.getSource() == kflSlider) {
+			gCB.setkfl((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(kflSlider.getValue()), 100.0)));
+				updatekflLabel();
 			}
-			if(ce.getSource() == dlkapSlider) {
-			gCB.setdlkap((double) (dlkapSlider.getValue()/100.0));
-				updatedlkapLabel();
+			if(ce.getSource() == kapiSlider) {
+			gCB.setkapi((double) (kapiSlider.getValue()/100.0));
+				updatekapiLabel();
+			}
+			if(ce.getSource() == kapSlider) {
+			gCB.setkap((double) (kapSlider.getValue()/100.0));
+				updatekapLabel();
 			}
 			if(ce.getSource() == rate1Slider) {
 			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
@@ -305,14 +344,17 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 		private void updatekrtLabel() {
 		krtLabel.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));		
 		}		
-		private void updatehpdfLabel() {
-		hpdfLabel.setText("Low Freq Damping Frequency " + String.format("%4.2f", gCB.gethpdf()));		
+		private void updatekfhLabel() {
+		kfhLabel.setText("Low Freq Damping Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
 		}		
-		private void updateinputkapLabel() {
-		inputkapLabel.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getinputkap()));		
+		private void updatekflLabel() {
+		kflLabel.setText("High Freq Damping Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
 		}		
-		private void updatedlkapLabel() {
-		dlkapLabel.setText("Delay All-Pass Coefficient " + String.format("%4.2f", gCB.getdlkap()));		
+		private void updatekapiLabel() {
+		kapiLabel.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getkapi()));		
+		}		
+		private void updatekapLabel() {
+		kapLabel.setText("Loop All-Pass Coefficient " + String.format("%4.2f", gCB.getkap()));		
 		}		
 		private void updaterate1Label() {
 		rate1Label.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		

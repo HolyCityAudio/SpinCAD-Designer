@@ -32,9 +32,9 @@ rdax controlIn, 0.586
 sof 1.0, 0.414
 mulx inputTwo
 wrax temp,0
-rdax controlIn, -1
-sof 0.999, 0.999
-sof 1.414,0 
+rdax controlIn, 1
+sof 0.707, -0.707
+sof -2.0,0 
 mulx inputOne
 rdax temp, 1
 skp run, writeout

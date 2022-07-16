@@ -63,7 +63,8 @@
 @menuitem "Small Reverb" MinReverb 
 @menuitem "Room Reverb" reverb_room 
 @menuitem "Hall Reverb" reverb_hall 
-// @menuitem "Plate Reverb" reverb_plate 
+//@menuitem "Plate Reverb" reverb_plate 
+//@menuitem "Reverb Plate Filters" reverb_plate_filters 
 // @menuitem "Gated Reverb" gated_verb 
 @menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
@@ -72,7 +73,7 @@
 //@menuitem "Shimmer Reverb" shimmer_verb 
 
 @menu "Modulation"  
-@menuitem "LFO Chorus" Chorus 
+@menuitem "1-voice Chorus" Chorus 
 @menuitem "4-voice Chorus" ChorusQuad 
 @menuitem "LFO Flanger" Flanger 
 @menuitem "Servo Flanger" servo
@@ -85,7 +86,7 @@
 @menuitem "Pitch Shift Adjustable" Pitch_shift_test 
 // @menuitem "Pitch Up" PitchUp 
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
-@menuitem "Pitch Up/Down" pitchupdown 
+@menuitem "Octave Up/Down" pitchupdown 
 @menuitem "Glitch Shift Adjustable" Glitch_shift 
 //@menuitem "Pitch Four" pitch_four 
 @menuitem "Pitch Offset" pitchoffset 

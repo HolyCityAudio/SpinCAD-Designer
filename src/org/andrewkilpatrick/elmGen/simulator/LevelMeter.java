@@ -25,8 +25,6 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
-import org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerPanel;
 import org.andrewkilpatrick.elmGen.util.Util;
 
 

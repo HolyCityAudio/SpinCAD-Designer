@@ -37,8 +37,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
-
 public class ClipControlControlPanel implements ChangeListener, ActionListener, ItemListener {
 
 	private JSlider gainSlider = new JSlider(JSlider.HORIZONTAL, 100, 1000, 200);
