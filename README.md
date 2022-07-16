@@ -5,6 +5,9 @@ SpinCAD Designer is an open source Java project which allows creation and audio 
 It should be used with the Eclipse Java development package, or with the Eclipse DSL development package if you 
 wish to explore SpinCAD-Builder.
 
+New as of July 2022, I am developing video and written tutorials for SpinCAD to help you get the most out of it.
+https://www.patreon.com/holycityaudio
+
 ![SpinCAD Designer](/spincad.png)
 
 If you simply want to use SpinCAD Designer, download the SpinCAD-whatever.jar file and run it on your computer.  You'll need JRE/JDK 1.8 or later.
