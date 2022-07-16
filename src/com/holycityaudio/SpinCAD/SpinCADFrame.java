@@ -91,7 +91,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1029;
+	int buildNum = 1030;
 	// Swing things
 	private JPanel contentPane;
 	//=====================s====================================================================
@@ -697,7 +697,7 @@ public class SpinCADFrame extends JFrame {
 		mntmHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					openWebpage(new URL("http://holycityaudio.com/spincad-designer-2/spincad-designer-help-pages/"));
+					openWebpage(new URL("https://www.patreon.com/holycityaudio"));
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
