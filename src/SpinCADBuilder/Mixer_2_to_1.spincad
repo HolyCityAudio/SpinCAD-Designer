@@ -8,10 +8,10 @@
 @controlInput level_2 'Level 2'
 
 equ gain1 1.0 
-@sliderLabel gain1 'Input Gain 1' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain1 'Input Gain 1' -18 0 -6 1.0 1 DBLEVEL 
 
 equ gain2 1.0 
-@sliderLabel gain2 'Input Gain 2' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain2 'Input Gain 2' -18 0 -6 1.0 1 DBLEVEL 
 
 ;REGISTERS 
 equ   output     reg0       

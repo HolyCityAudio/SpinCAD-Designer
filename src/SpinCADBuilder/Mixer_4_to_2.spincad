@@ -1,0 +1,75 @@
+@name 'Mixer 4:2'
+@color "0x2468f2"
+@audioInput input1 'Input 1'
+@audioInput input2 'Input 2'
+@audioInput input3 'Input 3'
+@audioInput input4 'Input 4'
+
+@audioOutput output1 Output1
+@audioOutput output2 Output2
+@controlInput level_1 'Level 1'
+@controlInput level_2 'Level 2'
+@controlInput level_3 'Level 3'
+@controlInput level_4 'Level 4'
+
+equ gain1 1.0 
+@sliderLabel gain1 'Input Gain 1' -18 0 -6 1.0 1 DBLEVEL 
+
+equ gain2 1.0 
+@sliderLabel gain2 'Input Gain 2' -18 0 -6 1.0 1 DBLEVEL 
+
+equ gain3 1.0 
+@sliderLabel gain3 'Input Gain 3' -18 0 -6 1.0 1 DBLEVEL 
+
+equ gain4 1.0 
+@sliderLabel gain4 'Input Gain 4' -18 0 -6 1.0 1 DBLEVEL 
+
+;REGISTERS 
+equ   output1     reg0 	     
+equ   output2     reg1   
+
+// we dont read input 1 unless it's connected
+@isPinConnected 'Input 1'
+rdax    input1, gain1    ;read input signal
+// if level 1 is connected we multiply by level 1
+	@isPinConnected 'Level 1'
+		mulx level_1
+	@endif
+	wrax output1, 0.0
+@endif
+
+@isPinConnected 'Input 2'
+	rdax input2, gain2
+	@isPinConnected 'Level 2'
+		mulx level_2
+	@endif
+	@isPinConnected 'Input 1'
+		rdax output1, 1.0
+	@endif
+	wrax output1, 0.0
+@endif
+
+// we dont read input 1 unless it's connected
+@isPinConnected 'Input 3'
+	rdax    input3, gain3    ;read input signal
+// if level 1 is connected we multiply by level 1
+	@isPinConnected 'Level 3'
+		mulx level_3
+	@endif
+	wrax output2, 0.0
+@endif
+
+@isPinConnected 'Input 4'
+	rdax input4, gain4
+	@isPinConnected 'Level 4'
+		mulx level_4
+	@endif
+	@isPinConnected 'Input 3'
+		rdax output2, 1.0
+	@endif
+	wrax output2, 0.0
+@endif
+
+
+@setOutputPin Output1 output1
+@setOutputPin Output2 output2
