@@ -79,7 +79,7 @@ public Mixer_3_to_1ControlPanel(Mixer_3_to_1CADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+						gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
 						gain1Slider.addChangeListener(new Mixer_3_to_1Listener());
 						gain1Label = new JLabel();
 						Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -106,7 +106,7 @@ public Mixer_3_to_1ControlPanel(Mixer_3_to_1CADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
+						gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
 						gain2Slider.addChangeListener(new Mixer_3_to_1Listener());
 						gain2Label = new JLabel();
 						Border gain2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -133,7 +133,7 @@ public Mixer_3_to_1ControlPanel(Mixer_3_to_1CADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gain3Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain3())));
+						gain3Slider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain3())));
 						gain3Slider.addChangeListener(new Mixer_3_to_1Listener());
 						gain3Label = new JLabel();
 						Border gain3Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
