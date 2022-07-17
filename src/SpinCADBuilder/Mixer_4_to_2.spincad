@@ -70,6 +70,5 @@ rdax    input1, gain1    ;read input signal
 	wrax output2, 0.0
 @endif
 
-
 @setOutputPin Output1 output1
 @setOutputPin Output2 output2
