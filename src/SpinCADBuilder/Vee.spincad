@@ -1,0 +1,34 @@
+@name 'Vee'
+@color "0xf2f224"
+@controlInput input Input
+@controlOutput output1 'Output 1'
+@controlOutput output2 'Output 2'
+
+;REGISTERS 
+
+@isPinConnected Input
+@isPinConnected 'Output 1'
+equ   output1     reg0
+rdax input, 1.0
+sof -2.0, 0.99902
+skp gez, positive
+clr
+positive:
+wrax    output1,0    ; 
+@endif
+       
+@isPinConnected 'Output 2'
+equ   output2     reg1
+sof 0, 0.99902
+rdax input, -0.99902
+sof -1.99804, 0.99902
+skp gez, pos
+clr
+pos:
+wrax    output2,0    ; 
+@endif
+
+@setOutputPin 'Output 1' output1
+@setOutputPin 'Output 2' output2
+@endif
+
