@@ -113,11 +113,10 @@
 @menuitem "LFO Value" LFO_Value 
 @menuitem "Ramp LFO" RampLFO
 @menuitem "Oscillator" Oscillator
-@menuitem "Constant" Constant 
 @menuitem "New Oscillator" New_Oscillator
 //@menuitem "Pluck" Pluck
 @menuitem "Ramp Sample/Hold" SampleHold
-@menuitem "4-Phase Sample/Hold" Sine_Sample_Hold
+//@menuitem "4-Phase Sample/Hold" Sine_Sample_Hold
 //@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer
 @menuitem "Envelope" EnvelopeControl
@@ -126,16 +125,20 @@
 @menuitem "Invert" InvertControl
 @menuitem "Power" PowerControl
 @menuitem "Clip" ClipControl
-@menuitem "Maximum" maxx
-@menuitem "Multiply" Multiply
-@menuitem "Half Wave" Half_Wave
 @menuitem "Slicer" Slicer
 @menuitem "Two Stage" Two_Stage
-@menuitem "Exp" Exp
-@menuitem "Log" Log
-@menuitem "Root" Root
-@menuitem "Absolute Value" Absa
+@menuitem "Vee" Vee
 @menuitem "Mixer 2:1" ControlMixer_2_to_1
 @menuitem "Mixer 3:1" ControlMixer_3_to_1
 //@menuitem "SmootherA" control_smootherA
 @menuitem "Tap Tempo" TapTempo
+
+@menu "Instructions"
+@menuitem "Maximum" maxx
+@menuitem "Multiply" Multiply
+@menuitem "Half Wave" Half_Wave
+@menuitem "Exp" Exp
+@menuitem "Log" Log
+@menuitem "Root" Root
+@menuitem "Absolute Value" Absa
+@menuitem "Constant" Constant 
