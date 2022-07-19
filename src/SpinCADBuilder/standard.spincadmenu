@@ -107,7 +107,7 @@
 @menuitem "Pot 0" Pot0 
 @menuitem "Pot 1" Pot1 
 @menuitem "Pot 2" Pot2 
-@menuitem "Scale/Offset" ScaleOffsetControl
+
 @menuitem "Smoother" control_smoother
 @menuitem "Sin/Cos LFO" SinCosLFOA
 @menuitem "LFO Value" LFO_Value 
@@ -119,8 +119,7 @@
 //@menuitem "4-Phase Sample/Hold" Sine_Sample_Hold
 //@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer
-@menuitem "Envelope" EnvelopeControl
-@menuitem "Envelope II" New_Envelope
+
 //@menuitem "Peak/Envelope" Peak_Envelope
 @menuitem "Invert" InvertControl
 @menuitem "Power" PowerControl
@@ -128,17 +127,20 @@
 @menuitem "Slicer" Slicer
 @menuitem "Two Stage" Two_Stage
 @menuitem "Vee" Vee
+@menuitem "Envelope" EnvelopeControl
+@menuitem "Envelope II" New_Envelope
 @menuitem "Mixer 2:1" ControlMixer_2_to_1
 @menuitem "Mixer 3:1" ControlMixer_3_to_1
 //@menuitem "SmootherA" control_smootherA
 @menuitem "Tap Tempo" TapTempo
 
 @menu "Instructions"
+@menuitem "Scale/Offset" ScaleOffsetControl
 @menuitem "Maximum" maxx
 @menuitem "Multiply" Multiply
 @menuitem "Half Wave" Half_Wave
+@menuitem "Absolute Value" Absa
 @menuitem "Exp" Exp
 @menuitem "Log" Log
 @menuitem "Root" Root
-@menuitem "Absolute Value" Absa
 @menuitem "Constant" Constant 
