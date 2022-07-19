@@ -64,7 +64,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LFO_ValueCADBlock;
@@ -73,24 +72,25 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.New_OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Two_StageCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.VeeCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_3_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.maxxCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MultiplyCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Half_WaveCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.AbsaCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.AbsaCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
 
 	import java.awt.event.ActionEvent;
@@ -709,15 +709,6 @@
 	});
 	mn_control.add(mntm_Pot2);
 		
-	final JMenuItem mntm_ScaleOffsetControl = new JMenuItem("Scale/Offset");
-	mntm_ScaleOffsetControl.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new ScaleOffsetControlCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_ScaleOffsetControl);
-		
 	final JMenuItem mntm_control_smoother = new JMenuItem("Smoother");
 	mntm_control_smoother.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -790,24 +781,6 @@
 	});
 	mn_control.add(mntm_tremolizer);
 		
-	final JMenuItem mntm_EnvelopeControl = new JMenuItem("Envelope");
-	mntm_EnvelopeControl.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new EnvelopeControlCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_EnvelopeControl);
-		
-	final JMenuItem mntm_New_Envelope = new JMenuItem("Envelope II");
-	mntm_New_Envelope.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new New_EnvelopeCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_New_Envelope);
-		
 	final JMenuItem mntm_InvertControl = new JMenuItem("Invert");
 	mntm_InvertControl.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -862,6 +835,24 @@
 	});
 	mn_control.add(mntm_Vee);
 		
+	final JMenuItem mntm_EnvelopeControl = new JMenuItem("Envelope");
+	mntm_EnvelopeControl.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new EnvelopeControlCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_EnvelopeControl);
+		
+	final JMenuItem mntm_New_Envelope = new JMenuItem("Envelope II");
+	mntm_New_Envelope.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new New_EnvelopeCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_New_Envelope);
+		
 	final JMenuItem mntm_ControlMixer_2_to_1 = new JMenuItem("Mixer 2:1");
 	mntm_ControlMixer_2_to_1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -892,6 +883,15 @@
 	JMenu mn_instructions = new JMenu("Instructions");
 	menuBar.add(mn_instructions);
 	
+	final JMenuItem mntm_ScaleOffsetControl = new JMenuItem("Scale/Offset");
+	mntm_ScaleOffsetControl.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ScaleOffsetControlCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_instructions.add(mntm_ScaleOffsetControl);
+		
 	final JMenuItem mntm_maxx = new JMenuItem("Maximum");
 	mntm_maxx.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -919,6 +919,15 @@
 	});
 	mn_instructions.add(mntm_Half_Wave);
 		
+	final JMenuItem mntm_Absa = new JMenuItem("Absolute Value");
+	mntm_Absa.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new AbsaCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_instructions.add(mntm_Absa);
+		
 	final JMenuItem mntm_Exp = new JMenuItem("Exp");
 	mntm_Exp.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -945,15 +954,6 @@
 		}
 	});
 	mn_instructions.add(mntm_Root);
-		
-	final JMenuItem mntm_Absa = new JMenuItem("Absolute Value");
-	mntm_Absa.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new AbsaCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_instructions.add(mntm_Absa);
 		
 	final JMenuItem mntm_Constant = new JMenuItem("Constant");
 	mntm_Constant.addActionListener(new ActionListener() {

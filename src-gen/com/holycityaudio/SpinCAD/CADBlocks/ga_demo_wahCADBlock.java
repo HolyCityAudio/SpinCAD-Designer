@@ -45,8 +45,8 @@
 			private int lavg;
 			private int ffil;
 			private int bypass;
-			private int dacl;
-			private int dacr;
+			private int output1;
+			private int output2;
 			private double kap = 0.6;
 			private double krt = 0.55;
 			private double krf = 0.5;
@@ -140,8 +140,8 @@
 			lavg = sfxb.allocateReg();
 			ffil = sfxb.allocateReg();
 			bypass = sfxb.allocateReg();
-			dacl = sfxb.allocateReg();
-			dacr = sfxb.allocateReg();
+			output1 = sfxb.allocateReg();
+			output2 = sfxb.allocateReg();
 			if(this.getPin("Input_Left").isConnected() == true) {
 			sfxb.skip(RUN, 5);
 			sfxb.writeRegister(lp1, 0);
@@ -256,10 +256,10 @@
 			sfxb.readRegister(mono, 1);
 			sfxb.writeRegister(wahout, 1);
 			sfxb.readRegister(revout, 1);
-			sfxb.scaleOffset(1, 0.02);
-			sfxb.writeRegister(dacl, 1);
-			sfxb.scaleOffset(1, -0.04);
-			sfxb.writeRegister(dacr, 0);
+			sfxb.writeRegister(output1, 1);
+			sfxb.writeRegister(output2, 0);
+			this.getPin("Audio_Output_1").setRegister(output1);
+			this.getPin("Audio_Output_2").setRegister(output2);
 			}
 			
 
