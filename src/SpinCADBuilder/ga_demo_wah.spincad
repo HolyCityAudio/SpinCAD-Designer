@@ -45,8 +45,8 @@ equ	avg	reg11
 equ	lavg	reg12
 equ	ffil	reg13
 equ	bypass	reg14
-equ dacl reg15
-equ dacr reg16
+equ output1 reg15
+equ output2 reg16
 
 ;declare constants:
 
@@ -105,8 +105,8 @@ wra	d2,1.99
 
 @isPinConnected Reverb_Level
 rda	d1,1.99
-mulx	pot0
-mulx	pot0
+mulx	input0
+mulx	input0
 @else
 rda d1, 0.5
 @endif
@@ -148,7 +148,7 @@ log	1,0
 
 @isPinConnected Wah_Sens 
 rdax	temp,-1
-mulx 	pot1
+mulx 	input1
 @else
 rdax temp, -0.5
 @endif
@@ -162,7 +162,7 @@ wrax	wf,0
 ;get wfq value from pot2:
 
 @isPinConnected Wah_Level_Q
-rdax	pot2,1
+rdax	input2,1
 sof	-0.2,0.25	;make 0.3 to 0.05
 @else
 sof 0.0, 0.2
@@ -188,7 +188,7 @@ wrax	wf1,0		;finished with biquad filter.
 ;derive bypass signal from pot2:
 
 @isPinConnected Wah_Level_Q
-rdax	pot2,1
+rdax	input2,1
 @else
 sof 0.0, 0.8
 @endif
@@ -204,8 +204,10 @@ mulx	bypass
 rdax	mono,1
 wrax	wahout,1
 rdax	revout,1
-sof	1,0.02
-wrax	dacl,1
-sof	1,-0.04
-wrax	dacr,0
+; sof	1,0.02
+wrax	output1,1
+; sof	1,-0.04
+wrax	output2,0
+@setOutputPin "Audio_Output_1" output1
+@setOutputPin "Audio_Output_2" output2
 @endif
