@@ -5,15 +5,10 @@
 @controlInput decayControl Decay
 @controlInput sens Sensitivity
 @controlOutput lpf1 "Fast Output"  
-
-
-
-
 @controlOutput lpf1 "Slow Output"
 @controlOutput outputMax "Max Output"  
 @controlOutput avg "avg"
 @controlOutput lavg "lavg"
-
 
 equ attackFreq 0.00015
 // variable - Name - low - high - multiplier - precision - option 

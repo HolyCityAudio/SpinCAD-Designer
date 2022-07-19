@@ -21,7 +21,6 @@ package com.holycityaudio.SpinCAD.ControlBlocks;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
-import com.holycityaudio.SpinCAD.ControlBlocks.ControlCADBlock;
 
 public class TapTempoCADBlock extends ControlCADBlock{
 
