@@ -52,6 +52,7 @@
 // @menuitem "Coarse Delay" CoarseDelay 
 @menuitem "Triple-tap" TripleTap 
 @menuitem "MN3011" MN3011a 
+@menuitem "Drum Delay" DrumDelay 
 @menuitem "6-Tap Stereo" sixtap 
 @menuitem "8-Tap" eighttap 
 @menuitem "Stutter" Stutter 
