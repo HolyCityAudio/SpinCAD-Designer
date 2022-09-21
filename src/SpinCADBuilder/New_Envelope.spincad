@@ -1,14 +1,14 @@
-@name 'New Envelope'
+@name 'Pluck Detector'
 @color "0x02f27f"
 @audioInput input Input
 @controlInput attackControl Attack
 @controlInput decayControl Decay
 @controlInput sens Sensitivity
-@controlOutput lpf1 "Fast Output"  
-@controlOutput lpf1 "Slow Output"
-@controlOutput outputMax "Max Output"  
-@controlOutput avg "avg"
-@controlOutput lavg "lavg"
+@controlOutput ffil "Trigger Output"
+@comment "Derived from ga_auto_wah.spn written by Keith Barr"
+
+equ threshhold 0.002
+@sliderLabelSpinner threshhold 'Threshhold' 0.0002 0.002 10 100 5 LOG  
 
 equ attackFreq 0.00015
 // variable - Name - low - high - multiplier - precision - option 
@@ -46,11 +46,11 @@ rdax   lavg,1
 wrax   temp,0
 rdax   avg,1
 maxx   temp,1      ;filter a long average
-wrax   lavg,0
+wrax   lavg,1
 
 ;now set up a means by which the sensitivity control can affect the filter frequency:
 
-rdax   lavg,1
+; rdax   lavg,1
 sof    1,0.002      ;never let lavg go to zero
 log   1,0
 wrax   temp,0
@@ -64,9 +64,7 @@ rdax   temp,-1
 
 exp   1,0
 rdfx   ffil,postFreq
-wrax   ffil,1      
-sof   0.7,0.02      ;limit frequency range
-wrax   output,0
+wrax   ffil,0     
 
 @isPinConnected Attack
 rdax input, attackFreq
@@ -89,15 +87,5 @@ rdax input, 1.0
 rdfx lpf2, decayFreq
 @endif
 
-wrax lpf2, 1
-maxx lpf1, 1.0
-
-; # wrax output, 0
-
-@setOutputPin "Max Output" output
-@setOutputPin "Fast Output" lpf1
-@setOutputPin "Slow Output" lpf2
-@setOutputPin "avg" avg 
-@setOutputPin "lavg" lavg 
-
+@setOutputPin "Output" ffil
 @endif

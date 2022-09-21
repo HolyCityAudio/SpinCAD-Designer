@@ -7,6 +7,7 @@
 @audioOutput output3 'Tap 3 Out'  
 @audioOutput output4 'Tap 4 Out'  
 @controlInput cIn1 'Delay Time' 
+@controlInput heads 'Heads' 
 @controlInput fbk 'Feedback Gain'
 
 equ inputGain 1.0
@@ -38,6 +39,8 @@ equ tap3Ratio 0.45
 equ tap4Ratio 0.25 
 @sliderLabel tap4Ratio 'Tap 4 Time (%): ' 0.0 1.0 0.25 1000.0 2
 
+equ heads 1.0
+
 equ delayOffset -1
 
 // establish the base address for this module
@@ -47,6 +50,7 @@ mem drumDelay delayLength
 
 // input connection must be there for any code to be generated
 @isPinConnected Input
+
 // read the input and write to base of delay line
 @isPinConnected Feedback
 rdax feedback,fbkGain
@@ -57,10 +61,22 @@ mulx fbk
 rdax adcl, inputGain
 wra drumDelay, 0.0
 
+// deal with the "heads" knob
+@isPinConnected 'Heads'
+rdax heads, 1.0
+sof 1.0, -0.25
+skp NEG, noHead1
+sof 1.0, -0.25
+skp NEG, noHead2
+sof 1.0, -0.25
+skp NEG, noHead3
+@else
+@endif
+
 // tap 1 -----------------------------------------------------------
 
 @isPinConnected 'Tap 1 Out'
-equ   output1     reg0      
+equ output1     reg1     
 clr
 or $7FFF00
 @isPinConnected 'Delay Time'
@@ -69,13 +85,14 @@ mulx cIn1
 @getDelayScaleControl tap1Ratio delayLength delayOffset 
 wrax ADDR_PTR, 0
 rmpa 1.0
-wrax output1, 0.0 
-@setOutputPin 'Tap 1 Out' output1 
+wrax output1, 0.0
+@setOutputPin 'Tap 1 Out' output1
 @endif
 
+noHead1:
 // tap 2 -----------------------------------------------------------
-@isPinConnected 'Tap 2 Out'
-equ   output2     reg1       
+@isPinConnected 'Tap 1 Out'
+equ output2     reg1     
 clr
 or $7FFF00
 @isPinConnected 'Delay Time'
@@ -88,9 +105,10 @@ wrax output2, 0.0
 @setOutputPin 'Tap 2 Out' output2
 @endif
 
+noHead2:
 // tap 3 -----------------------------------------------------------
 @isPinConnected 'Tap 3 Out'
-equ   output3     reg2  
+equ output3     reg2  
 clr
 or $7FFF00  
 @isPinConnected 'Delay Time'
@@ -103,9 +121,10 @@ wrax output3, 0.0
 @setOutputPin 'Tap 3 Out' output3
 @endif
 
+noHead3:
 // tap 4 -----------------------------------------------------------
 @isPinConnected 'Tap 4 Out'
-equ   output4     reg3  
+equ output4     reg3  
 clr
 or $7FFF00  
 @isPinConnected 'Delay Time'
@@ -119,5 +138,4 @@ wrax output4, 0.0
 @endif
 
 @endif
-
 

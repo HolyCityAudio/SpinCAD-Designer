@@ -30,6 +30,7 @@
 			private static final long serialVersionUID = 1L;
 			private New_EnvelopeControlPanel cp = null;
 			
+			private double threshhold = 0.002;
 			private double attackFreq = 0.00015;
 			private double decayFreq = 0.00015;
 			private double postFreq = 0.00015;
@@ -44,19 +45,16 @@
 
 			public New_EnvelopeCADBlock(int x, int y) {
 				super(x, y);
-				setName("New Envelope");					
+				setName("Pluck Detector");					
 			setBorderColor(new Color(0x02f27f));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addControlInputPin(this, "Attack");
 				addControlInputPin(this, "Decay");
 				addControlInputPin(this, "Sensitivity");
-				addControlOutputPin(this, "Fast Output");
-				addControlOutputPin(this, "Slow Output");
-				addControlOutputPin(this, "Max Output");
-				addControlOutputPin(this, "avg");
-				addControlOutputPin(this, "lavg");
+				addControlOutputPin(this, "Trigger Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -126,8 +124,7 @@
 			sfxb.writeRegister(temp, 0);
 			sfxb.readRegister(avg, 1);
 			sfxb.maxx(temp, 1);
-			sfxb.writeRegister(lavg, 0);
-			sfxb.readRegister(lavg, 1);
+			sfxb.writeRegister(lavg, 1);
 			sfxb.scaleOffset(1, 0.002);
 			sfxb.log(1, 0);
 			sfxb.writeRegister(temp, 0);
@@ -140,9 +137,7 @@
 			
 			sfxb.exp(1, 0);
 			sfxb.readRegisterFilter(ffil, postFreq);
-			sfxb.writeRegister(ffil, 1);
-			sfxb.scaleOffset(0.7, 0.02);
-			sfxb.writeRegister(output, 0);
+			sfxb.writeRegister(ffil, 0);
 			if(this.getPin("Attack").isConnected() == true) {
 			sfxb.readRegister(input, attackFreq);
 			sfxb.readRegister(lpf1, -attackFreq);
@@ -164,19 +159,20 @@
 			sfxb.readRegisterFilter(lpf2, decayFreq);
 			}
 			
-			sfxb.writeRegister(lpf2, 1);
-			sfxb.maxx(lpf1, 1.0);
-			this.getPin("Max Output").setRegister(output);
-			this.getPin("Fast Output").setRegister(lpf1);
-			this.getPin("Slow Output").setRegister(lpf2);
-			this.getPin("avg").setRegister(avg);
-			this.getPin("lavg").setRegister(lavg);
+			this.getPin("Output").setRegister(ffil);
 			}
 			
 
 			}
 			
 			// create setters and getter for control panel variables
+			public void setthreshhold(double __param) {
+				threshhold = __param;	
+			}
+			
+			public double getthreshhold() {
+				return threshhold;
+			}
 			public void setattackFreq(double __param) {
 				attackFreq = __param;	
 			}

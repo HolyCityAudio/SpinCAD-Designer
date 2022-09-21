@@ -57,6 +57,9 @@ public class SpinCADSimulator {
 		this.sctb = new simControlToolBar(frame);
 		this.stb = new ScopeToolBar();
 		prefs = Preferences.userNodeForPackage(this.getClass());
+		prefs.get("CH1_VERT_GAIN", "");
+		prefs.get("CH2_VERT_GAIN", "");
+		prefs.get("timeBase", "");
 	}
 
 	// check whether simulator is currently running

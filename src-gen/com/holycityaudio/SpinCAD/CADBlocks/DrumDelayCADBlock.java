@@ -37,6 +37,7 @@
 			private double tap2Ratio = 0.60;
 			private double tap3Ratio = 0.45;
 			private double tap4Ratio = 0.25;
+			private double heads = 1.0;
 			private double delayOffset = -1;
 			private int output1;
 			private int output2;
@@ -55,6 +56,7 @@
 				addOutputPin(this, "Tap 3 Out");
 				addOutputPin(this, "Tap 4 Out");
 				addControlInputPin(this, "Delay Time");
+				addControlInputPin(this, "Heads");
 				addControlInputPin(this, "Feedback Gain");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
@@ -104,6 +106,11 @@
 			if(sp != null) {
 				cIn1 = sp.getRegister();
 			}
+			sp = this.getPin("Heads").getPinConnection();
+			int heads = -1;
+			if(sp != null) {
+				heads = sp.getRegister();
+			}
 			sp = this.getPin("Feedback Gain").getPinConnection();
 			int fbk = -1;
 			if(sp != null) {
@@ -124,6 +131,17 @@
 			
 			sfxb.readRegister(adcl, inputGain);
 			sfxb.FXwriteDelay("drumDelay", 0, 0.0);
+			if(this.getPin("Heads").isConnected() == true) {
+			sfxb.readRegister(heads, 1.0);
+			sfxb.scaleOffset(1.0, -0.25);
+			sfxb.skip(NEG, 15);
+			sfxb.scaleOffset(1.0, -0.25);
+			sfxb.skip(NEG, 24);
+			sfxb.scaleOffset(1.0, -0.25);
+			sfxb.skip(NEG, 33);
+			} else {
+			}
+			
 			if(this.getPin("Tap 1 Out").isConnected() == true) {
 			output1 = sfxb.allocateReg();
 			sfxb.clear();
@@ -139,7 +157,7 @@
 			this.getPin("Tap 1 Out").setRegister(output1);
 			}
 			
-			if(this.getPin("Tap 2 Out").isConnected() == true) {
+			if(this.getPin("Tap 1 Out").isConnected() == true) {
 			output2 = sfxb.allocateReg();
 			sfxb.clear();
 			sfxb.or(0x7FFF00);

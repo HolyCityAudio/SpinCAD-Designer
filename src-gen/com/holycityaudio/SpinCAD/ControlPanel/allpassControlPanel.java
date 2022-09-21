@@ -54,8 +54,14 @@ public class allpassControlPanel extends spinCADControlPanel {
 	// declare the controls
 	JSlider gainSlider;
 	JLabel  gainLabel;	
-	JSlider nAPsSlider;
-	JLabel  nAPsLabel;	
+	JSlider ap1lengthSlider;
+	JLabel  ap1lengthLabel;	
+	JSlider ap2lengthSlider;
+	JLabel  ap2lengthLabel;	
+	JSlider ap3lengthSlider;
+	JLabel  ap3lengthLabel;	
+	JSlider ap4lengthSlider;
+	JLabel  ap4lengthLabel;	
 	JSlider kiapSlider;
 	JLabel  kiapLabel;	
 
@@ -100,28 +106,111 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					nAPsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (4 * 1.0), (int) (gCB.getnAPs() * 1.0));
-						nAPsSlider.addChangeListener(new allpassListener());
-						nAPsLabel = new JLabel();
-						Border nAPsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						nAPsLabel.setBorder(nAPsBorder1);
-						updatenAPsLabel();
+					ap1lengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (4095 * 1), (int) (gCB.getap1length() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
+						ap1lengthSlider.addChangeListener(new allpassListener());
+						ap1lengthLabel = new JLabel();
+						Border ap1lengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						ap1lengthLabel.setBorder(ap1lengthBorder1);
+						updateap1lengthLabel();
 						
-						Border nAPsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel nAPsinnerPanel = new JPanel();
+						Border ap1lengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel ap1lengthinnerPanel = new JPanel();
 							
-						nAPsinnerPanel.setLayout(new BoxLayout(nAPsinnerPanel, BoxLayout.Y_AXIS));
-						nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						nAPsinnerPanel.add(nAPsLabel);
-						nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						nAPsinnerPanel.add(nAPsSlider);		
-						nAPsinnerPanel.setBorder(nAPsborder2);
+						ap1lengthinnerPanel.setLayout(new BoxLayout(ap1lengthinnerPanel, BoxLayout.Y_AXIS));
+						ap1lengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ap1lengthinnerPanel.add(ap1lengthLabel);
+						ap1lengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ap1lengthinnerPanel.add(ap1lengthSlider);		
+						ap1lengthinnerPanel.setBorder(ap1lengthborder2);
 			
-						frame.add(nAPsinnerPanel);
+						frame.add(ap1lengthinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
+					ap2lengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (4095 * 1), (int) (gCB.getap2length() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
+						ap2lengthSlider.addChangeListener(new allpassListener());
+						ap2lengthLabel = new JLabel();
+						Border ap2lengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						ap2lengthLabel.setBorder(ap2lengthBorder1);
+						updateap2lengthLabel();
+						
+						Border ap2lengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel ap2lengthinnerPanel = new JPanel();
+							
+						ap2lengthinnerPanel.setLayout(new BoxLayout(ap2lengthinnerPanel, BoxLayout.Y_AXIS));
+						ap2lengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ap2lengthinnerPanel.add(ap2lengthLabel);
+						ap2lengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ap2lengthinnerPanel.add(ap2lengthSlider);		
+						ap2lengthinnerPanel.setBorder(ap2lengthborder2);
+			
+						frame.add(ap2lengthinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					ap3lengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (4095 * 1), (int) (gCB.getap3length() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
+						ap3lengthSlider.addChangeListener(new allpassListener());
+						ap3lengthLabel = new JLabel();
+						Border ap3lengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						ap3lengthLabel.setBorder(ap3lengthBorder1);
+						updateap3lengthLabel();
+						
+						Border ap3lengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel ap3lengthinnerPanel = new JPanel();
+							
+						ap3lengthinnerPanel.setLayout(new BoxLayout(ap3lengthinnerPanel, BoxLayout.Y_AXIS));
+						ap3lengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ap3lengthinnerPanel.add(ap3lengthLabel);
+						ap3lengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ap3lengthinnerPanel.add(ap3lengthSlider);		
+						ap3lengthinnerPanel.setBorder(ap3lengthborder2);
+			
+						frame.add(ap3lengthinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					ap4lengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (4095 * 1), (int) (gCB.getap4length() * 1));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
+						ap4lengthSlider.addChangeListener(new allpassListener());
+						ap4lengthLabel = new JLabel();
+						Border ap4lengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						ap4lengthLabel.setBorder(ap4lengthBorder1);
+						updateap4lengthLabel();
+						
+						Border ap4lengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel ap4lengthinnerPanel = new JPanel();
+							
+						ap4lengthinnerPanel.setLayout(new BoxLayout(ap4lengthinnerPanel, BoxLayout.Y_AXIS));
+						ap4lengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ap4lengthinnerPanel.add(ap4lengthLabel);
+						ap4lengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						ap4lengthinnerPanel.add(ap4lengthSlider);		
+						ap4lengthinnerPanel.setBorder(ap4lengthborder2);
+			
+						frame.add(ap4lengthinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(-0.98 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
 						kiapSlider.addChangeListener(new allpassListener());
 						kiapLabel = new JLabel();
 						Border kiapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -156,9 +245,21 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
 				updategainLabel();
 			}
-			if(ce.getSource() == nAPsSlider) {
-			gCB.setnAPs((double) (nAPsSlider.getValue()/1.0));
-				updatenAPsLabel();
+			if(ce.getSource() == ap1lengthSlider) {
+			gCB.setap1length((double) (ap1lengthSlider.getValue()/1));			    					
+				updateap1lengthLabel();
+			}
+			if(ce.getSource() == ap2lengthSlider) {
+			gCB.setap2length((double) (ap2lengthSlider.getValue()/1));			    					
+				updateap2lengthLabel();
+			}
+			if(ce.getSource() == ap3lengthSlider) {
+			gCB.setap3length((double) (ap3lengthSlider.getValue()/1));			    					
+				updateap3lengthLabel();
+			}
+			if(ce.getSource() == ap4lengthSlider) {
+			gCB.setap4length((double) (ap4lengthSlider.getValue()/1));			    					
+				updateap4lengthLabel();
 			}
 			if(ce.getSource() == kiapSlider) {
 			gCB.setkiap((double) (kiapSlider.getValue()/100.0));
@@ -184,8 +285,17 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 		private void updategainLabel() {
 		gainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
-		private void updatenAPsLabel() {
-		nAPsLabel.setText("All Pass Stages " + String.format("%4.1f", gCB.getnAPs()));		
+		private void updateap1lengthLabel() {
+		ap1lengthLabel.setText("AP1 length " + String.format("%4.0f", (1000 * gCB.getap1length())/ElmProgram.getSamplerate()));		
+		}		
+		private void updateap2lengthLabel() {
+		ap2lengthLabel.setText("AP2 length " + String.format("%4.0f", (1000 * gCB.getap2length())/ElmProgram.getSamplerate()));		
+		}		
+		private void updateap3lengthLabel() {
+		ap3lengthLabel.setText("AP3 length " + String.format("%4.0f", (1000 * gCB.getap3length())/ElmProgram.getSamplerate()));		
+		}		
+		private void updateap4lengthLabel() {
+		ap4lengthLabel.setText("AP4 length " + String.format("%4.0f", (1000 * gCB.getap4length())/ElmProgram.getSamplerate()));		
 		}		
 		private void updatekiapLabel() {
 		kiapLabel.setText("All Pass " + String.format("%4.2f", gCB.getkiap()));		

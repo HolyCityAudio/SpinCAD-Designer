@@ -32,6 +32,10 @@
 			
 			private double gain = 0.5;
 			private double nAPs = 4;
+			private double ap1length = 125;
+			private double ap2length = 250;
+			private double ap3length = 750;
+			private double ap4length = 1500;
 			private double kiap = 0.5;
 			private int output1;
 
@@ -43,6 +47,9 @@
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -126,12 +133,33 @@
 			public double getgain() {
 				return gain;
 			}
-			public void setnAPs(double __param) {
-				nAPs = __param;	
+			public void setap1length(double __param) {
+				ap1length = __param;	
 			}
 			
-			public double getnAPs() {
-				return nAPs;
+			public double getap1length() {
+				return ap1length;
+			}
+			public void setap2length(double __param) {
+				ap2length = __param;	
+			}
+			
+			public double getap2length() {
+				return ap2length;
+			}
+			public void setap3length(double __param) {
+				ap3length = __param;	
+			}
+			
+			public double getap3length() {
+				return ap3length;
+			}
+			public void setap4length(double __param) {
+				ap4length = __param;	
+			}
+			
+			public double getap4length() {
+				return ap4length;
 			}
 			public void setkiap(double __param) {
 				kiap = __param;	
