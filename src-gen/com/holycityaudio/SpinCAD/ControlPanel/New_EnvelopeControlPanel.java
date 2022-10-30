@@ -52,6 +52,10 @@ public class New_EnvelopeControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private New_EnvelopeCADBlock gCB;
 	// declare the controls
+	JSlider threshholdSlider;
+	JLabel  threshholdLabel;
+	JSpinner  threshholdSpinner;	
+	private boolean threshholdsilentGUIChange = false;	
 	JSlider attackFreqSlider;
 	JLabel  attackFreqLabel;
 	JSpinner  attackFreqSpinner;	
@@ -73,9 +77,51 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("New Envelope");
+				frame.setTitle("Pluck Detector");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			
+				threshholdSlider.addChangeListener(new New_EnvelopeListener());
+				
+				threshholdLabel = new JLabel("Threshhold");
+			
+				SpinnerNumberModel threshholdSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getthreshhold()) * 100, 0.51, 10000.00, 0.01);
+			
+				threshholdSpinner = new JSpinner(threshholdSpinnerNumberModel);
+				JSpinner.NumberEditor threshholdeditor = (JSpinner.NumberEditor)threshholdSpinner.getEditor();  
+				DecimalFormat threshholdformat = threshholdeditor.getFormat();  
+			 			threshholdformat.setMinimumFractionDigits(2);  
+				threshholdformat.setMaximumFractionDigits(2);  
+				threshholdeditor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
+				Dimension threshholdd = threshholdSpinner.getPreferredSize();  
+				threshholdd.width = 25;  
+				threshholdSpinner.setPreferredSize(threshholdd);  
+				
+				updatethreshholdSpinner();
+				threshholdSpinner.addChangeListener(new New_EnvelopeListener());
+				
+				JPanel threshholdtopLine = new JPanel();
+				threshholdtopLine.setLayout(new BoxLayout(threshholdtopLine, BoxLayout.X_AXIS));
+			
+				threshholdtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
+				threshholdtopLine.add(threshholdLabel);
+				threshholdtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
+				threshholdtopLine.add(threshholdSpinner);
+				
+				Border threshholdborder2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				threshholdtopLine.setBorder(threshholdborder2);
+			
+				Border threshholdborder1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel threshholdinnerPanel = new JPanel();
+					
+				threshholdinnerPanel.setLayout(new BoxLayout(threshholdinnerPanel, BoxLayout.Y_AXIS));
+				threshholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				threshholdinnerPanel.add(threshholdtopLine);
+				threshholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+				threshholdinnerPanel.add(threshholdSlider);		
+				threshholdinnerPanel.setBorder(threshholdborder1);
+			
+				frame.add(threshholdinnerPanel);
 			
 			// multiplier is points per decade here
 				attackFreqSlider = SpinCADBlock.LogSlider(0.51,20,gCB.getattackFreq(), "LOGFREQ", 100.0);
@@ -221,6 +267,17 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class New_EnvelopeListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(threshholdsilentGUIChange == true) 
+				return;
+			
+			if(ce.getSource() == threshholdSlider) {
+			gCB.setthreshhold((double) (threshholdSlider.getValue()/100));
+				updatethreshholdSpinner();
+			}
+			if(ce.getSource() == threshholdSpinner) {
+			gCB.setthreshhold((double) (threshholdSlider.getValue()/100));
+				updatethreshholdSlider();
+			}
 			if(attackFreqsilentGUIChange == true) 
 				return;
 			
@@ -271,6 +328,32 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updatethreshholdSpinner() {
+			SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					threshholdsilentGUIChange = true;
+				}
+				finally {
+					threshholdsilentGUIChange = false;   	    	  
+				}
+			}
+		});
+		}	
+		
+		private void updatethreshholdSlider() {
+			SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					threshholdsilentGUIChange = true;
+				}
+				finally {
+					threshholdsilentGUIChange = false;   	    	  
+				}
+			}
+		});
+		}		
+			
 		private void updateattackFreqSpinner() {
 			SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

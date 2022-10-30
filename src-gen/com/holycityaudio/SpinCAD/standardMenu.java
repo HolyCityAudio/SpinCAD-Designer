@@ -37,6 +37,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.SixBandEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.DrumDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.sixtapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.StutterCADBlock;
@@ -44,6 +45,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.allpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChirpCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.MinReverb2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_roomCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_hallCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev1CADBlock;
@@ -436,7 +438,7 @@
 	JMenu mn_delay = new JMenu("Delay");
 	menuBar.add(mn_delay);
 	
-	final JMenuItem mntm_TripleTap = new JMenuItem("Triple-tap");
+	final JMenuItem mntm_TripleTap = new JMenuItem("ThreeTap");
 	mntm_TripleTap.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			SpinCADBlock pcB = new TripleTapCADBlock(50, 100);
@@ -453,6 +455,15 @@
 		}
 	});
 	mn_delay.add(mntm_MN3011a);
+		
+	final JMenuItem mntm_DrumDelay = new JMenuItem("Drum Delay");
+	mntm_DrumDelay.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new DrumDelayCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_delay.add(mntm_DrumDelay);
 		
 	final JMenuItem mntm_sixtap = new JMenuItem("6-Tap Stereo");
 	mntm_sixtap.addActionListener(new ActionListener() {
@@ -519,6 +530,15 @@
 		}
 	});
 	mn_reverb.add(mntm_MinReverb);
+		
+	final JMenuItem mntm_MinReverb2 = new JMenuItem("Small Reverb 2");
+	mntm_MinReverb2.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new MinReverb2CADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_MinReverb2);
 		
 	final JMenuItem mntm_reverb_room = new JMenuItem("Room Reverb");
 	mntm_reverb_room.addActionListener(new ActionListener() {
