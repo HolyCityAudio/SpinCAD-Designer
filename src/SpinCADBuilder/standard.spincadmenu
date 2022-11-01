@@ -50,8 +50,9 @@
 @menu "Delay" 
 // @menuitem "Single Delay" SingleDelay
 // @menuitem "Coarse Delay" CoarseDelay 
-@menuitem "Triple-tap" TripleTap 
+@menuitem "ThreeTap" TripleTap 
 @menuitem "MN3011" MN3011a 
+@menuitem "Drum Delay" DrumDelay 
 @menuitem "6-Tap Stereo" sixtap 
 @menuitem "8-Tap" eighttap 
 @menuitem "Stutter" Stutter 
@@ -61,6 +62,7 @@
 @menuitem "Allpass" allpass 
 @menuitem "Chirp" Chirp 
 @menuitem "Small Reverb" MinReverb 
+@menuitem "Small Reverb 2" MinReverb2 
 @menuitem "Room Reverb" reverb_room 
 @menuitem "Hall Reverb" reverb_hall 
 //@menuitem "Plate Reverb" reverb_plate 

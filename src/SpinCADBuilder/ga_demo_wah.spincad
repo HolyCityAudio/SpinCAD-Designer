@@ -135,11 +135,11 @@ rdax	lavg,1
 wrax	temp,0
 rdax	avg,1
 maxx	temp,1		;filter a long average
-wrax	lavg,0
+wrax	lavg,1
 
 ;now set up a means by which the sensitivity control can affect the filter frequency:
 
-rdax	lavg,1
+; rdax	lavg,1
 sof 	1,0.002		;never let lavg go to zero
 log	1,0
 wrax	temp,0

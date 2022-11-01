@@ -4,13 +4,25 @@
 @audioOutput output1 Output
 
 equ gain 0.5 
-@sliderLabel gain 'Input Gain' -18 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain 'Input Gain' -18 0 -6 1.0 1 DBLEVEL
 
 equ nAPs 4
-@sliderLabel nAPs 'All Pass Stages' 2 4 4 1.0 1 
+; @sliderLabel nAPs 'All Pass Stages' 2 4 4 1.0 1 
 
-equ   kiap   0.5  ; input all pass filter
-@sliderLabel kiap 'All Pass' 0.25 0.98 0.5 100.0 2 
+equ ap1length 125
+@sliderLabel ap1length 'AP1 length'  0 4095 125 1 0 LENGTHTOTIME
+
+equ ap2length 250
+@sliderLabel ap2length 'AP2 length'  0 4095 250 1 0 LENGTHTOTIME
+
+equ ap3length 750
+@sliderLabel ap3length 'AP3 length'  0 4095 750 1 0 LENGTHTOTIME
+
+equ ap4length 1500
+@sliderLabel ap4length 'AP4 length'  0 4095 1500 1 0 LENGTHTOTIME
+
+equ   kiap   0.5  ; input all pass coefficient
+@sliderLabel kiap 'All Pass' -0.98 0.98 0.5 100.0 2
 
 @isPinConnected Input
 

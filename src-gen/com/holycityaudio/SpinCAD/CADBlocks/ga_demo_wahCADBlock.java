@@ -203,8 +203,7 @@
 			sfxb.writeRegister(temp, 0);
 			sfxb.readRegister(avg, 1);
 			sfxb.maxx(temp, 1);
-			sfxb.writeRegister(lavg, 0);
-			sfxb.readRegister(lavg, 1);
+			sfxb.writeRegister(lavg, 1);
 			sfxb.scaleOffset(1, 0.002);
 			sfxb.log(1, 0);
 			sfxb.writeRegister(temp, 0);

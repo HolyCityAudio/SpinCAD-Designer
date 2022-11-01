@@ -1,0 +1,141 @@
+@name "Drum Delay"
+@color "0x6060c4"
+@audioInput adcl Input 
+@audioInput feedback Feedback
+@audioOutput output1 'Tap 1 Out'
+@audioOutput output2 'Tap 2 Out'  
+@audioOutput output3 'Tap 3 Out'  
+@audioOutput output4 'Tap 4 Out'  
+@controlInput cIn1 'Delay Time' 
+@controlInput heads 'Heads' 
+@controlInput fbk 'Feedback Gain'
+
+equ inputGain 1.0
+@sliderLabel inputGain 'Input Gain: '  -24 0 0 1.0 1 DBLEVEL
+
+equ fbkGain 0.5
+@sliderLabel fbkGain 'Feedback Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+
+// total allocated memory buffer for this delay
+// create a Control Panel with a Slider Label
+equ delayLength 32767 
+@sliderLabel delayLength 'Delay Time (ms): ' 0 32767 16384 1 0 LENGTHTOTIME
+		
+// tap 1 length in % (control panel value) 
+//	'@sliderLabel' ename = ID controlName = ID (minVal = SPINDOUBLE maxVal = SPINDOUBLE initVal = SPINDOUBLE multiplier = SPINDOUBLE precision = INT (option = ID)?)?
+
+equ tap1Ratio 0.85 
+@sliderLabel tap1Ratio 'Tap 1 Time (%): '  0.0 1.0 0.85 1000.0 2  
+
+// tap 2 length in % (control panel value)
+equ tap2Ratio 0.60 
+@sliderLabel tap2Ratio 'Tap 2 Time (%): ' 0.0 1.0 0.60 1000.0 2	
+
+// tap 3 length in % (control panel value)
+equ tap3Ratio 0.45 
+@sliderLabel tap3Ratio 'Tap 3 Time (%): ' 0.0 1.0 0.45 1000.0 2
+
+// tap 3 length in % (control panel value)
+equ tap4Ratio 0.25 
+@sliderLabel tap4Ratio 'Tap 4 Time (%): ' 0.0 1.0 0.25 1000.0 2
+
+equ heads 1.0
+
+equ delayOffset -1
+
+// establish the base address for this module
+@getBaseAddress 
+// then allocate the buffer
+mem drumDelay delayLength 
+
+// input connection must be there for any code to be generated
+@isPinConnected Input
+
+// read the input and write to base of delay line
+@isPinConnected Feedback
+rdax feedback,fbkGain
+@isPinConnected 'Feedback Gain'
+mulx fbk
+@endif
+@endif
+rdax adcl, inputGain
+wra drumDelay, 0.0
+
+// deal with the "heads" knob
+@isPinConnected 'Heads'
+rdax heads, 1.0
+sof 1.0, -0.25
+skp NEG, noHead1
+sof 1.0, -0.25
+skp NEG, noHead2
+sof 1.0, -0.25
+skp NEG, noHead3
+@else
+@endif
+
+// tap 1 -----------------------------------------------------------
+
+@isPinConnected 'Tap 1 Out'
+equ output1     reg1     
+clr
+or $7FFF00
+@isPinConnected 'Delay Time'
+mulx cIn1
+@endif
+@getDelayScaleControl tap1Ratio delayLength delayOffset 
+wrax ADDR_PTR, 0
+rmpa 1.0
+wrax output1, 0.0
+@setOutputPin 'Tap 1 Out' output1
+@endif
+
+noHead1:
+// tap 2 -----------------------------------------------------------
+@isPinConnected 'Tap 1 Out'
+equ output2     reg1     
+clr
+or $7FFF00
+@isPinConnected 'Delay Time'
+mulx cIn1
+@endif
+@getDelayScaleControl tap2Ratio delayLength delayOffset 
+wrax ADDR_PTR, 0
+rmpa 1.0
+wrax output2, 0.0
+@setOutputPin 'Tap 2 Out' output2
+@endif
+
+noHead2:
+// tap 3 -----------------------------------------------------------
+@isPinConnected 'Tap 3 Out'
+equ output3     reg2  
+clr
+or $7FFF00  
+@isPinConnected 'Delay Time'
+mulx cIn1
+@endif
+@getDelayScaleControl tap3Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa 1.0
+wrax output3, 0.0
+@setOutputPin 'Tap 3 Out' output3
+@endif
+
+noHead3:
+// tap 4 -----------------------------------------------------------
+@isPinConnected 'Tap 4 Out'
+equ output4     reg3  
+clr
+or $7FFF00  
+@isPinConnected 'Delay Time'
+mulx cIn1
+@endif
+@getDelayScaleControl tap4Ratio delayLength delayOffset
+wrax ADDR_PTR, 0
+rmpa 1.0
+wrax output4, 0.0
+@setOutputPin 'Tap 4 Out' output4
+@endif
+
+@endif
+
