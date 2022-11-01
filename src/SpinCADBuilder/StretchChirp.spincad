@@ -15,6 +15,7 @@ equ   ap01   0.5  ; input all pass filter
 mem stretchBuffer stretch
 
 @isPinConnected Input
+equ output1 reg0
 ; read buffer end, multiply by -ap01
 ; rdax stretchBuffer#, -ap01
 ; add to adcl, now acc = x[n] - ap01 * x[n - stretch]
