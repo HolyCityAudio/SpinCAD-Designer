@@ -14,10 +14,6 @@ equ   ap01   0.5  ; input all pass filter
 
 equ output1 reg0
 
-equ ap01 0.55
-equ stretch 15
-mem stretchBuffer stretch
-
 @isPinConnected Input
 ; read buffer end, multiply by -ap01
 ; rdax stretchBuffer#, -ap01
