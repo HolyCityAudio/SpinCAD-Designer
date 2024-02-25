@@ -49,7 +49,7 @@ public class ClipControlCADBlock extends ControlCADBlock{
 			control = p.getRegister();
 			int lbyp = sfxb.allocateReg();
 			sfxb.readRegister(control, 1.0);
-			if(invert == true) {
+			if(flip == true) {
 				sfxb.scaleOffset(-0.999, 0.999);
 			}
 			if(scaledGain > 8.0)	// 10.0 is the max
@@ -87,7 +87,7 @@ public class ClipControlCADBlock extends ControlCADBlock{
 			if(flipped == true)
 				sfxb.scaleOffset(-1.0, 0);
 			
-			if(flip == true) {
+			if(invert == true) {
 				sfxb.scaleOffset(-0.999, 0.999);
 			}
 			sfxb.writeRegister(lbyp, 0);
