@@ -698,7 +698,7 @@ public class SpinCADFrame extends JFrame {
 		mntmHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					openWebpage(new URL("https://www.patreon.com/holycityaudio"));
+					openWebpage(new URL("https://holy-city-audio.gitbook.io/spincad-designer"));
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
@@ -710,7 +710,7 @@ public class SpinCADFrame extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
-						+ "Copyright 2022 Gary Worsham, Holy City Audio\n" + 
+						+ "Copyright 2024 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
