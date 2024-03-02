@@ -7,9 +7,9 @@
 @controlInput input0 Reverb_Time
 @controlInput input1 Low_Freq
 @controlInput input2 High_Freq
-@comment "Spin ROM Reverb 1 written by Keith Barr"
-@comment "Spin Semiconductor Open Reverb License"
-@comment "http://www.spinsemi.com/programs.php"
+// @comment "Spin ROM Reverb 1 written by Keith Barr"
+// @comment "Spin Semiconductor Open Reverb License"
+// @comment "http://www.spinsemi.com/programs.php"
 
 ;reverb program
 ;large reverb, stereo in and out

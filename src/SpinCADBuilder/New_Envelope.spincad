@@ -6,7 +6,7 @@
 @controlInput sens Sensitivity
 
 @controlOutput ffil "Trigger Output"
-@comment "Derived from ga_auto_wah.spn written by Keith Barr"
+// @comment "Derived from ga_auto_wah.spn written by Keith Barr"
 
 equ threshhold 0.002
 @sliderLabelSpinner threshhold 'Threshhold' 0.0002 0.002 10 100 5 LOG  

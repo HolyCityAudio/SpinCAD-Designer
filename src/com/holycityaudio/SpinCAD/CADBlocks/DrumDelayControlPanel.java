@@ -17,7 +17,7 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *     
  */ 
-package com.holycityaudio.SpinCAD.ControlPanel;
+package com.holycityaudio.SpinCAD.CADBlocks;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import javax.swing.JFrame;
@@ -45,7 +45,6 @@ import java.awt.Dimension;
 import java.text.DecimalFormat;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
-import com.holycityaudio.SpinCAD.CADBlocks.DrumDelayCADBlock;
 
 @SuppressWarnings("unused")
 public class DrumDelayControlPanel extends spinCADControlPanel {

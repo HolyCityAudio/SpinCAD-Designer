@@ -23,7 +23,6 @@
 		import com.holycityaudio.SpinCAD.SpinCADBlock;
 		import com.holycityaudio.SpinCAD.SpinCADPin;
 		import com.holycityaudio.SpinCAD.SpinFXBlock;
- 		import com.holycityaudio.SpinCAD.ControlPanel.DrumDelayControlPanel;
 		
 	    @SuppressWarnings("unused")
 	    public class DrumDelayCADBlock extends SpinCADBlock {
@@ -134,60 +133,29 @@
 			if(this.getPin("Heads").isConnected() == true) {
 			sfxb.readRegister(heads, 1.0);
 			sfxb.scaleOffset(1.0, -0.25);
-			sfxb.skip(NEG, 15);
-			sfxb.scaleOffset(1.0, -0.25);
+			if(this.getPin("Delay Time").isConnected() == true) {
 			sfxb.skip(NEG, 24);
+			} else {
+			sfxb.skip(NEG, 21);
+			}
+			
 			sfxb.scaleOffset(1.0, -0.25);
-			sfxb.skip(NEG, 33);
+			if(this.getPin("Delay Time").isConnected() == true) {
+			sfxb.skip(NEG, 16);
+			} else {
+			sfxb.skip(NEG, 14);
+			}
+			
+			sfxb.scaleOffset(1.0, -0.25);
+			if(this.getPin("Delay Time").isConnected() == true) {
+			sfxb.skip(NEG, 7);
+			} else {
+			sfxb.skip(NEG, 6);
+			}
+			
 			} else {
 			}
 			
-			if(this.getPin("Tap 1 Out").isConnected() == true) {
-			output1 = sfxb.allocateReg();
-			sfxb.clear();
-			sfxb.or(0x7FFF00);
-			if(this.getPin("Delay Time").isConnected() == true) {
-			sfxb.mulx(cIn1);
-			}
-			
-			sfxb.scaleOffset((0.95 * tap1Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap1Ratio * delayLength))/32768.0);
-			sfxb.writeRegister(ADDR_PTR, 0);
-			sfxb.readDelayPointer(1.0);
-			sfxb.writeRegister(output1, 0.0);
-			this.getPin("Tap 1 Out").setRegister(output1);
-			}
-			
-			if(this.getPin("Tap 1 Out").isConnected() == true) {
-			output2 = sfxb.allocateReg();
-			sfxb.clear();
-			sfxb.or(0x7FFF00);
-			if(this.getPin("Delay Time").isConnected() == true) {
-			sfxb.mulx(cIn1);
-			}
-			
-			sfxb.scaleOffset((0.95 * tap2Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap2Ratio * delayLength))/32768.0);
-			sfxb.writeRegister(ADDR_PTR, 0);
-			sfxb.readDelayPointer(1.0);
-			sfxb.writeRegister(output2, 0.0);
-			this.getPin("Tap 2 Out").setRegister(output2);
-			}
-			
-			if(this.getPin("Tap 3 Out").isConnected() == true) {
-			output3 = sfxb.allocateReg();
-			sfxb.clear();
-			sfxb.or(0x7FFF00);
-			if(this.getPin("Delay Time").isConnected() == true) {
-			sfxb.mulx(cIn1);
-			}
-			
-			sfxb.scaleOffset((0.95 * tap3Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap3Ratio * delayLength))/32768.0);
-			sfxb.writeRegister(ADDR_PTR, 0);
-			sfxb.readDelayPointer(1.0);
-			sfxb.writeRegister(output3, 0.0);
-			this.getPin("Tap 3 Out").setRegister(output3);
-			}
-			
-			if(this.getPin("Tap 4 Out").isConnected() == true) {
 			output4 = sfxb.allocateReg();
 			sfxb.clear();
 			sfxb.or(0x7FFF00);
@@ -200,8 +168,42 @@
 			sfxb.readDelayPointer(1.0);
 			sfxb.writeRegister(output4, 0.0);
 			this.getPin("Tap 4 Out").setRegister(output4);
+			output3 = sfxb.allocateReg();
+			sfxb.clear();
+			sfxb.or(0x7FFF00);
+			if(this.getPin("Delay Time").isConnected() == true) {
+			sfxb.mulx(cIn1);
 			}
 			
+			sfxb.scaleOffset((0.95 * tap3Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap3Ratio * delayLength))/32768.0);
+			sfxb.writeRegister(ADDR_PTR, 0);
+			sfxb.readDelayPointer(1.0);
+			sfxb.writeRegister(output3, 0.0);
+			this.getPin("Tap 3 Out").setRegister(output3);
+			output2 = sfxb.allocateReg();
+			sfxb.clear();
+			sfxb.or(0x7FFF00);
+			if(this.getPin("Delay Time").isConnected() == true) {
+			sfxb.mulx(cIn1);
+			}
+			
+			sfxb.scaleOffset((0.95 * tap2Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap2Ratio * delayLength))/32768.0);
+			sfxb.writeRegister(ADDR_PTR, 0);
+			sfxb.readDelayPointer(1.0);
+			sfxb.writeRegister(output2, 0.0);
+			this.getPin("Tap 2 Out").setRegister(output2);
+			output1 = sfxb.allocateReg();
+			sfxb.clear();
+			sfxb.or(0x7FFF00);
+			if(this.getPin("Delay Time").isConnected() == true) {
+			sfxb.mulx(cIn1);
+			}
+			
+			sfxb.scaleOffset((0.95 * tap1Ratio * delayLength)/32768.0, (delayOffset + (0.05 * tap1Ratio * delayLength))/32768.0);
+			sfxb.writeRegister(ADDR_PTR, 0);
+			sfxb.readDelayPointer(1.0);
+			sfxb.writeRegister(output1, 0.0);
+			this.getPin("Tap 1 Out").setRegister(output1);
 			}
 			
 

@@ -1,5 +1,5 @@
 @name "Drum Delay"
-@color "0x6060c4"
+@color "0x6062c4"
 @audioInput adcl Input 
 @audioInput feedback Feedback
 @audioOutput output1 'Tap 1 Out'
@@ -65,17 +65,29 @@ wra drumDelay, 0.0
 @isPinConnected 'Heads'
 rdax heads, 1.0
 sof 1.0, -0.25
+@isPinConnected 'Delay Time'
 skp NEG, noHead1
+@else
+skp neg, noHead1
+@endif
 sof 1.0, -0.25
+@isPinConnected 'Delay Time'
 skp NEG, noHead2
+@else
+skp neg, noHead2
+@endif
 sof 1.0, -0.25
+@isPinConnected 'Delay Time'
 skp NEG, noHead3
+@else
+skp neg, noHead3
+@endif
 @else
 @endif
 
 // tap 1 -----------------------------------------------------------
 
-@isPinConnected 'Tap 1 Out'
+// @isPinConnected 'Tap 1 Out'
 equ output1     reg1     
 clr
 or $7FFF00
@@ -87,11 +99,11 @@ wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output1, 0.0
 @setOutputPin 'Tap 1 Out' output1
-@endif
+// @endif
 
 noHead1:
 // tap 2 -----------------------------------------------------------
-@isPinConnected 'Tap 1 Out'
+// @isPinConnected 'Tap 2 Out'
 equ output2     reg1     
 clr
 or $7FFF00
@@ -103,11 +115,11 @@ wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output2, 0.0
 @setOutputPin 'Tap 2 Out' output2
-@endif
+// @endif
 
 noHead2:
 // tap 3 -----------------------------------------------------------
-@isPinConnected 'Tap 3 Out'
+// @isPinConnected 'Tap 3 Out'
 equ output3     reg2  
 clr
 or $7FFF00  
@@ -119,11 +131,11 @@ wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output3, 0.0
 @setOutputPin 'Tap 3 Out' output3
-@endif
+// @endif
 
 noHead3:
 // tap 4 -----------------------------------------------------------
-@isPinConnected 'Tap 4 Out'
+// @isPinConnected 'Tap 4 Out'
 equ output4     reg3  
 clr
 or $7FFF00  
@@ -135,7 +147,7 @@ wrax ADDR_PTR, 0
 rmpa 1.0
 wrax output4, 0.0
 @setOutputPin 'Tap 4 Out' output4
-@endif
+// @endif
 
 @endif
 
