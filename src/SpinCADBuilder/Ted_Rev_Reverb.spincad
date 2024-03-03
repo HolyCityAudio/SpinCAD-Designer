@@ -1,0 +1,236 @@
+@name Ted_Rev_Reverb
+@color "0x7100fc"
+@audioInput inputl 'Input_Left'
+@audioInput inputr 'Input_Right'
+@audioOutput outputl 'Output_Left'
+@audioOutput outputr 'Output_Right'
+
+
+@controlInput input0 'Pre_Delay'
+@controlInput input1 'Decay_Time'
+@controlInput input2 'Damping'
+
+equ inputGainl 1.0
+@sliderLabel inputGainl 'Input Gain L'  -24 0 0 1.0 1 DBLEVEL
+equ inputGainr 1.0
+@sliderLabel inputGainr 'Input Gain R'  -24 0 0 1.0 1 DBLEVEL
+
+equ pre 3000
+@sliderLabel pre 'Pre_Delay' 0 9900 3000 1 0 // Predelay length control
+equ decay 18000
+@sliderLabel decay 'Decay_Time' 0 32767 18000 1 0  // Reverse delay length control
+
+@getBaseAddress
+mem pdel pre // Predelay buffer, 300ms
+mem rdel decay // Reverse delay buffer
+mem ap1 1234 // All-pass filter 1 delay buffer
+mem ap2 957 // All-pass filter 2 delay buffer
+mem ap3 765 // All-pass filter 3 delay buffer
+mem ap4 321 // All-pass filter 4 delay buffer
+
+equ f1 reg0 // Filter 1
+equ f2 reg1 // Filter 2
+equ f3 reg2 // Filter 3
+equ f4 reg3 // Filter 4
+equ input0 reg4 // Predelay output
+equ input2 reg5 // Delay filter control
+equ kfil reg6 // Filter coefficient
+equ input1 reg9
+
+
+ //not sure about these 2
+equ outputl reg7
+equ outputr reg8
+
+
+@isPinConnected 'Input_Right'
+rdax    inputr,inputGainr    ;get right input
+@endif
+
+@isPinConnected 'Input_Left'
+rdax    inputl,inputGainl    ;get left input
+@endif
+wra pdel, 0 ; Write to predelay buffer
+;get predelay output into input0:
+
+@isPinConnected 'Pre_Delay'
+rdax    input0,0.3        ;get pot0 (to 0.3 of memory range)
+@endif
+rdfx    input2,0.001    ;filter delay control
+wrax    input2,1        ;write delay control filter
+wrax    addr_ptr,0    ;write to address pointer
+rmpa    1        ;read delay from address pointer
+wrax    input0,0        ;write result to input0
+wra    rdel,0        ;clear reverse delay input
+
+;now write the input0 register to the reverse delay, depending on pot1:
+
+@isPinConnected 'Decay_Time'
+rdax     input1,1
+//@endif
+
+skp    zro,wr1
+sof    1,-0.125
+skp    neg,wr2
+sof    1,-0.125
+skp    neg,wr3
+sof    1,-0.125
+skp    neg,wr4
+sof    1,-0.125
+skp    neg,wr5
+sof    1,-0.125
+skp    neg,wr6
+sof    1,-0.125
+skp    neg,wr7
+skp    run,wr8
+
+wr1:
+@isPinConnected 'Pre_Delay'
+ldax    input0
+wra    rdel+14000,0
+skp    zro,wr9
+@endif
+@isPinConnected 'Pre_Delay'
+wr2:
+ldax    input0
+wra    rdel+12000,0
+skp    zro,wr9
+@endif
+@isPinConnected 'Pre_Delay'
+wr3:
+ldax    input0
+wra    rdel+10000,0
+skp    zro,wr9
+@endif
+@isPinConnected 'Pre_Delay'
+wr4:
+ldax    input0
+wra    rdel+8000,0
+skp    zro,wr9
+@endif
+@isPinConnected 'Pre_Delay'
+wr5:
+ldax    input0
+wra    rdel+6000,0
+skp    zro,wr9
+@endif
+@isPinConnected 'Pre_Delay'
+wr6:
+ldax    input0
+wra    rdel+4000,0
+skp    zro,wr9
+@endif
+@isPinConnected 'Pre_Delay'
+wr7:
+ldax    input0
+wra    rdel+2000,0
+skp    zro,wr9
+@endif
+@isPinConnected 'Pre_Delay'
+wr8:
+ldax    input0
+wra    rdel,0         
+@endif
+wr9:
+
+;prepare filter coefficient from pot2:
+@isPinConnected 'Damping'
+rdax    input2,1
+@endif
+
+sof    0.8,0.1        ;treble increases CW
+wrax    kfil,0
+
+;do reverse reverb taps with interspersed filtering and allpasses:
+
+rda    rdel+1,0.05
+rda    rdel+303,-0.05
+rda    rdel+569,0.06
+rda    rdel+911,0.07
+rda    rdel+1256,-0.008
+rda    rdel+1478,0.008
+rda    rdel+1818,-0.01
+rda    rdel+2089,0.01
+rda    rdel+2358,-0.011
+rda    rdel+2710,0.012
+rda    rdel+3018,0.0135
+rda    rdel+3345,-0.012
+rda    rdel+3567,-0.015
+rda    rdel+3922,0.02
+rda    rdel+4167,-0.02
+
+rdax    f1,-1
+mulx    kfil
+rdax    f1,1
+wrax    f1,1
+rda    ap1#,0.5
+wrap    ap1,-0.5
+
+rda    rdel+4522,-0.029
+rda    rdel+4754,0.04
+rda    rdel+5156,-0.034
+rda    rdel+5342,-0.04
+rda    rdel+5657,0.035
+rda    rdel+6008,0.04
+rda    rdel+6283,-0.04
+rda    rdel+6623,-0.045
+rda    rdel+6845,-0.055
+rda    rdel+7219,0.06
+rda    rdel+7487,-0.06
+rda    rdel+7832,-0.05
+rda    rdel+8065,0.07
+
+rdax    f2,-1
+mulx    kfil
+rdax    f2,1
+wrax    f2,1
+rda    ap2#,0.5
+wrap    ap2,-0.5
+
+rda    rdel+8404,0.08
+rda    rdel+8713,-0.07
+rda    rdel+8967,-0.08
+rda    rdel+9307,0.08
+rda    rdel+9576,-0.09
+rda    rdel+9924,-0.09
+rda    rdel+10298,-0.11
+rda    rdel+10578,0.1
+rda    rdel+10835,0.12
+rda    rdel+11207,-0.1
+rda    rdel+11523,-0.14
+rda    rdel+11765,-0.18
+rda    rdel+12113,0.16
+rda    rdel+12324,-0.13
+rda    rdel+12735,-0.17
+
+rdax    f3,-1
+mulx    kfil
+rdax    f3,1
+wrax    f3,1
+rda    ap3#,0.5
+wrap    ap3,-0.5
+
+rda    rdel+13003,0.19
+rda    rdel+13267,-0.14
+rda    rdel+13610,0.16
+rda    rdel+13945,-0.18
+rda    rdel+14130,0.2
+rda    rdel+14550,-0.25
+rda    rdel+14800,-0.25
+
+rdax    f4,-1
+mulx    kfil
+rdax    f4,1
+wrax    f4,1
+rda    ap4#,0.5
+wrap    ap4,-0.5
+
+rda    rdel+16000,1
+@setOutputPin 'Output_Left' outputl
+wrax    outputl,1
+
+@setOutputPin 'Output_Right' outputr
+wrax    outputr,0
+
+
+@endif

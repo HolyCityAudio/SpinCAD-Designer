@@ -48,6 +48,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverb2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_roomCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_hallCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Ted_Rev_ReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
@@ -557,6 +558,15 @@
 		}
 	});
 	mn_reverb.add(mntm_reverb_hall);
+		
+	final JMenuItem mntm_Ted_Rev_Reverb = new JMenuItem("Ted Reverb");
+	mntm_Ted_Rev_Reverb.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Ted_Rev_ReverbCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_Ted_Rev_Reverb);
 		
 	final JMenuItem mntm_rom_rev1 = new JMenuItem("ROM Reverb 1");
 	mntm_rom_rev1.addActionListener(new ActionListener() {

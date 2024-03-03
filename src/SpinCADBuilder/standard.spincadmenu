@@ -65,6 +65,7 @@
 @menuitem "Small Reverb 2" MinReverb2 
 @menuitem "Room Reverb" reverb_room 
 @menuitem "Hall Reverb" reverb_hall 
+@menuitem "Ted Reverb" Ted_Rev_Reverb 
 //@menuitem "Plate Reverb" reverb_plate 
 //@menuitem "Reverb Plate Filters" reverb_plate_filters 
 // @menuitem "Gated Reverb" gated_verb 

@@ -102,13 +102,14 @@
 			sfxb.scaleOffset(-2.0, 0);
 			sfxb.mulx(inputOne);
 			sfxb.readRegister(temp, 1);
-			sfxb.skip(RUN, 7);
+			sfxb.skip(RUN, 8);
+			sfxb.clear();
 			sfxb.readRegister(controlIn, 1.414);
-			sfxb.mulx(inputOne);
+			sfxb.mulx(inputTwo);
 			sfxb.writeRegister(temp, 0);
 			sfxb.readRegister(controlIn, -0.586);
 			sfxb.scaleOffset(0.999, 0.999);
-			sfxb.mulx(inputTwo);
+			sfxb.mulx(inputOne);
 			sfxb.readRegister(temp, 1);
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Audio Output").setRegister(output1);

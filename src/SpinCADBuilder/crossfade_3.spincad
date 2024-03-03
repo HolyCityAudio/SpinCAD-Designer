@@ -41,12 +41,13 @@ skp run, writeout
 
 ; here, controlIn is between 0.0 and 0.5
 zerofifty:
+clr
 rdax controlIn, 1.414
-mulx inputOne
+mulx inputTwo
 wrax temp,0
 rdax controlIn, -0.586
 sof 0.999, 0.999
-mulx inputTwo
+mulx inputOne
 rdax temp, 1
 
 writeout:
