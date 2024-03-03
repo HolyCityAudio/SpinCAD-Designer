@@ -14,4 +14,6 @@ Initially I developed SpinCAD Designer in Eclipse for Java, Juno and Kepler Vers
 
 I use the Java and DSL (Domain Specific Language using Xtext and Xtend) version of the IDE.  Xtext is used as a parser to read "SpinCAD Builder" files, while Xtext handles the Java code generation to turn these into SpinCAD Designer blocks.  SpinCAD Designer itself can be compiled strictly from the Java source supplied.
 
-Instructions on using this code with Eclipse can be found here: https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/Installing_and_configuring_Eclipse_to_compile_SpinCAD_Designer.zip This is only necessary if you wish to fork this repository in order to change or enhance SpinCAD Designer's behavior.  This includes the addition of new functional blocks you have invented or found laying around somewhere.
+Instructions on using this code with Eclipse can be found here: https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/Installing_and_configuring_Eclipse_to_compile_SpinCAD_Designer.zip This is only necessary if you wish to fork this repository in order to change or enhance SpinCAD Designer's behavior.  This includes the addition of new functional blocks you have invented or found laying around somewhere.  
+
+Warning: Adding new blocks using SpinCAD Builder is a fairly advanced topic.
