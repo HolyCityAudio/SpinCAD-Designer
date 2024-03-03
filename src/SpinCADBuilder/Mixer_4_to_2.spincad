@@ -1,70 +1,70 @@
 @name 'Mixer 4:2'
 @color "0x2468f2"
-@audioInput input1 'Input 1'
-@audioInput input2 'Input 2'
-@audioInput input3 'Input 3' 
-@audioInput input4 'Input 4'
+@audioInput input1 'Input 1a'
+@audioInput input2 'Input 1b'
+@audioInput input3 'Input 2a' 
+@audioInput input4 'Input 2b'
 
 @audioOutput output1 Output1
 @audioOutput output2 Output2
-@controlInput level_1 'Level 1'
-@controlInput level_2 'Level 2'
-@controlInput level_3 'Level 3'
-@controlInput level_4 'Level 4'
+@controlInput level_1 'Level 1a'
+@controlInput level_2 'Level 1b'
+@controlInput level_3 'Level 2a'
+@controlInput level_4 'Level 2b'
 
 equ gain1 1.0 
-@sliderLabel gain1 'Input Gain 1' -18 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain1 'Input Gain 1a' -18 0 -6 1.0 1 DBLEVEL 
 
 equ gain2 1.0 
-@sliderLabel gain2 'Input Gain 2' -18 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain2 'Input Gain 1b' -18 0 -6 1.0 1 DBLEVEL 
 
 equ gain3 1.0 
-@sliderLabel gain3 'Input Gain 3' -18 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain3 'Input Gain 2a' -18 0 -6 1.0 1 DBLEVEL 
 
 equ gain4 1.0 
-@sliderLabel gain4 'Input Gain 4' -18 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain4 'Input Gain 2b' -18 0 -6 1.0 1 DBLEVEL 
 
 ;REGISTERS 
 equ   output1     reg0 	     
 equ   output2     reg1   
 
 // we dont read input 1 unless it's connected
-@isPinConnected 'Input 1'
+@isPinConnected 'Input 1a'
 rdax    input1, gain1    ;read input signal
 // if level 1 is connected we multiply by level 1
-	@isPinConnected 'Level 1'
+	@isPinConnected 'Level 1a'
 		mulx level_1
 	@endif
 	wrax output1, 0.0
 @endif
 
-@isPinConnected 'Input 2'
+@isPinConnected 'Input 1b'
 	rdax input2, gain2
-	@isPinConnected 'Level 2'
+	@isPinConnected 'Level 1b'
 		mulx level_2
 	@endif
-	@isPinConnected 'Input 1'
+	@isPinConnected 'Input 1a'
 		rdax output1, 1.0
 	@endif
 	wrax output1, 0.0
 @endif
 
 // we dont read input 1 unless it's connected
-@isPinConnected 'Input 3'
+@isPinConnected 'Input 2a'
 	rdax    input3, gain3    ;read input signal
 // if level 1 is connected we multiply by level 1
-	@isPinConnected 'Level 3'
+	@isPinConnected 'Level 2a'
 		mulx level_3
 	@endif
 	wrax output2, 0.0
 @endif
 
-@isPinConnected 'Input 4'
+@isPinConnected 'Input 2b'
 	rdax input4, gain4
-	@isPinConnected 'Level 4'
+	@isPinConnected 'Level 2b'
 		mulx level_4
 	@endif
-	@isPinConnected 'Input 3'
+	@isPinConnected 'Input 2a'
 		rdax output2, 1.0
 	@endif
 	wrax output2, 0.0

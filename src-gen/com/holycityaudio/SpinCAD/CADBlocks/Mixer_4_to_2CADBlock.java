@@ -42,16 +42,16 @@
 				setName("Mixer 4:2");					
 			setBorderColor(new Color(0x2468f2));
 				// Iterate through pin definitions and allocate or assign as needed
-				addInputPin(this, "Input 1");
-				addInputPin(this, "Input 2");
-				addInputPin(this, "Input 3");
-				addInputPin(this, "Input 4");
+				addInputPin(this, "Input 1a");
+				addInputPin(this, "Input 1b");
+				addInputPin(this, "Input 2a");
+				addInputPin(this, "Input 2b");
 				addOutputPin(this, "Output1");
 				addOutputPin(this, "Output2");
-				addControlInputPin(this, "Level 1");
-				addControlInputPin(this, "Level 2");
-				addControlInputPin(this, "Level 3");
-				addControlInputPin(this, "Level 4");
+				addControlInputPin(this, "Level 1a");
+				addControlInputPin(this, "Level 1b");
+				addControlInputPin(this, "Level 2a");
+				addControlInputPin(this, "Level 2b");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -82,42 +82,42 @@
 			SpinCADPin sp = null;
 					
 			// Iterate through pin definitions and connect or assign as needed
-			sp = this.getPin("Input 1").getPinConnection();
+			sp = this.getPin("Input 1a").getPinConnection();
 			int input1 = -1;
 			if(sp != null) {
 				input1 = sp.getRegister();
 			}
-			sp = this.getPin("Input 2").getPinConnection();
+			sp = this.getPin("Input 1b").getPinConnection();
 			int input2 = -1;
 			if(sp != null) {
 				input2 = sp.getRegister();
 			}
-			sp = this.getPin("Input 3").getPinConnection();
+			sp = this.getPin("Input 2a").getPinConnection();
 			int input3 = -1;
 			if(sp != null) {
 				input3 = sp.getRegister();
 			}
-			sp = this.getPin("Input 4").getPinConnection();
+			sp = this.getPin("Input 2b").getPinConnection();
 			int input4 = -1;
 			if(sp != null) {
 				input4 = sp.getRegister();
 			}
-			sp = this.getPin("Level 1").getPinConnection();
+			sp = this.getPin("Level 1a").getPinConnection();
 			int level_1 = -1;
 			if(sp != null) {
 				level_1 = sp.getRegister();
 			}
-			sp = this.getPin("Level 2").getPinConnection();
+			sp = this.getPin("Level 1b").getPinConnection();
 			int level_2 = -1;
 			if(sp != null) {
 				level_2 = sp.getRegister();
 			}
-			sp = this.getPin("Level 3").getPinConnection();
+			sp = this.getPin("Level 2a").getPinConnection();
 			int level_3 = -1;
 			if(sp != null) {
 				level_3 = sp.getRegister();
 			}
-			sp = this.getPin("Level 4").getPinConnection();
+			sp = this.getPin("Level 2b").getPinConnection();
 			int level_4 = -1;
 			if(sp != null) {
 				level_4 = sp.getRegister();
@@ -126,44 +126,44 @@
 			// finally, generate the instructions
 			output1 = sfxb.allocateReg();
 			output2 = sfxb.allocateReg();
-			if(this.getPin("Input 1").isConnected() == true) {
+			if(this.getPin("Input 1a").isConnected() == true) {
 			sfxb.readRegister(input1, gain1);
-			if(this.getPin("Level 1").isConnected() == true) {
+			if(this.getPin("Level 1a").isConnected() == true) {
 			sfxb.mulx(level_1);
 			}
 			
 			sfxb.writeRegister(output1, 0.0);
 			}
 			
-			if(this.getPin("Input 2").isConnected() == true) {
+			if(this.getPin("Input 1b").isConnected() == true) {
 			sfxb.readRegister(input2, gain2);
-			if(this.getPin("Level 2").isConnected() == true) {
+			if(this.getPin("Level 1b").isConnected() == true) {
 			sfxb.mulx(level_2);
 			}
 			
-			if(this.getPin("Input 1").isConnected() == true) {
+			if(this.getPin("Input 1a").isConnected() == true) {
 			sfxb.readRegister(output1, 1.0);
 			}
 			
 			sfxb.writeRegister(output1, 0.0);
 			}
 			
-			if(this.getPin("Input 3").isConnected() == true) {
+			if(this.getPin("Input 2a").isConnected() == true) {
 			sfxb.readRegister(input3, gain3);
-			if(this.getPin("Level 3").isConnected() == true) {
+			if(this.getPin("Level 2a").isConnected() == true) {
 			sfxb.mulx(level_3);
 			}
 			
 			sfxb.writeRegister(output2, 0.0);
 			}
 			
-			if(this.getPin("Input 4").isConnected() == true) {
+			if(this.getPin("Input 2b").isConnected() == true) {
 			sfxb.readRegister(input4, gain4);
-			if(this.getPin("Level 4").isConnected() == true) {
+			if(this.getPin("Level 2b").isConnected() == true) {
 			sfxb.mulx(level_4);
 			}
 			
-			if(this.getPin("Input 3").isConnected() == true) {
+			if(this.getPin("Input 2a").isConnected() == true) {
 			sfxb.readRegister(output2, 1.0);
 			}
 			
