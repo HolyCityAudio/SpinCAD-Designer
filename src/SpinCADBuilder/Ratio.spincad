@@ -1,0 +1,37 @@
+@name Ratio 
+@color "0xf2f224"  
+@controlInput input Input
+@controlOutput fullRange FullRange
+@controlOutput ratioOut Ratio 
+
+;REGISTERS 
+equ   fullRange     reg0       
+equ   ratioOut     reg1  
+
+equ invRatio 5
+// variable - Name - low - high - multiplier - precision - option 
+@sliderLabel invRatio 'Ratio' 2.0 100.0 5.0 10.0 1 
+
+equ scale 0.2
+// number1 is used in calculations
+// get scale and offset for fullRange Output
+equ number1 1.0
+@divideDouble offsetVal number1 invRatio
+equ offsetVal 0.9
+@minusDouble scale number1 offsetVal
+
+equ logOffset 0.4
+@ratioToLogOffset logOffset invRatio 
+ 
+@isPinConnected Input
+rdax    input,1    ;read input signal 
+sof	scale, offsetVal
+wrax    fullRange,1    ;output to fullRange pin
+log -1.0, logOffset
+exp 1.0, 0
+wrax    ratioOut,0    ;output to fullRange pin
+
+@setOutputPin FullRange fullRange
+@setOutputPin Ratio ratioOut
+@endif
+

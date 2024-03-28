@@ -67,6 +67,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.PotSkipCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LFO_ValueCADBlock;
@@ -77,6 +78,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.RatioCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ClipControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Two_StageCADBlock;
@@ -95,6 +97,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ControlPanelTestCADBlock;
 
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
@@ -739,6 +742,15 @@
 	});
 	mn_control.add(mntm_Pot2);
 		
+	final JMenuItem mntm_PotSkip = new JMenuItem("Pot Skip");
+	mntm_PotSkip.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new PotSkipCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_PotSkip);
+		
 	final JMenuItem mntm_control_smoother = new JMenuItem("Smoother");
 	mntm_control_smoother.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -828,6 +840,15 @@
 		}
 	});
 	mn_control.add(mntm_PowerControl);
+		
+	final JMenuItem mntm_Ratio = new JMenuItem("Ratio");
+	mntm_Ratio.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new RatioCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Ratio);
 		
 	final JMenuItem mntm_ClipControl = new JMenuItem("Clip");
 	mntm_ClipControl.addActionListener(new ActionListener() {
@@ -993,6 +1014,15 @@
 		}
 	});
 	mn_instructions.add(mntm_Constant);
+		
+	final JMenuItem mntm_ControlPanelTest = new JMenuItem("Control Panel Test");
+	mntm_ControlPanelTest.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ControlPanelTestCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_instructions.add(mntm_ControlPanelTest);
 		
 	}
 }

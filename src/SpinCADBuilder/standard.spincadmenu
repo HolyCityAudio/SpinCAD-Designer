@@ -110,7 +110,7 @@
 @menuitem "Pot 0" Pot0 
 @menuitem "Pot 1" Pot1 
 @menuitem "Pot 2" Pot2 
-
+@menuitem "Pot Skip" PotSkip 
 @menuitem "Smoother" control_smoother
 @menuitem "Sin/Cos LFO" SinCosLFOA
 @menuitem "LFO Value" LFO_Value 
@@ -126,6 +126,7 @@
 //@menuitem "Peak/Envelope" Peak_Envelope
 @menuitem "Invert" InvertControl
 @menuitem "Power" PowerControl
+@menuitem "Ratio" Ratio
 @menuitem "Clip" ClipControl
 @menuitem "Slicer" Slicer
 @menuitem "Two Stage" Two_Stage
@@ -147,3 +148,4 @@
 @menuitem "Log" Log
 @menuitem "Root" Root
 @menuitem "Constant" Constant 
+@menuitem "Control Panel Test" ControlPanelTest 
