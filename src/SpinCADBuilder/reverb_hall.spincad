@@ -139,7 +139,9 @@ wrhx	hp1,-0.5
 wrax	temp,-1		;write to temp (for shelving LP)
 rdfx	lp1,0.5		;do the LP as a HP
 wrhx	lp1,-1
-mulx	input2		;kd is a shelf (neg number)
+@isPinConnected HF_Loss
+mulx	input2
+@endif
 rdax	temp,1		;add filter input
 wra	d1,0		;write to next delay input
 
@@ -161,7 +163,9 @@ wrhx	hp2,-0.5
 wrax	temp,-1
 rdfx	lp2,0.5
 wrhx	lp2,-1
+@isPinConnected HF_Loss
 mulx	input2
+@endif
 rdax	temp,1
 wra	d2,0
 
@@ -173,7 +177,9 @@ wrap	tap1,-0.5
 wrax	temp,1
 rdfx	tlp,0.1
 wrhx	tlp,-1
+@isPinConnected HF_Loss
 mulx	input2
+@endif
 rdax	temp,1
 wra	tdel+101,0
 

@@ -184,7 +184,10 @@
 			sfxb.writeRegister(temp, -1);
 			sfxb.readRegisterFilter(lp1, 0.5);
 			sfxb.writeRegisterHighshelf(lp1, -1);
+			if(this.getPin("HF_Loss").isConnected() == true) {
 			sfxb.mulx(input2);
+			}
+			
 			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("d1", 0, 0);
 			sfxb.FXreadDelay("d1#", 0, -krt);
@@ -204,7 +207,10 @@
 			sfxb.writeRegister(temp, -1);
 			sfxb.readRegisterFilter(lp2, 0.5);
 			sfxb.writeRegisterHighshelf(lp2, -1);
+			if(this.getPin("HF_Loss").isConnected() == true) {
 			sfxb.mulx(input2);
+			}
+			
 			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("d2", 0, 0);
 			sfxb.FXreadDelay("tdel+", (int)(100 * 1.0), 1);
@@ -213,7 +219,10 @@
 			sfxb.writeRegister(temp, 1);
 			sfxb.readRegisterFilter(tlp, 0.1);
 			sfxb.writeRegisterHighshelf(tlp, -1);
+			if(this.getPin("HF_Loss").isConnected() == true) {
 			sfxb.mulx(input2);
+			}
+			
 			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("tdel+", (int)(101 * 1.0), 0);
 			sfxb.FXreadDelay("tdel+", (int)(1000 * 1.0), 1);
