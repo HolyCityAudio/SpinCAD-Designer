@@ -73,11 +73,15 @@ public class Log extends Instruction {
 	public void simulate(SimulatorState state) {
 		// XXX - rewrite Log to not use doubles
 		double acc = Util.regToDouble(state.getACCVal());
+		double res;
 		acc = Math.abs(acc);
 		if(acc == 0.0) {
-			acc = 0.00001;
+			res = 1.0;
 		}
-		double res = (Math.log10(acc) / Math.log10(2.0) / 16.0);
+		else
+		{
+			res = (Math.log10(acc) / (Math.log10(2.0) * 16.0));
+		}
 		state.setACCVal(Util.doubleToScale((res * scale) + offset));
 	}
 }

@@ -37,6 +37,7 @@ public class RampLFOCADBlock extends ControlCADBlock{
 	public RampLFOCADBlock(int x, int y) {
 		super(x, y);
 		addControlInputPin(this, "Rate");			//	
+		addControlInputPin(this, "Tri Width");			//	
 		addControlOutputPin(this, "Ramp LFO");		//	Ramp 1
 		addControlOutputPin(this, "Triangle LFO");	//	
 		hasControlPanel = true;
@@ -70,14 +71,19 @@ public class RampLFOCADBlock extends ControlCADBlock{
 		} else {
 			sfxb.chorusReadValue(RMP1);
 		}
-		if(this.getPin("Triangle LFO").isConnected()) {
-			triangle = sfxb.allocateReg();
-			sfxb.writeRegister(ramp0, 1.0);	
-			sfxb.scaleOffset(1.999, -0.5 * lfoWidths[lfoWidth]/4096);
-			sfxb.absa();
+		if(this.getPin("Triangle LFO").isConnected()) {	
+			p = this.getPin("Tri Width");
+			if(p.isConnected()) {
+				triangle = sfxb.allocateReg();
+				sfxb.writeRegister(ramp0, 1.0);	
+				sfxb.scaleOffset(1.999, -0.5 * lfoWidths[lfoWidth]/4096);
+				sfxb.absa();
+				int triWidth = p.getPinConnection().getRegister();			
+				sfxb.mulx(triWidth);
+			}
 			sfxb.writeRegister(triangle, 0.0);	
 			this.getPin("Triangle LFO").setRegister(triangle);
-		} else {
+		} else {	
 			sfxb.writeRegister(ramp0, 0.0);	
 		}
 		this.getPin("Ramp LFO").setRegister(ramp0);
