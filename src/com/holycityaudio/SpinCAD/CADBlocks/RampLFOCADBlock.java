@@ -72,12 +72,12 @@ public class RampLFOCADBlock extends ControlCADBlock{
 			sfxb.chorusReadValue(RMP1);
 		}
 		if(this.getPin("Triangle LFO").isConnected()) {	
+			triangle = sfxb.allocateReg();
+			sfxb.writeRegister(ramp0, 1.0);	
+			sfxb.scaleOffset(1.999, -0.5 * lfoWidths[lfoWidth]/4096);
+			sfxb.absa();
 			p = this.getPin("Tri Width");
 			if(p.isConnected()) {
-				triangle = sfxb.allocateReg();
-				sfxb.writeRegister(ramp0, 1.0);	
-				sfxb.scaleOffset(1.999, -0.5 * lfoWidths[lfoWidth]/4096);
-				sfxb.absa();
 				int triWidth = p.getPinConnection().getRegister();			
 				sfxb.mulx(triWidth);
 			}
