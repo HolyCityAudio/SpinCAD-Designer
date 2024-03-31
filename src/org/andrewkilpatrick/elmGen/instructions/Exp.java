@@ -73,12 +73,12 @@ public class Exp extends Instruction {
 		// XXX - rewrite Exp to not use doubles
 		double val = Util.regToDouble(state.getACCVal());
 		if(val >= 0.0) {
-			state.setACCVal(Util.doubleToScale((0.9999998807907104 * scale) + offset));
+			state.setACCVal(Util.doubleToReg((0.9999998807907104 * scale) + offset));
 		}
 		else {
 			val *= 16.0;
 			val = Math.pow(2.0, val);
-			state.setACCVal(Util.doubleToScale((val * scale) + offset));
+			state.setACCVal(Util.doubleToReg((val * scale) + offset));
 		}
 	}
 }

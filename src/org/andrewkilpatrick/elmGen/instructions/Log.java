@@ -82,6 +82,6 @@ public class Log extends Instruction {
 		{
 			res = (Math.log10(acc) / (Math.log10(2.0) * 16.0));
 		}
-		state.setACCVal(Util.doubleToScale((res * scale) + offset));
+		state.setACCVal(Util.doubleToReg((res * scale) + offset));
 	}
 }

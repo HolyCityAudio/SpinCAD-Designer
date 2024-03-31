@@ -41,7 +41,8 @@ public class Util {
 		if(value < -0x800000) {
 			value = -0x800000;
 		}
-		return (double)value / 8388608.0;
+		// return (double)value / 4194304.0;	// 0x40000
+		return (double)value / 8388608.0;	// 0x80000
 	}
 
 	// GSW added for integration with SpinCAD Designer	
