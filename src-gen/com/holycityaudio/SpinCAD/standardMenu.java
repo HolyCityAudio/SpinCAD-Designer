@@ -48,7 +48,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverb2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_roomCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_hallCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Ted_Rev_ReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
@@ -97,7 +96,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.ControlPanelTestCADBlock;
 
 	import java.awt.event.ActionEvent;
 	import java.awt.event.ActionListener;
@@ -562,15 +560,6 @@
 	});
 	mn_reverb.add(mntm_reverb_hall);
 		
-	final JMenuItem mntm_Ted_Rev_Reverb = new JMenuItem("Ted Reverb");
-	mntm_Ted_Rev_Reverb.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new Ted_Rev_ReverbCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_reverb.add(mntm_Ted_Rev_Reverb);
-		
 	final JMenuItem mntm_rom_rev1 = new JMenuItem("ROM Reverb 1");
 	mntm_rom_rev1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -1014,15 +1003,6 @@
 		}
 	});
 	mn_instructions.add(mntm_Constant);
-		
-	final JMenuItem mntm_ControlPanelTest = new JMenuItem("Control Panel Test");
-	mntm_ControlPanelTest.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new ControlPanelTestCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_instructions.add(mntm_ControlPanelTest);
 		
 	}
 }
