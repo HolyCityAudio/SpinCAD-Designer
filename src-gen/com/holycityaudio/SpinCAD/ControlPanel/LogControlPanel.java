@@ -71,7 +71,7 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
+					multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.00 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
 						multiplierSlider.addChangeListener(new LogListener());
 						multiplierLabel = new JLabel();
 						Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -92,7 +92,7 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					log_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getlog_offset() * 1000.0));
+					log_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(-16 * 100.0),(int) (15.99999 * 100.0), (int) (gCB.getlog_offset() * 100.0));
 						log_offsetSlider.addChangeListener(new LogListener());
 						log_offsetLabel = new JLabel();
 						Border log_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
@@ -128,7 +128,7 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 				updatemultiplierLabel();
 			}
 			if(ce.getSource() == log_offsetSlider) {
-			gCB.setlog_offset((double) (log_offsetSlider.getValue()/1000.0));
+			gCB.setlog_offset((double) (log_offsetSlider.getValue()/100.0));
 				updatelog_offsetLabel();
 			}
 			}
@@ -152,7 +152,7 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 		multiplierLabel.setText("Log Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
 		}		
 		private void updatelog_offsetLabel() {
-		log_offsetLabel.setText("Log_Offset " + String.format("%4.3f", gCB.getlog_offset()));		
+		log_offsetLabel.setText("Log_Offset " + String.format("%4.2f", gCB.getlog_offset()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

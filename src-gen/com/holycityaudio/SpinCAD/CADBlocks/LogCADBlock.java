@@ -32,6 +32,7 @@
 			
 			private double multiplier = 0.5;
 			private double log_offset = 0.5;
+			private double sixteen = 16;
 			private int output1;
 
 			public LogCADBlock(int x, int y) {
@@ -75,10 +76,11 @@
 			}
 			
 			// finally, generate the instructions
+			double scaledOffset = log_offset / sixteen;
 			output1 = sfxb.allocateReg();
 			if(this.getPin("Control Input").isConnected() == true) {
 			sfxb.readRegister(input, 1);
-			sfxb.log(multiplier, log_offset);
+			sfxb.log(multiplier, scaledOffset);
 			sfxb.writeRegister(output1, 0);
 			this.getPin("Log Output").setRegister(output1);
 			}
