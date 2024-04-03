@@ -8,7 +8,7 @@ Please visit: [The SpinCAD Designer Gitbook site](https://holy-city-audio.gitboo
 
 ![SpinCAD Designer](/spincad.png)
 
-If you simply want to use SpinCAD Designer, download the SpinCAD-whatever.jar file and run it on your computer.  You'll need JRE/JDK 1.8 or later.
+If you simply want to use SpinCAD Designer, download the SpinCAD-whatever.jar file and run it on your computer.  You'll need JRE/JDK 1.8 or later.  Click on the "Releases" button to the right to access the jar files.
 
 Initially I developed SpinCAD Designer in Eclipse for Java, Juno and Kepler Versions.  Next, after transferring the code from an SVN account into Github, I have moved to Eclipse Luna.  Now I'm on the 2022 version (as of 2022).
 
