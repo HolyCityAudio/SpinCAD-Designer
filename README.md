@@ -1,14 +1,12 @@
 SpinCAD-Designer
 ================
 
-SpinCAD Designer is an open source Java project which allows creation and audio simulation of patches for the Spin FV-1 audio DSP chip.  It should be used with the Java Runtime Environment or Java Development Kit 1.8 or later.  It has been tested on Windows, macOS, and Linux.
+SpinCAD Designer is an open source Java project which allows creation and audio simulation of patches for the Spin FV-1 audio DSP chip.  It should be used with the Java Runtime Environment or Java Development Kit 1.8 or later.  It has been tested on Windows, macOS, and Linux.  If you simply want to use SpinCAD Designer, download the SpinCAD-whatever.jar file and run it on your computer.  You'll need JRE/JDK 1.8 or later.  Click on the "Releases" button to the right to access the jar files.
 
 New as of July 2022, I am developing video and written tutorials for SpinCAD to help you get the most out of it.
 Please visit: [The SpinCAD Designer Gitbook site](https://holy-city-audio.gitbook.io/spincad-designer)
 
 ![SpinCAD Designer](/spincad.png)
-
-If you simply want to use SpinCAD Designer, download the SpinCAD-whatever.jar file and run it on your computer.  You'll need JRE/JDK 1.8 or later.  Click on the "Releases" button to the right to access the jar files.
 
 Initially I developed SpinCAD Designer in Eclipse for Java, Juno and Kepler Versions.  Next, after transferring the code from an SVN account into Github, I have moved to Eclipse Luna.  Now I'm on the 2022 version (as of 2022).
 
