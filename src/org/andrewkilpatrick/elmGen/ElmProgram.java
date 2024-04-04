@@ -391,17 +391,70 @@ public class ElmProgram implements Serializable {
 	}
 
 	public String getProgramListing(int mode) {
+		int i;
 		if (mode == 1) {
 			String str = "; ----------------------------\n";
-			for (int i = 0; i < instList.size(); i++) {
+			for (i = 0; i < instList.size(); i++) {
 				Instruction inst = instList.get(i);
 				// str += String.format("%08X", inst.getHexWord()) + " - ";
 				str += inst.getInstructionString(1) + "\n";
 			}
 			return str;
-		} else
+		}
+		else
 			return "Error! Invalid mode.";
 	}
+
+	public String optimizeProgram(int mode) {
+		int i;
+		List<Instruction> optList = new LinkedList<Instruction>();
+		if (mode == 1) {
+			String str = "; ----------------------------\n";
+			for (i = 0; i < instList.size() - 1; i++) {
+				Instruction inst = instList.get(i);
+				Instruction nextInst = instList.get(i + 1);
+				String stateMent1 = inst.getInstructionString();
+				String stateMent2;
+				if(stateMent1.startsWith("WriteRegister")) {
+					int nSkip = 0;	// number of lines to skip
+					int ii = i + 1;
+					stateMent2 = nextInst.getInstructionString();
+					
+					while (stateMent2.startsWith(";")) {
+						str += stateMent2;
+						stateMent2 = instList.get(ii).getInstructionString();
+						ii++;
+						nSkip++;
+					}
+
+					if(stateMent2.startsWith("ReadRegister")) {
+						String[] reg1 = stateMent1.split("[(,)]"); 
+						String[] reg2 = stateMent2.split("[(,)]");
+						if(reg1[1].equals(reg2[1]) && reg1[2].equals("0.0")) {
+							System.out.println("Matched " + inst.getInstructionString() + " " + stateMent2);
+							String optimizer = "WriteRegister(" + reg1[1] + "," + reg2[2] + ")\n";
+							str += optimizer;
+							System.out.println("Replaced with " + optimizer);
+							WriteRegister wrax = new WriteRegister(Integer.parseInt(reg1[1]), Double.parseDouble(reg2[2]));
+							optList.add(wrax);		
+							//nSkip++;
+							i += nSkip;
+						}
+						else {
+							optList.add(inst);							
+						}
+					}
+				}
+				else {
+					optList.add(inst);		
+				}
+			}
+			optList.add(instList.get(i));
+		} else
+			return "Error! Invalid mode.";
+		return name;
+	}
+
 
 	/*
 	 * INSTRUCTIONS
