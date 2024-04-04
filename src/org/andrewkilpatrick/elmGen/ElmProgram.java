@@ -408,6 +408,7 @@ public class ElmProgram implements Serializable {
 	public String optimizeProgram(int mode) {
 		int i;
 		List<Instruction> optList = new LinkedList<Instruction>();
+
 		if (mode == 1) {
 			String str = "; ----------------------------\n";
 			for (i = 0; i < instList.size() - 1; i++) {
@@ -416,14 +417,16 @@ public class ElmProgram implements Serializable {
 				String stateMent1 = inst.getInstructionString();
 				String stateMent2;
 				if(stateMent1.startsWith("WriteRegister")) {
+					List<Instruction> commentList = new LinkedList<Instruction>();
 					int nSkip = 0;	// number of lines to skip
 					int ii = i + 1;
 					stateMent2 = nextInst.getInstructionString();
 					
 					while (stateMent2.startsWith(";")) {
+						commentList.add(new Comment(stateMent2));
 						str += stateMent2;
-						stateMent2 = instList.get(ii).getInstructionString();
 						ii++;
+						stateMent2 = instList.get(ii).getInstructionString();
 						nSkip++;
 					}
 
@@ -431,13 +434,16 @@ public class ElmProgram implements Serializable {
 						String[] reg1 = stateMent1.split("[(,)]"); 
 						String[] reg2 = stateMent2.split("[(,)]");
 						if(reg1[1].equals(reg2[1]) && reg1[2].equals("0.0")) {
-							System.out.println("Matched " + inst.getInstructionString() + " " + stateMent2);
+							System.out.println("Optimizing " + inst.getInstructionString() + " " + stateMent2);
 							String optimizer = "WriteRegister(" + reg1[1] + "," + reg2[2] + ")\n";
 							str += optimizer;
-							System.out.println("Replaced with " + optimizer);
 							WriteRegister wrax = new WriteRegister(Integer.parseInt(reg1[1]), Double.parseDouble(reg2[2]));
 							optList.add(wrax);		
-							//nSkip++;
+							// add comments back in
+							for (int j = 0; j < commentList.size(); j++) {
+								optList.add(commentList.get(j));
+							}
+							nSkip++;
 							i += nSkip;
 						}
 						else {
@@ -452,6 +458,10 @@ public class ElmProgram implements Serializable {
 			optList.add(instList.get(i));
 		} else
 			return "Error! Invalid mode.";
+		instList.clear();
+		for(i = 0; i < optList.size(); i++) {
+			instList.add(optList.get(i));
+		}
 		return name;
 	}
 
