@@ -80,6 +80,7 @@ import java.net.URL;
 
 import org.andrewkilpatrick.elmGen.Debug;
 import org.andrewkilpatrick.elmGen.ElmProgram;
+import org.andrewkilpatrick.elmGen.util.Util;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
@@ -91,7 +92,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1039;
+	int buildNum = 1040;
 
 	// Swing things
 	private JPanel contentPane;
@@ -244,8 +245,7 @@ public class SpinCADFrame extends JFrame {
 		// initialize file paths in preferences
 		SpinCADFile fsp = new SpinCADFile();
 		fsp.init_prefs();
-		
-		// ======================================================
+			
 		// ; ==================== menu bar and items ==========
 
 		JMenuBar menuBar = new JMenuBar();
@@ -384,9 +384,10 @@ public class SpinCADFrame extends JFrame {
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.patch[bankIndex].patchModel.sortAlignGen();
+				eeprom.patch[bankIndex].patchModel.getRenderBlock().optimizeProgram(1);
 				StringSelection stringSelection = new StringSelection (eeprom.patch[bankIndex].cb.getComments() + eeprom.patch[bankIndex].patchModel.getRenderBlock().getProgramListing(1));
 				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
-				clpbrd.setContents (stringSelection, null);
+				clpbrd.setContents (stringSelection, null);	
 			}
 		});
 		mnFileMenu.add(mntmCopyToClipboard);

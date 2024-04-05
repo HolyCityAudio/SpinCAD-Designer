@@ -450,7 +450,9 @@ public class ElmProgram implements Serializable {
 							optList.add(inst);							
 						}
 					}
-				}
+					else {
+						optList.add(inst);							
+					}				}
 				else {
 					optList.add(inst);		
 				}
