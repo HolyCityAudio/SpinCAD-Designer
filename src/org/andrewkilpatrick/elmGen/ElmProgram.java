@@ -410,56 +410,66 @@ public class ElmProgram implements Serializable {
 		List<Instruction> optList = new LinkedList<Instruction>();
 
 		if (mode == 1) {
-			String str = "; ----------------------------\n";
 			for (i = 0; i < instList.size() - 1; i++) {
 				Instruction inst = instList.get(i);
 				Instruction nextInst = instList.get(i + 1);
 				String stateMent1 = inst.getInstructionString();
 				String stateMent2;
+				// mode 1 replaces the following combination
+				// WRAX REGX, 0.0
+				// RDAX REGX, a
+				// with
+				// WRAX REGX, a
+				// so first we look for WRAX
 				if(stateMent1.startsWith("WriteRegister")) {
 					List<Instruction> commentList = new LinkedList<Instruction>();
-					int nSkip = 0;	// number of lines to skip
 					int ii = i + 1;
 					stateMent2 = nextInst.getInstructionString();
-					
+					// have to skip over (and save) any comments in the way
 					while (stateMent2.startsWith(";")) {
 						commentList.add(new Comment(stateMent2));
-						str += stateMent2;
 						ii++;
 						stateMent2 = instList.get(ii).getInstructionString();
-						nSkip++;
 					}
-
+					// look for the next instruction being RDAX
 					if(stateMent2.startsWith("ReadRegister")) {
+						// pull apart the instruction string to get the register and multiplier values
 						String[] reg1 = stateMent1.split("[(,)]"); 
 						String[] reg2 = stateMent2.split("[(,)]");
 						if(reg1[1].equals(reg2[1]) && reg1[2].equals("0.0")) {
+							// match found
 							System.out.println("Optimizing " + inst.getInstructionString() + " " + stateMent2);
-							String optimizer = "WriteRegister(" + reg1[1] + "," + reg2[2] + ")\n";
-							str += optimizer;
+							// make a new instruction with parts from the other 2
 							WriteRegister wrax = new WriteRegister(Integer.parseInt(reg1[1]), Double.parseDouble(reg2[2]));
+							// add it to the optimized instruction list
 							optList.add(wrax);		
 							// add comments back in
 							for (int j = 0; j < commentList.size(); j++) {
 								optList.add(commentList.get(j));
 							}
-							nSkip++;
-							i += nSkip;
+							i = ii;
 						}
+						// no match, just continue
 						else {
 							optList.add(inst);							
 						}
 					}
+					// no match, just continue
 					else {
 						optList.add(inst);							
-					}				}
+					}			
+				}
+				// no match, just continue
 				else {
 					optList.add(inst);		
 				}
 			}
+			// add the last instruction
 			optList.add(instList.get(i));
 		} else
 			return "Error! Invalid mode.";
+		System.out.println("Optimization saved " + (instList.size() - optList.size()) + " instructions.");
+		// now copy the optimized list back to the main list
 		instList.clear();
 		for(i = 0; i < optList.size(); i++) {
 			instList.add(optList.get(i));
