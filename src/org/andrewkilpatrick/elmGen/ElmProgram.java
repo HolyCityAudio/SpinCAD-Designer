@@ -467,7 +467,7 @@ public class ElmProgram implements Serializable {
 			// add the last instruction
 			optList.add(instList.get(i));
 		} else if (mode == 0) {
-			int[] regCleared = new int[33];
+			int[] regCleared = new int[32];
 			for (i = 0; i < instList.size() - 1; i++) {
 				Instruction inst = instList.get(i);
 				Instruction nextInst = instList.get(i + 1);
@@ -480,36 +480,57 @@ public class ElmProgram implements Serializable {
 				// They may not all be adjacent due to the sorting algorithm working on parallel signal paths.
 				// This prepares the code listing to be as optimized as possible by mode 1.
 				// Which means that they should be done in order.
+
 				if(stateMent1.startsWith("WriteRegister")) {
-					List<Instruction> commentList = new LinkedList<Instruction>();
 					String[] reg1 = stateMent1.split("[(,)]");
 					int whichReg = Integer.parseInt(reg1[1]) - 32;
-					if((whichReg >= 0) && (Double.parseDouble(reg1[2]) == 0.0)) {
-						regCleared[whichReg] = 1;
-					}
-					int ii = i + 1;
-					stateMent2 = nextInst.getInstructionString();
-					// have to skip over (and save) any comments in the way
-					while (stateMent2.startsWith(";")) {
-						commentList.add(new Comment(stateMent2));
-						ii++;
-						stateMent2 = instList.get(ii).getInstructionString();
-					}
-					// look for the next instruction being RDAX
-					// see if the reg matches the previous one (which would be mode 1)
-					// we can let that sit for now to let mode 1 do its job.
-					// so that means we'll keep going if it matches but stop if it doesn't.
-					if(stateMent2.startsWith("ReadRegister")) {
-						String[] reg2 = stateMent2.split("[(,)]");
-						if(reg1[1].equals(reg2[1])) {
-							optList.add(inst);							
-						}	
-						// no match, just continue
-						else {
-							if(regCleared[Integer.parseInt(reg2[1]) - 32] == 0) {
-								// now we have to try to move this block
+					Double scale = Double.parseDouble(reg1[2]);
+					if ((whichReg >= 0) && (scale == 0.0)) {
+						List<Instruction> commentList = new LinkedList<Instruction>();
+						int ii = i + 1;
+						stateMent2 = nextInst.getInstructionString();
+						// scan for RDAX
+						// have to skip over (and save) any comments in the way
+						while (!stateMent2.startsWith("ReadRegister") && ii < (instList.size() - 1)) {
+							if(stateMent2.startsWith(";")) {
+								commentList.add(new Comment(stateMent2));
 							}
-						}// no match, just continue
+							ii++;
+							stateMent2 = instList.get(ii).getInstructionString();
+						}
+						// see if the reg matches the previous one (which would be mode 1)
+						// we can let that sit for now to let mode 1 do its job.
+						// so that means we'll keep going if it matches but stop if it doesn't.
+						// need to add a loop to scan to the end - 1
+						if(stateMent2.startsWith("ReadRegister")) {
+							String[] reg2 = stateMent2.split("[(,)]");
+							// no match, just continue (in other words we are looking for ones which don't match)
+							if(reg1[1].equals(reg2[1])) {
+								optList.add(inst);							
+							}	
+							else {
+								// did we previously clear this register?
+								if(whichReg == Integer.parseInt(reg2[1]) - 32) {
+									// now we have to try to move this block
+									// create a new Instruction list
+									// copy the first instruction in
+									// keep copying instructions until we hit a 
+									// WRAX, REGn, 0
+									// now copy this group of instructions to the optimized list
+									// then delete the hole in the main instList
+									// don't try to optimize this register again.
+									regCleared[Integer.parseInt(reg2[1]) - 32] = 0;
+								}
+							}// no match, just continue
+						}
+						else {
+							// add the last instruction
+							optList.add(instList.get(i));
+						}
+					}
+					else {
+						// add the last instruction
+						optList.add(instList.get(i));						
 					}
 				}
 				// add the last instruction
