@@ -1,0 +1,45 @@
+@name PotSkip
+@color "0xf2f224"
+@controlInput input Input 
+
+equ steps 4 
+@sliderLabel steps 'Steps' 4 12 4 4 0  
+equ numberMinusOne -1.0
+
+@isPinConnected Input
+@divideDouble increment numberMinusOne steps 
+
+@isEqualTo steps 12
+mem   iap12   1  ; all-pass filters
+@endif
+@isEqualTo steps 8 
+mem   iap12   1  ; all-pass filters
+@endif
+@isEqualTo steps 4 
+rdax input, 1.0
+and 	%01100000_00000000_00000000
+skp zro, doSomething4_1
+sof 1, increment
+skp zro, doSomething4_2
+sof 1, increment
+skp zro, doSomething4_3
+doSomething4_4:
+// insert code to do something here
+skp run, allDone4
+doSomething4_3:
+// insert code to do something here
+skp run, allDone4
+doSomething4_2:
+// insert code to do something here
+skp run, allDone4
+doSomething4_1:
+// insert code to do something here
+clr
+allDone4:
+@endif
+
+
+@endif
+
+
+
