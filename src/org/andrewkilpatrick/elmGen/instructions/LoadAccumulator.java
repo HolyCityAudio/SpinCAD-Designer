@@ -38,10 +38,11 @@ public class LoadAccumulator extends Instruction {
 	 * @param addr the address to load into ACC (0-63)
 	 */
 	public LoadAccumulator(int addr) {
-		if(addr < 0 || addr > 63) {
-			throw new IllegalArgumentException("addr out of range: " + addr +
-					" - valid range: 0 - 63");
-		}
+		/// GSW removing register limits
+		// if(addr < 0 || addr > 63) {
+		//	throw new IllegalArgumentException("addr out of range: " + addr +
+		//			" - valid range: 0 - 63");
+		// }
 		this.addr = addr;
 	}
 	
