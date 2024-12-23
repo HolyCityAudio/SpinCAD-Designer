@@ -106,7 +106,7 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayd", length); 
 			sfxb.FXallocDelayMem("temp", 1); 
-			double scaledPitch = pitchCoeff / sixteen;
+			double scaledPitch = pitchCoeff / sixteen; 
 			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
 			sfxb.loadRampLFO((int) 0, (int) pitchCoeff, (int) length);

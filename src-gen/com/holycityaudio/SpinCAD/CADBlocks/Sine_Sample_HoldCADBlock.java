@@ -110,7 +110,7 @@
 			}
 			
 			if(this.getPin("LFO Rate").isConnected() == true) {
-			double temp1 = rate / rateMax;
+			double temp1 = rate / rateMax; 
 			sfxb.readRegister(rateReg, temp1);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RATE, 0);

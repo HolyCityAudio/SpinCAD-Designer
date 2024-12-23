@@ -76,7 +76,7 @@
 			}
 			
 			// finally, generate the instructions
-			double scaledOffset = log_offset / sixteen;
+			double scaledOffset = log_offset / sixteen; 
 			output1 = sfxb.allocateReg();
 			if(this.getPin("Control Input").isConnected() == true) {
 			sfxb.readRegister(input, 1);
