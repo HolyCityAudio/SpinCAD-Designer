@@ -384,7 +384,8 @@ public class SpinCADFrame extends JFrame {
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.patch[bankIndex].patchModel.sortAlignGen();
-				eeprom.patch[bankIndex].patchModel.getRenderBlock().optimizeProgram(1);
+				// GSW remove optimization for now
+				// eeprom.patch[bankIndex].patchModel.getRenderBlock().optimizeProgram(1);
 				StringSelection stringSelection = new StringSelection (eeprom.patch[bankIndex].cb.getComments() + eeprom.patch[bankIndex].patchModel.getRenderBlock().getProgramListing(1));
 				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
 				clpbrd.setContents (stringSelection, null);	
