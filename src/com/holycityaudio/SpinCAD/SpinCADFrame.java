@@ -92,7 +92,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1040;
+	int buildNum = 1041;
 
 	// Swing things
 	private JPanel contentPane;
@@ -374,6 +374,8 @@ public class SpinCADFrame extends JFrame {
 		mntmSaveAsm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.patch[bankIndex].patchModel.sortAlignGen();
+				eeprom.patch[bankIndex].patchModel.getRenderBlock().optimizeProgram();
+				eeprom.patch[bankIndex].patchModel.getRenderBlock().compactRegisters();
 				SpinCADFile f = new SpinCADFile();
 				f.fileSaveAsm(eeprom.patch[bankIndex]);
 			}
@@ -384,8 +386,6 @@ public class SpinCADFrame extends JFrame {
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.patch[bankIndex].patchModel.sortAlignGen();
-				eeprom.patch[bankIndex].patchModel.getRenderBlock().optimizeProgram(0);
-				eeprom.patch[bankIndex].patchModel.getRenderBlock().optimizeProgram(1);
 				StringSelection stringSelection = new StringSelection (eeprom.patch[bankIndex].cb.getComments() + eeprom.patch[bankIndex].patchModel.getRenderBlock().getProgramListing(1));
 				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
 				clpbrd.setContents (stringSelection, null);	

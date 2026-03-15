@@ -50,6 +50,12 @@ public class Mulx extends Instruction {
 	public int getHexWord() {
 		return ((addr & 0x3f) << 5) | 0x0a;
 	}
+	
+	// Added for optimizer support GSW 03-15-2026
+	public int getAddr()
+	{
+		return this.addr;		
+	}
 
 	@Override
 	public String getInstructionString() {

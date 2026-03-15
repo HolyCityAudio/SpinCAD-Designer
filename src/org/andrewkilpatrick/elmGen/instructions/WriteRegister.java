@@ -81,6 +81,17 @@ public class WriteRegister extends Instruction {
 					"Error! Invalid mode.";
 	}
 
+	// Added for optimizer support GSW 03-15-2026
+	public int getAddr()
+	{
+		return this.addr;		
+	}
+	
+	public double getScale()
+	{
+		return this.scale;		
+	}
+	
 	@Override
 	public void simulate(SimulatorState state) {
 		state.setRegVal(addr, state.getACCVal());

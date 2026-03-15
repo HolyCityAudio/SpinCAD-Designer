@@ -65,6 +65,17 @@ public class WriteRegisterLowshelf extends Instruction {
 	public String getInstructionString() {
 		return "WriteRegisterLowshelf(" + addr + "," + scale + ")";
 	}
+	// Added for optimizer support GSW 03-15-2026
+	public int getAddr()
+	{
+		return this.addr;		
+	}
+	
+	public double getScale()
+	{
+		return this.scale;		
+	}
+	
 	// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {

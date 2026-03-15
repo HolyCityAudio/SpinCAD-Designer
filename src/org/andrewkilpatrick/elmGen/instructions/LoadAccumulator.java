@@ -62,6 +62,11 @@ public class LoadAccumulator extends Instruction {
 		else
 			return "Error! Invalid mode.";
 	}
+	// Added for optimizer support GSW 03-15-2026
+	public int getAddr()
+	{
+		return this.addr;		
+	}
 	
 	@Override
 	public void simulate(SimulatorState state) {
