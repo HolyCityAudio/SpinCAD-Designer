@@ -42,10 +42,11 @@ public class ReadRegister extends Instruction {
 	 * @param scale the amount to scale the register
 	 */
 	public ReadRegister(int addr, double scale) {
-		if(addr < 0 || addr > 63) {
-			throw new IllegalArgumentException("addr out of range: " + addr +
-					" - valid range: 0 - 63");
-		}
+		// GSW removing limitation on registers
+		// if(addr < 0 || addr > 63) {
+//			throw new IllegalArgumentException("addr out of range: " + addr +
+	//				" - valid range: 0 - 63");
+		// }
 		checkS114(scale);
 		this.addr = addr;
 		this.scale = scale;
