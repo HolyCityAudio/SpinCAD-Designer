@@ -407,8 +407,8 @@ public class ElmProgram implements Serializable {
 		else
 			return "Error! Invalid mode.";
 	}
-
-	// ============================================================
+	
+// ============================================================
 //  Drop-in replacement for optimizeProgram() in ElmProgram.java
 //
 //  Also requires one private helper method: countRegisterReads()
@@ -577,7 +577,13 @@ public String optimizeProgram() {
     // Replace the instruction list in-place
     instList.clear();
     instList.addAll(optList);
-
+ // Recount comments since instList was rebuilt
+    nComments = 0;
+    for (Instruction inst : instList) {
+        if (inst instanceof Comment) {
+            nComments++;
+        }
+    }
     return name;
 }
 
@@ -813,6 +819,8 @@ if (compactedHighest > USER_REG_MAX) {
     System.err.println("  OK: all registers fit within REG0–REG31.");
 }
 System.err.println("----------------------------------------");
+// Hook for subclasses to update their register allocator state
+onRegistersCompacted(usedAddresses.isEmpty() ? USER_REG_MIN : (compactedHighest + 1));    
 }
 
 //============================================================
@@ -842,12 +850,15 @@ for (Instruction inst : instList) {
 return found;
 }
 
-//============================================================
-//Required imports to add at the top of ElmProgram.java
-//(if not already present):
-//
-//import java.util.HashMap;
-//import java.util.Map;
+/**
+ * Called at the end of compactRegisters() with the new next-free
+ * register address. Subclasses that maintain their own allocator
+ * high-water mark should override this to update it.
+ */
+protected void onRegistersCompacted(int newNextFreeReg) {
+    // default: no-op
+}
+
 //============================================================
 
 	/*

@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * SpinCADFile.java
- * Copyright (C) 2013 - 2014 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * Copyright (C) 2013 - 2026 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2026.  Look for GSW in code.
  * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -57,9 +57,10 @@ public class SpinCADFile {
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
 
+	// FIX #10: use isEmpty() instead of == "" for string comparison
 	private void init_pref(String prefName, String initValue){
 		String value = prefs.get(prefName,  "");
-		if (value == "") {
+		if (value.isEmpty()) {
 			prefs.put(prefName, initValue);
 		}
 	}
@@ -79,37 +80,29 @@ public class SpinCADFile {
 		init_pref("RecentHexFileList.fileList", "");
 	}
 	
+	// FIX #4: use try-with-resources to prevent oos being null if stream
+	// construction fails, and avoid NPE on oos.writeObject(). Also moved
+	// MRU update out of finally so it only runs on success.
 	public void fileSavePatch(SpinCADPatch m) {
 		File fileToBeSaved = new File(prefs.get("MRUPatchFolder",  "") + "/" + m.patchFileName);
 		String filePath = fileToBeSaved.getPath();
 		loadRecentPatchFileList();
 
-		FileOutputStream fos;
-		ObjectOutputStream oos = null;
-		try {
-			fos = new FileOutputStream(filePath);
-			oos = new ObjectOutputStream(fos); 
+		try (FileOutputStream fos = new FileOutputStream(filePath);
+			 ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			oos.writeObject(m);
+			oos.flush();
+			// Only update MRU on successful save
+			saveMRUPatchFolder(filePath);
+			recentPatchFileList.add(fileToBeSaved);
+			saveRecentPatchFileList();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			SpinCADDialogs.MessageBox("File save failed!", "Could not find or create the file.");
 		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-		try {
-			oos.writeObject(m);
-		} catch (IOException e1) {
 			// XXX debug this is currently triggered when a block control panel is open and you save the patch
-			e1.printStackTrace();
-		} 	
-		try {
-			oos.flush();
-			oos.close(); 
-		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally {
-			saveMRUPatchFolder(filePath);
-			recentPatchFileList.add(fileToBeSaved);		
-			saveRecentPatchFileList();
+			SpinCADDialogs.MessageBox("File save failed!", "An I/O error occurred while saving.");
 		}
 	}
 
@@ -237,7 +230,6 @@ public class SpinCADFile {
 
 		loadRecentHexFileList();
 		final String newline = "\n";
-		SpinCADPatch p = new SpinCADPatch();
 
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -248,18 +240,14 @@ public class SpinCADFile {
 
 		int returnVal = fc.showOpenDialog(new JFrame());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			String filePath = null;
 			File file = fc.getSelectedFile();
+			System.out.println("Opening: " + file.getName() + "." + newline);
+			String filePath = file.getPath();
 
-			System.out.println("Opening: " + file.getName() + "."
-					+ newline);
-			filePath = file.getPath();
+			SpinCADPatch p = new SpinCADPatch();
 			try {
+				// FIX #9: only update MRU and patch metadata if read succeeds
 				p = fileReadHex(filePath);
-			} catch (Exception e) {	
-				e.printStackTrace();
-				SpinCADDialogs.MessageBox("Hex File open failed!", "That's not supposed to happen!");
-			} finally {
 				saveMRUHexFolder(filePath);
 				recentHexFileList.add(file);
 				String fileName = file.getName();
@@ -267,22 +255,23 @@ public class SpinCADFile {
 				p.cb.setFileName(fileName);
 				p.isHexFile = true;
 				p.setChanged(false);
+				saveRecentHexFileList();
+				return p;
+			} catch (Exception e) {	
+				e.printStackTrace();
+				SpinCADDialogs.MessageBox("Hex File open failed!", "That's not supposed to happen!");
+				return null;
 			}
-			saveRecentHexFileList();
-			return p;
 		} else {
-			System.out.println("Open command cancelled by user."
-					+ newline);
+			System.out.println("Open command cancelled by user." + newline);
 			return null;
 		}
-
 	}
 
 	public SpinCADPatch fileOpenPatch() {
 
 		loadRecentPatchFileList();
 		final String newline = "\n";
-		SpinCADPatch p = new SpinCADPatch();
 
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -293,12 +282,11 @@ public class SpinCADFile {
 
 		int returnVal = fc.showOpenDialog(new JFrame());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			String filePath = null;
 			File file = fc.getSelectedFile();
+			System.out.println("Opening: " + file.getName() + "." + newline);
+			String filePath = file.getPath();
 
-			System.out.println("Opening: " + file.getName() + "."
-					+ newline);
-			filePath = file.getPath();
+			SpinCADPatch p = new SpinCADPatch();
 			try {
 				p = fileReadPatch(filePath);
 			} catch (Exception e) {	
@@ -308,20 +296,21 @@ public class SpinCADFile {
 					p = fileReadPatch952(filePath);
 				} catch (Exception exc) {	
 					exc.printStackTrace();
+					SpinCADDialogs.MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+					return null;  // FIX #8: don't update MRU or return corrupt data on failure
 				}
 				SpinCADDialogs.MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
-			} finally {
-				saveMRUPatchFolder(filePath);
-				recentPatchFileList.add(file);
-				String fileName = file.getName();
-				p.patchFileName = fileName;
-				p.cb.setFileName(fileName);
 			}
+			// FIX #8: only update MRU and metadata on success, not in finally
+			saveMRUPatchFolder(filePath);
+			recentPatchFileList.add(file);
+			String fileName = file.getName();
+			p.patchFileName = fileName;
+			p.cb.setFileName(fileName);
 			saveRecentPatchFileList();
 			return p;
 		} else {
-			System.out.println("Open command cancelled by user."
-					+ newline);
+			System.out.println("Open command cancelled by user." + newline);
 			return null;
 		}
 	}
@@ -414,13 +403,10 @@ public class SpinCADFile {
 
 					fileSavePatch(p);
 					recentPatchFileList.add(fileToBeSaved);
-
+					p.setChanged(false);  // only mark clean on success
 				} catch (Exception e) {	// thrown over in SpinCADFile.java
 					e.printStackTrace();
 					SpinCADDialogs.MessageBox("File save failed!", "look at stack trace for info");
-				}
-				finally {
-					p.setChanged(false);
 				}
 			}
 		}
@@ -452,22 +438,25 @@ public class SpinCADFile {
 				n = JOptionPane.showConfirmDialog(frame,
 						"Would you like to overwrite it?", "File already exists!",
 						JOptionPane.YES_NO_OPTION);
-				if (n == JOptionPane.YES_OPTION) {
-					try {
-						fileSaveBank(b);
-					} finally {
-					}
+			}
+
+			// FIX #6: b.changed = false was outside the YES_OPTION block,
+			// marking the bank clean even on cancel or failure. Now it only
+			// runs after a confirmed, successful save.
+			if (n == JOptionPane.YES_OPTION) {
+				try {
+					fileSaveBank(b);
+					b.changed = false;  // only mark clean on successful save
+				} catch (Exception e) {
+					e.printStackTrace();
+					SpinCADDialogs.MessageBox("File save failed!", "look at stack trace for info");
 				}
+				if(recentBankFileList != null){
+					recentBankFileList.add(fileToBeSaved);
+				}
+				saveMRUBankFolder(fileToBeSaved.getPath());
+				b.bankFileName = fileToBeSaved.getName();
 			}
-			else {
-				fileSaveBank(b);
-			}
-			b.changed = false;
-			if(recentBankFileList != null){
-				recentBankFileList.add(fileToBeSaved);
-			}
-			saveMRUBankFolder(fileToBeSaved.getPath());
-			b.bankFileName = fileToBeSaved.getName();
 		}
 	}
 
@@ -482,8 +471,14 @@ public class SpinCADFile {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Spin ASM Files", "spn");
 		fc.setFileFilter(filter);
-		// XXX DEBUG
-		fc.showSaveDialog(new JFrame());
+
+		// FIX #1: check return value - original code ignored cancel and crashed
+		// with NullPointerException on fc.getSelectedFile()
+		int returnVal = fc.showSaveDialog(new JFrame());
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
+			return;  // user cancelled
+		}
+
 		File fileToBeSaved = fc.getSelectedFile();
 
 		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spn")) {
@@ -558,7 +553,14 @@ public class SpinCADFile {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Hex Files", "hex");
 		fc.setFileFilter(filter);
-		fc.showSaveDialog(new JFrame());
+
+		// FIX #2: check return value - original code ignored cancel and crashed
+		// with NullPointerException on fc.getSelectedFile()
+		int returnVal = fc.showSaveDialog(new JFrame());
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
+			return;  // user cancelled
+		}
+
 		File fileToBeSaved = fc.getSelectedFile();
 
 		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".hex")) {
@@ -572,12 +574,13 @@ public class SpinCADFile {
 					JOptionPane.YES_NO_OPTION);
 		}
 		if (n == JOptionPane.YES_OPTION) {
-			String filePath;
-			try {
-				filePath = fileToBeSaved.getPath();
-				fileToBeSaved.delete();
-			} finally {
-			}
+			// FIX #5: removed the spurious empty try/finally block that was
+			// silently swallowing exceptions and could leave filePath
+			// uninitialized. Neither getPath() nor delete() throw checked
+			// exceptions, so no try/catch is needed here.
+			String filePath = fileToBeSaved.getPath();
+			fileToBeSaved.delete();
+
 			for(int i = 0; i < 8; i++) {
 				try {
 					if(bank.patch[i].isHexFile) {
@@ -609,8 +612,14 @@ public class SpinCADFile {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Spin Project Files", "spj");
 		fc.setFileFilter(filter);
-		// XXX debug
-		fc.showSaveDialog(new JFrame());
+
+		// FIX #3: check return value - original code ignored cancel and crashed
+		// with NullPointerException on fc.getSelectedFile()
+		int returnVal = fc.showSaveDialog(new JFrame());
+		if (returnVal != JFileChooser.APPROVE_OPTION) {
+			return;  // user cancelled
+		}
+
 		File fileToBeSaved = fc.getSelectedFile();
 
 		if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spj")) {
@@ -633,7 +642,8 @@ public class SpinCADFile {
 				try {
 					String asmFileNameRoot =  FilenameUtils.removeExtension(bank.patch[i].patchFileName);
 					String asmFileName = folder + "\\" +  asmFileNameRoot + ".spn";
-					if(bank.patch[i].patchFileName != "Untitled") {
+					// FIX #7: use .equals() not != for string comparison
+					if(!bank.patch[i].patchFileName.equals("Untitled")) {
 						fileSaveAsm(bank.patch[i], asmFileName);
 						spnFileNames[i] = asmFileName;				
 					}
@@ -644,7 +654,6 @@ public class SpinCADFile {
 							JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 					e.printStackTrace();
-				} finally {
 				}
 			}
 
@@ -666,7 +675,8 @@ public class SpinCADFile {
 
 			for(int i = 0; i < 8; i++) {
 				try {
-					if(bank.patch[i].patchFileName != "Untitled") {
+					// FIX #7: use .equals() not != for string comparison
+					if(!bank.patch[i].patchFileName.equals("Untitled")) {
 						writer.write(spnFileNames[i] + ",1");
 					}
 					else {
@@ -736,21 +746,17 @@ public class SpinCADFile {
 	//====================================================
 	// most-recently used file and folder methods
 
+	// FIX #11: removed unused local variable 'nameS' from saveMRUBankFolder
 	private void saveMRUBankFolder(String path) {
 		Path pathE = Paths.get(path);
-
 		String pathS = pathE.getParent().toString();
-		String nameS = pathE.getFileName().toString();
-
 		prefs.put("MRUBankFolder", pathS);
 	}
 
+	// FIX #11: removed unused local variable 'nameS' from saveMRUPatchFolder
 	private void saveMRUPatchFolder(String path) {
 		Path pathE = Paths.get(path);
-
 		String pathS = pathE.getParent().toString();
-		String nameS = pathE.getFileName().toString();
-
 		prefs.put("MRUPatchFolder", pathS);
 	}
 
@@ -900,4 +906,3 @@ public class SpinCADFile {
 	}
 
 }
-
