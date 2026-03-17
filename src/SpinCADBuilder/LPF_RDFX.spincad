@@ -11,7 +11,6 @@ equ freq 0.15
 equ lpf1 Reg0
 
 @isPinConnected Input
-
 @isPinConnected Frequency
 rdax input, freq
 rdax lpf1, -freq
