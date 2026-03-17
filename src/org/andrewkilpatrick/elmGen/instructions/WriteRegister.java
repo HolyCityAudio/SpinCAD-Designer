@@ -43,19 +43,20 @@ public class WriteRegister extends Instruction {
 	 * @param scale the amount to scale the ACC after the write
 	 */
 	public WriteRegister(int addr, double scale) {
-		if(addr < 0 || addr > 63) {
+//		if(addr < 0 || addr > 63) {
 //			throw new IllegalArgumentException("addr out of range: " + addr + " - valid range: 0 - 63");
 	// GSW added for integration with SpinCAD Designer
 	// there's probably a better way to handle it at a higher level
-			JFrame frame = new JFrame();
-			JOptionPane.showMessageDialog(
-					frame,
-					"Too many registers used!\n" + 
-							"Remove some blocks." ,
-							"Whoopsie!",
-							JOptionPane.OK_OPTION);
-
-		}
+	// removing this to allow going over FV-1 limits
+	//		JFrame frame = new JFrame();
+	//		JOptionPane.showMessageDialog(
+	//				frame,
+	//				"Too many registers used!\n" + 
+	//						"Remove some blocks." ,
+	//						"Whoopsie!",
+	//						JOptionPane.OK_OPTION);
+	//
+//		}
 		checkS114(scale);
 		this.addr = addr;
 		this.scale = scale;

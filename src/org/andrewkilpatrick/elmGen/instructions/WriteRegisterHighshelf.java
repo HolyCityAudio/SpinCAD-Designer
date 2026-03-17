@@ -44,10 +44,11 @@ public class WriteRegisterHighshelf extends Instruction {
 	 */
 
 	public WriteRegisterHighshelf(int addr, double scale) {
-		if(addr < 0 || addr > 63) {
-			throw new IllegalArgumentException("addr out of range: " + addr +
-					" - valid range: 0 - 63");
-		}
+		/// GSW removing register limits
+		// if(addr < 0 || addr > 63) {
+		//	throw new IllegalArgumentException("addr out of range: " + addr +
+		//			" - valid range: 0 - 63");
+		// }
 		checkS114(scale);
 		this.addr = addr;
 		this.scale = scale;
