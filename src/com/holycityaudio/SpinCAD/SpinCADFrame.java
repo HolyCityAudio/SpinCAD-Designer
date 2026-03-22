@@ -277,6 +277,7 @@ public class SpinCADFrame extends JFrame {
 		setJMenuBar(menuBar);
 
 		JMenu mnFileMenu = new JMenu("File");
+		mnFileMenu.setMnemonic(java.awt.event.KeyEvent.VK_F);
 		menuBar.add(mnFileMenu);
 
 		// Patch File operations
