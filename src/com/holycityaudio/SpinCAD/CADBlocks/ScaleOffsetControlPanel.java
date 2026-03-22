@@ -57,6 +57,7 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 	
 	public ScaleOffsetControlPanel(ScaleOffsetControlCADBlock scaleOffsetControlCADBlock) {
 		this.sof = scaleOffsetControlCADBlock;
+		sof.controlPanelFrame = this;
 		this.setTitle("Scale Offset");
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -113,7 +114,7 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(new Point(sof.getX() + 200, sof.getY() + 150));
+		this.setLocation(sof.getControlPanelLocation(200, 150));
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 		

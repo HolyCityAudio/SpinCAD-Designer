@@ -41,6 +41,7 @@ class QuantizerControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame();
+				BC.controlPanelFrame = frame;
 				frame.setTitle("Quantizer");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				bitSlider = new JSlider(JSlider.HORIZONTAL, 1, 16, BC.getBits());
@@ -52,7 +53,7 @@ class QuantizerControlPanel {
 				frame.setAlwaysOnTop(true);	
 				frame.setVisible(true);
 				frame.pack();
-				frame.setLocation(BC.getX() + 200, BC.getY() + 150);
+				frame.setLocation(BC.getControlPanelLocation(200, 150));
 			}
 		});
 

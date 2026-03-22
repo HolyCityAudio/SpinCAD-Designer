@@ -46,7 +46,8 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
 
 	public HPFControlPanel(HPFCADBlock b) {
 		this.HPF = b;
-		
+		HPF.controlPanelFrame = this;
+
         EventQueue.invokeLater(new Runnable()
         {
             public void run()
@@ -76,7 +77,7 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
 
 		this.pack();
 		this.setVisible(true);
-		this.setLocation(HPF.getX() + 200, HPF.getY() + 150);
+		this.setLocation(HPF.getControlPanelLocation(200, 150));
 		//		freqSlider.setValue((int)Math.round((b.getFreq() * 100.0)));
 		//		resSlider.setValue((int)Math.round((b.getRes() * 100.0)));
 	}

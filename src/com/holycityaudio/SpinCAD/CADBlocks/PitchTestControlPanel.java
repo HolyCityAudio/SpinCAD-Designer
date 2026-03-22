@@ -42,6 +42,7 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 
 	public PitchTestControlPanel(PitchTestCADBlock ppcb) {
 		this.pong = ppcb;
+		pong.controlPanelFrame = this;
 		this.setTitle("Pitch Shift Test");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
@@ -83,7 +84,7 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 		this.setVisible(true);
 		this.setAlwaysOnTop(true);
 		this.pack();
-		this.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));
+		this.setLocation(pong.getControlPanelLocation(200, 150));
 	}
 
 	public void stateChanged(ChangeEvent ce) {

@@ -55,6 +55,7 @@ public class SixBandEQControlPanel extends JFrame {
 
 	public SixBandEQControlPanel(SixBandEQCADBlock b) {
 		this.filter = b;
+		filter.controlPanelFrame = this;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				setTitle("6-Band EQ");
@@ -123,7 +124,7 @@ public class SixBandEQControlPanel extends JFrame {
 
 				qSlider.setValue((int) Math.round((filter.getQLevel() * 100.0)));
 				setVisible(true);
-				setLocation(new Point(filter.getX() + 200, filter.getY() + 150));
+				setLocation(filter.getControlPanelLocation(200, 150));
 				pack();
 				setResizable(false);
 				setAlwaysOnTop(true);

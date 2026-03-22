@@ -43,6 +43,7 @@ class BPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 	
 	public BPFControlPanel(BPFCADBlock b) {
 		this.BPF = b;
+		BPF.controlPanelFrame = this;
 		this.setTitle("Band pass Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
@@ -62,7 +63,7 @@ class BPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 		
 		this.pack();
 		this.setVisible(true);		
-		this.setLocation(BPF.getX() + 200, BPF.getY() + 150);
+		this.setLocation(BPF.getControlPanelLocation(200, 150));
 		}
 
 	@Override

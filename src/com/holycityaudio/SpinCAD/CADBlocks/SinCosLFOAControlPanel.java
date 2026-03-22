@@ -77,10 +77,11 @@ public class SinCosLFOAControlPanel extends spinCADControlPanel implements Chang
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("LFO");
+				pC.controlPanelFrame = frame;
 				frame.setTitle("Sin/Cos LFO");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-				frame.setLocation(new Point(pC.getX() + 200, pC.getY() + 150));
+				frame.setLocation(pC.getControlPanelLocation(200, 150));
 
 				//				    graph.setBorder(BorderFactory.createEmptyBorder(0,10,10,10)); 
 

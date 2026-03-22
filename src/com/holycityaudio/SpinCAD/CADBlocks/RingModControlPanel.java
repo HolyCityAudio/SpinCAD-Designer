@@ -40,6 +40,7 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 	
 	public RingModControlPanel(RingModCADBlock ringModCADBlock) {
 		this.outBlock = ringModCADBlock;
+		outBlock.controlPanelFrame = this;
 		this.setTitle("Ring Mod");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
@@ -56,7 +57,7 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 		this.setVisible(true);
 		this.setAlwaysOnTop(true);
 		this.pack();
-		this.setLocation(outBlock.getX() + 200, outBlock.getY() + 150);
+		this.setLocation(outBlock.getControlPanelLocation(200, 150));
 	}
 
 	@Override

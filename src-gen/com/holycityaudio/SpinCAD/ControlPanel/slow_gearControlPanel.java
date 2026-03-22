@@ -63,6 +63,7 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
+				gCB.controlPanelFrame = frame;
 				frame.setTitle("Slow_gear");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -96,7 +97,7 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocation(gCB.getControlPanelLocation(100, 100));
 				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}

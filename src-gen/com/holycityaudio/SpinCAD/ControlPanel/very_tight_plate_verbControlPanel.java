@@ -61,13 +61,14 @@ public very_tight_plate_verbControlPanel(very_tight_plate_verbCADBlock genericCA
 			public void run() {
 
 				frame = new JFrame();
+				gCB.controlPanelFrame = frame;
 				frame.setTitle("Plate_Verb_3");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocation(gCB.getControlPanelLocation(100, 100));
 				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}

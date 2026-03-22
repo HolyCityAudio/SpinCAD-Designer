@@ -46,6 +46,7 @@ class VolumeControlPanel_A {
 			public void run() {
 
 				frame = new JFrame();
+				spbVol.controlPanelFrame = frame;
 				frame.setTitle("Volume");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -57,7 +58,7 @@ class VolumeControlPanel_A {
 				frame.getContentPane().add(gainSlider);
 				updateGainLabel();
 				frame.setVisible(true);		
-				frame.setLocation(new Point(spbVol.getX() + 200, spbVol.getY() + 150));
+				frame.setLocation(spbVol.getControlPanelLocation(200, 150));
 				frame.pack();
 				frame.setResizable(false);
 				frame.setAlwaysOnTop(true);

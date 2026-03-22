@@ -43,6 +43,7 @@ class LPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 	
 	public LPFControlPanel(LPFCADBlock lpfcadBlock) {
 		this.LPF = lpfcadBlock;
+		LPF.controlPanelFrame = this;
 		this.setTitle("Low pass Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
@@ -62,7 +63,7 @@ class LPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 		
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(LPF.getX() + 200, LPF.getY() + 150);	
+		this.setLocation(LPF.getControlPanelLocation(200, 150));	
 //		freqSlider.setValue((int)Math.round((lpfcadBlock.getFreq() * 100.0)));
 //		resSlider.setValue((int)Math.round((lpfcadBlock.getRes() * 100.0)));
 	}

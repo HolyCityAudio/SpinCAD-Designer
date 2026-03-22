@@ -93,7 +93,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1047;
+	int buildNum = 1048;
 
 	// Swing things
 	private JPanel contentPane;
@@ -718,7 +718,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
+				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.99 Build " + buildNum + "\n"
 						+ "Copyright 2026 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
@@ -816,8 +816,7 @@ public class SpinCADFrame extends JFrame {
 		while(itr.hasNext()) {
 			block = itr.next();
 			if(block.selected == true) {
-				// TODO need to think of a way to delete an open control panel
-				//						if(block.editBlock != null)
+				block.deleteControlPanel();
 				deleteBlockConnection(getPatch().patchModel, block);
 				itr.remove();
 			}

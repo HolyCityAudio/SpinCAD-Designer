@@ -43,6 +43,7 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 	
 	public OscillatorControlPanel(OscillatorCADBlock osc) {
 		this.outBlock = osc;
+		outBlock.controlPanelFrame = this;
 		this.setTitle("Oscillator");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
@@ -56,7 +57,7 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 		
 		lfoSlider.setValue((int)Math.round(100000.0 * outBlock.getLFO()));
 		updateLFOLabel();
-		this.setLocation(osc.getX() + 100, osc.getY() + 100);
+		this.setLocation(osc.getControlPanelLocation(100, 100));
 		this.setAlwaysOnTop(true);
 		
 		this.setVisible(true);

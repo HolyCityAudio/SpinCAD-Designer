@@ -44,6 +44,7 @@ class OverdriveControlPanel extends JFrame implements ChangeListener, ActionList
 
 	public OverdriveControlPanel(OverdriveCADBlock odCb) {
 		this.oD = odCb;
+		oD.controlPanelFrame = this;
 		this.setTitle("Overdrive");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
@@ -83,7 +84,7 @@ class OverdriveControlPanel extends JFrame implements ChangeListener, ActionList
 
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(oD.getX() + 200, oD.getY() + 150);
+		this.setLocation(oD.getControlPanelLocation(200, 150));
 		this.setAlwaysOnTop(true);
 	}
 

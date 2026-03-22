@@ -67,6 +67,7 @@ public ControlMixer_3_to_1ControlPanel(ControlMixer_3_to_1CADBlock genericCADBlo
 			public void run() {
 
 				frame = new JFrame();
+				gCB.controlPanelFrame = frame;
 				frame.setTitle("Mixer 3:1");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -136,7 +137,7 @@ public ControlMixer_3_to_1ControlPanel(ControlMixer_3_to_1CADBlock genericCADBlo
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocation(gCB.getControlPanelLocation(100, 100));
 				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}

@@ -43,6 +43,7 @@ class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 	
 	public SingleDelayControlPanel(SingleDelayCADBlock singleDelayCADBlock) {
 		this.delay = singleDelayCADBlock;
+		delay.controlPanelFrame = this;
 		this.setTitle("Single Delay");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
@@ -67,7 +68,7 @@ class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 		lengthSlider.setValue(singleDelayCADBlock.getDelayTime());
 
 		this.setVisible(true);
-		this.setLocation(new Point(delay.getX() + 200, delay.getY() + 150));
+		this.setLocation(delay.getControlPanelLocation(200, 150));
 		this.setAlwaysOnTop(true);
 		this.pack();
 	}

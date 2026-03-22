@@ -58,6 +58,7 @@ class BiQuadControlPanel {
 			public void run() {
 
 				frame = new JFrame();
+				spbBQF.controlPanelFrame = frame;
 				frame.setTitle("BiQuad Filter");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -85,7 +86,7 @@ class BiQuadControlPanel {
 				frame.setVisible(true);		
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(spbBQF.getX() + 200, spbBQF.getY() + 150);
+				frame.setLocation(spbBQF.getControlPanelLocation(200, 150));
 			}
 		});
 	}

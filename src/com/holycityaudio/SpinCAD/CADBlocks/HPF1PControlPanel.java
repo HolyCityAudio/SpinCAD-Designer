@@ -44,6 +44,7 @@ class HPF1PControlPanel extends JFrame {
 
 	public HPF1PControlPanel(HPF1PCADBlock hpf1pcadBlock) {
 		this.HPF = hpf1pcadBlock;
+		HPF.controlPanelFrame = this;
 		createAndShowUI();
 	}
 	
@@ -65,7 +66,7 @@ class HPF1PControlPanel extends JFrame {
 				updateFreqLabel();
 				setAlwaysOnTop(true);
 				setVisible(true);
-				setLocation(new Point(HPF.getX() + 200, HPF.getY() + 150));
+				setLocation(HPF.getControlPanelLocation(200, 150));
 				pack();
 				setResizable(false);
 			}

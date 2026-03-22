@@ -42,6 +42,7 @@ class FBInputControlPanel extends JFrame implements ChangeListener, ActionListen
 	
 	public FBInputControlPanel(FBInputCADBlock fbInputCADBlock) {
 		inBlock = fbInputCADBlock;
+		inBlock.controlPanelFrame = this;
 		this.setTitle(inBlock.getName());
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		
@@ -57,7 +58,7 @@ class FBInputControlPanel extends JFrame implements ChangeListener, ActionListen
 		this.pack();
 		this.setAlwaysOnTop(true);	
 		this.setVisible(true);
-		this.setLocation(new Point(inBlock.getX() + 200, inBlock.getY() + 150));
+		this.setLocation(inBlock.getControlPanelLocation(200, 150));
 		this.setResizable(false);
 	}
 

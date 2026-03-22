@@ -64,6 +64,7 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
+				gCB.controlPanelFrame = frame;
 				frame.setTitle("Slicer");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -98,7 +99,7 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocation(gCB.getControlPanelLocation(100, 100));
 				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}

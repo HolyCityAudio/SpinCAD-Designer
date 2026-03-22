@@ -77,6 +77,7 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 			public void run() {
 
 				frame = new JFrame();
+				gCB.controlPanelFrame = frame;
 				frame.setTitle("Reverb_Delay_Line_01");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -278,7 +279,7 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocation(gCB.getControlPanelLocation(100, 100));
 				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}

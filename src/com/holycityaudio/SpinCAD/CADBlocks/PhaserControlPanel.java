@@ -64,6 +64,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Ramp LFO");
+				pong.controlPanelFrame = frame;
 				frame.setTitle("Phaser");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				frame.setResizable(false);
@@ -89,7 +90,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.pack();
-				frame.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));			}
+				frame.setLocation(pong.getControlPanelLocation(200, 150));			}
 		});
 	}
 

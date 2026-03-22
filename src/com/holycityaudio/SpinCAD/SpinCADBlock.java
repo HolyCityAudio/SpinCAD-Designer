@@ -68,7 +68,8 @@ public class SpinCADBlock extends SpinFXBlock {
 	int height = 40;
 	boolean selected = false;	// for multi-select in panel
 	private String name = null;
-	public spinCADControlPanel scCP = null;			// control panel for editing parameters
+	public transient spinCADControlPanel scCP = null;			// control panel for editing parameters
+	public transient javax.swing.JFrame controlPanelFrame = null;  // tracks the open control panel window
 	protected boolean hasControlPanel = false;	// used to determine whether to offer a control panel
 
 	Color borderColor = new Color(0x09B545);
@@ -450,9 +451,69 @@ public class SpinCADBlock extends SpinFXBlock {
 		return hasControlPanel;
 	}
 
+	public java.awt.Point getControlPanelLocation(int offsetX, int offsetY) {
+		// Convert block-relative coordinates to screen coordinates
+		// by finding the main SpinCADFrame window location
+		for (java.awt.Window w : java.awt.Window.getWindows()) {
+			if (w instanceof javax.swing.JFrame && w.isDisplayable()
+					&& w.getClass().getName().contains("SpinCADFrame")) {
+				java.awt.Point frameLoc = w.getLocationOnScreen();
+				return new java.awt.Point(frameLoc.x + getX() + offsetX,
+						frameLoc.y + getY() + offsetY);
+			}
+		}
+		// Fallback: use block coordinates directly (single monitor behavior)
+		return new java.awt.Point(getX() + offsetX, getY() + offsetY);
+	}
+
 	public void deleteControlPanel() {
-		if (scCP != null) {
-			//			scCP.delete();
+		// Dispose via the base-class controlPanelFrame field (preferred path)
+		if (controlPanelFrame != null) {
+			controlPanelFrame.dispose();
+			controlPanelFrame = null;
+		}
+
+		// Also try cp/cP fields via reflection as fallback
+		for (String fieldName : new String[]{"cp", "cP"}) {
+			try {
+				java.lang.reflect.Field cpField = this.getClass().getDeclaredField(fieldName);
+				cpField.setAccessible(true);
+				Object cpObj = cpField.get(this);
+				if (cpObj != null) {
+					if (cpObj instanceof javax.swing.JFrame) {
+						((javax.swing.JFrame) cpObj).dispose();
+					} else {
+						try {
+							java.lang.reflect.Field frameField = cpObj.getClass().getDeclaredField("frame");
+							frameField.setAccessible(true);
+							Object frameObj = frameField.get(cpObj);
+							if (frameObj instanceof javax.swing.JFrame) {
+								((javax.swing.JFrame) frameObj).dispose();
+							}
+						} catch (NoSuchFieldException ignored) {}
+					}
+					cpField.set(this, null);
+				}
+			} catch (NoSuchFieldException ignored) {
+			} catch (Exception e) {
+				System.err.println("deleteControlPanel reflection error: " + e);
+			}
+		}
+
+		// Scan all open JFrames for any referencing this block
+		for (java.awt.Window w : java.awt.Window.getWindows()) {
+			if (w instanceof javax.swing.JFrame && w.isDisplayable()) {
+				try {
+					for (java.lang.reflect.Field f : w.getClass().getDeclaredFields()) {
+						if (SpinCADBlock.class.isAssignableFrom(f.getType())) {
+							f.setAccessible(true);
+							if (f.get(w) == this) {
+								w.dispose();
+							}
+						}
+					}
+				} catch (Exception ignored) {}
+			}
 		}
 	}
 	// below are functions to translate parameters between CADBlocks and control panels

@@ -51,6 +51,7 @@ public class RootControlControlPanel extends JFrame {
 
 	public RootControlControlPanel(RootCADBlock rCB) {
 		this.pC = rCB;
+		pC.controlPanelFrame = this;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				setTitle("Root");
@@ -81,7 +82,7 @@ public class RootControlControlPanel extends JFrame {
 				rootLabel.setText(String.format("%d", pC.getRoot()));
 				invert.setSelected(pC.isInvert());
 				flip.setSelected(pC.isFlip());
-				setLocation(pC.getX() + 200, pC.getY() + 150);
+				setLocation(pC.getControlPanelLocation(200, 150));
 				setAlwaysOnTop(true);
 				setVisible(true);
 				pack();

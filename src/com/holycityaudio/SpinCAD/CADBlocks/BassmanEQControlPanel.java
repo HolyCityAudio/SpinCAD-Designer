@@ -50,6 +50,7 @@ class BassmanEQControlPanel {
 			public void run() {
 
 				frame = new JFrame();
+				spbBMEQ.controlPanelFrame = frame;
 				frame.setTitle("Bassman '59 EQ");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -83,7 +84,7 @@ class BassmanEQControlPanel {
 				frame.setAlwaysOnTop(true);	
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(spbBMEQ.getX() + 100, spbBMEQ.getY() + 100);
+				frame.setLocation(spbBMEQ.getControlPanelLocation(100, 100));
 			}
 		});
 	}

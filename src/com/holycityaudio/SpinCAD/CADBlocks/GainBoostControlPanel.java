@@ -42,6 +42,7 @@ public class GainBoostControlPanel implements ChangeListener {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Gain Boost");
+				pC.controlPanelFrame = frame;
 				frame.setTitle("Gain Boost");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
@@ -54,7 +55,7 @@ public class GainBoostControlPanel implements ChangeListener {
 				gainSlider.setValue((int) Math.round(pC.getGain()));
 				updateGainLabel();
 
-				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
+				frame.setLocation(pC.getControlPanelLocation(200, 150));
 				frame.setVisible(true);
 				frame.pack();
 				frame.setAlwaysOnTop(true);

@@ -47,6 +47,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 	public SVF2PControlPanel(SVF2PCADBlock svf2pcadBlock) {
 		// TODO make this thread safe
 		this.cadBlock = svf2pcadBlock;
+		cadBlock.controlPanelFrame = this;
 		this.setTitle("State Variable Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -68,7 +69,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 		updateFreqLabel();
 		qSlider.setValue((int)Math.round(svf2pcadBlock.getQ()));
 		updateQLabel();
-		this.setLocation(new Point(cadBlock.getX() + 200, cadBlock.getY() + 150));
+		this.setLocation(cadBlock.getControlPanelLocation(200, 150));
 
 		this.setVisible(true);
 		this.pack();

@@ -47,6 +47,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 
 	public OneBandEQControlPanel(OneBandEQCADBlock b) {
 		this.filter = b;
+		filter.controlPanelFrame = this;
 		this.setTitle("1-Band EQ");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -84,7 +85,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 		qSlider.setValue((int) Math.round((b.getQLevel() * 100.0)));
 		qLabel.setText("Resonance "	+ String.format("%2.2f", b.getQLevel()));
 		this.setAlwaysOnTop(true);
-		this.setLocation(new Point(filter.getX() + 200, filter.getY() + 150));
+		this.setLocation(filter.getControlPanelLocation(200, 150));
 		this.pack();
 	}
 

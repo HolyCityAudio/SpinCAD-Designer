@@ -44,6 +44,7 @@ class LPF1PControlPanel extends JFrame {
 
 	public LPF1PControlPanel(LPF1PCADBlock lpf1pcadBlock) {
 		this.LPF = lpf1pcadBlock;
+		LPF.controlPanelFrame = this;
 		createAndShowUI();
 	}
 	
@@ -65,7 +66,7 @@ class LPF1PControlPanel extends JFrame {
 				updateFreqLabel();
 				setVisible(true);
 				setAlwaysOnTop(true);
-				setLocation(new Point(LPF.getX() + 200, LPF.getY() + 150));
+				setLocation(LPF.getControlPanelLocation(200, 150));
 				pack();
 				setResizable(false);
 			}

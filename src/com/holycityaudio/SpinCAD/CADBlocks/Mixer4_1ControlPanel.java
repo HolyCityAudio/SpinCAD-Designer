@@ -52,6 +52,7 @@ class Mixer4_1ControlPanel {
 			public void run() {
 
 				frame = new JFrame();
+				spbMix.controlPanelFrame = frame;
 				frame.setTitle("Mixer 4-1");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -84,7 +85,7 @@ class Mixer4_1ControlPanel {
 				frame.setVisible(true);	
 				frame.setAlwaysOnTop(true);	
 				frame.setResizable(false);
-				frame.setLocation(new Point(spbMix.getX() + 200, spbMix.getY() + 150));
+				frame.setLocation(spbMix.getControlPanelLocation(200, 150));
 				frame.pack();
 			}
 		});

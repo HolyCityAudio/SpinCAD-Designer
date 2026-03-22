@@ -69,6 +69,7 @@ public Mixer_4_to_2ControlPanel(Mixer_4_to_2CADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
+				gCB.controlPanelFrame = frame;
 				frame.setTitle("Mixer 4:2");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -183,7 +184,7 @@ public Mixer_4_to_2ControlPanel(Mixer_4_to_2CADBlock genericCADBlock) {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocation(gCB.getControlPanelLocation(100, 100));
 				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}

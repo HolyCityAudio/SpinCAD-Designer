@@ -45,12 +45,13 @@ class ServoDelayControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame();
+				mD.controlPanelFrame = frame;
 				frame.setTitle("Servo Delay");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				// XXX debug, this may not be correct
 				int timeCoarse = calcDelayTimeCoarse(mD.getDelayLength());
 				delaySliderCoarse = new JSlider(JSlider.HORIZONTAL, 0, calcDelayTimeCoarse(32767), timeCoarse);
-				
+
 				delaySliderCoarse.addChangeListener(new bitSliderListener());
 				delayLabelCoarse = new JLabel();
 				frame.add(delayLabelCoarse);
@@ -68,7 +69,7 @@ class ServoDelayControlPanel {
 				
 				frame.setVisible(true);
 				frame.pack();
-				frame.setLocation(mD.getX() + 200, mD.getY() + 150);
+				frame.setLocation(mD.getControlPanelLocation(200, 150));
 			}
 		});
 

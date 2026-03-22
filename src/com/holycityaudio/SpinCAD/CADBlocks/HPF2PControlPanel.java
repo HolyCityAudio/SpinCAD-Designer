@@ -63,6 +63,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 
 	public HPF2PControlPanel(HPF2PCADBlock lpf1pcadBlock) {
 		this.hPF = lpf1pcadBlock;
+		hPF.controlPanelFrame = this;
 		nPoles = new JComboBox<Object>(listOptions);
 		nPoles.addActionListener(this);
 		createAndShowUI();
@@ -108,7 +109,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 //				updateFreqLabel();
 				setAlwaysOnTop(true);
 				setVisible(true);
-				setLocation(new Point(hPF.getX() + 200, hPF.getY() + 150));
+				setLocation(hPF.getControlPanelLocation(200, 150));
 				pack();
 				setResizable(false);
 			}

@@ -44,6 +44,7 @@ public class PotControlPanel implements ItemListener {
 			public void run() {
 				String panelName = String.format("Pot %d response", pCB.getPotNum());
 				frame = new JFrame(panelName);
+				pC.controlPanelFrame = frame;
 				frame.setTitle(panelName);
 				frame.setResizable(false);
 
@@ -53,8 +54,8 @@ public class PotControlPanel implements ItemListener {
 				frame.add(speedupCB);
 
 				frame.setVisible(true);
-				frame.setSize(180, 50);
-				frame.setLocation(new Point(pCB.getX() + 200, pCB.getY() + 150));
+				frame.pack();
+				frame.setLocation(pCB.getControlPanelLocation(200, 150));
 				frame.setAlwaysOnTop(true);
 
 			}

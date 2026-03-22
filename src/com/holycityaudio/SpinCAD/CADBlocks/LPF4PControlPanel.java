@@ -61,6 +61,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 	public LPF4PControlPanel(LPF4PCADBlock lpf1pcadBlock) {
 		this.LPF = lpf1pcadBlock;
+		LPF.controlPanelFrame = this;
 		nPoles = new JComboBox<Object>(listOptions);
 		nPoles.addActionListener(this);
 		createAndShowUI();
@@ -106,7 +107,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 //				updateFreqLabel();
 				setAlwaysOnTop(true);
 				setVisible(true);
-				setLocation(new Point(LPF.getX() + 200, LPF.getY() + 150));
+				setLocation(LPF.getControlPanelLocation(200, 150));
 				pack();
 				setResizable(true);
 			}

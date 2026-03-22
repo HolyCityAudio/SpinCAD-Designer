@@ -43,6 +43,7 @@ public class ConstantControlPanel extends JFrame implements ChangeListener {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				sof = cCB;
+				sof.controlPanelFrame = ConstantControlPanel.this;
 				setTitle("Constant");
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
@@ -56,7 +57,7 @@ public class ConstantControlPanel extends JFrame implements ChangeListener {
 
 				setVisible(true);
 				pack();
-				setLocation(new Point(cCB.getX() + 200, cCB.getY() + 150));
+				setLocation(cCB.getControlPanelLocation(200, 150));
 				setResizable(false);
 				setAlwaysOnTop(true);
 			}

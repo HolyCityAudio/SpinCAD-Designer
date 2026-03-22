@@ -53,6 +53,7 @@ class ThreeTapControlPanel extends JFrame implements ChangeListener, ActionListe
 	
 	public ThreeTapControlPanel(ThreeTapCADBlock ppcb) {
 		this.pong = ppcb;
+		pong.controlPanelFrame = this;
 		this.setTitle("Ping Pong Delay");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
@@ -102,7 +103,7 @@ class ThreeTapControlPanel extends JFrame implements ChangeListener, ActionListe
 		
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));
+		this.setLocation(pong.getControlPanelLocation(200, 150));
 	}
 
 	@Override
