@@ -28,14 +28,22 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 /**
  * Audio output sink that writes processed samples to the sound card.
  *
- * GSW 2026-03-22: Extracted from elmGen-0.5.jar and fixed buffer sizing.
- * The original code called line.open(format) with no buffer size, which
- * uses a platform-dependent default. On MacOS (CoreAudio) the default
- * buffer is very small, causing underruns and silent output after a few
- * seconds of playback. Specifying an explicit buffer (0.5 s) fixes this.
+ * GSW 2026-03-22: Extracted from elmGen-0.5.jar and fixed for MacOS.
+ *
+ * Problems fixed:
+ *  1. Original used default buffer size — too small on MacOS CoreAudio.
+ *  2. Blocking line.write() can hang forever on MacOS if CoreAudio stalls.
+ *     Now writes only as much as line.available() allows, with a running
+ *     flag check between chunks so stopSimulator() can break the loop.
+ *  3. close() called drain() which blocks if the line is stuck.
+ *     Now calls stop/flush/close for immediate teardown.
+ *  4. Pre-allocates the byte conversion buffer to reduce GC pressure
+ *     in the real-time audio path.
  */
 public class AudioCardOutput implements AudioSink {
-	SourceDataLine line = null;
+	private SourceDataLine line = null;
+	private volatile boolean running = true;
+	private byte[] outBuf;  // pre-allocated conversion buffer
 
 	public AudioCardOutput() throws LineUnavailableException {
 		AudioFormat format = new AudioFormat(
@@ -49,12 +57,14 @@ public class AudioCardOutput implements AudioSink {
 		line = (SourceDataLine) AudioSystem.getLine(info);
 
 		// Explicit buffer: 0.5 seconds of stereo 16-bit audio.
-		// The original code used the platform default, which is too small
-		// on MacOS CoreAudio, leading to underruns and silent playback.
 		int bytesPerFrame = 4;  // 2 channels × 2 bytes (16-bit)
 		int bufferFrames = ElmProgram.SAMPLERATE / 2;  // 0.5 seconds
 		int bufferBytes = bufferFrames * bytesPerFrame;
 		line.open(format, bufferBytes);
+
+		// Pre-allocate for the max batch size used by SpinSimulator (8192 samples)
+		outBuf = new byte[8192 * 2];
+
 		line.start();
 	}
 
@@ -65,23 +75,49 @@ public class AudioCardOutput implements AudioSink {
 
 	@Override
 	public void writeDac(int[] buf, int len) {
-		if (len < 1 || len > buf.length) {
-			return;
+		if (!running || !line.isOpen()) return;
+		if (len < 1 || len > buf.length) return;
+
+		// Grow conversion buffer if needed (unlikely — batch size is usually 8192)
+		int byteLen = len * 2;
+		if (byteLen > outBuf.length) {
+			outBuf = new byte[byteLen];
 		}
+
 		// Convert int samples (FV-1 24-bit fixed point) to 16-bit little-endian bytes
-		byte[] bytes = new byte[len * 2];
 		int pos = 0;
 		for (int i = 0; i < len; i++) {
 			// Extract bits 8-23 as a 16-bit sample (little-endian: low byte first)
-			bytes[pos++] = (byte) ((buf[i] & 0xFF00) >> 8);
-			bytes[pos++] = (byte) ((buf[i] & 0xFF0000) >> 16);
+			outBuf[pos++] = (byte) ((buf[i] & 0xFF00) >> 8);
+			outBuf[pos++] = (byte) ((buf[i] & 0xFF0000) >> 16);
 		}
-		line.write(bytes, 0, pos);
+
+		// Write in chunks sized to line.available() so we never block
+		// indefinitely in line.write(). Check 'running' between chunks
+		// so that close() can break us out promptly.
+		int written = 0;
+		while (written < pos && running) {
+			int avail = line.available();
+			if (avail <= 0) {
+				try { Thread.sleep(1); } catch (InterruptedException e) { return; }
+				continue;
+			}
+			int toWrite = Math.min(pos - written, avail);
+			int n = line.write(outBuf, written, toWrite);
+			if (n <= 0) break;
+			written += n;
+		}
 	}
 
 	@Override
 	public void close() {
-		line.drain();
-		line.close();
+		running = false;
+		if (line != null) {
+			// stop + flush gives immediate teardown — drain() would block
+			// if the line is stuck, which is the whole problem on MacOS.
+			line.stop();
+			line.flush();
+			line.close();
+		}
 	}
 }

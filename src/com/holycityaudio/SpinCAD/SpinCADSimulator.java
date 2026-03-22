@@ -386,7 +386,7 @@ public class SpinCADSimulator {
 			setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
 
 			Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-			Dimension cbDim = new Dimension(60, 24);
+			Dimension cbDim = new Dimension(80, 24);
 
 			btnCh1Enable.setToolTipText("Toggle Channel 1 trace on/off");
 			btnCh1Enable.addActionListener(this);

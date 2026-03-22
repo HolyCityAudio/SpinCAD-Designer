@@ -60,6 +60,7 @@ public class AudioFileReader implements AudioSource {
 		byte inBuf[] = new byte[buf.length * 2];
 		int ret = audioInputStream.read(inBuf);
 		if(ret < 1 && loop) {
+			audioInputStream.close();  // close old stream before re-opening
 			File soundFile = new File(filename);
 			try {
 				audioInputStream = AudioSystem.getAudioInputStream(soundFile);
