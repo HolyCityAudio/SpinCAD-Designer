@@ -32,11 +32,12 @@
 			
 			private int tovrx;
 			private int lf1;
+			private double threshold = -0.1875;
+			private double filterFactor = 0.75;
+			private double nStages = 1;
 			private int lf2;
 			private int lf3;
 			private int lf4;
-			private double threshold = -0.1875;
-			private double filterFactor = 0.4;
 
 			public ToverXCADBlock(int x, int y) {
 				super(x, y);
@@ -80,9 +81,6 @@
 			// finally, generate the instructions
 			tovrx = sfxb.allocateReg();
 			lf1 = sfxb.allocateReg();
-			lf2 = sfxb.allocateReg();
-			lf3 = sfxb.allocateReg();
-			lf4 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(adcl, 1);
 			sfxb.log(-1, threshold);
@@ -91,44 +89,99 @@
 			sfxb.mulx(tovrx);
 			sfxb.readRegister(tovrx, -2);
 			sfxb.mulx(adcl);
+			if(nStages == 1) {
+			sfxb.scaleOffset(-2, 0);
+			sfxb.scaleOffset(1.999, 0);
+			sfxb.writeRegister(lf1, 0);
+			} else {
 			sfxb.readRegister(lf1, filterFactor);
 			sfxb.writeRegister(lf1, 1);
+			}
+			
+			if(nStages > 1) {
+			lf2 = sfxb.allocateReg();
 			sfxb.log(-1, threshold);
 			sfxb.exp(1, 0);
 			sfxb.writeRegister(tovrx, 1);
 			sfxb.mulx(tovrx);
 			sfxb.readRegister(tovrx, -2);
-			sfxb.mulx(adcl);
+			sfxb.mulx(lf1);
+			}
+			
+			if(nStages == 2) {
+			sfxb.scaleOffset(-2, 0);
+			sfxb.scaleOffset(1.999, 0);
+			sfxb.writeRegister(lf2, 0);
+			} else {
+			if(nStages > 2) {
 			sfxb.readRegister(lf2, filterFactor);
 			sfxb.writeRegister(lf2, 1);
+			}
+			
+			}
+			
+			if(nStages > 2) {
+			lf3 = sfxb.allocateReg();
 			sfxb.log(-1, threshold);
 			sfxb.exp(1, 0);
 			sfxb.writeRegister(tovrx, 1);
 			sfxb.mulx(tovrx);
 			sfxb.readRegister(tovrx, -2);
-			sfxb.mulx(adcl);
+			sfxb.mulx(lf2);
+			}
+			
+			if(nStages == 3) {
+			sfxb.scaleOffset(-2, 0);
+			sfxb.scaleOffset(1.999, 0);
+			sfxb.writeRegister(lf3, 0);
+			} else {
+			if(nStages == 4) {
 			sfxb.readRegister(lf3, filterFactor);
 			sfxb.writeRegister(lf3, 1);
+			}
+			
+			}
+			
+			if(nStages > 3) {
+			lf4 = sfxb.allocateReg();
 			sfxb.log(-1, threshold);
 			sfxb.exp(1, 0);
 			sfxb.writeRegister(tovrx, 1);
 			sfxb.mulx(tovrx);
 			sfxb.readRegister(tovrx, -2);
-			sfxb.mulx(adcl);
-			sfxb.readRegister(lf4, filterFactor);
+			sfxb.mulx(lf3);
+			sfxb.scaleOffset(-2, 0);
+			sfxb.scaleOffset(1.999, 0);
 			sfxb.writeRegister(lf4, 0);
+			}
+			
+			if(nStages == 1) {
+			this.getPin("Audio_Output").setRegister(lf1);
+			}
+			
+			if(nStages == 2) {
+			this.getPin("Audio_Output").setRegister(lf2);
+			}
+			
+			if(nStages == 3) {
+			this.getPin("Audio_Output").setRegister(lf3);
+			}
+			
+			if(nStages == 4) {
 			this.getPin("Audio_Output").setRegister(lf4);
+			}
+			
 			}
 			
 
 			}
 			
 			// create setters and getter for control panel variables
-			public void setfilterFactor(double __param) {
-				filterFactor = __param;	
+			public void setnStages(double __param) {
+				nStages = __param;	
 			}
 			
-			public double getfilterFactor() {
-				return filterFactor;
+			public double getnStages() {
+				return nStages;
 			}
 		}	

@@ -24,6 +24,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.NoiseGateCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
@@ -334,6 +335,15 @@
 		}
 	});
 	mn_dynamics.add(mntm_soft_knee_limiter);
+		
+	final JMenuItem mntm_NoiseGate = new JMenuItem("Noise Gate");
+	mntm_NoiseGate.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new NoiseGateCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_dynamics.add(mntm_NoiseGate);
 		
 	JMenu mn_filters = new JMenu("Filters");
 	menuBar.add(mn_filters);

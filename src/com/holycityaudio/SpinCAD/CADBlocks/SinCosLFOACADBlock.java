@@ -99,7 +99,7 @@ public class SinCosLFOACADBlock extends ControlCADBlock{
 			sfxb.writeRegister(cos, 0.0);
 			p.setRegister(cos);
 		}
-		System.out.println("LFO code gen! Rate/width:" + lfoRate + " /" + lfoWidth);
+		// System.out.println("LFO code gen! Rate/width:" + lfoRate + " /" + lfoWidth);
 	}
 
 	public void editBlock(){

@@ -4,15 +4,14 @@
 
 ;REGISTERS 
 equ   tovrx     reg0       
-equ   lf1		reg1       
-equ   lf2   	reg2          
-equ   lf3      	reg3       
-equ   lf4 	reg4       
+equ   lf1		reg1           
 
 ;CONSTANTS 
 equ   threshold   -0.1875       
-equ   filterFactor   0.4  ; low pass filter
-@sliderLabel filterFactor 'Low Pass' 350 5000 1400.0 100.0 1 LOGFREQ
+equ   filterFactor   0.75  ; low pass filter
+; @sliderLabel filterFactor 'Low Pass' 350 5000 1400.0 100.0 1 LOGFREQ
+equ nStages 1
+@sliderLabel nStages 'Stages' 1 4 1 1.0 1 
 
 @isPinConnected Input
 rdax    adcl,1    ;read input signal
@@ -23,36 +22,85 @@ wrax    tovrx,1    ;save t/X, we'll need it later...
 mulx    tovrx    ;(t/X)^2
 rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
 mulx    adcl    ;multiply by the input signal 
+
+@isEqualTo nStages 1
+sof 	-2,0 	;restore gain
+sof 	1.999,0 	;phase and gain restored
+wrax    lf1,0    ;output in lf1, clear ACC
+@else
 rdax    lf1, filterFactor    ;restore gain and filter
 wrax    lf1,1    ;output in ACC and lf1 
+@endif
 
+@isGreaterThan nStages 1
+equ   lf2   	reg2 
 log    -1,threshold
 exp    1,0    ;provides t/X 
 wrax    tovrx,1    ;save t/X, we'll need it later...
 mulx    tovrx    ;(t/X)^2
 rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
-mulx    adcl    ;multiply by the input signal 
+mulx    lf1    ;multiply by the stage input signal 
+
+@endif
+
+@isEqualTo nStages 2
+sof 	-2,0 	;restore gain
+sof 	1.999,0 	;phase and gain restored
+wrax    lf2,0    ;output in lf2, clear ACC 
+@else
+@isGreaterThan nStages 2
 rdax    lf2, filterFactor    ;restore gain and filter
-wrax    lf2,1    ;output in ACC and lf1 
+wrax    lf2,1    ;output in ACC and lf2 
+@endif
+@endif
 
+@isGreaterThan nStages 2
+equ   lf3      	reg3 
 log    -1,threshold
 exp    1,0    ;provides t/X 
 wrax    tovrx,1    ;save t/X, we'll need it later...
 mulx    tovrx    ;(t/X)^2
 rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
-mulx    adcl    ;multiply by the input signal 
+mulx    lf2    ;multiply by the stage input signal 
+@endif
+
+@isEqualTo nStages 3
+sof 	-2,0 	;restore gain
+sof 	1.999,0 	;phase and gain restored
+wrax    lf3,0    ;output in lf3, clear ACC 
+@else
+@isEqualTo nStages 4
 rdax    lf3, filterFactor    ;restore gain and filter
-wrax    lf3,1    ;output in ACC and lf1 
+wrax    lf3,1    ;output in ACC and lf3 
+@endif
+@endif
 
+@isGreaterThan nStages 3
+equ   lf4 	reg4   
 log    -1,threshold
 exp    1,0    ;provides t/X 
 wrax    tovrx,1    ;save t/X, we'll need it later...
 mulx    tovrx    ;(t/X)^2
 rdax    tovrx,-2    ;inverts multiplicand, which will invert phase
-mulx    adcl    ;multiply by the input signal 
-rdax    lf4, filterFactor    ;restore gain and filter
-wrax    lf4,0    ;output in ACC and lf1 
+mulx    lf3    ;multiply by the stage input signal 
+sof 	-2,0 	;restore gain
+sof 	1.999,0 	;phase and gain restored
+wrax    lf4,0    ;output in lf4, clear ACC
+@endif
+
+@isEqualTo nStages 1
+@setOutputPin Audio_Output lf1
+@endif
+@isEqualTo nStages 2
+@setOutputPin Audio_Output lf2
+@endif
+@isEqualTo nStages 3
+@setOutputPin Audio_Output lf3
+@endif
+@isEqualTo nStages 4
 @setOutputPin Audio_Output lf4
+@endif
+ 
 
 @endif
 

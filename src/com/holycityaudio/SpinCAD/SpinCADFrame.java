@@ -24,7 +24,6 @@ import java.awt.BorderLayout;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 // import javax.sound.sampled.spi.AudioFileReader;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -37,10 +36,12 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
@@ -92,7 +93,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1045;
+	int buildNum = 1047;
 
 	// Swing things
 	private JPanel contentPane;
@@ -219,31 +220,46 @@ public class SpinCADFrame extends JFrame {
 
 		simX.sctb.setFloatable(false);
 		simX.sctb.setBorder(border);
-		simPanel.setLayout(new BoxLayout(simPanel, BoxLayout.Y_AXIS));
-		simPanel.add(simX.sctb);
+
+		// simPanel: sctb on top, JSplitPane with logger + scope below
+		simPanel.setLayout(new BorderLayout());
+		simPanel.add(simX.sctb, BorderLayout.NORTH);
+
+		// Right side: amplitude labels + scope panel + scope toolbar
+		JPanel scopeDisplay = new JPanel();
+		scopeDisplay.setLayout(new BoxLayout(scopeDisplay, BoxLayout.X_AXIS));
+
+		org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel ampLabels =
+				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel();
+		scopeDisplay.add(ampLabels);
+
+		JPanel scopeColumn = new JPanel();
+		scopeColumn.setLayout(new BoxLayout(scopeColumn, BoxLayout.Y_AXIS));
+		scopeColumn.add(simX.scopePanel);
+		simX.stb.setFloatable(false);
+		scopeColumn.add(simX.stb);
+		scopeDisplay.add(scopeColumn);
+
+		// JSplitPane: logger on left, scope on right — both visible together
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				simX.loggerPanel, scopeDisplay);
+		splitPane.setDividerLocation(300);
+		splitPane.setResizeWeight(0.4);
+		splitPane.setVisible(false);   // hidden until simulator runs with display enabled
+
+		simPanel.add(splitPane, BorderLayout.CENTER);
+		simX.displayColumn = splitPane;
 
 		topPanel.add(simPanel, BorderLayout.NORTH);
 
 		contentPane.add(topPanel, BorderLayout.NORTH);
-		// level monitor is not currently used
-		//		contentPane.add(simX.levelMonitor, BorderLayout.WEST);
-
-		simPanel.add(simX.loggerPanel);
-		simX.loggerPanel.setVisible(false);
-		// re-enabling scope for the time being
-		simPanel.add(simX.scopePanel);
-		simX.scopePanel.setVisible(false);
-
-		simPanel.add(simX.stb);
-		simX.stb.setFloatable(false);
-		simX.stb.setVisible(true);
 
 		// controlPanels.setFloatable(false);
 		contentPane.add(controlPanels, BorderLayout.EAST);
 		controlPanels.setLayout(new BoxLayout(controlPanels, BoxLayout.Y_AXIS));
 		
 		// initialize file paths in preferences
-		SpinCADFile fsp = new SpinCADFile();
+		SpinCADFile fsp = new SpinCADFile(SpinCADFrame.this);
 		fsp.init_prefs();
 			
 		// ; ==================== menu bar and items ==========
@@ -262,7 +278,7 @@ public class SpinCADFrame extends JFrame {
 
 				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(panel,
+					int dialogResult = JOptionPane.showConfirmDialog(SpinCADFrame.this,
 							"You have unsaved changes!  Continue?", "Warning!",
 							dialogButton);
 					if (dialogResult == JOptionPane.NO_OPTION) {
@@ -281,9 +297,9 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmOpenPatch = new JMenuItem("Open Patch");
 		mntmOpenPatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SpinCADFile f = new SpinCADFile();
+				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				if (eeprom.patch[bankIndex].getChanged() == true) {
-					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
+					int dialogResult = SpinCADDialogs.yesNoBox(SpinCADFrame.this, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == JOptionPane.NO_OPTION) {
 						// eeprom.patch[bankIndex].patchModel.newModel();
@@ -309,9 +325,9 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmOpenHex = new JMenuItem("Open Hex");
 		mntmOpenHex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SpinCADFile f = new SpinCADFile();
+				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				if (eeprom.patch[bankIndex].getChanged() == true) {
-					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
+					int dialogResult = SpinCADDialogs.yesNoBox(SpinCADFrame.this, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == JOptionPane.NO_OPTION) {
 						//						eeprom.patch[bankIndex].patchModel.newModel();
@@ -334,7 +350,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSavePatch = new JMenuItem("Save Patch");
 		mntmSavePatch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SpinCADFile f = new SpinCADFile();
+				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				if(eeprom.patch[bankIndex].patchFileName != "Untitled") {
 					f.fileSavePatch(eeprom.patch[bankIndex]);
 				} else {
@@ -350,7 +366,7 @@ public class SpinCADFrame extends JFrame {
 		mntmSavePatchAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.patch[bankIndex].cb.setVersion("Patch saved from SpinCAD Designer version " + buildNum);
-				SpinCADFile f = new SpinCADFile();
+				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				f.fileSavePatchAs(eeprom.patch[bankIndex]);
 				updateAll(false);
 			}
@@ -374,7 +390,7 @@ public class SpinCADFrame extends JFrame {
 		mntmSaveAsm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.patch[bankIndex].patchModel.sortAlignGen();
-				SpinCADFile f = new SpinCADFile();
+				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				f.fileSaveAsm(eeprom.patch[bankIndex]);
 			}
 		});
@@ -400,7 +416,7 @@ public class SpinCADFrame extends JFrame {
 
 				if (eeprom.patch[bankIndex].getChanged() == true) {
 					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog(panel,
+					int dialogResult = JOptionPane.showConfirmDialog(SpinCADFrame.this,
 							"You have unsaved changes!  Continue?", "Warning!",
 							dialogButton);
 					if (dialogResult == JOptionPane.NO_OPTION) {
@@ -420,9 +436,9 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmOpenBank = new JMenuItem("Open Bank");
 		mntmOpenBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SpinCADFile f= new SpinCADFile();
+				SpinCADFile f= new SpinCADFile(SpinCADFrame.this);
 				if (eeprom.patch[bankIndex].getChanged() == true) {
-					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!",
+					int dialogResult = SpinCADDialogs.yesNoBox(SpinCADFrame.this, "Warning!",
 							"You have unsaved changes!  Continue?");
 					if (dialogResult == JOptionPane.NO_OPTION) {
 						return;
@@ -442,10 +458,10 @@ public class SpinCADFrame extends JFrame {
 		mntmSaveBank.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(eeprom.bankFileName != "Untitled") {
-					SpinCADFile f = new SpinCADFile();
+					SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 					f.fileSaveBank(eeprom);
 				} else {
-					SpinCADFile f = new SpinCADFile();
+					SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 					f.fileSaveBankAs(eeprom);
 				}
 				updateAll(false);
@@ -459,7 +475,7 @@ public class SpinCADFrame extends JFrame {
 		mntmSaveBankAs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.cb.setVersion("Bank saved from SpinCAD Designer version " + buildNum);
-				SpinCADFile f = new SpinCADFile();
+				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				f.fileSaveBankAs(eeprom);
 				eeprom.changed = false;
 				updateAll();
@@ -483,7 +499,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveHex = new JMenuItem("Export Bank to Hex");
 		mntmSaveHex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SpinCADFile f = new SpinCADFile();
+				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				f.fileSaveHex(eeprom);
 			}
 		});
@@ -493,7 +509,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSavePrj = new JMenuItem("Export Bank to Spin Project");
 		mntmSavePrj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SpinCADFile f = new SpinCADFile();
+				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				f.fileSaveSpj(eeprom);
 			}
 		});
@@ -506,16 +522,16 @@ public class SpinCADFrame extends JFrame {
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (eeprom.patch[bankIndex].getChanged() == true) {
-					int dialogResult = SpinCADDialogs.yesNoBox(panel, "Warning!", 
+					int dialogResult = SpinCADDialogs.yesNoBox(SpinCADFrame.this, "Warning!", 
 							"You have unsaved changes!  Save first?");				
 					if (dialogResult == JOptionPane.YES_OPTION) {
 						File fileToBeSaved = new File(eeprom.patch[bankIndex].patchFileName);
 						if (fileToBeSaved.exists()) {
 							String filePath = fileToBeSaved.getPath();
-							SpinCADFile f = new SpinCADFile();
+							SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 							f.fileSavePatch(eeprom.patch[bankIndex]);
 						} else {
-							SpinCADFile f = new SpinCADFile();
+							SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 							f.fileSavePatchAs(eeprom.patch[bankIndex]);
 						}
 					}
@@ -590,31 +606,14 @@ public class SpinCADFrame extends JFrame {
 		final JMenu mnSimulator = new JMenu("Simulator");
 		menuBar.add(mnSimulator);
 
-		final JMenuItem mntmSimLogger = new JCheckBoxMenuItem("Enable Level Viewer");
-		mntmSimLogger.addActionListener(new ActionListener() {
+		final JCheckBoxMenuItem mntmEnableDisplay = new JCheckBoxMenuItem("Enable Display");
+		mntmEnableDisplay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(simX.loggerIsVisible == true) {
-					simX.loggerIsVisible = false;
-				}
-				else {
-					simX.loggerIsVisible = true;
-				}
+				simX.displayIsVisible = mntmEnableDisplay.isSelected();
+				if(simX.isSimRunning()) simX.switchDisplay();
 			}
 		});
-		mnSimulator.add(mntmSimLogger);
-
-		final JMenuItem mntmSimScope = new JCheckBoxMenuItem("Enable Scope");
-		mntmSimScope.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if(simX.scopeIsVisible == true) {
-					simX.scopeIsVisible = false;
-				}
-				else {
-					simX.scopeIsVisible = true;
-				}
-			}
-		});
-		mnSimulator.add(mntmSimScope);
+		mnSimulator.add(mntmEnableDisplay);
 
 		mnSimulator.addSeparator();
 		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");
@@ -684,7 +683,7 @@ public class SpinCADFrame extends JFrame {
 					try {
 						simX.setSimulatorDebugFile();
 					} catch (IOException e) {
-						SpinCADDialogs.MessageBox("Simulator Debug File Error", "Uhmmmm....");
+						SpinCADDialogs.MessageBox(SpinCADFrame.this, "Simulator Debug File Error", "Uhmmmm....");
 					}
 				}
 			});
@@ -738,7 +737,7 @@ public class SpinCADFrame extends JFrame {
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				int confirm = JOptionPane.showOptionDialog(null,
+				int confirm = JOptionPane.showOptionDialog(SpinCADFrame.this,
 						"Do you wish to exit SpinCAD?", "Exit Confirmation",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, null, null);

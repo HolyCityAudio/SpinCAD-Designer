@@ -52,8 +52,8 @@ public class ToverXControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private ToverXCADBlock gCB;
 	// declare the controls
-	JSlider filterFactorSlider;
-	JLabel  filterFactorLabel;	
+	JSlider nStagesSlider;
+	JLabel  nStagesLabel;	
 
 public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		
@@ -69,30 +69,24 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					//---------------------------------------------
-					// LOGFREQ is used for single pole filters
-					// multiplier is points per decade here
-						filterFactorSlider = SpinCADBlock.LogSlider(350,5000,gCB.getfilterFactor(), "LOGFREQ", 100.0);
-					//---------------------------------------------
-					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
-						filterFactorSlider.addChangeListener(new ToverXListener());
-						filterFactorLabel = new JLabel();
-						Border filterFactorBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						filterFactorLabel.setBorder(filterFactorBorder1);
-						updatefilterFactorLabel();
+					nStagesSlider = new JSlider(JSlider.HORIZONTAL, (int)(1 * 1.0),(int) (4 * 1.0), (int) (gCB.getnStages() * 1.0));
+						nStagesSlider.addChangeListener(new ToverXListener());
+						nStagesLabel = new JLabel();
+						Border nStagesBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						nStagesLabel.setBorder(nStagesBorder1);
+						updatenStagesLabel();
 						
-						Border filterFactorborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel filterFactorinnerPanel = new JPanel();
+						Border nStagesborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel nStagesinnerPanel = new JPanel();
 							
-						filterFactorinnerPanel.setLayout(new BoxLayout(filterFactorinnerPanel, BoxLayout.Y_AXIS));
-						filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						filterFactorinnerPanel.add(filterFactorLabel);
-						filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						filterFactorinnerPanel.add(filterFactorSlider);		
-						filterFactorinnerPanel.setBorder(filterFactorborder2);
+						nStagesinnerPanel.setLayout(new BoxLayout(nStagesinnerPanel, BoxLayout.Y_AXIS));
+						nStagesinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						nStagesinnerPanel.add(nStagesLabel);
+						nStagesinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						nStagesinnerPanel.add(nStagesSlider);		
+						nStagesinnerPanel.setBorder(nStagesborder2);
 			
-						frame.add(filterFactorinnerPanel);
+						frame.add(nStagesinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -106,9 +100,9 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class ToverXListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
-			if(ce.getSource() == filterFactorSlider) {
-			gCB.setfilterFactor((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(filterFactorSlider.getValue()), 100.0)));
-				updatefilterFactorLabel();
+			if(ce.getSource() == nStagesSlider) {
+			gCB.setnStages((double) (nStagesSlider.getValue()/1.0));
+				updatenStagesLabel();
 			}
 			}
 		}
@@ -127,8 +121,8 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
-		private void updatefilterFactorLabel() {
-		filterFactorLabel.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfilterFactor())) + " Hz");		
+		private void updatenStagesLabel() {
+		nStagesLabel.setText("Stages " + String.format("%4.1f", gCB.getnStages()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

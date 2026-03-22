@@ -1,0 +1,26 @@
+@name 'Noise Gate'
+@color "0x009595"
+@audioInput input 'Audio In'
+@audioOutput output 'Audio Out'
+// @controlInput threshReg 'Threshold'   
+// @controlOutput gate 'Control Output'
+
+equ output reg1
+equ gate reg2 
+
+equ thresh 0.02 
+//              variable - Name -     low - high - init - multiplier - precision - (option) 
+@sliderLabel    thresh    'Threshold' 0.001 0.1    0.1   1000.0          3            
+
+@isPinConnected 'Audio In'
+rdax input, thresh
+absa
+rdax gate, 0.9998
+wrax gate, 1.999
+mulx input
+wrax output, 0
+@setOutputPin 'Audio Out' output
+// @setOutputPin 'Control Output' gate
+@endif
+
+

@@ -6,8 +6,8 @@
 @controlOutput output Output
 
 equ gain1 1.0 
-// variable - Name - low - high - multiplier - precision - option 
-@sliderLabel gain1 'Gain 1' 0.001 1.0 1.0 1000.0 3  
+//           variable - Name -     low - high - init - multiplier - precision - option 
+@sliderLabel gain1     'Gain 1'    0.001 1.0    1.0    1000.0       3  
 
 equ gain2 1.0 
 @sliderLabel gain2 'Gain 2' 0.001 1.0 1.0 1000.0 3 

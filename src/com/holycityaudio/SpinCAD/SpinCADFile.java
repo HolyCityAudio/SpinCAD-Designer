@@ -20,6 +20,7 @@
 
 package com.holycityaudio.SpinCAD;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +37,6 @@ import java.nio.file.Paths;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -52,9 +52,17 @@ public class SpinCADFile {
 	// this next one is specific to file open, needs to be here for MRU file list operations
 	private JFileChooser fc;
 
+	/** Parent component for dialogs — ensures they appear on the correct monitor. */
+	private Component dialogParent = null;
+
 	public SpinCADFile() {
-		// create a Preferences instance (somewhere later in the code)
 		prefs = Preferences.userNodeForPackage(this.getClass());
+	}
+
+	/** Preferred constructor — pass the main application window as parent. */
+	public SpinCADFile(Component parent) {
+		prefs = Preferences.userNodeForPackage(this.getClass());
+		this.dialogParent = parent;
 	}
 
 	// FIX #10: use isEmpty() instead of == "" for string comparison
@@ -98,11 +106,11 @@ public class SpinCADFile {
 			saveRecentPatchFileList();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			SpinCADDialogs.MessageBox("File save failed!", "Could not find or create the file.");
+			SpinCADDialogs.MessageBox(dialogParent, "File save failed!", "Could not find or create the file.");
 		} catch (IOException e) {
 			// XXX debug this is currently triggered when a block control panel is open and you save the patch
 			e.printStackTrace();
-			SpinCADDialogs.MessageBox("File save failed!", "An I/O error occurred while saving.");
+			SpinCADDialogs.MessageBox(dialogParent, "File save failed!", "An I/O error occurred while saving.");
 		}
 	}
 
@@ -238,7 +246,7 @@ public class SpinCADFile {
 		fc.setAccessory(recentHexFileList);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-		int returnVal = fc.showOpenDialog(new JFrame());
+		int returnVal = fc.showOpenDialog(dialogParent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
 			System.out.println("Opening: " + file.getName() + "." + newline);
@@ -259,7 +267,7 @@ public class SpinCADFile {
 				return p;
 			} catch (Exception e) {	
 				e.printStackTrace();
-				SpinCADDialogs.MessageBox("Hex File open failed!", "That's not supposed to happen!");
+				SpinCADDialogs.MessageBox(dialogParent, "Hex File open failed!", "That's not supposed to happen!");
 				return null;
 			}
 		} else {
@@ -280,7 +288,7 @@ public class SpinCADFile {
 		fc.setAccessory(recentPatchFileList);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-		int returnVal = fc.showOpenDialog(new JFrame());
+		int returnVal = fc.showOpenDialog(dialogParent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
 			System.out.println("Opening: " + file.getName() + "." + newline);
@@ -296,10 +304,10 @@ public class SpinCADFile {
 					p = fileReadPatch952(filePath);
 				} catch (Exception exc) {	
 					exc.printStackTrace();
-					SpinCADDialogs.MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+					SpinCADDialogs.MessageBox(dialogParent, "File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
 					return null;  // FIX #8: don't update MRU or return corrupt data on failure
 				}
-				SpinCADDialogs.MessageBox("File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+				SpinCADDialogs.MessageBox(dialogParent, "File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
 			}
 			// FIX #8: only update MRU and metadata on success, not in finally
 			saveMRUPatchFolder(filePath);
@@ -338,7 +346,7 @@ public class SpinCADFile {
 		fc.setAccessory(recentBankFileList);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-		int returnVal = fc.showOpenDialog(new JFrame());
+		int returnVal = fc.showOpenDialog(dialogParent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			file = fc.getSelectedFile();
 			// This is where a real application would open the file.
@@ -376,7 +384,7 @@ public class SpinCADFile {
 				"SpinCAD Files", "spcd");
 		fc.setFileFilter(filter);
 		fc.setSelectedFile(new File(p.patchFileName));
-		int returnVal = fc.showSaveDialog(new JFrame());
+		int returnVal = fc.showSaveDialog(dialogParent);
 		// need to process user canceling box right here
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 
@@ -388,8 +396,7 @@ public class SpinCADFile {
 			}
 			int n = JOptionPane.YES_OPTION;
 			if (fileToBeSaved.exists()) {
-				JFrame frame = new JFrame();
-				n = JOptionPane.showConfirmDialog(frame,
+				n = JOptionPane.showConfirmDialog(dialogParent,
 						"Would you like to overwrite it?", "File already exists!",
 						JOptionPane.YES_NO_OPTION);
 			}
@@ -406,7 +413,7 @@ public class SpinCADFile {
 					p.setChanged(false);  // only mark clean on success
 				} catch (Exception e) {	// thrown over in SpinCADFile.java
 					e.printStackTrace();
-					SpinCADDialogs.MessageBox("File save failed!", "look at stack trace for info");
+					SpinCADDialogs.MessageBox(dialogParent, "File save failed!", "look at stack trace for info");
 				}
 			}
 		}
@@ -420,7 +427,7 @@ public class SpinCADFile {
 				"SpinCAD Bank Files", "spbk");
 		fc.setFileFilter(filter);
 		fc.setSelectedFile(new File(b.bankFileName));
-		int returnVal = fc.showSaveDialog(new JFrame());
+		int returnVal = fc.showSaveDialog(dialogParent);
 		// need to process user canceling box right here
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 
@@ -434,8 +441,7 @@ public class SpinCADFile {
 
 			int n = JOptionPane.YES_OPTION;
 			if (fileToBeSaved.exists()) {
-				JFrame frame = new JFrame();
-				n = JOptionPane.showConfirmDialog(frame,
+				n = JOptionPane.showConfirmDialog(dialogParent,
 						"Would you like to overwrite it?", "File already exists!",
 						JOptionPane.YES_NO_OPTION);
 			}
@@ -449,7 +455,7 @@ public class SpinCADFile {
 					b.changed = false;  // only mark clean on successful save
 				} catch (Exception e) {
 					e.printStackTrace();
-					SpinCADDialogs.MessageBox("File save failed!", "look at stack trace for info");
+					SpinCADDialogs.MessageBox(dialogParent, "File save failed!", "look at stack trace for info");
 				}
 				if(recentBankFileList != null){
 					recentBankFileList.add(fileToBeSaved);
@@ -474,7 +480,7 @@ public class SpinCADFile {
 
 		// FIX #1: check return value - original code ignored cancel and crashed
 		// with NullPointerException on fc.getSelectedFile()
-		int returnVal = fc.showSaveDialog(new JFrame());
+		int returnVal = fc.showSaveDialog(dialogParent);
 		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;  // user cancelled
 		}
@@ -486,8 +492,7 @@ public class SpinCADFile {
 		}
 		int n = JOptionPane.YES_OPTION;
 		if (fileToBeSaved.exists()) {
-			JFrame frame1 = new JFrame();
-			n = JOptionPane.showConfirmDialog(frame1,
+			n = JOptionPane.showConfirmDialog(dialogParent,
 					"Would you like to overwrite it?", "File already exists!",
 					JOptionPane.YES_NO_OPTION);
 		}
@@ -498,7 +503,7 @@ public class SpinCADFile {
 			try {
 				fileSaveAsm(patch, filePath);
 			} catch (IOException e) {
-				JOptionPane.showOptionDialog(null,
+				JOptionPane.showOptionDialog(dialogParent,
 						"File save error!", "Error",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, null, null);
@@ -556,7 +561,7 @@ public class SpinCADFile {
 
 		// FIX #2: check return value - original code ignored cancel and crashed
 		// with NullPointerException on fc.getSelectedFile()
-		int returnVal = fc.showSaveDialog(new JFrame());
+		int returnVal = fc.showSaveDialog(dialogParent);
 		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;  // user cancelled
 		}
@@ -568,8 +573,7 @@ public class SpinCADFile {
 		}
 		int n = JOptionPane.YES_OPTION;
 		if (fileToBeSaved.exists()) {
-			JFrame frame1 = new JFrame();
-			n = JOptionPane.showConfirmDialog(frame1,
+			n = JOptionPane.showConfirmDialog(dialogParent,
 					"Would you like to overwrite it?", "File already exists!",
 					JOptionPane.YES_NO_OPTION);
 		}
@@ -590,7 +594,7 @@ public class SpinCADFile {
 						fileSaveHex(i, bank.patch[i].patchModel.getRenderBlock().generateHex(), filePath);										
 					}
 				} catch (IOException e) {
-					JOptionPane.showOptionDialog(null,
+					JOptionPane.showOptionDialog(dialogParent,
 							"File save error!", "Error",
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE, null, null, null);
@@ -615,7 +619,7 @@ public class SpinCADFile {
 
 		// FIX #3: check return value - original code ignored cancel and crashed
 		// with NullPointerException on fc.getSelectedFile()
-		int returnVal = fc.showSaveDialog(new JFrame());
+		int returnVal = fc.showSaveDialog(dialogParent);
 		if (returnVal != JFileChooser.APPROVE_OPTION) {
 			return;  // user cancelled
 		}
@@ -627,8 +631,7 @@ public class SpinCADFile {
 		}
 		int n = JOptionPane.YES_OPTION;
 		if (fileToBeSaved.exists()) {
-			JFrame frame1 = new JFrame();
-			n = JOptionPane.showConfirmDialog(frame1,
+			n = JOptionPane.showConfirmDialog(dialogParent,
 					"Would you like to overwrite it?", "File already exists!",
 					JOptionPane.YES_NO_OPTION);
 		}
@@ -648,7 +651,7 @@ public class SpinCADFile {
 						spnFileNames[i] = asmFileName;				
 					}
 				} catch (IOException e) {
-					JOptionPane.showOptionDialog(null,
+					JOptionPane.showOptionDialog(dialogParent,
 							"File save error!", "Error",
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE, null, null, null);
@@ -684,7 +687,7 @@ public class SpinCADFile {
 					}
 					writer.newLine();				
 				} catch (IOException e) {
-					JOptionPane.showOptionDialog(null,
+					JOptionPane.showOptionDialog(dialogParent,
 							"File save error!\n" + filePath, "Error",
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE, null, null, null);
