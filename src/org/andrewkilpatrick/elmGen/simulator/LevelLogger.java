@@ -174,6 +174,51 @@ public class LevelLogger implements AudioSink {
 		}
 	}
 
+	// -------------------------------------------------------------------------
+	// LoggerLabelPanel: dB scale labels for the level logger, placed beside
+	// the logger waveform so labels are never overwritten by the sweep.
+	// -------------------------------------------------------------------------
+	public static class LoggerLabelPanel extends JPanel {
+		private static final long serialVersionUID = 3L;
+		private static final Color BG    = new Color(20, 20, 20);
+		private static final Color LINE  = new Color(70, 100, 70);
+		private static final Color LABEL = new Color(100, 160, 100);
+
+		public LoggerLabelPanel() {
+			setPreferredSize(new Dimension(42, 200));
+			setMinimumSize(new Dimension(42, 50));
+			setMaximumSize(new Dimension(42, Integer.MAX_VALUE));
+			setBackground(BG);
+		}
+
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			int w = getWidth();
+			int h = getHeight();
+			g2.setFont(new Font("Monospaced", Font.PLAIN, 9));
+
+			// vertical separator on right edge
+			g2.setColor(LINE);
+			g2.drawLine(w - 1, 0, w - 1, h);
+
+			// 2 pixels per dB, grid every 12 dB from 0 to -96
+			for(int db = 0; db <= 96; db += 12) {
+				int y = db * 2;
+				if(y >= h) break;
+				// tick mark
+				g2.setColor(LINE);
+				g2.drawLine(w - 5, y, w - 1, y);
+				// label
+				g2.setColor(LABEL);
+				String label = (db == 0) ? "0dBFS" : ("-" + db + "dB");
+				g2.drawString(label, 2, y < 12 ? y + 10 : y - 2);
+			}
+		}
+	}
+
 	// =========================================================================
 	public LevelLogger() {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -480,12 +525,10 @@ public class LevelLogger implements AudioSink {
 
 		private void drawLoggerGrid(Graphics2D g2, int w, int h) {
 			Color gridColor  = new Color(70, 100, 70);
-			Color labelColor = new Color(100, 160, 100);
 			float[] dash = { 4f, 4f };
 			BasicStroke dashed = new BasicStroke(1f, BasicStroke.CAP_BUTT,
 								 BasicStroke.JOIN_MITER, 1f, dash, 0f);
 			BasicStroke solid  = new BasicStroke(1f);
-			g2.setFont(new Font("Monospaced", Font.PLAIN, 9));
 			// 2 pixels per dB; grid line every 12 dB from 0 to -96
 			for(int db = 0; db <= 96; db += 12) {
 				int y = db * 2;
@@ -493,9 +536,6 @@ public class LevelLogger implements AudioSink {
 				g2.setStroke(db == 0 ? solid : dashed);
 				g2.setColor(gridColor);
 				g2.drawLine(0, y, w, y);
-				g2.setColor(labelColor);
-				String label = (db == 0) ? "0dBFS" : ("-" + db + "dB");
-				g2.drawString(label, 2, y < 12 ? y + 10 : y - 2);
 			}
 			g2.setStroke(solid);
 		}

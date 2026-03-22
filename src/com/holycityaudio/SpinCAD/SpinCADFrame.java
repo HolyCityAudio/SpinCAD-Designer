@@ -240,9 +240,18 @@ public class SpinCADFrame extends JFrame {
 		scopeColumn.add(simX.stb);
 		scopeDisplay.add(scopeColumn);
 
+		// Left side: dB labels + logger panel
+		JPanel loggerDisplay = new JPanel();
+		loggerDisplay.setLayout(new BoxLayout(loggerDisplay, BoxLayout.X_AXIS));
+
+		org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel dbLabels =
+				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel();
+		loggerDisplay.add(dbLabels);
+		loggerDisplay.add(simX.loggerPanel);
+
 		// JSplitPane: logger on left, scope on right — both visible together
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				simX.loggerPanel, scopeDisplay);
+				loggerDisplay, scopeDisplay);
 		splitPane.setDividerLocation(300);
 		splitPane.setResizeWeight(0.4);
 		splitPane.setVisible(false);   // hidden until simulator runs with display enabled
