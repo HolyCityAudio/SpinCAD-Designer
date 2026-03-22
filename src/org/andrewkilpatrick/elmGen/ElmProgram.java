@@ -20,7 +20,9 @@ package org.andrewkilpatrick.elmGen;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JFrame;
 
 import org.andrewkilpatrick.elmGen.instructions.Absa;
@@ -53,6 +55,7 @@ import org.andrewkilpatrick.elmGen.instructions.WriteRegister;
 import org.andrewkilpatrick.elmGen.instructions.WriteRegisterHighshelf;
 import org.andrewkilpatrick.elmGen.instructions.WriteRegisterLowshelf;
 import org.andrewkilpatrick.elmGen.instructions.Xor;
+
 
 /**
  * This class represents a program on the DSP. Effect programs should subclass
@@ -404,79 +407,459 @@ public class ElmProgram implements Serializable {
 		else
 			return "Error! Invalid mode.";
 	}
+	
+// ============================================================
+//  Drop-in replacement for optimizeProgram() in ElmProgram.java
+//
+//  Also requires one private helper method: countRegisterReads()
+//
+//  Assumptions (consistent with the existing codebase):
+//    - WriteRegister has: getAddr() -> int,  getScale() -> double
+//    - ReadRegister  has: getAddr() -> int,  getScale() -> double
+//    - ScaleOffset   has: getScale() -> double, getOffset() -> double
+//      (used to emit SOF for Case 3)
+//    - Comment is the only non-executable instruction type (already
+//      handled by the existing code)
+//
+//  If your instruction classes use different getter names, adjust
+//  the four calls marked "*** ADJUST IF NEEDED ***" below.
+// ============================================================
 
-	public String optimizeProgram(int mode) {
-		int i;
-		List<Instruction> optList = new LinkedList<Instruction>();
+/**
+ * Optimizes the instruction list by collapsing redundant
+ * WriteRegister / ReadRegister pairs produced by the block
+ * connection architecture.
+ *
+ * Three cases are handled:
+ *
+ *   Case 1  –  wrax reg, 0.0  /  rdax reg, 1.0
+ *              AND reg not referenced anywhere else
+ *              → both instructions deleted, register freed
+ *              Saves: 2 instructions, 1 register
+ *
+ *   Case 2  –  wrax reg, 0.0  /  rdax reg, 1.0
+ *              AND reg IS referenced elsewhere
+ *              → collapsed to: wrax reg, 1.0
+ *              Saves: 1 instruction
+ *
+ *   Case 3  –  wrax reg, 0.0  /  rdax reg, <gain>  (gain ≠ 1.0)
+ *              AND reg not referenced anywhere else
+ *              → replaced by: sof <gain>, 0.0
+ *              Saves: 1 instruction, 1 register
+ *
+ * Comments interspersed between the two instructions are
+ * preserved and re-inserted after the replacement instruction.
+ *
+ * @return the program name (matches original contract)
+ */
+public String optimizeProgram() {
 
-		if (mode == 1) {
-			for (i = 0; i < instList.size() - 1; i++) {
-				Instruction inst = instList.get(i);
-				Instruction nextInst = instList.get(i + 1);
-				String stateMent1 = inst.getInstructionString();
-				String stateMent2;
-				// mode 1 replaces the following combination
-				// WRAX REGX, 0.0
-				// RDAX REGX, a
-				// with
-				// WRAX REGX, a
-				// so first we look for WRAX
-				if(stateMent1.startsWith("WriteRegister")) {
-					List<Instruction> commentList = new LinkedList<Instruction>();
-					int ii = i + 1;
-					stateMent2 = nextInst.getInstructionString();
-					// have to skip over (and save) any comments in the way
-					while (stateMent2.startsWith(";")) {
-						commentList.add(new Comment(stateMent2));
-						ii++;
-						stateMent2 = instList.get(ii).getInstructionString();
-					}
-					// look for the next instruction being RDAX
-					if(stateMent2.startsWith("ReadRegister")) {
-						// pull apart the instruction string to get the register and multiplier values
-						String[] reg1 = stateMent1.split("[(,)]"); 
-						String[] reg2 = stateMent2.split("[(,)]");
-						if(reg1[1].equals(reg2[1]) && reg1[2].equals("0.0")) {
-							// match found
-							System.out.println("Optimizing " + inst.getInstructionString() + " " + stateMent2);
-							// make a new instruction with parts from the other 2
-							WriteRegister wrax = new WriteRegister(Integer.parseInt(reg1[1]), Double.parseDouble(reg2[2]));
-							// add it to the optimized instruction list
-							optList.add(wrax);		
-							// add comments back in
-							for (int j = 0; j < commentList.size(); j++) {
-								optList.add(commentList.get(j));
-							}
-							i = ii;
-						}
-						// no match, just continue
-						else {
-							optList.add(inst);							
-						}
-					}
-					// no match, just continue
-					else {
-						optList.add(inst);							
-					}			
-				}
-				// no match, just continue
-				else {
-					optList.add(inst);		
-				}
-			}
-			// add the last instruction
-			optList.add(instList.get(i));
-		} else
-			return "Error! Invalid mode.";
-		System.out.println("Optimization saved " + (instList.size() - optList.size()) + " instructions.");
-		// now copy the optimized list back to the main list
-		instList.clear();
-		for(i = 0; i < optList.size(); i++) {
-			instList.add(optList.get(i));
-		}
-		return name;
-	}
+    // ----------------------------------------------------------
+    // Phase 1: count how many times each register address is
+    // *read* (i.e. used as a source) across the whole program.
+    // WriteRegister is a write, so it does not count here.
+    // ----------------------------------------------------------
+    Map<Integer, Integer> readCount = countRegisterReads();
 
+    // ----------------------------------------------------------
+    // Phase 2: single forward pass – find adjacent wrax/rdax
+    // pairs (with optional comments in between) and apply the
+    // appropriate case.
+    // ----------------------------------------------------------
+    List<Instruction> optList = new LinkedList<>();
+    int savedInstructions = 0;
+    int savedRegisters    = 0;
+
+    int i = 0;
+    while (i < instList.size()) {
+        Instruction inst = instList.get(i);
+
+        // Only interested in WriteRegister as the first instruction
+        if (!(inst instanceof WriteRegister)) {
+            optList.add(inst);
+            i++;
+            continue;
+        }
+
+        WriteRegister wrax = (WriteRegister) inst;
+
+        // *** ADJUST IF NEEDED *** – getter names for WriteRegister
+        int    wraxAddr  = wrax.getAddr();
+        double wraxScale = wrax.getScale();
+
+        // We only optimise the pattern where wrax zeroes the ACC
+        if (wraxScale != 0.0) {
+            optList.add(inst);
+            i++;
+            continue;
+        }
+
+        // Scan forward past any Comment instructions, collecting them
+        List<Instruction> interveningComments = new LinkedList<>();
+        int j = i + 1;
+        while (j < instList.size() && instList.get(j) instanceof Comment) {
+            interveningComments.add(instList.get(j));
+            j++;
+        }
+
+        // Check whether the next non-comment instruction is ReadRegister
+        if (j >= instList.size() || !(instList.get(j) instanceof ReadRegister)) {
+            optList.add(inst);
+            i++;
+            continue;
+        }
+
+        ReadRegister rdax = (ReadRegister) instList.get(j);
+
+        // *** ADJUST IF NEEDED *** – getter names for ReadRegister
+        int    rdaxAddr  = rdax.getAddr();
+        double rdaxScale = rdax.getScale();
+
+        // Registers must match
+        if (rdaxAddr != wraxAddr) {
+            optList.add(inst);
+            i++;
+            continue;
+        }
+
+        // How many times is this register read across the whole program?
+        // The rdax we are about to remove counts as one read, so if
+        // readCount == 1 the register is not needed anywhere else.
+        int reads = readCount.getOrDefault(wraxAddr, 0);
+        boolean usedElsewhere = (reads > 1);
+
+        // -------------------------------------------------------
+        // Apply the matching case
+        // -------------------------------------------------------
+        if (rdaxScale == 1.0 && !usedElsewhere) {
+            // Case 1: both instructions gone, register freed
+            // Comments between the pair are preserved as block separators
+            System.out.println("Optimizer Case 1: removed wrax/rdax pair for reg "
+                    + wraxAddr + " (saved 2 instructions, 1 register)");
+            savedInstructions += 2;
+            savedRegisters    += 1;
+            optList.addAll(interveningComments);
+
+        } else if (rdaxScale == 1.0) {
+            // Case 2: collapse to wrax reg, 1.0
+            System.out.println("Optimizer Case 2: collapsed wrax/rdax to wrax "
+                    + wraxAddr + ", 1.0 (saved 1 instruction)");
+            WriteRegister merged = new WriteRegister(wraxAddr, 1.0); // *** ADJUST IF NEEDED ***
+            optList.add(merged);
+            optList.addAll(interveningComments);
+            savedInstructions += 1;
+
+        } else if (!usedElsewhere) {
+            // Case 3: replace pair with sof <gain>, 0.0
+            System.out.println("Optimizer Case 3: replaced wrax/rdax with sof "
+                    + rdaxScale + ", 0.0 for reg " + wraxAddr
+                    + " (saved 1 instruction, 1 register)");
+            ScaleOffset sof = new ScaleOffset(rdaxScale, 0.0); // *** ADJUST IF NEEDED ***
+            optList.add(sof);
+            optList.addAll(interveningComments);
+            savedInstructions += 1;
+            savedRegisters    += 1;
+
+        } else {
+            // No optimisation applies – keep both instructions as-is
+            optList.add(inst);
+            optList.addAll(interveningComments);
+            optList.add(rdax);
+        }
+
+        // Advance past both matched instructions (and the comments)
+        i = j + 1;
+    }
+
+    System.out.println("Optimization complete: saved " + savedInstructions
+            + " instruction(s) and " + savedRegisters + " register(s).");
+
+    // Replace the instruction list in-place
+    instList.clear();
+    instList.addAll(optList);
+ // Recount comments since instList was rebuilt
+    nComments = 0;
+    for (Instruction inst : instList) {
+        if (inst instanceof Comment) {
+            nComments++;
+        }
+    }
+    return name;
+}
+
+// ============================================================
+//  Helper: count how many instructions READ each register
+//  address.  Only instructions that use a register as a
+//  *source* are counted (ReadRegister, ReadRegisterFilter,
+//  Maxx, Mulx).  WriteRegister is a write, not a read.
+// ============================================================
+private Map<Integer, Integer> countRegisterReads() {
+    Map<Integer, Integer> counts = new HashMap<>();
+
+    for (Instruction inst : instList) {
+
+        if (inst instanceof ReadRegister) {
+            // *** ADJUST IF NEEDED ***
+            int addr = ((ReadRegister) inst).getAddr();
+            counts.merge(addr, 1, Integer::sum);
+
+        } else if (inst instanceof ReadRegisterFilter) {
+            // rdfx also reads the register
+            // *** ADJUST IF NEEDED ***
+            int addr = ((ReadRegisterFilter) inst).getAddr();
+            counts.merge(addr, 1, Integer::sum);
+
+        } else if (inst instanceof Maxx) {
+            // maxx reads the register for comparison
+            // *** ADJUST IF NEEDED ***
+            int addr = ((Maxx) inst).getAddr();
+            counts.merge(addr, 1, Integer::sum);
+
+        } else if (inst instanceof Mulx) {
+            // mulx reads the register
+            // *** ADJUST IF NEEDED ***
+            int addr = ((Mulx) inst).getAddr();
+            counts.merge(addr, 1, Integer::sum);
+        }
+        // WriteRegister, WriteRegisterLowshelf, WriteRegisterHighshelf
+        // are writes only – do not count them here.
+        // All other instructions (delays, LFOs, SOF, etc.) don't
+        // reference the general-purpose register file.
+    }
+    return counts;
+}
+
+//============================================================
+//Add compactRegisters() and its helper collectRegisterAddresses()
+//to ElmProgram.java, after the optimizeProgram() method.
+//
+//Call it immediately after optimizeProgram() in your pipeline:
+//
+//  program.optimizeProgram();
+//  program.compactRegisters();
+//
+//Required imports (add to ElmProgram.java if not present):
+//  import java.util.HashMap;
+//  import java.util.Map;
+//  import java.util.TreeSet;
+//============================================================
+
+/**
+* Compacts the user-register address space after optimization.
+*
+* The FV-1 supports REG0 (0x20) through REG31 (0x3F) as
+* general-purpose registers.  After the instruction optimizer
+* removes redundant wrax/rdax pairs, gaps appear in the
+* allocated register sequence (e.g. 0x20, 0x22, 0x25 with
+* 0x21, 0x23, 0x24 now unused).
+*
+* This method:
+*   1. Scans every instruction that references a user register
+*      and collects the set of addresses actually still in use.
+*   2. Builds a remapping table: lowest used address → REG0,
+*      next → REG1, etc., preserving relative order.
+*   3. Rewrites every register-referencing instruction in place
+*      using the new addresses.
+*   4. Prints a summary to System.err reporting:
+*        - how many registers were compacted away
+*        - the new highest register number
+*        - an ERROR if the new highest register still exceeds REG31
+*
+* Hardware-mapped addresses (LFO regs 0x00–0x07, POT/ADC/DAC
+* 0x10–0x18) are never remapped.
+*/
+public void compactRegisters() {
+
+// ----------------------------------------------------------
+// Constants (already defined in ElmProgram, repeated here
+// for clarity – the method can reference the class fields
+// directly, these comments are just documentation).
+//   REG0  = 0x20  (first user register)
+//   REG31 = 0x3F  (last legal user register on FV-1)
+// ----------------------------------------------------------
+final int USER_REG_MIN = REG0;   // 0x20 = 32
+final int USER_REG_MAX = 0x3F;   // 63  (REG31, the legal ceiling)
+
+// ----------------------------------------------------------
+// Phase 1: Collect every user-register address still
+// referenced anywhere in the instruction list.
+// Uses a TreeSet so we get them in ascending order.
+// ----------------------------------------------------------
+TreeSet<Integer> usedAddresses = collectRegisterAddresses(USER_REG_MIN, USER_REG_MAX);
+
+if (usedAddresses.isEmpty()) {
+    System.err.println("compactRegisters: no user registers found, nothing to compact.");
+    return;
+}
+
+// ----------------------------------------------------------
+// Phase 2: Build old-address → new-address remapping table.
+// Assign contiguous addresses starting at REG0.
+// ----------------------------------------------------------
+Map<Integer, Integer> remap = new HashMap<>();
+int next = USER_REG_MIN;
+for (int oldAddr : usedAddresses) {
+    remap.put(oldAddr, next);
+    next++;
+}
+
+int originalHighest = usedAddresses.last();
+int compactedHighest = next - 1;   // highest address after remapping
+int holesRemoved = usedAddresses.size() == (originalHighest - USER_REG_MIN + 1)
+        ? 0
+        : (originalHighest - USER_REG_MIN + 1) - usedAddresses.size();
+
+// ----------------------------------------------------------
+// Phase 3: Rewrite every instruction that holds a user-
+// register address, replacing old address with new address.
+//
+// Each instruction type that references a register must be
+// handled.  We replace the whole instruction object because
+// the instruction classes are (presumably) immutable value
+// types with no setAddr() mutator.  If your classes DO have
+// a setAddr() mutator, you can simplify each branch to just
+// call inst.setAddr(newAddr) instead of creating a new object.
+//
+// *** ADJUST IF NEEDED *** if your constructor signatures differ.
+// ----------------------------------------------------------
+for (int i = 0; i < instList.size(); i++) {
+    Instruction inst = instList.get(i);
+
+    if (inst instanceof WriteRegister) {
+        WriteRegister w = (WriteRegister) inst;
+        int newAddr = remap.getOrDefault(w.getAddr(), w.getAddr());
+        if (newAddr != w.getAddr()) {
+            instList.set(i, new WriteRegister(newAddr, w.getScale()));
+        }
+
+    } else if (inst instanceof WriteRegisterLowshelf) {
+        WriteRegisterLowshelf w = (WriteRegisterLowshelf) inst;
+        int newAddr = remap.getOrDefault(w.getAddr(), w.getAddr());
+        if (newAddr != w.getAddr()) {
+            instList.set(i, new WriteRegisterLowshelf(newAddr, w.getScale()));
+        }
+
+    } else if (inst instanceof WriteRegisterHighshelf) {
+        WriteRegisterHighshelf w = (WriteRegisterHighshelf) inst;
+        int newAddr = remap.getOrDefault(w.getAddr(), w.getAddr());
+        if (newAddr != w.getAddr()) {
+            instList.set(i, new WriteRegisterHighshelf(newAddr, w.getScale()));
+        }
+
+    } else if (inst instanceof ReadRegister) {
+        ReadRegister r = (ReadRegister) inst;
+        int newAddr = remap.getOrDefault(r.getAddr(), r.getAddr());
+        if (newAddr != r.getAddr()) {
+            instList.set(i, new ReadRegister(newAddr, r.getScale()));
+        }
+
+    } else if (inst instanceof ReadRegisterFilter) {
+        ReadRegisterFilter r = (ReadRegisterFilter) inst;
+        int newAddr = remap.getOrDefault(r.getAddr(), r.getAddr());
+        if (newAddr != r.getAddr()) {
+            instList.set(i, new ReadRegisterFilter(newAddr, r.getScale()));
+        }
+
+    } else if (inst instanceof Maxx) {
+        Maxx m = (Maxx) inst;
+        int newAddr = remap.getOrDefault(m.getAddr(), m.getAddr());
+        if (newAddr != m.getAddr()) {
+            instList.set(i, new Maxx(newAddr, m.getScale()));
+        }
+
+    } else if (inst instanceof Mulx) {
+        Mulx m = (Mulx) inst;
+        int newAddr = remap.getOrDefault(m.getAddr(), m.getAddr());
+        if (newAddr != m.getAddr()) {
+            instList.set(i, new Mulx(newAddr));
+        }
+    }
+    // LoadAccumulator also reads a register
+    else if (inst instanceof LoadAccumulator) {
+        LoadAccumulator la = (LoadAccumulator) inst;
+        int newAddr = remap.getOrDefault(la.getAddr(), la.getAddr());
+        if (newAddr != la.getAddr()) {
+            instList.set(i, new LoadAccumulator(newAddr));
+        }
+    }
+    // All other instruction types (delays, LFOs, SOF, Skip, etc.)
+    // do not reference user registers – leave them untouched.
+}
+
+// ----------------------------------------------------------
+// Phase 4: Report results.
+// ----------------------------------------------------------
+int originalRegCount = originalHighest - USER_REG_MIN + 1;
+int compactedRegCount = compactedHighest - USER_REG_MIN + 1;
+
+System.err.println("----------------------------------------");
+System.err.println("Register compaction report:");
+System.err.println("  Registers before compaction : "
+        + originalRegCount
+        + "  (highest was REG" + (originalHighest - USER_REG_MIN) + " / 0x"
+        + Integer.toHexString(originalHighest) + ")");
+System.err.println("  Holes removed               : " + holesRemoved);
+System.err.println("  Registers after compaction  : "
+        + compactedRegCount
+        + "  (highest is now REG" + (compactedHighest - USER_REG_MIN) + " / 0x"
+        + Integer.toHexString(compactedHighest) + ")");
+
+if (compactedHighest > USER_REG_MAX) {
+    // Still over the hardware limit even after compaction.
+    // Express the overage in user-friendly REGn terms.
+    int overBy = compactedHighest - USER_REG_MAX;
+    System.err.println("  ERROR: register count still exceeds FV-1 limit!");
+    System.err.println("         Maximum legal register is REG31 (0x3F).");
+    System.err.println("         Highest used after compaction is REG"
+            + (compactedHighest - USER_REG_MIN)
+            + " -- over by " + overBy
+            + " register" + (overBy == 1 ? "" : "s") + ".");
+    System.err.println("         This patch will NOT assemble for a real FV-1.");
+} else {
+    System.err.println("  OK: all registers fit within REG0–REG31.");
+}
+System.err.println("----------------------------------------");
+// Hook for subclasses to update their register allocator state
+onRegistersCompacted(usedAddresses.isEmpty() ? USER_REG_MIN : (compactedHighest + 1));    
+}
+
+//============================================================
+//Helper: scan instList and return a sorted set of all
+//user-register addresses in the range [minAddr, maxAddr]
+//that are actually referenced by at least one instruction.
+//============================================================
+private TreeSet<Integer> collectRegisterAddresses(int minAddr, int maxAddr) {
+TreeSet<Integer> found = new TreeSet<>();
+
+for (Instruction inst : instList) {
+    int addr = -1;
+
+    if      (inst instanceof WriteRegister)      addr = ((WriteRegister)      inst).getAddr();
+    else if (inst instanceof WriteRegisterLowshelf)  addr = ((WriteRegisterLowshelf)  inst).getAddr();
+    else if (inst instanceof WriteRegisterHighshelf) addr = ((WriteRegisterHighshelf) inst).getAddr();
+    else if (inst instanceof ReadRegister)       addr = ((ReadRegister)        inst).getAddr();
+    else if (inst instanceof ReadRegisterFilter) addr = ((ReadRegisterFilter)  inst).getAddr();
+    else if (inst instanceof Maxx)               addr = ((Maxx)                inst).getAddr();
+    else if (inst instanceof Mulx)               addr = ((Mulx)                inst).getAddr();
+    else if (inst instanceof LoadAccumulator)    addr = ((LoadAccumulator)     inst).getAddr();
+
+    if (addr >= minAddr && addr <= maxAddr) {
+        found.add(addr);
+    }
+}
+return found;
+}
+
+/**
+ * Called at the end of compactRegisters() with the new next-free
+ * register address. Subclasses that maintain their own allocator
+ * high-water mark should override this to update it.
+ */
+protected void onRegistersCompacted(int newNextFreeReg) {
+    // default: no-op
+}
+
+//============================================================
 
 	/*
 	 * INSTRUCTIONS

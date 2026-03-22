@@ -62,7 +62,19 @@ public class Maxx extends Instruction {
 	public String getInstructionString() {
 		return "Maxx(" + addr + "," + scale + ")";
 	}
-	// GSW added for integration with SpinCAD Designer	
+	
+	// Added for optimizer support GSW 03-15-2026
+	public int getAddr()
+	{
+		return this.addr;		
+	}
+	
+	public double getScale()
+	{
+		return this.scale;		
+	}
+
+// GSW added for integration with SpinCAD Designer	
 	public String getInstructionString(int mode) {
 		if (mode == 1) {
 			return "MAXX " + Util.getRegisterName(addr) + "," + Util.removeComma(String.format("%6.10f",scale));

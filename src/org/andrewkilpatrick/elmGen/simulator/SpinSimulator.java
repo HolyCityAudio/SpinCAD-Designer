@@ -229,6 +229,11 @@ public class SpinSimulator extends Thread {
 			inst = simList.get(state.getPC());
 			inst.simulate(state);
 			state.incrementPC();
+if (false) {
+			System.out.println("Inst:" + inst.getInstructionString());
+			System.out.println("Acc: " + state.getACCVal() + " (" + String.format("%x", state.getACCVal()) + ")" + " (" + state.getACCVal()/32768 + ")");			
+}
+
 		}
 		state.sampleIncrement();
 	}

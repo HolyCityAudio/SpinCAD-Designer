@@ -109,7 +109,7 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayd", length); 
 			sfxb.FXallocDelayMem("temp", 1); 
-			double scaledPitch = pitchCoeff / sixteen;
+			double scaledPitch = pitchCoeff / sixteen; 
 			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
 			sfxb.loadRampLFO((int) 0, (int) pitchCoeff, (int) length);
@@ -120,7 +120,7 @@
 			
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayd", 0, 0);
-			double halfPitch = scaledPitch / two;
+			double halfPitch = scaledPitch / two; 
 			if(this.getPin("Pitch Control").isConnected() == true) {
 			if(controlRange == 1) {
 			sfxb.readRegister(pitchControl, 1.0);

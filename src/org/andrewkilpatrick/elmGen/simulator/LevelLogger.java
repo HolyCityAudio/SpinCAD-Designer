@@ -132,8 +132,15 @@ public class LevelLogger implements AudioSink {
 
 			windowCount ++;
 			if(windowCount >= windowRatio) {
-				panel.updateLevels();
-				windowCount = 0;
+				if(panel == null)
+				{
+					windowCount = 5;
+				}
+				else
+				{
+					panel.updateLevels();
+					windowCount = 0;
+				}
 				//				maxL = 0.0;
 				//				maxR = 0.0;
 			}
@@ -182,7 +189,8 @@ public class LevelLogger implements AudioSink {
 				triggered = true;
 			}
 
-			if(triggered && (tm == triggerMode.AUTO) || (tm == triggerMode.SINGLE)) {
+			// if(triggered && (tm == triggerMode.AUTO) || (tm == triggerMode.SINGLE)) {
+			if(true) {
 				if(logMode == 1) {
 					if(xPos < 1) {
 						g2.setColor(Color.BLACK);

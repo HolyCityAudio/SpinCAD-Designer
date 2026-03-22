@@ -57,6 +57,17 @@ public class ReadRegister extends Instruction {
 		return ((convS114(scale) & 0xffff) << 16) | 
 			((addr & 0x3f) << 5) | 0x04;
 	}
+	
+	// Added for optimizer support GSW 03-15-2026
+	public int getAddr()
+	{
+		return this.addr;		
+	}
+	
+	public double getScale()
+	{
+		return this.scale;		
+	}
 
 	@Override
 	public String getInstructionString() {

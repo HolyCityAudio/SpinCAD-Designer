@@ -138,4 +138,12 @@ public class SpinFXBlock extends ElmProgram {
 			}
 			return address;
 		}		
+
+@Override
+	protected void onRegistersCompacted(int newNextFreeReg) {
+    	setNumRegs(newNextFreeReg);
+    	System.err.println("SpinFXBlock: numRegs updated to 0x"
+            + Integer.toHexString(newNextFreeReg)
+            + " (REG" + (newNextFreeReg - REG0) + ")");
+	}
 }

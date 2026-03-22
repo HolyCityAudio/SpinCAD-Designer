@@ -120,8 +120,8 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayl", delayLength); 
 			double x1 = delayLength * width;
-			double x3 = x1 / number6554000;
-			double x2 = x1 / twoHundred;
+			double x3 = x1 / number6554000; 
+			double x2 = x1 / twoHundred; 
 			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
 			sfxb.loadSinLFO((int) SIN0,(int) rate, (int) x2);
@@ -141,7 +141,7 @@
 			}
 			
 			if(this.getPin("LFO Rate").isConnected() == true) {
-			double temp1 = rate / rateMax;
+			double temp1 = rate / rateMax; 
 			sfxb.readRegister(rateIn, temp1);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RATE, 0);

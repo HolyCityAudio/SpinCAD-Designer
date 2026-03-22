@@ -46,7 +46,7 @@ public class SimulatorState {
 		acc = new Reg(0);
 		pacc = new Reg(0);
 		lr = new Reg(0);
-		regs = new Reg[64];
+		regs = new Reg[256];
 		delay = new int[32768];
 		sinLFO = new SinLFO[2];
 		rampLFO = new RampLFO[2];

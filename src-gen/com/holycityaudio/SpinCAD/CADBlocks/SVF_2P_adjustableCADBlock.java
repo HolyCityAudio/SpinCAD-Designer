@@ -119,8 +119,8 @@
 			sfxb.writeRegister(z2, -1);
 			if(this.getPin("Q").isConnected() == true) {
 			sfxb.writeRegister(temp, 0);
-			double y = number1 / qMin;
-			double x1 = number1 / qMax;
+			double y = number1 / qMin; 
+			double x1 = number1 / qMax; 
 			double q = x1 - y;
 			temp = sfxb.allocateReg();
 			scaledQ = sfxb.allocateReg();
@@ -131,7 +131,7 @@
 			sfxb.mulx(scaledQ);
 			sfxb.readRegister(temp, 1);
 			} else {
-			double q = number1 / qMax;
+			double q = number1 / qMax; 
 			sfxb.readRegister(z1, -q);
 			}
 			

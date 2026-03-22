@@ -123,7 +123,7 @@
 			}
 			
 			if(this.getPin("LFO_Width").isConnected() == true) {
-			double temp = width / widthMax;
+			double temp = width / widthMax; 
 			sfxb.readRegister(widthIn, temp);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RANGE, 0);
@@ -134,7 +134,7 @@
 			}
 			
 			if(this.getPin("LFO_Rate").isConnected() == true) {
-			double temp1 = rate / rateMax;
+			double temp1 = rate / rateMax; 
 			sfxb.readRegister(rateIn, temp1);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RATE, 0);

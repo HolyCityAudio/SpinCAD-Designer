@@ -92,7 +92,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1042;
+	int buildNum = 1045;
 
 	// Swing things
 	private JPanel contentPane;
@@ -384,8 +384,6 @@ public class SpinCADFrame extends JFrame {
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				eeprom.patch[bankIndex].patchModel.sortAlignGen();
-				// GSW remove optimization for now
-				// eeprom.patch[bankIndex].patchModel.getRenderBlock().optimizeProgram(1);
 				StringSelection stringSelection = new StringSelection (eeprom.patch[bankIndex].cb.getComments() + eeprom.patch[bankIndex].patchModel.getRenderBlock().getProgramListing(1));
 				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
 				clpbrd.setContents (stringSelection, null);	
@@ -712,7 +710,7 @@ public class SpinCADFrame extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.98 Build " + buildNum + "\n"
-						+ "Copyright 2024 Gary Worsham, Holy City Audio\n" + 
+						+ "Copyright 2026 Gary Worsham, Holy City Audio\n" + 
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");

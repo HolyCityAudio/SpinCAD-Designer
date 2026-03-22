@@ -109,7 +109,7 @@
 			
 			if(this.getPin("LFO_Width").isConnected() == true) {
 			double x1 = delayLength * width;
-			double x3 = x1 / number6554000;
+			double x3 = x1 / number6554000; 
 			sfxb.readRegister(widthIn, x3);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RANGE, 0);
@@ -120,7 +120,7 @@
 			}
 			
 			if(this.getPin("LFO_Rate").isConnected() == true) {
-			double temp1 = rate / rateMax;
+			double temp1 = rate / rateMax; 
 			sfxb.readRegister(rateIn, temp1);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(SIN0_RATE, 0);

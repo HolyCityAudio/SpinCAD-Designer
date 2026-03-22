@@ -73,6 +73,17 @@ public class WriteRegisterHighshelf extends Instruction {
 			return "Error! Invalid mode.";
 	}
 	
+	// Added for optimizer support GSW 03-15-2026
+	public int getAddr()
+	{
+		return this.addr;		
+	}
+	
+	public double getScale()
+	{
+		return this.scale;		
+	}
+	
 	//Description 
 	//The current ACC value is stored in the register pointed to by ADDR, then ACC is 
 	//multiplied by C. Finally the previous content of ACC (PACC) is added to the product. 

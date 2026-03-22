@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.andrewkilpatrick.elmGen.ElmProgram;
+
 // import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
@@ -179,8 +181,13 @@ public class SpinCADModel implements Serializable {
 				break;
 		}		
 		realign();
-		int i = generateCode();
+		generateCode();
+	    // ADD THESE - get the ElmProgram from renderBlock and optimize
+		renderBlock.optimizeProgram();
+		renderBlock.compactRegisters();
 		renderBlock.checkCodeLen();
+		int i = renderBlock.getCodeLen();
+	    
 		return i;
 	}
 
