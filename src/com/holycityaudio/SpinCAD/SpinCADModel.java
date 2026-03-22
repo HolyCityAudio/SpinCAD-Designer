@@ -184,6 +184,7 @@ public class SpinCADModel implements Serializable {
 		generateCode();
 	    // ADD THESE - get the ElmProgram from renderBlock and optimize
 		renderBlock.optimizeProgram();
+		renderBlock.optimizeOutputRegisters();
 		renderBlock.compactRegisters();
 		renderBlock.checkCodeLen();
 		int i = renderBlock.getCodeLen();

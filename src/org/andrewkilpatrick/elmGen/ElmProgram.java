@@ -18,8 +18,11 @@
 package org.andrewkilpatrick.elmGen;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -627,6 +630,237 @@ private Map<Integer, Integer> countRegisterReads() {
         // reference the general-purpose register file.
     }
     return counts;
+}
+
+// ============================================================
+//  Second-pass output-register optimizer.
+//
+//  Handles non-adjacent WRAX REGx / RDAX REGx patterns where
+//  the register is only used to shuttle a value to DAC outputs.
+//
+//  Case 4 – WRAX REGx,0.0 → N × (RDAX REGx,1.0 / WRAX DACy,0.0)
+//           REGx not used elsewhere, all gains 1.0
+//           → Replace WRAX REGx with chain of WRAX DACy.
+//           Saves: N+1 instructions, 1 register
+//
+//  Case 5 – RDAX REGx,1.0 / WRAX DACy,0.0 in output section
+//           REGx IS used elsewhere (e.g. filter state via RDFX)
+//           → Insert WRAX DACy,1.0 after the last WRAX REGx
+//             (piggybacks on ACC value; note that DACy receives
+//              ACC × wraxScale, not the register value itself).
+//           Saves: 1 instruction per output pair
+//
+//  Case 6 – WRAX REGx,0.0 → N × (RDAX REGx,g_i / WRAX DACy,0.0)
+//           REGx not used elsewhere, gains differ
+//           → Replace WRAX REGx,0.0 with WRAX REGx,g1, then
+//             chain WRAX DACy with ratio-scaled gains.
+//           Saves: N instructions
+// ============================================================
+public void optimizeOutputRegisters() {
+
+    Map<Integer, Integer> readCount = countRegisterReads();
+    final int USER_REG_MIN = REG0;  // 0x20
+
+    // ----------------------------------------------------------
+    // Phase 1: Find all "output pairs" in the instruction list.
+    // An output pair is: RDAX REGx, gain / WRAX DACy, 0.0
+    // where DACy is DACL or DACR and REGx is a user register.
+    // ----------------------------------------------------------
+    // Each entry: [rdaxIdx, wraxDacIdx, regAddr, dacAddr]
+    List<int[]> pairInfo = new ArrayList<>();
+    List<Double> pairGains = new ArrayList<>();
+
+    for (int i = 0; i < instList.size(); i++) {
+        if (!(instList.get(i) instanceof ReadRegister)) continue;
+        ReadRegister rdax = (ReadRegister) instList.get(i);
+        if (rdax.getAddr() < USER_REG_MIN) continue;
+
+        // Skip comments to find next non-comment instruction
+        int j = i + 1;
+        while (j < instList.size() && instList.get(j) instanceof Comment) j++;
+        if (j >= instList.size()) continue;
+        if (!(instList.get(j) instanceof WriteRegister)) continue;
+
+        WriteRegister wraxDac = (WriteRegister) instList.get(j);
+        if ((wraxDac.getAddr() != DACL && wraxDac.getAddr() != DACR)
+                || wraxDac.getScale() != 0.0) {
+            continue;
+        }
+
+        pairInfo.add(new int[]{i, j, rdax.getAddr(), wraxDac.getAddr()});
+        pairGains.add(rdax.getScale());
+    }
+
+    if (pairInfo.isEmpty()) {
+        System.out.println("Output register optimizer: no output pairs found.");
+        return;
+    }
+
+    // ----------------------------------------------------------
+    // Phase 2: Group output pairs by source register.
+    // ----------------------------------------------------------
+    Map<Integer, List<Integer>> groups = new LinkedHashMap<>();
+    for (int idx = 0; idx < pairInfo.size(); idx++) {
+        int regAddr = pairInfo.get(idx)[2];
+        groups.computeIfAbsent(regAddr, k -> new ArrayList<>()).add(idx);
+    }
+
+    // ----------------------------------------------------------
+    // Phase 3: For each register group, determine which case
+    // applies and record the transformation.
+    // ----------------------------------------------------------
+    Set<Integer> removeSet = new TreeSet<>();
+    Map<Integer, Instruction> replaceMap = new HashMap<>();
+    Map<Integer, List<Instruction>> insertMap = new HashMap<>();
+
+    int savedInst = 0;
+    int savedRegs = 0;
+
+    for (Map.Entry<Integer, List<Integer>> entry : groups.entrySet()) {
+        int reg = entry.getKey();
+        List<Integer> pis = entry.getValue();
+
+        int totalReads = readCount.getOrDefault(reg, 0);
+        boolean onlyInOutput = (totalReads == pis.size());
+
+        // Find the last WRAX to this register before the first output pair
+        int firstOPIdx = pairInfo.get(pis.get(0))[0];
+        int srcWrIdx = -1;
+        double srcWrScale = 0.0;
+        for (int i = firstOPIdx - 1; i >= 0; i--) {
+            if (instList.get(i) instanceof WriteRegister) {
+                WriteRegister w = (WriteRegister) instList.get(i);
+                if (w.getAddr() == reg) {
+                    srcWrIdx = i;
+                    srcWrScale = w.getScale();
+                    break;
+                }
+            }
+        }
+        if (srcWrIdx < 0) continue;  // couldn't find the source write
+
+        // ----- All reads in output, WRAX has scale 0.0 -----
+        if (onlyInOutput && srcWrScale == 0.0) {
+            boolean allGainsOne = true;
+            for (int pi : pis) {
+                if (pairGains.get(pi) != 1.0) { allGainsOne = false; break; }
+            }
+
+            if (allGainsOne) {
+                // === Case 4: same register, all gains 1.0, not used elsewhere ===
+                // Replace WRAX REGx,0.0 with chain:  WRAX DAC_0,1.0 / ... / WRAX DAC_N,0.0
+                int n = pis.size();
+                replaceMap.put(srcWrIdx,
+                    new WriteRegister(pairInfo.get(pis.get(0))[3], n > 1 ? 1.0 : 0.0));
+
+                if (n > 1) {
+                    List<Instruction> extra = new ArrayList<>();
+                    for (int k = 1; k < n; k++) {
+                        double s = (k < n - 1) ? 1.0 : 0.0;
+                        extra.add(new WriteRegister(pairInfo.get(pis.get(k))[3], s));
+                    }
+                    insertMap.put(srcWrIdx, extra);
+                }
+
+                for (int pi : pis) {
+                    removeSet.add(pairInfo.get(pi)[0]);  // RDAX
+                    removeSet.add(pairInfo.get(pi)[1]);  // WRAX DACy
+                }
+
+                savedInst += n + 1;
+                savedRegs += 1;
+                System.out.println("Optimizer Case 4: inlined " + n
+                    + " DAC write(s) at reg " + reg
+                    + " (saved " + (n + 1) + " instructions, 1 register)");
+
+            } else {
+                // === Case 6: same register, different gains, not used elsewhere ===
+                // Replace WRAX REGx,0.0 with WRAX REGx,g1 then chain of WRAX DACy
+                double g0 = pairGains.get(pis.get(0));
+                replaceMap.put(srcWrIdx, new WriteRegister(reg, g0));
+
+                List<Instruction> chain = new ArrayList<>();
+                double accScale = g0;  // ACC = V × g0 after the modified WRAX REGx
+                for (int k = 0; k < pis.size(); k++) {
+                    double s;
+                    if (k < pis.size() - 1) {
+                        double nextG = pairGains.get(pis.get(k + 1));
+                        s = nextG / accScale;
+                        accScale *= s;
+                    } else {
+                        s = 0.0;
+                    }
+                    chain.add(new WriteRegister(pairInfo.get(pis.get(k))[3], s));
+                }
+                insertMap.put(srcWrIdx, chain);
+
+                for (int pi : pis) {
+                    removeSet.add(pairInfo.get(pi)[0]);
+                    removeSet.add(pairInfo.get(pi)[1]);
+                }
+
+                savedInst += pis.size();
+                System.out.println("Optimizer Case 6: inlined " + pis.size()
+                    + " DAC write(s) with scaled gains for reg " + reg
+                    + " (saved " + pis.size() + " instructions)");
+            }
+
+        // ----- Register used elsewhere (e.g. filter state) -----
+        } else if (!onlyInOutput && srcWrScale != 0.0) {
+            // === Case 5: insert WRAX DACy,1.0 after the WRAX REGx ===
+            // Only handle output pairs with gain 1.0 for safety
+            boolean allGainsOne = true;
+            for (int pi : pis) {
+                if (pairGains.get(pi) != 1.0) { allGainsOne = false; break; }
+            }
+            if (!allGainsOne) continue;
+
+            List<Instruction> inserts = insertMap.getOrDefault(srcWrIdx, new ArrayList<>());
+            for (int pi : pis) {
+                inserts.add(new WriteRegister(pairInfo.get(pi)[3], 1.0));
+                removeSet.add(pairInfo.get(pi)[0]);
+                removeSet.add(pairInfo.get(pi)[1]);
+            }
+            insertMap.put(srcWrIdx, inserts);
+
+            savedInst += pis.size();
+            System.out.println("Optimizer Case 5: inserted " + pis.size()
+                + " DAC write(s) after wrax reg " + reg
+                + " (saved " + pis.size() + " instructions)");
+        }
+        // All other combinations: leave as-is
+    }
+
+    if (removeSet.isEmpty() && replaceMap.isEmpty()) {
+        System.out.println("Output register optimizer: no optimizations applied.");
+        return;
+    }
+
+    // ----------------------------------------------------------
+    // Phase 4: Rebuild the instruction list with transformations.
+    // ----------------------------------------------------------
+    List<Instruction> newList = new LinkedList<>();
+    for (int i = 0; i < instList.size(); i++) {
+        if (removeSet.contains(i)) continue;
+
+        newList.add(replaceMap.containsKey(i) ? replaceMap.get(i) : instList.get(i));
+
+        if (insertMap.containsKey(i)) {
+            newList.addAll(insertMap.get(i));
+        }
+    }
+
+    instList.clear();
+    instList.addAll(newList);
+
+    // Recount comments since instList was rebuilt
+    nComments = 0;
+    for (Instruction inst : instList) {
+        if (inst instanceof Comment) nComments++;
+    }
+
+    System.out.println("Output register optimization complete: saved "
+        + savedInst + " instruction(s) and " + savedRegs + " register(s).");
 }
 
 //============================================================
