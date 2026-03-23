@@ -25,6 +25,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
+import org.andrewkilpatrick.elmGen.instructions.Instruction;
+import org.andrewkilpatrick.elmGen.instructions.Clear;
+import org.andrewkilpatrick.elmGen.instructions.Comment;
+import org.andrewkilpatrick.elmGen.instructions.Mulx;
+import org.andrewkilpatrick.elmGen.instructions.ReadRegister;
 
 // import org.andrewkilpatrick.elmGen.ElmProgram;
 
@@ -282,7 +287,44 @@ public class SpinCADModel implements Serializable {
 				// TODO debug this, some problem with triple delay buffer assignments
 				// no there is a problem here
 				renderBlock.setNumBlocks(block.getBlockNum());	// this is for keeping delay segments unique
+				int instrBefore = renderBlock.getCodeLen();
 				block.generateCode(renderBlock);
+				int instrAfter = renderBlock.getCodeLen();
+
+				// mute input pins: replace RDAX/MULX with CLR if first
+				// non-comment instruction, otherwise remove it
+				for (SpinCADPin pin : block.pinList) {
+					if (pin.isInputPin() && pin.isMuted() && pin.getPinConnection() != null) {
+						int sourceReg = pin.getPinConnection().getRegister();
+						if (sourceReg >= 0) {
+							for (int idx = instrBefore; idx < instrAfter; idx++) {
+								Instruction inst = renderBlock.getInstruction(idx);
+								int matchAddr = -1;
+								if (inst instanceof ReadRegister) {
+									matchAddr = ((ReadRegister) inst).getAddr();
+								} else if (inst instanceof Mulx) {
+									matchAddr = ((Mulx) inst).getAddr();
+								}
+								if (matchAddr == sourceReg) {
+									boolean isFirst = true;
+									for (int j = instrBefore; j < idx; j++) {
+										if (!(renderBlock.getInstruction(j) instanceof Comment)) {
+											isFirst = false;
+											break;
+										}
+									}
+									if (isFirst) {
+										renderBlock.replaceInstruction(idx, new Clear());
+									} else {
+										renderBlock.removeInstruction(idx);
+										instrAfter--;
+									}
+									break;
+								}
+							}
+						}
+					}
+				}
 				// now blockMin is the block with the lowest number
 			}
 		} catch (Exception e) {

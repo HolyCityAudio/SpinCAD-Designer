@@ -43,6 +43,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -122,19 +123,20 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 					if(currentPin.getPinConnection() != null && currentPin.getBlockConnection() != null) {
 						Point startPt = null;
 						Point stopPt = null;
-						//						System.out.println("Draw connection!");
 						stopPin = currentPin.getPinConnection();
 						stopBlock = currentPin.getBlockConnection();
 						stopPt = stopBlock.getPinXY(stopPin);
-						startPt = block.getPinXY(currentPin);					
+						startPt = block.getPinXY(currentPin);
 						Line2D line = new Line2D.Double(startPt, stopPt);
-						if(currentPin.getName().contains("Control")) {
-							g2.setColor(Color.BLUE);						
-						}
-						else
+						if(currentPin.isMuted()) {
+							g2.setColor(Color.RED);
+						} else if(currentPin.getName().contains("Control")) {
+							g2.setColor(Color.BLUE);
+						} else {
 							g2.setColor(Color.black);
+						}
 						g2.setStroke(new BasicStroke(2));
-						g2.draw(line);	
+						g2.draw(line);
 						currentPin = null;
 					}
 				}
@@ -495,6 +497,7 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 		if(f.getPatch().isHexFile) {
 			return;
 		}
+		f.etb.statusMessage.setText("");
 		boolean hitSomething = false;
 		// drop a line or block if you were dragging it
 		if(dm == dragModes.DRAGMOVE) {
@@ -524,10 +527,10 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 				dragLine = null;
 			}
 			else {
-				// right clicked on pin, look to see if hit on/near pin and if so, delete connection.
+				// right clicked on pin, look to see if hit on/near pin
 				Point point = getNearbyPoint();
 				if(point != null) {
-					SpinCADBlock b = null;	
+					SpinCADBlock b = null;
 					Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
 					while(itr.hasNext()) {
 						b = itr.next();
@@ -535,12 +538,10 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 						SpinCADPin currentPin = null;
 						while(itrPin.hasNext()) {
 							currentPin = itrPin.next();
-							// hit a block pin, so connect it
-							// bug here somewhere
 							if(hitPin(arg0, b, currentPin)) {
-								currentPin.deletePinConnection();
-								f.getPatch().setChanged(true);
-								f.updateFrameTitle();
+								if(currentPin.isInputPin()) {
+									doPinPop(arg0, b, currentPin);
+								}
 								return;
 							}
 						}
@@ -691,6 +692,43 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 		menu.show(e.getComponent(), e.getX(), e.getY());
 	}	
 	
+	private void doPinPop(MouseEvent e, SpinCADBlock b, SpinCADPin pin) {
+		PinPopUpMenu menu = new PinPopUpMenu(b, pin);
+		menu.show(e.getComponent(), e.getX(), e.getY());
+	}
+
+	class PinPopUpMenu extends JPopupMenu {
+		private static final long serialVersionUID = 1L;
+
+		public PinPopUpMenu(SpinCADBlock block, SpinCADPin pin) {
+			JMenuItem deleteWire = new JMenuItem("Delete Wire");
+			deleteWire.addActionListener(e -> {
+				pin.deletePinConnection();
+				pin.setMuted(false);
+				f.getPatch().setChanged(true);
+				if (f.simX.isSimRunning()) {
+					f.etb.statusMessage.setText("Change will take place after simulator stops.");
+				} else {
+					f.updateFrameTitle();
+				}
+				repaint();
+			});
+			add(deleteWire);
+
+			JCheckBoxMenuItem mutePin = new JCheckBoxMenuItem("Mute This Pin", pin.isMuted());
+			mutePin.addActionListener(e -> {
+				pin.setMuted(!pin.isMuted());
+				if (f.simX.isSimRunning()) {
+					f.etb.statusMessage.setText("Change will take place after simulator stops.");
+				} else {
+					f.updateAll(true);
+				}
+				repaint();
+			});
+			add(mutePin);
+		}
+	}
+
 	// popup menu handling
 	class PopUpMenu extends JPopupMenu {
 		/**

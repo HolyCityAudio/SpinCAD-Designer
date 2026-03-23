@@ -350,6 +350,18 @@ public class ElmProgram implements Serializable {
 		return instList.get(num);
 	}
 
+	public void replaceInstruction(int num, Instruction inst) {
+		instList.set(num, inst);
+	}
+
+	public void insertInstruction(int num, Instruction inst) {
+		instList.add(num, inst);
+	}
+
+	public void removeInstruction(int num) {
+		instList.remove(num);
+	}
+
 	/**
 	 * Generates the hex output from the current instruction list.
 	 * 

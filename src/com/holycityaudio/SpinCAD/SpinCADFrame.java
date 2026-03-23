@@ -1119,6 +1119,7 @@ public class SpinCADFrame extends JFrame {
 		 */
 
 		final JLabel pinName = new JLabel("");
+		final JLabel statusMessage = new JLabel("");
 
 		class Task extends SwingWorker<Void, Void> {
 			/*
@@ -1143,7 +1144,17 @@ public class SpinCADFrame extends JFrame {
 
 		public EditResourcesToolBar() {
 			super();
-			add(pinName);
+			setLayout(new java.awt.BorderLayout());
+			JPanel pinPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+			pinPanel.setPreferredSize(new java.awt.Dimension(200, 20));
+			pinPanel.add(pinName);
+			add(pinPanel, java.awt.BorderLayout.WEST);
+
+			JPanel statusPanel = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+			statusMessage.setForeground(java.awt.Color.RED);
+			statusPanel.add(statusMessage);
+			add(statusPanel, java.awt.BorderLayout.CENTER);
+
 			setVisible(true);
 		}
 

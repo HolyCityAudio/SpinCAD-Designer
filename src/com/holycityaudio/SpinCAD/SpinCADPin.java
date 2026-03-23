@@ -44,6 +44,9 @@ public class SpinCADPin implements Serializable {
 	// the register value is assigned during code generation
 	private int Register = -1;
 
+	// volatile state - not serialized
+	private transient boolean muted = false;
+
 	private Color pinColor;
 	private String name = "";
 	private pinType type = null;
@@ -103,9 +106,14 @@ public class SpinCADPin implements Serializable {
 		Graphics2D g2 = (Graphics2D) g;
 		int size = 8;
 		Ellipse2D boundingRect = new Ellipse2D.Double(block.getX() + x_pos - size/2, block.getY() + y_pos - size/2, size, size);
-		g2.setColor(pinColor);
-		g2.setStroke(new BasicStroke(2));
-		g2.draw(boundingRect);
+		if (muted) {
+			g2.setColor(Color.BLACK);
+			g2.fill(boundingRect);
+		} else {
+			g2.setColor(pinColor);
+			g2.setStroke(new BasicStroke(2));
+			g2.draw(boundingRect);
+		}
 	}
 
 	public pinType getType() {
@@ -176,11 +184,18 @@ public class SpinCADPin implements Serializable {
 	}	
 
 	public boolean isControlOutputPin() {
-		if((type == pinType.CONTROL_OUT)) 
+		if((type == pinType.CONTROL_OUT))
 			return true;
 		else
 			return false;
 	}
 
+	public boolean isMuted() {
+		return muted;
+	}
+
+	public void setMuted(boolean m) {
+		muted = m;
+	}
 }
 
