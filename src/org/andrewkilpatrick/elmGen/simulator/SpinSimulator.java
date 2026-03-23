@@ -40,7 +40,7 @@ public class SpinSimulator extends Thread {
 	int pot0 = 0;
 	int pot1 = 0;
 	int pot2 = 0;
-	boolean runSimulator = true;
+	volatile boolean runSimulator = true;
 	boolean loopMode = true;
 	String inputFilename = null;
 	String outputFilename = null;
@@ -66,6 +66,7 @@ public class SpinSimulator extends Thread {
 	public SpinSimulator(ElmProgram prog, String inputFilename,
 			String outputFilename, double pot0, double pot1, double pot2) {
 		state = new SimulatorState();
+		setDaemon(true);  // don't prevent app exit if thread is stuck
 		this.prog = prog;
 		this.inputFilename = inputFilename;
 		this.outputFilename = outputFilename;
@@ -73,7 +74,6 @@ public class SpinSimulator extends Thread {
 		this.pot1 = Util.doubleToReg(pot1);
 		this.pot2 = Util.doubleToReg(pot2);
 		audioSinks = new LinkedList<AudioSink>();
-//		System.out.println("SpinSimulator - starting up simulator for: " + prog.getName());
 	}
 
 	// GSW new class for integration into SpinCAD Designer
@@ -168,7 +168,7 @@ public class SpinSimulator extends Thread {
 					// outBuf[i + 1] = inBuf[i + 1];
 				}
 
-				// write all the outputs - only one can block
+				// write all the outputs
 				for (int i = 0; i < audioSinks.size(); i++) {
 					audioSinks.get(i).writeDac(outBuf, ret);
 				}
@@ -211,10 +211,18 @@ public class SpinSimulator extends Thread {
 	}
 
 	/**
-	 * Stops the simulator.
+	 * Stops the simulator and releases all audio resources.
+	 * Closing the sinks breaks any blocked writeDac() call so
+	 * the simulator thread can exit promptly.
 	 */
 	public void stopSimulator() {
 		runSimulator = false;
+		// Close sinks immediately to unblock any stalled writeDac()
+		if (audioSinks != null) {
+			for (int i = 0; i < audioSinks.size(); i++) {
+				try { audioSinks.get(i).close(); } catch (Exception ignored) {}
+			}
+		}
 	}
 
 	/**

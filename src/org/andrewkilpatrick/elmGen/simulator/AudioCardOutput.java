@@ -17,6 +17,8 @@
  */
 package org.andrewkilpatrick.elmGen.simulator;
 
+import java.util.concurrent.ArrayBlockingQueue;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -28,22 +30,18 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 /**
  * Audio output sink that writes processed samples to the sound card.
  *
- * GSW 2026-03-22: Extracted from elmGen-0.5.jar and fixed for MacOS.
- *
- * Problems fixed:
- *  1. Original used default buffer size — too small on MacOS CoreAudio.
- *  2. Blocking line.write() can hang forever on MacOS if CoreAudio stalls.
- *     Now writes only as much as line.available() allows, with a running
- *     flag check between chunks so stopSimulator() can break the loop.
- *  3. close() called drain() which blocks if the line is stuck.
- *     Now calls stop/flush/close for immediate teardown.
- *  4. Pre-allocates the byte conversion buffer to reduce GC pressure
- *     in the real-time audio path.
+ * Uses a dedicated writer thread so that the simulation thread is never
+ * blocked by CoreAudio on macOS.  A small queue of byte buffers sits
+ * between the simulation (producer) and the audio card (consumer).
  */
 public class AudioCardOutput implements AudioSink {
 	private SourceDataLine line = null;
 	private volatile boolean running = true;
-	private byte[] outBuf;  // pre-allocated conversion buffer
+
+	// Queue between simulation thread (producer) and audio writer thread (consumer).
+	// Capacity of 4 buffers gives ~0.5s of headroom before the simulation blocks.
+	private final ArrayBlockingQueue<byte[]> queue = new ArrayBlockingQueue<>(4);
+	private Thread writerThread;
 
 	public AudioCardOutput() throws LineUnavailableException {
 		AudioFormat format = new AudioFormat(
@@ -61,11 +59,31 @@ public class AudioCardOutput implements AudioSink {
 		int bufferFrames = ElmProgram.SAMPLERATE / 2;  // 0.5 seconds
 		int bufferBytes = bufferFrames * bytesPerFrame;
 		line.open(format, bufferBytes);
-
-		// Pre-allocate for the max batch size used by SpinSimulator (8192 samples)
-		outBuf = new byte[8192 * 2];
-
 		line.start();
+
+		// Start the dedicated audio writer thread
+		writerThread = new Thread(this::writerLoop, "AudioCardWriter");
+		writerThread.setDaemon(true);
+		writerThread.start();
+	}
+
+	/** Writer thread: drains the queue into the SourceDataLine. */
+	private void writerLoop() {
+		while (running) {
+			try {
+				byte[] buf = queue.poll(50, java.util.concurrent.TimeUnit.MILLISECONDS);
+				if (buf == null) continue;  // timeout, check running flag
+
+				int written = 0;
+				while (written < buf.length && running) {
+					int n = line.write(buf, written, buf.length - written);
+					if (n <= 0) break;
+					written += n;
+				}
+			} catch (InterruptedException e) {
+				return;
+			}
+		}
 	}
 
 	@Override
@@ -75,16 +93,11 @@ public class AudioCardOutput implements AudioSink {
 
 	@Override
 	public void writeDac(int[] buf, int len) {
-		if (!running || !line.isOpen()) return;
+		if (!running) return;
 		if (len < 1 || len > buf.length) return;
 
-		// Grow conversion buffer if needed (unlikely — batch size is usually 8192)
-		int byteLen = len * 2;
-		if (byteLen > outBuf.length) {
-			outBuf = new byte[byteLen];
-		}
-
 		// Convert int samples (FV-1 24-bit fixed point) to 16-bit little-endian bytes
+		byte[] outBuf = new byte[len * 2];
 		int pos = 0;
 		for (int i = 0; i < len; i++) {
 			// Extract bits 8-23 as a 16-bit sample (little-endian: low byte first)
@@ -92,29 +105,26 @@ public class AudioCardOutput implements AudioSink {
 			outBuf[pos++] = (byte) ((buf[i] & 0xFF0000) >> 16);
 		}
 
-		// Write in chunks sized to line.available() so we never block
-		// indefinitely in line.write(). Check 'running' between chunks
-		// so that close() can break us out promptly.
-		int written = 0;
-		while (written < pos && running) {
-			int avail = line.available();
-			if (avail <= 0) {
-				try { Thread.sleep(1); } catch (InterruptedException e) { return; }
-				continue;
+		// Enqueue for the writer thread.  Block when the queue is full so the
+		// simulation runs at the audio sample rate instead of racing ahead.
+		// Use a timeout loop so we can still exit promptly when stopped.
+		while (running) {
+			try {
+				if (queue.offer(outBuf, 100, java.util.concurrent.TimeUnit.MILLISECONDS)) break;
+			} catch (InterruptedException e) {
+				return;
 			}
-			int toWrite = Math.min(pos - written, avail);
-			int n = line.write(outBuf, written, toWrite);
-			if (n <= 0) break;
-			written += n;
 		}
 	}
 
 	@Override
 	public void close() {
 		running = false;
-		if (line != null) {
-			// stop + flush gives immediate teardown — drain() would block
-			// if the line is stuck, which is the whole problem on MacOS.
+		if (writerThread != null) {
+			writerThread.interrupt();
+			try { writerThread.join(2000); } catch (InterruptedException ignored) {}
+		}
+		if (line != null && line.isOpen()) {
 			line.stop();
 			line.flush();
 			line.close();

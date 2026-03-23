@@ -74,6 +74,12 @@ public class LevelLogger implements AudioSink {
 
 	AudioDelay delay;
 
+	// Batched rendering: accumulate pixel values during writeDac(),
+	// draw them all in one Graphics2D pass at the end of each buffer.
+	private double[] pendingL = new double[4096];
+	private double[] pendingR = new double[4096];
+	private int pendingCount = 0;
+
 	private static final double FV1_FULL_SCALE = 8388608.0;
 	private static final double[] GRID_LEVELS = { 1.0, 0.5, 0.25, 0.1 };
 
@@ -254,6 +260,7 @@ public class LevelLogger implements AudioSink {
 	public void writeDac(int[] buf, int len) {
 		if(paused) return;
 		int dbuf[] = delay.process(buf, 50000);
+		pendingCount = 0;
 		for(int i = 0; i < len; i += 2) {
 			if(logMode == 1) {
 				left  = Math.abs(Util.regToDouble(dbuf[i])     + 0.00001);
@@ -268,9 +275,17 @@ public class LevelLogger implements AudioSink {
 			}
 			windowCount++;
 			if(windowCount >= windowRatio) {
-				if(!frozen) panel.updateLevels();
+				if(!frozen && pendingCount < pendingL.length) {
+					pendingL[pendingCount] = (logMode == 1) ? maxL : left;
+					pendingR[pendingCount] = (logMode == 1) ? maxR : right;
+					pendingCount++;
+				}
 				windowCount = 0;
 			}
+		}
+		// Render all pending pixels in one Graphics2D pass
+		if(pendingCount > 0 && !frozen) {
+			panel.updateLevelsBatch(pendingL, pendingR, pendingCount);
 		}
 	}
 
@@ -340,8 +355,12 @@ public class LevelLogger implements AudioSink {
 			panel.repaint();
 		}
 
-		protected void updateLevels() {
-			if(!panel.isShowing()) return;  // hidden card — skip rendering
+		/**
+		 * Renders a batch of pending pixel values in a single Graphics2D pass.
+		 * Called once per writeDac() buffer instead of once per pixel.
+		 */
+		protected void updateLevelsBatch(double[] batchL, double[] batchR, int count) {
+			if(!panel.isShowing()) return;
 			int panelWidth  = panel.getWidth();
 			int panelHeight = panel.getHeight();
 			if(panelWidth < 1 || panelHeight < 1) return;
@@ -349,64 +368,30 @@ public class LevelLogger implements AudioSink {
 			int centerY = panelHeight / 2;
 			int halfH   = centerY - 4;
 
-			if(logMode == 1) {
-				// ---- LOG / LEVEL-METER MODE — draw to back buffer to prevent white flash ----
-				Graphics2D g2 = getBufferGraphics();
-				if(g2 == null) return;
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			Graphics2D g2 = getBufferGraphics();
+			if(g2 == null) return;
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-				int newL = (int) sampleToDB(maxL);
-				int newR = (int) sampleToDB(maxR);
+			// Pre-compute gain multipliers (scope mode only, constant for the batch)
+			double gainMultL = Math.pow(2.0, 16 - scopeCh1Gain);
+			double gainMultR = Math.pow(2.0, 16 - scopeCh2Gain);
 
-				filter[2] = filter[1];
-				filter[1] = filter[0];
-				filter[0] = newL;
-				if(filter[0] - filter[2] > 0.0) triggered = true;
+			for(int p = 0; p < count; p++) {
+				int newL, newR;
 
-				if(triggered && (tm == triggerMode.AUTO) || (tm == triggerMode.SINGLE)) {
-					if(xPos < 1) {
-						g2.setColor(Color.BLACK);
-						g2.fillRect(0, 0, panelWidth, panelHeight);
-						drawLoggerGrid(g2, panelWidth, panelHeight);
-					}
-					// Erase slice ahead of cursor, restore grid lines
-					g2.setColor(Color.BLACK);
-					g2.fillRect(xPos + 1, 0, 3, panelHeight);
-					redrawLoggerGridSlice(g2, xPos + 1, 3, panelHeight);
-					g2.setColor(Color.MAGENTA);
-					g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
-					g2.setColor(Color.CYAN);
-					g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
-					oldL = newL;
-					oldR = newR;
-					xPos++;
-					if(xPos == panelWidth) {
-						switch(tm) {
-						case AUTO:   xPos = 0; triggered = false; break;
-						case NORMAL: xPos = 0; triggered = false; break;
-						case SINGLE: triggered = false; break;
-						}
-					}
+				if(logMode == 1) {
+					// Logger mode: values are maxL/maxR (amplitude)
+					newL = (int) sampleToDB(batchL[p]);
+					newR = (int) sampleToDB(batchR[p]);
+				} else {
+					// Scope mode: values are raw sample ints
+					double normL = (batchL[p] / FV1_FULL_SCALE) * gainMultL;
+					double normR = (batchR[p] / FV1_FULL_SCALE) * gainMultR;
+					newL = centerY - (int)(normL * halfH);
+					newR = centerY - (int)(normR * halfH);
 				}
-				g2.dispose();
-				publish();
 
-			} else if(logMode == 0) {
-				// ---- SCOPE MODE — all drawing to back buffer ----
-				Graphics2D g2 = getBufferGraphics();
-				if(g2 == null) return;
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-				double normL = left  / FV1_FULL_SCALE;
-				double normR = right / FV1_FULL_SCALE;
-				double gainMultL = Math.pow(2.0, 16 - scopeCh1Gain);
-				double gainMultR = Math.pow(2.0, 16 - scopeCh2Gain);
-				normL *= gainMultL;
-				normR *= gainMultR;
-
-				int newL = centerY - (int)(normL * halfH);
-				int newR = centerY - (int)(normR * halfH);
-
+				// Trigger detection
 				filter[2] = filter[1];
 				filter[1] = filter[0];
 				filter[0] = newL;
@@ -414,27 +399,40 @@ public class LevelLogger implements AudioSink {
 
 				if(triggered && (tm == triggerMode.AUTO) || (tm == triggerMode.SINGLE)) {
 
-					if(xPos < 1) {
-						// New sweep: clear and draw full grid
+					if(logMode == 1) {
+						// ---- LOGGER MODE ----
+						if(xPos < 1) {
+							g2.setColor(Color.BLACK);
+							g2.fillRect(0, 0, panelWidth, panelHeight);
+							drawLoggerGrid(g2, panelWidth, panelHeight);
+						}
 						g2.setColor(Color.BLACK);
-						g2.fillRect(0, 0, panelWidth, panelHeight);
-						drawGrid(g2, panelWidth, panelHeight, centerY, halfH);
-						oldL = centerY;
-						oldR = centerY;
-					}
-
-					// Erase the thin slice ahead of the cursor, restore grid
-					g2.setColor(Color.BLACK);
-					g2.fillRect(xPos + 1, 0, 3, panelHeight);
-					redrawGridSlice(g2, xPos + 1, 3, centerY, halfH, panelWidth);
-
-					if(ch1Enabled) {
-						g2.setColor(new Color(0, 210, 80));
-						g2.drawLine(xPos, oldL, xPos + 1, newL);
-					}
-					if(ch2Enabled) {
-						g2.setColor(new Color(210, 170, 0));
-						g2.drawLine(xPos, oldR, xPos + 1, newR);
+						g2.fillRect(xPos + 1, 0, 3, panelHeight);
+						redrawLoggerGridSlice(g2, xPos + 1, 3, panelHeight);
+						g2.setColor(Color.MAGENTA);
+						g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
+						g2.setColor(Color.CYAN);
+						g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
+					} else {
+						// ---- SCOPE MODE ----
+						if(xPos < 1) {
+							g2.setColor(Color.BLACK);
+							g2.fillRect(0, 0, panelWidth, panelHeight);
+							drawGrid(g2, panelWidth, panelHeight, centerY, halfH);
+							oldL = centerY;
+							oldR = centerY;
+						}
+						g2.setColor(Color.BLACK);
+						g2.fillRect(xPos + 1, 0, 3, panelHeight);
+						redrawGridSlice(g2, xPos + 1, 3, centerY, halfH, panelWidth);
+						if(ch1Enabled) {
+							g2.setColor(new Color(0, 210, 80));
+							g2.drawLine(xPos, oldL, xPos + 1, newL);
+						}
+						if(ch2Enabled) {
+							g2.setColor(new Color(210, 170, 0));
+							g2.drawLine(xPos, oldR, xPos + 1, newR);
+						}
 					}
 
 					oldL = newL;
@@ -445,6 +443,7 @@ public class LevelLogger implements AudioSink {
 						if(pendingFreeze) {
 							frozen = true;
 							pendingFreeze = false;
+							break;  // stop rendering — sweep is complete and frozen
 						}
 						switch(tm) {
 						case AUTO:   xPos = 0; triggered = false; break;
@@ -453,9 +452,10 @@ public class LevelLogger implements AudioSink {
 						}
 					}
 				}
-				g2.dispose();
-				publish();
 			}
+
+			g2.dispose();
+			publish();
 		}
 
 		private void drawGrid(Graphics2D g2, int panelWidth, int panelHeight,
@@ -562,10 +562,12 @@ public class LevelLogger implements AudioSink {
 			// Trigger a sweep restart so the full grid + traces are redrawn
 			xPos      = 0;
 			triggered = false;
-			// Temporarily unfreeze to allow one updateLevels pass
+			// Temporarily unfreeze to allow one batch pass with current values
 			boolean wasFrozen = frozen;
 			frozen = false;
-			panel.updateLevels();
+			double[] l = { (logMode == 1) ? maxL : left };
+			double[] r = { (logMode == 1) ? maxR : right };
+			panel.updateLevelsBatch(l, r, 1);
 			frozen = wasFrozen;
 		}
 	}

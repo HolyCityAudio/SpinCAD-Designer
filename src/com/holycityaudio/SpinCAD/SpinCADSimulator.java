@@ -182,6 +182,11 @@ public class SpinCADSimulator {
 					// --- Start ---
 					String testWavFileName = checkSimulatorFile();
 					if(testWavFileName != "Not found!") {
+						// Ensure any previous simulator thread is fully stopped
+						if (sim != null) {
+							sim.stopSimulator();
+							try { sim.join(2000); } catch (InterruptedException ignored) {}
+						}
 						setSimRunning(true);
 						btnStartSimulation.setText(" Stop Simulator ");
 						frame.updateAll();

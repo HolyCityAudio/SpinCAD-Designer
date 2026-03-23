@@ -33,8 +33,11 @@ public class AudioFileReader implements AudioSource {
 	String filename;
 	AudioInputStream audioInputStream;
 	final boolean loop;
+	final int frameSize;       // bytes per frame (channels × bytesPerSample)
+	final long totalFrames;    // total frames in the file (-1 if unknown)
+	long framesRead;           // frames consumed from current stream
 
-	public AudioFileReader(String filename, boolean loop) 
+	public AudioFileReader(String filename, boolean loop)
 			throws UnsupportedAudioFileException, IOException {
 		this.filename = filename;
 		this.loop = loop;
@@ -51,24 +54,57 @@ public class AudioFileReader implements AudioSource {
 			throw new UnsupportedAudioFileException("the file must be PCM signed");
 		}
 		if(audioFormat.getSampleRate() != ElmProgram.SAMPLERATE) {
-			System.err.println("SAMPLE RATE WARNING: samples rates != " + ElmProgram.SAMPLERATE + 
+			System.err.println("SAMPLE RATE WARNING: samples rates != " + ElmProgram.SAMPLERATE +
 					" may produce wrong simulated results");
 		}
+		frameSize = audioFormat.getFrameSize();  // 4 for stereo 16-bit
+		totalFrames = audioInputStream.getFrameLength();
+		framesRead = 0;
+		System.out.println("AudioFileReader: " + totalFrames + " frames");
 	}
-	
+
+	/** Reopen the file for looping. */
+	private void reopen() throws IOException {
+		audioInputStream.close();
+		File soundFile = new File(filename);
+		try {
+			audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+		} catch (UnsupportedAudioFileException e) {
+			System.out.println("AudioFileReader: loop reopen failed: " + e);
+			throw new IOException("can't loop file: " + e.getMessage());
+		}
+		framesRead = 0;
+	}
+
 	public int read(int buf[]) throws IOException {
 		byte inBuf[] = new byte[buf.length * 2];
+
+		// If we know the file length, check whether we've consumed all frames.
+		// On macOS, AudioInputStream.read() can block at EOF instead of
+		// returning -1, so we proactively loop before that happens.
+		if(totalFrames > 0 && framesRead >= totalFrames) {
+			if(loop) {
+				reopen();
+			} else {
+				return -1;
+			}
+		}
+
 		int ret = audioInputStream.read(inBuf);
+
+		// Fallback: also handle read() returning -1 (works on Windows/Linux)
 		if(ret < 1 && loop) {
-			audioInputStream.close();  // close old stream before re-opening
-			File soundFile = new File(filename);
-			try {
-				audioInputStream = AudioSystem.getAudioInputStream(soundFile);
-			} catch (UnsupportedAudioFileException e) {
-				throw new IOException("can't loop file: " + e.getMessage());
-			}			
+			reopen();
 			ret = audioInputStream.read(inBuf);
 		}
+
+		if(ret < 1) return ret;
+
+		// Track frames consumed so we can detect EOF proactively
+		if(frameSize > 0) {
+			framesRead += ret / frameSize;
+		}
+
 		int bufCount = 0;
 		for(int i = 0; i < ret; i += 2) {
 			buf[bufCount] = (short)((inBuf[i] & 0xff) | ((inBuf[i + 1] & 0xff) << 8)) << 8;

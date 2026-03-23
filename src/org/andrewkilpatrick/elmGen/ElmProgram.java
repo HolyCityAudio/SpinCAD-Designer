@@ -537,16 +537,12 @@ public String optimizeProgram() {
         if (rdaxScale == 1.0 && !usedElsewhere) {
             // Case 1: both instructions gone, register freed
             // Comments between the pair are preserved as block separators
-            System.out.println("Optimizer Case 1: removed wrax/rdax pair for reg "
-                    + wraxAddr + " (saved 2 instructions, 1 register)");
             savedInstructions += 2;
             savedRegisters    += 1;
             optList.addAll(interveningComments);
 
         } else if (rdaxScale == 1.0) {
             // Case 2: collapse to wrax reg, 1.0
-            System.out.println("Optimizer Case 2: collapsed wrax/rdax to wrax "
-                    + wraxAddr + ", 1.0 (saved 1 instruction)");
             WriteRegister merged = new WriteRegister(wraxAddr, 1.0); // *** ADJUST IF NEEDED ***
             optList.add(merged);
             optList.addAll(interveningComments);
@@ -554,9 +550,6 @@ public String optimizeProgram() {
 
         } else if (!usedElsewhere) {
             // Case 3: replace pair with sof <gain>, 0.0
-            System.out.println("Optimizer Case 3: replaced wrax/rdax with sof "
-                    + rdaxScale + ", 0.0 for reg " + wraxAddr
-                    + " (saved 1 instruction, 1 register)");
             ScaleOffset sof = new ScaleOffset(rdaxScale, 0.0); // *** ADJUST IF NEEDED ***
             optList.add(sof);
             optList.addAll(interveningComments);
@@ -692,7 +685,6 @@ public void optimizeOutputRegisters() {
     }
 
     if (pairInfo.isEmpty()) {
-        System.out.println("Output register optimizer: no output pairs found.");
         return;
     }
 
@@ -769,9 +761,6 @@ public void optimizeOutputRegisters() {
 
                 savedInst += n + 1;
                 savedRegs += 1;
-                System.out.println("Optimizer Case 4: inlined " + n
-                    + " DAC write(s) at reg " + reg
-                    + " (saved " + (n + 1) + " instructions, 1 register)");
 
             } else {
                 // === Case 6: same register, different gains, not used elsewhere ===
@@ -800,9 +789,6 @@ public void optimizeOutputRegisters() {
                 }
 
                 savedInst += pis.size();
-                System.out.println("Optimizer Case 6: inlined " + pis.size()
-                    + " DAC write(s) with scaled gains for reg " + reg
-                    + " (saved " + pis.size() + " instructions)");
             }
 
         // ----- Register used elsewhere (e.g. filter state) -----
@@ -824,15 +810,11 @@ public void optimizeOutputRegisters() {
             insertMap.put(srcWrIdx, inserts);
 
             savedInst += pis.size();
-            System.out.println("Optimizer Case 5: inserted " + pis.size()
-                + " DAC write(s) after wrax reg " + reg
-                + " (saved " + pis.size() + " instructions)");
         }
         // All other combinations: leave as-is
     }
 
     if (removeSet.isEmpty() && replaceMap.isEmpty()) {
-        System.out.println("Output register optimizer: no optimizations applied.");
         return;
     }
 
