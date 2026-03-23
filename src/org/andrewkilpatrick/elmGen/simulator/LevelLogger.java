@@ -56,6 +56,7 @@ public class LevelLogger implements AudioSink {
 	boolean triggered = false;
 
 	private double[] filter = new double[3];
+	private boolean filterInitialized = false;
 
 	private int logMode = 1;  // 0 = scope, 1 = log
 	double left  = -1;
@@ -333,6 +334,7 @@ public class LevelLogger implements AudioSink {
 				// Reset sweep so the full grid is redrawn at new size
 				xPos      = 0;
 				triggered = false;
+				filterInitialized = false;
 				oldL = h / 2;
 				oldR = h / 2;
 				// Publish initial black frame to the panel
@@ -391,7 +393,12 @@ public class LevelLogger implements AudioSink {
 					newR = centerY - (int)(normR * halfH);
 				}
 
-				// Trigger detection
+				// Trigger detection — seed filter on first sample to avoid
+				// false trigger from pixel-coordinate vs zero mismatch
+				if(!filterInitialized) {
+					filter[0] = filter[1] = filter[2] = newL;
+					filterInitialized = true;
+				}
 				filter[2] = filter[1];
 				filter[1] = filter[0];
 				filter[0] = newL;
@@ -409,9 +416,9 @@ public class LevelLogger implements AudioSink {
 						g2.setColor(Color.BLACK);
 						g2.fillRect(xPos + 1, 0, 3, panelHeight);
 						redrawLoggerGridSlice(g2, xPos + 1, 3, panelHeight);
-						g2.setColor(Color.MAGENTA);
+						g2.setColor(new Color(0, 210, 80));
 						g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
-						g2.setColor(Color.CYAN);
+						g2.setColor(new Color(210, 170, 0));
 						g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
 					} else {
 						// ---- SCOPE MODE ----
