@@ -416,10 +416,14 @@ public class LevelLogger implements AudioSink {
 						g2.setColor(Color.BLACK);
 						g2.fillRect(xPos + 1, 0, 3, panelHeight);
 						redrawLoggerGridSlice(g2, xPos + 1, 3, panelHeight);
-						g2.setColor(new Color(0, 210, 80));
-						g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
-						g2.setColor(new Color(210, 170, 0));
-						g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
+						if(ch1Enabled) {
+							g2.setColor(new Color(0, 210, 80));
+							g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
+						}
+						if(ch2Enabled) {
+							g2.setColor(new Color(210, 170, 0));
+							g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
+						}
 					} else {
 						// ---- SCOPE MODE ----
 						if(xPos < 1) {
@@ -584,7 +588,26 @@ public class LevelLogger implements AudioSink {
 	}
 
 	public void setLogMode(int mode) {
-		if((logMode == 0) || (logMode == 1)) logMode = mode;
+		if(mode == 0 || mode == 1) logMode = mode;
+	}
+
+	public int getLogMode() { return logMode; }
+
+	/** Reset sweep state for a clean redraw (e.g. after switching modes). */
+	public void resetSweep() {
+		xPos = 0;
+		triggered = false;
+		filterInitialized = false;
+		frozen = false;
+		pendingFreeze = false;
+		// Clear the back buffer to black
+		if(panel != null && panel.backBuffer != null) {
+			java.awt.Graphics2D g2 = panel.backBuffer.createGraphics();
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, panel.backBuffer.getWidth(), panel.backBuffer.getHeight());
+			g2.dispose();
+			panel.publish();
+		}
 	}
 
 	public void setPaused(boolean p) { paused = p; }

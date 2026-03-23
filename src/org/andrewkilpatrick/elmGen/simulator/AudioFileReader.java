@@ -92,10 +92,23 @@ public class AudioFileReader implements AudioSource {
 
 		int ret = audioInputStream.read(inBuf);
 
-		// Fallback: also handle read() returning -1 (works on Windows/Linux)
-		if(ret < 1 && loop) {
-			reopen();
-			ret = audioInputStream.read(inBuf);
+		// macOS AudioInputStream can return 0 or -1 spuriously mid-file.
+		// Retry a few times before treating it as a real EOF.
+		if(ret < 1) {
+			System.out.println("AudioFileReader: read returned " + ret
+					+ " at frame " + framesRead + "/" + totalFrames);
+			for(int retry = 0; retry < 3 && ret < 1; retry++) {
+				if(ret == -1) {
+					// True EOF or macOS quirk — reopen if looping
+					if(loop) {
+						reopen();
+					} else {
+						return -1;
+					}
+				}
+				ret = audioInputStream.read(inBuf);
+				System.out.println("AudioFileReader: retry " + (retry+1) + " returned " + ret);
+			}
 		}
 
 		if(ret < 1) return ret;

@@ -45,7 +45,7 @@ public class SpinSimulator extends Thread {
 	String inputFilename = null;
 	String outputFilename = null;
 	LinkedList<AudioSink> audioSinks = null;
-	public LevelLogger scope, levelL = null;
+	public LevelLogger scope = null;
 
 	/**
 	 * Creates a simulator.
@@ -297,25 +297,27 @@ if (false) {
 		this.loopMode = loopMode;
 	}
 
-	public void showLevelLogger() {
-		audioSinks.add(new LevelLogger());
-		System.out.print(audioSinks);
-	}
-
-	// GSW added this part to integrate into SpinCAD Designer
-	public void showLevelLogger(JPanel p) {
-		levelL = new LevelLogger(p);
-		audioSinks.add(levelL);
-//		System.out.println(audioSinks);
-	}
-
-	// GSW added this part to integrate into SpinCAD Designer
-	public void showScope(JPanel p) {
+	/**
+	 * Add a single display sink (scope/logger) to the simulator.
+	 * Starts in scope mode (logMode=0). Use setDisplayMode() to switch.
+	 */
+	public void showDisplay(JPanel p) {
 		scope = new LevelLogger(p);
 		scope.setLogMode(0);
 		scope.windowRatio = 8;
 		audioSinks.add(scope);
-//		System.out.println(audioSinks);
+	}
+
+	/**
+	 * Switch the display between scope mode (0) and logger mode (1).
+	 */
+	public void setDisplayMode(int mode) {
+		if(scope == null) return;
+		scope.setLogMode(mode);
+		if(mode == 1) {
+			scope.setWindowRatio(512);
+		}
+		scope.resetSweep();
 	}
 
 	public void showLevelMeter() {

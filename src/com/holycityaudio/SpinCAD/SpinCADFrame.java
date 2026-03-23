@@ -41,7 +41,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
@@ -93,7 +92,7 @@ public class SpinCADFrame extends JFrame {
 	 * 
 	 */
 
-	int buildNum = 1055;
+	int buildNum = 1056;
 
 	// Swing things
 	private JPanel contentPane;
@@ -221,43 +220,33 @@ public class SpinCADFrame extends JFrame {
 		simX.sctb.setFloatable(false);
 		simX.sctb.setBorder(border);
 
-		// simPanel: sctb on top, JSplitPane with logger + scope below
+		// simPanel: sctb on top, display panel below
 		simPanel.setLayout(new BorderLayout());
 		simPanel.add(simX.sctb, BorderLayout.NORTH);
 
-		// Right side: amplitude labels + scope panel + scope toolbar
-		JPanel scopeDisplay = new JPanel();
-		scopeDisplay.setLayout(new BoxLayout(scopeDisplay, BoxLayout.X_AXIS));
-
+		// Y-axis label cards: swap between scope (amplitude) and logger (dB) labels
 		org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel ampLabels =
 				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel();
-		scopeDisplay.add(ampLabels);
+		org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel dbLabels =
+				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel();
+		simX.labelCards.add(ampLabels, "scope");
+		simX.labelCards.add(dbLabels, "logger");
+		simX.labelCardLayout.show(simX.labelCards, "scope");
+
+		// Display: label cards on the left, scope panel fills remaining space
+		JPanel displayPanel = new JPanel(new BorderLayout());
+		displayPanel.add(simX.labelCards, BorderLayout.WEST);
 
 		JPanel scopeColumn = new JPanel();
 		scopeColumn.setLayout(new BoxLayout(scopeColumn, BoxLayout.Y_AXIS));
 		scopeColumn.add(simX.scopePanel);
 		simX.stb.setFloatable(false);
 		scopeColumn.add(simX.stb);
-		scopeDisplay.add(scopeColumn);
+		displayPanel.add(scopeColumn, BorderLayout.CENTER);
 
-		// Left side: dB labels + logger panel
-		JPanel loggerDisplay = new JPanel();
-		loggerDisplay.setLayout(new BoxLayout(loggerDisplay, BoxLayout.X_AXIS));
-
-		org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel dbLabels =
-				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel();
-		loggerDisplay.add(dbLabels);
-		loggerDisplay.add(simX.loggerPanel);
-
-		// JSplitPane: logger on left, scope on right — both visible together
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				loggerDisplay, scopeDisplay);
-		splitPane.setDividerLocation(300);
-		splitPane.setResizeWeight(0.4);
-		splitPane.setVisible(false);   // hidden until simulator runs with display enabled
-
-		simPanel.add(splitPane, BorderLayout.CENTER);
-		simX.displayColumn = splitPane;
+		displayPanel.setVisible(false);   // hidden until simulator runs
+		simPanel.add(displayPanel, BorderLayout.CENTER);
+		simX.displayColumn = displayPanel;
 
 		topPanel.add(simPanel, BorderLayout.NORTH);
 
@@ -617,9 +606,15 @@ public class SpinCADFrame extends JFrame {
 		menuBar.add(mnSimulator);
 
 		final JCheckBoxMenuItem mntmEnableDisplay = new JCheckBoxMenuItem("Enable Display");
+		// Restore from preferences
+		java.util.prefs.Preferences simPrefs = java.util.prefs.Preferences.userNodeForPackage(SpinCADSimulator.class);
+		boolean savedDisplayEnabled = simPrefs.getBoolean("ENABLE_DISPLAY", false);
+		mntmEnableDisplay.setSelected(savedDisplayEnabled);
+		simX.displayIsVisible = savedDisplayEnabled;
 		mntmEnableDisplay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				simX.displayIsVisible = mntmEnableDisplay.isSelected();
+				simPrefs.putBoolean("ENABLE_DISPLAY", mntmEnableDisplay.isSelected());
 				if(simX.isSimRunning()) simX.switchDisplay();
 			}
 		});

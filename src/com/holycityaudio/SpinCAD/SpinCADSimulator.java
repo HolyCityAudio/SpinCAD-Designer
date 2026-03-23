@@ -34,7 +34,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.andrewkilpatrick.elmGen.simulator.AudioFileReader;
 import org.andrewkilpatrick.elmGen.simulator.LevelLogger;
-import org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerBufferPanel;
 import org.andrewkilpatrick.elmGen.simulator.LevelLogger.ScopePanel;
 import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 
@@ -45,7 +44,6 @@ public class SpinCADSimulator {
 
 	private Preferences prefs;
 	public JPanel levelMonitor = new JPanel();
-	public LoggerBufferPanel loggerPanel = new LoggerBufferPanel();
 
 	// scopePanel is declared as ScopePanel so the double-buffered paintComponent
 	// is in effect from the moment it is added to the layout.
@@ -55,6 +53,13 @@ public class SpinCADSimulator {
 	public javax.swing.JComponent displayColumn = null;  // set by SpinCADFrame after layout
 	// displayIsVisible: show the logger+scope split pane when simulator runs
 	public boolean displayIsVisible = false;
+
+	// CardLayout for swapping Y-axis labels between scope and logger modes
+	public java.awt.CardLayout labelCardLayout = new java.awt.CardLayout();
+	public JPanel labelCards = new JPanel(labelCardLayout);
+
+	// Current display mode: 0 = scope, 1 = logger
+	private int displayMode = 0;
 
 	private SpinCADFrame frame;
 
@@ -195,8 +200,11 @@ public class SpinCADSimulator {
 								testWavFileName, outputFile,
 								patch.getPotVal(0), patch.getPotVal(1), patch.getPotVal(2));
 
-						sim.showLevelLogger(loggerPanel);
-						sim.showScope(scopePanel);
+						sim.showDisplay(scopePanel);
+						// Apply current display mode (scope or logger)
+						if(displayMode == 1) {
+							sim.setDisplayMode(1);
+						}
 						restoreScopePrefs();
 
 						// Show/hide display and force layout before audio starts
@@ -293,7 +301,9 @@ public class SpinCADSimulator {
 			this.fg    = fg;
 			setOpaque(false);   // we paint everything ourselves
 			setPreferredSize(new Dimension(64, 24));
+			setMinimumSize(new Dimension(64, 24));
 			setMaximumSize(new Dimension(64, 24));
+			setAlignmentY(CENTER_ALIGNMENT);
 			setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 
 			addMouseListener(new MouseAdapter() {
@@ -366,7 +376,11 @@ public class SpinCADSimulator {
 		final Color FREEZE_OFF_COLOR = new Color(80, 80, 90);
 		final Color FREEZE_ON_COLOR  = new Color(30, 30, 40);
 
+		final Color MODE_SCOPE_COLOR  = new Color(60, 80, 130);
+		final Color MODE_LOGGER_COLOR = new Color(100, 60, 120);
+
 		// Custom-painted buttons — immune to LAF background overrides
+		final TraceButton btnModeToggle = new TraceButton("Levels", MODE_SCOPE_COLOR, Color.WHITE);
 		final TraceButton btnCh1Enable = new TraceButton("● Ch 1", CH1_COLOR, Color.WHITE);
 		final TraceButton btnCh2Enable = new TraceButton("● Ch 2", CH2_COLOR, Color.BLACK);
 		final TraceButton btnFreeze    = new TraceButton("❚❚ Freeze", FREEZE_OFF_COLOR, Color.WHITE);
@@ -382,6 +396,9 @@ public class SpinCADSimulator {
 		final JLabel timebaseLabel = new JLabel(" Time/div (ms): ");
 		JComboBox<String> timebase = new JComboBox<>(timebaseLabels);
 
+		// Separators between scope-specific controls (hidden in logger mode)
+		final java.util.List<javax.swing.JToolBar.Separator> scopeSeparators = new java.util.ArrayList<>();
+
 		public ScopeToolBar() {
 			super();
 			setBackground(new Color(45, 45, 50));
@@ -392,6 +409,12 @@ public class SpinCADSimulator {
 
 			Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 			Dimension cbDim = new Dimension(80, 24);
+
+			btnModeToggle.setToolTipText("Switch between Scope and Level Logger");
+			btnModeToggle.addActionListener(this);
+			add(btnModeToggle);
+
+			addSeparator(new Dimension(8, 24));
 
 			btnCh1Enable.setToolTipText("Toggle Channel 1 trace on/off");
 			btnCh1Enable.addActionListener(this);
@@ -405,11 +428,11 @@ public class SpinCADSimulator {
 
 			addSeparator(new Dimension(6, 24));
 
-			btnFreeze.setToolTipText("Freeze scope at end of current sweep");
+			btnFreeze.setToolTipText("Freeze display at end of current sweep");
 			btnFreeze.addActionListener(this);
 			add(btnFreeze);
 
-			addSeparator(new Dimension(8, 24));
+			scopeSeparators.add(addScopeSeparator(8));
 
 			ch1_Vertical_Gain.setToolTipText("Ch 1 vertical gain");
 			ch1_Vertical_Gain.setPreferredSize(cbDim);
@@ -431,7 +454,7 @@ public class SpinCADSimulator {
 			add(ch2_Vertical_Gain_Label);
 			add(ch2_Vertical_Gain);
 
-			addSeparator(new Dimension(8, 24));
+			scopeSeparators.add(addScopeSeparator(8));
 
 			timebase.setToolTipText("Milliseconds per horizontal division");
 			timebase.setPreferredSize(cbDim);
@@ -448,7 +471,33 @@ public class SpinCADSimulator {
 
 		public void updateVisibility(boolean running) {
 			setVisible(running);
-			if(running) refreshButtonStates();
+			if(running) {
+				refreshButtonStates();
+				setScopeControlsVisible(displayMode == 0);
+			}
+		}
+
+		/** Add a separator and return it so it can be tracked for visibility. */
+		private javax.swing.JToolBar.Separator addScopeSeparator(int width) {
+			javax.swing.JToolBar.Separator sep = new javax.swing.JToolBar.Separator(new Dimension(width, 24));
+			add(sep);
+			return sep;
+		}
+
+		/** Show/hide scope-specific controls (gain, timebase, ch enable, freeze, separators). */
+		void setScopeControlsVisible(boolean visible) {
+			ch1_Vertical_Gain_Label.setVisible(visible);
+			ch1_Vertical_Gain.setVisible(visible);
+			ch2_Vertical_Gain_Label.setVisible(visible);
+			ch2_Vertical_Gain.setVisible(visible);
+			timebaseLabel.setVisible(visible);
+			timebase.setVisible(visible);
+			for(javax.swing.JToolBar.Separator sep : scopeSeparators) {
+				sep.setVisible(visible);
+			}
+			// Update mode toggle button
+			btnModeToggle.setLabel(visible ? "Levels" : "Scope");
+			btnModeToggle.setBgColor(visible ? MODE_SCOPE_COLOR : MODE_LOGGER_COLOR);
 		}
 
 		private void refreshButtonStates() {
@@ -487,7 +536,22 @@ public class SpinCADSimulator {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if(arg0.getSource() == btnCh1Enable) {
+			if(arg0.getSource() == btnModeToggle) {
+				// Toggle between scope (0) and logger (1)
+				displayMode = (displayMode == 0) ? 1 : 0;
+				if(sim != null) {
+					sim.setDisplayMode(displayMode);
+					if(displayMode == 0) {
+						// Switching back to scope — restore timebase-based windowRatio
+						String val = (String) timebase.getSelectedItem();
+						try { applyMsPerDiv(Double.parseDouble(val)); }
+						catch(NumberFormatException ignored) {}
+					}
+				}
+				setScopeControlsVisible(displayMode == 0);
+				refreshButtonStates();
+				labelCardLayout.show(labelCards, displayMode == 0 ? "scope" : "logger");
+			} else if(arg0.getSource() == btnCh1Enable) {
 				if(sim != null && sim.scope != null) {
 					sim.scope.setCh1Enabled(!sim.scope.isCh1Enabled());
 					refreshButtonStates();
