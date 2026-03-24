@@ -105,7 +105,11 @@ public class SpinSimulator extends Thread {
 			e.printStackTrace();
 		} catch (LineUnavailableException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("Simulator thread failed unexpectedly: " + e);
+			e.printStackTrace();
 		}
+		runSimulator = false;
 		System.out.println("Simulation ended.");
 	}
 

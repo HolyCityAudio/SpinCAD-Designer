@@ -30,22 +30,33 @@ import org.andrewkilpatrick.elmGen.ElmProgram;
 /**
  * Audio output sink that writes processed samples to the sound card.
  *
- * Uses a dedicated writer thread so that the simulation thread is never
- * blocked by CoreAudio on macOS.  A small queue of byte buffers sits
- * between the simulation (producer) and the audio card (consumer).
+ * Opens the audio line at 44100 Hz (universally supported by all OS audio
+ * subsystems) and resamples from the FV-1 native rate (32768 Hz) using
+ * linear interpolation.  This avoids macOS CoreAudio deadlocks caused by
+ * its sample-rate converter choking on the non-standard 32768 Hz rate.
+ *
+ * A dedicated writer thread keeps the simulation from blocking on I/O.
  */
 public class AudioCardOutput implements AudioSink {
 	private SourceDataLine line = null;
 	private volatile boolean running = true;
 
+	private static final int OUTPUT_RATE = 44100;
+
+	// Resampler: input rate / output rate = advance per output sample
+	private final double srcStep;
+	private double srcPhase = 0.0;
+	private int prevL = 0, prevR = 0;
+
 	// Queue between simulation thread (producer) and audio writer thread (consumer).
-	// Capacity of 4 buffers gives ~0.5s of headroom before the simulation blocks.
 	private final ArrayBlockingQueue<byte[]> queue = new ArrayBlockingQueue<>(4);
 	private Thread writerThread;
 
 	public AudioCardOutput() throws LineUnavailableException {
+		srcStep = (double) ElmProgram.SAMPLERATE / OUTPUT_RATE;
+
 		AudioFormat format = new AudioFormat(
-				(float) ElmProgram.SAMPLERATE,  // sample rate
+				(float) OUTPUT_RATE,             // 44100 Hz output
 				16,                              // bits per sample
 				2,                               // channels (stereo)
 				true,                            // signed
@@ -54,9 +65,9 @@ public class AudioCardOutput implements AudioSink {
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		line = (SourceDataLine) AudioSystem.getLine(info);
 
-		// Explicit buffer: 0.5 seconds of stereo 16-bit audio.
+		// 0.5 seconds of buffer at the output rate
 		int bytesPerFrame = 4;  // 2 channels × 2 bytes (16-bit)
-		int bufferFrames = ElmProgram.SAMPLERATE / 2;  // 0.5 seconds
+		int bufferFrames = OUTPUT_RATE / 2;
 		int bufferBytes = bufferFrames * bytesPerFrame;
 		line.open(format, bufferBytes);
 		line.start();
@@ -69,20 +80,24 @@ public class AudioCardOutput implements AudioSink {
 
 	/** Writer thread: drains the queue into the SourceDataLine. */
 	private void writerLoop() {
-		while (running) {
-			try {
+		try {
+			while (running) {
 				byte[] buf = queue.poll(50, java.util.concurrent.TimeUnit.MILLISECONDS);
-				if (buf == null) continue;  // timeout, check running flag
+				if (buf == null) continue;
 
 				int written = 0;
 				while (written < buf.length && running) {
-					int n = line.write(buf, written, buf.length - written);
+					int chunk = Math.min(4096, buf.length - written);
+					int n = line.write(buf, written, chunk);
 					if (n <= 0) break;
 					written += n;
 				}
-			} catch (InterruptedException e) {
-				return;
 			}
+		} catch (InterruptedException e) {
+			// Thread interrupted during shutdown — normal exit
+		} catch (Exception e) {
+			System.err.println("AudioCardOutput: writer thread failed: " + e);
+			e.printStackTrace();
 		}
 	}
 
@@ -94,20 +109,68 @@ public class AudioCardOutput implements AudioSink {
 	@Override
 	public void writeDac(int[] buf, int len) {
 		if (!running) return;
-		if (len < 1 || len > buf.length) return;
+		if (len < 2 || len > buf.length) return;
 
-		// Convert int samples (FV-1 24-bit fixed point) to 16-bit little-endian bytes
-		byte[] outBuf = new byte[len * 2];
-		int pos = 0;
-		for (int i = 0; i < len; i++) {
-			// Extract bits 8-23 as a 16-bit sample (little-endian: low byte first)
-			outBuf[pos++] = (byte) ((buf[i] & 0xFF00) >> 8);
-			outBuf[pos++] = (byte) ((buf[i] & 0xFF0000) >> 16);
+		int inputFrames = len / 2;  // stereo interleaved: 2 ints per frame
+
+		// How many output frames we can produce from this input buffer.
+		// Each output frame advances srcStep in the input.
+		int outputFrames = (int) ((inputFrames - srcPhase) / srcStep);
+		if (outputFrames < 0) outputFrames = 0;
+		if (srcPhase + outputFrames * srcStep < inputFrames) {
+			outputFrames++;
 		}
 
-		// Enqueue for the writer thread.  Block when the queue is full so the
-		// simulation runs at the audio sample rate instead of racing ahead.
-		// Use a timeout loop so we can still exit promptly when stopped.
+		byte[] outBuf = new byte[outputFrames * 4];  // stereo 16-bit = 4 bytes/frame
+		int pos = 0;
+
+		for (int j = 0; j < outputFrames; j++) {
+			double srcPos = srcPhase + j * srcStep;
+			int idx = (int) srcPos;
+			double frac = srcPos - idx;
+
+			// Bounds check (should not happen, but guard against float drift)
+			if (idx >= inputFrames) break;
+
+			int sL0 = buf[idx * 2];
+			int sR0 = buf[idx * 2 + 1];
+
+			int sL1, sR1;
+			int idx1 = idx + 1;
+			if (idx1 < inputFrames) {
+				sL1 = buf[idx1 * 2];
+				sR1 = buf[idx1 * 2 + 1];
+			} else {
+				sL1 = sL0;
+				sR1 = sR0;
+			}
+
+			// Linear interpolation
+			int outL = (int) (sL0 + (sL1 - sL0) * frac);
+			int outR = (int) (sR0 + (sR1 - sR0) * frac);
+
+			// 16-bit little-endian (extract bits 8-23 of 24-bit fixed point)
+			outBuf[pos++] = (byte) ((outL & 0xFF00) >> 8);
+			outBuf[pos++] = (byte) ((outL & 0xFF0000) >> 16);
+			outBuf[pos++] = (byte) ((outR & 0xFF00) >> 8);
+			outBuf[pos++] = (byte) ((outR & 0xFF0000) >> 16);
+		}
+
+		// Advance resampler phase for next buffer
+		srcPhase = srcPhase + outputFrames * srcStep - inputFrames;
+		prevL = buf[(inputFrames - 1) * 2];
+		prevR = buf[(inputFrames - 1) * 2 + 1];
+
+		// Trim outBuf if the safety break fired
+		if (pos < outBuf.length) {
+			byte[] trimmed = new byte[pos];
+			System.arraycopy(outBuf, 0, trimmed, 0, pos);
+			outBuf = trimmed;
+		}
+
+		if (outBuf.length == 0) return;
+
+		// Enqueue for the writer thread
 		while (running) {
 			try {
 				if (queue.offer(outBuf, 100, java.util.concurrent.TimeUnit.MILLISECONDS)) break;

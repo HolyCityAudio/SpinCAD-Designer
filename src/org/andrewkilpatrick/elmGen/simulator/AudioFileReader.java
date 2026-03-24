@@ -84,6 +84,8 @@ public class AudioFileReader implements AudioSource {
 		// returning -1, so we proactively loop before that happens.
 		if(totalFrames > 0 && framesRead >= totalFrames) {
 			if(loop) {
+				System.out.println("AudioFileReader: proactive loop at frame "
+						+ framesRead + "/" + totalFrames);
 				reopen();
 			} else {
 				return -1;

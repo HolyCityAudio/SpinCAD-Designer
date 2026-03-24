@@ -30,7 +30,7 @@ public class PhaserCADBlock extends SpinCADBlock{
 	 */
 	private static final long serialVersionUID = 343880108475812086L;
 	int temp, temp1, phase, stages, controlMode;
-	PhaserControlPanel cP = null; 
+	transient PhaserControlPanel cP = null;
 
 	public PhaserCADBlock(int x, int y) {
 		super(x, y);
