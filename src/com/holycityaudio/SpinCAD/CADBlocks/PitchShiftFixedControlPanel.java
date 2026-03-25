@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +14,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 
@@ -29,23 +29,25 @@ import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
+
 @SuppressWarnings("serial")
 class PitchShiftFixedControlPanel implements ChangeListener {
-	JSlider freqSlider = new JSlider(JSlider.HORIZONTAL, -12, 19, 0);
-	JSlider ampSlider = new JSlider(JSlider.HORIZONTAL, 0, 3, 2);
+	JSlider freqSlider = new FineControlSlider(JSlider.HORIZONTAL, -12, 19, 0);
+	JSlider ampSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 3, 2);
 
-	JLabel freqLabel = new JLabel();
-	JLabel ampLabel = new JLabel();
-	
+	JTextField freqField = new JTextField();
+	JTextField ampField = new JTextField();
+
 	private JFrame frame;
 
 	private PitchShiftFixedCADBlock pong;
@@ -56,9 +58,47 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 		freqSlider.addChangeListener(this);
 		ampSlider.addChangeListener(this);
 
+		freqField.setHorizontalAlignment(JTextField.CENTER);
+		freqField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int val = Integer.parseInt(freqField.getText().replaceAll("[^0-9.\\-]", "").split("\\.")[0]);
+					val = Math.max(-12, Math.min(19, val));
+					pong.setFreq(val);
+					freqSlider.setValue(val);
+					updateFreqLabel();
+				} catch (NumberFormatException ex) {
+					updateFreqLabel();
+				}
+			}
+		});
+
+		ampField.setHorizontalAlignment(JTextField.CENTER);
+		ampField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					// User types a buffer depth value: 512, 1024, 2048, 4096
+					int typed = Integer.parseInt(ampField.getText().replaceAll("[^0-9.\\-]", "").split("\\.")[0]);
+					int idx;
+					if (typed <= 512) idx = 0;
+					else if (typed <= 1024) idx = 1;
+					else if (typed <= 2048) idx = 2;
+					else idx = 3;
+					idx = Math.max(0, Math.min(3, idx));
+					pong.setAmp(idx);
+					ampSlider.setValue(idx);
+					updateAmpLabel(idx);
+				} catch (NumberFormatException ex) {
+					updateAmpLabel(ampSlider.getValue());
+				}
+			}
+		});
+
 		pong = pitchShiftFixedCADBlock;
 		rb  = new LFORadioButtons();
-		
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Ramp LFO");
@@ -69,11 +109,11 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 				freqSlider.setMajorTickSpacing(1);
 				freqSlider.setPaintTicks(true);
 
-				frame.add(ampLabel);
+				frame.add(ampField);
 				updateAmpLabel(2);
 				frame.add(ampSlider);
 
-				frame.add(freqLabel);
+				frame.add(freqField);
 				updateFreqLabel();
 				frame.add(freqSlider);
 				frame.add(rb);
@@ -115,10 +155,10 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 	}
 
 	public void updateFreqLabel() {
-		freqLabel.setText("Shift (semitones) " + String.format("%d", pong.getFreq()));
+		freqField.setText("Shift (semitones) " + String.format("%d", pong.getFreq()));
 
 	}
-	
+
 	public void updateAmpLabel(int i) {
 		String label = "";
 		if(i == 0) {
@@ -133,9 +173,9 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 		if(i == 3) {
 			label = "4096";
 		}
-		ampLabel.setText("Buffer depth " + label);
-	}	
-	
+		ampField.setText("Buffer depth " + label);
+	}
+
 	private class LFORadioButtons extends JPanel implements ActionListener {
 		JRadioButton lfo0 = new JRadioButton("LFO 0");
 		JRadioButton lfo1 = new JRadioButton("LFO 1");
@@ -171,10 +211,10 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 		public void actionPerformed(ActionEvent arg0) {
 			if(lfo0.isSelected()) {
 				pong.setLFOSel(0);
-			} 
+			}
 			else if(lfo1.isSelected()) {
 				pong.setLFOSel(1);
-			} 
+			}
 		}
 	}
 }

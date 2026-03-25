@@ -2,7 +2,7 @@
  * LPFControlPanel.java
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -15,7 +15,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 package com.holycityaudio.SpinCAD.CADBlocks;
@@ -30,39 +30,41 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
+
 
 @SuppressWarnings("serial")
 class LPFControlPanel extends JFrame implements ChangeListener, ActionListener {
-	JSlider freqSlider;
-	JSlider resSlider;
+	FineControlSlider freqSlider;
+	FineControlSlider resSlider;
 
 	JLabel freqLabel;
 	JLabel resLabel;
-	
+
 	private LPFCADBlock LPF;
-	
+
 	public LPFControlPanel(LPFCADBlock lpfcadBlock) {
 		this.LPF = lpfcadBlock;
 		this.setTitle("Low pass Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-		
-		freqSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+
+		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 100, 0);
 		freqSlider.addChangeListener(this);
-		resSlider = new JSlider(JSlider.HORIZONTAL, 0, 90, 0);
+		resSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 90, 0);
 		resSlider.addChangeListener(this);
-		
+
 		freqLabel = new JLabel();
 		resLabel = new JLabel();
-		
+
 		this.getContentPane().add(freqLabel);
 		this.getContentPane().add(freqSlider);
 
 		this.getContentPane().add(resLabel);
 		this.getContentPane().add(resSlider);
-		
+
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(LPF.getX() + 200, LPF.getY() + 150);	
+		this.setLocation(LPF.getX() + 200, LPF.getY() + 150);
 //		freqSlider.setValue((int)Math.round((lpfcadBlock.getFreq() * 100.0)));
 //		resSlider.setValue((int)Math.round((lpfcadBlock.getRes() * 100.0)));
 	}
@@ -70,7 +72,7 @@ class LPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// ---
-		
+
 	}
 
 	public void stateChanged(ChangeEvent ce) {

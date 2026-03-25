@@ -1,50 +1,54 @@
-/* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
- * 
- *   This program is free software: you can redistribute it and/or modify 
- *   it under the terms of the GNU General Public License as published by 
- *   the Free Software Foundation, either version 3 of the License, or 
- *   (at your option) any later version. 
- * 
- *   This program is distributed in the hope that it will be useful, 
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- *   GNU General Public License for more details. 
- * 
- *   You should have received a copy of the GNU General Public License 
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
- *     
- */ 
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * Copyright (C)2013 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.holycityaudio.SpinCAD.FineControlSlider;
 
 
 
 public class PowerControlControlPanel extends JFrame {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4717076120154216169L;
-	private JSlider powerSlider = new JSlider(JSlider.HORIZONTAL, 1, 5, 2);
-	private JLabel powerLabel = new JLabel("Hi");
+	private JSlider powerSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 5, 2);
+	private JTextField powerField = new JTextField();
 	private JCheckBox invert = new JCheckBox();
 	private JCheckBox flip = new JCheckBox();
 	private PowerPanel graph = new PowerPanel();
@@ -53,6 +57,24 @@ public class PowerControlControlPanel extends JFrame {
 
 	public PowerControlControlPanel(PowerControlCADBlock powerControlCADBlock) {
 		this.pC = powerControlCADBlock;
+
+		powerField.setHorizontalAlignment(JTextField.CENTER);
+		powerField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					double val = Double.parseDouble(powerField.getText().replaceAll("[^0-9.\\-]", ""));
+					val = Math.max(1.0, Math.min(5.0, val));
+					pC.setPower(val);
+					powerSlider.setValue((int) Math.round(val));
+					updatePowerLabel();
+					graph.repaint();
+				} catch (NumberFormatException ex) {
+					updatePowerLabel();
+				}
+			}
+		});
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				setTitle("Power");
@@ -69,18 +91,18 @@ public class PowerControlControlPanel extends JFrame {
 				flip.addItemListener(pccIL);
 				graph.setBackground(Color.BLACK);
 				graph.setPreferredSize(new Dimension(150, 120));
-				//	    graph.setBorder(BorderFactory.createEmptyBorder(0,10,10,10)); 
+				//	    graph.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
 
 				powerSlider.addChangeListener(pccCL);
 
-				add(powerLabel);
+				add(powerField);
 				add(powerSlider);
 				add(invert);
 				add(flip);
 				add(graph);
 
 				powerSlider.setValue((int) Math.round(pC.getPower()));
-				powerLabel.setText(String.format("%2.2f", pC.getPower()));
+				updatePowerLabel();
 				invert.setSelected(pC.getInvert());
 				flip.setSelected(pC.getFlip());
 				setLocation(pC.getX() + 200, pC.getY() + 150);
@@ -92,7 +114,11 @@ public class PowerControlControlPanel extends JFrame {
 		});
 	}
 
-	class pccItemListener implements ItemListener { 
+	private void updatePowerLabel() {
+		powerField.setText(String.format("%2.2f", pC.getPower()));
+	}
+
+	class pccItemListener implements ItemListener {
 		public void itemStateChanged(ItemEvent arg0) {
 			Object source = arg0.getItemSelectable();
 
@@ -101,37 +127,37 @@ public class PowerControlControlPanel extends JFrame {
 					pC.setFlip(false);
 				}
 				else
-					pC.setFlip(true);	    		
+					pC.setFlip(true);
 			} else if (source == invert) {
 		        if (arg0.getStateChange() == ItemEvent.DESELECTED) {
 					pC.setInvert(false);
 				}
 				else
-					pC.setInvert(true);	    		
-			} 		
+					pC.setInvert(true);
+			}
 			graph.repaint();
 		}
 	}
 
-	class pccChangeListener implements ChangeListener { 
+	class pccChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent e) {
 			if (e.getSource() == powerSlider) {
 				pC.setPower((double) powerSlider.getValue());
-				powerLabel.setText(String.format("%2.2f", pC.getPower()));
+				updatePowerLabel();
 			}
 			graph.repaint();
-		}	
+		}
 	}
 
 	class PowerPanel extends JPanel {
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 7344139509606778116L;
 
 		public PowerPanel() {
-			super();		
+			super();
 		}
 
 		protected void paintComponent(Graphics g2) {

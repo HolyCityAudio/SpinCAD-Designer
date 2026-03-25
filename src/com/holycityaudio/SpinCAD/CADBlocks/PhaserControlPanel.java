@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +14,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 
@@ -33,13 +33,16 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
+
 class PhaserControlPanel implements ChangeListener, ActionListener {
-	JSlider stagesSlider = new JSlider(JSlider.HORIZONTAL, 1, 5, 4);
-	JLabel stagesLabel = new JLabel();
+	JSlider stagesSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 5, 4);
+	JTextField stagesField = new JTextField();
 
 	private JLabel controlTypeLabel = new JLabel("Control Type");
 	private JComboBox<String> controlType;
@@ -56,6 +59,23 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 	public PhaserControlPanel(PhaserCADBlock swoosh) {
 
 		stagesSlider.addChangeListener(this);
+		stagesField.setHorizontalAlignment(JTextField.CENTER);
+		stagesField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int val = Integer.parseInt(stagesField.getText().replaceAll("[^0-9.\\-]", "").split("\\.")[0]);
+					// Display shows 2*stages, so user enters display value; convert back
+					val = val / 2;
+					val = Math.max(1, Math.min(5, val));
+					pong.setStages(val);
+					stagesSlider.setValue(val);
+					updateFreqLabel();
+				} catch (NumberFormatException ex) {
+					updateFreqLabel();
+				}
+			}
+		});
 		controlType = new JComboBox<String>(listOptions);
 		controlType.addActionListener(this);
 
@@ -71,16 +91,16 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				stagesSlider.setMajorTickSpacing(1);
 				stagesSlider.setPaintTicks(true);
 
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.add(stagesLabel);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
+				frame.add(stagesField);
 				updateFreqLabel();
 				frame.add(stagesSlider);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 
 				frame.add(controlTypeLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 				frame.add(controlType);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 				controlType.setSelectedIndex(pong.getControlMode());
 
 				stagesSlider.setValue((pong.getStages()));
@@ -101,7 +121,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 	}
 
 	public void updateFreqLabel() {
-		stagesLabel.setText("Stages " + String.format("%d", 2 * pong.getStages()));
+		stagesField.setText("Stages " + String.format("%d", 2 * pong.getStages()));
 	}
 
 	@Override
@@ -113,11 +133,11 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				pong.setControlMode(0);
 			} else if (range == listOptions[1]) {
 				pong.setControlMode(1);
-			} 
+			}
 		}
 		pong.setupControls();
-	}	
-	
+	}
+
 	class MyWindowListener implements WindowListener
 	{
 	@Override

@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -14,33 +14,37 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
+
 class Mixer4_1ControlPanel {
 	private JFrame frame;
 
-	JSlider gain1Slider;
-	JLabel gain1Label;
-	JSlider gain2Slider;
-	JLabel gain2Label;
-	JSlider gain3Slider;
-	JLabel gain3Label;
-	JSlider gain4Slider;
-	JLabel gain4Label;
+	FineControlSlider gain1Slider;
+	JTextField gain1Field;
+	FineControlSlider gain2Slider;
+	JTextField gain2Field;
+	FineControlSlider gain3Slider;
+	JTextField gain3Field;
+	FineControlSlider gain4Slider;
+	JTextField gain4Field;
 
 	private Mixer4_1CADBlock spbMix;
 
@@ -55,34 +59,42 @@ class Mixer4_1ControlPanel {
 				frame.setTitle("Mixer 4-1");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
-				gain1Slider = new JSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain1() * 100));
+				gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain1() * 100));
 				gain1Slider.addChangeListener(new volumeSliderListener());
-				gain1Label = new JLabel();
-				
-				gain2Slider = new JSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain2() * 100));
-				gain2Slider.addChangeListener(new volumeSliderListener());
-				gain2Label = new JLabel();
+				gain1Field = new JTextField();
+				gain1Field.setHorizontalAlignment(JTextField.CENTER);
+				gain1Field.addActionListener(new GainFieldListener());
 
-				gain3Slider = new JSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain3() * 100));
+				gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain2() * 100));
+				gain2Slider.addChangeListener(new volumeSliderListener());
+				gain2Field = new JTextField();
+				gain2Field.setHorizontalAlignment(JTextField.CENTER);
+				gain2Field.addActionListener(new GainFieldListener());
+
+				gain3Slider = new FineControlSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain3() * 100));
 				gain3Slider.addChangeListener(new volumeSliderListener());
-				gain3Label = new JLabel();
-				
-				gain4Slider = new JSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain4() * 100));
+				gain3Field = new JTextField();
+				gain3Field.setHorizontalAlignment(JTextField.CENTER);
+				gain3Field.addActionListener(new GainFieldListener());
+
+				gain4Slider = new FineControlSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain4() * 100));
 				gain4Slider.addChangeListener(new volumeSliderListener());
-				gain4Label = new JLabel();
-				
-				frame.getContentPane().add(gain1Label);
+				gain4Field = new JTextField();
+				gain4Field.setHorizontalAlignment(JTextField.CENTER);
+				gain4Field.addActionListener(new GainFieldListener());
+
+				frame.getContentPane().add(gain1Field);
 				frame.getContentPane().add(gain1Slider);
-				frame.getContentPane().add(gain2Label);
+				frame.getContentPane().add(gain2Field);
 				frame.getContentPane().add(gain2Slider);
-				frame.getContentPane().add(gain3Label);
+				frame.getContentPane().add(gain3Field);
 				frame.getContentPane().add(gain3Slider);
-				frame.getContentPane().add(gain4Label);
+				frame.getContentPane().add(gain4Field);
 				frame.getContentPane().add(gain4Slider);
-				
+
 				updateGainLabels();
-				frame.setVisible(true);	
-				frame.setAlwaysOnTop(true);	
+				frame.setVisible(true);
+				frame.setAlwaysOnTop(true);
 				frame.setResizable(false);
 				frame.setLocation(new Point(spbMix.getX() + 200, spbMix.getY() + 150));
 				frame.pack();
@@ -90,7 +102,7 @@ class Mixer4_1ControlPanel {
 		});
 	}
 
-	class volumeSliderListener implements ChangeListener { 
+	class volumeSliderListener implements ChangeListener {
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
 				spbMix.setGain1((double) gain1Slider.getValue()/100.0);
@@ -111,11 +123,39 @@ class Mixer4_1ControlPanel {
 		}
 	}
 
+	class GainFieldListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				String text = ((JTextField) e.getSource()).getText().replaceAll("[^\\d.\\-]", "");
+				double val = Double.parseDouble(text);
+				int sliderVal = (int) Math.round(val * 100.0);
+				sliderVal = Math.max(1, Math.min(50, sliderVal));
+				if (e.getSource() == gain1Field) {
+					spbMix.setGain1(sliderVal / 100.0);
+					gain1Slider.setValue(sliderVal);
+				} else if (e.getSource() == gain2Field) {
+					spbMix.setGain2(sliderVal / 100.0);
+					gain2Slider.setValue(sliderVal);
+				} else if (e.getSource() == gain3Field) {
+					spbMix.setGain3(sliderVal / 100.0);
+					gain3Slider.setValue(sliderVal);
+				} else if (e.getSource() == gain4Field) {
+					spbMix.setGain4(sliderVal / 100.0);
+					gain4Slider.setValue(sliderVal);
+				}
+				updateGainLabels();
+			} catch (NumberFormatException ex) {
+				updateGainLabels();
+			}
+		}
+	}
+
 	public void updateGainLabels() {
-		gain1Label.setText("Gain " + String.format("%4.2f", spbMix.getGain1()));		
-		gain2Label.setText("Gain " + String.format("%4.2f", spbMix.getGain2()));		
-		gain3Label.setText("Gain " + String.format("%4.2f", spbMix.getGain3()));		
-		gain4Label.setText("Gain " + String.format("%4.2f", spbMix.getGain4()));		
+		gain1Field.setText("Gain " + String.format("%4.2f", spbMix.getGain1()));
+		gain2Field.setText("Gain " + String.format("%4.2f", spbMix.getGain2()));
+		gain3Field.setText("Gain " + String.format("%4.2f", spbMix.getGain3()));
+		gain4Field.setText("Gain " + String.format("%4.2f", spbMix.getGain4()));
 
 	}
 }

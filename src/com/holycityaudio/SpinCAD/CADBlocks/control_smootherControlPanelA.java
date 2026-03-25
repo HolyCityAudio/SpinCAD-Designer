@@ -1,22 +1,22 @@
-/* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * control_smootherControlPanel.java
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
- * 
- *   This program is free software: you can redistribute it and/or modify 
- *   it under the terms of the GNU General Public License as published by 
- *   the Free Software Foundation, either version 3 of the License, or 
- *   (at your option) any later version. 
- * 
- *   This program is distributed in the hope that it will be useful, 
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- *   GNU General Public License for more details. 
- * 
- *   You should have received a copy of the GNU General Public License 
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
- *     
- */ 
+ * Copyright (C)2013 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package com.holycityaudio.SpinCAD.CADBlocks;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -37,6 +37,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 
 public class control_smootherControlPanelA {
@@ -44,10 +45,10 @@ public class control_smootherControlPanelA {
 
 	private control_smootherACADBlock gCB;
 	private boolean silentGUIChange = false;
-	
+
 	// declare the controls
 	JSlider filtSlider;
-	JLabel  filtLabel;	
+	JLabel  filtLabel;
 	JSpinner filtSpinner;
 
 
@@ -71,40 +72,43 @@ public class control_smootherControlPanelA {
 				// Spinner
 				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getfilt()) * 100, 0.51, 10000.00, 0.01);
 				filtSpinner = new JSpinner(filtSpinnerNumberModel);
-				JSpinner.NumberEditor editor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
+				JSpinner.NumberEditor editor = (JSpinner.NumberEditor)filtSpinner.getEditor();
 
-				DecimalFormat format = editor.getFormat();  
-				format.setMinimumFractionDigits(2);  
-				format.setMaximumFractionDigits(2);  
-				editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
-				Dimension d = filtSpinner.getPreferredSize();  
-				d.width = 55;  
-				filtSpinner.setPreferredSize(d);  
+				DecimalFormat format = editor.getFormat();
+				format.setMinimumFractionDigits(2);
+				format.setMaximumFractionDigits(2);
+				editor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
+				Dimension d = filtSpinner.getPreferredSize();
+				d.width = 55;
+				filtSpinner.setPreferredSize(d);
 
 				updatefiltSpinner();
 				filtSpinner.addChangeListener(new control_smootherListener());
 				topLine.add(filtSpinner);
 				topLine.setVisible(true);
 
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 				frame.getContentPane().add(topLine);
 
-				frame.add(Box.createRigidArea(new Dimension(5,5)));			
+				frame.add(Box.createRigidArea(new Dimension(5,5)));
 
-				// JSlider value is converted to an exponent representing filter frequency, so 
+				// JSlider value is converted to an exponent representing filter frequency, so
 				// -29 => 10^(-29/100) = 0.5129 Hz which determined is the lowest practical frequency possible
 				// with the FV-1's coefficient resolution.
 				// 100 => 10^(100/100) = 10 Hz.
 
-				filtSlider = SpinCADBlock.LogSlider(0.5129,10.0,gCB.getfilt(), "LOGFREQ", 100.0);
+				int leftLimit = SpinCADBlock.logvalToSlider(0.5129, 100.0);
+				int rightLimit = SpinCADBlock.logvalToSlider(10.0, 100.0);
+				int initial = SpinCADBlock.logvalToSlider(SpinCADBlock.filtToFreq(gCB.getfilt()), 100.0);
+				filtSlider = new FineControlSlider(JSlider.HORIZONTAL, leftLimit, rightLimit, initial);
 
 				filtSlider.addChangeListener(new control_smootherListener());
-				frame.getContentPane().add(filtSlider);		
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.getContentPane().add(filtSlider);
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 
 				frame.addWindowListener(new MyWindowListener());
 
-				frame.setVisible(true);		
+				frame.setVisible(true);
 				frame.pack();
 				frame.setResizable(false);
 
@@ -114,10 +118,10 @@ public class control_smootherControlPanelA {
 		});
 	}
 
-	// add change listener for Sliders 
-	class control_smootherListener implements ChangeListener { 
+	// add change listener for Sliders
+	class control_smootherListener implements ChangeListener {
 		public void stateChanged(ChangeEvent ce) {
-			if(silentGUIChange == true) 
+			if(silentGUIChange == true)
 				return;
 			if(ce.getSource() == filtSlider) {
 				gCB.setfilt(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(filtSlider.getValue(), 100.0)));
@@ -139,7 +143,7 @@ public class control_smootherControlPanelA {
 					filtSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getfilt()));
 				}
 				finally {
-					silentGUIChange = false;   	    	  
+					silentGUIChange = false;
 				}
 			}
 		});
@@ -153,7 +157,7 @@ public class control_smootherControlPanelA {
 					filtSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getfilt()))));
 				}
 				finally {
-					silentGUIChange = false;   	    	  
+					silentGUIChange = false;
 				}
 			}
 		});
