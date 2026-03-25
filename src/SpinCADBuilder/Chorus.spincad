@@ -35,7 +35,7 @@ equ width 30	// double value of width %
 // let's see if we can make it work.
 
 equ lfoSel 0
-@comboBox lfoSel 'LFO 0' 'LFO 1'
+@comboBox lfoSel 'SIN LFO 0' 'SIN LFO 1'
 
 @isPinConnected Input
 ;

@@ -168,50 +168,50 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 		progressBar_1.setToolTipText("RAM Used: " + ramUsed);
 		progressBar_1.setValue(ramUsed);
 
-		int rampLFO_0 = SpinCADModel.countLFOReferences(model,"LoadRampLFO(0");
+		int rampLFO_0 = SpinCADModel.countLFOReferences(model,"WLDR 0,");
 		if(rampLFO_0 == 0) {
 			ramp0Bar.setBackground(Color.GREEN);
 			ramp0Bar.setForeground(Color.black);
 		} else if(rampLFO_0 == 1) {
 			ramp0Bar.setBackground(Color.YELLOW);
 			ramp0Bar.setForeground(Color.black);
-		} else { 
+		} else {
 			ramp0Bar.setBackground(Color.RED);
 			ramp0Bar.setForeground(Color.white);
 		}
 
-		int rampLFO_1 = SpinCADModel.countLFOReferences(model,"LoadRampLFO(1");
+		int rampLFO_1 = SpinCADModel.countLFOReferences(model,"WLDR 1,");
 		if(rampLFO_1 == 0) {
 			ramp1Bar.setBackground(Color.GREEN);
 			ramp1Bar.setForeground(Color.black);
 		} else if(rampLFO_1 == 1) {
 			ramp1Bar.setBackground(Color.YELLOW);
 			ramp1Bar.setForeground(Color.black);
-		} else { 
+		} else {
 			ramp1Bar.setBackground(Color.RED);
 			ramp1Bar.setForeground(Color.white);
 		}
 
-		int sineLFO_0 = SpinCADModel.countLFOReferences(model,"LoadSinLFO(0");
+		int sineLFO_0 = SpinCADModel.countLFOReferences(model,"WLDS 0,");
 		if(sineLFO_0 == 0) {
 			sine0Bar.setBackground(Color.GREEN);
 			sine0Bar.setForeground(Color.black);
 		} else if(sineLFO_0 == 1) {
 			sine0Bar.setBackground(Color.YELLOW);
 			sine0Bar.setForeground(Color.black);
-		} else { 
+		} else {
 			sine0Bar.setBackground(Color.RED);
 			sine0Bar.setForeground(Color.white);
 		}
 
-		int sineLFO_1 = SpinCADModel.countLFOReferences(model,"LoadSinLFO(1");
+		int sineLFO_1 = SpinCADModel.countLFOReferences(model,"WLDS 1,");
 		if(sineLFO_1 == 0) {
 			sine1Bar.setBackground(Color.GREEN);
 			sine1Bar.setForeground(Color.black);
 		} else if(sineLFO_1 == 1) {
 			sine1Bar.setBackground(Color.YELLOW);
 			sine1Bar.setForeground(Color.black);
-		} else { 
+		} else {
 			sine1Bar.setBackground(Color.RED);
 			sine1Bar.setForeground(Color.white);
 		}

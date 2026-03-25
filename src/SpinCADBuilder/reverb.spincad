@@ -49,10 +49,10 @@ equ   kfh   0.01  ; high pass filter
 @sliderLabel kfh 'High Pass' 40 1000 400.0 100.0 1 LOGFREQ
 
 equ lfoSelA 0
-@comboBox lfoSelA 'LFO 0' 'LFO 1'
+@comboBox lfoSelA 'SIN LFO 0' 'SIN LFO 1'
 
 equ lfoSelB 0
-@comboBox lfoSelB 'LFO 0' 'LFO 1'
+@comboBox lfoSelB 'SIN LFO 0' 'SIN LFO 1'
 
 equ rate1 20
 @sliderLabel rate1 LFO_Rate_1 0.0 51.0 20.0 100.0 2 SINLFOFREQ

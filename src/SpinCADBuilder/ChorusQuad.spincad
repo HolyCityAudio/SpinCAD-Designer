@@ -38,7 +38,7 @@ equ width 64	// double value of width
 @sliderLabel width LFO_Width 0.0 200.0 3.0 100.0 1
 
 equ lfoSel 0
-@comboBox lfoSel 'LFO 0' 'LFO 1'
+@comboBox lfoSel 'SIN LFO 0' 'SIN LFO 1'
 
 @isPinConnected Input
 ;
