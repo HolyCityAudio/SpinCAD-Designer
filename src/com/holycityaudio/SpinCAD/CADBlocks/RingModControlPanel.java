@@ -36,15 +36,17 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 class RingModControlPanel extends JFrame implements ChangeListener, ActionListener {
 	JSlider lfoSlider;
 	JTextField lfoField;
+	private final int sliderMax;
 
 	private RingModCADBlock outBlock;
 
 	public RingModControlPanel(RingModCADBlock ringModCADBlock) {
 		this.outBlock = ringModCADBlock;
+		sliderMax = (int) Math.round(SpinCADBlock.freqToFilt(1200.0) * 500.0);
 		this.setTitle("Ring Mod");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		lfoSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 100, 0);
+		lfoSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, sliderMax, 0);
 		lfoSlider.addChangeListener(this);
 
 		lfoField = new JTextField();
@@ -54,9 +56,10 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double val = Double.parseDouble(lfoField.getText().replaceAll("[^0-9.\\-]", ""));
-					// val is in slider units (0-100)
-					int sliderVal = (int) Math.round(val);
-					sliderVal = Math.max(0, Math.min(100, sliderVal));
+					// val is in Hz; convert back to filter coefficient
+					double filt = SpinCADBlock.freqToFilt(val);
+					int sliderVal = (int) Math.round(filt * 500.0);
+					sliderVal = Math.max(0, Math.min(sliderMax, sliderVal));
 					outBlock.setLFO((double) sliderVal / 500.0);
 					lfoSlider.setValue(sliderVal);
 					updateLFOLabel();

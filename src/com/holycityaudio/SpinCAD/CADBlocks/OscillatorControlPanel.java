@@ -39,15 +39,17 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 	private static final long serialVersionUID = 7196751355520422757L;
 	JSlider lfoSlider;
 	JTextField lfoField;
+	private final int sliderMax;
 
 	private OscillatorCADBlock outBlock;
 
 	public OscillatorControlPanel(OscillatorCADBlock osc) {
 		this.outBlock = osc;
+		sliderMax = (int) Math.round(SpinCADBlock.freqToFilt(5000.0) * 100000.0);
 		this.setTitle("Oscillator");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		lfoSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 60000, 0);
+		lfoSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, sliderMax, 0);
 		lfoSlider.addChangeListener(this);
 
 		lfoField = new JTextField();
@@ -57,13 +59,10 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double val = Double.parseDouble(lfoField.getText().replaceAll("[^0-9.\\-]", ""));
-					// val is in Hz from filtToFreq display; convert back to filter coefficient
-					// Clamp slider value to valid range
-					double lfoVal = lfoSlider.getValue() / 100000.0;
-					// We can't easily invert filtToFreq, so clamp the slider range directly
-					// Parse as slider units (0-60000)
-					int sliderVal = (int) Math.round(val);
-					sliderVal = Math.max(0, Math.min(60000, sliderVal));
+					// val is in Hz; convert back to filter coefficient
+					double filt = SpinCADBlock.freqToFilt(val);
+					int sliderVal = (int) Math.round(filt * 100000.0);
+					sliderVal = Math.max(0, Math.min(sliderMax, sliderVal));
 					outBlock.setLFO((double) sliderVal / 100000.0);
 					lfoSlider.setValue(sliderVal);
 					updateLFOLabel();
