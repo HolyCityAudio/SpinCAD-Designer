@@ -273,7 +273,7 @@ public class SixBandEQControlPanel extends JFrame {
 	}
 
 	private void updateQField() {
-		qField.setText("Resonance " + String.format("%2.2f", filter.getQLevel()));
+		qField.setText("Resonance " + String.format("%2.1f", filter.getQLevel()));
 	}
 
 	class SixBandChangeListener implements ChangeListener {

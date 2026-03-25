@@ -64,7 +64,7 @@ class BiQuadControlPanel {
 				frame.setTitle("BiQuad Filter");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
-				freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 120, 3600, (int) spbBQF.getFreq());
+				freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 1200, 36000, (int) (spbBQF.getFreq() * 10));
 				resSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 100, (int) spbBQF.getQ());
 				freqSlider.addChangeListener(new biquadSliderListener());
 				resSlider.addChangeListener(new biquadSliderListener());
@@ -77,10 +77,9 @@ class BiQuadControlPanel {
 						try {
 							String text = freqField.getText().replaceAll("[^\\d.\\-]", "");
 							double val = Double.parseDouble(text);
-							int sliderVal = (int) Math.round(val);
-							sliderVal = Math.max(freqSlider.getMinimum(), Math.min(freqSlider.getMaximum(), sliderVal));
-							spbBQF.setFreq((double) sliderVal);
-							freqSlider.setValue(sliderVal);
+							val = Math.max(120.0, Math.min(3600.0, val));
+							spbBQF.setFreq(val);
+							freqSlider.setValue((int) Math.round(val * 10));
 							updateFreqField();
 						} catch (NumberFormatException ex) {
 							updateFreqField();
@@ -132,7 +131,7 @@ class BiQuadControlPanel {
 	class biquadSliderListener implements ChangeListener {
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-				spbBQF.setFreq((double) freqSlider.getValue());
+				spbBQF.setFreq((double) freqSlider.getValue() / 10.0);
 				updateFreqField();
 			}
 			if(ce.getSource() == resSlider) {
@@ -146,11 +145,11 @@ class BiQuadControlPanel {
 
 
 	private void updateFreqField() {
-		freqField.setText("Frequency " + String.format("%4.2f", spbBQF.getFreq()));
+		freqField.setText("Frequency " + String.format("%4.1f", spbBQF.getFreq()));
 	}
 
 	private void updateResField() {
-		resField.setText("Resonance " + String.format("%4.2f", spbBQF.getQ()));
+		resField.setText("Resonance " + String.format("%4.1f", spbBQF.getQ()));
 	}
 
 	class bqRadioButtons extends JPanel implements ActionListener {

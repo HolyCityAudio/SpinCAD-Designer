@@ -161,10 +161,10 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
 
 	private void updateFreqLabel() {
 		freqField.setText("Frequency: "
-				+ String.format("%2.2f", HPF.getFreq()));
+				+ String.format("%4.1f", HPF.getFreq()));
 	}
 
 	private void updateResLabel() {
-		resField.setText("Resonance: " + String.format("%2.2f", HPF.getRes()));
+		resField.setText("Resonance: " + String.format("%2.1f", HPF.getRes()));
 	}
 }

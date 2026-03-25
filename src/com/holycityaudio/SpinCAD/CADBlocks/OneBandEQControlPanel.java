@@ -164,6 +164,6 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 
 	private void updateQLabel() {
 		qField.setText("Resonance "
-				+ String.format("%2.2f", filter.getQLevel()));
+				+ String.format("%2.1f", filter.getQLevel()));
 	}
 }

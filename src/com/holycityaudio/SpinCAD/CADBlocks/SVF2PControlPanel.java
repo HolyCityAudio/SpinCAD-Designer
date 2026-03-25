@@ -59,7 +59,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 		this.setTitle("State Variable Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 80, 2500, 1000);
+		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 800, 25000, 10000);
 		freqSlider.addChangeListener(this);
 
 		qSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 100, 1);
@@ -76,7 +76,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 					double val = Double.parseDouble(freqField.getText().replaceAll("[^0-9.\\-]", ""));
 					val = Math.max(80.0, Math.min(2500.0, val));
 					cadBlock.setFreq(val);
-					freqSlider.setValue((int) Math.round(val));
+					freqSlider.setValue((int) Math.round(val * 10));
 					updateFreqField();
 				} catch (NumberFormatException ex) {
 					updateFreqField();
@@ -124,7 +124,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 		this.getContentPane().add(freqPanel);
 		this.getContentPane().add(qPanel);
 
-		freqSlider.setValue((int)Math.round((svf2pcadBlock.getFreq())));
+		freqSlider.setValue((int)Math.round(svf2pcadBlock.getFreq() * 10));
 		updateFreqField();
 		qSlider.setValue((int)Math.round(svf2pcadBlock.getQ()));
 		updateQField();
@@ -143,7 +143,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 
 	public void stateChanged(ChangeEvent ce) {
 		if(ce.getSource() == freqSlider) {
-			cadBlock.setFreq((double) freqSlider.getValue());
+			cadBlock.setFreq((double) freqSlider.getValue() / 10.0);
 			updateFreqField();
 		}
 		else if(ce.getSource() == qSlider) {
@@ -153,10 +153,10 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 	}
 
 	private void updateQField() {
-		qField.setText("Resonance " + String.format("%2.2f", cadBlock.getQ()));
+		qField.setText("Resonance " + String.format("%2.1f", cadBlock.getQ()));
 	}
 
 	private void updateFreqField() {
-		freqField.setText("Frequency " + String.format("%2.2f", cadBlock.getFreq()));
+		freqField.setText("Frequency " + String.format("%4.1f", cadBlock.getFreq()));
 	}
 }

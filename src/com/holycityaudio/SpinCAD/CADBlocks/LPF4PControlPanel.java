@@ -85,6 +85,22 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 				freqField = new JTextField();
 				freqField.setHorizontalAlignment(JTextField.CENTER);
+				freqField.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							String text = freqField.getText().replaceAll("[^\\d.\\-]", "");
+							double val = Double.parseDouble(text);
+							int sliderVal = (int) Math.round(val);
+							sliderVal = Math.max(80, Math.min(2500, sliderVal));
+							freqSlider.setValue(sliderVal);
+							LPF.setFreq((double) sliderVal);
+							updateFreqLabel();
+						} catch (NumberFormatException ex) {
+							updateFreqLabel();
+						}
+					}
+				});
 
 				int qSliderPosition = (int)(1/LPF.getQ());
 				qSlider = new FineControlSlider(JSlider.HORIZONTAL, 10, 200, qSliderPosition);
@@ -112,8 +128,8 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 				updateQLabel();
 
-//				getContentPane().add(freqField);
-//				getContentPane().add(freqSlider);
+				getContentPane().add(freqField);
+				getContentPane().add(freqSlider);
 				getContentPane().add(Box.createRigidArea(new Dimension(250,4)));
 				getContentPane().add(qField);
 				getContentPane().add(Box.createRigidArea(new Dimension(250,4)));
@@ -122,8 +138,8 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 				getContentPane().add(nPoles);
 				getContentPane().add(Box.createRigidArea(new Dimension(250,4)));
 
-//				freqSlider.setValue((int)Math.round(LPF.getFreq()));
-//				updateFreqLabel();
+				freqSlider.setValue((int)Math.round(LPF.getFreq()));
+				updateFreqLabel();
 				setAlwaysOnTop(true);
 				setVisible(true);
 				setLocation(new Point(LPF.getX() + 200, LPF.getY() + 150));
@@ -161,11 +177,11 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 	public void updateQLabel() {
 //		qField.setText(" Resonance " + String.format(new DecimalFormat("#.##").format(0.1/LPF.getQ())));
-		qField.setText(" Resonance " + String.format("%3.2f",(0.1/LPF.getQ())));
+		qField.setText(" Resonance " + String.format("%3.1f",(0.1/LPF.getQ())));
 	}
 
 	private void updateFreqLabel() {
-		freqField.setText("Frequency " + String.format("%2.2f", LPF.getFreq()));
+		freqField.setText("Frequency " + String.format("%4.1f", LPF.getFreq()));
 	}
 
 }
