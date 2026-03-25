@@ -143,7 +143,6 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}
 		});

@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * VeeControlPanel.java
+ * PotSkipControlPanel.java
  * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
@@ -45,15 +45,17 @@ import java.awt.Dimension;
 import java.text.DecimalFormat;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
-import com.holycityaudio.SpinCAD.CADBlocks.VeeCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.PotSkipCADBlock;
 
 @SuppressWarnings("unused")
-public class VeeControlPanel extends spinCADControlPanel {
+public class PotSkipControlPanel extends spinCADControlPanel {
 	private JFrame frame;
-	private VeeCADBlock gCB;
+	private PotSkipCADBlock gCB;
 	// declare the controls
+	JSlider stepsSlider;
+	JLabel  stepsLabel;	
 
-public VeeControlPanel(VeeCADBlock genericCADBlock) {
+public PotSkipControlPanel(PotSkipCADBlock genericCADBlock) {
 		
 		gCB = genericCADBlock;
 
@@ -61,9 +63,30 @@ public VeeControlPanel(VeeCADBlock genericCADBlock) {
 			public void run() {
 
 				frame = new JFrame();
-				frame.setTitle("Vee");
+				frame.setTitle("PotSkip");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					stepsSlider = new JSlider(JSlider.HORIZONTAL, (int)(4 * 4),(int) (12 * 4), (int) (gCB.getsteps() * 4));
+						stepsSlider.addChangeListener(new PotSkipListener());
+						stepsLabel = new JLabel();
+						Border stepsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						stepsLabel.setBorder(stepsBorder1);
+						updatestepsLabel();
+						
+						Border stepsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel stepsinnerPanel = new JPanel();
+							
+						stepsinnerPanel.setLayout(new BoxLayout(stepsinnerPanel, BoxLayout.Y_AXIS));
+						stepsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						stepsinnerPanel.add(stepsLabel);
+						stepsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
+						stepsinnerPanel.add(stepsSlider);		
+						stepsinnerPanel.setBorder(stepsborder2);
+			
+						frame.add(stepsinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -74,13 +97,17 @@ public VeeControlPanel(VeeCADBlock genericCADBlock) {
 		}
 
 		// add change listener for Sliders, Spinners 
-		class VeeListener implements ChangeListener { 
+		class PotSkipListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == stepsSlider) {
+			gCB.setsteps((double) (stepsSlider.getValue()/4));
+				updatestepsLabel();
+			}
 			}
 		}
 
 		// add item state changed listener for Checkbox
-		class VeeItemListener implements java.awt.event.ItemListener { 
+		class PotSkipItemListener implements java.awt.event.ItemListener { 
 			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
@@ -88,11 +115,14 @@ public VeeControlPanel(VeeCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class VeeActionListener implements java.awt.event.ActionListener { 
+		class PotSkipActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updatestepsLabel() {
+		stepsLabel.setText("Steps " + String.format("%4.0f", gCB.getsteps()));		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

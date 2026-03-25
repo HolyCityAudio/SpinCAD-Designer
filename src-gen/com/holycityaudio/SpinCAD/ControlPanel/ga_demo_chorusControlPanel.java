@@ -68,7 +68,6 @@ public ga_demo_chorusControlPanel(ga_demo_chorusCADBlock genericCADBlock) {
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}
 		});

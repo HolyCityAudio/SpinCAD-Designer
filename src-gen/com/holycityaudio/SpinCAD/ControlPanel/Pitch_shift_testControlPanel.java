@@ -117,7 +117,6 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}
 		});

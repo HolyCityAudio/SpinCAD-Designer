@@ -184,10 +184,10 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 	}
 
 	private void updateAttackField() {
-		attackField.setText(String.format("Attack: %4.2f", SpinCADBlock.filtToFreq(pC.getAttack())));
+		attackField.setText(String.format("Attack: %4.1f", SpinCADBlock.filtToFreq(pC.getAttack())));
 	}
 
 	private void updateDecayField() {
-		decayField.setText(String.format("Decay: %4.2f", SpinCADBlock.filtToFreq(pC.getDecay())));
+		decayField.setText(String.format("Decay: %4.1f", SpinCADBlock.filtToFreq(pC.getDecay())));
 	}
 }

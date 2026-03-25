@@ -109,7 +109,6 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}
 		});

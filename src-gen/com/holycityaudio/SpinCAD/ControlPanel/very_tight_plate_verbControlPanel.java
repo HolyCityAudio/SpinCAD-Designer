@@ -68,7 +68,6 @@ public very_tight_plate_verbControlPanel(very_tight_plate_verbCADBlock genericCA
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}
 		});

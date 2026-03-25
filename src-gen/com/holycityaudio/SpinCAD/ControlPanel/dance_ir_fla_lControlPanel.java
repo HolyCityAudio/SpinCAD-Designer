@@ -68,7 +68,6 @@ public dance_ir_fla_lControlPanel(dance_ir_fla_lCADBlock genericCADBlock) {
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}
 		});

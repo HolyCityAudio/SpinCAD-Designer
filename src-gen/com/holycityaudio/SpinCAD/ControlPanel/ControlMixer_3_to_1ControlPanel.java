@@ -137,7 +137,6 @@ public ControlMixer_3_to_1ControlPanel(ControlMixer_3_to_1CADBlock genericCADBlo
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}
 		});

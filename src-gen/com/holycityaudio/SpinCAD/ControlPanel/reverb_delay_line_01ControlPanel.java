@@ -279,7 +279,6 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);		
 			}
 		});

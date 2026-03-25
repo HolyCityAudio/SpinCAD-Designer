@@ -57,7 +57,7 @@ class LPF1PControlPanel extends JFrame {
 				setTitle("Low pass 1 pole");
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-				freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 80, 2500, 1000);
+				freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 800, 25000, 10000);
 				freqSlider.addChangeListener(new LPF1PChangeListener());
 
 				freqField = new JTextField();
@@ -68,10 +68,9 @@ class LPF1PControlPanel extends JFrame {
 						try {
 							String text = freqField.getText().replaceAll("[^\\d.\\-]", "");
 							double val = Double.parseDouble(text);
-							int sliderVal = (int) Math.round(val);
-							sliderVal = Math.max(80, Math.min(2500, sliderVal));
-							LPF.setFreq((double) sliderVal);
-							freqSlider.setValue(sliderVal);
+							val = Math.max(80.0, Math.min(2500.0, val));
+							LPF.setFreq(val);
+							freqSlider.setValue((int) Math.round(val * 10));
 							updateFreqLabel();
 						} catch (NumberFormatException ex) {
 							updateFreqLabel();
@@ -82,7 +81,7 @@ class LPF1PControlPanel extends JFrame {
 				getContentPane().add(freqField);
 				getContentPane().add(freqSlider);
 
-				freqSlider.setValue((int)Math.round(LPF.getFreq()));
+				freqSlider.setValue((int)Math.round(LPF.getFreq() * 10));
 				updateFreqLabel();
 				setVisible(true);
 				setAlwaysOnTop(true);
@@ -96,14 +95,14 @@ class LPF1PControlPanel extends JFrame {
 	class LPF1PChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-				LPF.setFreq((double) freqSlider.getValue());
+				LPF.setFreq((double) freqSlider.getValue() / 10.0);
 				updateFreqLabel();
 			}
 		}
 	}
 
 	private void updateFreqLabel() {
-		freqField.setText("Frequency " + String.format("%2.2f", LPF.getFreq()));
+		freqField.setText("Frequency " + String.format("%4.1f", LPF.getFreq()));
 	}
 
 }

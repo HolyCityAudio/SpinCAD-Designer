@@ -66,7 +66,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.PotSkipCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LFO_ValueCADBlock;
@@ -730,15 +729,6 @@
 		}
 	});
 	mn_control.add(mntm_Pot2);
-		
-	final JMenuItem mntm_PotSkip = new JMenuItem("Pot Skip");
-	mntm_PotSkip.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new PotSkipCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_PotSkip);
 		
 	final JMenuItem mntm_control_smoother = new JMenuItem("Smoother");
 	mntm_control_smoother.addActionListener(new ActionListener() {

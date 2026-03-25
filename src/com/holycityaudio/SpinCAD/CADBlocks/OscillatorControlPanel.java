@@ -99,6 +99,6 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 	}
 
 	private void updateLFOLabel() {
-		lfoField.setText("LFO "	+ String.format("%2.2f Hz", SpinCADBlock.filtToFreq(outBlock.getLFO())));
+		lfoField.setText("LFO "	+ String.format("%4.1f Hz", SpinCADBlock.filtToFreq(outBlock.getLFO())));
 	}
 }
