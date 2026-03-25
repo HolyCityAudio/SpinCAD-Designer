@@ -503,7 +503,7 @@ public class SpinCADBlock extends SpinFXBlock {
 		return Math.pow(10.0, pos/multiplier);
 	}
 
-	public static JSlider LogSlider(double fLow, double fHigh, double initVal, String mode, double pointsPerDecade) {
+	public static FineControlSlider LogSlider(double fLow, double fHigh, double initVal, String mode, double pointsPerDecade) {
 		int initial = -1;
 		int leftLimit = logvalToSlider(fLow, pointsPerDecade);
 		int rightLimit = logvalToSlider(fHigh, pointsPerDecade);
@@ -523,7 +523,7 @@ public class SpinCADBlock extends SpinFXBlock {
 			initial = leftLimit;
 		}
 
-		return new JSlider(JSlider.HORIZONTAL, leftLimit, rightLimit, initial);
+		return new FineControlSlider(JSlider.HORIZONTAL, leftLimit, rightLimit, initial);
 	}
 
 }

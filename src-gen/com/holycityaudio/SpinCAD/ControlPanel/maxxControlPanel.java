@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.maxxCADBlock;
@@ -52,8 +54,8 @@ public class maxxControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private maxxCADBlock gCB;
 	// declare the controls
-	JSlider gainSlider;
-	JLabel  gainLabel;	
+	FineControlSlider gainSlider;
+	JTextField  gainField;
 
 public maxxControlPanel(maxxCADBlock genericCADBlock) {
 		
@@ -69,21 +71,37 @@ public maxxControlPanel(maxxCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getgain() * 1000.0));
+					gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getgain() * 1000.0));
 						gainSlider.addChangeListener(new maxxListener());
-						gainLabel = new JLabel();
+						gainField = new JTextField();
+						gainField.setHorizontalAlignment(JTextField.CENTER);
 						Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						gainLabel.setBorder(gainBorder1);
+						gainField.setBorder(gainBorder1);
+						gainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(gainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(gainSlider.getMinimum(), Math.min(gainSlider.getMaximum(), sliderVal));
+						gainSlider.setValue(sliderVal);
+						gCB.setgain((double) sliderVal / 1000.0);
+									updategainLabel();
+								} catch (NumberFormatException ex) {
+									updategainLabel();
+								}
+							}
+						});
 						updategainLabel();
-						
+			
 						Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel gaininnerPanel = new JPanel();
-							
+			
 						gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gaininnerPanel.add(gainLabel);
-						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gaininnerPanel.add(gainSlider);		
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gaininnerPanel.add(gainField);
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gaininnerPanel.add(gainSlider);
 						gaininnerPanel.setBorder(gainborder2);
 			
 						frame.add(gaininnerPanel);
@@ -121,7 +139,7 @@ public maxxControlPanel(maxxCADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Gain " + String.format("%4.3f", gCB.getgain()));		
+		gainField.setText("Gain " + String.format("%4.3f", gCB.getgain()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

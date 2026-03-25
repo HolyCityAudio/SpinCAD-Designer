@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.PluckCADBlock;
@@ -52,12 +54,12 @@ public class PluckControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private PluckCADBlock gCB;
 	// declare the controls
-	JSlider thresholdSlider;
-	JLabel  thresholdLabel;	
-	JSlider pulseLevelSlider;
-	JLabel  pulseLevelLabel;	
-	JSlider pulseWidthSlider;
-	JLabel  pulseWidthLabel;	
+	FineControlSlider thresholdSlider;
+	JTextField  thresholdField;
+	FineControlSlider pulseLevelSlider;
+	JTextField  pulseLevelField;
+	FineControlSlider pulseWidthSlider;
+	JTextField  pulseWidthField;
 
 public PluckControlPanel(PluckCADBlock genericCADBlock) {
 		
@@ -73,68 +75,117 @@ public PluckControlPanel(PluckCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					thresholdSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.5 * 1000.0), (int) (gCB.getthreshold() * 1000.0));
+					thresholdSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.5 * 1000.0), (int) (gCB.getthreshold() * 1000.0));
 						thresholdSlider.addChangeListener(new PluckListener());
-						thresholdLabel = new JLabel();
+						thresholdField = new JTextField();
+						thresholdField.setHorizontalAlignment(JTextField.CENTER);
 						Border thresholdBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						thresholdLabel.setBorder(thresholdBorder1);
+						thresholdField.setBorder(thresholdBorder1);
+						thresholdField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(thresholdField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(thresholdSlider.getMinimum(), Math.min(thresholdSlider.getMaximum(), sliderVal));
+						thresholdSlider.setValue(sliderVal);
+						gCB.setthreshold((double) sliderVal / 1000.0);
+									updatethresholdLabel();
+								} catch (NumberFormatException ex) {
+									updatethresholdLabel();
+								}
+							}
+						});
 						updatethresholdLabel();
-						
+			
 						Border thresholdborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel thresholdinnerPanel = new JPanel();
-							
+			
 						thresholdinnerPanel.setLayout(new BoxLayout(thresholdinnerPanel, BoxLayout.Y_AXIS));
-						thresholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						thresholdinnerPanel.add(thresholdLabel);
-						thresholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						thresholdinnerPanel.add(thresholdSlider);		
+						thresholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						thresholdinnerPanel.add(thresholdField);
+						thresholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						thresholdinnerPanel.add(thresholdSlider);
 						thresholdinnerPanel.setBorder(thresholdborder2);
 			
 						frame.add(thresholdinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					pulseLevelSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 100.0),(int) (1.0 * 100.0), (int) (gCB.getpulseLevel() * 100.0));
+					pulseLevelSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-1.0 * 100.0),(int) (1.0 * 100.0), (int) (gCB.getpulseLevel() * 100.0));
 						pulseLevelSlider.addChangeListener(new PluckListener());
-						pulseLevelLabel = new JLabel();
+						pulseLevelField = new JTextField();
+						pulseLevelField.setHorizontalAlignment(JTextField.CENTER);
 						Border pulseLevelBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						pulseLevelLabel.setBorder(pulseLevelBorder1);
+						pulseLevelField.setBorder(pulseLevelBorder1);
+						pulseLevelField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(pulseLevelField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(pulseLevelSlider.getMinimum(), Math.min(pulseLevelSlider.getMaximum(), sliderVal));
+						pulseLevelSlider.setValue(sliderVal);
+						gCB.setpulseLevel((double) sliderVal / 100.0);
+									updatepulseLevelLabel();
+								} catch (NumberFormatException ex) {
+									updatepulseLevelLabel();
+								}
+							}
+						});
 						updatepulseLevelLabel();
-						
+			
 						Border pulseLevelborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel pulseLevelinnerPanel = new JPanel();
-							
+			
 						pulseLevelinnerPanel.setLayout(new BoxLayout(pulseLevelinnerPanel, BoxLayout.Y_AXIS));
-						pulseLevelinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						pulseLevelinnerPanel.add(pulseLevelLabel);
-						pulseLevelinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						pulseLevelinnerPanel.add(pulseLevelSlider);		
+						pulseLevelinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pulseLevelinnerPanel.add(pulseLevelField);
+						pulseLevelinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pulseLevelinnerPanel.add(pulseLevelSlider);
 						pulseLevelinnerPanel.setBorder(pulseLevelborder2);
 			
 						frame.add(pulseLevelinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (5000 * 1), (int) (gCB.getpulseWidth() * 1));
+					pulseWidthSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (5000 * 1), (int) (gCB.getpulseWidth() * 1));
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						pulseWidthSlider.addChangeListener(new PluckListener());
-						pulseWidthLabel = new JLabel();
+						pulseWidthField = new JTextField();
+						pulseWidthField.setHorizontalAlignment(JTextField.CENTER);
 						Border pulseWidthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						pulseWidthLabel.setBorder(pulseWidthBorder1);
+						pulseWidthField.setBorder(pulseWidthBorder1);
+						pulseWidthField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(pulseWidthField.getText().replaceAll("[^0-9.\\-]", ""));
+						double samples = val * ElmProgram.getSamplerate() / 1000.0;
+						int sliderVal = (int) Math.round(samples * 1);
+						sliderVal = Math.max(pulseWidthSlider.getMinimum(), Math.min(pulseWidthSlider.getMaximum(), sliderVal));
+						pulseWidthSlider.setValue(sliderVal);
+						gCB.setpulseWidth((double) sliderVal / 1);
+									updatepulseWidthLabel();
+								} catch (NumberFormatException ex) {
+									updatepulseWidthLabel();
+								}
+							}
+						});
 						updatepulseWidthLabel();
-						
+			
 						Border pulseWidthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel pulseWidthinnerPanel = new JPanel();
-							
+			
 						pulseWidthinnerPanel.setLayout(new BoxLayout(pulseWidthinnerPanel, BoxLayout.Y_AXIS));
-						pulseWidthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						pulseWidthinnerPanel.add(pulseWidthLabel);
-						pulseWidthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						pulseWidthinnerPanel.add(pulseWidthSlider);		
+						pulseWidthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pulseWidthinnerPanel.add(pulseWidthField);
+						pulseWidthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pulseWidthinnerPanel.add(pulseWidthSlider);
 						pulseWidthinnerPanel.setBorder(pulseWidthborder2);
 			
 						frame.add(pulseWidthinnerPanel);
@@ -180,13 +231,13 @@ public PluckControlPanel(PluckCADBlock genericCADBlock) {
 			}
 		}
 		private void updatethresholdLabel() {
-		thresholdLabel.setText("Threshold " + String.format("%4.3f", gCB.getthreshold()));		
+		thresholdField.setText("Threshold " + String.format("%4.3f", gCB.getthreshold()));		
 		}		
 		private void updatepulseLevelLabel() {
-		pulseLevelLabel.setText("Pulse Amplitude " + String.format("%4.2f", gCB.getpulseLevel()));		
+		pulseLevelField.setText("Pulse Amplitude " + String.format("%4.2f", gCB.getpulseLevel()));		
 		}		
 		private void updatepulseWidthLabel() {
-		pulseWidthLabel.setText("Pulse Width " + String.format("%4.0f", (1000 * gCB.getpulseWidth())/ElmProgram.getSamplerate()));		
+		pulseWidthField.setText("Pulse Width " + String.format("%4.0f", (1000 * gCB.getpulseWidth())/ElmProgram.getSamplerate()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

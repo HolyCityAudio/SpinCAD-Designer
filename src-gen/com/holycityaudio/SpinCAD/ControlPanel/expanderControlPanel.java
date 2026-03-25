@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.expanderCADBlock;
@@ -52,10 +54,10 @@ public class expanderControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private expanderCADBlock gCB;
 	// declare the controls
-	JSlider ripLowSlider;
-	JLabel  ripLowLabel;	
-	JSlider ripHighSlider;
-	JLabel  ripHighLabel;	
+	FineControlSlider ripLowSlider;
+	JTextField  ripLowField;
+	FineControlSlider ripHighSlider;
+	JTextField  ripHighField;
 
 public expanderControlPanel(expanderCADBlock genericCADBlock) {
 		
@@ -71,42 +73,74 @@ public expanderControlPanel(expanderCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					ripLowSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.015 * 1000.0), (int) (gCB.getripLow() * 1000.0));
+					ripLowSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.015 * 1000.0), (int) (gCB.getripLow() * 1000.0));
 						ripLowSlider.addChangeListener(new expanderListener());
-						ripLowLabel = new JLabel();
+						ripLowField = new JTextField();
+						ripLowField.setHorizontalAlignment(JTextField.CENTER);
 						Border ripLowBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						ripLowLabel.setBorder(ripLowBorder1);
+						ripLowField.setBorder(ripLowBorder1);
+						ripLowField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(ripLowField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(ripLowSlider.getMinimum(), Math.min(ripLowSlider.getMaximum(), sliderVal));
+						ripLowSlider.setValue(sliderVal);
+						gCB.setripLow((double) sliderVal / 1000.0);
+									updateripLowLabel();
+								} catch (NumberFormatException ex) {
+									updateripLowLabel();
+								}
+							}
+						});
 						updateripLowLabel();
-						
+			
 						Border ripLowborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel ripLowinnerPanel = new JPanel();
-							
+			
 						ripLowinnerPanel.setLayout(new BoxLayout(ripLowinnerPanel, BoxLayout.Y_AXIS));
-						ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						ripLowinnerPanel.add(ripLowLabel);
-						ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						ripLowinnerPanel.add(ripLowSlider);		
+						ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						ripLowinnerPanel.add(ripLowField);
+						ripLowinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						ripLowinnerPanel.add(ripLowSlider);
 						ripLowinnerPanel.setBorder(ripLowborder2);
 			
 						frame.add(ripLowinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					ripHighSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.02 * 1000.0),(int) (0.2 * 1000.0), (int) (gCB.getripHigh() * 1000.0));
+					ripHighSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.02 * 1000.0),(int) (0.2 * 1000.0), (int) (gCB.getripHigh() * 1000.0));
 						ripHighSlider.addChangeListener(new expanderListener());
-						ripHighLabel = new JLabel();
+						ripHighField = new JTextField();
+						ripHighField.setHorizontalAlignment(JTextField.CENTER);
 						Border ripHighBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						ripHighLabel.setBorder(ripHighBorder1);
+						ripHighField.setBorder(ripHighBorder1);
+						ripHighField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(ripHighField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(ripHighSlider.getMinimum(), Math.min(ripHighSlider.getMaximum(), sliderVal));
+						ripHighSlider.setValue(sliderVal);
+						gCB.setripHigh((double) sliderVal / 1000.0);
+									updateripHighLabel();
+								} catch (NumberFormatException ex) {
+									updateripHighLabel();
+								}
+							}
+						});
 						updateripHighLabel();
-						
+			
 						Border ripHighborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel ripHighinnerPanel = new JPanel();
-							
+			
 						ripHighinnerPanel.setLayout(new BoxLayout(ripHighinnerPanel, BoxLayout.Y_AXIS));
-						ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						ripHighinnerPanel.add(ripHighLabel);
-						ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						ripHighinnerPanel.add(ripHighSlider);		
+						ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						ripHighinnerPanel.add(ripHighField);
+						ripHighinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						ripHighinnerPanel.add(ripHighSlider);
 						ripHighinnerPanel.setBorder(ripHighborder2);
 			
 						frame.add(ripHighinnerPanel);
@@ -148,10 +182,10 @@ public expanderControlPanel(expanderCADBlock genericCADBlock) {
 			}
 		}
 		private void updateripLowLabel() {
-		ripLowLabel.setText("Rip_Low " + String.format("%4.3f", gCB.getripLow()));		
+		ripLowField.setText("Rip_Low " + String.format("%4.3f", gCB.getripLow()));		
 		}		
 		private void updateripHighLabel() {
-		ripHighLabel.setText("Rip_High " + String.format("%4.3f", gCB.getripHigh()));		
+		ripHighField.setText("Rip_High " + String.format("%4.3f", gCB.getripHigh()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

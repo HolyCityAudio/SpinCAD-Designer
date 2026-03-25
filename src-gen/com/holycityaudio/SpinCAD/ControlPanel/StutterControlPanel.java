@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.StutterCADBlock;
@@ -52,10 +54,10 @@ public class StutterControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private StutterCADBlock gCB;
 	// declare the controls
-	JSlider delayLengthSlider;
-	JLabel  delayLengthLabel;	
-	JSlider fadeTimeFiltSlider;
-	JLabel  fadeTimeFiltLabel;	
+	FineControlSlider delayLengthSlider;
+	JTextField  delayLengthField;
+	FineControlSlider fadeTimeFiltSlider;
+	JTextField  fadeTimeFiltField;
 
 public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		
@@ -71,52 +73,86 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(32 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
+					delayLengthSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(32 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new StutterListener());
-						delayLengthLabel = new JLabel();
+						delayLengthField = new JTextField();
+						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						delayLengthLabel.setBorder(delayLengthBorder1);
+						delayLengthField.setBorder(delayLengthBorder1);
+						delayLengthField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(delayLengthField.getText().replaceAll("[^0-9.\\-]", ""));
+						double samples = val * ElmProgram.getSamplerate() / 1000.0;
+						int sliderVal = (int) Math.round(samples * 1);
+						sliderVal = Math.max(delayLengthSlider.getMinimum(), Math.min(delayLengthSlider.getMaximum(), sliderVal));
+						delayLengthSlider.setValue(sliderVal);
+						gCB.setdelayLength((double) sliderVal / 1);
+									updatedelayLengthLabel();
+								} catch (NumberFormatException ex) {
+									updatedelayLengthLabel();
+								}
+							}
+						});
 						updatedelayLengthLabel();
-						
+			
 						Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel delayLengthinnerPanel = new JPanel();
-							
+			
 						delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
-						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						delayLengthinnerPanel.add(delayLengthLabel);
-						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						delayLengthinnerPanel.add(delayLengthSlider);		
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						delayLengthinnerPanel.add(delayLengthField);
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						delayLengthinnerPanel.add(delayLengthSlider);
 						delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
 						frame.add(delayLengthinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					fadeTimeFiltSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (50 * 1.0), (int) SpinCADBlock.filtToTime(gCB.getfadeTimeFilt() * 1.0));
+					fadeTimeFiltSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (50 * 1.0), (int) SpinCADBlock.filtToTime(gCB.getfadeTimeFilt() * 1.0));
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						fadeTimeFiltSlider.addChangeListener(new StutterListener());
-						fadeTimeFiltLabel = new JLabel();
+						fadeTimeFiltField = new JTextField();
+						fadeTimeFiltField.setHorizontalAlignment(JTextField.CENTER);
 						Border fadeTimeFiltBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						fadeTimeFiltLabel.setBorder(fadeTimeFiltBorder1);
+						fadeTimeFiltField.setBorder(fadeTimeFiltBorder1);
+						fadeTimeFiltField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(fadeTimeFiltField.getText().replaceAll("[^0-9.\\-]", ""));
+						double filt = SpinCADBlock.timeToFilt(val);
+						int sliderVal = (int) Math.round(filt * 1.0);
+						sliderVal = Math.max(fadeTimeFiltSlider.getMinimum(), Math.min(fadeTimeFiltSlider.getMaximum(), sliderVal));
+						fadeTimeFiltSlider.setValue(sliderVal);
+						gCB.setfadeTimeFilt(filt);
+									updatefadeTimeFiltLabel();
+								} catch (NumberFormatException ex) {
+									updatefadeTimeFiltLabel();
+								}
+							}
+						});
 						updatefadeTimeFiltLabel();
-						
+			
 						Border fadeTimeFiltborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel fadeTimeFiltinnerPanel = new JPanel();
-							
+			
 						fadeTimeFiltinnerPanel.setLayout(new BoxLayout(fadeTimeFiltinnerPanel, BoxLayout.Y_AXIS));
-						fadeTimeFiltinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						fadeTimeFiltinnerPanel.add(fadeTimeFiltLabel);
-						fadeTimeFiltinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						fadeTimeFiltinnerPanel.add(fadeTimeFiltSlider);		
+						fadeTimeFiltinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						fadeTimeFiltinnerPanel.add(fadeTimeFiltField);
+						fadeTimeFiltinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						fadeTimeFiltinnerPanel.add(fadeTimeFiltSlider);
 						fadeTimeFiltinnerPanel.setBorder(fadeTimeFiltborder2);
 			
 						frame.add(fadeTimeFiltinnerPanel);
@@ -158,10 +194,10 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			}
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
 		private void updatefadeTimeFiltLabel() {
-		fadeTimeFiltLabel.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt())) + " ms");		
+		fadeTimeFiltField.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt())) + " ms");		
 		}		
 		
 		class MyWindowListener implements WindowListener

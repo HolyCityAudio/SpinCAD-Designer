@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.Ted_Rev_ReverbCADBlock;
@@ -52,14 +54,14 @@ public class Ted_Rev_ReverbControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private Ted_Rev_ReverbCADBlock gCB;
 	// declare the controls
-	JSlider inputGainlSlider;
-	JLabel  inputGainlLabel;	
-	JSlider inputGainrSlider;
-	JLabel  inputGainrLabel;	
-	JSlider preSlider;
-	JLabel  preLabel;	
-	JSlider decaySlider;
-	JLabel  decayLabel;	
+	FineControlSlider inputGainlSlider;
+	JTextField  inputGainlField;
+	FineControlSlider inputGainrSlider;
+	JTextField  inputGainrField;
+	FineControlSlider preSlider;
+	JTextField  preField;
+	FineControlSlider decaySlider;
+	JTextField  decayField;
 
 public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 		
@@ -81,21 +83,37 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						inputGainlSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGainl())));
+						inputGainlSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGainl())));
 						inputGainlSlider.addChangeListener(new Ted_Rev_ReverbListener());
-						inputGainlLabel = new JLabel();
+						inputGainlField = new JTextField();
+						inputGainlField.setHorizontalAlignment(JTextField.CENTER);
 						Border inputGainlBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						inputGainlLabel.setBorder(inputGainlBorder1);
+						inputGainlField.setBorder(inputGainlBorder1);
+						inputGainlField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(inputGainlField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(inputGainlSlider.getMinimum(), Math.min(inputGainlSlider.getMaximum(), sliderVal));
+						inputGainlSlider.setValue(sliderVal);
+						gCB.setinputGainl((double) sliderVal);
+									updateinputGainlLabel();
+								} catch (NumberFormatException ex) {
+									updateinputGainlLabel();
+								}
+							}
+						});
 						updateinputGainlLabel();
-						
+			
 						Border inputGainlborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel inputGainlinnerPanel = new JPanel();
-							
+			
 						inputGainlinnerPanel.setLayout(new BoxLayout(inputGainlinnerPanel, BoxLayout.Y_AXIS));
-						inputGainlinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputGainlinnerPanel.add(inputGainlLabel);
-						inputGainlinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputGainlinnerPanel.add(inputGainlSlider);		
+						inputGainlinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGainlinnerPanel.add(inputGainlField);
+						inputGainlinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGainlinnerPanel.add(inputGainlSlider);
 						inputGainlinnerPanel.setBorder(inputGainlborder2);
 			
 						frame.add(inputGainlinnerPanel);
@@ -108,63 +126,111 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						inputGainrSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGainr())));
+						inputGainrSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGainr())));
 						inputGainrSlider.addChangeListener(new Ted_Rev_ReverbListener());
-						inputGainrLabel = new JLabel();
+						inputGainrField = new JTextField();
+						inputGainrField.setHorizontalAlignment(JTextField.CENTER);
 						Border inputGainrBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						inputGainrLabel.setBorder(inputGainrBorder1);
+						inputGainrField.setBorder(inputGainrBorder1);
+						inputGainrField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(inputGainrField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(inputGainrSlider.getMinimum(), Math.min(inputGainrSlider.getMaximum(), sliderVal));
+						inputGainrSlider.setValue(sliderVal);
+						gCB.setinputGainr((double) sliderVal);
+									updateinputGainrLabel();
+								} catch (NumberFormatException ex) {
+									updateinputGainrLabel();
+								}
+							}
+						});
 						updateinputGainrLabel();
-						
+			
 						Border inputGainrborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel inputGainrinnerPanel = new JPanel();
-							
+			
 						inputGainrinnerPanel.setLayout(new BoxLayout(inputGainrinnerPanel, BoxLayout.Y_AXIS));
-						inputGainrinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputGainrinnerPanel.add(inputGainrLabel);
-						inputGainrinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputGainrinnerPanel.add(inputGainrSlider);		
+						inputGainrinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGainrinnerPanel.add(inputGainrField);
+						inputGainrinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGainrinnerPanel.add(inputGainrSlider);
 						inputGainrinnerPanel.setBorder(inputGainrborder2);
 			
 						frame.add(inputGainrinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					preSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (9900 * 1), (int) (gCB.getpre() * 1));
+					preSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (9900 * 1), (int) (gCB.getpre() * 1));
 						preSlider.addChangeListener(new Ted_Rev_ReverbListener());
-						preLabel = new JLabel();
+						preField = new JTextField();
+						preField.setHorizontalAlignment(JTextField.CENTER);
 						Border preBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						preLabel.setBorder(preBorder1);
+						preField.setBorder(preBorder1);
+						preField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(preField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1);
+						sliderVal = Math.max(preSlider.getMinimum(), Math.min(preSlider.getMaximum(), sliderVal));
+						preSlider.setValue(sliderVal);
+						gCB.setpre((double) sliderVal / 1);
+									updatepreLabel();
+								} catch (NumberFormatException ex) {
+									updatepreLabel();
+								}
+							}
+						});
 						updatepreLabel();
-						
+			
 						Border preborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel preinnerPanel = new JPanel();
-							
+			
 						preinnerPanel.setLayout(new BoxLayout(preinnerPanel, BoxLayout.Y_AXIS));
-						preinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						preinnerPanel.add(preLabel);
-						preinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						preinnerPanel.add(preSlider);		
+						preinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						preinnerPanel.add(preField);
+						preinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						preinnerPanel.add(preSlider);
 						preinnerPanel.setBorder(preborder2);
 			
 						frame.add(preinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					decaySlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdecay() * 1));
+					decaySlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdecay() * 1));
 						decaySlider.addChangeListener(new Ted_Rev_ReverbListener());
-						decayLabel = new JLabel();
+						decayField = new JTextField();
+						decayField.setHorizontalAlignment(JTextField.CENTER);
 						Border decayBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						decayLabel.setBorder(decayBorder1);
+						decayField.setBorder(decayBorder1);
+						decayField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(decayField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1);
+						sliderVal = Math.max(decaySlider.getMinimum(), Math.min(decaySlider.getMaximum(), sliderVal));
+						decaySlider.setValue(sliderVal);
+						gCB.setdecay((double) sliderVal / 1);
+									updatedecayLabel();
+								} catch (NumberFormatException ex) {
+									updatedecayLabel();
+								}
+							}
+						});
 						updatedecayLabel();
-						
+			
 						Border decayborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel decayinnerPanel = new JPanel();
-							
+			
 						decayinnerPanel.setLayout(new BoxLayout(decayinnerPanel, BoxLayout.Y_AXIS));
-						decayinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						decayinnerPanel.add(decayLabel);
-						decayinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						decayinnerPanel.add(decaySlider);		
+						decayinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						decayinnerPanel.add(decayField);
+						decayinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						decayinnerPanel.add(decaySlider);
 						decayinnerPanel.setBorder(decayborder2);
 			
 						frame.add(decayinnerPanel);
@@ -214,16 +280,16 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainlLabel() {
-		inputGainlLabel.setText("Input Gain L " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGainl()))));		
+		inputGainlField.setText("Input Gain L " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGainl()))));		
 		}		
 		private void updateinputGainrLabel() {
-		inputGainrLabel.setText("Input Gain R " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGainr()))));		
+		inputGainrField.setText("Input Gain R " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGainr()))));		
 		}		
 		private void updatepreLabel() {
-		preLabel.setText("Pre_Delay " + String.format("%4.0f", gCB.getpre()));		
+		preField.setText("Pre_Delay " + String.format("%4.0f", gCB.getpre()));		
 		}		
 		private void updatedecayLabel() {
-		decayLabel.setText("Decay_Time " + String.format("%4.0f", gCB.getdecay()));		
+		decayField.setText("Decay_Time " + String.format("%4.0f", gCB.getdecay()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

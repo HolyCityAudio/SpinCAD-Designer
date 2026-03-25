@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.DrumDelaySrcCADBlock;
@@ -52,20 +54,20 @@ public class DrumDelaySrcControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private DrumDelaySrcCADBlock gCB;
 	// declare the controls
-	JSlider inputGainSlider;
-	JLabel  inputGainLabel;	
-	JSlider fbkGainSlider;
-	JLabel  fbkGainLabel;	
-	JSlider delayLengthSlider;
-	JLabel  delayLengthLabel;	
-	JSlider tap1RatioSlider;
-	JLabel  tap1RatioLabel;	
-	JSlider tap2RatioSlider;
-	JLabel  tap2RatioLabel;	
-	JSlider tap3RatioSlider;
-	JLabel  tap3RatioLabel;	
-	JSlider tap4RatioSlider;
-	JLabel  tap4RatioLabel;	
+	FineControlSlider inputGainSlider;
+	JTextField  inputGainField;
+	FineControlSlider fbkGainSlider;
+	JTextField  fbkGainField;
+	FineControlSlider delayLengthSlider;
+	JTextField  delayLengthField;
+	FineControlSlider tap1RatioSlider;
+	JTextField  tap1RatioField;
+	FineControlSlider tap2RatioSlider;
+	JTextField  tap2RatioField;
+	FineControlSlider tap3RatioSlider;
+	JTextField  tap3RatioField;
+	FineControlSlider tap4RatioSlider;
+	JTextField  tap4RatioField;
 
 public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 		
@@ -87,21 +89,37 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
+						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 						inputGainSlider.addChangeListener(new DrumDelaySrcListener());
-						inputGainLabel = new JLabel();
+						inputGainField = new JTextField();
+						inputGainField.setHorizontalAlignment(JTextField.CENTER);
 						Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						inputGainLabel.setBorder(inputGainBorder1);
+						inputGainField.setBorder(inputGainBorder1);
+						inputGainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(inputGainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(inputGainSlider.getMinimum(), Math.min(inputGainSlider.getMaximum(), sliderVal));
+						inputGainSlider.setValue(sliderVal);
+						gCB.setinputGain((double) sliderVal);
+									updateinputGainLabel();
+								} catch (NumberFormatException ex) {
+									updateinputGainLabel();
+								}
+							}
+						});
 						updateinputGainLabel();
-						
+			
 						Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel inputGaininnerPanel = new JPanel();
-							
+			
 						inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
-						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputGaininnerPanel.add(inputGainLabel);
-						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputGaininnerPanel.add(inputGainSlider);		
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGaininnerPanel.add(inputGainField);
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGaininnerPanel.add(inputGainSlider);
 						inputGaininnerPanel.setBorder(inputGainborder2);
 			
 						frame.add(inputGaininnerPanel);
@@ -114,131 +132,228 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
 						fbkGainSlider.addChangeListener(new DrumDelaySrcListener());
-						fbkGainLabel = new JLabel();
+						fbkGainField = new JTextField();
+						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
 						Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						fbkGainLabel.setBorder(fbkGainBorder1);
+						fbkGainField.setBorder(fbkGainBorder1);
+						fbkGainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(fbkGainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(fbkGainSlider.getMinimum(), Math.min(fbkGainSlider.getMaximum(), sliderVal));
+						fbkGainSlider.setValue(sliderVal);
+						gCB.setfbkGain((double) sliderVal);
+									updatefbkGainLabel();
+								} catch (NumberFormatException ex) {
+									updatefbkGainLabel();
+								}
+							}
+						});
 						updatefbkGainLabel();
-						
+			
 						Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel fbkGaininnerPanel = new JPanel();
-							
+			
 						fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
-						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						fbkGaininnerPanel.add(fbkGainLabel);
-						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						fbkGaininnerPanel.add(fbkGainSlider);		
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						fbkGaininnerPanel.add(fbkGainField);
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						fbkGaininnerPanel.add(fbkGainSlider);
 						fbkGaininnerPanel.setBorder(fbkGainborder2);
 			
 						frame.add(fbkGaininnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
+					delayLengthSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (32767 * 1), (int) (gCB.getdelayLength() * 1));
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new DrumDelaySrcListener());
-						delayLengthLabel = new JLabel();
+						delayLengthField = new JTextField();
+						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						delayLengthLabel.setBorder(delayLengthBorder1);
+						delayLengthField.setBorder(delayLengthBorder1);
+						delayLengthField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(delayLengthField.getText().replaceAll("[^0-9.\\-]", ""));
+						double samples = val * ElmProgram.getSamplerate() / 1000.0;
+						int sliderVal = (int) Math.round(samples * 1);
+						sliderVal = Math.max(delayLengthSlider.getMinimum(), Math.min(delayLengthSlider.getMaximum(), sliderVal));
+						delayLengthSlider.setValue(sliderVal);
+						gCB.setdelayLength((double) sliderVal / 1);
+									updatedelayLengthLabel();
+								} catch (NumberFormatException ex) {
+									updatedelayLengthLabel();
+								}
+							}
+						});
 						updatedelayLengthLabel();
-						
+			
 						Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel delayLengthinnerPanel = new JPanel();
-							
+			
 						delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
-						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						delayLengthinnerPanel.add(delayLengthLabel);
-						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						delayLengthinnerPanel.add(delayLengthSlider);		
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						delayLengthinnerPanel.add(delayLengthField);
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						delayLengthinnerPanel.add(delayLengthSlider);
 						delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
 						frame.add(delayLengthinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap1RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
+					tap1RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
 						tap1RatioSlider.addChangeListener(new DrumDelaySrcListener());
-						tap1RatioLabel = new JLabel();
+						tap1RatioField = new JTextField();
+						tap1RatioField.setHorizontalAlignment(JTextField.CENTER);
 						Border tap1RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						tap1RatioLabel.setBorder(tap1RatioBorder1);
+						tap1RatioField.setBorder(tap1RatioBorder1);
+						tap1RatioField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(tap1RatioField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(tap1RatioSlider.getMinimum(), Math.min(tap1RatioSlider.getMaximum(), sliderVal));
+						tap1RatioSlider.setValue(sliderVal);
+						gCB.settap1Ratio((double) sliderVal / 1000.0);
+									updatetap1RatioLabel();
+								} catch (NumberFormatException ex) {
+									updatetap1RatioLabel();
+								}
+							}
+						});
 						updatetap1RatioLabel();
-						
+			
 						Border tap1Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel tap1RatioinnerPanel = new JPanel();
-							
+			
 						tap1RatioinnerPanel.setLayout(new BoxLayout(tap1RatioinnerPanel, BoxLayout.Y_AXIS));
-						tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap1RatioinnerPanel.add(tap1RatioLabel);
-						tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap1RatioinnerPanel.add(tap1RatioSlider);		
+						tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap1RatioinnerPanel.add(tap1RatioField);
+						tap1RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap1RatioinnerPanel.add(tap1RatioSlider);
 						tap1RatioinnerPanel.setBorder(tap1Ratioborder2);
 			
 						frame.add(tap1RatioinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap2RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
+					tap2RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
 						tap2RatioSlider.addChangeListener(new DrumDelaySrcListener());
-						tap2RatioLabel = new JLabel();
+						tap2RatioField = new JTextField();
+						tap2RatioField.setHorizontalAlignment(JTextField.CENTER);
 						Border tap2RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						tap2RatioLabel.setBorder(tap2RatioBorder1);
+						tap2RatioField.setBorder(tap2RatioBorder1);
+						tap2RatioField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(tap2RatioField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(tap2RatioSlider.getMinimum(), Math.min(tap2RatioSlider.getMaximum(), sliderVal));
+						tap2RatioSlider.setValue(sliderVal);
+						gCB.settap2Ratio((double) sliderVal / 1000.0);
+									updatetap2RatioLabel();
+								} catch (NumberFormatException ex) {
+									updatetap2RatioLabel();
+								}
+							}
+						});
 						updatetap2RatioLabel();
-						
+			
 						Border tap2Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel tap2RatioinnerPanel = new JPanel();
-							
+			
 						tap2RatioinnerPanel.setLayout(new BoxLayout(tap2RatioinnerPanel, BoxLayout.Y_AXIS));
-						tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap2RatioinnerPanel.add(tap2RatioLabel);
-						tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap2RatioinnerPanel.add(tap2RatioSlider);		
+						tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap2RatioinnerPanel.add(tap2RatioField);
+						tap2RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap2RatioinnerPanel.add(tap2RatioSlider);
 						tap2RatioinnerPanel.setBorder(tap2Ratioborder2);
 			
 						frame.add(tap2RatioinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap3RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
+					tap3RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
 						tap3RatioSlider.addChangeListener(new DrumDelaySrcListener());
-						tap3RatioLabel = new JLabel();
+						tap3RatioField = new JTextField();
+						tap3RatioField.setHorizontalAlignment(JTextField.CENTER);
 						Border tap3RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						tap3RatioLabel.setBorder(tap3RatioBorder1);
+						tap3RatioField.setBorder(tap3RatioBorder1);
+						tap3RatioField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(tap3RatioField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(tap3RatioSlider.getMinimum(), Math.min(tap3RatioSlider.getMaximum(), sliderVal));
+						tap3RatioSlider.setValue(sliderVal);
+						gCB.settap3Ratio((double) sliderVal / 1000.0);
+									updatetap3RatioLabel();
+								} catch (NumberFormatException ex) {
+									updatetap3RatioLabel();
+								}
+							}
+						});
 						updatetap3RatioLabel();
-						
+			
 						Border tap3Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel tap3RatioinnerPanel = new JPanel();
-							
+			
 						tap3RatioinnerPanel.setLayout(new BoxLayout(tap3RatioinnerPanel, BoxLayout.Y_AXIS));
-						tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap3RatioinnerPanel.add(tap3RatioLabel);
-						tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap3RatioinnerPanel.add(tap3RatioSlider);		
+						tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap3RatioinnerPanel.add(tap3RatioField);
+						tap3RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap3RatioinnerPanel.add(tap3RatioSlider);
 						tap3RatioinnerPanel.setBorder(tap3Ratioborder2);
 			
 						frame.add(tap3RatioinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap4RatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Ratio() * 1000.0));
+					tap4RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Ratio() * 1000.0));
 						tap4RatioSlider.addChangeListener(new DrumDelaySrcListener());
-						tap4RatioLabel = new JLabel();
+						tap4RatioField = new JTextField();
+						tap4RatioField.setHorizontalAlignment(JTextField.CENTER);
 						Border tap4RatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						tap4RatioLabel.setBorder(tap4RatioBorder1);
+						tap4RatioField.setBorder(tap4RatioBorder1);
+						tap4RatioField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(tap4RatioField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(tap4RatioSlider.getMinimum(), Math.min(tap4RatioSlider.getMaximum(), sliderVal));
+						tap4RatioSlider.setValue(sliderVal);
+						gCB.settap4Ratio((double) sliderVal / 1000.0);
+									updatetap4RatioLabel();
+								} catch (NumberFormatException ex) {
+									updatetap4RatioLabel();
+								}
+							}
+						});
 						updatetap4RatioLabel();
-						
+			
 						Border tap4Ratioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel tap4RatioinnerPanel = new JPanel();
-							
+			
 						tap4RatioinnerPanel.setLayout(new BoxLayout(tap4RatioinnerPanel, BoxLayout.Y_AXIS));
-						tap4RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap4RatioinnerPanel.add(tap4RatioLabel);
-						tap4RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap4RatioinnerPanel.add(tap4RatioSlider);		
+						tap4RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap4RatioinnerPanel.add(tap4RatioField);
+						tap4RatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap4RatioinnerPanel.add(tap4RatioSlider);
 						tap4RatioinnerPanel.setBorder(tap4Ratioborder2);
 			
 						frame.add(tap4RatioinnerPanel);
@@ -300,25 +415,25 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainLabel.setText("Input Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
+		inputGainField.setText("Input Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
 		}		
 		private void updatefbkGainLabel() {
-		fbkGainLabel.setText("Feedback Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
+		fbkGainField.setText("Feedback Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
 		}		
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
 		private void updatetap1RatioLabel() {
-		tap1RatioLabel.setText("Tap 1 Time (%):  " + String.format("%4.2f", gCB.gettap1Ratio()));		
+		tap1RatioField.setText("Tap 1 Time (%):  " + String.format("%4.2f", gCB.gettap1Ratio()));		
 		}		
 		private void updatetap2RatioLabel() {
-		tap2RatioLabel.setText("Tap 2 Time (%):  " + String.format("%4.2f", gCB.gettap2Ratio()));		
+		tap2RatioField.setText("Tap 2 Time (%):  " + String.format("%4.2f", gCB.gettap2Ratio()));		
 		}		
 		private void updatetap3RatioLabel() {
-		tap3RatioLabel.setText("Tap 3 Time (%):  " + String.format("%4.2f", gCB.gettap3Ratio()));		
+		tap3RatioField.setText("Tap 3 Time (%):  " + String.format("%4.2f", gCB.gettap3Ratio()));		
 		}		
 		private void updatetap4RatioLabel() {
-		tap4RatioLabel.setText("Tap 4 Time (%):  " + String.format("%4.2f", gCB.gettap4Ratio()));		
+		tap4RatioField.setText("Tap 4 Time (%):  " + String.format("%4.2f", gCB.gettap4Ratio()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
@@ -52,8 +54,8 @@ public class Glitch_shiftControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private Glitch_shiftCADBlock gCB;
 	// declare the controls
-	JSlider pitchCoeffSlider;
-	JLabel  pitchCoeffLabel;	
+	FineControlSlider pitchCoeffSlider;
+	JTextField  pitchCoeffField;
 	private JComboBox <String> lfoSelComboBox; 
 	private JComboBox <String> lfoWidthComboBox; 
 
@@ -71,21 +73,37 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					pitchCoeffSlider = new JSlider(JSlider.HORIZONTAL, (int)(-8192 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
+					pitchCoeffSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-8192 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
 						pitchCoeffSlider.addChangeListener(new Glitch_shiftListener());
-						pitchCoeffLabel = new JLabel();
+						pitchCoeffField = new JTextField();
+						pitchCoeffField.setHorizontalAlignment(JTextField.CENTER);
 						Border pitchCoeffBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						pitchCoeffLabel.setBorder(pitchCoeffBorder1);
+						pitchCoeffField.setBorder(pitchCoeffBorder1);
+						pitchCoeffField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(pitchCoeffField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1.0);
+						sliderVal = Math.max(pitchCoeffSlider.getMinimum(), Math.min(pitchCoeffSlider.getMaximum(), sliderVal));
+						pitchCoeffSlider.setValue(sliderVal);
+						gCB.setpitchCoeff((double) sliderVal / 1.0);
+									updatepitchCoeffLabel();
+								} catch (NumberFormatException ex) {
+									updatepitchCoeffLabel();
+								}
+							}
+						});
 						updatepitchCoeffLabel();
-						
+			
 						Border pitchCoeffborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel pitchCoeffinnerPanel = new JPanel();
-							
+			
 						pitchCoeffinnerPanel.setLayout(new BoxLayout(pitchCoeffinnerPanel, BoxLayout.Y_AXIS));
-						pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						pitchCoeffinnerPanel.add(pitchCoeffLabel);
-						pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						pitchCoeffinnerPanel.add(pitchCoeffSlider);		
+						pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pitchCoeffinnerPanel.add(pitchCoeffField);
+						pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pitchCoeffinnerPanel.add(pitchCoeffSlider);
 						pitchCoeffinnerPanel.setBorder(pitchCoeffborder2);
 			
 						frame.add(pitchCoeffinnerPanel);
@@ -145,7 +163,7 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitchCoeffLabel() {
-		pitchCoeffLabel.setText("Pitch Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
+		pitchCoeffField.setText("Pitch Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

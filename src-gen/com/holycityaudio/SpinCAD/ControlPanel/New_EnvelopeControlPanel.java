@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
@@ -52,22 +54,14 @@ public class New_EnvelopeControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private New_EnvelopeCADBlock gCB;
 	// declare the controls
-	JSlider threshholdSlider;
-	JLabel  threshholdLabel;
-	JSpinner  threshholdSpinner;	
-	private boolean threshholdsilentGUIChange = false;	
-	JSlider attackFreqSlider;
-	JLabel  attackFreqLabel;
-	JSpinner  attackFreqSpinner;	
-	private boolean attackFreqsilentGUIChange = false;	
-	JSlider decayFreqSlider;
-	JLabel  decayFreqLabel;
-	JSpinner  decayFreqSpinner;	
-	private boolean decayFreqsilentGUIChange = false;	
-	JSlider postFreqSlider;
-	JLabel  postFreqLabel;
-	JSpinner  postFreqSpinner;	
-	private boolean postFreqsilentGUIChange = false;	
+	FineControlSlider threshholdSlider;
+	JTextField  threshholdField;
+	FineControlSlider attackFreqSlider;
+	JTextField  attackFreqField;
+	FineControlSlider decayFreqSlider;
+	JTextField  decayFreqField;
+	FineControlSlider postFreqSlider;
+	JTextField  postFreqField;
 
 public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 		
@@ -80,180 +74,176 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 				frame.setTitle("Pluck Detector");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+						threshholdSlider.addChangeListener(new New_EnvelopeListener());
+						threshholdField = new JTextField();
+						threshholdField.setHorizontalAlignment(JTextField.CENTER);
+						Border threshholdBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						threshholdField.setBorder(threshholdBorder1);
+						threshholdField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(threshholdField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100);
+						sliderVal = Math.max(threshholdSlider.getMinimum(), Math.min(threshholdSlider.getMaximum(), sliderVal));
+						threshholdSlider.setValue(sliderVal);
+						gCB.setthreshhold((double) sliderVal / 100);
+									updatethreshholdLabel();
+								} catch (NumberFormatException ex) {
+									updatethreshholdLabel();
+								}
+							}
+						});
+						updatethreshholdLabel();
 			
-				threshholdSlider.addChangeListener(new New_EnvelopeListener());
-				
-				threshholdLabel = new JLabel("Threshhold");
+						Border threshholdborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel threshholdinnerPanel = new JPanel();
 			
-				SpinnerNumberModel threshholdSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getthreshhold()) * 100, 0.51, 10000.00, 0.01);
+						threshholdinnerPanel.setLayout(new BoxLayout(threshholdinnerPanel, BoxLayout.Y_AXIS));
+						threshholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						threshholdinnerPanel.add(threshholdField);
+						threshholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						threshholdinnerPanel.add(threshholdSlider);
+						threshholdinnerPanel.setBorder(threshholdborder2);
 			
-				threshholdSpinner = new JSpinner(threshholdSpinnerNumberModel);
-				JSpinner.NumberEditor threshholdeditor = (JSpinner.NumberEditor)threshholdSpinner.getEditor();  
-				DecimalFormat threshholdformat = threshholdeditor.getFormat();  
-			 			threshholdformat.setMinimumFractionDigits(2);  
-				threshholdformat.setMaximumFractionDigits(2);  
-				threshholdeditor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
-				Dimension threshholdd = threshholdSpinner.getPreferredSize();  
-				threshholdd.width = 25;  
-				threshholdSpinner.setPreferredSize(threshholdd);  
-				
-				updatethreshholdSpinner();
-				threshholdSpinner.addChangeListener(new New_EnvelopeListener());
-				
-				JPanel threshholdtopLine = new JPanel();
-				threshholdtopLine.setLayout(new BoxLayout(threshholdtopLine, BoxLayout.X_AXIS));
+						frame.add(threshholdinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					// multiplier is points per decade here
+						attackFreqSlider = SpinCADBlock.LogSlider(0.51,20,gCB.getattackFreq(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+						attackFreqSlider.addChangeListener(new New_EnvelopeListener());
+						attackFreqField = new JTextField();
+						attackFreqField.setHorizontalAlignment(JTextField.CENTER);
+						Border attackFreqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						attackFreqField.setBorder(attackFreqBorder1);
+						attackFreqField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(attackFreqField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(attackFreqSlider.getMinimum(), Math.min(attackFreqSlider.getMaximum(), sliderVal));
+						attackFreqSlider.setValue(sliderVal);
+						gCB.setattackFreq(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updateattackFreqLabel();
+								} catch (NumberFormatException ex) {
+									updateattackFreqLabel();
+								}
+							}
+						});
+						updateattackFreqLabel();
 			
-				threshholdtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				threshholdtopLine.add(threshholdLabel);
-				threshholdtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				threshholdtopLine.add(threshholdSpinner);
-				
-				Border threshholdborder2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				threshholdtopLine.setBorder(threshholdborder2);
+						Border attackFreqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel attackFreqinnerPanel = new JPanel();
 			
-				Border threshholdborder1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel threshholdinnerPanel = new JPanel();
-					
-				threshholdinnerPanel.setLayout(new BoxLayout(threshholdinnerPanel, BoxLayout.Y_AXIS));
-				threshholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				threshholdinnerPanel.add(threshholdtopLine);
-				threshholdinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				threshholdinnerPanel.add(threshholdSlider);		
-				threshholdinnerPanel.setBorder(threshholdborder1);
+						attackFreqinnerPanel.setLayout(new BoxLayout(attackFreqinnerPanel, BoxLayout.Y_AXIS));
+						attackFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						attackFreqinnerPanel.add(attackFreqField);
+						attackFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						attackFreqinnerPanel.add(attackFreqSlider);
+						attackFreqinnerPanel.setBorder(attackFreqborder2);
 			
-				frame.add(threshholdinnerPanel);
+						frame.add(attackFreqinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					// multiplier is points per decade here
+						decayFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getdecayFreq(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+						decayFreqSlider.addChangeListener(new New_EnvelopeListener());
+						decayFreqField = new JTextField();
+						decayFreqField.setHorizontalAlignment(JTextField.CENTER);
+						Border decayFreqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						decayFreqField.setBorder(decayFreqBorder1);
+						decayFreqField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(decayFreqField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(decayFreqSlider.getMinimum(), Math.min(decayFreqSlider.getMaximum(), sliderVal));
+						decayFreqSlider.setValue(sliderVal);
+						gCB.setdecayFreq(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatedecayFreqLabel();
+								} catch (NumberFormatException ex) {
+									updatedecayFreqLabel();
+								}
+							}
+						});
+						updatedecayFreqLabel();
 			
-			// multiplier is points per decade here
-				attackFreqSlider = SpinCADBlock.LogSlider(0.51,20,gCB.getattackFreq(), "LOGFREQ", 100.0);
-				attackFreqSlider.addChangeListener(new New_EnvelopeListener());
-				
-				attackFreqLabel = new JLabel("Attack Freq");
+						Border decayFreqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel decayFreqinnerPanel = new JPanel();
 			
-				SpinnerNumberModel attackFreqSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getattackFreq()) * 100, 0.51, 10000.00, 0.01);
+						decayFreqinnerPanel.setLayout(new BoxLayout(decayFreqinnerPanel, BoxLayout.Y_AXIS));
+						decayFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						decayFreqinnerPanel.add(decayFreqField);
+						decayFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						decayFreqinnerPanel.add(decayFreqSlider);
+						decayFreqinnerPanel.setBorder(decayFreqborder2);
 			
-				attackFreqSpinner = new JSpinner(attackFreqSpinnerNumberModel);
-				JSpinner.NumberEditor attackFreqeditor = (JSpinner.NumberEditor)attackFreqSpinner.getEditor();  
-				DecimalFormat attackFreqformat = attackFreqeditor.getFormat();  
-			 			attackFreqformat.setMinimumFractionDigits(2);  
-				attackFreqformat.setMaximumFractionDigits(2);  
-				attackFreqeditor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
-				Dimension attackFreqd = attackFreqSpinner.getPreferredSize();  
-				attackFreqd.width = 25;  
-				attackFreqSpinner.setPreferredSize(attackFreqd);  
-				
-				updateattackFreqSpinner();
-				attackFreqSpinner.addChangeListener(new New_EnvelopeListener());
-				
-				JPanel attackFreqtopLine = new JPanel();
-				attackFreqtopLine.setLayout(new BoxLayout(attackFreqtopLine, BoxLayout.X_AXIS));
+						frame.add(decayFreqinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					// multiplier is points per decade here
+						postFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getpostFreq(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+						postFreqSlider.addChangeListener(new New_EnvelopeListener());
+						postFreqField = new JTextField();
+						postFreqField.setHorizontalAlignment(JTextField.CENTER);
+						Border postFreqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						postFreqField.setBorder(postFreqBorder1);
+						postFreqField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(postFreqField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(postFreqSlider.getMinimum(), Math.min(postFreqSlider.getMaximum(), sliderVal));
+						postFreqSlider.setValue(sliderVal);
+						gCB.setpostFreq(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatepostFreqLabel();
+								} catch (NumberFormatException ex) {
+									updatepostFreqLabel();
+								}
+							}
+						});
+						updatepostFreqLabel();
 			
-				attackFreqtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				attackFreqtopLine.add(attackFreqLabel);
-				attackFreqtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				attackFreqtopLine.add(attackFreqSpinner);
-				
-				Border attackFreqborder2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				attackFreqtopLine.setBorder(attackFreqborder2);
+						Border postFreqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel postFreqinnerPanel = new JPanel();
 			
-				Border attackFreqborder1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel attackFreqinnerPanel = new JPanel();
-					
-				attackFreqinnerPanel.setLayout(new BoxLayout(attackFreqinnerPanel, BoxLayout.Y_AXIS));
-				attackFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				attackFreqinnerPanel.add(attackFreqtopLine);
-				attackFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				attackFreqinnerPanel.add(attackFreqSlider);		
-				attackFreqinnerPanel.setBorder(attackFreqborder1);
+						postFreqinnerPanel.setLayout(new BoxLayout(postFreqinnerPanel, BoxLayout.Y_AXIS));
+						postFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						postFreqinnerPanel.add(postFreqField);
+						postFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						postFreqinnerPanel.add(postFreqSlider);
+						postFreqinnerPanel.setBorder(postFreqborder2);
 			
-				frame.add(attackFreqinnerPanel);
-			
-			// multiplier is points per decade here
-				decayFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getdecayFreq(), "LOGFREQ", 100.0);
-				decayFreqSlider.addChangeListener(new New_EnvelopeListener());
-				
-				decayFreqLabel = new JLabel("Decay Freq");
-			
-				SpinnerNumberModel decayFreqSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getdecayFreq()) * 100, 0.51, 10000.00, 0.01);
-			
-				decayFreqSpinner = new JSpinner(decayFreqSpinnerNumberModel);
-				JSpinner.NumberEditor decayFreqeditor = (JSpinner.NumberEditor)decayFreqSpinner.getEditor();  
-				DecimalFormat decayFreqformat = decayFreqeditor.getFormat();  
-			 			decayFreqformat.setMinimumFractionDigits(2);  
-				decayFreqformat.setMaximumFractionDigits(2);  
-				decayFreqeditor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
-				Dimension decayFreqd = decayFreqSpinner.getPreferredSize();  
-				decayFreqd.width = 25;  
-				decayFreqSpinner.setPreferredSize(decayFreqd);  
-				
-				updatedecayFreqSpinner();
-				decayFreqSpinner.addChangeListener(new New_EnvelopeListener());
-				
-				JPanel decayFreqtopLine = new JPanel();
-				decayFreqtopLine.setLayout(new BoxLayout(decayFreqtopLine, BoxLayout.X_AXIS));
-			
-				decayFreqtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				decayFreqtopLine.add(decayFreqLabel);
-				decayFreqtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				decayFreqtopLine.add(decayFreqSpinner);
-				
-				Border decayFreqborder2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				decayFreqtopLine.setBorder(decayFreqborder2);
-			
-				Border decayFreqborder1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel decayFreqinnerPanel = new JPanel();
-					
-				decayFreqinnerPanel.setLayout(new BoxLayout(decayFreqinnerPanel, BoxLayout.Y_AXIS));
-				decayFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				decayFreqinnerPanel.add(decayFreqtopLine);
-				decayFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				decayFreqinnerPanel.add(decayFreqSlider);		
-				decayFreqinnerPanel.setBorder(decayFreqborder1);
-			
-				frame.add(decayFreqinnerPanel);
-			
-			// multiplier is points per decade here
-				postFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getpostFreq(), "LOGFREQ", 100.0);
-				postFreqSlider.addChangeListener(new New_EnvelopeListener());
-				
-				postFreqLabel = new JLabel("Post freq");
-			
-				SpinnerNumberModel postFreqSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getpostFreq()) * 100, 0.51, 10000.00, 0.01);
-			
-				postFreqSpinner = new JSpinner(postFreqSpinnerNumberModel);
-				JSpinner.NumberEditor postFreqeditor = (JSpinner.NumberEditor)postFreqSpinner.getEditor();  
-				DecimalFormat postFreqformat = postFreqeditor.getFormat();  
-			 			postFreqformat.setMinimumFractionDigits(2);  
-				postFreqformat.setMaximumFractionDigits(2);  
-				postFreqeditor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
-				Dimension postFreqd = postFreqSpinner.getPreferredSize();  
-				postFreqd.width = 25;  
-				postFreqSpinner.setPreferredSize(postFreqd);  
-				
-				updatepostFreqSpinner();
-				postFreqSpinner.addChangeListener(new New_EnvelopeListener());
-				
-				JPanel postFreqtopLine = new JPanel();
-				postFreqtopLine.setLayout(new BoxLayout(postFreqtopLine, BoxLayout.X_AXIS));
-			
-				postFreqtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				postFreqtopLine.add(postFreqLabel);
-				postFreqtopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				postFreqtopLine.add(postFreqSpinner);
-				
-				Border postFreqborder2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				postFreqtopLine.setBorder(postFreqborder2);
-			
-				Border postFreqborder1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel postFreqinnerPanel = new JPanel();
-					
-				postFreqinnerPanel.setLayout(new BoxLayout(postFreqinnerPanel, BoxLayout.Y_AXIS));
-				postFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				postFreqinnerPanel.add(postFreqtopLine);
-				postFreqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				postFreqinnerPanel.add(postFreqSlider);		
-				postFreqinnerPanel.setBorder(postFreqborder1);
-			
-				frame.add(postFreqinnerPanel);
+						frame.add(postFreqinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -266,49 +256,21 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class New_EnvelopeListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
-			if(threshholdsilentGUIChange == true) 
-				return;
-			
 			if(ce.getSource() == threshholdSlider) {
 			gCB.setthreshhold((double) (threshholdSlider.getValue()/100));
-				updatethreshholdSpinner();
+				updatethreshholdLabel();
 			}
-			if(ce.getSource() == threshholdSpinner) {
-			gCB.setthreshhold((double) (threshholdSlider.getValue()/100));
-				updatethreshholdSlider();
-			}
-			if(attackFreqsilentGUIChange == true) 
-				return;
-			
 			if(ce.getSource() == attackFreqSlider) {
 			gCB.setattackFreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(attackFreqSlider.getValue()), 100.0)));
-				updateattackFreqSpinner();
+				updateattackFreqLabel();
 			}
-			if(ce.getSource() == attackFreqSpinner) {
-			gCB.setattackFreq(SpinCADBlock.freqToFilt((double)(attackFreqSpinner.getValue())));
-				updateattackFreqSlider();
-			}
-			if(decayFreqsilentGUIChange == true) 
-				return;
-			
 			if(ce.getSource() == decayFreqSlider) {
 			gCB.setdecayFreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(decayFreqSlider.getValue()), 100.0)));
-				updatedecayFreqSpinner();
+				updatedecayFreqLabel();
 			}
-			if(ce.getSource() == decayFreqSpinner) {
-			gCB.setdecayFreq(SpinCADBlock.freqToFilt((double)(decayFreqSpinner.getValue())));
-				updatedecayFreqSlider();
-			}
-			if(postFreqsilentGUIChange == true) 
-				return;
-			
 			if(ce.getSource() == postFreqSlider) {
 			gCB.setpostFreq((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(postFreqSlider.getValue()), 100.0)));
-				updatepostFreqSpinner();
-			}
-			if(ce.getSource() == postFreqSpinner) {
-			gCB.setpostFreq(SpinCADBlock.freqToFilt((double)(postFreqSpinner.getValue())));
-				updatepostFreqSlider();
+				updatepostFreqLabel();
 			}
 			}
 		}
@@ -327,116 +289,17 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
-		private void updatethreshholdSpinner() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					threshholdsilentGUIChange = true;
-				}
-				finally {
-					threshholdsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}	
-		
-		private void updatethreshholdSlider() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					threshholdsilentGUIChange = true;
-				}
-				finally {
-					threshholdsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}		
-			
-		private void updateattackFreqSpinner() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					attackFreqsilentGUIChange = true;
-		attackFreqSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getattackFreq()));
-				}
-				finally {
-					attackFreqsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}	
-		
-		private void updateattackFreqSlider() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					attackFreqsilentGUIChange = true;
-		attackFreqSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getattackFreq()))));		
-				}
-				finally {
-					attackFreqsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}		
-			
-		private void updatedecayFreqSpinner() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					decayFreqsilentGUIChange = true;
-		decayFreqSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getdecayFreq()));
-				}
-				finally {
-					decayFreqsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}	
-		
-		private void updatedecayFreqSlider() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					decayFreqsilentGUIChange = true;
-		decayFreqSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getdecayFreq()))));		
-				}
-				finally {
-					decayFreqsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}		
-			
-		private void updatepostFreqSpinner() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					postFreqsilentGUIChange = true;
-		postFreqSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getpostFreq()));
-				}
-				finally {
-					postFreqsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}	
-		
-		private void updatepostFreqSlider() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					postFreqsilentGUIChange = true;
-		postFreqSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getpostFreq()))));		
-				}
-				finally {
-					postFreqsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}		
-			
+		private void updatethreshholdLabel() {
+		}
+		private void updateattackFreqLabel() {
+		attackFreqField.setText("Attack Freq " + String.format("%4.5f", SpinCADBlock.filtToFreq(gCB.getattackFreq())) + " Hz");
+		}
+		private void updatedecayFreqLabel() {
+		decayFreqField.setText("Decay Freq " + String.format("%4.5f", SpinCADBlock.filtToFreq(gCB.getdecayFreq())) + " Hz");
+		}
+		private void updatepostFreqLabel() {
+		postFreqField.setText("Post freq " + String.format("%4.5f", SpinCADBlock.filtToFreq(gCB.getpostFreq())) + " Hz");
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

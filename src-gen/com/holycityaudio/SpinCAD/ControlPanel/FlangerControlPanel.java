@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
@@ -52,16 +54,16 @@ public class FlangerControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private FlangerCADBlock gCB;
 	// declare the controls
-	JSlider inputGainSlider;
-	JLabel  inputGainLabel;	
-	JSlider fbkGainSlider;
-	JLabel  fbkGainLabel;	
-	JSlider delayLengthSlider;
-	JLabel  delayLengthLabel;	
-	JSlider rateSlider;
-	JLabel  rateLabel;	
-	JSlider widthSlider;
-	JLabel  widthLabel;	
+	FineControlSlider inputGainSlider;
+	JTextField  inputGainField;
+	FineControlSlider fbkGainSlider;
+	JTextField  fbkGainField;
+	FineControlSlider delayLengthSlider;
+	JTextField  delayLengthField;
+	FineControlSlider rateSlider;
+	JTextField  rateField;
+	FineControlSlider widthSlider;
+	JTextField  widthField;
 	private JComboBox <String> lfoSelComboBox; 
 
 public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
@@ -84,21 +86,37 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						inputGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
+						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
 						inputGainSlider.addChangeListener(new FlangerListener());
-						inputGainLabel = new JLabel();
+						inputGainField = new JTextField();
+						inputGainField.setHorizontalAlignment(JTextField.CENTER);
 						Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						inputGainLabel.setBorder(inputGainBorder1);
+						inputGainField.setBorder(inputGainBorder1);
+						inputGainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(inputGainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(inputGainSlider.getMinimum(), Math.min(inputGainSlider.getMaximum(), sliderVal));
+						inputGainSlider.setValue(sliderVal);
+						gCB.setinputGain((double) sliderVal);
+									updateinputGainLabel();
+								} catch (NumberFormatException ex) {
+									updateinputGainLabel();
+								}
+							}
+						});
 						updateinputGainLabel();
-						
+			
 						Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel inputGaininnerPanel = new JPanel();
-							
+			
 						inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
-						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputGaininnerPanel.add(inputGainLabel);
-						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inputGaininnerPanel.add(inputGainSlider);		
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGaininnerPanel.add(inputGainField);
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGaininnerPanel.add(inputGainSlider);
 						inputGaininnerPanel.setBorder(inputGainborder2);
 			
 						frame.add(inputGaininnerPanel);
@@ -111,47 +129,80 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						fbkGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
 						fbkGainSlider.addChangeListener(new FlangerListener());
-						fbkGainLabel = new JLabel();
+						fbkGainField = new JTextField();
+						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
 						Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						fbkGainLabel.setBorder(fbkGainBorder1);
+						fbkGainField.setBorder(fbkGainBorder1);
+						fbkGainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(fbkGainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(fbkGainSlider.getMinimum(), Math.min(fbkGainSlider.getMaximum(), sliderVal));
+						fbkGainSlider.setValue(sliderVal);
+						gCB.setfbkGain((double) sliderVal);
+									updatefbkGainLabel();
+								} catch (NumberFormatException ex) {
+									updatefbkGainLabel();
+								}
+							}
+						});
 						updatefbkGainLabel();
-						
+			
 						Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel fbkGaininnerPanel = new JPanel();
-							
+			
 						fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
-						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						fbkGaininnerPanel.add(fbkGainLabel);
-						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						fbkGaininnerPanel.add(fbkGainSlider);		
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						fbkGaininnerPanel.add(fbkGainField);
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						fbkGaininnerPanel.add(fbkGainSlider);
 						fbkGaininnerPanel.setBorder(fbkGainborder2);
 			
 						frame.add(fbkGaininnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(16 * 1),(int) (512 * 1), (int) (gCB.getdelayLength() * 1));
+					delayLengthSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(16 * 1),(int) (512 * 1), (int) (gCB.getdelayLength() * 1));
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new FlangerListener());
-						delayLengthLabel = new JLabel();
+						delayLengthField = new JTextField();
+						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						delayLengthLabel.setBorder(delayLengthBorder1);
+						delayLengthField.setBorder(delayLengthBorder1);
+						delayLengthField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(delayLengthField.getText().replaceAll("[^0-9.\\-]", ""));
+						double samples = val * ElmProgram.getSamplerate() / 1000.0;
+						int sliderVal = (int) Math.round(samples * 1);
+						sliderVal = Math.max(delayLengthSlider.getMinimum(), Math.min(delayLengthSlider.getMaximum(), sliderVal));
+						delayLengthSlider.setValue(sliderVal);
+						gCB.setdelayLength((double) sliderVal / 1);
+									updatedelayLengthLabel();
+								} catch (NumberFormatException ex) {
+									updatedelayLengthLabel();
+								}
+							}
+						});
 						updatedelayLengthLabel();
-						
+			
 						Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel delayLengthinnerPanel = new JPanel();
-							
+			
 						delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
-						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						delayLengthinnerPanel.add(delayLengthLabel);
-						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						delayLengthinnerPanel.add(delayLengthSlider);		
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						delayLengthinnerPanel.add(delayLengthField);
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						delayLengthinnerPanel.add(delayLengthSlider);
 						delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
 						frame.add(delayLengthinnerPanel);
@@ -163,42 +214,75 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
+					rateSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new FlangerListener());
-						rateLabel = new JLabel();
+						rateField = new JTextField();
+						rateField.setHorizontalAlignment(JTextField.CENTER);
 						Border rateBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						rateLabel.setBorder(rateBorder1);
+						rateField.setBorder(rateBorder1);
+						rateField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(rateField.getText().replaceAll("[^0-9.\\-]", ""));
+						double coeff = val * 2.0 * Math.PI * Math.pow(2.0, 17) / (ElmProgram.getSamplerate() * 511.0);
+						int sliderVal = (int) Math.round(coeff * 100.0);
+						sliderVal = Math.max(rateSlider.getMinimum(), Math.min(rateSlider.getMaximum(), sliderVal));
+						rateSlider.setValue(sliderVal);
+						gCB.setrate((double) sliderVal / 100.0);
+									updaterateLabel();
+								} catch (NumberFormatException ex) {
+									updaterateLabel();
+								}
+							}
+						});
 						updaterateLabel();
-						
+			
 						Border rateborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel rateinnerPanel = new JPanel();
-							
+			
 						rateinnerPanel.setLayout(new BoxLayout(rateinnerPanel, BoxLayout.Y_AXIS));
-						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rateinnerPanel.add(rateLabel);
-						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rateinnerPanel.add(rateSlider);		
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						rateinnerPanel.add(rateField);
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						rateinnerPanel.add(rateSlider);
 						rateinnerPanel.setBorder(rateborder2);
 			
 						frame.add(rateinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					widthSlider = new JSlider(JSlider.HORIZONTAL, (int)(5.0 * 100.0),(int) (100.0 * 100.0), (int) (gCB.getwidth() * 100.0));
+					widthSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(5.0 * 100.0),(int) (100.0 * 100.0), (int) (gCB.getwidth() * 100.0));
 						widthSlider.addChangeListener(new FlangerListener());
-						widthLabel = new JLabel();
+						widthField = new JTextField();
+						widthField.setHorizontalAlignment(JTextField.CENTER);
 						Border widthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						widthLabel.setBorder(widthBorder1);
+						widthField.setBorder(widthBorder1);
+						widthField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(widthField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(widthSlider.getMinimum(), Math.min(widthSlider.getMaximum(), sliderVal));
+						widthSlider.setValue(sliderVal);
+						gCB.setwidth((double) sliderVal / 100.0);
+									updatewidthLabel();
+								} catch (NumberFormatException ex) {
+									updatewidthLabel();
+								}
+							}
+						});
 						updatewidthLabel();
-						
+			
 						Border widthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel widthinnerPanel = new JPanel();
-							
+			
 						widthinnerPanel.setLayout(new BoxLayout(widthinnerPanel, BoxLayout.Y_AXIS));
-						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						widthinnerPanel.add(widthLabel);
-						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						widthinnerPanel.add(widthSlider);		
+						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						widthinnerPanel.add(widthField);
+						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						widthinnerPanel.add(widthSlider);
 						widthinnerPanel.setBorder(widthborder2);
 			
 						frame.add(widthinnerPanel);
@@ -262,19 +346,19 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
+		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
 		}		
 		private void updatefbkGainLabel() {
-		fbkGainLabel.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
+		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
 		}		
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Delay Time " + String.format("%4.2f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Time " + String.format("%4.2f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
 		private void updaterateLabel() {
-		rateLabel.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
+		rateField.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
 		}		
 		private void updatewidthLabel() {
-		widthLabel.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));		
+		widthField.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

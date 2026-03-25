@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.RatioCADBlock;
@@ -52,8 +54,8 @@ public class RatioControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private RatioCADBlock gCB;
 	// declare the controls
-	JSlider invRatioSlider;
-	JLabel  invRatioLabel;	
+	FineControlSlider invRatioSlider;
+	JTextField  invRatioField;
 
 public RatioControlPanel(RatioCADBlock genericCADBlock) {
 		
@@ -69,21 +71,37 @@ public RatioControlPanel(RatioCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					invRatioSlider = new JSlider(JSlider.HORIZONTAL, (int)(2.0 * 10.0),(int) (100.0 * 10.0), (int) (gCB.getinvRatio() * 10.0));
+					invRatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(2.0 * 10.0),(int) (100.0 * 10.0), (int) (gCB.getinvRatio() * 10.0));
 						invRatioSlider.addChangeListener(new RatioListener());
-						invRatioLabel = new JLabel();
+						invRatioField = new JTextField();
+						invRatioField.setHorizontalAlignment(JTextField.CENTER);
 						Border invRatioBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						invRatioLabel.setBorder(invRatioBorder1);
+						invRatioField.setBorder(invRatioBorder1);
+						invRatioField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(invRatioField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 10.0);
+						sliderVal = Math.max(invRatioSlider.getMinimum(), Math.min(invRatioSlider.getMaximum(), sliderVal));
+						invRatioSlider.setValue(sliderVal);
+						gCB.setinvRatio((double) sliderVal / 10.0);
+									updateinvRatioLabel();
+								} catch (NumberFormatException ex) {
+									updateinvRatioLabel();
+								}
+							}
+						});
 						updateinvRatioLabel();
-						
+			
 						Border invRatioborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel invRatioinnerPanel = new JPanel();
-							
+			
 						invRatioinnerPanel.setLayout(new BoxLayout(invRatioinnerPanel, BoxLayout.Y_AXIS));
-						invRatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						invRatioinnerPanel.add(invRatioLabel);
-						invRatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						invRatioinnerPanel.add(invRatioSlider);		
+						invRatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						invRatioinnerPanel.add(invRatioField);
+						invRatioinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						invRatioinnerPanel.add(invRatioSlider);
 						invRatioinnerPanel.setBorder(invRatioborder2);
 			
 						frame.add(invRatioinnerPanel);
@@ -121,7 +139,7 @@ public RatioControlPanel(RatioCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinvRatioLabel() {
-		invRatioLabel.setText("Ratio " + String.format("%4.1f", gCB.getinvRatio()));		
+		invRatioField.setText("Ratio " + String.format("%4.1f", gCB.getinvRatio()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

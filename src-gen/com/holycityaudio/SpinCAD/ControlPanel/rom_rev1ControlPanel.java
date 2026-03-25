@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.rom_rev1CADBlock;
@@ -52,18 +54,18 @@ public class rom_rev1ControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private rom_rev1CADBlock gCB;
 	// declare the controls
-	JSlider gainSlider;
-	JLabel  gainLabel;	
-	JSlider kiapSlider;
-	JLabel  kiapLabel;	
-	JSlider nDLsSlider;
-	JLabel  nDLsLabel;	
-	JSlider kapd1Slider;
-	JLabel  kapd1Label;	
-	JSlider kflSlider;
-	JLabel  kflLabel;	
-	JSlider kfhSlider;
-	JLabel  kfhLabel;	
+	FineControlSlider gainSlider;
+	JTextField  gainField;
+	FineControlSlider kiapSlider;
+	JTextField  kiapField;
+	FineControlSlider nDLsSlider;
+	JTextField  nDLsField;
+	FineControlSlider kapd1Slider;
+	JTextField  kapd1Field;
+	FineControlSlider kflSlider;
+	JTextField  kflField;
+	FineControlSlider kfhSlider;
+	JTextField  kfhField;
 
 public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 		
@@ -85,84 +87,148 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
+						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
 						gainSlider.addChangeListener(new rom_rev1Listener());
-						gainLabel = new JLabel();
+						gainField = new JTextField();
+						gainField.setHorizontalAlignment(JTextField.CENTER);
 						Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						gainLabel.setBorder(gainBorder1);
+						gainField.setBorder(gainBorder1);
+						gainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(gainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(gainSlider.getMinimum(), Math.min(gainSlider.getMaximum(), sliderVal));
+						gainSlider.setValue(sliderVal);
+						gCB.setgain((double) sliderVal);
+									updategainLabel();
+								} catch (NumberFormatException ex) {
+									updategainLabel();
+								}
+							}
+						});
 						updategainLabel();
-						
+			
 						Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel gaininnerPanel = new JPanel();
-							
+			
 						gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gaininnerPanel.add(gainLabel);
-						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gaininnerPanel.add(gainSlider);		
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gaininnerPanel.add(gainField);
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gaininnerPanel.add(gainSlider);
 						gaininnerPanel.setBorder(gainborder2);
 			
 						frame.add(gaininnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkiap() * 100.0));
+					kiapSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.25 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getkiap() * 100.0));
 						kiapSlider.addChangeListener(new rom_rev1Listener());
-						kiapLabel = new JLabel();
+						kiapField = new JTextField();
+						kiapField.setHorizontalAlignment(JTextField.CENTER);
 						Border kiapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						kiapLabel.setBorder(kiapBorder1);
+						kiapField.setBorder(kiapBorder1);
+						kiapField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(kiapField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(kiapSlider.getMinimum(), Math.min(kiapSlider.getMaximum(), sliderVal));
+						kiapSlider.setValue(sliderVal);
+						gCB.setkiap((double) sliderVal / 100.0);
+									updatekiapLabel();
+								} catch (NumberFormatException ex) {
+									updatekiapLabel();
+								}
+							}
+						});
 						updatekiapLabel();
-						
+			
 						Border kiapborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel kiapinnerPanel = new JPanel();
-							
+			
 						kiapinnerPanel.setLayout(new BoxLayout(kiapinnerPanel, BoxLayout.Y_AXIS));
-						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kiapinnerPanel.add(kiapLabel);
-						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kiapinnerPanel.add(kiapSlider);		
+						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kiapinnerPanel.add(kiapField);
+						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kiapinnerPanel.add(kiapSlider);
 						kiapinnerPanel.setBorder(kiapborder2);
 			
 						frame.add(kiapinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					nDLsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (4 * 1.0), (int) (gCB.getnDLs() * 1.0));
+					nDLsSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (4 * 1.0), (int) (gCB.getnDLs() * 1.0));
 						nDLsSlider.addChangeListener(new rom_rev1Listener());
-						nDLsLabel = new JLabel();
+						nDLsField = new JTextField();
+						nDLsField.setHorizontalAlignment(JTextField.CENTER);
 						Border nDLsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						nDLsLabel.setBorder(nDLsBorder1);
+						nDLsField.setBorder(nDLsBorder1);
+						nDLsField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(nDLsField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1.0);
+						sliderVal = Math.max(nDLsSlider.getMinimum(), Math.min(nDLsSlider.getMaximum(), sliderVal));
+						nDLsSlider.setValue(sliderVal);
+						gCB.setnDLs((double) sliderVal / 1.0);
+									updatenDLsLabel();
+								} catch (NumberFormatException ex) {
+									updatenDLsLabel();
+								}
+							}
+						});
 						updatenDLsLabel();
-						
+			
 						Border nDLsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel nDLsinnerPanel = new JPanel();
-							
+			
 						nDLsinnerPanel.setLayout(new BoxLayout(nDLsinnerPanel, BoxLayout.Y_AXIS));
-						nDLsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						nDLsinnerPanel.add(nDLsLabel);
-						nDLsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						nDLsinnerPanel.add(nDLsSlider);		
+						nDLsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						nDLsinnerPanel.add(nDLsField);
+						nDLsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						nDLsinnerPanel.add(nDLsSlider);
 						nDLsinnerPanel.setBorder(nDLsborder2);
 			
 						frame.add(nDLsinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					kapd1Slider = new JSlider(JSlider.HORIZONTAL, (int)(0.3 * 100.0),(int) (0.8 * 100.0), (int) (gCB.getkapd1() * 100.0));
+					kapd1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.3 * 100.0),(int) (0.8 * 100.0), (int) (gCB.getkapd1() * 100.0));
 						kapd1Slider.addChangeListener(new rom_rev1Listener());
-						kapd1Label = new JLabel();
+						kapd1Field = new JTextField();
+						kapd1Field.setHorizontalAlignment(JTextField.CENTER);
 						Border kapd1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						kapd1Label.setBorder(kapd1Border1);
+						kapd1Field.setBorder(kapd1Border1);
+						kapd1Field.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(kapd1Field.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(kapd1Slider.getMinimum(), Math.min(kapd1Slider.getMaximum(), sliderVal));
+						kapd1Slider.setValue(sliderVal);
+						gCB.setkapd1((double) sliderVal / 100.0);
+									updatekapd1Label();
+								} catch (NumberFormatException ex) {
+									updatekapd1Label();
+								}
+							}
+						});
 						updatekapd1Label();
-						
+			
 						Border kapd1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel kapd1innerPanel = new JPanel();
-							
+			
 						kapd1innerPanel.setLayout(new BoxLayout(kapd1innerPanel, BoxLayout.Y_AXIS));
-						kapd1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kapd1innerPanel.add(kapd1Label);
-						kapd1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kapd1innerPanel.add(kapd1Slider);		
+						kapd1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kapd1innerPanel.add(kapd1Field);
+						kapd1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kapd1innerPanel.add(kapd1Slider);
 						kapd1innerPanel.setBorder(kapd1border2);
 			
 						frame.add(kapd1innerPanel);
@@ -177,19 +243,35 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						kflSlider.addChangeListener(new rom_rev1Listener());
-						kflLabel = new JLabel();
+						kflField = new JTextField();
+						kflField.setHorizontalAlignment(JTextField.CENTER);
 						Border kflBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						kflLabel.setBorder(kflBorder1);
+						kflField.setBorder(kflBorder1);
+						kflField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(kflField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(kflSlider.getMinimum(), Math.min(kflSlider.getMaximum(), sliderVal));
+						kflSlider.setValue(sliderVal);
+						gCB.setkfl(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatekflLabel();
+								} catch (NumberFormatException ex) {
+									updatekflLabel();
+								}
+							}
+						});
 						updatekflLabel();
-						
+			
 						Border kflborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel kflinnerPanel = new JPanel();
-							
+			
 						kflinnerPanel.setLayout(new BoxLayout(kflinnerPanel, BoxLayout.Y_AXIS));
-						kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kflinnerPanel.add(kflLabel);
-						kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kflinnerPanel.add(kflSlider);		
+						kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kflinnerPanel.add(kflField);
+						kflinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kflinnerPanel.add(kflSlider);
 						kflinnerPanel.setBorder(kflborder2);
 			
 						frame.add(kflinnerPanel);
@@ -204,19 +286,35 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						kfhSlider.addChangeListener(new rom_rev1Listener());
-						kfhLabel = new JLabel();
+						kfhField = new JTextField();
+						kfhField.setHorizontalAlignment(JTextField.CENTER);
 						Border kfhBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						kfhLabel.setBorder(kfhBorder1);
+						kfhField.setBorder(kfhBorder1);
+						kfhField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(kfhField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(kfhSlider.getMinimum(), Math.min(kfhSlider.getMaximum(), sliderVal));
+						kfhSlider.setValue(sliderVal);
+						gCB.setkfh(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatekfhLabel();
+								} catch (NumberFormatException ex) {
+									updatekfhLabel();
+								}
+							}
+						});
 						updatekfhLabel();
-						
+			
 						Border kfhborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel kfhinnerPanel = new JPanel();
-							
+			
 						kfhinnerPanel.setLayout(new BoxLayout(kfhinnerPanel, BoxLayout.Y_AXIS));
-						kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kfhinnerPanel.add(kfhLabel);
-						kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kfhinnerPanel.add(kfhSlider);		
+						kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kfhinnerPanel.add(kfhField);
+						kfhinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kfhinnerPanel.add(kfhSlider);
 						kfhinnerPanel.setBorder(kfhborder2);
 			
 						frame.add(kfhinnerPanel);
@@ -274,22 +372,22 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		private void updatekiapLabel() {
-		kiapLabel.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		
+		kiapField.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		
 		}		
 		private void updatenDLsLabel() {
-		nDLsLabel.setText("Delay_Stages " + String.format("%4.0f", gCB.getnDLs()));		
+		nDLsField.setText("Delay_Stages " + String.format("%4.0f", gCB.getnDLs()));		
 		}		
 		private void updatekapd1Label() {
-		kapd1Label.setText("Delay_All_Pass_1_Gain " + String.format("%4.2f", gCB.getkapd1()));		
+		kapd1Field.setText("Delay_All_Pass_1_Gain " + String.format("%4.2f", gCB.getkapd1()));		
 		}		
 		private void updatekflLabel() {
-		kflLabel.setText("Low_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
+		kflField.setText("Low_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
 		}		
 		private void updatekfhLabel() {
-		kfhLabel.setText("High_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
+		kfhField.setText("High_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

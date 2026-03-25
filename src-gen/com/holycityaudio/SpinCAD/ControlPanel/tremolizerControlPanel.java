@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
@@ -52,8 +54,8 @@ public class tremolizerControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private tremolizerCADBlock gCB;
 	// declare the controls
-	JSlider depthSlider;
-	JLabel  depthLabel;	
+	FineControlSlider depthSlider;
+	JTextField  depthField;
 
 public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
 		
@@ -69,21 +71,37 @@ public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					depthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.5 * 100.0),(int) (0.999 * 100.0), (int) (gCB.getdepth() * 100.0));
+					depthSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.5 * 100.0),(int) (0.999 * 100.0), (int) (gCB.getdepth() * 100.0));
 						depthSlider.addChangeListener(new tremolizerListener());
-						depthLabel = new JLabel();
+						depthField = new JTextField();
+						depthField.setHorizontalAlignment(JTextField.CENTER);
 						Border depthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						depthLabel.setBorder(depthBorder1);
+						depthField.setBorder(depthBorder1);
+						depthField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(depthField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(depthSlider.getMinimum(), Math.min(depthSlider.getMaximum(), sliderVal));
+						depthSlider.setValue(sliderVal);
+						gCB.setdepth((double) sliderVal / 100.0);
+									updatedepthLabel();
+								} catch (NumberFormatException ex) {
+									updatedepthLabel();
+								}
+							}
+						});
 						updatedepthLabel();
-						
+			
 						Border depthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel depthinnerPanel = new JPanel();
-							
+			
 						depthinnerPanel.setLayout(new BoxLayout(depthinnerPanel, BoxLayout.Y_AXIS));
-						depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						depthinnerPanel.add(depthLabel);
-						depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						depthinnerPanel.add(depthSlider);		
+						depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						depthinnerPanel.add(depthField);
+						depthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						depthinnerPanel.add(depthSlider);
 						depthinnerPanel.setBorder(depthborder2);
 			
 						frame.add(depthinnerPanel);
@@ -121,7 +139,7 @@ public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
 			}
 		}
 		private void updatedepthLabel() {
-		depthLabel.setText("Depth " + String.format("%4.2f", gCB.getdepth()));		
+		depthField.setText("Depth " + String.format("%4.2f", gCB.getdepth()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -87,7 +87,7 @@
 			
 			// create setters and getter for control panel variables
 			public void setfilt(double __param) {
-				filt = __param;	
+				filt = __param;
 			}
 			
 			public double getfilt() {

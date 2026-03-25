@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ToverXCADBlock;
@@ -52,8 +54,8 @@ public class ToverXControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private ToverXCADBlock gCB;
 	// declare the controls
-	JSlider filterFactorSlider;
-	JLabel  filterFactorLabel;	
+	FineControlSlider filterFactorSlider;
+	JTextField  filterFactorField;
 
 public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		
@@ -77,19 +79,35 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						filterFactorSlider.addChangeListener(new ToverXListener());
-						filterFactorLabel = new JLabel();
+						filterFactorField = new JTextField();
+						filterFactorField.setHorizontalAlignment(JTextField.CENTER);
 						Border filterFactorBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						filterFactorLabel.setBorder(filterFactorBorder1);
+						filterFactorField.setBorder(filterFactorBorder1);
+						filterFactorField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(filterFactorField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(filterFactorSlider.getMinimum(), Math.min(filterFactorSlider.getMaximum(), sliderVal));
+						filterFactorSlider.setValue(sliderVal);
+						gCB.setfilterFactor(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatefilterFactorLabel();
+								} catch (NumberFormatException ex) {
+									updatefilterFactorLabel();
+								}
+							}
+						});
 						updatefilterFactorLabel();
-						
+			
 						Border filterFactorborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel filterFactorinnerPanel = new JPanel();
-							
+			
 						filterFactorinnerPanel.setLayout(new BoxLayout(filterFactorinnerPanel, BoxLayout.Y_AXIS));
-						filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						filterFactorinnerPanel.add(filterFactorLabel);
-						filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						filterFactorinnerPanel.add(filterFactorSlider);		
+						filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						filterFactorinnerPanel.add(filterFactorField);
+						filterFactorinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						filterFactorinnerPanel.add(filterFactorSlider);
 						filterFactorinnerPanel.setBorder(filterFactorborder2);
 			
 						frame.add(filterFactorinnerPanel);
@@ -127,7 +145,7 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefilterFactorLabel() {
-		filterFactorLabel.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfilterFactor())) + " Hz");		
+		filterFactorField.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfilterFactor())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

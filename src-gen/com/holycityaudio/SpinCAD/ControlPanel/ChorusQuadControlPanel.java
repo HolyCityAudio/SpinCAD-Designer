@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ChorusQuadCADBlock;
@@ -52,22 +54,22 @@ public class ChorusQuadControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private ChorusQuadCADBlock gCB;
 	// declare the controls
-	JSlider gain1Slider;
-	JLabel  gain1Label;	
-	JSlider delayLengthSlider;
-	JLabel  delayLengthLabel;	
-	JSlider tap1CenterSlider;
-	JLabel  tap1CenterLabel;	
-	JSlider tap2CenterSlider;
-	JLabel  tap2CenterLabel;	
-	JSlider tap3CenterSlider;
-	JLabel  tap3CenterLabel;	
-	JSlider tap4CenterSlider;
-	JLabel  tap4CenterLabel;	
-	JSlider rateSlider;
-	JLabel  rateLabel;	
-	JSlider widthSlider;
-	JLabel  widthLabel;	
+	FineControlSlider gain1Slider;
+	JTextField  gain1Field;
+	FineControlSlider delayLengthSlider;
+	JTextField  delayLengthField;
+	FineControlSlider tap1CenterSlider;
+	JTextField  tap1CenterField;
+	FineControlSlider tap2CenterSlider;
+	JTextField  tap2CenterField;
+	FineControlSlider tap3CenterSlider;
+	JTextField  tap3CenterField;
+	FineControlSlider tap4CenterSlider;
+	JTextField  tap4CenterField;
+	FineControlSlider rateSlider;
+	JTextField  rateField;
+	FineControlSlider widthSlider;
+	JTextField  widthField;
 	private JComboBox <String> lfoSelComboBox; 
 
 public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
@@ -90,131 +92,228 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
 						gain1Slider.addChangeListener(new ChorusQuadListener());
-						gain1Label = new JLabel();
+						gain1Field = new JTextField();
+						gain1Field.setHorizontalAlignment(JTextField.CENTER);
 						Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						gain1Label.setBorder(gain1Border1);
+						gain1Field.setBorder(gain1Border1);
+						gain1Field.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(gain1Field.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(gain1Slider.getMinimum(), Math.min(gain1Slider.getMaximum(), sliderVal));
+						gain1Slider.setValue(sliderVal);
+						gCB.setgain1((double) sliderVal);
+									updategain1Label();
+								} catch (NumberFormatException ex) {
+									updategain1Label();
+								}
+							}
+						});
 						updategain1Label();
-						
+			
 						Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel gain1innerPanel = new JPanel();
-							
+			
 						gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
-						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gain1innerPanel.add(gain1Label);
-						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gain1innerPanel.add(gain1Slider);		
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gain1innerPanel.add(gain1Field);
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gain1innerPanel.add(gain1Slider);
 						gain1innerPanel.setBorder(gain1border2);
 			
 						frame.add(gain1innerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					delayLengthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (2048 * 1), (int) (gCB.getdelayLength() * 1));
+					delayLengthSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 1),(int) (2048 * 1), (int) (gCB.getdelayLength() * 1));
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						delayLengthSlider.addChangeListener(new ChorusQuadListener());
-						delayLengthLabel = new JLabel();
+						delayLengthField = new JTextField();
+						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
 						Border delayLengthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						delayLengthLabel.setBorder(delayLengthBorder1);
+						delayLengthField.setBorder(delayLengthBorder1);
+						delayLengthField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(delayLengthField.getText().replaceAll("[^0-9.\\-]", ""));
+						double samples = val * ElmProgram.getSamplerate() / 1000.0;
+						int sliderVal = (int) Math.round(samples * 1);
+						sliderVal = Math.max(delayLengthSlider.getMinimum(), Math.min(delayLengthSlider.getMaximum(), sliderVal));
+						delayLengthSlider.setValue(sliderVal);
+						gCB.setdelayLength((double) sliderVal / 1);
+									updatedelayLengthLabel();
+								} catch (NumberFormatException ex) {
+									updatedelayLengthLabel();
+								}
+							}
+						});
 						updatedelayLengthLabel();
-						
+			
 						Border delayLengthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel delayLengthinnerPanel = new JPanel();
-							
+			
 						delayLengthinnerPanel.setLayout(new BoxLayout(delayLengthinnerPanel, BoxLayout.Y_AXIS));
-						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						delayLengthinnerPanel.add(delayLengthLabel);
-						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						delayLengthinnerPanel.add(delayLengthSlider);		
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						delayLengthinnerPanel.add(delayLengthField);
+						delayLengthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						delayLengthinnerPanel.add(delayLengthSlider);
 						delayLengthinnerPanel.setBorder(delayLengthborder2);
 			
 						frame.add(delayLengthinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap1CenterSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Center() * 1000.0));
+					tap1CenterSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Center() * 1000.0));
 						tap1CenterSlider.addChangeListener(new ChorusQuadListener());
-						tap1CenterLabel = new JLabel();
+						tap1CenterField = new JTextField();
+						tap1CenterField.setHorizontalAlignment(JTextField.CENTER);
 						Border tap1CenterBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						tap1CenterLabel.setBorder(tap1CenterBorder1);
+						tap1CenterField.setBorder(tap1CenterBorder1);
+						tap1CenterField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(tap1CenterField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(tap1CenterSlider.getMinimum(), Math.min(tap1CenterSlider.getMaximum(), sliderVal));
+						tap1CenterSlider.setValue(sliderVal);
+						gCB.settap1Center((double) sliderVal / 1000.0);
+									updatetap1CenterLabel();
+								} catch (NumberFormatException ex) {
+									updatetap1CenterLabel();
+								}
+							}
+						});
 						updatetap1CenterLabel();
-						
+			
 						Border tap1Centerborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel tap1CenterinnerPanel = new JPanel();
-							
+			
 						tap1CenterinnerPanel.setLayout(new BoxLayout(tap1CenterinnerPanel, BoxLayout.Y_AXIS));
-						tap1CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap1CenterinnerPanel.add(tap1CenterLabel);
-						tap1CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap1CenterinnerPanel.add(tap1CenterSlider);		
+						tap1CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap1CenterinnerPanel.add(tap1CenterField);
+						tap1CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap1CenterinnerPanel.add(tap1CenterSlider);
 						tap1CenterinnerPanel.setBorder(tap1Centerborder2);
 			
 						frame.add(tap1CenterinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap2CenterSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Center() * 1000.0));
+					tap2CenterSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Center() * 1000.0));
 						tap2CenterSlider.addChangeListener(new ChorusQuadListener());
-						tap2CenterLabel = new JLabel();
+						tap2CenterField = new JTextField();
+						tap2CenterField.setHorizontalAlignment(JTextField.CENTER);
 						Border tap2CenterBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						tap2CenterLabel.setBorder(tap2CenterBorder1);
+						tap2CenterField.setBorder(tap2CenterBorder1);
+						tap2CenterField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(tap2CenterField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(tap2CenterSlider.getMinimum(), Math.min(tap2CenterSlider.getMaximum(), sliderVal));
+						tap2CenterSlider.setValue(sliderVal);
+						gCB.settap2Center((double) sliderVal / 1000.0);
+									updatetap2CenterLabel();
+								} catch (NumberFormatException ex) {
+									updatetap2CenterLabel();
+								}
+							}
+						});
 						updatetap2CenterLabel();
-						
+			
 						Border tap2Centerborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel tap2CenterinnerPanel = new JPanel();
-							
+			
 						tap2CenterinnerPanel.setLayout(new BoxLayout(tap2CenterinnerPanel, BoxLayout.Y_AXIS));
-						tap2CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap2CenterinnerPanel.add(tap2CenterLabel);
-						tap2CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap2CenterinnerPanel.add(tap2CenterSlider);		
+						tap2CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap2CenterinnerPanel.add(tap2CenterField);
+						tap2CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap2CenterinnerPanel.add(tap2CenterSlider);
 						tap2CenterinnerPanel.setBorder(tap2Centerborder2);
 			
 						frame.add(tap2CenterinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap3CenterSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Center() * 1000.0));
+					tap3CenterSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Center() * 1000.0));
 						tap3CenterSlider.addChangeListener(new ChorusQuadListener());
-						tap3CenterLabel = new JLabel();
+						tap3CenterField = new JTextField();
+						tap3CenterField.setHorizontalAlignment(JTextField.CENTER);
 						Border tap3CenterBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						tap3CenterLabel.setBorder(tap3CenterBorder1);
+						tap3CenterField.setBorder(tap3CenterBorder1);
+						tap3CenterField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(tap3CenterField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(tap3CenterSlider.getMinimum(), Math.min(tap3CenterSlider.getMaximum(), sliderVal));
+						tap3CenterSlider.setValue(sliderVal);
+						gCB.settap3Center((double) sliderVal / 1000.0);
+									updatetap3CenterLabel();
+								} catch (NumberFormatException ex) {
+									updatetap3CenterLabel();
+								}
+							}
+						});
 						updatetap3CenterLabel();
-						
+			
 						Border tap3Centerborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel tap3CenterinnerPanel = new JPanel();
-							
+			
 						tap3CenterinnerPanel.setLayout(new BoxLayout(tap3CenterinnerPanel, BoxLayout.Y_AXIS));
-						tap3CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap3CenterinnerPanel.add(tap3CenterLabel);
-						tap3CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap3CenterinnerPanel.add(tap3CenterSlider);		
+						tap3CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap3CenterinnerPanel.add(tap3CenterField);
+						tap3CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap3CenterinnerPanel.add(tap3CenterSlider);
 						tap3CenterinnerPanel.setBorder(tap3Centerborder2);
 			
 						frame.add(tap3CenterinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap4CenterSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Center() * 1000.0));
+					tap4CenterSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Center() * 1000.0));
 						tap4CenterSlider.addChangeListener(new ChorusQuadListener());
-						tap4CenterLabel = new JLabel();
+						tap4CenterField = new JTextField();
+						tap4CenterField.setHorizontalAlignment(JTextField.CENTER);
 						Border tap4CenterBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						tap4CenterLabel.setBorder(tap4CenterBorder1);
+						tap4CenterField.setBorder(tap4CenterBorder1);
+						tap4CenterField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(tap4CenterField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(tap4CenterSlider.getMinimum(), Math.min(tap4CenterSlider.getMaximum(), sliderVal));
+						tap4CenterSlider.setValue(sliderVal);
+						gCB.settap4Center((double) sliderVal / 1000.0);
+									updatetap4CenterLabel();
+								} catch (NumberFormatException ex) {
+									updatetap4CenterLabel();
+								}
+							}
+						});
 						updatetap4CenterLabel();
-						
+			
 						Border tap4Centerborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel tap4CenterinnerPanel = new JPanel();
-							
+			
 						tap4CenterinnerPanel.setLayout(new BoxLayout(tap4CenterinnerPanel, BoxLayout.Y_AXIS));
-						tap4CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap4CenterinnerPanel.add(tap4CenterLabel);
-						tap4CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						tap4CenterinnerPanel.add(tap4CenterSlider);		
+						tap4CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap4CenterinnerPanel.add(tap4CenterField);
+						tap4CenterinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						tap4CenterinnerPanel.add(tap4CenterSlider);
 						tap4CenterinnerPanel.setBorder(tap4Centerborder2);
 			
 						frame.add(tap4CenterinnerPanel);
@@ -226,42 +325,75 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
+					rateSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new ChorusQuadListener());
-						rateLabel = new JLabel();
+						rateField = new JTextField();
+						rateField.setHorizontalAlignment(JTextField.CENTER);
 						Border rateBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						rateLabel.setBorder(rateBorder1);
+						rateField.setBorder(rateBorder1);
+						rateField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(rateField.getText().replaceAll("[^0-9.\\-]", ""));
+						double coeff = val * 2.0 * Math.PI * Math.pow(2.0, 17) / (ElmProgram.getSamplerate() * 511.0);
+						int sliderVal = (int) Math.round(coeff * 100.0);
+						sliderVal = Math.max(rateSlider.getMinimum(), Math.min(rateSlider.getMaximum(), sliderVal));
+						rateSlider.setValue(sliderVal);
+						gCB.setrate((double) sliderVal / 100.0);
+									updaterateLabel();
+								} catch (NumberFormatException ex) {
+									updaterateLabel();
+								}
+							}
+						});
 						updaterateLabel();
-						
+			
 						Border rateborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel rateinnerPanel = new JPanel();
-							
+			
 						rateinnerPanel.setLayout(new BoxLayout(rateinnerPanel, BoxLayout.Y_AXIS));
-						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rateinnerPanel.add(rateLabel);
-						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rateinnerPanel.add(rateSlider);		
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						rateinnerPanel.add(rateField);
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						rateinnerPanel.add(rateSlider);
 						rateinnerPanel.setBorder(rateborder2);
 			
 						frame.add(rateinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					widthSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (200.0 * 100.0), (int) (gCB.getwidth() * 100.0));
+					widthSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (200.0 * 100.0), (int) (gCB.getwidth() * 100.0));
 						widthSlider.addChangeListener(new ChorusQuadListener());
-						widthLabel = new JLabel();
+						widthField = new JTextField();
+						widthField.setHorizontalAlignment(JTextField.CENTER);
 						Border widthBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						widthLabel.setBorder(widthBorder1);
+						widthField.setBorder(widthBorder1);
+						widthField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(widthField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(widthSlider.getMinimum(), Math.min(widthSlider.getMaximum(), sliderVal));
+						widthSlider.setValue(sliderVal);
+						gCB.setwidth((double) sliderVal / 100.0);
+									updatewidthLabel();
+								} catch (NumberFormatException ex) {
+									updatewidthLabel();
+								}
+							}
+						});
 						updatewidthLabel();
-						
+			
 						Border widthborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel widthinnerPanel = new JPanel();
-							
+			
 						widthinnerPanel.setLayout(new BoxLayout(widthinnerPanel, BoxLayout.Y_AXIS));
-						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						widthinnerPanel.add(widthLabel);
-						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						widthinnerPanel.add(widthSlider);		
+						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						widthinnerPanel.add(widthField);
+						widthinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						widthinnerPanel.add(widthSlider);
 						widthinnerPanel.setBorder(widthborder2);
 			
 						frame.add(widthinnerPanel);
@@ -337,28 +469,28 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Label.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
+		gain1Field.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
 		}		
 		private void updatedelayLengthLabel() {
-		delayLengthLabel.setText("Chorus_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Chorus_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
 		private void updatetap1CenterLabel() {
-		tap1CenterLabel.setText("Tap_1_Center " + String.format("%4.3f", gCB.gettap1Center()));		
+		tap1CenterField.setText("Tap_1_Center " + String.format("%4.3f", gCB.gettap1Center()));		
 		}		
 		private void updatetap2CenterLabel() {
-		tap2CenterLabel.setText("Tap_2_Center " + String.format("%4.3f", gCB.gettap2Center()));		
+		tap2CenterField.setText("Tap_2_Center " + String.format("%4.3f", gCB.gettap2Center()));		
 		}		
 		private void updatetap3CenterLabel() {
-		tap3CenterLabel.setText("Tap_3_Center " + String.format("%4.3f", gCB.gettap3Center()));		
+		tap3CenterField.setText("Tap_3_Center " + String.format("%4.3f", gCB.gettap3Center()));		
 		}		
 		private void updatetap4CenterLabel() {
-		tap4CenterLabel.setText("Tap_4_Center " + String.format("%4.3f", gCB.gettap4Center()));		
+		tap4CenterField.setText("Tap_4_Center " + String.format("%4.3f", gCB.gettap4Center()));		
 		}		
 		private void updaterateLabel() {
-		rateLabel.setText("LFO_Rate " + String.format("%4.1f", coeffToLFORate(gCB.getrate())));		
+		rateField.setText("LFO_Rate " + String.format("%4.1f", coeffToLFORate(gCB.getrate())));		
 		}		
 		private void updatewidthLabel() {
-		widthLabel.setText("LFO_Width " + String.format("%4.1f", gCB.getwidth()));		
+		widthField.setText("LFO_Width " + String.format("%4.1f", gCB.getwidth()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

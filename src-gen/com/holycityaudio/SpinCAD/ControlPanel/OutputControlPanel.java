@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
@@ -52,10 +54,10 @@ public class OutputControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private OutputCADBlock gCB;
 	// declare the controls
-	JSlider gain1Slider;
-	JLabel  gain1Label;	
-	JSlider gain2Slider;
-	JLabel  gain2Label;	
+	FineControlSlider gain1Slider;
+	JTextField  gain1Field;
+	FineControlSlider gain2Slider;
+	JTextField  gain2Field;
 	JCheckBox monoCheckBox;
 	JCheckBox offset0CheckBox;
 
@@ -79,21 +81,37 @@ public OutputControlPanel(OutputCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
 						gain1Slider.addChangeListener(new OutputListener());
-						gain1Label = new JLabel();
+						gain1Field = new JTextField();
+						gain1Field.setHorizontalAlignment(JTextField.CENTER);
 						Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						gain1Label.setBorder(gain1Border1);
+						gain1Field.setBorder(gain1Border1);
+						gain1Field.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(gain1Field.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(gain1Slider.getMinimum(), Math.min(gain1Slider.getMaximum(), sliderVal));
+						gain1Slider.setValue(sliderVal);
+						gCB.setgain1((double) sliderVal);
+									updategain1Label();
+								} catch (NumberFormatException ex) {
+									updategain1Label();
+								}
+							}
+						});
 						updategain1Label();
-						
+			
 						Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel gain1innerPanel = new JPanel();
-							
+			
 						gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
-						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gain1innerPanel.add(gain1Label);
-						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gain1innerPanel.add(gain1Slider);		
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gain1innerPanel.add(gain1Field);
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gain1innerPanel.add(gain1Slider);
 						gain1innerPanel.setBorder(gain1border2);
 			
 						frame.add(gain1innerPanel);
@@ -106,21 +124,37 @@ public OutputControlPanel(OutputCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gain2Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
+						gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
 						gain2Slider.addChangeListener(new OutputListener());
-						gain2Label = new JLabel();
+						gain2Field = new JTextField();
+						gain2Field.setHorizontalAlignment(JTextField.CENTER);
 						Border gain2Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						gain2Label.setBorder(gain2Border1);
+						gain2Field.setBorder(gain2Border1);
+						gain2Field.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(gain2Field.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(gain2Slider.getMinimum(), Math.min(gain2Slider.getMaximum(), sliderVal));
+						gain2Slider.setValue(sliderVal);
+						gCB.setgain2((double) sliderVal);
+									updategain2Label();
+								} catch (NumberFormatException ex) {
+									updategain2Label();
+								}
+							}
+						});
 						updategain2Label();
-						
+			
 						Border gain2border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel gain2innerPanel = new JPanel();
-							
+			
 						gain2innerPanel.setLayout(new BoxLayout(gain2innerPanel, BoxLayout.Y_AXIS));
-						gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gain2innerPanel.add(gain2Label);
-						gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gain2innerPanel.add(gain2Slider);		
+						gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gain2innerPanel.add(gain2Field);
+						gain2innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gain2innerPanel.add(gain2Slider);
 						gain2innerPanel.setBorder(gain2border2);
 			
 						frame.add(gain2innerPanel);
@@ -176,10 +210,10 @@ public OutputControlPanel(OutputCADBlock genericCADBlock) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Label.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
+		gain1Field.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
 		}		
 		private void updategain2Label() {
-		gain2Label.setText("Input Gain 2 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
+		gain2Field.setText("Input Gain 2 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

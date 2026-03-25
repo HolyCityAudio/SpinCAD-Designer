@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
@@ -52,8 +54,8 @@ public class rms_limiterControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private rms_limiterCADBlock gCB;
 	// declare the controls
-	JSlider inGainSlider;
-	JLabel  inGainLabel;	
+	FineControlSlider inGainSlider;
+	JTextField  inGainField;
 
 public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 		
@@ -69,21 +71,37 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					inGainSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.1 * 100.0),(int) (1.0 * 100.0), (int) (gCB.getinGain() * 100.0));
+					inGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.1 * 100.0),(int) (1.0 * 100.0), (int) (gCB.getinGain() * 100.0));
 						inGainSlider.addChangeListener(new rms_limiterListener());
-						inGainLabel = new JLabel();
+						inGainField = new JTextField();
+						inGainField.setHorizontalAlignment(JTextField.CENTER);
 						Border inGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						inGainLabel.setBorder(inGainBorder1);
+						inGainField.setBorder(inGainBorder1);
+						inGainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(inGainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(inGainSlider.getMinimum(), Math.min(inGainSlider.getMaximum(), sliderVal));
+						inGainSlider.setValue(sliderVal);
+						gCB.setinGain((double) sliderVal / 100.0);
+									updateinGainLabel();
+								} catch (NumberFormatException ex) {
+									updateinGainLabel();
+								}
+							}
+						});
 						updateinGainLabel();
-						
+			
 						Border inGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel inGaininnerPanel = new JPanel();
-							
+			
 						inGaininnerPanel.setLayout(new BoxLayout(inGaininnerPanel, BoxLayout.Y_AXIS));
-						inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inGaininnerPanel.add(inGainLabel);
-						inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						inGaininnerPanel.add(inGainSlider);		
+						inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inGaininnerPanel.add(inGainField);
+						inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inGaininnerPanel.add(inGainSlider);
 						inGaininnerPanel.setBorder(inGainborder2);
 			
 						frame.add(inGaininnerPanel);
@@ -121,7 +139,7 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinGainLabel() {
-		inGainLabel.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));		
+		inGainField.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

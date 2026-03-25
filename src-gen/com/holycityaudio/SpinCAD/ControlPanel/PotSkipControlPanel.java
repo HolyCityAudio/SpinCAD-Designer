@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.PotSkipCADBlock;
@@ -52,8 +54,8 @@ public class PotSkipControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private PotSkipCADBlock gCB;
 	// declare the controls
-	JSlider stepsSlider;
-	JLabel  stepsLabel;	
+	FineControlSlider stepsSlider;
+	JTextField  stepsField;
 
 public PotSkipControlPanel(PotSkipCADBlock genericCADBlock) {
 		
@@ -69,21 +71,37 @@ public PotSkipControlPanel(PotSkipCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					stepsSlider = new JSlider(JSlider.HORIZONTAL, (int)(4 * 4),(int) (12 * 4), (int) (gCB.getsteps() * 4));
+					stepsSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(4 * 4),(int) (12 * 4), (int) (gCB.getsteps() * 4));
 						stepsSlider.addChangeListener(new PotSkipListener());
-						stepsLabel = new JLabel();
+						stepsField = new JTextField();
+						stepsField.setHorizontalAlignment(JTextField.CENTER);
 						Border stepsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						stepsLabel.setBorder(stepsBorder1);
+						stepsField.setBorder(stepsBorder1);
+						stepsField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(stepsField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 4);
+						sliderVal = Math.max(stepsSlider.getMinimum(), Math.min(stepsSlider.getMaximum(), sliderVal));
+						stepsSlider.setValue(sliderVal);
+						gCB.setsteps((double) sliderVal / 4);
+									updatestepsLabel();
+								} catch (NumberFormatException ex) {
+									updatestepsLabel();
+								}
+							}
+						});
 						updatestepsLabel();
-						
+			
 						Border stepsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel stepsinnerPanel = new JPanel();
-							
+			
 						stepsinnerPanel.setLayout(new BoxLayout(stepsinnerPanel, BoxLayout.Y_AXIS));
-						stepsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						stepsinnerPanel.add(stepsLabel);
-						stepsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						stepsinnerPanel.add(stepsSlider);		
+						stepsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						stepsinnerPanel.add(stepsField);
+						stepsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						stepsinnerPanel.add(stepsSlider);
 						stepsinnerPanel.setBorder(stepsborder2);
 			
 						frame.add(stepsinnerPanel);
@@ -121,7 +139,7 @@ public PotSkipControlPanel(PotSkipCADBlock genericCADBlock) {
 			}
 		}
 		private void updatestepsLabel() {
-		stepsLabel.setText("Steps " + String.format("%4.0f", gCB.getsteps()));		
+		stepsField.setText("Steps " + String.format("%4.0f", gCB.getsteps()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.New_OscillatorCADBlock;
@@ -52,8 +54,8 @@ public class New_OscillatorControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private New_OscillatorCADBlock gCB;
 	// declare the controls
-	JSlider freqVarSlider;
-	JLabel  freqVarLabel;	
+	FineControlSlider freqVarSlider;
+	JTextField  freqVarField;
 
 public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 		
@@ -77,19 +79,35 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						freqVarSlider.addChangeListener(new New_OscillatorListener());
-						freqVarLabel = new JLabel();
+						freqVarField = new JTextField();
+						freqVarField.setHorizontalAlignment(JTextField.CENTER);
 						Border freqVarBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						freqVarLabel.setBorder(freqVarBorder1);
+						freqVarField.setBorder(freqVarBorder1);
+						freqVarField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(freqVarField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(freqVarSlider.getMinimum(), Math.min(freqVarSlider.getMaximum(), sliderVal));
+						freqVarSlider.setValue(sliderVal);
+						gCB.setfreqVar(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatefreqVarLabel();
+								} catch (NumberFormatException ex) {
+									updatefreqVarLabel();
+								}
+							}
+						});
 						updatefreqVarLabel();
-						
+			
 						Border freqVarborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel freqVarinnerPanel = new JPanel();
-							
+			
 						freqVarinnerPanel.setLayout(new BoxLayout(freqVarinnerPanel, BoxLayout.Y_AXIS));
-						freqVarinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						freqVarinnerPanel.add(freqVarLabel);
-						freqVarinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						freqVarinnerPanel.add(freqVarSlider);		
+						freqVarinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						freqVarinnerPanel.add(freqVarField);
+						freqVarinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						freqVarinnerPanel.add(freqVarSlider);
 						freqVarinnerPanel.setBorder(freqVarborder2);
 			
 						frame.add(freqVarinnerPanel);
@@ -127,7 +145,7 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqVarLabel() {
-		freqVarLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreqVar())) + " Hz");		
+		freqVarField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreqVar())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -33,6 +33,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ChirpCADBlock;
@@ -52,14 +54,14 @@ public class ChirpControlPanel extends spinCADControlPanel {
 	private JFrame frame;
 	private ChirpCADBlock gCB;
 	// declare the controls
-	JSlider gainSlider;
-	JLabel  gainLabel;	
-	JSlider nAPsSlider;
-	JLabel  nAPsLabel;	
-	JSlider stretchSlider;
-	JLabel  stretchLabel;	
-	JSlider kiapSlider;
-	JLabel  kiapLabel;	
+	FineControlSlider gainSlider;
+	JTextField  gainField;
+	FineControlSlider nAPsSlider;
+	JTextField  nAPsField;
+	FineControlSlider stretchSlider;
+	JTextField  stretchField;
+	FineControlSlider kiapSlider;
+	JTextField  kiapField;
 
 public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 		
@@ -81,84 +83,148 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
+						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 						gainSlider.addChangeListener(new ChirpListener());
-						gainLabel = new JLabel();
+						gainField = new JTextField();
+						gainField.setHorizontalAlignment(JTextField.CENTER);
 						Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						gainLabel.setBorder(gainBorder1);
+						gainField.setBorder(gainBorder1);
+						gainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(gainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(gainSlider.getMinimum(), Math.min(gainSlider.getMaximum(), sliderVal));
+						gainSlider.setValue(sliderVal);
+						gCB.setgain((double) sliderVal);
+									updategainLabel();
+								} catch (NumberFormatException ex) {
+									updategainLabel();
+								}
+							}
+						});
 						updategainLabel();
-						
+			
 						Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel gaininnerPanel = new JPanel();
-							
+			
 						gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gaininnerPanel.add(gainLabel);
-						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gaininnerPanel.add(gainSlider);		
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gaininnerPanel.add(gainField);
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gaininnerPanel.add(gainSlider);
 						gaininnerPanel.setBorder(gainborder2);
 			
 						frame.add(gaininnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					nAPsSlider = new JSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (30 * 1.0), (int) (gCB.getnAPs() * 1.0));
+					nAPsSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(2 * 1.0),(int) (30 * 1.0), (int) (gCB.getnAPs() * 1.0));
 						nAPsSlider.addChangeListener(new ChirpListener());
-						nAPsLabel = new JLabel();
+						nAPsField = new JTextField();
+						nAPsField.setHorizontalAlignment(JTextField.CENTER);
 						Border nAPsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						nAPsLabel.setBorder(nAPsBorder1);
+						nAPsField.setBorder(nAPsBorder1);
+						nAPsField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(nAPsField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1.0);
+						sliderVal = Math.max(nAPsSlider.getMinimum(), Math.min(nAPsSlider.getMaximum(), sliderVal));
+						nAPsSlider.setValue(sliderVal);
+						gCB.setnAPs((double) sliderVal / 1.0);
+									updatenAPsLabel();
+								} catch (NumberFormatException ex) {
+									updatenAPsLabel();
+								}
+							}
+						});
 						updatenAPsLabel();
-						
+			
 						Border nAPsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel nAPsinnerPanel = new JPanel();
-							
+			
 						nAPsinnerPanel.setLayout(new BoxLayout(nAPsinnerPanel, BoxLayout.Y_AXIS));
-						nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						nAPsinnerPanel.add(nAPsLabel);
-						nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						nAPsinnerPanel.add(nAPsSlider);		
+						nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						nAPsinnerPanel.add(nAPsField);
+						nAPsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						nAPsinnerPanel.add(nAPsSlider);
 						nAPsinnerPanel.setBorder(nAPsborder2);
 			
 						frame.add(nAPsinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					stretchSlider = new JSlider(JSlider.HORIZONTAL, (int)(1 * 1.0),(int) (50 * 1.0), (int) (gCB.getstretch() * 1.0));
+					stretchSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1 * 1.0),(int) (50 * 1.0), (int) (gCB.getstretch() * 1.0));
 						stretchSlider.addChangeListener(new ChirpListener());
-						stretchLabel = new JLabel();
+						stretchField = new JTextField();
+						stretchField.setHorizontalAlignment(JTextField.CENTER);
 						Border stretchBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						stretchLabel.setBorder(stretchBorder1);
+						stretchField.setBorder(stretchBorder1);
+						stretchField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(stretchField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1.0);
+						sliderVal = Math.max(stretchSlider.getMinimum(), Math.min(stretchSlider.getMaximum(), sliderVal));
+						stretchSlider.setValue(sliderVal);
+						gCB.setstretch((double) sliderVal / 1.0);
+									updatestretchLabel();
+								} catch (NumberFormatException ex) {
+									updatestretchLabel();
+								}
+							}
+						});
 						updatestretchLabel();
-						
+			
 						Border stretchborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel stretchinnerPanel = new JPanel();
-							
+			
 						stretchinnerPanel.setLayout(new BoxLayout(stretchinnerPanel, BoxLayout.Y_AXIS));
-						stretchinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						stretchinnerPanel.add(stretchLabel);
-						stretchinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						stretchinnerPanel.add(stretchSlider);		
+						stretchinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						stretchinnerPanel.add(stretchField);
+						stretchinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						stretchinnerPanel.add(stretchSlider);
 						stretchinnerPanel.setBorder(stretchborder2);
 			
 						frame.add(stretchinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					kiapSlider = new JSlider(JSlider.HORIZONTAL, (int)(-0.98 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
+					kiapSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-0.98 * 100.0),(int) (0.98 * 100.0), (int) (gCB.getkiap() * 100.0));
 						kiapSlider.addChangeListener(new ChirpListener());
-						kiapLabel = new JLabel();
+						kiapField = new JTextField();
+						kiapField.setHorizontalAlignment(JTextField.CENTER);
 						Border kiapBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						kiapLabel.setBorder(kiapBorder1);
+						kiapField.setBorder(kiapBorder1);
+						kiapField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(kiapField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(kiapSlider.getMinimum(), Math.min(kiapSlider.getMaximum(), sliderVal));
+						kiapSlider.setValue(sliderVal);
+						gCB.setkiap((double) sliderVal / 100.0);
+									updatekiapLabel();
+								} catch (NumberFormatException ex) {
+									updatekiapLabel();
+								}
+							}
+						});
 						updatekiapLabel();
-						
+			
 						Border kiapborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel kiapinnerPanel = new JPanel();
-							
+			
 						kiapinnerPanel.setLayout(new BoxLayout(kiapinnerPanel, BoxLayout.Y_AXIS));
-						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kiapinnerPanel.add(kiapLabel);
-						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						kiapinnerPanel.add(kiapSlider);		
+						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kiapinnerPanel.add(kiapField);
+						kiapinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						kiapinnerPanel.add(kiapSlider);
 						kiapinnerPanel.setBorder(kiapborder2);
 			
 						frame.add(kiapinnerPanel);
@@ -208,16 +274,16 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		private void updatenAPsLabel() {
-		nAPsLabel.setText("Stages " + String.format("%4.1f", gCB.getnAPs()));		
+		nAPsField.setText("Stages " + String.format("%4.1f", gCB.getnAPs()));		
 		}		
 		private void updatestretchLabel() {
-		stretchLabel.setText("Stretch " + String.format("%4.1f", gCB.getstretch()));		
+		stretchField.setText("Stretch " + String.format("%4.1f", gCB.getstretch()));		
 		}		
 		private void updatekiapLabel() {
-		kiapLabel.setText("All Pass " + String.format("%4.2f", gCB.getkiap()));		
+		kiapField.setText("All Pass " + String.format("%4.2f", gCB.getkiap()));		
 		}		
 		
 		class MyWindowListener implements WindowListener
