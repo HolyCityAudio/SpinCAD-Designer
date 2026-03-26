@@ -96,10 +96,16 @@ public class SpinCADFile {
 		String filePath = fileToBeSaved.getPath();
 		loadRecentPatchFileList();
 
-		try (FileOutputStream fos = new FileOutputStream(filePath);
-			 ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-			oos.writeObject(m);
-			oos.flush();
+		try {
+			if (filePath.endsWith(".spcdj")) {
+				SpinCADJsonSerializer.writePatch(m, filePath);
+			} else {
+				try (FileOutputStream fos = new FileOutputStream(filePath);
+					 ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+					oos.writeObject(m);
+					oos.flush();
+				}
+			}
 			// Only update MRU on successful save
 			saveMRUPatchFolder(filePath);
 			recentPatchFileList.add(fileToBeSaved);
@@ -115,30 +121,31 @@ public class SpinCADFile {
 	}
 
 	public void fileSaveBank(SpinCADBank b) {
-		
+
 		String Folder = prefs.get("MRUBankFolder",  "");
-		
+
 		File fileToBeSaved = new File( Folder + "/" + b.bankFileName);
 		System.out.println("fileToBeSaved " + fileToBeSaved);
 
 		String filePath = fileToBeSaved.getPath();
 		System.out.println("filepath " + filePath);
-		
+
 		loadRecentBankFileList();
 
-		try { 
-			FileOutputStream fos = new FileOutputStream(filePath); 
-			ObjectOutputStream oos = new ObjectOutputStream(fos); 
-
-			oos.writeObject(b); 	
-
-			oos.flush(); 
-			oos.close(); 
-		} 
-		catch(Exception e) { 
-			System.out.println("Exception during serialization: " + e); 
-			//		System.exit(0); 
-		} 
+		try {
+			if (filePath.endsWith(".spbkj")) {
+				SpinCADJsonSerializer.writeBank(b, filePath);
+			} else {
+				FileOutputStream fos = new FileOutputStream(filePath);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(b);
+				oos.flush();
+				oos.close();
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception during serialization: " + e);
+		}
 		finally {
 			saveMRUBankFolder(filePath);
 			if(recentBankFileList != null) {
@@ -149,14 +156,17 @@ public class SpinCADFile {
 	}
 
 	public SpinCADPatch fileReadPatch(String fileName) throws IOException, ClassNotFoundException {
-		// Object deserialization 
-		FileInputStream fis = new FileInputStream(fileName); 
-		ObjectInputStream ois = new ObjectInputStream(fis); 
+		if (fileName.endsWith(".spcdj")) {
+			return SpinCADJsonSerializer.readPatch(fileName);
+		}
+		// Object deserialization
+		FileInputStream fis = new FileInputStream(fileName);
+		ObjectInputStream ois = new ObjectInputStream(fis);
 		SpinCADPatch p  = new SpinCADPatch();
 
 		p = (SpinCADPatch) ois.readObject();
 
-		ois.close(); 
+		ois.close();
 		return p;
 	} 
 
@@ -283,7 +293,7 @@ public class SpinCADFile {
 
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Files", "spcd");
+				"SpinCAD Files", "spcd", "spcdj");
 		fc.setFileFilter(filter);
 		fc.setAccessory(recentPatchFileList);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -297,17 +307,17 @@ public class SpinCADFile {
 			SpinCADPatch p = new SpinCADPatch();
 			try {
 				p = fileReadPatch(filePath);
-			} catch (Exception e) {	
+			} catch (Exception e) {
 				e.printStackTrace();
 				try {
-					System.out.println("Trying version 952 format..." + newline);					
+					System.out.println("Trying version 952 format..." + newline);
 					p = fileReadPatch952(filePath);
-				} catch (Exception exc) {	
+				} catch (Exception exc) {
 					exc.printStackTrace();
-					SpinCADDialogs.MessageBox(dialogParent, "File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+					SpinCADDialogs.MessageBox(dialogParent, "File open failed!", "This file may be from\nan incompatible version of \nSpinCAD Designer.");
 					return null;  // FIX #8: don't update MRU or return corrupt data on failure
 				}
-				SpinCADDialogs.MessageBox(dialogParent, "File open failed!", "This spcd file may be from\nan incompatible version of \nSpinCAD Designer.");
+				SpinCADDialogs.MessageBox(dialogParent, "File open failed!", "This file may be from\nan incompatible version of \nSpinCAD Designer.");
 			}
 			// FIX #8: only update MRU and metadata on success, not in finally
 			saveMRUPatchFolder(filePath);
@@ -324,11 +334,14 @@ public class SpinCADFile {
 	}
 
 	public SpinCADBank fileReadBank(File fileName) throws IOException, ClassNotFoundException {
-		// Object deserialization 
-		FileInputStream fis = new FileInputStream(fileName); 
-		ObjectInputStream ois = new ObjectInputStream(fis); 
+		if (fileName.getName().endsWith(".spbkj")) {
+			return SpinCADJsonSerializer.readBank(fileName.getPath());
+		}
+		// Object deserialization
+		FileInputStream fis = new FileInputStream(fileName);
+		ObjectInputStream ois = new ObjectInputStream(fis);
 		SpinCADBank b  = (SpinCADBank)ois.readObject();
-		ois.close(); 
+		ois.close();
 		return b;
 	} 	
 
@@ -340,7 +353,7 @@ public class SpinCADFile {
 		final String newline = "\n";
 		// In response to a button click:
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Bank Files", "spbk");
+				"SpinCAD Bank Files", "spbk", "spbkj");
 		System.out.println("\nfilter=" + filter);
 		fc.setFileFilter(filter);
 		fc.setAccessory(recentBankFileList);
@@ -381,9 +394,14 @@ public class SpinCADFile {
 		String savedPath = prefs.get("MRUPatchFolder", "");
 		final JFileChooser fc = new JFileChooser(savedPath);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Files", "spcd");
+				"SpinCAD JSON Files", "spcdj");
 		fc.setFileFilter(filter);
-		fc.setSelectedFile(new File(p.patchFileName));
+		// suggest JSON extension for new saves
+		String suggestedName = p.patchFileName;
+		if (suggestedName.endsWith(".spcd")) {
+			suggestedName = suggestedName.substring(0, suggestedName.length() - 5) + ".spcdj";
+		}
+		fc.setSelectedFile(new File(suggestedName));
 		int returnVal = fc.showSaveDialog(dialogParent);
 		// need to process user canceling box right here
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -391,8 +409,9 @@ public class SpinCADFile {
 			// In response to a button click:
 			File fileToBeSaved = fc.getSelectedFile();
 
-			if (!fileToBeSaved.getAbsolutePath().endsWith(".spcd")) {
-				fileToBeSaved = new File(fc.getSelectedFile() + ".spcd");
+			if (!fileToBeSaved.getAbsolutePath().endsWith(".spcdj") &&
+				!fileToBeSaved.getAbsolutePath().endsWith(".spcd")) {
+				fileToBeSaved = new File(fc.getSelectedFile() + ".spcdj");
 			}
 			int n = JOptionPane.YES_OPTION;
 			if (fileToBeSaved.exists()) {
@@ -424,9 +443,14 @@ public class SpinCADFile {
 		String savedPath = prefs.get("MRUBankFolder", "");
 		final JFileChooser fc = new JFileChooser(savedPath);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"SpinCAD Bank Files", "spbk");
+				"SpinCAD JSON Bank Files", "spbkj");
 		fc.setFileFilter(filter);
-		fc.setSelectedFile(new File(b.bankFileName));
+		// suggest JSON extension for new saves
+		String suggestedName = b.bankFileName;
+		if (suggestedName.endsWith(".spbk")) {
+			suggestedName = suggestedName.substring(0, suggestedName.length() - 5) + ".spbkj";
+		}
+		fc.setSelectedFile(new File(suggestedName));
 		int returnVal = fc.showSaveDialog(dialogParent);
 		// need to process user canceling box right here
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -434,8 +458,9 @@ public class SpinCADFile {
 			// In response to a button click:
 			File fileToBeSaved = fc.getSelectedFile();
 
-			if (!fc.getSelectedFile().getAbsolutePath().endsWith(".spbk")) {
-				fileToBeSaved = new File(fc.getSelectedFile() + ".spbk");
+			if (!fileToBeSaved.getAbsolutePath().endsWith(".spbkj") &&
+				!fileToBeSaved.getAbsolutePath().endsWith(".spbk")) {
+				fileToBeSaved = new File(fc.getSelectedFile() + ".spbkj");
 			}
 			b.bankFileName = fileToBeSaved.getName();
 
