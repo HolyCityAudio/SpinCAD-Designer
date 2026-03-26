@@ -287,8 +287,8 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			
 						frame.add(widthinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();
-				lfoSelComboBox.addItem("LFO 0");
-				lfoSelComboBox.addItem("LFO 1");
+				lfoSelComboBox.addItem("SIN LFO 0");
+				lfoSelComboBox.addItem("SIN LFO 1");
 				lfoSelComboBox.setSelectedIndex(gCB.getlfoSel());
 				frame.add(Box.createRigidArea(new Dimension(5,8)));			
 				frame.getContentPane().add(lfoSelComboBox);

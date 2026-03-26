@@ -19,6 +19,7 @@
  */ 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -33,7 +34,8 @@ public class control_smootherACADBlock extends SpinCADBlock {
 
 	public control_smootherACADBlock(int x, int y) {
 		super(x, y);
-		setName("Smoother A");	
+		setName("Smoother");
+		setBorderColor(new Color(0xf2f224));	
 		// Iterate through pin definitions and allocate or assign as needed
 		addControlInputPin(this, "Control_Input");
 		addControlOutputPin(this, "Control_Output");
