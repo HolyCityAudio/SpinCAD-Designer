@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +14,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 
@@ -27,19 +27,34 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.andrewkilpatrick.elmGen.ElmProgram;
+
+import com.holycityaudio.SpinCAD.FineControlSlider;
+
 class PhaserControlPanel implements ChangeListener, ActionListener {
-	JSlider stagesSlider = new JSlider(JSlider.HORIZONTAL, 1, 5, 4);
-	JLabel stagesLabel = new JLabel();
+	JSlider stagesSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 5, 4);
+	JTextField stagesField = new JTextField();
+
+	FineControlSlider rateSlider;
+	JTextField rateField;
+
+	FineControlSlider widthSlider;
+	JTextField widthField;
 
 	private JLabel controlTypeLabel = new JLabel("Control Type");
 	private JComboBox<String> controlType;
@@ -56,6 +71,23 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 	public PhaserControlPanel(PhaserCADBlock swoosh) {
 
 		stagesSlider.addChangeListener(this);
+		stagesField.setHorizontalAlignment(JTextField.CENTER);
+		stagesField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int val = Integer.parseInt(stagesField.getText().replaceAll("[^0-9.\\-]", "").split("\\.")[0]);
+					// Display shows 2*stages, so user enters display value; convert back
+					val = val / 2;
+					val = Math.max(1, Math.min(5, val));
+					pong.setStages(val);
+					stagesSlider.setValue(val);
+					updateStagesLabel();
+				} catch (NumberFormatException ex) {
+					updateStagesLabel();
+				}
+			}
+		});
 		controlType = new JComboBox<String>(listOptions);
 		controlType.addActionListener(this);
 
@@ -63,8 +95,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Ramp LFO");
-				pong.controlPanelFrame = frame;
+				frame = new JFrame("Phaser");
 				frame.setTitle("Phaser");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				frame.setResizable(false);
@@ -72,16 +103,93 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				stagesSlider.setMajorTickSpacing(1);
 				stagesSlider.setPaintTicks(true);
 
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
-				frame.add(stagesLabel);
-				updateFreqLabel();
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
+				frame.add(stagesField);
+				updateStagesLabel();
 				frame.add(stagesSlider);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 
+				// LFO Rate slider (0-100 maps to 0.0-1.0 for SIN_RATE register)
+				rateSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 100, (int)(pong.getLfoRate() * 100));
+				rateSlider.addChangeListener(new PhaserChangeListener());
+
+				rateField = new JTextField();
+				rateField.setHorizontalAlignment(JTextField.CENTER);
+				rateField.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							String text = rateField.getText().replaceAll("[^\\d.\\-]", "");
+							double val = Double.parseDouble(text);
+							// Convert Hz back to slider value
+							// Hz = (samplerate * coeff * 511) / (2 * PI * 2^17)
+							// coeff = Hz * 2 * PI * 2^17 / (samplerate * 511)
+							double coeff = val * 2 * Math.PI * Math.pow(2.0, 17) / (ElmProgram.getSamplerate() * 511.0);
+							int sliderVal = (int) Math.round(coeff * 100);
+							sliderVal = Math.max(1, Math.min(100, sliderVal));
+							rateSlider.setValue(sliderVal);
+							pong.setLfoRate(sliderVal / 100.0);
+							updateRateLabel();
+						} catch (NumberFormatException ex) {
+							updateRateLabel();
+						}
+					}
+				});
+
+				Border rateBorder = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				rateField.setBorder(rateBorder);
+				Border rateOuterBorder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel ratePanel = new JPanel();
+				ratePanel.setLayout(new BoxLayout(ratePanel, BoxLayout.Y_AXIS));
+				ratePanel.add(Box.createRigidArea(new Dimension(5, 4)));
+				ratePanel.add(rateField);
+				ratePanel.add(Box.createRigidArea(new Dimension(5, 4)));
+				ratePanel.add(rateSlider);
+				ratePanel.setBorder(rateOuterBorder);
+				updateRateLabel();
+				frame.add(ratePanel);
+
+				// LFO Width slider (0-100 maps to 0.0-1.0)
+				widthSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 100, (int)(pong.getLfoWidth() * 100));
+				widthSlider.addChangeListener(new PhaserChangeListener());
+
+				widthField = new JTextField();
+				widthField.setHorizontalAlignment(JTextField.CENTER);
+				widthField.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							String text = widthField.getText().replaceAll("[^\\d.\\-]", "");
+							double val = Double.parseDouble(text);
+							int sliderVal = (int) Math.round(val);
+							sliderVal = Math.max(1, Math.min(100, sliderVal));
+							widthSlider.setValue(sliderVal);
+							pong.setLfoWidth(sliderVal / 100.0);
+							updateWidthLabel();
+						} catch (NumberFormatException ex) {
+							updateWidthLabel();
+						}
+					}
+				});
+
+				Border widthBorder = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				widthField.setBorder(widthBorder);
+				Border widthOuterBorder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel widthPanel = new JPanel();
+				widthPanel.setLayout(new BoxLayout(widthPanel, BoxLayout.Y_AXIS));
+				widthPanel.add(Box.createRigidArea(new Dimension(5, 4)));
+				widthPanel.add(widthField);
+				widthPanel.add(Box.createRigidArea(new Dimension(5, 4)));
+				widthPanel.add(widthSlider);
+				widthPanel.setBorder(widthOuterBorder);
+				updateWidthLabel();
+				frame.add(widthPanel);
+
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 				frame.add(controlTypeLabel);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 				frame.add(controlType);
-				frame.add(Box.createRigidArea(new Dimension(5,4)));			
+				frame.add(Box.createRigidArea(new Dimension(5,4)));
 				controlType.setSelectedIndex(pong.getControlMode());
 
 				stagesSlider.setValue((pong.getStages()));
@@ -90,19 +198,43 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.pack();
-				frame.setLocation(pong.getControlPanelLocation(200, 150));			}
+				frame.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));
+			}
 		});
+	}
+
+	class PhaserChangeListener implements ChangeListener {
+		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == rateSlider) {
+				pong.setLfoRate(rateSlider.getValue() / 100.0);
+				updateRateLabel();
+			}
+			else if(ce.getSource() == widthSlider) {
+				pong.setLfoWidth(widthSlider.getValue() / 100.0);
+				updateWidthLabel();
+			}
+		}
 	}
 
 	public void stateChanged(ChangeEvent ce) {
 		if(ce.getSource() == stagesSlider) {
 			pong.setStages(stagesSlider.getValue());
-			updateFreqLabel();
+			updateStagesLabel();
 		}
 	}
 
-	public void updateFreqLabel() {
-		stagesLabel.setText("Stages " + String.format("%d", 2 * pong.getStages()));
+	public void updateStagesLabel() {
+		stagesField.setText("Stages " + String.format("%d", 2 * pong.getStages()));
+	}
+
+	private void updateRateLabel() {
+		double coeff = pong.getLfoRate() * 511.0;
+		double hz = (ElmProgram.getSamplerate() * coeff) / (2 * Math.PI * Math.pow(2.0, 17));
+		rateField.setText("LFO Rate " + String.format("%4.1f", hz) + " Hz");
+	}
+
+	private void updateWidthLabel() {
+		widthField.setText("LFO Width " + String.format("%4.1f", pong.getLfoWidth() * 100) + "%");
 	}
 
 	@Override
@@ -114,11 +246,11 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				pong.setControlMode(0);
 			} else if (range == listOptions[1]) {
 				pong.setControlMode(1);
-			} 
+			}
 		}
 		pong.setupControls();
-	}	
-	
+	}
+
 	class MyWindowListener implements WindowListener
 	{
 	@Override

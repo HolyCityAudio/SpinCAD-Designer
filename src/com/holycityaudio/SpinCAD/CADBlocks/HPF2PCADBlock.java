@@ -43,7 +43,12 @@ public class HPF2PCADBlock extends SpinCADBlock{
 		addControlInputPin(this, "Frequency");
 		addControlInputPin(this, "Resonance");
 		setBorderColor(new Color(0x24f26f));	
-		setName("High Pass 2P");	}
+		if(is4Pole == true) {
+			setName("HP 4P");	
+		} else {
+			setName("HP 2P");	
+		}	
+		}
 
 	public void editBlock(){
 		new HPF2PControlPanel(this);

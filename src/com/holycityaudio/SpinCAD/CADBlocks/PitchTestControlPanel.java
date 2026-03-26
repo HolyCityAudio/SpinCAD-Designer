@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -14,52 +14,91 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
 
 @SuppressWarnings("serial")
 class PitchTestControlPanel extends JFrame implements ChangeListener {
 	JSlider freqSlider;
 	JSlider ampSlider;
 
-	JLabel freqLabel;
-	JLabel ampLabel;
+	JTextField freqField;
+	JTextField ampField;
 
 	private PitchTestCADBlock pong;
 
 	public PitchTestControlPanel(PitchTestCADBlock ppcb) {
 		this.pong = ppcb;
-		pong.controlPanelFrame = this;
 		this.setTitle("Pitch Shift Test");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 
-		freqSlider = new JSlider(JSlider.HORIZONTAL, -16383, 32767, 16384);
+		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, -16383, 32767, 16384);
 		freqSlider.addChangeListener(this);
-		ampSlider = new JSlider(JSlider.HORIZONTAL, 0, 3, 2);
+		ampSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 3, 2);
 		ampSlider.addChangeListener(this);
 
-		freqLabel = new JLabel();
-		ampLabel = new JLabel();
+		freqField = new JTextField();
+		freqField.setHorizontalAlignment(JTextField.CENTER);
+		freqField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int val = Integer.parseInt(freqField.getText().replaceAll("[^0-9.\\-]", "").split("\\.")[0]);
+					val = Math.max(-16383, Math.min(32767, val));
+					pong.setFreq(val);
+					freqSlider.setValue(val);
+					updateFreqLabel();
+				} catch (NumberFormatException ex) {
+					updateFreqLabel();
+				}
+			}
+		});
 
-		this.getContentPane().add(ampLabel);
+		ampField = new JTextField();
+		ampField.setHorizontalAlignment(JTextField.CENTER);
+		ampField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					// User types a buffer depth value: 512, 1024, 2048, 4096
+					int typed = Integer.parseInt(ampField.getText().replaceAll("[^0-9.\\-]", "").split("\\.")[0]);
+					int idx;
+					if (typed <= 512) idx = 0;
+					else if (typed <= 1024) idx = 1;
+					else if (typed <= 2048) idx = 2;
+					else idx = 3;
+					idx = Math.max(0, Math.min(3, idx));
+					pong.setAmp(idx);
+					ampSlider.setValue(idx);
+					updateAmpLabel(idx);
+				} catch (NumberFormatException ex) {
+					updateAmpLabel(ampSlider.getValue());
+				}
+			}
+		});
+
+		this.getContentPane().add(ampField);
 		updateAmpLabel(2);
 		this.getContentPane().add(ampSlider);
 
-		this.getContentPane().add(freqLabel);
+		this.getContentPane().add(freqField);
 		updateFreqLabel();
 		this.getContentPane().add(freqSlider);
 
@@ -84,7 +123,7 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 		this.setVisible(true);
 		this.setAlwaysOnTop(true);
 		this.pack();
-		this.setLocation(pong.getControlPanelLocation(200, 150));
+		this.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));
 	}
 
 	public void stateChanged(ChangeEvent ce) {
@@ -100,7 +139,7 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 	}
 
 	public void updateFreqLabel() {
-		freqLabel.setText("Freq coefficient " + String.format("%d", pong.getFreq()));
+		freqField.setText("Freq coefficient " + String.format("%d", pong.getFreq()));
 
 	}
 	public void updateAmpLabel(int i) {
@@ -117,6 +156,6 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 		if(i == 3) {
 			label = "4096";
 		}
-		ampLabel.setText("Amplitude " + label);
-	}	
+		ampField.setText("Amplitude " + label);
+	}
 }

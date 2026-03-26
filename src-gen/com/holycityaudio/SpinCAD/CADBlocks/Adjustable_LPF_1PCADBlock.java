@@ -141,14 +141,14 @@
 			
 			// create setters and getter for control panel variables
 			public void setattackFreq(double __param) {
-				attackFreq = __param;	
+				attackFreq = __param;
 			}
 			
 			public double getattackFreq() {
 				return attackFreq;
 			}
 			public void setdecayFreq(double __param) {
-				decayFreq = __param;	
+				decayFreq = __param;
 			}
 			
 			public double getdecayFreq() {

@@ -31,7 +31,6 @@
 			private LPF_RDFXControlPanel cp = null;
 			
 			private double freq = 0.15;
-			private int output;
 			private int lpf1;
 
 			public LPF_RDFXCADBlock(int x, int y) {
@@ -81,7 +80,6 @@
 			}
 			
 			// finally, generate the instructions
-			output = sfxb.allocateReg();
 			lpf1 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			if(this.getPin("Frequency").isConnected() == true) {

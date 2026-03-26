@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -14,7 +14,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 package com.holycityaudio.SpinCAD.CADBlocks;
@@ -24,46 +24,66 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 
 @SuppressWarnings("serial")
 class RingModControlPanel extends JFrame implements ChangeListener, ActionListener {
 	JSlider lfoSlider;
-	JLabel lfoLabel;
-	
+	JTextField lfoField;
+	private final int sliderMax;
+
 	private RingModCADBlock outBlock;
-	
+
 	public RingModControlPanel(RingModCADBlock ringModCADBlock) {
 		this.outBlock = ringModCADBlock;
-		outBlock.controlPanelFrame = this;
+		sliderMax = (int) Math.round(SpinCADBlock.freqToFilt(1200.0) * 500.0);
 		this.setTitle("Ring Mod");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-		
-		lfoSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+
+		lfoSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, sliderMax, 0);
 		lfoSlider.addChangeListener(this);
-		
-		lfoLabel = new JLabel();
-		
-		this.getContentPane().add(lfoLabel);
+
+		lfoField = new JTextField();
+		lfoField.setHorizontalAlignment(JTextField.CENTER);
+		lfoField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					double val = Double.parseDouble(lfoField.getText().replaceAll("[^0-9.\\-]", ""));
+					// val is in Hz; convert back to filter coefficient
+					double filt = SpinCADBlock.freqToFilt(val);
+					int sliderVal = (int) Math.round(filt * 500.0);
+					sliderVal = Math.max(0, Math.min(sliderMax, sliderVal));
+					outBlock.setLFO((double) sliderVal / 500.0);
+					lfoSlider.setValue(sliderVal);
+					updateLFOLabel();
+				} catch (NumberFormatException ex) {
+					updateLFOLabel();
+				}
+			}
+		});
+
+		this.getContentPane().add(lfoField);
 		this.getContentPane().add(lfoSlider);
-		
+
 		lfoSlider.setValue((int)Math.round(500.0 * outBlock.getLFO()));
-		updateLFOLabel();		
+		updateLFOLabel();
 		this.setVisible(true);
 		this.setAlwaysOnTop(true);
 		this.pack();
-		this.setLocation(outBlock.getControlPanelLocation(200, 150));
+		this.setLocation(outBlock.getX() + 200, outBlock.getY() + 150);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// ---
-		
+
 	}
 
 	public void stateChanged(ChangeEvent ce) {
@@ -72,9 +92,9 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 			updateLFOLabel();
 		}
 	}
-	
+
 	private void updateLFOLabel() {
-		lfoLabel.setText("LFO "	+ String.format("%2.2f Hz", SpinCADBlock.filtToFreq(outBlock.getLFO())));		
+		lfoField.setText("LFO "	+ String.format("%4.1f Hz", SpinCADBlock.filtToFreq(outBlock.getLFO())));
 	}
 
 }

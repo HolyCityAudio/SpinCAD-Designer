@@ -2,7 +2,7 @@
  * HPFControlPanel.java
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -15,38 +15,43 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.holycityaudio.SpinCAD.FineControlSlider;
 
 
 public class HPFControlPanel extends JFrame implements ChangeListener {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8785303496392300373L;
-	
-	JSlider freqSlider;
-	JSlider resSlider;
 
-	JLabel freqLabel;
-	JLabel resLabel;
+	FineControlSlider freqSlider;
+	FineControlSlider resSlider;
+
+	JTextField freqField;
+	JTextField resField;
 
 	private HPFCADBlock HPF;
 
 	public HPFControlPanel(HPFCADBlock b) {
 		this.HPF = b;
-		HPF.controlPanelFrame = this;
 
         EventQueue.invokeLater(new Runnable()
         {
@@ -61,23 +66,58 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
 		this.setTitle("High pass Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-		freqSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 100, 0);
 		freqSlider.addChangeListener(this);
-		resSlider = new JSlider(JSlider.HORIZONTAL, 0, 90, 0);
+		resSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 90, 0);
 		resSlider.addChangeListener(this);
 
-		freqLabel = new JLabel();
-		resLabel = new JLabel();
+		freqField = new JTextField();
+		freqField.setHorizontalAlignment(JTextField.CENTER);
+		freqField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String text = freqField.getText().replaceAll("[^\\d.\\-]", "");
+					double val = Double.parseDouble(text);
+					int sliderVal = (int) Math.round(val * 100.0);
+					sliderVal = Math.max(0, Math.min(100, sliderVal));
+					freqSlider.setValue(sliderVal);
+					HPF.setFreq((double) sliderVal / 100.0);
+					updateFreqLabel();
+				} catch (NumberFormatException ex) {
+					updateFreqLabel();
+				}
+			}
+		});
 
-		this.getContentPane().add(freqLabel);
+		resField = new JTextField();
+		resField.setHorizontalAlignment(JTextField.CENTER);
+		resField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String text = resField.getText().replaceAll("[^\\d.\\-]", "");
+					double val = Double.parseDouble(text);
+					int sliderVal = (int) Math.round(val * 100.0);
+					sliderVal = Math.max(0, Math.min(90, sliderVal));
+					resSlider.setValue(sliderVal);
+					HPF.setRes((double) sliderVal / 100.0);
+					updateResLabel();
+				} catch (NumberFormatException ex) {
+					updateResLabel();
+				}
+			}
+		});
+
+		this.getContentPane().add(freqField);
 		this.getContentPane().add(freqSlider);
 
-		this.getContentPane().add(resLabel);
+		this.getContentPane().add(resField);
 		this.getContentPane().add(resSlider);
 
 		this.pack();
 		this.setVisible(true);
-		this.setLocation(HPF.getControlPanelLocation(200, 150));
+		this.setLocation(HPF.getX() + 200, HPF.getY() + 150);
 		//		freqSlider.setValue((int)Math.round((b.getFreq() * 100.0)));
 		//		resSlider.setValue((int)Math.round((b.getRes() * 100.0)));
 	}
@@ -86,21 +126,23 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
 		this.HPF = b;
 		//		this.setTitle("High pass Filter");
 
-		freqSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 100, 0);
 		freqSlider.addChangeListener(this);
-		resSlider = new JSlider(JSlider.HORIZONTAL, 0, 90, 0);
+		resSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 90, 0);
 		resSlider.addChangeListener(this);
 
 		JLabel blockName = new JLabel("High Pass Filter");
-		freqLabel = new JLabel();
-		resLabel = new JLabel();
+		freqField = new JTextField();
+		freqField.setHorizontalAlignment(JTextField.CENTER);
+		resField = new JTextField();
+		resField.setHorizontalAlignment(JTextField.CENTER);
 
 		p.add(blockName);
 
-		p.add(freqLabel);
+		p.add(freqField);
 		p.add(freqSlider);
 
-		p.add(resLabel);
+		p.add(resField);
 		p.add(resSlider);
 
 		freqSlider.setValue((int)Math.round((b.getFreq() * 100.0)));
@@ -110,11 +152,19 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
 	public void stateChanged(ChangeEvent ce) {
 		if (ce.getSource() == freqSlider) {
 			HPF.setFreq((double) freqSlider.getValue() / 100.0);
-			freqLabel.setText("Frequency: "
-					+ String.format("%2.2f", HPF.getFreq()));
+			updateFreqLabel();
 		} else if (ce.getSource() == resSlider) {
 			HPF.setRes((double) resSlider.getValue() / 100.0);
-			resLabel.setText("Resonance: " + String.format("%2.2f", HPF.getRes()));
+			updateResLabel();
 		}
+	}
+
+	private void updateFreqLabel() {
+		freqField.setText("Frequency: "
+				+ String.format("%4.1f", HPF.getFreq()));
+	}
+
+	private void updateResLabel() {
+		resField.setText("Resonance: " + String.format("%2.1f", HPF.getRes()));
 	}
 }

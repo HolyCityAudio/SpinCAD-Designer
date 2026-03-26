@@ -1,21 +1,21 @@
-/* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick 
- * 
- *   This program is free software: you can redistribute it and/or modify 
- *   it under the terms of the GNU General Public License as published by 
- *   the Free Software Foundation, either version 3 of the License, or 
- *   (at your option) any later version. 
- * 
- *   This program is distributed in the hope that it will be useful, 
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- *   GNU General Public License for more details. 
- * 
- *   You should have received a copy of the GNU General Public License 
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
- *     
- */ 
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+ * Copyright (C)2013 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package com.holycityaudio.SpinCAD.ControlBlocks;
 
@@ -30,30 +30,31 @@ import java.awt.event.ItemListener;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 
 public class RampLFOControlPanel implements ChangeListener, ActionListener, ItemListener {
-	
+
 	String RampWidths[] = { "512", "1024", "2048", "4096" };
 	int lfoWidths[] = { 512, 1024, 2048, 4096 };
 
-	private JSlider lfoWidthSlider = new JSlider(JSlider.HORIZONTAL, 0, 3, 3);
-	private JLabel lfoWidthLabel = new JLabel("LFO Width");
-	
-	private JSlider lfoRateSlider = new JSlider(JSlider.HORIZONTAL, -16384, 32767, 3200);
-	private JLabel lfoRateLabel = new JLabel("LFO Rate");
+	private JSlider lfoWidthSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 3, 3);
+	private JTextField lfoWidthField = new JTextField("LFO Width");
+
+	private JSlider lfoRateSlider = new FineControlSlider(JSlider.HORIZONTAL, -16384, 32767, 3200);
+	private JTextField lfoRateField = new JTextField("LFO Rate");
 
 	private LFORadioButtons rb;
-	
+
 	private JFrame frame;
 	private RampLFOCADBlock pC;
 
@@ -62,32 +63,77 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 		lfoRateSlider.addChangeListener(this);
 		this.pC = rampLFOCADBlock;
 		rb  = new LFORadioButtons();
-		
+
+		lfoRateField.setHorizontalAlignment(JTextField.CENTER);
+		lfoRateField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					double val = Double.parseDouble(lfoRateField.getText().replaceAll("[^0-9.\\-]", ""));
+					// Rate display: 16.0 * rate * 4096 / (32767.0 * lfoWidths[width])
+					// Invert: rate = val * 32767.0 * lfoWidths[width] / (16.0 * 4096)
+					int widthIdx = pC.getLFOWidth();
+					int sliderVal = (int) Math.round(val * 32767.0 * lfoWidths[widthIdx] / (16.0 * 4096));
+					sliderVal = Math.max(-16384, Math.min(32767, sliderVal));
+					pC.setLFORate(sliderVal);
+					lfoRateSlider.setValue(sliderVal);
+					updateLFORateLabel();
+				} catch (NumberFormatException ex) {
+					updateLFORateLabel();
+				}
+			}
+		});
+
+		lfoWidthField.setHorizontalAlignment(JTextField.CENTER);
+		lfoWidthField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int val = Integer.parseInt(lfoWidthField.getText().replaceAll("[^0-9]", ""));
+					// Find the closest matching width index
+					int bestIdx = 0;
+					int bestDiff = Math.abs(val - lfoWidths[0]);
+					for (int i = 1; i < lfoWidths.length; i++) {
+						int diff = Math.abs(val - lfoWidths[i]);
+						if (diff < bestDiff) {
+							bestDiff = diff;
+							bestIdx = i;
+						}
+					}
+					pC.setLFOWidth(bestIdx);
+					lfoWidthSlider.setValue(bestIdx);
+					updateLFOWidthLabel();
+					updateLFORateLabel();
+				} catch (NumberFormatException ex) {
+					updateLFOWidthLabel();
+				}
+			}
+		});
+
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("LFO");
-				pC.controlPanelFrame = frame;
 				frame.setTitle("");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-				frame.setLocation(pC.getControlPanelLocation(200, 150));
+				frame.setLocation(new Point(pC.getX() + 200, pC.getY() + 150));
 
-				//   graph.setBorder(BorderFactory.createEmptyBorder(0,10,10,10)); 
+				//   graph.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
 
 				lfoRateSlider.setMajorTickSpacing(25);
 
-				frame.add(lfoRateLabel);
+				frame.add(lfoRateField);
 				frame.add(lfoRateSlider);
-				frame.add(lfoWidthLabel);
+				frame.add(lfoWidthField);
 				frame.add(lfoWidthSlider);
 
 				lfoRateSlider.setValue(pC.getLFORate());
 				updateLFORateLabel();
 				lfoWidthSlider.setValue(pC.getLFOWidth());
 				updateLFOWidthLabel();
-				
+
 				frame.add(rb);
-				
+
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.pack();
@@ -112,21 +158,21 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 			updateLFOWidthLabel();
 			updateLFORateLabel();	// since the rate depends on the width...
 		}
-	}	
-	
+	}
+
 	private void updateLFOWidthLabel() {
 		pC.setLFOWidth(lfoWidthSlider.getValue());
-		lfoWidthLabel.setText("Width: " + RampWidths[pC.getLFOWidth()]);		
+		lfoWidthField.setText("Width: " + RampWidths[pC.getLFOWidth()]);
 	}
-	
+
 	private void updateLFORateLabel() {
 		pC.setLFORate( lfoRateSlider.getValue());
-		lfoRateLabel.setText(String.format("Rate: %2.3f", 16.0 * pC.getLFORate() * 4096 / (32767.0 * lfoWidths[pC.getLFOWidth()])));
+		lfoRateField.setText(String.format("Rate: %2.3f", 16.0 * pC.getLFORate() * 4096 / (32767.0 * lfoWidths[pC.getLFOWidth()])));
 	}
-	
+
 	class LFORadioButtons extends JPanel implements ActionListener {
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = -507133930408340822L;
 		JRadioButton lfo0 = new JRadioButton("LFO 0");
@@ -163,10 +209,10 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 		public void actionPerformed(ActionEvent arg0) {
 			if(lfo0.isSelected()) {
 				pC.setLFOSel(0);
-			} 
+			}
 			else if(lfo1.isSelected()) {
 				pC.setLFOSel(1);
-			} 
+			}
 			pC.setName("Ramp LFO " + pC.getLFOSel());
 		}
 	}

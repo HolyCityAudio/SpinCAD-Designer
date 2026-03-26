@@ -44,9 +44,9 @@ public class LPF4PCADBlock extends SpinCADBlock{
 		addControlInputPin(this, "Frequency");
 		addControlInputPin(this, "Resonance");
 		if(is4Pole == true) {
-			setName("Low Pass 4P");	
+			setName("LP 4P");	
 		} else {
-			setName("Low Pass 2P");	
+			setName("LP 2P");	
 		}
 	}
 

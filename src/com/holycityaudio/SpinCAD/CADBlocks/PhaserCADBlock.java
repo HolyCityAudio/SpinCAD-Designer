@@ -30,7 +30,9 @@ public class PhaserCADBlock extends SpinCADBlock{
 	 */
 	private static final long serialVersionUID = 343880108475812086L;
 	int temp, temp1, phase, stages, controlMode;
-	transient PhaserControlPanel cP = null;
+	double lfoRate = 0.5;
+	double lfoWidth = 0.5;
+	PhaserControlPanel cP = null;
 
 	public PhaserCADBlock(int x, int y) {
 		super(x, y);
@@ -118,30 +120,29 @@ public class PhaserCADBlock extends SpinCADBlock{
 				sfxb.loadSinLFO(1, 0, 32767);
 
 				p = this.getPin("LFO Width").getPinConnection();
-				int depth = -1;
+				int depth = sfxb.allocateReg();
 				if(p != null) {
-					depth = p.getRegister();
-					sfxb.readRegister(depth, 1.0);
+					int widthPinReg = p.getRegister();
+					sfxb.loadAccumulator(widthPinReg);
+					sfxb.scaleOffset(lfoWidth, 0.0);
+					sfxb.writeRegister(depth, 1.0);
 				}
 				else {
-					depth = sfxb.allocateReg();		// shortcut, could optimize later
-					sfxb.scaleOffset(0.0,  0.5);	// default width in case no pin connected
-					sfxb.writeAllpass(depth, 0.0);
+					sfxb.scaleOffset(0.0, lfoWidth);
+					sfxb.writeRegister(depth, 1.0);
 				}
 
 				sfxb.readRegister(BYPASS, 0.9);
 				sfxb.writeRegister(BYPASS, 0);
 
 				p = this.getPin("LFO Speed").getPinConnection();
-				int speed = -1;
 				if(p != null) {
-					speed = p.getRegister();
-					sfxb.readRegister(speed, 1.0);
+					int speed = p.getRegister();
+					sfxb.scaleOffset(0.0, lfoRate);
 					sfxb.mulx(speed);
-					sfxb.scaleOffset(0.83, 0.002);
 				}
 				else {
-					sfxb.scaleOffset(0.0,  0.5);	// default speed in case no pin connected
+					sfxb.scaleOffset(0.0, lfoRate);
 				}
 
 				sfxb.writeRegister(SIN1_RATE, 0);
@@ -273,7 +274,23 @@ public class PhaserCADBlock extends SpinCADBlock{
 		return controlMode;
 	}
 
+	public double getLfoRate() {
+		return lfoRate;
+	}
+
+	public void setLfoRate(double lfoRate) {
+		this.lfoRate = lfoRate;
+	}
+
+	public double getLfoWidth() {
+		return lfoWidth;
+	}
+
+	public void setLfoWidth(double lfoWidth) {
+		this.lfoWidth = lfoWidth;
+	}
+
 	public void clearCP() {
-		cP = null;		
+		cP = null;
 	}
 }

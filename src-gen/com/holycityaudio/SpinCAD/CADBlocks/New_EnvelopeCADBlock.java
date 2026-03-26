@@ -167,28 +167,28 @@
 			
 			// create setters and getter for control panel variables
 			public void setthreshhold(double __param) {
-				threshhold = __param;	
+				threshhold = __param;
 			}
 			
 			public double getthreshhold() {
 				return threshhold;
 			}
 			public void setattackFreq(double __param) {
-				attackFreq = __param;	
+				attackFreq = __param;
 			}
 			
 			public double getattackFreq() {
 				return attackFreq;
 			}
 			public void setdecayFreq(double __param) {
-				decayFreq = __param;	
+				decayFreq = __param;
 			}
 			
 			public double getdecayFreq() {
 				return decayFreq;
 			}
 			public void setpostFreq(double __param) {
-				postFreq = __param;	
+				postFreq = __param;
 			}
 			
 			public double getpostFreq() {

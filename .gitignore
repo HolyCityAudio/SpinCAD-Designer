@@ -1,2 +1,8 @@
+# Eclipse
+bin/
+.metadata/
+.settings/
+*.class
 
+# Build
 /bin/SpinCADBuilder

@@ -2,7 +2,7 @@
  * LPF1PControlPanel.java
  * Copyright (C) 2013 - 2014 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
- * 
+ *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
@@ -15,75 +15,94 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 	
+ *
  */
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.holycityaudio.SpinCAD.FineControlSlider;
+
 
 class HPF1PControlPanel extends JFrame {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2288952347754535913L;
 
-	JSlider freqSlider;
-	JLabel freqLabel;
+	FineControlSlider freqSlider;
+	JTextField freqField;
 
 	private HPF1PCADBlock HPF;
 
 	public HPF1PControlPanel(HPF1PCADBlock hpf1pcadBlock) {
 		this.HPF = hpf1pcadBlock;
-		HPF.controlPanelFrame = this;
 		createAndShowUI();
 	}
-	
+
 	private void createAndShowUI() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				setTitle("High pass 1 pole");
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-				freqSlider = new JSlider(JSlider.HORIZONTAL, 80, 2500, 1000);
+				freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 800, 25000, 10000);
 				freqSlider.addChangeListener(new LPF1PChangeListener());
 
-				freqLabel = new JLabel();
+				freqField = new JTextField();
+				freqField.setHorizontalAlignment(JTextField.CENTER);
+				freqField.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							String text = freqField.getText().replaceAll("[^\\d.\\-]", "");
+							double val = Double.parseDouble(text);
+							val = Math.max(80.0, Math.min(2500.0, val));
+							HPF.setFreq(val);
+							freqSlider.setValue((int) Math.round(val * 10));
+							updateFreqLabel();
+						} catch (NumberFormatException ex) {
+							updateFreqLabel();
+						}
+					}
+				});
 
-				getContentPane().add(freqLabel);
+				getContentPane().add(freqField);
 				getContentPane().add(freqSlider);
 
-				freqSlider.setValue((int)Math.round(HPF.getFreq()));
+				freqSlider.setValue((int)Math.round(HPF.getFreq() * 10));
 				updateFreqLabel();
 				setAlwaysOnTop(true);
 				setVisible(true);
-				setLocation(HPF.getControlPanelLocation(200, 150));
+				setLocation(new Point(HPF.getX() + 200, HPF.getY() + 150));
 				pack();
 				setResizable(false);
 			}
-		});		
+		});
 	}
 
-	class LPF1PChangeListener implements ChangeListener { 
+	class LPF1PChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-				HPF.setFreq((double) freqSlider.getValue());
+				HPF.setFreq((double) freqSlider.getValue() / 10.0);
 				updateFreqLabel();
 			}
 		}
 	}
-	
+
 	private void updateFreqLabel() {
-		freqLabel.setText("Frequency " + String.format("%4.2f", HPF.getFreq()));		
+		freqField.setText("Frequency " + String.format("%4.1f", HPF.getFreq()));
 	}
 
 }
