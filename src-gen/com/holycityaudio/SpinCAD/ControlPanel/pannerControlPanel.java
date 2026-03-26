@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,17 +45,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.pannerCADBlock;
 
 @SuppressWarnings("unused")
 public class pannerControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private pannerCADBlock gCB;
 	// declare the controls
-	JSlider gain1Slider;
-	JLabel  gain1Label;	
+	FineControlSlider gain1Slider;
+	JTextField  gain1Field;
 
 public pannerControlPanel(pannerCADBlock genericCADBlock) {
 		
@@ -62,9 +65,7 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("Panner");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Panner");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
@@ -76,29 +77,44 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gain1Slider = new JSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
 						gain1Slider.addChangeListener(new pannerListener());
-						gain1Label = new JLabel();
+						gain1Field = new JTextField();
+						gain1Field.setHorizontalAlignment(JTextField.CENTER);
 						Border gain1Border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						gain1Label.setBorder(gain1Border1);
+						gain1Field.setBorder(gain1Border1);
+						gain1Field.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(gain1Field.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(gain1Slider.getMinimum(), Math.min(gain1Slider.getMaximum(), sliderVal));
+						gain1Slider.setValue(sliderVal);
+						gCB.setgain1((double) sliderVal);
+									updategain1Label();
+								} catch (NumberFormatException ex) {
+									updategain1Label();
+								}
+							}
+						});
 						updategain1Label();
-						
+			
 						Border gain1border2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel gain1innerPanel = new JPanel();
-							
+			
 						gain1innerPanel.setLayout(new BoxLayout(gain1innerPanel, BoxLayout.Y_AXIS));
-						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gain1innerPanel.add(gain1Label);
-						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gain1innerPanel.add(gain1Slider);		
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gain1innerPanel.add(gain1Field);
+						gain1innerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gain1innerPanel.add(gain1Slider);
 						gain1innerPanel.setBorder(gain1border2);
 			
 						frame.add(gain1innerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -129,7 +145,7 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Label.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
+		gain1Field.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,17 +45,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock;
 
 @SuppressWarnings("unused")
 public class noise_amzControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private noise_amzCADBlock gCB;
 	// declare the controls
-	JSlider gainSlider;
-	JLabel  gainLabel;	
+	FineControlSlider gainSlider;
+	JTextField  gainField;
 	private JComboBox <String> controlRangeComboBox; 
 
 public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
@@ -63,9 +66,7 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("Noise_AMZ");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Noise_AMZ");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
@@ -77,21 +78,37 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						gainSlider = new JSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
+						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain())));
 						gainSlider.addChangeListener(new noise_amzListener());
-						gainLabel = new JLabel();
+						gainField = new JTextField();
+						gainField.setHorizontalAlignment(JTextField.CENTER);
 						Border gainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						gainLabel.setBorder(gainBorder1);
+						gainField.setBorder(gainBorder1);
+						gainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(gainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(gainSlider.getMinimum(), Math.min(gainSlider.getMaximum(), sliderVal));
+						gainSlider.setValue(sliderVal);
+						gCB.setgain((double) sliderVal);
+									updategainLabel();
+								} catch (NumberFormatException ex) {
+									updategainLabel();
+								}
+							}
+						});
 						updategainLabel();
-						
+			
 						Border gainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel gaininnerPanel = new JPanel();
-							
+			
 						gaininnerPanel.setLayout(new BoxLayout(gaininnerPanel, BoxLayout.Y_AXIS));
-						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gaininnerPanel.add(gainLabel);
-						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						gaininnerPanel.add(gainSlider);		
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gaininnerPanel.add(gainField);
+						gaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						gaininnerPanel.add(gainSlider);
 						gaininnerPanel.setBorder(gainborder2);
 			
 						frame.add(gaininnerPanel);
@@ -105,8 +122,7 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -140,7 +156,7 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainLabel.setText("Output Level " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
+		gainField.setText("Output Level " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

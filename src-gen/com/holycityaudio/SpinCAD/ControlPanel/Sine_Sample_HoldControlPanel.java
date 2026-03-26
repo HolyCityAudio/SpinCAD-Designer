@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,17 +45,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.Sine_Sample_HoldCADBlock;
 
 @SuppressWarnings("unused")
 public class Sine_Sample_HoldControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private Sine_Sample_HoldCADBlock gCB;
 	// declare the controls
-	JSlider rateSlider;
-	JLabel  rateLabel;	
+	FineControlSlider rateSlider;
+	JTextField  rateField;
 	private JComboBox <String> lfoSelComboBox; 
 
 public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
@@ -63,9 +66,7 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("4-Phase Sample/Hold");
+				frame = new JDialog(SpinCADFrame.getInstance(), "4-Phase Sample/Hold");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
@@ -76,21 +77,38 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					rateSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
+					rateSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new Sine_Sample_HoldListener());
-						rateLabel = new JLabel();
+						rateField = new JTextField();
+						rateField.setHorizontalAlignment(JTextField.CENTER);
 						Border rateBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						rateLabel.setBorder(rateBorder1);
+						rateField.setBorder(rateBorder1);
+						rateField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(rateField.getText().replaceAll("[^0-9.\\-]", ""));
+						double coeff = val * 2.0 * Math.PI * Math.pow(2.0, 17) / (ElmProgram.getSamplerate() * 511.0);
+						int sliderVal = (int) Math.round(coeff * 100.0);
+						sliderVal = Math.max(rateSlider.getMinimum(), Math.min(rateSlider.getMaximum(), sliderVal));
+						rateSlider.setValue(sliderVal);
+						gCB.setrate((double) sliderVal / 100.0);
+									updaterateLabel();
+								} catch (NumberFormatException ex) {
+									updaterateLabel();
+								}
+							}
+						});
 						updaterateLabel();
-						
+			
 						Border rateborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel rateinnerPanel = new JPanel();
-							
+			
 						rateinnerPanel.setLayout(new BoxLayout(rateinnerPanel, BoxLayout.Y_AXIS));
-						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rateinnerPanel.add(rateLabel);
-						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						rateinnerPanel.add(rateSlider);		
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						rateinnerPanel.add(rateField);
+						rateinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						rateinnerPanel.add(rateSlider);
 						rateinnerPanel.setBorder(rateborder2);
 			
 						frame.add(rateinnerPanel);
@@ -104,8 +122,7 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -139,7 +156,7 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 			}
 		}
 		private void updaterateLabel() {
-		rateLabel.setText("LFO Max Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
+		rateField.setText("LFO Max Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
 		}		
 		
 		class MyWindowListener implements WindowListener

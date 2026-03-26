@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,21 +45,22 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.SVF_2P_adjustableCADBlock;
 
 @SuppressWarnings("unused")
 public class SVF_2P_adjustableControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private SVF_2P_adjustableCADBlock gCB;
 	// declare the controls
-	JSlider freqSlider;
-	JLabel  freqLabel;	
-	JSlider qMaxSlider;
-	JLabel  qMaxLabel;	
-	JSlider qMinSlider;
-	JLabel  qMinLabel;	
+	FineControlSlider freqSlider;
+	JTextField  freqField;
+	FineControlSlider qMaxSlider;
+	JTextField  qMaxField;
+	FineControlSlider qMinSlider;
+	JTextField  qMinField;
 
 public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) {
 		
@@ -66,9 +69,7 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("SVF 2 Pole");
+				frame = new JDialog(SpinCADFrame.getInstance(), "SVF 2 Pole");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
@@ -82,69 +83,116 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 						freqSlider = SpinCADBlock.LogSlider(20,5000,gCB.getfreq(), "LOGFREQ2", 100.0);
 					// ---------------------------------------------						
 						freqSlider.addChangeListener(new SVF_2P_adjustableListener());
-						freqLabel = new JLabel();
+						freqField = new JTextField();
+						freqField.setHorizontalAlignment(JTextField.CENTER);
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						freqLabel.setBorder(freqBorder1);
+						freqField.setBorder(freqBorder1);
+						freqField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(freqField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(freqSlider.getMinimum(), Math.min(freqSlider.getMaximum(), sliderVal));
+						freqSlider.setValue(sliderVal);
+						gCB.setfreq(SpinCADBlock.freqToFiltSVF(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatefreqLabel();
+								} catch (NumberFormatException ex) {
+									updatefreqLabel();
+								}
+							}
+						});
 						updatefreqLabel();
-						
+			
 						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel freqinnerPanel = new JPanel();
-							
+			
 						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
-						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						freqinnerPanel.add(freqLabel);
-						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						freqinnerPanel.add(freqSlider);		
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						freqinnerPanel.add(freqField);
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						freqinnerPanel.add(freqSlider);
 						freqinnerPanel.setBorder(freqborder2);
 			
 						frame.add(freqinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					qMaxSlider = new JSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (200.0 * 1000.0), (int) (gCB.getqMax() * 1000.0));
+					qMaxSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (200.0 * 1000.0), (int) (gCB.getqMax() * 1000.0));
 						qMaxSlider.addChangeListener(new SVF_2P_adjustableListener());
-						qMaxLabel = new JLabel();
+						qMaxField = new JTextField();
+						qMaxField.setHorizontalAlignment(JTextField.CENTER);
 						Border qMaxBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						qMaxLabel.setBorder(qMaxBorder1);
+						qMaxField.setBorder(qMaxBorder1);
+						qMaxField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(qMaxField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(qMaxSlider.getMinimum(), Math.min(qMaxSlider.getMaximum(), sliderVal));
+						qMaxSlider.setValue(sliderVal);
+						gCB.setqMax((double) sliderVal / 1000.0);
+									updateqMaxLabel();
+								} catch (NumberFormatException ex) {
+									updateqMaxLabel();
+								}
+							}
+						});
 						updateqMaxLabel();
-						
+			
 						Border qMaxborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel qMaxinnerPanel = new JPanel();
-							
+			
 						qMaxinnerPanel.setLayout(new BoxLayout(qMaxinnerPanel, BoxLayout.Y_AXIS));
-						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						qMaxinnerPanel.add(qMaxLabel);
-						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						qMaxinnerPanel.add(qMaxSlider);		
+						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						qMaxinnerPanel.add(qMaxField);
+						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						qMaxinnerPanel.add(qMaxSlider);
 						qMaxinnerPanel.setBorder(qMaxborder2);
 			
 						frame.add(qMaxinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					qMinSlider = new JSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (50.0 * 1000.0), (int) (gCB.getqMin() * 1000.0));
+					qMinSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (50.0 * 1000.0), (int) (gCB.getqMin() * 1000.0));
 						qMinSlider.addChangeListener(new SVF_2P_adjustableListener());
-						qMinLabel = new JLabel();
+						qMinField = new JTextField();
+						qMinField.setHorizontalAlignment(JTextField.CENTER);
 						Border qMinBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						qMinLabel.setBorder(qMinBorder1);
+						qMinField.setBorder(qMinBorder1);
+						qMinField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(qMinField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(qMinSlider.getMinimum(), Math.min(qMinSlider.getMaximum(), sliderVal));
+						qMinSlider.setValue(sliderVal);
+						gCB.setqMin((double) sliderVal / 1000.0);
+									updateqMinLabel();
+								} catch (NumberFormatException ex) {
+									updateqMinLabel();
+								}
+							}
+						});
 						updateqMinLabel();
-						
+			
 						Border qMinborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel qMininnerPanel = new JPanel();
-							
+			
 						qMininnerPanel.setLayout(new BoxLayout(qMininnerPanel, BoxLayout.Y_AXIS));
-						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						qMininnerPanel.add(qMinLabel);
-						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						qMininnerPanel.add(qMinSlider);		
+						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						qMininnerPanel.add(qMinField);
+						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						qMininnerPanel.add(qMinSlider);
 						qMininnerPanel.setBorder(qMinborder2);
 			
 						frame.add(qMininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -183,13 +231,13 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 			}
 		}
 		private void updatefreqLabel() {
-		freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");		
+		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");		
 		}		
 		private void updateqMaxLabel() {
-		qMaxLabel.setText("Max Resonance " + String.format("%4.1f", gCB.getqMax()));		
+		qMaxField.setText("Max Resonance " + String.format("%4.1f", gCB.getqMax()));		
 		}		
 		private void updateqMinLabel() {
-		qMinLabel.setText("Min Resonance " + String.format("%4.1f", gCB.getqMin()));		
+		qMinField.setText("Min Resonance " + String.format("%4.1f", gCB.getqMin()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,17 +45,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.Crossover_4PCADBlock;
 
 @SuppressWarnings("unused")
 public class Crossover_4PControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private Crossover_4PCADBlock gCB;
 	// declare the controls
-	JSlider freqSlider;
-	JLabel  freqLabel;	
+	FineControlSlider freqSlider;
+	JTextField  freqField;
 
 public Crossover_4PControlPanel(Crossover_4PCADBlock genericCADBlock) {
 		
@@ -62,9 +65,7 @@ public Crossover_4PControlPanel(Crossover_4PCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("Crossover 4P");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Crossover 4P");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
@@ -78,27 +79,42 @@ public Crossover_4PControlPanel(Crossover_4PCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 						freqSlider.addChangeListener(new Crossover_4PListener());
-						freqLabel = new JLabel();
+						freqField = new JTextField();
+						freqField.setHorizontalAlignment(JTextField.CENTER);
 						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						freqLabel.setBorder(freqBorder1);
+						freqField.setBorder(freqBorder1);
+						freqField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(freqField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(freqSlider.getMinimum(), Math.min(freqSlider.getMaximum(), sliderVal));
+						freqSlider.setValue(sliderVal);
+						gCB.setfreq(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatefreqLabel();
+								} catch (NumberFormatException ex) {
+									updatefreqLabel();
+								}
+							}
+						});
 						updatefreqLabel();
-						
+			
 						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel freqinnerPanel = new JPanel();
-							
+			
 						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
-						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						freqinnerPanel.add(freqLabel);
-						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						freqinnerPanel.add(freqSlider);		
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						freqinnerPanel.add(freqField);
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						freqinnerPanel.add(freqSlider);
 						freqinnerPanel.setBorder(freqborder2);
 			
 						frame.add(freqinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -129,7 +145,7 @@ public Crossover_4PControlPanel(Crossover_4PCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqLabel() {
-		freqLabel.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
+		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
 		}		
 		
 		class MyWindowListener implements WindowListener

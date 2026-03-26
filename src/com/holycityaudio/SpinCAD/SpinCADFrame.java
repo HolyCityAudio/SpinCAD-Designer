@@ -88,9 +88,12 @@ import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
 public class SpinCADFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	/**
-	 * 
-	 */
+	private static SpinCADFrame instance;
+
+	public static SpinCADFrame getInstance() {
+		return instance;
+	}
+
 
 	int buildNum = 1056;
 
@@ -161,6 +164,7 @@ public class SpinCADFrame extends JFrame {
 
 	@SuppressWarnings("unused")
 	public SpinCADFrame() {
+		instance = this;
 		// setTitle("SpinCAD Designer - Untitled");
 		updateFrameTitle();
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

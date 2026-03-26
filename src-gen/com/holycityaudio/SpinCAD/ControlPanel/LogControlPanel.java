@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,19 +45,20 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
 
 @SuppressWarnings("unused")
 public class LogControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private LogCADBlock gCB;
 	// declare the controls
-	JSlider multiplierSlider;
-	JLabel  multiplierLabel;	
-	JSlider log_offsetSlider;
-	JLabel  log_offsetLabel;	
+	FineControlSlider multiplierSlider;
+	JTextField  multiplierField;
+	FineControlSlider log_offsetSlider;
+	JTextField  log_offsetField;
 
 public LogControlPanel(LogCADBlock genericCADBlock) {
 		
@@ -64,58 +67,87 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("Log");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Log");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.00 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
+					multiplierSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-1.00 * 1000.0),(int) (0.99999 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
 						multiplierSlider.addChangeListener(new LogListener());
-						multiplierLabel = new JLabel();
+						multiplierField = new JTextField();
+						multiplierField.setHorizontalAlignment(JTextField.CENTER);
 						Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						multiplierLabel.setBorder(multiplierBorder1);
+						multiplierField.setBorder(multiplierBorder1);
+						multiplierField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(multiplierField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(multiplierSlider.getMinimum(), Math.min(multiplierSlider.getMaximum(), sliderVal));
+						multiplierSlider.setValue(sliderVal);
+						gCB.setmultiplier((double) sliderVal / 1000.0);
+									updatemultiplierLabel();
+								} catch (NumberFormatException ex) {
+									updatemultiplierLabel();
+								}
+							}
+						});
 						updatemultiplierLabel();
-						
+			
 						Border multiplierborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel multiplierinnerPanel = new JPanel();
-							
+			
 						multiplierinnerPanel.setLayout(new BoxLayout(multiplierinnerPanel, BoxLayout.Y_AXIS));
-						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						multiplierinnerPanel.add(multiplierLabel);
-						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						multiplierinnerPanel.add(multiplierSlider);		
+						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						multiplierinnerPanel.add(multiplierField);
+						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						multiplierinnerPanel.add(multiplierSlider);
 						multiplierinnerPanel.setBorder(multiplierborder2);
 			
 						frame.add(multiplierinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					log_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(-16 * 100.0),(int) (15.99999 * 100.0), (int) (gCB.getlog_offset() * 100.0));
+					log_offsetSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-16 * 100.0),(int) (15.99999 * 100.0), (int) (gCB.getlog_offset() * 100.0));
 						log_offsetSlider.addChangeListener(new LogListener());
-						log_offsetLabel = new JLabel();
+						log_offsetField = new JTextField();
+						log_offsetField.setHorizontalAlignment(JTextField.CENTER);
 						Border log_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						log_offsetLabel.setBorder(log_offsetBorder1);
+						log_offsetField.setBorder(log_offsetBorder1);
+						log_offsetField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(log_offsetField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(log_offsetSlider.getMinimum(), Math.min(log_offsetSlider.getMaximum(), sliderVal));
+						log_offsetSlider.setValue(sliderVal);
+						gCB.setlog_offset((double) sliderVal / 100.0);
+									updatelog_offsetLabel();
+								} catch (NumberFormatException ex) {
+									updatelog_offsetLabel();
+								}
+							}
+						});
 						updatelog_offsetLabel();
-						
+			
 						Border log_offsetborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel log_offsetinnerPanel = new JPanel();
-							
+			
 						log_offsetinnerPanel.setLayout(new BoxLayout(log_offsetinnerPanel, BoxLayout.Y_AXIS));
-						log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						log_offsetinnerPanel.add(log_offsetLabel);
-						log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						log_offsetinnerPanel.add(log_offsetSlider);		
+						log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						log_offsetinnerPanel.add(log_offsetField);
+						log_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						log_offsetinnerPanel.add(log_offsetSlider);
 						log_offsetinnerPanel.setBorder(log_offsetborder2);
 			
 						frame.add(log_offsetinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -150,10 +182,10 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 			}
 		}
 		private void updatemultiplierLabel() {
-		multiplierLabel.setText("Log Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
+		multiplierField.setText("Log Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
 		}		
 		private void updatelog_offsetLabel() {
-		log_offsetLabel.setText("Log_Offset " + String.format("%4.2f", gCB.getlog_offset()));		
+		log_offsetField.setText("Log_Offset " + String.format("%4.2f", gCB.getlog_offset()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,17 +45,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.slow_gearCADBlock;
 
 @SuppressWarnings("unused")
 public class slow_gearControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private slow_gearCADBlock gCB;
 	// declare the controls
-	JSlider threshSlider;
-	JLabel  threshLabel;	
+	FineControlSlider threshSlider;
+	JTextField  threshField;
 
 public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 		
@@ -62,9 +65,7 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("Slow_gear");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Slow_gear");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
@@ -76,29 +77,44 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
 					// dB level slider goes in steps of 1 dB
-						threshSlider = new JSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getthresh())));
+						threshSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getthresh())));
 						threshSlider.addChangeListener(new slow_gearListener());
-						threshLabel = new JLabel();
+						threshField = new JTextField();
+						threshField.setHorizontalAlignment(JTextField.CENTER);
 						Border threshBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						threshLabel.setBorder(threshBorder1);
+						threshField.setBorder(threshBorder1);
+						threshField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(threshField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val);
+						sliderVal = Math.max(threshSlider.getMinimum(), Math.min(threshSlider.getMaximum(), sliderVal));
+						threshSlider.setValue(sliderVal);
+						gCB.setthresh((double) sliderVal);
+									updatethreshLabel();
+								} catch (NumberFormatException ex) {
+									updatethreshLabel();
+								}
+							}
+						});
 						updatethreshLabel();
-						
+			
 						Border threshborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel threshinnerPanel = new JPanel();
-							
+			
 						threshinnerPanel.setLayout(new BoxLayout(threshinnerPanel, BoxLayout.Y_AXIS));
-						threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						threshinnerPanel.add(threshLabel);
-						threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						threshinnerPanel.add(threshSlider);		
+						threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						threshinnerPanel.add(threshField);
+						threshinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						threshinnerPanel.add(threshSlider);
 						threshinnerPanel.setBorder(threshborder2);
 			
 						frame.add(threshinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -129,7 +145,7 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 			}
 		}
 		private void updatethreshLabel() {
-		threshLabel.setText("Threshold " + String.format("%4.1f dB", (20 * Math.log10(gCB.getthresh()))));		
+		threshField.setText("Threshold " + String.format("%4.1f dB", (20 * Math.log10(gCB.getthresh()))));		
 		}		
 		
 		class MyWindowListener implements WindowListener

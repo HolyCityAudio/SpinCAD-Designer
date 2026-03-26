@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,17 +45,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
 
 @SuppressWarnings("unused")
 public class SlicerControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private SlicerCADBlock gCB;
 	// declare the controls
-	JSlider sliceSlider;
-	JLabel  sliceLabel;	
+	FineControlSlider sliceSlider;
+	JTextField  sliceField;
 	private JComboBox <String> controlRangeComboBox; 
 
 public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
@@ -63,29 +66,43 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("Slicer");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Slicer");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					sliceSlider = new JSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getslice() * 100.0));
+					sliceSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (0.95 * 100.0), (int) (gCB.getslice() * 100.0));
 						sliceSlider.addChangeListener(new SlicerListener());
-						sliceLabel = new JLabel();
+						sliceField = new JTextField();
+						sliceField.setHorizontalAlignment(JTextField.CENTER);
 						Border sliceBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						sliceLabel.setBorder(sliceBorder1);
+						sliceField.setBorder(sliceBorder1);
+						sliceField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(sliceField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 100.0);
+						sliderVal = Math.max(sliceSlider.getMinimum(), Math.min(sliceSlider.getMaximum(), sliderVal));
+						sliceSlider.setValue(sliderVal);
+						gCB.setslice((double) sliderVal / 100.0);
+									updatesliceLabel();
+								} catch (NumberFormatException ex) {
+									updatesliceLabel();
+								}
+							}
+						});
 						updatesliceLabel();
-						
+			
 						Border sliceborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel sliceinnerPanel = new JPanel();
-							
+			
 						sliceinnerPanel.setLayout(new BoxLayout(sliceinnerPanel, BoxLayout.Y_AXIS));
-						sliceinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						sliceinnerPanel.add(sliceLabel);
-						sliceinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						sliceinnerPanel.add(sliceSlider);		
+						sliceinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						sliceinnerPanel.add(sliceField);
+						sliceinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						sliceinnerPanel.add(sliceSlider);
 						sliceinnerPanel.setBorder(sliceborder2);
 			
 						frame.add(sliceinnerPanel);
@@ -99,8 +116,7 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -134,7 +150,7 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 			}
 		}
 		private void updatesliceLabel() {
-		sliceLabel.setText("Slice Level " + String.format("%4.2f", gCB.getslice()));		
+		sliceField.setText("Slice Level " + String.format("%4.2f", gCB.getslice()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

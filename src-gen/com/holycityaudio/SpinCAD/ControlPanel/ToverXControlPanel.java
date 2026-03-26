@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,17 +45,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ToverXCADBlock;
 
 @SuppressWarnings("unused")
 public class ToverXControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private ToverXCADBlock gCB;
 	// declare the controls
-	JSlider nStagesSlider;
-	JLabel  nStagesLabel;	
+	FineControlSlider nStagesSlider;
+	JTextField  nStagesField;
 
 public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		
@@ -62,37 +65,50 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("ToverX");
+				frame = new JDialog(SpinCADFrame.getInstance(), "ToverX");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					nStagesSlider = new JSlider(JSlider.HORIZONTAL, (int)(1 * 1.0),(int) (4 * 1.0), (int) (gCB.getnStages() * 1.0));
+					nStagesSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1 * 1.0),(int) (4 * 1.0), (int) (gCB.getnStages() * 1.0));
 						nStagesSlider.addChangeListener(new ToverXListener());
-						nStagesLabel = new JLabel();
+						nStagesField = new JTextField();
+						nStagesField.setHorizontalAlignment(JTextField.CENTER);
 						Border nStagesBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						nStagesLabel.setBorder(nStagesBorder1);
+						nStagesField.setBorder(nStagesBorder1);
+						nStagesField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(nStagesField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1.0);
+						sliderVal = Math.max(nStagesSlider.getMinimum(), Math.min(nStagesSlider.getMaximum(), sliderVal));
+						nStagesSlider.setValue(sliderVal);
+						gCB.setnStages((double) sliderVal / 1.0);
+									updatenStagesLabel();
+								} catch (NumberFormatException ex) {
+									updatenStagesLabel();
+								}
+							}
+						});
 						updatenStagesLabel();
-						
+			
 						Border nStagesborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel nStagesinnerPanel = new JPanel();
-							
+			
 						nStagesinnerPanel.setLayout(new BoxLayout(nStagesinnerPanel, BoxLayout.Y_AXIS));
-						nStagesinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						nStagesinnerPanel.add(nStagesLabel);
-						nStagesinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						nStagesinnerPanel.add(nStagesSlider);		
+						nStagesinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						nStagesinnerPanel.add(nStagesField);
+						nStagesinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						nStagesinnerPanel.add(nStagesSlider);
 						nStagesinnerPanel.setBorder(nStagesborder2);
 			
 						frame.add(nStagesinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -123,7 +139,7 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 			}
 		}
 		private void updatenStagesLabel() {
-		nStagesLabel.setText("Stages " + String.format("%4.1f", gCB.getnStages()));		
+		nStagesField.setText("Stages " + String.format("%4.1f", gCB.getnStages()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

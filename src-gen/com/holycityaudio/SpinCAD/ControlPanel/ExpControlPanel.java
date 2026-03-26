@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,19 +45,20 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock;
 
 @SuppressWarnings("unused")
 public class ExpControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private ExpCADBlock gCB;
 	// declare the controls
-	JSlider multiplierSlider;
-	JLabel  multiplierLabel;	
-	JSlider exp_offsetSlider;
-	JLabel  exp_offsetLabel;	
+	FineControlSlider multiplierSlider;
+	JTextField  multiplierField;
+	FineControlSlider exp_offsetSlider;
+	JTextField  exp_offsetField;
 
 public ExpControlPanel(ExpCADBlock genericCADBlock) {
 		
@@ -64,58 +67,87 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("Exp");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Exp");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					multiplierSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
+					multiplierSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getmultiplier() * 1000.0));
 						multiplierSlider.addChangeListener(new ExpListener());
-						multiplierLabel = new JLabel();
+						multiplierField = new JTextField();
+						multiplierField.setHorizontalAlignment(JTextField.CENTER);
 						Border multiplierBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						multiplierLabel.setBorder(multiplierBorder1);
+						multiplierField.setBorder(multiplierBorder1);
+						multiplierField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(multiplierField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(multiplierSlider.getMinimum(), Math.min(multiplierSlider.getMaximum(), sliderVal));
+						multiplierSlider.setValue(sliderVal);
+						gCB.setmultiplier((double) sliderVal / 1000.0);
+									updatemultiplierLabel();
+								} catch (NumberFormatException ex) {
+									updatemultiplierLabel();
+								}
+							}
+						});
 						updatemultiplierLabel();
-						
+			
 						Border multiplierborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel multiplierinnerPanel = new JPanel();
-							
+			
 						multiplierinnerPanel.setLayout(new BoxLayout(multiplierinnerPanel, BoxLayout.Y_AXIS));
-						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						multiplierinnerPanel.add(multiplierLabel);
-						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						multiplierinnerPanel.add(multiplierSlider);		
+						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						multiplierinnerPanel.add(multiplierField);
+						multiplierinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						multiplierinnerPanel.add(multiplierSlider);
 						multiplierinnerPanel.setBorder(multiplierborder2);
 			
 						frame.add(multiplierinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					exp_offsetSlider = new JSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getexp_offset() * 1000.0));
+					exp_offsetSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-1.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.getexp_offset() * 1000.0));
 						exp_offsetSlider.addChangeListener(new ExpListener());
-						exp_offsetLabel = new JLabel();
+						exp_offsetField = new JTextField();
+						exp_offsetField.setHorizontalAlignment(JTextField.CENTER);
 						Border exp_offsetBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						exp_offsetLabel.setBorder(exp_offsetBorder1);
+						exp_offsetField.setBorder(exp_offsetBorder1);
+						exp_offsetField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(exp_offsetField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(exp_offsetSlider.getMinimum(), Math.min(exp_offsetSlider.getMaximum(), sliderVal));
+						exp_offsetSlider.setValue(sliderVal);
+						gCB.setexp_offset((double) sliderVal / 1000.0);
+									updateexp_offsetLabel();
+								} catch (NumberFormatException ex) {
+									updateexp_offsetLabel();
+								}
+							}
+						});
 						updateexp_offsetLabel();
-						
+			
 						Border exp_offsetborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel exp_offsetinnerPanel = new JPanel();
-							
+			
 						exp_offsetinnerPanel.setLayout(new BoxLayout(exp_offsetinnerPanel, BoxLayout.Y_AXIS));
-						exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						exp_offsetinnerPanel.add(exp_offsetLabel);
-						exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-						exp_offsetinnerPanel.add(exp_offsetSlider);		
+						exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						exp_offsetinnerPanel.add(exp_offsetField);
+						exp_offsetinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						exp_offsetinnerPanel.add(exp_offsetSlider);
 						exp_offsetinnerPanel.setBorder(exp_offsetborder2);
 			
 						frame.add(exp_offsetinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -150,10 +182,10 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 			}
 		}
 		private void updatemultiplierLabel() {
-		multiplierLabel.setText("Exp_Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
+		multiplierField.setText("Exp_Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
 		}		
 		private void updateexp_offsetLabel() {
-		exp_offsetLabel.setText("Exp_Offset " + String.format("%4.3f", gCB.getexp_offset()));		
+		exp_offsetField.setText("Exp_Offset " + String.format("%4.3f", gCB.getexp_offset()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

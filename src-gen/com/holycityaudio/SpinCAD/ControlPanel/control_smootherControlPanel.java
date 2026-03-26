@@ -20,7 +20,8 @@
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -33,6 +34,7 @@ import javax.swing.JSlider;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.Box;
@@ -43,19 +45,18 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 
 @SuppressWarnings("unused")
 public class control_smootherControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private control_smootherCADBlock gCB;
 	// declare the controls
-	JSlider filtSlider;
-	JLabel  filtLabel;
-	JSpinner  filtSpinner;	
-	private boolean filtsilentGUIChange = false;	
+	FineControlSlider filtSlider;
+	JTextField  filtField;
 
 public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 		
@@ -64,60 +65,56 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				gCB.controlPanelFrame = frame;
-				frame.setTitle("Smoother");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Smoother");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					// multiplier is points per decade here
+						filtSlider = SpinCADBlock.LogSlider(0.51,15.00,gCB.getfilt(), "LOGFREQ", 100.0);
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+						filtSlider.addChangeListener(new control_smootherListener());
+						filtField = new JTextField();
+						filtField.setHorizontalAlignment(JTextField.CENTER);
+						Border filtBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						filtField.setBorder(filtBorder1);
+						filtField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(filtField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(filtSlider.getMinimum(), Math.min(filtSlider.getMaximum(), sliderVal));
+						filtSlider.setValue(sliderVal);
+						gCB.setfilt(SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatefiltLabel();
+								} catch (NumberFormatException ex) {
+									updatefiltLabel();
+								}
+							}
+						});
+						updatefiltLabel();
 			
-			// multiplier is points per decade here
-				filtSlider = SpinCADBlock.LogSlider(0.51,15.00,gCB.getfilt(), "LOGFREQ", 100.0);
-				filtSlider.addChangeListener(new control_smootherListener());
-				
-				filtLabel = new JLabel("Frequency (Hz)");
+						Border filtborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel filtinnerPanel = new JPanel();
 			
-				SpinnerNumberModel filtSpinnerNumberModel = new SpinnerNumberModel(SpinCADBlock.filtToFreq(gCB.getfilt()) * 100, 0.51, 10000.00, 0.01);
+						filtinnerPanel.setLayout(new BoxLayout(filtinnerPanel, BoxLayout.Y_AXIS));
+						filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						filtinnerPanel.add(filtField);
+						filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						filtinnerPanel.add(filtSlider);
+						filtinnerPanel.setBorder(filtborder2);
 			
-				filtSpinner = new JSpinner(filtSpinnerNumberModel);
-				JSpinner.NumberEditor filteditor = (JSpinner.NumberEditor)filtSpinner.getEditor();  
-				DecimalFormat filtformat = filteditor.getFormat();  
-			 			filtformat.setMinimumFractionDigits(2);  
-				filtformat.setMaximumFractionDigits(2);  
-				filteditor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);  
-				Dimension filtd = filtSpinner.getPreferredSize();  
-				filtd.width = 25;  
-				filtSpinner.setPreferredSize(filtd);  
-				
-				updatefiltSpinner();
-				filtSpinner.addChangeListener(new control_smootherListener());
-				
-				JPanel filttopLine = new JPanel();
-				filttopLine.setLayout(new BoxLayout(filttopLine, BoxLayout.X_AXIS));
-			
-				filttopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				filttopLine.add(filtLabel);
-				filttopLine.add(Box.createRigidArea(new Dimension(35,4)));			
-				filttopLine.add(filtSpinner);
-				
-				Border filtborder2 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-				filttopLine.setBorder(filtborder2);
-			
-				Border filtborder1 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-				JPanel filtinnerPanel = new JPanel();
-					
-				filtinnerPanel.setLayout(new BoxLayout(filtinnerPanel, BoxLayout.Y_AXIS));
-				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				filtinnerPanel.add(filttopLine);
-				filtinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));			
-				filtinnerPanel.add(filtSlider);		
-				filtinnerPanel.setBorder(filtborder1);
-			
-				frame.add(filtinnerPanel);
+						frame.add(filtinnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
+				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
 				frame.setVisible(true);		
 			}
 		});
@@ -126,16 +123,9 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class control_smootherListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
-			if(filtsilentGUIChange == true) 
-				return;
-			
 			if(ce.getSource() == filtSlider) {
 			gCB.setfilt((double) SpinCADBlock.freqToFilt(SpinCADBlock.sliderToLogval((int)(filtSlider.getValue()), 100.0)));
-				updatefiltSpinner();
-			}
-			if(ce.getSource() == filtSpinner) {
-			gCB.setfilt(SpinCADBlock.freqToFilt((double)(filtSpinner.getValue())));
-				updatefiltSlider();
+				updatefiltLabel();
 			}
 			}
 		}
@@ -154,34 +144,9 @@ public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
-		private void updatefiltSpinner() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					filtsilentGUIChange = true;
-		filtSpinner.setValue(SpinCADBlock.filtToFreq(gCB.getfilt()));
-				}
-				finally {
-					filtsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}	
-		
-		private void updatefiltSlider() {
-			SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					filtsilentGUIChange = true;
-		filtSlider.setValue((int) (100 * Math.log10(SpinCADBlock.filtToFreq(gCB.getfilt()))));		
-				}
-				finally {
-					filtsilentGUIChange = false;   	    	  
-				}
-			}
-		});
-		}		
-			
+		private void updatefiltLabel() {
+		filtField.setText("Frequency (Hz) " + String.format("%4.5f", SpinCADBlock.filtToFreq(gCB.getfilt())) + " Hz");
+		}
 		
 		class MyWindowListener implements WindowListener
 		{
