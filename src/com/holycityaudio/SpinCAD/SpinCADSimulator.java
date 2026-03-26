@@ -61,6 +61,12 @@ public class SpinCADSimulator {
 	// Current display mode: 0 = scope, 1 = logger
 	private int displayMode = 0;
 
+	// Reference to scope amplitude label panel for Lin/dB toggle
+	public org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel ampLabelPanel;
+
+	// Lin/dB toggle button — placed under the label panel by SpinCADFrame
+	public TraceButton btnLinDb;
+
 	private SpinCADFrame frame;
 
 	public simControlToolBar sctb;
@@ -73,6 +79,21 @@ public class SpinCADSimulator {
 		patch = p;
 		this.sctb = new simControlToolBar(frame);
 		this.stb  = new ScopeToolBar();
+		this.btnLinDb = new TraceButton("dB", new java.awt.Color(80, 80, 90), java.awt.Color.WHITE);
+		btnLinDb.setToolTipText("Toggle between linear and dB scale labels");
+		btnLinDb.setPreferredSize(new Dimension(58, 32));
+		btnLinDb.setMinimumSize(new Dimension(58, 32));
+		btnLinDb.setMaximumSize(new Dimension(58, 32));
+		btnLinDb.addActionListener(e -> {
+			if(ampLabelPanel != null) {
+				boolean nowDB = !ampLabelPanel.isDBMode();
+				ampLabelPanel.setDBMode(nowDB);
+				btnLinDb.setLabel(nowDB ? "dB" : "Lin");
+				if(sim != null && sim.scope != null) {
+					sim.scope.setLinMode(!nowDB);
+				}
+			}
+		});
 		prefs = Preferences.userNodeForPackage(this.getClass());
 	}
 
@@ -232,14 +253,14 @@ public class SpinCADSimulator {
 			if(sim == null || sim.scope == null) return;
 
 			// Restore ch1 gain — update both the scope and the combo box display
-			String gain1 = prefs.get("CH1_VERT_GAIN", "8x");
+			String gain1 = prefs.get("CH1_VERT_GAIN", "1x");
 			switch(gain1) {
-			case "1x":  sim.scope.setScopeCh1Gain(19); break;
-			case "2x":  sim.scope.setScopeCh1Gain(18); break;
-			case "4x":  sim.scope.setScopeCh1Gain(17); break;
-			case "8x":  sim.scope.setScopeCh1Gain(16); break;
-			case "16x": sim.scope.setScopeCh1Gain(15); break;
-			default:    sim.scope.setScopeCh1Gain(16); gain1 = "8x"; break;
+			case "1x":  sim.scope.setScopeCh1Gain(16); break;
+			case "2x":  sim.scope.setScopeCh1Gain(15); break;
+			case "4x":  sim.scope.setScopeCh1Gain(14); break;
+			case "8x":  sim.scope.setScopeCh1Gain(13); break;
+			case "16x": sim.scope.setScopeCh1Gain(12); break;
+			default:    sim.scope.setScopeCh1Gain(16); gain1 = "1x"; break;
 			}
 			// Suppress the ActionEvent so we don't double-apply on combo change
 			stb.ch1_Vertical_Gain.removeActionListener(stb);
@@ -247,14 +268,14 @@ public class SpinCADSimulator {
 			stb.ch1_Vertical_Gain.addActionListener(stb);
 
 			// Restore ch2 gain
-			String gain2 = prefs.get("CH2_VERT_GAIN", "8x");
+			String gain2 = prefs.get("CH2_VERT_GAIN", "1x");
 			switch(gain2) {
-			case "1x":  sim.scope.setScopeCh2Gain(19); break;
-			case "2x":  sim.scope.setScopeCh2Gain(18); break;
-			case "4x":  sim.scope.setScopeCh2Gain(17); break;
-			case "8x":  sim.scope.setScopeCh2Gain(16); break;
-			case "16x": sim.scope.setScopeCh2Gain(15); break;
-			default:    sim.scope.setScopeCh2Gain(16); gain2 = "8x"; break;
+			case "1x":  sim.scope.setScopeCh2Gain(16); break;
+			case "2x":  sim.scope.setScopeCh2Gain(15); break;
+			case "4x":  sim.scope.setScopeCh2Gain(14); break;
+			case "8x":  sim.scope.setScopeCh2Gain(13); break;
+			case "16x": sim.scope.setScopeCh2Gain(12); break;
+			default:    sim.scope.setScopeCh2Gain(16); gain2 = "1x"; break;
 			}
 			stb.ch2_Vertical_Gain.removeActionListener(stb);
 			stb.ch2_Vertical_Gain.setSelectedItem(gain2);
@@ -332,8 +353,8 @@ public class SpinCADSimulator {
 			int w = getWidth();
 			int h = getHeight();
 
-			// Background fill — dim when logically disabled, lighten on hover
-			Color fill = enabled2 ? bg : bg.darker().darker();
+			// Background fill — dim when logically or Swing disabled, lighten on hover
+			Color fill = (enabled2 && isEnabled()) ? bg : bg.darker().darker();
 			if(hovered && isEnabled()) fill = fill.brighter();
 			g2.setColor(fill);
 			g2.fillRoundRect(1, 1, w - 2, h - 2, ARC, ARC);
@@ -343,7 +364,7 @@ public class SpinCADSimulator {
 			g2.drawRoundRect(1, 1, w - 2, h - 2, ARC, ARC);
 
 			// Label
-			g2.setColor(enabled2 ? fg : fg.darker());
+			g2.setColor((enabled2 && isEnabled()) ? fg : fg.darker());
 			g2.setFont(getFont());
 			FontMetrics fm = g2.getFontMetrics();
 			int tx = (w - fm.stringWidth(label)) / 2;
@@ -380,7 +401,7 @@ public class SpinCADSimulator {
 		final Color MODE_LOGGER_COLOR = new Color(100, 60, 120);
 
 		// Custom-painted buttons — immune to LAF background overrides
-		final TraceButton btnModeToggle = new TraceButton("Levels", MODE_SCOPE_COLOR, Color.WHITE);
+		final TraceButton btnModeToggle = new TraceButton("Scope", MODE_SCOPE_COLOR, Color.WHITE);
 		final TraceButton btnCh1Enable = new TraceButton("● Ch 1", CH1_COLOR, Color.WHITE);
 		final TraceButton btnCh2Enable = new TraceButton("● Ch 2", CH2_COLOR, Color.BLACK);
 		final TraceButton btnFreeze    = new TraceButton("❚❚ Freeze", FREEZE_OFF_COLOR, Color.WHITE);
@@ -438,7 +459,7 @@ public class SpinCADSimulator {
 			ch1_Vertical_Gain.setPreferredSize(cbDim);
 			ch1_Vertical_Gain.setMaximumSize(cbDim);
 			ch1_Vertical_Gain.setBorder(border);
-			ch1_Vertical_Gain.setSelectedItem("8x");
+			ch1_Vertical_Gain.setSelectedItem("1x");
 			ch1_Vertical_Gain.addActionListener(this);
 			ch1_Vertical_Gain_Label.setForeground(new Color(200, 200, 200));
 			add(ch1_Vertical_Gain_Label);
@@ -448,7 +469,7 @@ public class SpinCADSimulator {
 			ch2_Vertical_Gain.setPreferredSize(cbDim);
 			ch2_Vertical_Gain.setMaximumSize(cbDim);
 			ch2_Vertical_Gain.setBorder(border);
-			ch2_Vertical_Gain.setSelectedItem("8x");
+			ch2_Vertical_Gain.setSelectedItem("1x");
 			ch2_Vertical_Gain.addActionListener(this);
 			ch2_Vertical_Gain_Label.setForeground(new Color(200, 200, 200));
 			add(ch2_Vertical_Gain_Label);
@@ -496,8 +517,15 @@ public class SpinCADSimulator {
 				sep.setVisible(visible);
 			}
 			// Update mode toggle button
-			btnModeToggle.setLabel(visible ? "Levels" : "Scope");
+			btnModeToggle.setLabel(visible ? "Scope" : "Levels");
 			btnModeToggle.setBgColor(visible ? MODE_SCOPE_COLOR : MODE_LOGGER_COLOR);
+			// Disable Lin/dB toggle in logger mode — logger is always dB
+			btnLinDb.setEnabled(visible);
+			if(!visible) {
+				if(ampLabelPanel != null) ampLabelPanel.setDBMode(true);
+				btnLinDb.setLabel("dB");
+				if(sim != null && sim.scope != null) sim.scope.setLinMode(false);
+			}
 		}
 
 		private void refreshButtonStates() {
@@ -572,11 +600,11 @@ public class SpinCADSimulator {
 				String gain = (String) ch1_Vertical_Gain.getSelectedItem();
 				if(sim != null && sim.scope != null) {
 					switch(gain) {
-					case "1x":  sim.scope.setScopeCh1Gain(19); break;
-					case "2x":  sim.scope.setScopeCh1Gain(18); break;
-					case "4x":  sim.scope.setScopeCh1Gain(17); break;
-					case "8x":  sim.scope.setScopeCh1Gain(16); break;
-					case "16x": sim.scope.setScopeCh1Gain(15); break;
+					case "1x":  sim.scope.setScopeCh1Gain(16); break;
+					case "2x":  sim.scope.setScopeCh1Gain(15); break;
+					case "4x":  sim.scope.setScopeCh1Gain(14); break;
+					case "8x":  sim.scope.setScopeCh1Gain(13); break;
+					case "16x": sim.scope.setScopeCh1Gain(12); break;
 					}
 					prefs.put("CH1_VERT_GAIN", gain);
 				}
@@ -584,11 +612,11 @@ public class SpinCADSimulator {
 				String gain = (String) ch2_Vertical_Gain.getSelectedItem();
 				if(sim != null && sim.scope != null) {
 					switch(gain) {
-					case "1x":  sim.scope.setScopeCh2Gain(19); break;
-					case "2x":  sim.scope.setScopeCh2Gain(18); break;
-					case "4x":  sim.scope.setScopeCh2Gain(17); break;
-					case "8x":  sim.scope.setScopeCh2Gain(16); break;
-					case "16x": sim.scope.setScopeCh2Gain(15); break;
+					case "1x":  sim.scope.setScopeCh2Gain(16); break;
+					case "2x":  sim.scope.setScopeCh2Gain(15); break;
+					case "4x":  sim.scope.setScopeCh2Gain(14); break;
+					case "8x":  sim.scope.setScopeCh2Gain(13); break;
+					case "16x": sim.scope.setScopeCh2Gain(12); break;
 					}
 					prefs.put("CH2_VERT_GAIN", gain);
 				}

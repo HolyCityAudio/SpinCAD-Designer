@@ -82,7 +82,10 @@ public class LevelLogger implements AudioSink {
 	private int pendingCount = 0;
 
 	private static final double FV1_FULL_SCALE = 8388608.0;
-	private static final double[] GRID_LEVELS = { 1.0, 0.5, 0.25, 0.1 };
+	private static final int TOP_PAD = 5;
+	private static final double[] DB_GRID_LEVELS  = { 1.0, 0.5, 0.25, 0.1 };
+	private static final double[] LIN_GRID_LEVELS = { 1.0, 0.75, 0.5, 0.25 };
+	private boolean linMode = false;
 
 	// -------------------------------------------------------------------------
 	// ScopePanel: a JPanel subclass that renders from a shared BufferedImage.
@@ -138,17 +141,23 @@ public class LevelLogger implements AudioSink {
 	// -------------------------------------------------------------------------
 	public static class AmplitudeLabelPanel extends JPanel {
 		private static final long serialVersionUID = 1L;
-		private static final double[] LEVELS = { 1.0, 0.5, 0.25, 0.1 };
-		private static final String[] LABELS = { "0dBFS", "-6dB", "-12dB", "-20dB" };
+		private static final double[] DB_LEVELS  = { 1.0, 0.5, 0.25, 0.1 };
+		private static final double[] DB_VALUES  = { 0, -6, -12, -20 };
+		private static final double[] LIN_LEVELS = { 1.0, 0.75, 0.5, 0.25 };
 		private static final Color BG    = new Color(20, 20, 20);
 		private static final Color LINE  = new Color(60, 90, 60);
 		private static final Color LABEL = new Color(100, 170, 100);
 
+		private boolean dBMode = true;
+
 		public AmplitudeLabelPanel() {
-			setPreferredSize(new Dimension(52, 200));
-			setMinimumSize(new Dimension(52, 50));
+			setPreferredSize(new Dimension(58, 200));
+			setMinimumSize(new Dimension(58, 50));
 			setBackground(BG);
 		}
+
+		public void setDBMode(boolean db) { dBMode = db; repaint(); }
+		public boolean isDBMode() { return dBMode; }
 
 		@Override
 		protected void paintComponent(Graphics g) {
@@ -157,27 +166,40 @@ public class LevelLogger implements AudioSink {
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			int w = getWidth();
 			int h = getHeight();
-			int centerY = h / 2;
-			int halfH   = centerY - 4;
+			int centerY = (h + TOP_PAD) / 2;
+			int halfH   = centerY - TOP_PAD - 4;
 
-			g2.setFont(new Font("Monospaced", Font.PLAIN, 9));
+			Font font = new Font("Monospaced", Font.PLAIN, 11);
+			g2.setFont(font);
+			java.awt.FontMetrics fm = g2.getFontMetrics();
+			int textOffsetY = (fm.getAscent() - fm.getDescent()) / 2;
+
 			g2.setColor(LINE);
 			g2.drawLine(w - 1, 0, w - 1, h);
 
-			for(int gi = 0; gi < LEVELS.length; gi++) {
-				int yPos = centerY - (int)(LEVELS[gi] * halfH);
-				int yNeg = centerY + (int)(LEVELS[gi] * halfH);
+			double[] levels = dBMode ? DB_LEVELS : LIN_LEVELS;
+			for(int gi = 0; gi < levels.length; gi++) {
+				int yPos = centerY - (int)(levels[gi] * halfH);
+				int yNeg = centerY + (int)(levels[gi] * halfH);
 				g2.setColor(LINE);
 				g2.drawLine(w - 5, yPos, w - 1, yPos);
 				g2.drawLine(w - 5, yNeg, w - 1, yNeg);
 				g2.setColor(LABEL);
-				g2.drawString("+" + LABELS[gi], 2, yPos + 4);
-				if(gi > 0) g2.drawString("-" + LABELS[gi], 2, yNeg + 4);
+				if(dBMode) {
+					String lbl = (gi == 0) ? "0dBFS" : ((int) DB_VALUES[gi] + "dB");
+					g2.drawString(lbl, 2, yPos + textOffsetY);
+					if(gi > 0) g2.drawString(lbl, 2, yNeg + textOffsetY);
+				} else {
+					String posLbl = String.format("+%.2f", levels[gi]);
+					String negLbl = String.format("-%.2f", levels[gi]);
+					g2.drawString(posLbl, 2, yPos + textOffsetY);
+					if(gi > 0) g2.drawString(negLbl, 2, yNeg + textOffsetY);
+				}
 			}
 			g2.setColor(LINE);
 			g2.drawLine(w - 5, centerY, w - 1, centerY);
 			g2.setColor(LABEL);
-			g2.drawString("0", 2, centerY + 4);
+			g2.drawString("0", 2, centerY + textOffsetY);
 		}
 	}
 
@@ -192,9 +214,9 @@ public class LevelLogger implements AudioSink {
 		private static final Color LABEL = new Color(100, 160, 100);
 
 		public LoggerLabelPanel() {
-			setPreferredSize(new Dimension(42, 200));
-			setMinimumSize(new Dimension(42, 50));
-			setMaximumSize(new Dimension(42, Integer.MAX_VALUE));
+			setPreferredSize(new Dimension(58, 200));
+			setMinimumSize(new Dimension(58, 50));
+			setMaximumSize(new Dimension(58, Integer.MAX_VALUE));
 			setBackground(BG);
 		}
 
@@ -205,15 +227,18 @@ public class LevelLogger implements AudioSink {
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			int w = getWidth();
 			int h = getHeight();
-			g2.setFont(new Font("Monospaced", Font.PLAIN, 9));
+			Font font = new Font("Monospaced", Font.PLAIN, 11);
+			g2.setFont(font);
+			java.awt.FontMetrics fm = g2.getFontMetrics();
+			int textOffsetY = (fm.getAscent() - fm.getDescent()) / 2;
 
 			// vertical separator on right edge
 			g2.setColor(LINE);
 			g2.drawLine(w - 1, 0, w - 1, h);
 
-			// 2 pixels per dB, grid every 12 dB from 0 to -96
-			for(int db = 0; db <= 96; db += 12) {
-				int y = db * 2;
+			// 2 pixels per dB, grid every 12 dB from 0 to -84
+			for(int db = 0; db <= 84; db += 12) {
+				int y = db * 2 + TOP_PAD;
 				if(y >= h) break;
 				// tick mark
 				g2.setColor(LINE);
@@ -221,7 +246,7 @@ public class LevelLogger implements AudioSink {
 				// label
 				g2.setColor(LABEL);
 				String label = (db == 0) ? "0dBFS" : ("-" + db + "dB");
-				g2.drawString(label, 2, y < 12 ? y + 10 : y - 2);
+				g2.drawString(label, 2, y + textOffsetY);
 			}
 		}
 	}
@@ -367,8 +392,8 @@ public class LevelLogger implements AudioSink {
 			int panelHeight = panel.getHeight();
 			if(panelWidth < 1 || panelHeight < 1) return;
 
-			int centerY = panelHeight / 2;
-			int halfH   = centerY - 4;
+			int centerY = (panelHeight + TOP_PAD) / 2;
+			int halfH   = centerY - TOP_PAD - 4;
 
 			Graphics2D g2 = getBufferGraphics();
 			if(g2 == null) return;
@@ -393,16 +418,19 @@ public class LevelLogger implements AudioSink {
 					newR = centerY - (int)(normR * halfH);
 				}
 
-				// Trigger detection — seed filter on first sample to avoid
-				// false trigger from pixel-coordinate vs zero mismatch
-				if(!filterInitialized) {
-					filter[0] = filter[1] = filter[2] = newL;
-					filterInitialized = true;
+				// Trigger detection — scope mode only; logger always runs
+				if(logMode == 0) {
+					if(!filterInitialized) {
+						filter[0] = filter[1] = filter[2] = newL;
+						filterInitialized = true;
+					}
+					filter[2] = filter[1];
+					filter[1] = filter[0];
+					filter[0] = newL;
+					if(filter[0] - filter[2] < 0.0) triggered = true;
+				} else {
+					triggered = true;
 				}
-				filter[2] = filter[1];
-				filter[1] = filter[0];
-				filter[0] = newL;
-				if(filter[0] - filter[2] > 0.0) triggered = true;
 
 				if(triggered && (tm == triggerMode.AUTO) || (tm == triggerMode.SINGLE)) {
 
@@ -418,11 +446,11 @@ public class LevelLogger implements AudioSink {
 						redrawLoggerGridSlice(g2, xPos + 1, 3, panelHeight);
 						if(ch1Enabled) {
 							g2.setColor(new Color(0, 210, 80));
-							g2.drawLine(xPos, (oldL * -2), xPos + 1, -(newL * 2));
+							g2.drawLine(xPos, (oldL * -2) + TOP_PAD, xPos + 1, -(newL * 2) + TOP_PAD);
 						}
 						if(ch2Enabled) {
 							g2.setColor(new Color(210, 170, 0));
-							g2.drawLine(xPos, (oldR * -2), xPos + 1, -(newR * 2));
+							g2.drawLine(xPos, (oldR * -2) + TOP_PAD, xPos + 1, -(newR * 2) + TOP_PAD);
 						}
 					} else {
 						// ---- SCOPE MODE ----
@@ -430,8 +458,8 @@ public class LevelLogger implements AudioSink {
 							g2.setColor(Color.BLACK);
 							g2.fillRect(0, 0, panelWidth, panelHeight);
 							drawGrid(g2, panelWidth, panelHeight, centerY, halfH);
-							oldL = centerY;
-							oldR = centerY;
+							oldL = newL;
+							oldR = newR;
 						}
 						g2.setColor(Color.BLACK);
 						g2.fillRect(xPos + 1, 0, 3, panelHeight);
@@ -480,9 +508,10 @@ public class LevelLogger implements AudioSink {
 
 			Color gridColor      = new Color(70, 120, 70);
 			Color timeColor      = new Color(60, 90, 130);
-			for(int gi = 0; gi < GRID_LEVELS.length; gi++) {
-				int yPos = centerY - (int)(GRID_LEVELS[gi] * halfH);
-				int yNeg = centerY + (int)(GRID_LEVELS[gi] * halfH);
+			double[] gridLevels = linMode ? LIN_GRID_LEVELS : DB_GRID_LEVELS;
+			for(int gi = 0; gi < gridLevels.length; gi++) {
+				int yPos = centerY - (int)(gridLevels[gi] * halfH);
+				int yNeg = centerY + (int)(gridLevels[gi] * halfH);
 				g2.setStroke(gi == 0 ? solid : dashed);
 				g2.setColor(gridColor);
 				g2.drawLine(0, yPos, panelWidth, yPos);
@@ -510,9 +539,10 @@ public class LevelLogger implements AudioSink {
 		private void redrawGridSlice(Graphics2D g2, int x, int w,
 									 int centerY, int halfH, int panelWidth) {
 			g2.setStroke(new BasicStroke(1f));
-			for(int gi = 0; gi < GRID_LEVELS.length; gi++) {
-				int yPos = centerY - (int)(GRID_LEVELS[gi] * halfH);
-				int yNeg = centerY + (int)(GRID_LEVELS[gi] * halfH);
+			double[] gridLevels = linMode ? LIN_GRID_LEVELS : DB_GRID_LEVELS;
+			for(int gi = 0; gi < gridLevels.length; gi++) {
+				int yPos = centerY - (int)(gridLevels[gi] * halfH);
+				int yNeg = centerY + (int)(gridLevels[gi] * halfH);
 				g2.setColor(new Color(70, 120, 70));
 				g2.drawLine(x, yPos, x + w, yPos);
 				g2.drawLine(x, yNeg, x + w, yNeg);
@@ -542,7 +572,7 @@ public class LevelLogger implements AudioSink {
 			BasicStroke solid  = new BasicStroke(1f);
 			// 2 pixels per dB; grid line every 12 dB from 0 to -96
 			for(int db = 0; db <= 96; db += 12) {
-				int y = db * 2;
+				int y = db * 2 + TOP_PAD;
 				if(y >= h) break;
 				g2.setStroke(db == 0 ? solid : dashed);
 				g2.setColor(gridColor);
@@ -555,7 +585,7 @@ public class LevelLogger implements AudioSink {
 			g2.setStroke(new BasicStroke(1f));
 			g2.setColor(new Color(70, 100, 70));
 			for(int db = 0; db <= 96; db += 12) {
-				int y = db * 2;
+				int y = db * 2 + TOP_PAD;
 				if(y >= h) break;
 				g2.drawLine(x, y, x + sliceW, y);
 			}
@@ -624,6 +654,9 @@ public class LevelLogger implements AudioSink {
 	public void setCh2Enabled(boolean enabled) { ch2Enabled = enabled; }
 	public boolean isCh1Enabled() { return ch1Enabled; }
 	public boolean isCh2Enabled() { return ch2Enabled; }
+
+	public void setLinMode(boolean lin) { linMode = lin; }
+	public boolean isLinMode() { return linMode; }
 
 	public void requestFreeze() { pendingFreeze = true; }
 	public void unfreeze()      { frozen = false; pendingFreeze = false; }

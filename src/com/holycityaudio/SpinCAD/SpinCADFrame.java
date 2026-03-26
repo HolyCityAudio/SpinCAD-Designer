@@ -96,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	}
 
 
-	int buildNum = 1056;
+	int buildNum = 1061;
 
 	// Swing things
 	private JPanel contentPane;
@@ -233,15 +233,20 @@ public class SpinCADFrame extends JFrame {
 		// Y-axis label cards: swap between scope (amplitude) and logger (dB) labels
 		org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel ampLabels =
 				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel();
+		simX.ampLabelPanel = ampLabels;
 		org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel dbLabels =
 				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel();
 		simX.labelCards.add(ampLabels, "scope");
 		simX.labelCards.add(dbLabels, "logger");
 		simX.labelCardLayout.show(simX.labelCards, "scope");
 
-		// Display: label cards on the left, scope panel fills remaining space
+		// Display: label column on the left (labels + Lin/dB button), scope column on right
+		JPanel leftColumn = new JPanel(new BorderLayout());
+		leftColumn.add(simX.labelCards, BorderLayout.CENTER);
+		leftColumn.add(simX.btnLinDb, BorderLayout.SOUTH);
+
 		JPanel displayPanel = new JPanel(new BorderLayout());
-		displayPanel.add(simX.labelCards, BorderLayout.WEST);
+		displayPanel.add(leftColumn, BorderLayout.WEST);
 
 		JPanel scopeColumn = new JPanel();
 		scopeColumn.setLayout(new BoxLayout(scopeColumn, BoxLayout.Y_AXIS));
