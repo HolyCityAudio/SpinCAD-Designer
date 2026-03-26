@@ -325,15 +325,15 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 			
 						frame.add(kfhinnerPanel);
 				lfoSelAComboBox = new JComboBox <String> ();
-				lfoSelAComboBox.addItem("LFO 0");
-				lfoSelAComboBox.addItem("LFO 1");
+				lfoSelAComboBox.addItem("SIN LFO 0");
+				lfoSelAComboBox.addItem("SIN LFO 1");
 				lfoSelAComboBox.setSelectedIndex(gCB.getlfoSelA());
 				frame.add(Box.createRigidArea(new Dimension(5,8)));			
 				frame.getContentPane().add(lfoSelAComboBox);
 				lfoSelAComboBox.addActionListener(new reverbActionListener());
 				lfoSelBComboBox = new JComboBox <String> ();
-				lfoSelBComboBox.addItem("LFO 0");
-				lfoSelBComboBox.addItem("LFO 1");
+				lfoSelBComboBox.addItem("SIN LFO 0");
+				lfoSelBComboBox.addItem("SIN LFO 1");
 				lfoSelBComboBox.setSelectedIndex(gCB.getlfoSelB());
 				frame.add(Box.createRigidArea(new Dimension(5,8)));			
 				frame.getContentPane().add(lfoSelBComboBox);

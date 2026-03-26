@@ -36,6 +36,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -95,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	}
 
 
-	int buildNum = 1056;
+	int buildNum = 1061;
 
 	// Swing things
 	private JPanel contentPane;
@@ -118,6 +119,7 @@ public class SpinCADFrame extends JFrame {
 	SpinCADSimulator simX = new SpinCADSimulator(this, new SpinCADPatch());
 
 	private final JPanel simPanel = new JPanel();
+	private SampleRateComboBox sampleRateDialog = null;
 
 	// BANK ========================================================
 	// stuff to do with working on a bank of 8 vs. just one patch
@@ -231,15 +233,20 @@ public class SpinCADFrame extends JFrame {
 		// Y-axis label cards: swap between scope (amplitude) and logger (dB) labels
 		org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel ampLabels =
 				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.AmplitudeLabelPanel();
+		simX.ampLabelPanel = ampLabels;
 		org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel dbLabels =
 				new org.andrewkilpatrick.elmGen.simulator.LevelLogger.LoggerLabelPanel();
 		simX.labelCards.add(ampLabels, "scope");
 		simX.labelCards.add(dbLabels, "logger");
 		simX.labelCardLayout.show(simX.labelCards, "scope");
 
-		// Display: label cards on the left, scope panel fills remaining space
+		// Display: label column on the left (labels + Lin/dB button), scope column on right
+		JPanel leftColumn = new JPanel(new BorderLayout());
+		leftColumn.add(simX.labelCards, BorderLayout.CENTER);
+		leftColumn.add(simX.btnLinDb, BorderLayout.SOUTH);
+
 		JPanel displayPanel = new JPanel(new BorderLayout());
-		displayPanel.add(simX.labelCards, BorderLayout.WEST);
+		displayPanel.add(leftColumn, BorderLayout.WEST);
 
 		JPanel scopeColumn = new JPanel();
 		scopeColumn.setLayout(new BoxLayout(scopeColumn, BoxLayout.Y_AXIS));
@@ -678,8 +685,11 @@ public class SpinCADFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				SampleRateComboBox srCB = new SampleRateComboBox();
-				srCB.setLocation(mnSimulator.getLocation());
+				if (sampleRateDialog != null && sampleRateDialog.isVisible()) {
+					sampleRateDialog.toFront();
+					return;
+				}
+				sampleRateDialog = new SampleRateComboBox(SpinCADFrame.this);
 			}
 		});
 		mnSimulator.add(mntmSetSampleRate);
@@ -1199,77 +1209,45 @@ public class SpinCADFrame extends JFrame {
 
 	// ===================================================
 	// == Sample rate combo box
-	public class SampleRateComboBox extends JFrame {
-		/**
-		 * 
-		 */
+	public class SampleRateComboBox extends JDialog {
 		private static final long serialVersionUID = 1L;
-		/**
-		 * 
-		private static final long serialVersionUID = 1L;
-		 */
 		JComboBox<Object> rateList = null;
 
-		public SampleRateComboBox() {
-			super("Sample Rate");
-			createAndShowGUI();
-		}
+		public SampleRateComboBox(JFrame owner) {
+			super(owner, "Sample Rate", false);
+			String[] rateStrings = { "32768", "44100", "48000" };
+			rateList = new JComboBox<Object>(rateStrings);
 
-		/** Listens to the combo box. */
-		class SampleRateListener implements ActionListener {
-			public void actionPerformed(ActionEvent e) {
-				JComboBox<String> cb = ((JComboBox<String>) e.getSource());
-				String rate = (String) cb.getSelectedItem();
-				if (rate == "32768") {
-					ElmProgram.setSamplerate(32768);
-				} else if (rate == "44100") {
-					ElmProgram.setSamplerate(44100);
-				} else if (rate == "48000") {
-					ElmProgram.setSamplerate(48000);
-				}
+			if (ElmProgram.SAMPLERATE == 44100) {
+				rateList.setSelectedIndex(1);
+			} else if (ElmProgram.SAMPLERATE == 48000) {
+				rateList.setSelectedIndex(2);
+			} else {
+				rateList.setSelectedIndex(0);
 			}
-		}
 
-		/**
-		 * Create the GUI and show it. For thread safety, this method should be
-		 * invoked from the event-dispatching thread.
-		 */
-		private void createAndShowGUI() {
-			// Create and set up the window.
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-
-					// Create and set up the content pane.
-					JPanel newContentPane = new JPanel(new BorderLayout());
-					setContentPane(newContentPane);
-					newContentPane.setOpaque(true); // content panes must be
-					// opaque
-					String[] rateStrings = { "32768", "44100", "48000" };
-
-					// Create the combo box, select the item at index 4.
-					// Indices start at 0, so 4 specifies the pig.
-					rateList = new JComboBox<Object>(rateStrings);
-					if (ElmProgram.SAMPLERATE == 44100) {
-						rateList.setSelectedIndex(1);
-
-					} else if (ElmProgram.SAMPLERATE == 48000) {
-						rateList.setSelectedIndex(2);
-
-					} else
-						rateList.setSelectedIndex(0);
-					rateList.addActionListener(new SampleRateListener());
-
-					// Lay out the demo.
-					newContentPane.add(rateList, BorderLayout.PAGE_START);
-					newContentPane.setBorder(BorderFactory.createEmptyBorder(
-							20, 20, 20, 20));
-
-					// Display the window.
-					pack();
-					setVisible(true);
-					setResizable(false);
+			rateList.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JComboBox<String> cb = ((JComboBox<String>) e.getSource());
+					String rate = (String) cb.getSelectedItem();
+					if ("32768".equals(rate)) {
+						ElmProgram.setSamplerate(32768);
+					} else if ("44100".equals(rate)) {
+						ElmProgram.setSamplerate(44100);
+					} else if ("48000".equals(rate)) {
+						ElmProgram.setSamplerate(48000);
+					}
 				}
 			});
+
+			JPanel content = new JPanel(new BorderLayout());
+			content.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+			content.add(rateList, BorderLayout.PAGE_START);
+			setContentPane(content);
+			pack();
+			setResizable(false);
+			setLocationRelativeTo(owner);
+			setVisible(true);
 		}
 	}
 

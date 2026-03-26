@@ -6,3 +6,4 @@ bin/
 
 # Build
 /bin/SpinCADBuilder
+/simulator-debug.txt
