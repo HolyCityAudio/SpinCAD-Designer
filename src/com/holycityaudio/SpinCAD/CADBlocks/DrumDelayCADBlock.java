@@ -27,7 +27,7 @@
 	    @SuppressWarnings("unused")
 	    public class DrumDelayCADBlock extends SpinCADBlock {
 			private static final long serialVersionUID = 1L;
-			private DrumDelayControlPanel cp = null;
+			private transient DrumDelayControlPanel cp = null;
 			
 			private double inputGain = 1.0;
 			private double fbkGain = 0.5;
