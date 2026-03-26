@@ -84,6 +84,8 @@ import org.andrewkilpatrick.elmGen.util.Util;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
 
 public class SpinCADFrame extends JFrame {
 
@@ -289,9 +291,8 @@ public class SpinCADFrame extends JFrame {
 					}
 				}
 				eeprom.patch[bankIndex] = new SpinCADPatch();
-				//				bankPanel.setVisible(false);
-				updateAll();
-				// repaint();
+				addDefaultBlocksIfEnabled();
+				updateAll();;
 			}
 		});
 		mntmNewPatch.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
@@ -521,6 +522,17 @@ public class SpinCADFrame extends JFrame {
 
 		mnFileMenu.addSeparator();
 
+		JMenuItem mntmPreferences = new JMenuItem("Preferences...");
+		mntmPreferences.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				PreferencesDialog dlg = new PreferencesDialog(SpinCADFrame.this);
+				dlg.setVisible(true);
+			}
+		});
+		mnFileMenu.add(mntmPreferences);
+
+		mnFileMenu.addSeparator();
+
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -725,12 +737,61 @@ public class SpinCADFrame extends JFrame {
 			}
 		});
 		mnHelp.add(mntmAbout);
+
+		// Auto-reload last file if preference is enabled
+		autoReloadLastFile();
 	}
 
-	/**
-	 * @param panel
-	 * @param mntmExit
-	 */
+	private void addDefaultBlocksIfEnabled() {
+		SpinCADFile f = new SpinCADFile(this);
+		if (f.getAddDefaultBlocks()) {
+			java.awt.Rectangle vis = panel.getVisibleRect();
+			int cx = vis.x + vis.width / 2;
+			int topY = vis.y + 30;
+			int bottomY = vis.y + vis.height - 80;
+			eeprom.patch[bankIndex].patchModel.addBlock(new InputCADBlock(cx, topY));
+			eeprom.patch[bankIndex].patchModel.addBlock(new OutputCADBlock(cx, bottomY));
+		}
+	}
+
+	private void autoReloadLastFile() {
+		SpinCADFile f = new SpinCADFile(this);
+		if (!f.getAutoReloadLastFile()) {
+			return;
+		}
+		String lastType = f.getLastFileType();
+		String lastPath = f.getLastFilePath();
+		if (lastPath.isEmpty()) {
+			return;
+		}
+		File lastFile = new File(lastPath);
+		if (!lastFile.exists()) {
+			return;
+		}
+		try {
+			if ("bank".equals(lastType)) {
+				SpinCADBank b = f.fileReadBank(lastFile);
+				if (b != null) {
+					eeprom = b;
+					eeprom.changed = false;
+					bankIndex = 0;
+					simX.updateSliders(eeprom.patch[bankIndex]);
+					updateAll();
+				}
+			} else if ("patch".equals(lastType)) {
+				SpinCADPatch p = f.fileReadPatch(lastPath);
+				if (p != null) {
+					p.patchFileName = lastFile.getName();
+					eeprom.patch[bankIndex] = p;
+					eeprom.patch[bankIndex].setChanged(false);
+					simX.updateSliders(eeprom.patch[bankIndex]);
+					updateAll();
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Auto-reload failed: " + e.getMessage());
+		}
+	}
 
 	void updateFrameTitle() {
 		SwingUtilities.invokeLater(new Runnable() {

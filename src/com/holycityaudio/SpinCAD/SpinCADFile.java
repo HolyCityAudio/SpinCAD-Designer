@@ -110,6 +110,7 @@ public class SpinCADFile {
 			saveMRUPatchFolder(filePath);
 			recentPatchFileList.add(fileToBeSaved);
 			saveRecentPatchFileList();
+			setLastFile("patch", filePath);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			SpinCADDialogs.MessageBox(dialogParent, "File save failed!", "Could not find or create the file.");
@@ -152,6 +153,7 @@ public class SpinCADFile {
 				recentBankFileList.add(fileToBeSaved);
 			}
 			saveRecentBankFileList();
+			setLastFile("bank", filePath);
 		}
 	}
 
@@ -326,6 +328,7 @@ public class SpinCADFile {
 			p.patchFileName = fileName;
 			p.cb.setFileName(fileName);
 			saveRecentPatchFileList();
+			setLastFile("patch", filePath);
 			return p;
 		} else {
 			System.out.println("Open command cancelled by user." + newline);
@@ -381,6 +384,7 @@ public class SpinCADFile {
 			b.cb.setFileName(fileName);
 			b.changed = false;
 			saveRecentBankFileList();
+			setLastFile("bank", filePath);
 			return b;
 		} else {
 			System.out.println("Open command cancelled by user."
@@ -770,6 +774,39 @@ public class SpinCADFile {
 		writer.close();
 	}
 
+
+	//====================================================
+	// preferences for auto-reload at startup
+
+	public boolean getAutoReloadLastFile() {
+		return prefs.getBoolean("AutoReloadLastFile", false);
+	}
+
+	public void setAutoReloadLastFile(boolean enabled) {
+		prefs.putBoolean("AutoReloadLastFile", enabled);
+	}
+
+	public boolean getAddDefaultBlocks() {
+		return prefs.getBoolean("AddDefaultBlocks", false);
+	}
+
+	public void setAddDefaultBlocks(boolean enabled) {
+		prefs.putBoolean("AddDefaultBlocks", enabled);
+	}
+
+	/** Returns "patch", "bank", or "" depending on what was last saved/opened. */
+	public String getLastFileType() {
+		return prefs.get("LastFileType", "");
+	}
+
+	public String getLastFilePath() {
+		return prefs.get("LastFilePath", "");
+	}
+
+	public void setLastFile(String type, String path) {
+		prefs.put("LastFileType", type);
+		prefs.put("LastFilePath", path);
+	}
 
 	//====================================================
 	// most-recently used file and folder methods
