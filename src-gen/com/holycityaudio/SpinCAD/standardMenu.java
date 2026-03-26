@@ -67,6 +67,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LFO_ValueCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
@@ -738,6 +739,15 @@
 		}
 	});
 	mn_control.add(mntm_control_smoother);
+		
+	final JMenuItem mntm_control_smootherA = new JMenuItem("SmootherA");
+	mntm_control_smootherA.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new control_smootherACADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_control_smootherA);
 		
 	final JMenuItem mntm_SinCosLFOA = new JMenuItem("Sin/Cos LFO");
 	mntm_SinCosLFOA.addActionListener(new ActionListener() {
