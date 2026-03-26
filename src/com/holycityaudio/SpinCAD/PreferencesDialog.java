@@ -36,6 +36,7 @@ public class PreferencesDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JCheckBox autoReloadCheckBox;
 	private final JCheckBox addDefaultBlocksCheckBox;
+	private final JCheckBox showSpinAsmCheckBox;
 	private final SpinCADFile spinCADFile;
 
 	public PreferencesDialog(Frame owner) {
@@ -68,6 +69,17 @@ public class PreferencesDialog extends JDialog {
 
 		contentPanel.add(newPatchPanel);
 
+		// Display section
+		JPanel displayPanel = new JPanel();
+		displayPanel.setLayout(new BoxLayout(displayPanel, BoxLayout.Y_AXIS));
+		displayPanel.setBorder(BorderFactory.createTitledBorder("Display"));
+
+		showSpinAsmCheckBox = new JCheckBox("Show Spin ASM");
+		showSpinAsmCheckBox.setSelected(spinCADFile.getShowSpinAsm());
+		displayPanel.add(showSpinAsmCheckBox);
+
+		contentPanel.add(displayPanel);
+
 		// Button panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JButton okButton = new JButton("OK");
@@ -77,6 +89,8 @@ public class PreferencesDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				spinCADFile.setAutoReloadLastFile(autoReloadCheckBox.isSelected());
 				spinCADFile.setAddDefaultBlocks(addDefaultBlocksCheckBox.isSelected());
+				spinCADFile.setShowSpinAsm(showSpinAsmCheckBox.isSelected());
+				SpinCADFrame.getInstance().setAsmPanelVisible(showSpinAsmCheckBox.isSelected());
 				dispose();
 			}
 		});

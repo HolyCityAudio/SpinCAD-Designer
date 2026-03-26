@@ -786,6 +786,14 @@ public class SpinCADFile {
 		prefs.putBoolean("AutoReloadLastFile", enabled);
 	}
 
+	public boolean getShowSpinAsm() {
+		return prefs.getBoolean("ShowSpinAsm", false);
+	}
+
+	public void setShowSpinAsm(boolean enabled) {
+		prefs.putBoolean("ShowSpinAsm", enabled);
+	}
+
 	public boolean getAddDefaultBlocks() {
 		return prefs.getBoolean("AddDefaultBlocks", false);
 	}

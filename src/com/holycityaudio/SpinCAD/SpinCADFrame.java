@@ -49,6 +49,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import javax.swing.KeyStroke;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
@@ -102,6 +104,9 @@ public class SpinCADFrame extends JFrame {
 
 	// Swing things
 	private JPanel contentPane;
+	private JTextArea asmTextArea;
+	private JScrollPane asmScrollPane;
+	private JSplitPane mainSplitPane;
 	//=====================s====================================================================
 	// pb shows instructions, registers, and RAM used.  It also shows allocation state of LFOs
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
@@ -196,7 +201,20 @@ public class SpinCADFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		setPreferredSize(new Dimension(450, 1200));
 
-		contentPane.add(scrollPane, BorderLayout.CENTER);
+		// ASM listing panel
+		asmTextArea = new JTextArea();
+		asmTextArea.setEditable(false);
+		asmTextArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
+		asmScrollPane = new JScrollPane(asmTextArea);
+
+		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, asmScrollPane);
+		mainSplitPane.setResizeWeight(0.8);
+		contentPane.add(mainSplitPane, BorderLayout.CENTER);
+
+		// Show or hide ASM panel based on preference
+		SpinCADFile asmPref = new SpinCADFile(this);
+		asmScrollPane.setVisible(asmPref.getShowSpinAsm());
+		mainSplitPane.setDividerSize(asmPref.getShowSpinAsm() ? 6 : 0);
 
 		// =========================================================
 		// ======================= toolbars ========================
@@ -752,6 +770,38 @@ public class SpinCADFrame extends JFrame {
 		autoReloadLastFile();
 	}
 
+	private void updateAsmPanel() {
+		if (!asmScrollPane.isVisible()) {
+			return;
+		}
+		try {
+			SpinCADPatch patch = eeprom.patch[bankIndex];
+			if (patch.patchModel.blockList.size() > 0) {
+				patch.patchModel.sortAlignGen();
+				SpinFXBlock rb = patch.patchModel.getRenderBlock();
+				if (rb != null) {
+					asmTextArea.setText(rb.getProgramListing(1));
+					asmTextArea.setCaretPosition(0);
+				}
+			} else {
+				asmTextArea.setText("");
+			}
+		} catch (Exception e) {
+			asmTextArea.setText("; (unable to generate listing)");
+		}
+	}
+
+	public void setAsmPanelVisible(boolean visible) {
+		asmScrollPane.setVisible(visible);
+		mainSplitPane.setDividerSize(visible ? 6 : 0);
+		if (visible) {
+			mainSplitPane.setDividerLocation(0.8);
+			updateAsmPanel();
+		}
+		mainSplitPane.revalidate();
+		mainSplitPane.repaint();
+	}
+
 	private void addDefaultBlocksIfEnabled() {
 		SpinCADFile f = new SpinCADFile(this);
 		if (f.getAddDefaultBlocks()) {
@@ -1256,11 +1306,12 @@ public class SpinCADFrame extends JFrame {
 			etb.pinName.setVisible(true);
 		} else {
 			simX.sctb.setVisible(true);
-			etb.pinName.setText("");			
+			etb.pinName.setText("");
 		}
 		etb.update();
 		updateFrameTitle();
-		contentPane.repaint();	
+		updateAsmPanel();
+		contentPane.repaint();
 	}
 
 	public void updateAll(boolean isChanged) {
