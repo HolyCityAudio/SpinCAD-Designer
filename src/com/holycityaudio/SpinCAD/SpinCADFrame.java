@@ -932,6 +932,22 @@ public class SpinCADFrame extends JFrame {
 		saveModel();
 		SpinCADBlock block;
 
+		// If deleting a feedback block, also select its partner
+		for (SpinCADBlock b : getPatch().patchModel.blockList) {
+			if (b.selected) {
+				if (b instanceof FBInputCADBlock || b instanceof FBOutputCADBlock) {
+					for (SpinCADBlock partner : getPatch().patchModel.blockList) {
+						if (partner != b && partner.getIndex() == b.getIndex()) {
+							if ((b instanceof FBInputCADBlock && partner instanceof FBOutputCADBlock) ||
+								(b instanceof FBOutputCADBlock && partner instanceof FBInputCADBlock)) {
+								partner.selected = true;
+							}
+						}
+					}
+				}
+			}
+		}
+
 		Iterator<SpinCADBlock> itr = getPatch().patchModel.blockList.iterator();
 		while(itr.hasNext()) {
 			block = itr.next();
