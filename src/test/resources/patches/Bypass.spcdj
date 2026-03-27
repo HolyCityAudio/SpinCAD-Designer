@@ -1,0 +1,57 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "Bypass.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1061",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 264,
+      "y": 44,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 1,
+      "x": 260,
+      "y": 265,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 1,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 2",
+      "toBlockIndex": 1,
+      "toPin": "Input 2"
+    }
+  ]
+}
