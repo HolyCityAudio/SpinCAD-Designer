@@ -46,12 +46,15 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 // =======================================================================================================
 public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionListener{
@@ -81,6 +84,28 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 	//	private static String keys = null;
 
 	//	private SpinCADModel pasteBuffer = new SpinCADModel();
+
+	/**
+	 * Check if connecting sourceBlock's output to destBlock's input would
+	 * create a cycle. Returns true if destBlock already feeds into sourceBlock.
+	 */
+	private boolean wouldCreateCycle(SpinCADBlock sourceBlock, SpinCADBlock destBlock) {
+		Set<SpinCADBlock> visited = new HashSet<>();
+		return canReach(destBlock, sourceBlock, visited);
+	}
+
+	private boolean canReach(SpinCADBlock from, SpinCADBlock target, Set<SpinCADBlock> visited) {
+		if (from == target) return true;
+		if (!visited.add(from)) return false;
+		for (SpinCADBlock b : f.getPatch().patchModel.blockList) {
+			for (SpinCADPin pin : b.pinList) {
+				if (pin.isInputPin() && pin.getBlockConnection() == from) {
+					if (canReach(b, target, visited)) return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	public SpinCADPanel (final SpinCADFrame spdFrame) {
 		f = spdFrame;
@@ -614,13 +639,23 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 							if(startPin.isOutputPin() && currentPin.isInputPin()) {
 								stopBlock = b;
 								if(startBlock != stopBlock) {
+									if (wouldCreateCycle(startBlock, b)) {
+										JOptionPane.showMessageDialog(f,
+											"Cannot create circular connection. Add a feedback loop instead.",
+											"Circular Connection", JOptionPane.WARNING_MESSAGE);
+										dm = dragModes.NODRAG;
+										dragLine = null;
+										startBlock = null;
+										repaint();
+										return;
+									}
 									// decrement count of pin which was connected
 									SpinCADPin p = currentPin.getPinConnection();
 									if(p != null) {
 										currentPin.deletePinConnection();
 									}
 									stopPin = currentPin;
-									stopPin.setConnection(startBlock,  startPin);		
+									stopPin.setConnection(startBlock,  startPin);
 									// XXX debug set pin connections in both directions don't think this works
 									// startPin.setConnection(stopBlock,  stopPin);
 									System.out.println("Connect stop!");
@@ -637,10 +672,20 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 							else if (startPin.isInputPin() && currentPin.isOutputPin()) {
 								stopBlock = b;
 								if(startBlock != stopBlock) {
+									if (wouldCreateCycle(b, startBlock)) {
+										JOptionPane.showMessageDialog(f,
+											"Cannot create circular connection. Add a feedback loop instead.",
+											"Circular Connection", JOptionPane.WARNING_MESSAGE);
+										dm = dragModes.NODRAG;
+										dragLine = null;
+										startBlock = null;
+										repaint();
+										return;
+									}
 									stopPin = currentPin;
 									// XXX debug set pin connections in both directions don't think this works
-									startPin.setConnection(stopBlock,  stopPin);	
-									// stopPin.setConnection(startBlock,  startPin);		
+									startPin.setConnection(stopBlock,  stopPin);
+									// stopPin.setConnection(startBlock,  startPin);
 									System.out.println("Connect stop!");
 									dm = dragModes.NODRAG;
 									dragLine = null;
