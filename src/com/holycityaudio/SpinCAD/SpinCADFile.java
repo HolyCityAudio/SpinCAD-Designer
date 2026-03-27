@@ -632,6 +632,51 @@ public class SpinCADFile {
 				}
 			}
 			saveMRUHexFolder(filePath);
+			executeHexSaveCommand(filePath);
+		}
+	}
+
+	private void executeHexSaveCommand(String hexFilePath) {
+		if (!getExecCommandOnHexSave()) {
+			return;
+		}
+		String command = getHexSaveCommand();
+		if (command == null || command.trim().isEmpty()) {
+			return;
+		}
+		command = command.replace("%s", "'" + hexFilePath + "'");
+		try {
+			String[] shellCommand;
+			if (System.getProperty("os.name").toLowerCase().contains("win")) {
+				shellCommand = new String[]{"powershell.exe", "-Command", command};
+			} else {
+				shellCommand = new String[]{"/bin/sh", "-c", command};
+			}
+			System.out.println("Executing: " + java.util.Arrays.toString(shellCommand));
+			Process proc = Runtime.getRuntime().exec(shellCommand);
+			int exitCode = proc.waitFor();
+			String error = new String(proc.getErrorStream().readAllBytes()).trim();
+			String output = new String(proc.getInputStream().readAllBytes()).trim();
+			if (!output.isEmpty()) {
+				System.out.println("Command output: " + output);
+			}
+			if (!error.isEmpty()) {
+				System.err.println("Command error: " + error);
+			}
+			if (exitCode != 0) {
+				String message = error.isEmpty() ? output : error;
+				System.err.println("Command exited with code " + exitCode);
+				JOptionPane.showMessageDialog(dialogParent,
+						"Command exited with code " + exitCode + ":\n" + command +
+						(message.isEmpty() ? "" : "\n\n" + message),
+						"Command Error", JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(dialogParent,
+					"Failed to execute command:\n" + command + "\n" + e.getMessage(),
+					"Command Error", JOptionPane.ERROR_MESSAGE);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -800,6 +845,22 @@ public class SpinCADFile {
 
 	public void setAddDefaultBlocks(boolean enabled) {
 		prefs.putBoolean("AddDefaultBlocks", enabled);
+	}
+
+	public boolean getExecCommandOnHexSave() {
+		return prefs.getBoolean("ExecCommandOnHexSave", false);
+	}
+
+	public void setExecCommandOnHexSave(boolean enabled) {
+		prefs.putBoolean("ExecCommandOnHexSave", enabled);
+	}
+
+	public String getHexSaveCommand() {
+		return prefs.get("HexSaveCommand", "");
+	}
+
+	public void setHexSaveCommand(String command) {
+		prefs.put("HexSaveCommand", command);
 	}
 
 	/** Returns "patch", "bank", or "" depending on what was last saved/opened. */

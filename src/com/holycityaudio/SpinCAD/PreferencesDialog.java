@@ -30,6 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class PreferencesDialog extends JDialog {
 
@@ -37,6 +38,8 @@ public class PreferencesDialog extends JDialog {
 	private final JCheckBox autoReloadCheckBox;
 	private final JCheckBox addDefaultBlocksCheckBox;
 	private final JCheckBox showSpinAsmCheckBox;
+	private final JCheckBox execCommandOnHexSaveCheckBox;
+	private final JTextField hexSaveCommandField;
 	private final SpinCADFile spinCADFile;
 
 	public PreferencesDialog(Frame owner) {
@@ -80,6 +83,28 @@ public class PreferencesDialog extends JDialog {
 
 		contentPanel.add(displayPanel);
 
+		// Hex Save section
+		JPanel hexSavePanel = new JPanel();
+		hexSavePanel.setLayout(new BoxLayout(hexSavePanel, BoxLayout.Y_AXIS));
+		hexSavePanel.setBorder(BorderFactory.createTitledBorder("Hex Save"));
+
+		execCommandOnHexSaveCheckBox = new JCheckBox("Execute command on hex save");
+		execCommandOnHexSaveCheckBox.setSelected(spinCADFile.getExecCommandOnHexSave());
+		hexSavePanel.add(execCommandOnHexSaveCheckBox);
+
+		hexSaveCommandField = new JTextField(spinCADFile.getHexSaveCommand(), 30);
+		hexSaveCommandField.setToolTipText("Command to execute after hex save. Use %s for the hex file path.");
+		hexSaveCommandField.setEnabled(execCommandOnHexSaveCheckBox.isSelected());
+		hexSavePanel.add(hexSaveCommandField);
+
+		execCommandOnHexSaveCheckBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hexSaveCommandField.setEnabled(execCommandOnHexSaveCheckBox.isSelected());
+			}
+		});
+
+		contentPanel.add(hexSavePanel);
+
 		// Button panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JButton okButton = new JButton("OK");
@@ -91,6 +116,8 @@ public class PreferencesDialog extends JDialog {
 				spinCADFile.setAddDefaultBlocks(addDefaultBlocksCheckBox.isSelected());
 				spinCADFile.setShowSpinAsm(showSpinAsmCheckBox.isSelected());
 				SpinCADFrame.getInstance().setAsmPanelVisible(showSpinAsmCheckBox.isSelected());
+				spinCADFile.setExecCommandOnHexSave(execCommandOnHexSaveCheckBox.isSelected());
+				spinCADFile.setHexSaveCommand(hexSaveCommandField.getText());
 				dispose();
 			}
 		});
