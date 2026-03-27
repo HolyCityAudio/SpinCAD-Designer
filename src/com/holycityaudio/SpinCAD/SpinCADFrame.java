@@ -964,6 +964,7 @@ public class SpinCADFrame extends JFrame {
 				itr.remove();
 			}
 		}
+		updateAll();
 	}
 
 	public void undo() {
