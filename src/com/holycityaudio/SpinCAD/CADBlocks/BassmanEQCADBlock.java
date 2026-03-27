@@ -45,7 +45,9 @@ public class BassmanEQCADBlock extends FilterCADBlock{
 
 	public BassmanEQCADBlock(int x, int y) {
 		super(x, y);
-		setName("Bassman '59 EQ");	
+		addInputPin(this, "Audio Input 1");
+		addOutputPin(this, "Audio Output 1");
+		setName("Bassman '59 EQ");
 	}
 
 	public void editBlock(){

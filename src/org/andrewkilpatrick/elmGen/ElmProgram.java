@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.JFrame;
 
 import org.andrewkilpatrick.elmGen.instructions.Absa;
 import org.andrewkilpatrick.elmGen.instructions.And;
@@ -304,13 +303,8 @@ public class ElmProgram implements Serializable {
 	 */
 	public void checkCodeLen() {
 		if ((getCodeLen() - getNumComments()) >= MAX_CODE_LEN) {
-
-			// throw new ElmProgramException("max program length reached: " +
-			// MAX_CODE_LEN);
-			JFrame frame = new JFrame();
-//			JOptionPane.showMessageDialog(frame, "Too many instructions!\n"
-//					+ "Please remove a block.",
-//					"Ran out of instructions!", JOptionPane.OK_OPTION);
+			System.err.println("Warning: program length (" + (getCodeLen() - getNumComments())
+					+ ") exceeds maximum (" + MAX_CODE_LEN + ")");
 		}
 	}
 

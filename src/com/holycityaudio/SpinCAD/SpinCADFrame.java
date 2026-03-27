@@ -179,6 +179,10 @@ public class SpinCADFrame extends JFrame {
 		// setTitle("SpinCAD Designer - Untitled");
 		updateFrameTitle();
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		java.net.URL iconURL = getClass().getResource("icon_256_x_256.png");
+		if (iconURL != null) {
+			setIconImage(new javax.swing.ImageIcon(iconURL).getImage());
+		}
 		setBounds(100, 100, 800, 600);
 		simX.updateSliders(eeprom.patch[0]);
 

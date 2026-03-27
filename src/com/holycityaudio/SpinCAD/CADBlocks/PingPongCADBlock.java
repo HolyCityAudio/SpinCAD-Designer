@@ -53,9 +53,11 @@ public class PingPongCADBlock extends DelayCADBlock{
 		//		super("MultiTap");
 		super(x, y);
 		hasControlPanel = true;
-		addControlInputPin(this, "Delay gain");	//	delay time
-		addControlInputPin(this, "Not assigned");	//	feedback
-		addOutputPin(this);
+		addInputPin(this, "Audio Input 1");
+		addControlInputPin(this, "Control Input 1");
+		addControlInputPin(this, "Control Input 2");
+		addOutputPin(this, "Audio Output 1");
+		addOutputPin(this, "Audio Output 2");
 		setName("Ping Pong");
 	}
 

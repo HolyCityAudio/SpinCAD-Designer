@@ -79,7 +79,7 @@ public class ThreeTapCADBlock extends DelayCADBlock{
 		int rightOut = -1;
 
 
-		SpinCADPin p = this.getPin("Audio Input 1").getPinConnection();
+		SpinCADPin p = this.getPin("Audio Input").getPinConnection();
 		if (p != null) {
 			input = p.getRegister();
 			if(input != -1) {		// don't generate code if there's no input connected
@@ -93,7 +93,7 @@ public class ThreeTapCADBlock extends DelayCADBlock{
 				// rdax pot2,1
 				int Control2 = -1;
 
-				p = this.getPin("Control Input 2").getPinConnection();
+				p = this.getPin("Delay gain").getPinConnection();
 				if(p == null) {	// there's no pin attached!
 					sfxb.readRegister(input, defaultGain);
 				}
@@ -123,10 +123,10 @@ public class ThreeTapCADBlock extends DelayCADBlock{
 				sfxb.FXreadDelay("PingPongDelay", tap2time, tap2level);  //
 				sfxb.writeRegister(output3, 0);
 
-				p = this.getPin("Audio Output 1");
-				p.setRegister(leftOut);
-				p = this.getPin("Audio Output 2");
-				p.setRegister(rightOut);
+				this.getPin("Delay End Out").setRegister(leftOut);
+				this.getPin("Tap 1 Out").setRegister(output1);
+				this.getPin("Tap 2 Out").setRegister(output2);
+				this.getPin("Tap 3 Out").setRegister(output3);
 
 			}
 		}
