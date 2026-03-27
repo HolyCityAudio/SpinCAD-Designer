@@ -37,8 +37,8 @@ public class control_smootherCADBlock extends SpinCADBlock {
 		setName("Smoother");
 		setBorderColor(new Color(0xf2f224));	
 		// Iterate through pin definitions and allocate or assign as needed
-		addControlInputPin(this, "Control_Input");
-		addControlOutputPin(this, "Control_Output");
+		addControlInputPin(this, "Control Input");
+		addControlOutputPin(this, "Control Output");
 		// if any control panel elements declared, set hasControlPanel to true
 		hasControlPanel = true;
 	}
@@ -67,7 +67,7 @@ public class control_smootherCADBlock extends SpinCADBlock {
 		SpinCADPin sp = null;
 
 		// Iterate through pin definitions and connect or assign as needed
-		sp = this.getPin("Control_Input").getPinConnection();
+		sp = this.getPin("Control Input").getPinConnection();
 		int input = -1;
 		if(sp != null) {
 			input = sp.getRegister();
@@ -75,11 +75,11 @@ public class control_smootherCADBlock extends SpinCADBlock {
 
 		// finally, generate the instructions
 		filtReg = sfxb.allocateReg();
-		if(this.getPin("Input").getPinConnection() != null) {
+		if(this.getPin("Control Input").getPinConnection() != null) {
 			sfxb.readRegister(input, 1.0);
 			sfxb.readRegisterFilter(filtReg, filt);
 			sfxb.writeRegister(filtReg, 0.0);
-			this.getPin("Control_Output").setRegister(filtReg);
+			this.getPin("Control Output").setRegister(filtReg);
 		}
 	}
 

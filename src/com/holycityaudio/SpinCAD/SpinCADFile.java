@@ -30,8 +30,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.prefs.Preferences;
@@ -157,13 +159,35 @@ public class SpinCADFile {
 		}
 	}
 
+	private static final java.util.Map<String, String> CLASS_RENAMES = java.util.Map.of(
+		"com.holycityaudio.SpinCAD.CADBlocks.control_smootherACADBlock",
+		"com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock",
+		"com.holycityaudio.SpinCAD.CADBlocks.control_smootherControlPanelA",
+		"com.holycityaudio.SpinCAD.CADBlocks.control_smootherControlPanel"
+	);
+
+	private ObjectInputStream createRemappingStream(InputStream in) throws IOException {
+		return new ObjectInputStream(in) {
+			@Override
+			protected Class<?> resolveClass(ObjectStreamClass desc)
+					throws IOException, ClassNotFoundException {
+				String name = desc.getName();
+				if (CLASS_RENAMES.containsKey(name)) {
+					name = CLASS_RENAMES.get(name);
+					return Class.forName(name);
+				}
+				return super.resolveClass(desc);
+			}
+		};
+	}
+
 	public SpinCADPatch fileReadPatch(String fileName) throws IOException, ClassNotFoundException {
 		if (fileName.endsWith(".spcdj")) {
 			return SpinCADJsonSerializer.readPatch(fileName);
 		}
 		// Object deserialization
 		FileInputStream fis = new FileInputStream(fileName);
-		ObjectInputStream ois = new ObjectInputStream(fis);
+		ObjectInputStream ois = createRemappingStream(fis);
 		SpinCADPatch p  = new SpinCADPatch();
 
 		p = (SpinCADPatch) ois.readObject();
@@ -178,8 +202,8 @@ public class SpinCADFile {
 		SpinCADPatch p = new SpinCADPatch();
 		p.patchFileName = fileName;
 
-		FileInputStream fis = new FileInputStream(fileName); 
-		ObjectInputStream ois = new ObjectInputStream(fis); 
+		FileInputStream fis = new FileInputStream(fileName);
+		ObjectInputStream ois = createRemappingStream(fis);
 
 		p.cb.line[0] = (String)ois.readObject();
 		p.cb.line[1] = (String)ois.readObject();
@@ -342,7 +366,7 @@ public class SpinCADFile {
 		}
 		// Object deserialization
 		FileInputStream fis = new FileInputStream(fileName);
-		ObjectInputStream ois = new ObjectInputStream(fis);
+		ObjectInputStream ois = createRemappingStream(fis);
 		SpinCADBank b  = (SpinCADBank)ois.readObject();
 		ois.close();
 		return b;
