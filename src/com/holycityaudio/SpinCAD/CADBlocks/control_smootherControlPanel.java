@@ -39,16 +39,16 @@ import javax.swing.border.Border;
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 
-public class control_smootherControlPanelA {
+public class control_smootherControlPanel {
 	private JFrame frame;
 
-	private control_smootherACADBlock gCB;
+	private control_smootherCADBlock gCB;
 
 	// declare the controls
 	FineControlSlider filtSlider;
 	JTextField filtField;
 
-	public control_smootherControlPanelA(control_smootherACADBlock genericCADBlock) {
+	public control_smootherControlPanel(control_smootherCADBlock genericCADBlock) {
 
 		gCB = genericCADBlock;
 

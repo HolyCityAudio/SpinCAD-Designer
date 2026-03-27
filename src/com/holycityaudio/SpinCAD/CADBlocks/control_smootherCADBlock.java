@@ -24,15 +24,15 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
-public class control_smootherACADBlock extends SpinCADBlock {
+public class control_smootherCADBlock extends SpinCADBlock {
 
 	private static final long serialVersionUID = 1L;
 
 	private int filtReg;
 	private double filt = 0.00015;	// default value is 1.0 Hz
-	private control_smootherControlPanelA cp = null;
+	private control_smootherControlPanel cp = null;
 
-	public control_smootherACADBlock(int x, int y) {
+	public control_smootherCADBlock(int x, int y) {
 		super(x, y);
 		setName("Smoother");
 		setBorderColor(new Color(0xf2f224));	
@@ -47,7 +47,7 @@ public class control_smootherACADBlock extends SpinCADBlock {
 	public void editBlock(){ 
 		if(cp == null) {
 			if(hasControlPanel == true) {
-				cp = new control_smootherControlPanelA(this);
+				cp = new control_smootherControlPanel(this);
 			}
 		}
 	}
