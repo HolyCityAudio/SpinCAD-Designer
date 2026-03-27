@@ -847,6 +847,14 @@ public class SpinCADFile {
 		prefs.putBoolean("AddDefaultBlocks", enabled);
 	}
 
+	public boolean getDisableOptimizer() {
+		return prefs.getBoolean("DisableOptimizer", false);
+	}
+
+	public void setDisableOptimizer(boolean enabled) {
+		prefs.putBoolean("DisableOptimizer", enabled);
+	}
+
 	public boolean getExecCommandOnHexSave() {
 		return prefs.getBoolean("ExecCommandOnHexSave", false);
 	}

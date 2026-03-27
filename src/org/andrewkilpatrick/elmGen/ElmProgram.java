@@ -821,7 +821,7 @@ public void optimizeOutputRegisters() {
             }
             insertMap.put(srcWrIdx, inserts);
 
-            savedInst += pis.size() * 2;
+            savedInst += pis.size();
         }
         // All other combinations: leave as-is
     }
