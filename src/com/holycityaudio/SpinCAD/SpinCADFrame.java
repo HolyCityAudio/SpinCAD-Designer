@@ -136,6 +136,8 @@ public class SpinCADFrame extends JFrame {
 
 	// eeprom is where ALL the data for 8 patches is stored
 	SpinCADBank eeprom = new SpinCADBank();
+	private commentBlockPanel patchInfoPanel = null;
+	private java.awt.Point patchInfoLocation = null;
 
 	// modelSave is used to undo deletes
 	ByteArrayOutputStream modelSave;
@@ -406,8 +408,13 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmInfo = new JMenuItem("Patch Information");
 		mntmInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				commentBlockPatch cbp = new commentBlockPatch(eeprom.patch[bankIndex]);
-				cbp.cbPnl.show();
+				if (patchInfoPanel != null && patchInfoPanel.commentFrame.isDisplayable()) {
+					patchInfoPanel.update(eeprom.patch[bankIndex].cb);
+					patchInfoPanel.commentFrame.toFront();
+				} else {
+					patchInfoPanel = new commentBlockPanel(eeprom.patch[bankIndex].cb, "Patch Information");
+					patchInfoPanel.show();
+				}
 			}
 		});
 		mntmInfo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
@@ -1133,7 +1140,11 @@ public class SpinCADFrame extends JFrame {
 					commentFrame.add(line4text);	
 					commentFrame.setAlwaysOnTop(true);
 					commentFrame.pack();
-					commentFrame.setLocation(200, 150);
+					if (patchInfoLocation != null) {
+						commentFrame.setLocation(patchInfoLocation);
+					} else {
+						commentFrame.setLocation(200, 150);
+					}
 					commentFrame.setResizable(false);
 					commentFrame.setVisible(true);
 				}
@@ -1144,9 +1155,32 @@ public class SpinCADFrame extends JFrame {
 		public void show() {
 			commentFrame.setAlwaysOnTop(true);
 			commentFrame.pack();
-			commentFrame.setLocation(200, 150);
+			if (patchInfoLocation != null) {
+				commentFrame.setLocation(patchInfoLocation);
+			} else {
+				commentFrame.setLocation(200, 150);
+			}
 			commentFrame.setResizable(false);
 			commentFrame.setVisible(true);
+		}
+
+		public void update(SpinCADCommentBlock cb) {
+			// save current edits to old comment block before switching
+			if (spcb != null) {
+				spcb.line[0] = line0text.getText();
+				spcb.line[1] = line1text.getText();
+				spcb.line[2] = line2text.getText();
+				spcb.line[3] = line3text.getText();
+				spcb.line[4] = line4text.getText();
+			}
+			this.spcb = cb;
+			fileNameText.setText(cb.fileName);
+			versionText.setText(cb.version);
+			line0text.setText(cb.line[0]);
+			line1text.setText(cb.line[1]);
+			line2text.setText(cb.line[2]);
+			line3text.setText(cb.line[3]);
+			line4text.setText(cb.line[4]);
 		}
 
 		@Override
@@ -1160,11 +1194,15 @@ public class SpinCADFrame extends JFrame {
 		@Override
 		public void windowClosing(WindowEvent arg0) {
 			// ---
-			spcb.line[0] = line0text.getText();	
-			spcb.line[1] = line1text.getText();	
-			spcb.line[2] = line2text.getText();	
-			spcb.line[3] = line3text.getText();	
-			spcb.line[4] = line4text.getText();	
+			spcb.line[0] = line0text.getText();
+			spcb.line[1] = line1text.getText();
+			spcb.line[2] = line2text.getText();
+			spcb.line[3] = line3text.getText();
+			spcb.line[4] = line4text.getText();
+			if (patchInfoPanel == this) {
+				patchInfoLocation = commentFrame.getLocation();
+				patchInfoPanel = null;
+			}
 		}
 
 		@Override
@@ -1243,6 +1281,9 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].patchModel.newModel();
 			}
 			updateAll();
+			if (patchInfoPanel != null && patchInfoPanel.commentFrame.isDisplayable()) {
+				patchInfoPanel.update(eeprom.patch[bankIndex].cb);
+			}
 		}
 	}
 
