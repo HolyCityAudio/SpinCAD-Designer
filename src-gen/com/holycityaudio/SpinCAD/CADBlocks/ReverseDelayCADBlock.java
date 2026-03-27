@@ -35,6 +35,7 @@
 			private int ramp;
 			private int ramp2;
 			private int xfade;
+			private int xfade2;
 
 			public ReverseDelayCADBlock(int x, int y) {
 				super(x, y);
@@ -86,6 +87,7 @@
 			ramp = sfxb.allocateReg();
 			ramp2 = sfxb.allocateReg();
 			xfade = sfxb.allocateReg();
+			xfade2 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.skip(RUN, 3);
 			sfxb.scaleOffset(0, -0.25);
@@ -106,6 +108,7 @@
 			sfxb.scaleOffset(0.5, 0.5);
 			sfxb.writeRegister(xfade, 0.0);
 			sfxb.readDelayPointer(1.0);
+			sfxb.mulx(xfade);
 			sfxb.writeRegister(output, 0.0);
 			sfxb.readRegister(ramp, 1.0);
 			sfxb.scaleOffset(1.0, -0.125);
@@ -114,6 +117,10 @@
 			sfxb.scaleOffset(1.0, 0.325);
 			sfxb.writeRegister(ADDR_PTR, 0.0);
 			sfxb.readDelayPointer(1.0);
+			sfxb.writeRegister(xfade2, 0.0);
+			sfxb.readRegister(xfade, 1.0);
+			sfxb.scaleOffset(-1.0, 0.99);
+			sfxb.mulx(xfade2);
 			sfxb.writeRegister(output2, 0.0);
 			}
 			
