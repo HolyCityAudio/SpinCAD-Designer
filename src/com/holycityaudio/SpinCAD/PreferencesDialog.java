@@ -38,6 +38,7 @@ public class PreferencesDialog extends JDialog {
 	private final JCheckBox autoReloadCheckBox;
 	private final JCheckBox addDefaultBlocksCheckBox;
 	private final JCheckBox showSpinAsmCheckBox;
+	private final JCheckBox disableOptimizerCheckBox;
 	private final JCheckBox execCommandOnHexSaveCheckBox;
 	private final JTextField hexSaveCommandField;
 	private final SpinCADFile spinCADFile;
@@ -83,6 +84,17 @@ public class PreferencesDialog extends JDialog {
 
 		contentPanel.add(displayPanel);
 
+		// Code Generation section
+		JPanel codeGenPanel = new JPanel();
+		codeGenPanel.setLayout(new BoxLayout(codeGenPanel, BoxLayout.Y_AXIS));
+		codeGenPanel.setBorder(BorderFactory.createTitledBorder("Code Generation"));
+
+		disableOptimizerCheckBox = new JCheckBox("Disable optimizer");
+		disableOptimizerCheckBox.setSelected(spinCADFile.getDisableOptimizer());
+		codeGenPanel.add(disableOptimizerCheckBox);
+
+		contentPanel.add(codeGenPanel);
+
 		// Hex Save section
 		JPanel hexSavePanel = new JPanel();
 		hexSavePanel.setLayout(new BoxLayout(hexSavePanel, BoxLayout.Y_AXIS));
@@ -116,6 +128,7 @@ public class PreferencesDialog extends JDialog {
 				spinCADFile.setAddDefaultBlocks(addDefaultBlocksCheckBox.isSelected());
 				spinCADFile.setShowSpinAsm(showSpinAsmCheckBox.isSelected());
 				SpinCADFrame.getInstance().setAsmPanelVisible(showSpinAsmCheckBox.isSelected());
+				spinCADFile.setDisableOptimizer(disableOptimizerCheckBox.isSelected());
 				spinCADFile.setExecCommandOnHexSave(execCommandOnHexSaveCheckBox.isSelected());
 				spinCADFile.setHexSaveCommand(hexSaveCommandField.getText());
 				dispose();
