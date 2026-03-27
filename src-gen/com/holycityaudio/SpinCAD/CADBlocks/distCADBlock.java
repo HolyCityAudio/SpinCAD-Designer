@@ -78,7 +78,7 @@
 			abs = sfxb.allocateReg();
 			sign = sfxb.allocateReg();
 			output = sfxb.allocateReg();
-			if(this.getPin("Input").isConnected() == true) {
+			if(this.getPin("Audio_Input").isConnected() == true) {
 			sfxb.scaleOffset(0, -1);
 			sfxb.writeRegister(sign, 0);
 			sfxb.readRegister(adcl, 1.0);

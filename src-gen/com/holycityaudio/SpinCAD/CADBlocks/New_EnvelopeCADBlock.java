@@ -52,7 +52,7 @@
 				addControlInputPin(this, "Attack");
 				addControlInputPin(this, "Decay");
 				addControlInputPin(this, "Sensitivity");
-				addControlOutputPin(this, "Trigger Output");
+				addControlOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;

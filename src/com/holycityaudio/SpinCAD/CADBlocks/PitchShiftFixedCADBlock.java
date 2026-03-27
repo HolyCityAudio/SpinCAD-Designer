@@ -37,7 +37,7 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 	 */
 	private static final long serialVersionUID = 3476502380095165941L;
 	private int freq = 0;
-	private int amp = 0;
+	private int amp = 512;
 	private int lfoSel = 0;
 	/**
 	 * 
