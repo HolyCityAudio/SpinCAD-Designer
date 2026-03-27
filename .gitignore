@@ -8,5 +8,9 @@ bin/
 /bin/SpinCADBuilder
 /simulator-debug.txt
 
+# Gradle
+.gradle/
+build/
+
 # Claude Code
 .claude/settings.local.json
