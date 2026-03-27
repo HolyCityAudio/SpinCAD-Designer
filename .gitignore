@@ -7,3 +7,6 @@ bin/
 # Build
 /bin/SpinCADBuilder
 /simulator-debug.txt
+
+# Claude Code
+.claude/settings.local.json
