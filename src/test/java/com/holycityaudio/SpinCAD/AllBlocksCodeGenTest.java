@@ -2,6 +2,8 @@ package com.holycityaudio.SpinCAD;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,8 @@ import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
  *   2. Wire an InputCADBlock to each audio input, ConstantCADBlock to each control input
  *   3. Wire an OutputCADBlock to audio outputs
  *   4. Run sortAlignGen() on the model
- *   5. Assert code was generated without errors and resources are within limits
+ *   5. Assert no exceptions were thrown during code generation
+ *   6. Assert resources are within FV-1 limits
  */
 public class AllBlocksCodeGenTest {
 
@@ -122,20 +125,41 @@ public class AllBlocksCodeGenTest {
             }
         }
 
-        // 4. Run code generation
-        int codeLen = model.sortAlignGen();
+        // 4. Run code generation, capturing stderr to detect swallowed exceptions
+        ByteArrayOutputStream errCapture = new ByteArrayOutputStream();
+        PrintStream origErr = System.err;
+        System.setErr(new PrintStream(errCapture));
 
-        // 5. Assert results
+        int codeLen;
+        try {
+            codeLen = model.sortAlignGen();
+        } finally {
+            System.setErr(origErr);
+        }
+
+        String stderrOutput = errCapture.toString();
+
+        // 5. Check for exceptions that were silently caught inside generateCode()
+        boolean hadException = stderrOutput.contains("Exception")
+                || stderrOutput.contains("Error")
+                // filter out expected non-error messages
+                && !stderrOutput.contains("Register compaction report");
+
+        // Print captured stderr so it's visible in test output
+        if (!stderrOutput.isEmpty()) {
+            System.err.print(stderrOutput);
+        }
+
+        assertFalse(hadException,
+                simpleName + ": code generation threw an exception:\n" + stderrOutput);
+
+        // 6. Assert resource limits
         SpinFXBlock renderBlock = model.getRenderBlock();
         assertNotNull(renderBlock, "Render block should not be null");
 
         int instrCount = renderBlock.getCodeLen() - renderBlock.getNumComments();
         int regsUsed = renderBlock.getNumRegs() - ElmProgram.REG0;
         int ramUsed = renderBlock.getDelayMemAllocated();
-
-        // Code was generated (at least the Input and Output blocks produce instructions)
-        assertTrue(instrCount >= 0,
-                simpleName + ": instruction count should be non-negative, got " + instrCount);
 
         // Resource limit warnings (not hard failures, since the test harness adds
         // Input + Output blocks that consume extra instructions/registers)
