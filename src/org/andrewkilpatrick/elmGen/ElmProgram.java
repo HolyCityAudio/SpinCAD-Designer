@@ -650,9 +650,8 @@ private Map<Integer, Integer> countRegisterReads() {
 //
 //  Case 5 – RDAX REGx,1.0 / WRAX DACy,0.0 in output section
 //           REGx IS used elsewhere (e.g. filter state via RDFX)
-//           → Insert WRAX DACy,1.0 after the last WRAX REGx
-//             (piggybacks on ACC value; note that DACy receives
-//              ACC × wraxScale, not the register value itself).
+//           Only applies when WRAX REGx has scale=1.0 (ACC unchanged).
+//           → Insert WRAX DACy,1.0 after the WRAX REGx,1.0
 //           Saves: 1 instruction per output pair
 //
 //  Case 6 – WRAX REGx,0.0 → N × (RDAX REGx,g_i / WRAX DACy,0.0)
@@ -803,10 +802,11 @@ public void optimizeOutputRegisters() {
                 savedInst += pis.size();
             }
 
-        // ----- Register used elsewhere (e.g. filter state) -----
-        } else if (!onlyInOutput && srcWrScale != 0.0) {
-            // === Case 5: insert WRAX DACy,1.0 after the WRAX REGx ===
-            // Only handle output pairs with gain 1.0 for safety
+        // ----- Register used elsewhere, WRAX scale is 1.0 -----
+        } else if (!onlyInOutput && srcWrScale == 1.0) {
+            // === Case 5: insert WRAX DACy,1.0 after the WRAX REGx,1.0 ===
+            // ACC after WRAX REGx,1.0 still holds the value, so we can
+            // piggyback DAC writes directly.
             boolean allGainsOne = true;
             for (int pi : pis) {
                 if (pairGains.get(pi) != 1.0) { allGainsOne = false; break; }
@@ -821,7 +821,7 @@ public void optimizeOutputRegisters() {
             }
             insertMap.put(srcWrIdx, inserts);
 
-            savedInst += pis.size();
+            savedInst += pis.size() * 2;
         }
         // All other combinations: leave as-is
     }
