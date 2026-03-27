@@ -71,6 +71,7 @@ public class SpinCADBlock extends SpinFXBlock {
 	public transient spinCADControlPanel scCP = null;			// control panel for editing parameters
 	public transient javax.swing.JFrame controlPanelFrame = null;  // tracks the open control panel window
 	protected boolean hasControlPanel = false;	// used to determine whether to offer a control panel
+	protected transient boolean controlPanelOpen = false;	// prevents opening multiple panels on the same block
 
 	Color borderColor = new Color(0x09B545);
 
@@ -467,6 +468,7 @@ public class SpinCADBlock extends SpinFXBlock {
 	}
 
 	public void deleteControlPanel() {
+		controlPanelOpen = false;
 		// Dispose via the base-class controlPanelFrame field (preferred path)
 		if (controlPanelFrame != null) {
 			controlPanelFrame.dispose();

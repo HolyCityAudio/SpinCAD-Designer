@@ -40,6 +40,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
@@ -443,7 +445,35 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 			switch(e.getActionCommand()) {
 			case "Control Panel":
 				unselectAll(f);
-				spcb.editBlock();
+				if (!spcb.controlPanelOpen) {
+					spcb.controlPanelOpen = true;
+					spcb.editBlock();
+					// Attach a listener to clear the flag when the panel window closes.
+					// Use invokeLater because some panels create their frame in invokeLater.
+					SwingUtilities.invokeLater(() -> {
+						for (java.awt.Window w : java.awt.Window.getWindows()) {
+							if (w instanceof JFrame && w.isDisplayable() && w.isVisible()) {
+								try {
+									for (java.lang.reflect.Field field : w.getClass().getDeclaredFields()) {
+										if (SpinCADBlock.class.isAssignableFrom(field.getType())) {
+											field.setAccessible(true);
+											if (field.get(w) == spcb) {
+												w.addWindowListener(new WindowAdapter() {
+													public void windowClosing(WindowEvent ev) {
+														spcb.controlPanelOpen = false;
+													}
+													public void windowClosed(WindowEvent ev) {
+														spcb.controlPanelOpen = false;
+													}
+												});
+											}
+										}
+									}
+								} catch (Exception ignored) {}
+							}
+						}
+					});
+				}
 				break;
 			case "Move":
 				syncMouse();
