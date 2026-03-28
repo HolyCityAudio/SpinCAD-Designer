@@ -38,6 +38,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class RootControlControlPanel extends JFrame {
 
@@ -101,7 +102,7 @@ public class RootControlControlPanel extends JFrame {
 				updateRootField();
 				invert.setSelected(pC.isInvert());
 				flip.setSelected(pC.isFlip());
-				setLocation(pC.getX() + 200, pC.getY() + 150);
+				setLocationRelativeTo(SpinCADFrame.getInstance());
 				setAlwaysOnTop(true);
 				setVisible(true);
 				pack();

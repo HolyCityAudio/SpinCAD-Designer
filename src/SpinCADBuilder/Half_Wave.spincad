@@ -1,5 +1,5 @@
 @name 'Half Wave' 
-@color "0xf2f224"  
+@color "0xffc800"  
 @controlInput input Input 
 @controlOutput output Output  
 

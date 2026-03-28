@@ -33,6 +33,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class BassmanEQControlPanel {
 	private JFrame frame;
@@ -143,7 +144,7 @@ class BassmanEQControlPanel {
 				frame.setAlwaysOnTop(true);
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(spbBMEQ.getX() + 100, spbBMEQ.getY() + 100);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 			}
 		});
 	}

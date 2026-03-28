@@ -19,6 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
@@ -33,6 +35,7 @@ public class PowerControlCADBlock extends ControlCADBlock{
 
 	public PowerControlCADBlock(int x, int y) {
 		super(x, y);
+		setBorderColor(new Color(0xf2f224));
 		hasControlPanel = true;
 		addControlInputPin(this);	
 		addControlOutputPin(this);	

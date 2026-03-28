@@ -303,22 +303,25 @@ public class SpinCADBlock extends SpinFXBlock {
 
 		sizeRect(g2);
 		RoundRectangle2D rect = new RoundRectangle2D.Double(x_pos + 3, y_pos + 5, width - 6, height - 10, 5, 5);
+
+		// Fill body with gradient from borderColor to white
+		GradientPaint bodyGradient = new GradientPaint(x_pos, y_pos, borderColor, x_pos + width, y_pos + height, Color.WHITE);
+		g2.setPaint(bodyGradient);
+		g2.fill(rect);
+
+		// Draw border on top: darker shade of borderColor for visibility against white background
 		if (selected == true) {
 			g2.setColor(Color.CYAN);
-			g2.setStroke(new BasicStroke(8));				
+			g2.setStroke(new BasicStroke(8));
 		} else if (hasControlPanel == true) {
-			g2.setColor(Color.WHITE);
-			g2.setStroke(new BasicStroke(6));
-		} 
-		else {
-			g2.setColor(borderColor);
-			g2.setStroke(new BasicStroke(4));			
+			g2.setColor(borderColor.darker());
+			g2.setStroke(new BasicStroke(3));
 		}
-
+		else {
+			g2.setColor(borderColor.darker());
+			g2.setStroke(new BasicStroke(3));
+		}
 		g2.draw(rect);
-		GradientPaint redtowhite = new GradientPaint(x_pos, y_pos,borderColor, x_pos + width, y_pos + height, Color.WHITE);
-		g2.setPaint(redtowhite);
-		g2.fill(rect);
 
 		Point pt = new Point(0,0);
 		pt.setLocation(rect.getMinX() + 5, 5 + (rect.getMaxY() + rect.getMinY())/2);

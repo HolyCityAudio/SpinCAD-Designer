@@ -36,6 +36,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 @SuppressWarnings("serial")
@@ -185,7 +186,7 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(new Point(sof.getX() + 200, sof.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 

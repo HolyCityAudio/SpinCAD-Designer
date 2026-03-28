@@ -33,6 +33,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class Mixer2_1x2ControlPanel {
 	private JFrame frame;
@@ -96,7 +97,7 @@ class Mixer2_1x2ControlPanel {
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.setResizable(false);
-				frame.setLocation(new Point(spbMix.getX() + 200, spbMix.getY() + 150));
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.pack();
 			}
 		});

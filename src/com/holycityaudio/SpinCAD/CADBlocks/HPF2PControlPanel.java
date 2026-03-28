@@ -38,6 +38,7 @@ import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 class HPF2PControlPanel extends JFrame implements ActionListener {
@@ -143,7 +144,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 				updateFreqLabel();
 				setAlwaysOnTop(true);
 				setVisible(true);
-				setLocation(new Point(hPF.getX() + 200, hPF.getY() + 150));
+				setLocationRelativeTo(SpinCADFrame.getInstance());
 				pack();
 				setResizable(false);
 			}

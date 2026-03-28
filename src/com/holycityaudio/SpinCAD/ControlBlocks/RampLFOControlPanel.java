@@ -40,6 +40,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
 
 public class RampLFOControlPanel implements ChangeListener, ActionListener, ItemListener {
@@ -116,7 +117,7 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 				frame.setTitle("");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-				frame.setLocation(new Point(pC.getX() + 200, pC.getY() + 150));
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 
 				//   graph.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
 
