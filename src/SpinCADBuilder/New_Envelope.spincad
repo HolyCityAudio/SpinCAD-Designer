@@ -1,6 +1,7 @@
 @name 'Pluck Detector'
 @color "0x02f27f"
 @audioInput input Input
+@audioOutput output Output
 @controlInput attackControl Attack
 @controlInput decayControl Decay
 @controlInput sens Sensitivity

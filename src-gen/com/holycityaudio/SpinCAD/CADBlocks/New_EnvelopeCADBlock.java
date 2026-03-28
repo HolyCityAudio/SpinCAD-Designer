@@ -49,10 +49,11 @@
 			setBorderColor(new Color(0x02f27f));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addOutputPin(this, "Output");
 				addControlInputPin(this, "Attack");
 				addControlInputPin(this, "Decay");
 				addControlInputPin(this, "Sensitivity");
-				addControlOutputPin(this, "Output");
+				addControlOutputPin(this, "Trigger Output");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
