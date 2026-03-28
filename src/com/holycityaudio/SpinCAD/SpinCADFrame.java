@@ -99,7 +99,7 @@ public class SpinCADFrame extends JFrame {
 	}
 
 
-	int buildNum = 1063;
+	int buildNum = 1064;
 
 	// Swing things
 	private JPanel contentPane;
@@ -154,6 +154,7 @@ public class SpinCADFrame extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		checkJavaVersion();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -165,6 +166,38 @@ public class SpinCADFrame extends JFrame {
 				}
 			}
 		});
+	}
+
+	private static void checkJavaVersion() {
+		String version = System.getProperty("java.version");
+		if (version == null) {
+			return;
+		}
+		// Java 8 and earlier use "1.x" format; Java 9+ use "9", "10", etc.
+		int major;
+		try {
+			if (version.startsWith("1.")) {
+				major = Integer.parseInt(version.substring(2, 3));
+			} else {
+				int dot = version.indexOf('.');
+				major = Integer.parseInt(dot > 0 ? version.substring(0, dot) : version);
+			}
+		} catch (NumberFormatException e) {
+			return; // can't parse, let it proceed
+		}
+		if (major < 8) {
+			System.err.println("ERROR: SpinCAD Designer requires Java 8 or newer.");
+			System.err.println("You are running Java " + version + ".");
+			System.err.println("Please install JDK 8 or newer from: https://adoptium.net/temurin/releases");
+			javax.swing.JOptionPane.showMessageDialog(null,
+				"SpinCAD Designer requires Java 8 or newer.\n"
+				+ "You are running Java " + version + ".\n\n"
+				+ "Please install JDK 8 or newer and try again.\n"
+				+ "Download from: https://adoptium.net/temurin/releases",
+				"Unsupported Java Version",
+				javax.swing.JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		}
 	}
 
 

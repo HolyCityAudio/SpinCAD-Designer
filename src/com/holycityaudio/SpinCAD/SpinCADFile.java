@@ -159,12 +159,15 @@ public class SpinCADFile {
 		}
 	}
 
-	private static final java.util.Map<String, String> CLASS_RENAMES = java.util.Map.of(
-		"com.holycityaudio.SpinCAD.CADBlocks.control_smootherACADBlock",
-		"com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock",
-		"com.holycityaudio.SpinCAD.CADBlocks.control_smootherControlPanelA",
-		"com.holycityaudio.SpinCAD.CADBlocks.control_smootherControlPanel"
-	);
+	private static final java.util.Map<String, String> CLASS_RENAMES;
+	static {
+		java.util.Map<String, String> m = new java.util.HashMap<>();
+		m.put("com.holycityaudio.SpinCAD.CADBlocks.control_smootherACADBlock",
+			"com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock");
+		m.put("com.holycityaudio.SpinCAD.CADBlocks.control_smootherControlPanelA",
+			"com.holycityaudio.SpinCAD.CADBlocks.control_smootherControlPanel");
+		CLASS_RENAMES = java.util.Collections.unmodifiableMap(m);
+	}
 
 	private ObjectInputStream createRemappingStream(InputStream in) throws IOException {
 		return new ObjectInputStream(in) {
