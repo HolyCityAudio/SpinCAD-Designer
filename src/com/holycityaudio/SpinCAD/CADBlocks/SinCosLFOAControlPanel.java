@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -154,6 +156,14 @@ public class SinCosLFOAControlPanel extends spinCADControlPanel implements Chang
 				lfoWidthSlider.setValue(pC.getLFOWidth());
 				updateLfoWidthLabel();
 
+				frame.addWindowListener(new WindowAdapter() {
+					public void windowClosing(WindowEvent e) {
+						pC.setControlPanelOpen(false);
+					}
+					public void windowClosed(WindowEvent e) {
+						pC.setControlPanelOpen(false);
+					}
+				});
 				frame.setVisible(true);
 				frame.pack();
 				frame.setAlwaysOnTop(true);

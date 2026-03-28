@@ -5,40 +5,61 @@
 @controlInput controlIn 'Control Input'
 @audioOutput output1 'Audio Output'
 
-;@controlOutput gain1 "Gain 1"
-;@controlOutput gain2 "Gain 2"
+equ gain1 0.5
+@sliderLabel gain1 'Input 1 Gain' -12 0 -6 1.0 1 DBLEVEL
 
+equ gain2 0.5
+@sliderLabel gain2 'Input 2 Gain' -12 0 -6 1.0 1 DBLEVEL
 
-
-;REGISTERS 
-;equ gain1 reg0
-;equ gain2 reg1
-
-@isPinConnected "Control Input"
+;REGISTERS
 equ   output1     reg2
 equ temp reg3
 
 @isPinConnected 'Audio In 1'
+@isPinConnected 'Audio In 2'
+; both audio inputs connected
+@isPinConnected "Control Input"
+; full linear crossfade algorithm
 rdax controlIn, -1.0
 sof -2.0, 0
-
-;wrax gain2, 1.0
 mulx inputTwo
-wrax    temp,0    ; 
-@endif
-       
-@isPinConnected 'Audio In 2'
+sof gain2, 0
+wrax temp,0
 rdax controlIn, 1.0
 sof 1.0, -1.0
 sof -2.0, 0.0
-;wrax gain1, 1.0
-mulx inputOne 
-@endif
+mulx inputOne
+sof gain1, 0
 rdax temp, 1
-wrax output1,0    ; 
+@else
+; no control input, mix at gain levels
+rdax inputOne, gain1
+rdax inputTwo, gain2
+@endif
+wrax output1, 0
+@else
+; only Audio In 1 connected
+@isPinConnected "Control Input"
+rdax inputOne, 1.0
+mulx controlIn
+sof gain1, 0
+@else
+rdax inputOne, gain1
+@endif
+wrax output1, 0
+@endif
+@else
+@isPinConnected 'Audio In 2'
+; only Audio In 2 connected
+@isPinConnected "Control Input"
+rdax inputTwo, 1.0
+mulx controlIn
+sof gain2, 0
+@else
+rdax inputTwo, gain2
+@endif
+wrax output1, 0
+@endif
+@endif
 
 @setOutputPin 'Audio Output' output1
-;@setOutputPin 'Gain 1' gain1
-;@setOutputPin 'Gain 2' gain2
-@endif
-

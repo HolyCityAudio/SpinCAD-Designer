@@ -73,6 +73,10 @@ public class SpinCADBlock extends SpinFXBlock {
 	protected boolean hasControlPanel = false;	// used to determine whether to offer a control panel
 	protected transient boolean controlPanelOpen = false;	// prevents opening multiple panels on the same block
 
+	public void setControlPanelOpen(boolean open) {
+		controlPanelOpen = open;
+	}
+
 	Color borderColor = new Color(0x09B545);
 
 	/**

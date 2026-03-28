@@ -202,6 +202,7 @@ public class SpinCADSimulator {
 					btnStartSimulation.setText(" Start Simulator");
 					sim.stopSimulator();
 					stb.updateVisibility(false);
+					frame.etb.statusMessage.setText("");
 				} else {
 					// --- Start ---
 					String testWavFileName = checkSimulatorFile();
@@ -240,6 +241,7 @@ public class SpinCADSimulator {
 					setSimRunning(false);
 					btnSigGen.setText("Start Signal");
 					sim.stopSimulator();
+					frame.etb.statusMessage.setText("");
 				} else {
 					setSimRunning(true);
 					btnSigGen.setText("Stop Signal");

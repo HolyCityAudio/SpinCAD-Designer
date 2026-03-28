@@ -1,0 +1,242 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "crossfade test.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1063",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    100.0,
+    2.0,
+    100.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 290,
+      "y": 30,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 1,
+      "x": 113,
+      "y": 407,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 2,
+      "x": 107,
+      "y": 362,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock",
+      "blockNum": 3,
+      "x": 153,
+      "y": 189,
+      "name": "LFO 0",
+      "params": {
+        "lfoRate": 148,
+        "lfoWidth": 32767,
+        "lfoSel": 0,
+        "outputRange": 0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 4,
+      "x": 263,
+      "y": 188,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.0,
+        "outHigh": 0.5
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 5,
+      "x": 120,
+      "y": 459,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock",
+      "blockNum": 6,
+      "x": 425,
+      "y": 189,
+      "name": "LFO 1",
+      "params": {
+        "lfoRate": 511,
+        "lfoWidth": 32767,
+        "lfoSel": 1,
+        "outputRange": 0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 7,
+      "x": 535,
+      "y": 188,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.0,
+        "outHigh": 0.5
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock",
+      "blockNum": 8,
+      "x": 254,
+      "y": 355,
+      "name": "Crossfade",
+      "params": {
+        "gain1": 0.5,
+        "gain2": 0.5,
+        "output1": 36
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.crossfade_2CADBlock",
+      "blockNum": 9,
+      "x": 390,
+      "y": 375,
+      "name": "Crossfade 2",
+      "params": {
+        "output1": 37,
+        "temp": 38
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.crossfade_3CADBlock",
+      "blockNum": 10,
+      "x": 317,
+      "y": 519,
+      "name": "Crossfade 3",
+      "params": {
+        "output1": 39,
+        "temp": 40
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 11,
+      "x": 302,
+      "y": 670,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Sine",
+      "toBlockIndex": 4,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 6,
+      "fromPin": "Sine",
+      "toBlockIndex": 7,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 8,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 7,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 8,
+      "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 8,
+      "toPin": "Fade"
+    },
+    {
+      "fromBlockIndex": 7,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 9,
+      "toPin": "Audio In 1"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 9,
+      "toPin": "Audio In 2"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 9,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 8,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 10,
+      "toPin": "Audio In 1"
+    },
+    {
+      "fromBlockIndex": 9,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 10,
+      "toPin": "Audio In 2"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 10,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 10,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 11,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 10,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 11,
+      "toPin": "Input 2"
+    }
+  ]
+}

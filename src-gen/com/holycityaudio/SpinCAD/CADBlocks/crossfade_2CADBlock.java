@@ -30,6 +30,8 @@
 			private static final long serialVersionUID = 1L;
 			private crossfade_2ControlPanel cp = null;
 			
+			private double gain1 = 0.5;
+			private double gain2 = 0.5;
 			private int output1;
 			private int temp;
 
@@ -43,6 +45,8 @@
 				addControlInputPin(this, "Control Input");
 				addOutputPin(this, "Audio Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -85,30 +89,72 @@
 			}
 			
 			// finally, generate the instructions
-			if(this.getPin("Control Input").isConnected() == true) {
 			output1 = sfxb.allocateReg();
 			temp = sfxb.allocateReg();
 			if(this.getPin("Audio In 1").isConnected() == true) {
+			if(this.getPin("Audio In 2").isConnected() == true) {
+			if(this.getPin("Control Input").isConnected() == true) {
 			sfxb.readRegister(controlIn, -1.0);
 			sfxb.scaleOffset(-2.0, 0);
 			sfxb.mulx(inputTwo);
+			sfxb.scaleOffset(gain2, 0);
 			sfxb.writeRegister(temp, 0);
-			}
-			
-			if(this.getPin("Audio In 2").isConnected() == true) {
 			sfxb.readRegister(controlIn, 1.0);
 			sfxb.scaleOffset(1.0, -1.0);
 			sfxb.scaleOffset(-2.0, 0.0);
 			sfxb.mulx(inputOne);
-			}
-			
+			sfxb.scaleOffset(gain1, 0);
 			sfxb.readRegister(temp, 1);
-			sfxb.writeRegister(output1, 0);
-			this.getPin("Audio Output").setRegister(output1);
+			} else {
+			sfxb.readRegister(inputOne, gain1);
+			sfxb.readRegister(inputTwo, gain2);
 			}
 			
+			sfxb.writeRegister(output1, 0);
+			} else {
+			if(this.getPin("Control Input").isConnected() == true) {
+			sfxb.readRegister(inputOne, 1.0);
+			sfxb.mulx(controlIn);
+			sfxb.scaleOffset(gain1, 0);
+			} else {
+			sfxb.readRegister(inputOne, gain1);
+			}
+			
+			sfxb.writeRegister(output1, 0);
+			}
+			
+			} else {
+			if(this.getPin("Audio In 2").isConnected() == true) {
+			if(this.getPin("Control Input").isConnected() == true) {
+			sfxb.readRegister(inputTwo, 1.0);
+			sfxb.mulx(controlIn);
+			sfxb.scaleOffset(gain2, 0);
+			} else {
+			sfxb.readRegister(inputTwo, gain2);
+			}
+			
+			sfxb.writeRegister(output1, 0);
+			}
+			
+			}
+			
+			this.getPin("Audio Output").setRegister(output1);
 
 			}
 			
 			// create setters and getter for control panel variables
+			public void setgain1(double __param) {
+				gain1 = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getgain1() {
+				return gain1;
+			}
+			public void setgain2(double __param) {
+				gain2 = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getgain2() {
+				return gain2;
+			}
 		}	

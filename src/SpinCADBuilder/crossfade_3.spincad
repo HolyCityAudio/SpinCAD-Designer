@@ -5,23 +5,21 @@
 @controlInput controlIn 'Control Input'
 @audioOutput output1 'Audio Output'
 
-;@controlOutput gain1 "Gain 1"
-;@controlOutput gain2 "Gain 2"
+equ gain1 0.5
+@sliderLabel gain1 'Input 1 Gain' -12 0 -6 1.0 1 DBLEVEL
 
+equ gain2 0.5
+@sliderLabel gain2 'Input 2 Gain' -12 0 -6 1.0 1 DBLEVEL
 
-
-;REGISTERS 
-;equ gain1 reg0
-;equ gain2 reg1
-
-; don't generate any code unless all 3 inputs are connected
-@isPinConnected "Control Input"
-@isPinConnected 'Audio In 1'
-@isPinConnected 'Audio In 2'
-
+;REGISTERS
 equ   output1     reg2
 equ temp reg3
 
+@isPinConnected 'Audio In 1'
+@isPinConnected 'Audio In 2'
+; both audio inputs connected
+@isPinConnected "Control Input"
+; full constant-power crossfade algorithm
 rdax controlIn, 1.0
 sof 1.0, -0.5
 ; skip if pot val is between 0 and 0.50
@@ -31,11 +29,13 @@ skp neg, zerofifty
 rdax controlIn, 0.586
 sof 1.0, 0.414
 mulx inputTwo
+sof gain2, 0
 wrax temp,0
 rdax controlIn, 1
 sof 0.707, -0.707
-sof -2.0,0 
+sof -2.0,0
 mulx inputOne
+sof gain1, 0
 rdax temp, 1
 skp run, writeout
 
@@ -44,21 +44,44 @@ zerofifty:
 clr
 rdax controlIn, 1.414
 mulx inputTwo
+sof gain2, 0
 wrax temp,0
 rdax controlIn, -0.586
 sof 0.999, 0.999
 mulx inputOne
+sof gain1, 0
 rdax temp, 1
 
 writeout:
-wrax output1,0    ; 
-
+@else
+; no control input, mix at gain levels
+rdax inputOne, gain1
+rdax inputTwo, gain2
+@endif
+wrax output1, 0
+@else
+; only Audio In 1 connected
+@isPinConnected "Control Input"
+rdax inputOne, 1.0
+mulx controlIn
+sof gain1, 0
+@else
+rdax inputOne, gain1
+@endif
+wrax output1, 0
+@endif
+@else
+@isPinConnected 'Audio In 2'
+; only Audio In 2 connected
+@isPinConnected "Control Input"
+rdax inputTwo, 1.0
+mulx controlIn
+sof gain2, 0
+@else
+rdax inputTwo, gain2
+@endif
+wrax output1, 0
+@endif
+@endif
 
 @setOutputPin 'Audio Output' output1
-;@setOutputPin 'Gain 1' gain1
-;@setOutputPin 'Gain 2' gain2
-
-@endif
-@endif
-@endif
-

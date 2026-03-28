@@ -15,9 +15,13 @@ rdax    input1, 1.0    ;read input signal
 @isPinConnected 'Input 2'
 maxx input2, gain
 @endif
-
 wrax    output,0    ;
+@else
+@isPinConnected 'Input 2'
+rdax    input2, gain    ;only input 2 connected
+wrax    output,0    ;
+@endif
+@endif
 
 @setOutputPin Output output
-@endif
 

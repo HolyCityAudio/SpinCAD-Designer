@@ -88,9 +88,15 @@
 			}
 			
 			sfxb.writeRegister(output, 0);
-			this.getPin("Output").setRegister(output);
+			} else {
+			if(this.getPin("Input 2").isConnected() == true) {
+			sfxb.readRegister(input2, gain);
+			sfxb.writeRegister(output, 0);
 			}
 			
+			}
+			
+			this.getPin("Output").setRegister(output);
 
 			}
 			

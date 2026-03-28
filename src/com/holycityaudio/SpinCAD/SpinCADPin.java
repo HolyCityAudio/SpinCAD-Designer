@@ -46,6 +46,7 @@ public class SpinCADPin implements Serializable {
 
 	// volatile state - not serialized
 	private transient boolean muted = false;
+	private transient boolean tempDisconnected = false;
 
 	private Color pinColor;
 	private String name = "";
@@ -89,7 +90,7 @@ public class SpinCADPin implements Serializable {
 	}
 
 	public boolean isConnected() {
-		if (numConnections > 0) {
+		if (numConnections > 0 && !tempDisconnected) {
 			return true;
 		} else
 			return false;
@@ -98,7 +99,12 @@ public class SpinCADPin implements Serializable {
 	}
 
 	public SpinCADPin getPinConnection() {
+		if (tempDisconnected) return null;
 		return connectorPin;
+	}
+
+	public void setTempDisconnected(boolean d) {
+		tempDisconnected = d;
 	}
 
 
