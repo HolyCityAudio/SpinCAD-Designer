@@ -46,13 +46,13 @@
 			public New_EnvelopeCADBlock(int x, int y) {
 				super(x, y);
 				setName("Pluck Detector");					
-			setBorderColor(new Color(0x02f27f));
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addControlInputPin(this, "Attack");
 				addControlInputPin(this, "Decay");
 				addControlInputPin(this, "Sensitivity");
-				addControlOutputPin(this, "Output");
+				addControlOutputPin(this, "Trigger Output");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;

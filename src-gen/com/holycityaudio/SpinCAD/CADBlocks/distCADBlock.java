@@ -38,6 +38,7 @@
 			public distCADBlock(int x, int y) {
 				super(x, y);
 				setName("Distortion");					
+			setBorderColor(new Color(0xff0000));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Audio_Input");
 				addOutputPin(this, "Audio_Output");
@@ -78,7 +79,7 @@
 			abs = sfxb.allocateReg();
 			sign = sfxb.allocateReg();
 			output = sfxb.allocateReg();
-			if(this.getPin("Audio_Input").isConnected() == true) {
+			if(this.getPin("Input").isConnected() == true) {
 			sfxb.scaleOffset(0, -1);
 			sfxb.writeRegister(sign, 0);
 			sfxb.readRegister(adcl, 1.0);
