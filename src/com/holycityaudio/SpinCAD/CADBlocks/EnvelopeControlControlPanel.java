@@ -24,7 +24,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -33,6 +32,7 @@ import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class EnvelopeControlControlPanel implements ChangeListener, ActionListener {
 
@@ -148,7 +148,7 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 				decaySlider.setValue((int) SpinCADBlock.logvalToSlider(SpinCADBlock.filtToFreq(pC.getDecay()), 100.0));
 				updateDecayField();
 
-				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.setVisible(true);
 				frame.pack();
 				frame.setAlwaysOnTop(true);

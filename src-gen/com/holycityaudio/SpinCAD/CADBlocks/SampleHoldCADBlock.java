@@ -38,6 +38,7 @@
 			public SampleHoldCADBlock(int x, int y) {
 				super(x, y);
 				setName("SampleHold");					
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control_In");
 				addControlInputPin(this, "Rate");

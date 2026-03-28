@@ -32,6 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class QuantizerControlPanel {
 
@@ -72,7 +73,7 @@ class QuantizerControlPanel {
 				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);
 				frame.pack();
-				frame.setLocation(BC.getX() + 200, BC.getY() + 150);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 			}
 		});
 

@@ -38,6 +38,7 @@
 			public LogCADBlock(int x, int y) {
 				super(x, y);
 				setName("Log");					
+			setBorderColor(new Color(0xffc800));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Control Input");
 				addControlOutputPin(this, "Log Output");

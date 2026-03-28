@@ -22,6 +22,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -39,6 +41,7 @@ public class MinReverbCADBlock extends SpinCADBlock{
 	private double kap = 0.325;  // AP coeff
 	public MinReverbCADBlock(int x, int y) {
 		super(x, y);
+		setBorderColor(new Color(0x7100fc));
 		// ---
 		addInputPin(this);
 		addOutputPin(this);

@@ -1,4 +1,5 @@
-@name RMS_Lim_Exp 
+@name RMS_Lim_Exp
+@color "0x009595"
 @audioInput adcl Input_Left
 @audioOutput output Audio_Output
 

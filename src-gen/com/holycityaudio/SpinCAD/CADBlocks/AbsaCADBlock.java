@@ -35,7 +35,7 @@
 			public AbsaCADBlock(int x, int y) {
 				super(x, y);
 				setName("AbsoluteValue");					
-			setBorderColor(new Color(0xf2f224));
+			setBorderColor(new Color(0xffc800));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlInputPin(this, "Input");
 				addControlOutputPin(this, "Output");

@@ -596,7 +596,6 @@ public class SpinCADJsonSerializer {
 		return readObject(json, pos);
 	}
 
-	@SuppressWarnings("unchecked")
 	private static Object readValue(String json, int[] pos) {
 		skipWhitespace(json, pos);
 		char c = json.charAt(pos[0]);

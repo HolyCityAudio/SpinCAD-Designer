@@ -25,7 +25,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -35,6 +34,7 @@ import javax.swing.event.ChangeListener;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class CoarseDelayControlPanel {
 
@@ -109,7 +109,7 @@ class CoarseDelayControlPanel {
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.pack();
-				frame.setLocation(mD.getX() + 200, mD.getY() + 150);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 			}
 		});
 

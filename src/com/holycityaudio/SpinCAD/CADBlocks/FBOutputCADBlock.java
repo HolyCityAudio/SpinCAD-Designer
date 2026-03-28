@@ -40,7 +40,7 @@ public class FBOutputCADBlock extends SpinCADBlock{
 	public FBOutputCADBlock(int x, int y) {
 		super(x, y);
 		addOutputPin(this, "Feedback Output");
-		setBorderColor(Color.orange);
+		setBorderColor(new Color(0x80b000));
 		setName("FB Out " + register);
 		//		OutputBlock output = new OutputBlock(this, 32, 34);
 	}
@@ -48,7 +48,7 @@ public class FBOutputCADBlock extends SpinCADBlock{
 	public FBOutputCADBlock(int x, int y, int ind) {
 		super(x, y);
 		addOutputPin(this, "Feedback Output");
-		setBorderColor(Color.orange);
+		setBorderColor(new Color(0x80b000));
 		setIndex(ind);
 		setName("FB Out " + getIndex());
 	}

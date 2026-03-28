@@ -17,9 +17,6 @@
  */
 package org.andrewkilpatrick.elmGen.instructions;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import org.andrewkilpatrick.elmGen.simulator.SimulatorState;
 import org.andrewkilpatrick.elmGen.util.Util;
 

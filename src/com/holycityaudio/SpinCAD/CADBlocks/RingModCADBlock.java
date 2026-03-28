@@ -38,7 +38,7 @@ public class RingModCADBlock extends SpinCADBlock{
 		addInputPin(this);
 		addControlInputPin(this, "Carrier Frequency");
 		addOutputPin(this);
-		setBorderColor(Color.cyan);
+		setBorderColor(new Color(0x24f2f2));
 		hasControlPanel = true;
 		setName("Ring Mod");
 	}

@@ -20,7 +20,6 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -33,6 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class Mixer3_1ControlPanel {
 	private JFrame frame;
@@ -86,7 +86,7 @@ class Mixer3_1ControlPanel {
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.setResizable(false);
-				frame.setLocation(new Point(spbMix.getX() + 200, spbMix.getY() + 150));
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.pack();
 			}
 		});

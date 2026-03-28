@@ -114,7 +114,7 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.setVisible(true);		
 			}
 		});

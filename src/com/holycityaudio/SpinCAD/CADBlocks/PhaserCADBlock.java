@@ -43,7 +43,7 @@ public class PhaserCADBlock extends SpinCADBlock{
 		addInputPin(this, "Audio Input");
 		addOutputPin(this, "Mix Out");
 		addOutputPin(this, "Wet Out");
-		setBorderColor(Color.cyan);
+		setBorderColor(new Color(0x24f2f2));
 		setName("Phaser");
 		// add a listener up to the JPanel to redraw this block when the control mode is changed.
 	}

@@ -18,6 +18,8 @@
  */ 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 import com.holycityaudio.SpinCAD.ControlBlocks.RampLFOControlPanel;
@@ -36,6 +38,7 @@ public class RampLFOCADBlock extends ControlCADBlock{
 
 	public RampLFOCADBlock(int x, int y) {
 		super(x, y);
+		setBorderColor(new Color(0xf2f224));
 		addControlInputPin(this, "Rate");			//	
 		addControlInputPin(this, "Tri Width");			//	
 		addControlOutputPin(this, "Ramp LFO");		//	Ramp 1

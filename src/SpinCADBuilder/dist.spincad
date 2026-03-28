@@ -1,5 +1,6 @@
 @name Distortion
-@audioInput adcl Audio_Input
+@color "0xff0000"
+@audioInput adcl Input
 @audioOutput output Audio_Output  
 
 ;distortion module   

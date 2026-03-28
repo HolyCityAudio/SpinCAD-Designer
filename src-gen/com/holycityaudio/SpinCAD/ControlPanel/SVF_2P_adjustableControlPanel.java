@@ -192,7 +192,7 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.setVisible(true);		
 			}
 		});

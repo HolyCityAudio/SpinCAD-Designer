@@ -42,6 +42,7 @@
 			public AliaserCADBlock(int x, int y) {
 				super(x, y);
 				setName("Aliaser");					
+			setBorderColor(new Color(0xff0000));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Smooth");

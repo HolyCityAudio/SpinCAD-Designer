@@ -1,4 +1,5 @@
-@name Soft_Knee_Limiter 
+@name Soft_Knee_Limiter
+@color "0x009595"
 @audioInput adcl Input
 @audioOutput dacl Audio_Output 
 
