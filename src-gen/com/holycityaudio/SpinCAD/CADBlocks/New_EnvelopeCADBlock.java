@@ -46,7 +46,7 @@
 			public New_EnvelopeCADBlock(int x, int y) {
 				super(x, y);
 				setName("Pluck Detector");					
-			setBorderColor(new Color(0x02f27f));
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
