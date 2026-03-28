@@ -45,7 +45,7 @@
 			public pitchoffsetCADBlock(int x, int y) {
 				super(x, y);
 				setName("PitchOffset");					
-			setBorderColor(new Color(0x00fc82));
+			setBorderColor(new Color(0xd050d0));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addOutputPin(this, "Output");

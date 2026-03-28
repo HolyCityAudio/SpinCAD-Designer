@@ -42,6 +42,7 @@
 			public ToverXCADBlock(int x, int y) {
 				super(x, y);
 				setName("ToverX");					
+			setBorderColor(new Color(0xff0000));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Audio_Output");

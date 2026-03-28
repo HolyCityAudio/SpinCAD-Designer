@@ -36,6 +36,7 @@
 			public LFO_ValueCADBlock(int x, int y) {
 				super(x, y);
 				setName("LFO Value");					
+			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addControlOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true

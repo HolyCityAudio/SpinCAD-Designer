@@ -42,6 +42,7 @@
 			public Pitch_shift_testCADBlock(int x, int y) {
 				super(x, y);
 				setName("Pitch Shift");					
+			setBorderColor(new Color(0xd050d0));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Pitch Out");

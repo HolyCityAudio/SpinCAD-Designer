@@ -40,6 +40,7 @@
 			public Glitch_shiftCADBlock(int x, int y) {
 				super(x, y);
 				setName("Glitch Shift");					
+			setBorderColor(new Color(0xd050d0));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Glitch Out");

@@ -163,8 +163,8 @@ public class LegacyFileLoadTest {
      */
     @Test
     void testFullRoundTrip() throws Exception {
-        File bankFile = findFirstBankFile();
-        assumeTrue(bankFile != null, "No .spbk/.spbkj bank file found in test resources");
+        File bankFile = new File("src/test/resources/patches/8-patch-bank.spbkj");
+        assumeTrue(bankFile.exists(), "8-patch-bank.spbkj not found in test resources");
 
         SpinCADFile scFile = new SpinCADFile();
         System.out.println("=== Round-trip test using: " + bankFile.getName());
@@ -308,8 +308,9 @@ public class LegacyFileLoadTest {
         System.out.println("  9. Exported Spin project: " + spjFile.getName());
 
         File[] spnFiles = new File(spjFolder).listFiles((d, n) -> n.endsWith(".spn"));
-        assertTrue(spnFiles != null && spnFiles.length > 0,
-                "Spin project should have created at least one .spn file");
+        assertNotNull(spnFiles, "Spin project folder should contain .spn files");
+        assertEquals(8, spnFiles.length,
+                "Spin project should have created 8 .spn files (one per patch)");
         System.out.println("  Created " + spnFiles.length + " .spn files in project");
 
         System.out.println("=== Round-trip test PASSED ===");

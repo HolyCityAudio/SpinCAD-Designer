@@ -39,6 +39,7 @@
 			public rms_lim_expCADBlock(int x, int y) {
 				super(x, y);
 				setName("RMS_Lim_Exp");					
+			setBorderColor(new Color(0x009595));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addOutputPin(this, "Audio_Output");

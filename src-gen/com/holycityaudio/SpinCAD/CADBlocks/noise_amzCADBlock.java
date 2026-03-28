@@ -39,6 +39,7 @@
 			public noise_amzCADBlock(int x, int y) {
 				super(x, y);
 				setName("Noise_AMZ");					
+			setBorderColor(new Color(0xff0000));
 				// Iterate through pin definitions and allocate or assign as needed
 				addOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true

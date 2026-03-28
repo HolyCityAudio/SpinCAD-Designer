@@ -57,6 +57,7 @@
 			public rom_rev1CADBlock(int x, int y) {
 				super(x, y);
 				setName("ROM_Reverb_1");					
+			setBorderColor(new Color(0x7100fc));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input_Left");
 				addInputPin(this, "Input_Right");
