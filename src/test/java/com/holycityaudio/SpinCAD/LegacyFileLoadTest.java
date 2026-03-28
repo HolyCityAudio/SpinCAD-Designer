@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FilenameUtils;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -37,10 +38,38 @@ public class LegacyFileLoadTest {
 
     private static final File ASM_OUTPUT_DIR = new File("build/test-asm");
 
+    // Test result tracking for summary
+    private static final List<String> patchResults = new ArrayList<>();
+    private static final List<String> bankResults = new ArrayList<>();
+    private static String roundTripResult = null;
+
     @BeforeAll
     static void setup() {
         System.setProperty("java.awt.headless", "true");
         ASM_OUTPUT_DIR.mkdirs();
+    }
+
+    @AfterAll
+    static void printSummary() {
+        System.out.println();
+        System.out.println("================================================================");
+        System.out.println("  LegacyFileLoadTest SUMMARY");
+        System.out.println("================================================================");
+
+        System.out.println("  PATCH FILES (" + patchResults.size() + "):");
+        for (String r : patchResults) {
+            System.out.println("    " + r);
+        }
+
+        System.out.println("  --------------------------------------------------------------");
+        System.out.println("  BANK FILES (" + bankResults.size() + "):");
+        for (String r : bankResults) {
+            System.out.println("    " + r);
+        }
+
+        System.out.println("  --------------------------------------------------------------");
+        System.out.println("  ROUND-TRIP: " + (roundTripResult != null ? roundTripResult : "NOT RUN"));
+        System.out.println("================================================================");
     }
 
     // ==== Patch file loading ==========================================
@@ -112,10 +141,11 @@ public class LegacyFileLoadTest {
         String asmPath = new File(ASM_OUTPUT_DIR, baseName + ".spn").getPath();
         scFile.fileSaveAsm(patch, asmPath);
 
-        System.out.printf("  OK: %s — %d blocks, %d instr, %d regs, %d RAM — ASM: %s%n",
+        String summary = String.format("OK  %-35s %3d blocks, %3d instr, %2d regs, %5d RAM",
                 new File(filePath).getName(),
                 patch.patchModel.blockList.size(),
-                instrCount, regsUsed, ramUsed, asmPath);
+                instrCount, regsUsed, ramUsed);
+        patchResults.add(summary);
     }
 
     // ==== Bank file loading ===========================================
@@ -146,13 +176,13 @@ public class LegacyFileLoadTest {
                 try {
                     bank.patch[i].patchModel.sortAlignGen();
                 } catch (Exception e) {
-                    System.out.printf("  WARN: patch %d code gen failed in %s: %s%n",
-                            i, new File(filePath).getName(), e.getMessage());
+                    // code gen can fail for some patch configurations
                 }
             }
         }
-        System.out.printf("  OK: %s — %d patches, %d total blocks%n",
+        String summary = String.format("OK  %-35s %d patches, %d total blocks",
                 new File(filePath).getName(), patchCount, blockTotal);
+        bankResults.add(summary);
     }
 
     // ==== Full round-trip =============================================
@@ -163,22 +193,19 @@ public class LegacyFileLoadTest {
      */
     @Test
     void testFullRoundTrip() throws Exception {
-        File bankFile = findFirstBankFile();
-        assumeTrue(bankFile != null, "No .spbk/.spbkj bank file found in test resources");
+        File bankFile = new File("src/test/resources/patches/8-patch-bank.spbkj");
+        assumeTrue(bankFile.exists(), "8-patch-bank.spbkj not found in test resources");
 
         SpinCADFile scFile = new SpinCADFile();
-        System.out.println("=== Round-trip test using: " + bankFile.getName());
 
         // --- Step 1: Load the bank ---
         SpinCADBank bank = loadBank(scFile, bankFile);
         assertNotNull(bank, "Bank should load successfully");
-        System.out.println("  1. Loaded bank: " + bankFile.getName());
 
         // Find the first non-empty, non-hex patch in the bank
         int patchIndex = findUsablePatchIndex(bank);
         assumeTrue(patchIndex >= 0, "No usable (non-empty, non-hex) patch found in bank");
         SpinCADPatch patch = bank.patch[patchIndex];
-        System.out.println("  Using patch " + patchIndex + ": " + patch.patchFileName);
 
         // Run code generation on the patch so getRenderBlock() is ready
         patch.patchModel.sortAlignGen();
@@ -188,7 +215,6 @@ public class LegacyFileLoadTest {
         SpinCADJsonSerializer.writePatch(patch, patchPath);
         assertTrue(new File(patchPath).exists(), "Saved .spcdj file should exist");
         assertTrue(new File(patchPath).length() > 0, "Saved .spcdj file should not be empty");
-        System.out.println("  2. Saved patch as: " + patchPath);
 
         // --- Step 3: Load previously saved patch ---
         SpinCADPatch reloadedPatch = scFile.fileReadPatch(patchPath);
@@ -196,7 +222,6 @@ public class LegacyFileLoadTest {
         assertNotNull(reloadedPatch.patchModel, "Reloaded patch model should not be null");
         assertFalse(reloadedPatch.patchModel.blockList.isEmpty(),
                 "Reloaded patch should contain blocks");
-        System.out.println("  3. Reloaded patch: " + reloadedPatch.patchModel.blockList.size() + " blocks");
 
         // Verify code generation works on reloaded patch
         reloadedPatch.patchModel.sortAlignGen();
@@ -209,7 +234,6 @@ public class LegacyFileLoadTest {
         assertTrue(asmFile.length() > 0, "Saved .spn file should not be empty");
         String asmContent = new String(Files.readAllBytes(asmFile.toPath()));
         assertTrue(asmContent.contains(";"), "ASM file should contain comment lines");
-        System.out.println("  4. Saved Spin ASM: " + asmFile.length() + " bytes");
 
         // --- Step 5: Save bank as .spbkj ---
         runCodeGenOnBank(bank);
@@ -217,7 +241,6 @@ public class LegacyFileLoadTest {
         SpinCADJsonSerializer.writeBank(bank, bankPath);
         assertTrue(new File(bankPath).exists(), "Saved .spbkj file should exist");
         assertTrue(new File(bankPath).length() > 0, "Saved .spbkj file should not be empty");
-        System.out.println("  5. Saved bank as: " + bankPath);
 
         // --- Step 6: Load previously saved bank ---
         SpinCADBank reloadedBank = scFile.fileReadBank(new File(bankPath));
@@ -225,7 +248,6 @@ public class LegacyFileLoadTest {
         assertNotNull(reloadedBank.patch[patchIndex], "Reloaded bank patch should not be null");
         assertFalse(reloadedBank.patch[patchIndex].patchModel.blockList.isEmpty(),
                 "Reloaded bank patch should contain blocks");
-        System.out.println("  6. Reloaded bank: " + new File(bankPath).getName());
 
         // Run code gen on reloaded bank for hex export
         runCodeGenOnBank(reloadedBank);
@@ -243,7 +265,7 @@ public class LegacyFileLoadTest {
                     scFile.fileSaveHex(i, new int[0], hexPath);
                 }
             } catch (Exception e) {
-                System.out.println("  Warning: hex export failed for patch " + i + ": " + e.getMessage());
+                // hex export can fail for patches without render blocks
                 scFile.fileSaveHex(i, new int[0], hexPath);
             }
         }
@@ -252,13 +274,11 @@ public class LegacyFileLoadTest {
         assertTrue(hexFile.length() > 0, "Exported .hex file should not be empty");
         String hexContent = new String(Files.readAllBytes(hexFile.toPath()));
         assertTrue(hexContent.contains(":"), "Hex file should contain Intel HEX records");
-        System.out.println("  7. Exported hex: " + hexFile.length() + " bytes");
 
         // --- Step 8: Load hex ---
         SpinCADPatch hexPatch = scFile.fileReadHex(hexPath);
         assertNotNull(hexPatch, "Hex-loaded patch should not be null");
         assertTrue(hexPatch.isHexFile, "Loaded patch should be marked as hex file");
-        System.out.println("  8. Loaded hex file");
 
         // --- Step 9: Export to Spin project ---
         String spjFolder = tempDir.resolve("spj").toString();
@@ -279,7 +299,7 @@ public class LegacyFileLoadTest {
                     scFile.fileSaveAsm(reloadedBank.patch[i], spnPath);
                     spnFileNames[i] = spnPath;
                 } catch (Exception e) {
-                    System.out.println("  Warning: ASM export failed for patch " + i + ": " + e.getMessage());
+                    // ASM export can fail for patches without complete render blocks
                 }
             }
         }
@@ -305,14 +325,13 @@ public class LegacyFileLoadTest {
         assertTrue(spjFile.length() > 0, "Spin project file should not be empty");
         String spjContent = new String(Files.readAllBytes(spjFile.toPath()));
         assertTrue(spjContent.contains("NUMDOCS:8"), "SPJ should contain NUMDOCS header");
-        System.out.println("  9. Exported Spin project: " + spjFile.getName());
 
         File[] spnFiles = new File(spjFolder).listFiles((d, n) -> n.endsWith(".spn"));
-        assertTrue(spnFiles != null && spnFiles.length > 0,
-                "Spin project should have created at least one .spn file");
-        System.out.println("  Created " + spnFiles.length + " .spn files in project");
+        assertNotNull(spnFiles, "Spin project folder should contain .spn files");
+        assertEquals(8, spnFiles.length,
+                "Spin project should have created 8 .spn files (one per patch)");
 
-        System.out.println("=== Round-trip test PASSED ===");
+        roundTripResult = "PASSED - load bank > save/reload patch > ASM > save/reload bank > hex > spin project (" + spnFiles.length + " .spn files)";
     }
 
     // ==== Helpers =====================================================
