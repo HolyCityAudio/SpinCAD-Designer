@@ -1,7 +1,7 @@
 @name Distortion
 @color "0xff0000"
 @audioInput adcl Input
-@audioOutput output Audio_Output  
+@audioOutput output Output  
 
 ;distortion module   
 ;begin distorting signal at -18dB (input referred).
@@ -64,5 +64,6 @@ sof	-2,0
 sof	-2,0		;bring up gain (12dB)
 wrax	output,0		;write outputs
 ;KB 07/03/06
+@setOutputPin 'Output' output
 @endif
 

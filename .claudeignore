@@ -1,0 +1,8 @@
+src-gen/
+build/
+lib/
+.gradle/
+gradle/
+*.jar
+*.class
+*.zip

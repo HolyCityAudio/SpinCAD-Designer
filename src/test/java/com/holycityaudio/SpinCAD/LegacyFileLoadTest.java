@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FilenameUtils;
+
 import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -33,9 +35,12 @@ public class LegacyFileLoadTest {
     @TempDir
     static Path tempDir;
 
+    private static final File ASM_OUTPUT_DIR = new File("build/test-asm");
+
     @BeforeAll
     static void setup() {
         System.setProperty("java.awt.headless", "true");
+        ASM_OUTPUT_DIR.mkdirs();
     }
 
     // ==== Patch file loading ==========================================
@@ -102,10 +107,15 @@ public class LegacyFileLoadTest {
         assertTrue(ramUsed <= ElmProgram.MAX_DELAY_MEM,
                 filePath + ": delay RAM (" + ramUsed + ") exceeds max");
 
-        System.out.printf("  OK: %s — %d blocks, %d instr, %d regs, %d RAM%n",
+        // Save as ASM (.spn)
+        String baseName = FilenameUtils.removeExtension(new File(filePath).getName());
+        String asmPath = new File(ASM_OUTPUT_DIR, baseName + ".spn").getPath();
+        scFile.fileSaveAsm(patch, asmPath);
+
+        System.out.printf("  OK: %s — %d blocks, %d instr, %d regs, %d RAM — ASM: %s%n",
                 new File(filePath).getName(),
                 patch.patchModel.blockList.size(),
-                instrCount, regsUsed, ramUsed);
+                instrCount, regsUsed, ramUsed, asmPath);
     }
 
     // ==== Bank file loading ===========================================
