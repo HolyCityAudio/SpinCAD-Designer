@@ -1095,6 +1095,7 @@ protected void onRegistersCompacted(int newNextFreeReg) {
 	 *            the amount to add to the ACC after scaling
 	 */
 	public void scaleOffset(double scale, double offset) {
+		if (scale == 1.0 && offset == 0.0) return;
 		//checkCodeLen();
 		instList.add(new ScaleOffset(scale, offset));
 	}
