@@ -18,6 +18,7 @@
 package org.andrewkilpatrick.elmGen.simulator;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class SimulatorState {
 	private int pc = 0;
@@ -51,11 +52,13 @@ public class SimulatorState {
 		sinLFO = new SinLFO[2];
 		rampLFO = new RampLFO[2];
 		
-		try {
-			FileOutputStream fos = new FileOutputStream(debugFilename);
+		try (FileOutputStream fos = new FileOutputStream(debugFilename)) {
+			// touch/truncate the debug file
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		
 		for(int i = 0; i < regs.length; i ++) {

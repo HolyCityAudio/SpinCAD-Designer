@@ -87,7 +87,7 @@ public class LegacyFileLoadTest {
                 "Patch should contain blocks: " + filePath);
 
         // Run code generation
-        int codeLen = patch.patchModel.sortAlignGen();
+        patch.patchModel.sortAlignGen();
 
         SpinFXBlock renderBlock = patch.patchModel.getRenderBlock();
         int instrCount = renderBlock.getCodeLen() - renderBlock.getNumComments();
