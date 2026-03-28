@@ -21,7 +21,6 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

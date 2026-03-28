@@ -130,9 +130,8 @@ public class AllBlocksCodeGenTest {
         PrintStream origErr = System.err;
         System.setErr(new PrintStream(errCapture));
 
-        int codeLen;
         try {
-            codeLen = model.sortAlignGen();
+            model.sortAlignGen();
         } finally {
             System.setErr(origErr);
         }

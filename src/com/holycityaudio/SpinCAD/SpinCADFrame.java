@@ -83,7 +83,6 @@ import java.net.URL;
 
 import org.andrewkilpatrick.elmGen.Debug;
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import org.andrewkilpatrick.elmGen.util.Util;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
