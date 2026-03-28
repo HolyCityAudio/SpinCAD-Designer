@@ -35,6 +35,7 @@
 			public OctaveCADBlock(int x, int y) {
 				super(x, y);
 				setName("Octave");					
+			setBorderColor(new Color(0xff0000));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Audio_Output");

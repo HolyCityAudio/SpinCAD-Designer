@@ -30,7 +30,6 @@ import java.awt.event.ItemListener;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -39,6 +38,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class ClipControlControlPanel implements ChangeListener, ActionListener, ItemListener {
 
@@ -105,7 +105,7 @@ public class ClipControlControlPanel implements ChangeListener, ActionListener, 
 				invert.setSelected(pC.getInvert());
 				flip.setSelected(pC.getFlip());
 
-				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);
 				frame.pack();

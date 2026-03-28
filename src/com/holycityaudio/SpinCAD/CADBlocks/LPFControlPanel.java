@@ -31,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 @SuppressWarnings("serial")
@@ -64,7 +65,7 @@ class LPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(LPF.getX() + 200, LPF.getY() + 150);
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 //		freqSlider.setValue((int)Math.round((lpfcadBlock.getFreq() * 100.0)));
 //		resSlider.setValue((int)Math.round((lpfcadBlock.getRes() * 100.0)));
 	}

@@ -31,6 +31,7 @@ import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class RingModControlPanel extends JFrame implements ChangeListener, ActionListener {
@@ -77,7 +78,7 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 		this.setVisible(true);
 		this.setAlwaysOnTop(true);
 		this.pack();
-		this.setLocation(outBlock.getX() + 200, outBlock.getY() + 150);
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 	}
 
 	@Override

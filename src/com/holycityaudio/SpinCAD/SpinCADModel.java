@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.andrewkilpatrick.elmGen.ElmProgram;
 import org.andrewkilpatrick.elmGen.instructions.Instruction;
 import org.andrewkilpatrick.elmGen.instructions.Clear;
 import org.andrewkilpatrick.elmGen.instructions.Comment;

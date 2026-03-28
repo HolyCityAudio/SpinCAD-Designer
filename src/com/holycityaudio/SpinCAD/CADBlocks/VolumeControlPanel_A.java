@@ -21,7 +21,6 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -34,6 +33,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class VolumeControlPanel_A {
 	private JFrame frame;
@@ -77,7 +77,7 @@ class VolumeControlPanel_A {
 				frame.getContentPane().add(gainSlider);
 				updateGainLabel();
 				frame.setVisible(true);
-				frame.setLocation(new Point(spbVol.getX() + 200, spbVol.getY() + 150));
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.pack();
 				frame.setResizable(false);
 				frame.setAlwaysOnTop(true);

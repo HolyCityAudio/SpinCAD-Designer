@@ -34,6 +34,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 public class HPFControlPanel extends JFrame implements ChangeListener {
@@ -117,7 +118,7 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
 
 		this.pack();
 		this.setVisible(true);
-		this.setLocation(HPF.getX() + 200, HPF.getY() + 150);
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		//		freqSlider.setValue((int)Math.round((b.getFreq() * 100.0)));
 		//		resSlider.setValue((int)Math.round((b.getRes() * 100.0)));
 	}

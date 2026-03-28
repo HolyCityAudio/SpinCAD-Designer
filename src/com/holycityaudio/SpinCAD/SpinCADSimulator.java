@@ -24,7 +24,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -33,7 +32,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.andrewkilpatrick.elmGen.simulator.AudioFileReader;
-import org.andrewkilpatrick.elmGen.simulator.LevelLogger;
 import org.andrewkilpatrick.elmGen.simulator.LevelLogger.ScopePanel;
 import org.andrewkilpatrick.elmGen.simulator.SpinSimulator;
 

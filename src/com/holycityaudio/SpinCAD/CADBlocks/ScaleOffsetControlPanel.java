@@ -21,7 +21,6 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -36,6 +35,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 @SuppressWarnings("serial")
@@ -185,7 +185,7 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(new Point(sof.getX() + 200, sof.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setResizable(false);
 		this.setAlwaysOnTop(true);
 

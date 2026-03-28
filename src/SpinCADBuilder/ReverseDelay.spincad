@@ -1,5 +1,5 @@
 @name "Reverse Delay"
-@color "0x7100fc"
+@color "0x6060c4"
 @audioInput input Input
 @audioOutput output Output
 ;@audioOutput output2 Output2

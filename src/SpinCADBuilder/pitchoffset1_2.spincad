@@ -1,5 +1,5 @@
 @name "Pitch Offset 1->2"
-@color "0x00fc82"
+@color "0xd050d0"
 @audioInput adcl Input
 @audioOutput output1 "Output 1"
 @audioOutput output2 "Output 2"

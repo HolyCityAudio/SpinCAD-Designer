@@ -19,6 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -36,6 +38,7 @@ public class OscillatorCADBlock extends SpinCADBlock{
 
 	public OscillatorCADBlock(int x, int y) {
 		super(x, y);
+		setBorderColor(new Color(0xf2f224));
 		hasControlPanel = true;
 		addControlInputPin(this, "LFO Speed");
 //debug, width control not working, probably due to output register setting when control connected

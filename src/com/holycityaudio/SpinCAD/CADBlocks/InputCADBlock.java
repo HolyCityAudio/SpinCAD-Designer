@@ -19,6 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -32,6 +34,7 @@ public class InputCADBlock extends SpinCADBlock{
 
 	public InputCADBlock(int x, int y) {
 		super(x, y);
+		setBorderColor(new Color(0x2468f2));
 		addOutputPin(this, "Output 1");
 		addOutputPin(this, "Output 2");
 		setName("Input");

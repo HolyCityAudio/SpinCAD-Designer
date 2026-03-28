@@ -1,4 +1,5 @@
 @name 'LFO Value'
+@color "0xf2f224"
 @controlOutput output1 Output
 
 equ lfoSel 0

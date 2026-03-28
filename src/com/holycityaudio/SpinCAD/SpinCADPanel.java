@@ -27,11 +27,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
@@ -206,34 +202,12 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 	}
 
 	private void moveMouse(Point p) {
-		GraphicsEnvironment ge = 
-				GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] gs = ge.getScreenDevices();
-
-		// Search the devices for the one that draws the specified point.
-		for (GraphicsDevice device: gs) { 
-			GraphicsConfiguration[] configurations =
-					device.getConfigurations();
-			for (GraphicsConfiguration config: configurations) {
-				Rectangle bounds = config.getBounds();
-				if(bounds.contains(p)) {
-					// Set point to screen coordinates.
-					Point b = bounds.getLocation(); 
-					Point s = new Point(p.x - b.x, p.y - b.y);
-
-					try {
-						Robot r = new Robot(device);
-						r.mouseMove(s.x, s.y);
-					} catch (AWTException e) {
-						e.printStackTrace();
-					}
-
-					return;
-				}
-			}
+		try {
+			Robot r = new Robot();
+			r.mouseMove(p.x, p.y);
+		} catch (AWTException e) {
+			e.printStackTrace();
 		}
-		// Couldn't move to the point, it may be off screen.
-		return;
 	}
 
 

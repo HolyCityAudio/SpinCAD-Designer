@@ -1,5 +1,5 @@
 @name Stutter 
-@color "0xf2c214"  
+@color "0x6060c4"  
 @audioInput input Input
 @audioOutput output Output
 @controlInput stutter Stutter  

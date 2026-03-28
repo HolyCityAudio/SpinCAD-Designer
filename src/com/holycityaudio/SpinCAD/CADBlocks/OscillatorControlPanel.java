@@ -31,6 +31,7 @@ import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class OscillatorControlPanel extends JFrame implements ChangeListener, ActionListener {
 	/**
@@ -77,7 +78,7 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 
 		lfoSlider.setValue((int)Math.round(100000.0 * outBlock.getLFO()));
 		updateLFOLabel();
-		this.setLocation(osc.getX() + 100, osc.getY() + 100);
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setAlwaysOnTop(true);
 
 		this.setVisible(true);

@@ -38,7 +38,7 @@
 			public StutterCADBlock(int x, int y) {
 				super(x, y);
 				setName("Stutter");					
-			setBorderColor(new Color(0xf2c214));
+			setBorderColor(new Color(0x6060c4));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

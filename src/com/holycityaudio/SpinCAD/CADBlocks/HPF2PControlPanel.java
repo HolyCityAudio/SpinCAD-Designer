@@ -21,7 +21,6 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -31,13 +30,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
-import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 class HPF2PControlPanel extends JFrame implements ActionListener {
@@ -143,7 +141,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 				updateFreqLabel();
 				setAlwaysOnTop(true);
 				setVisible(true);
-				setLocation(new Point(hPF.getX() + 200, hPF.getY() + 150));
+				setLocationRelativeTo(SpinCADFrame.getInstance());
 				pack();
 				setResizable(false);
 			}
