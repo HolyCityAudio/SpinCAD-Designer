@@ -4,9 +4,6 @@ bin/
 .settings/
 *.class
 
-# Generated source
-src-gen/
-
 # Build
 /bin/SpinCADBuilder
 /simulator-debug.txt
