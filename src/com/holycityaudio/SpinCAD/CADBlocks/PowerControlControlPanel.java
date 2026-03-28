@@ -38,6 +38,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 
@@ -105,7 +106,7 @@ public class PowerControlControlPanel extends JFrame {
 				updatePowerLabel();
 				invert.setSelected(pC.getInvert());
 				flip.setSelected(pC.getFlip());
-				setLocation(pC.getX() + 200, pC.getY() + 150);
+				setLocationRelativeTo(SpinCADFrame.getInstance());
 				setAlwaysOnTop(true);
 				setVisible(true);
 				pack();

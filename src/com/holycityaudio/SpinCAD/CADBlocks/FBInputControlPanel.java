@@ -32,6 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class FBInputControlPanel extends JFrame implements ChangeListener, ActionListener {
 	/**
@@ -79,7 +80,7 @@ class FBInputControlPanel extends JFrame implements ChangeListener, ActionListen
 		this.pack();
 		this.setAlwaysOnTop(true);
 		this.setVisible(true);
-		this.setLocation(new Point(inBlock.getX() + 200, inBlock.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setResizable(false);
 	}
 

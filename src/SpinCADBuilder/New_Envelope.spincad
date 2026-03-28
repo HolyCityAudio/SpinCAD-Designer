@@ -1,5 +1,5 @@
 @name 'Pluck Detector'
-@color "0x02f27f"
+@color "0xf2f224"
 @audioInput input Input
 @controlInput attackControl Attack
 @controlInput decayControl Decay

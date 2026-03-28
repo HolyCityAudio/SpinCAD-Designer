@@ -32,6 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class PitchTestControlPanel extends JFrame implements ChangeListener {
@@ -123,7 +124,7 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 		this.setVisible(true);
 		this.setAlwaysOnTop(true);
 		this.pack();
-		this.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 	}
 
 	public void stateChanged(ChangeEvent ce) {

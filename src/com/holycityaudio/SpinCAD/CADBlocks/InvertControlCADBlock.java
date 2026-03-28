@@ -19,6 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
@@ -31,6 +33,7 @@ public class InvertControlCADBlock extends ControlCADBlock{
 
 	public InvertControlCADBlock(int x, int y) {
 		super(x, y);
+		setBorderColor(new Color(0xf2f224));
 		addControlInputPin(this);	//	delay time
 		addControlOutputPin(this);	//	feedback
 		setName("Invert");

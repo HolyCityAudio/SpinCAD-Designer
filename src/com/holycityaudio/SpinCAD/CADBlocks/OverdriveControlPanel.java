@@ -31,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class OverdriveControlPanel extends JFrame implements ChangeListener, ActionListener {
@@ -129,7 +130,7 @@ class OverdriveControlPanel extends JFrame implements ChangeListener, ActionList
 
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(oD.getX() + 200, oD.getY() + 150);
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setAlwaysOnTop(true);
 	}
 

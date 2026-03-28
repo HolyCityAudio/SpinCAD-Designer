@@ -44,6 +44,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class SinCosLFOAControlPanel extends spinCADControlPanel implements ChangeListener, ActionListener, ItemListener {
 
@@ -127,7 +128,7 @@ public class SinCosLFOAControlPanel extends spinCADControlPanel implements Chang
 				frame.setTitle("Sin/Cos LFO");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-				frame.setLocation(new Point(pC.getX() + 200, pC.getY() + 150));
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 
 				//				    graph.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
 

@@ -31,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionListener {
@@ -102,7 +103,7 @@ class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 		updateLengthField();
 
 		this.setVisible(true);
-		this.setLocation(new Point(delay.getX() + 200, delay.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setAlwaysOnTop(true);
 		this.pack();
 	}

@@ -19,6 +19,8 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 import com.holycityaudio.SpinCAD.ControlBlocks.ControlCADBlock;
@@ -32,6 +34,7 @@ public class TapTempoCADBlock extends ControlCADBlock{
 
 	public TapTempoCADBlock(int x, int y) {
 		super(x, y);
+		setBorderColor(new Color(0xf2f224));
 		addControlInputPin(this);
 		addControlOutputPin(this, "Latch");
 		addControlOutputPin(this, "Ramp");

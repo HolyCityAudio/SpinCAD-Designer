@@ -31,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 @SuppressWarnings("serial")
@@ -64,7 +65,7 @@ class BPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 
 		this.pack();
 		this.setVisible(true);
-		this.setLocation(BPF.getX() + 200, BPF.getY() + 150);
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		}
 
 	@Override

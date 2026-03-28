@@ -100,7 +100,7 @@ public class SpinCADFrame extends JFrame {
 	}
 
 
-	int buildNum = 1062;
+	int buildNum = 1063;
 
 	// Swing things
 	private JPanel contentPane;
@@ -710,7 +710,7 @@ public class SpinCADFrame extends JFrame {
 				try {
 					simX.getSimulatorFile();
 				} catch (UnsupportedAudioFileException e) {
-					SpinCADDialogs.MessageBox("Simulator File Error", "Make sure that your simulator source\n"
+					SpinCADDialogs.MessageBox(SpinCADFrame.this, "Simulator File Error", "Make sure that your simulator source\n"
 							+ "file is a stereo 16 bit WAV file sampled \nat 32768, 44100, or 48000 Hz.");
 				}
 				catch (IOException e) {
@@ -768,10 +768,10 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SpinCADDialogs.MessageBox("About SpinCAD Designer", "Version 0.99 Build " + buildNum + "\n"
-						+ "Copyright 2026 Gary Worsham, Holy City Audio\n" + 
+				SpinCADDialogs.MessageBox(SpinCADFrame.this, "About SpinCAD Designer", "Version 0.99 Build " + buildNum + "\n"
+						+ "Copyright 2026 Gary Worsham, Holy City Audio\n" +
 						" This program is distributed in the hope that it will be useful," +
-						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
+						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" +
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
 			}
 		});

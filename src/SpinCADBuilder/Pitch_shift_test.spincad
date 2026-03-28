@@ -1,4 +1,5 @@
 @name 'Pitch Shift'
+@color "0xd050d0"
 @audioInput input Input
 @audioOutput pitch 'Pitch Out'
 @controlInput pitchControl 'Pitch Control'

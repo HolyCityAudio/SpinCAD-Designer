@@ -37,6 +37,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 class LPF4PControlPanel extends JFrame implements ActionListener {
@@ -142,7 +143,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 				updateFreqLabel();
 				setAlwaysOnTop(true);
 				setVisible(true);
-				setLocation(new Point(LPF.getX() + 200, LPF.getY() + 150));
+				setLocationRelativeTo(SpinCADFrame.getInstance());
 				pack();
 				setResizable(true);
 			}

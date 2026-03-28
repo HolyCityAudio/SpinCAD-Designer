@@ -1,4 +1,5 @@
 @name ToverX
+@color "0xff0000"
 @audioInput adcl Input
 @audioOutput lf4 Audio_Output  
 

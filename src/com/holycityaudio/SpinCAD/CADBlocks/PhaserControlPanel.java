@@ -45,6 +45,7 @@ import javax.swing.event.ChangeListener;
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class PhaserControlPanel implements ChangeListener, ActionListener {
 	JSlider stagesSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 5, 4);
@@ -198,7 +199,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.pack();
-				frame.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 			}
 		});
 	}

@@ -38,6 +38,7 @@ import javax.swing.border.Border;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class control_smootherControlPanel {
 	private JFrame frame;
@@ -112,7 +113,7 @@ public class control_smootherControlPanel {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(gCB.getX() + 100, gCB.getY() + 100);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.setVisible(true);
 			}
 		});

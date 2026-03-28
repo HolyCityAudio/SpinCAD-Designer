@@ -33,6 +33,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 public class ConstantControlPanel extends JFrame implements ChangeListener {
@@ -79,7 +80,7 @@ public class ConstantControlPanel extends JFrame implements ChangeListener {
 
 				setVisible(true);
 				pack();
-				setLocation(new Point(cCB.getX() + 200, cCB.getY() + 150));
+				setLocationRelativeTo(SpinCADFrame.getInstance());
 				setResizable(false);
 				setAlwaysOnTop(true);
 			}
