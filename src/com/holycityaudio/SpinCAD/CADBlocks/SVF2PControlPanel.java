@@ -19,7 +19,6 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -38,6 +37,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.Dimension;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener {
 	/**
@@ -128,7 +128,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 		updateFreqField();
 		qSlider.setValue((int)Math.round(svf2pcadBlock.getQ()));
 		updateQField();
-		this.setLocation(new Point(cadBlock.getX() + 200, cadBlock.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 
 		this.setVisible(true);
 		this.pack();

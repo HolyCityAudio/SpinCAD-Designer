@@ -28,7 +28,6 @@ import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -39,6 +38,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class BiQuadControlPanel {
@@ -123,7 +123,7 @@ class BiQuadControlPanel {
 				frame.setVisible(true);
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocation(spbBQF.getX() + 200, spbBQF.getY() + 150);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 			}
 		});
 	}

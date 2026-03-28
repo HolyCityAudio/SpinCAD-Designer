@@ -19,13 +19,11 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -33,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 public class ConstantControlPanel extends JFrame implements ChangeListener {
@@ -79,7 +78,7 @@ public class ConstantControlPanel extends JFrame implements ChangeListener {
 
 				setVisible(true);
 				pack();
-				setLocation(new Point(cCB.getX() + 200, cCB.getY() + 150));
+				setLocationRelativeTo(SpinCADFrame.getInstance());
 				setResizable(false);
 				setAlwaysOnTop(true);
 			}

@@ -40,7 +40,7 @@
 			public ReverseDelayCADBlock(int x, int y) {
 				super(x, y);
 				setName("Reverse Delay");					
-			setBorderColor(new Color(0x7100fc));
+			setBorderColor(new Color(0x6060c4));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");

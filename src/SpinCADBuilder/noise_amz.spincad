@@ -1,4 +1,5 @@
-@name Noise_AMZ  
+@name Noise_AMZ
+@color "0xff0000"
 @audioOutput output1 Output 
 
 equ gain 1.0 

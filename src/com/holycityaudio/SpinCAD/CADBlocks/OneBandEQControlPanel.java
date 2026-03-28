@@ -19,7 +19,6 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -31,6 +30,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class OneBandEQControlPanel extends JFrame implements ChangeListener {
 	/**
@@ -135,7 +135,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 		qSlider.setValue((int) Math.round((b.getQLevel() * 100.0)));
 		updateQLabel();
 		this.setAlwaysOnTop(true);
-		this.setLocation(new Point(filter.getX() + 200, filter.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.pack();
 	}
 

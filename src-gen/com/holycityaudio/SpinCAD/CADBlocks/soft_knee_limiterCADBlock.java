@@ -39,6 +39,7 @@
 			public soft_knee_limiterCADBlock(int x, int y) {
 				super(x, y);
 				setName("Soft_Knee_Limiter");					
+			setBorderColor(new Color(0x009595));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
 				addOutputPin(this, "Audio_Output");

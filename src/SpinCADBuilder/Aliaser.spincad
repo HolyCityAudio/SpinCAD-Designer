@@ -1,4 +1,5 @@
 @name Aliaser
+@color "0xff0000"
 @audioInput input Input
 @audioOutput output Smooth  
 @audioOutput old Raw  

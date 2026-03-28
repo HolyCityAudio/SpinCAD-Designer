@@ -22,7 +22,6 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -39,6 +38,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class PitchShiftFixedControlPanel implements ChangeListener {
@@ -138,7 +138,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 				frame.setVisible(true);
 				frame.setAlwaysOnTop(true);
 				frame.pack();
-				frame.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));			}
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());			}
 		});
 	}
 

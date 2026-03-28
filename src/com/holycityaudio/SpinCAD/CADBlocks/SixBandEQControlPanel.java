@@ -19,7 +19,6 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -32,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class SixBandEQControlPanel extends JFrame {
 	/**
@@ -240,7 +240,7 @@ public class SixBandEQControlPanel extends JFrame {
 				updateQField();
 
 				setVisible(true);
-				setLocation(new Point(filter.getX() + 200, filter.getY() + 150));
+				setLocationRelativeTo(SpinCADFrame.getInstance());
 				pack();
 				setResizable(false);
 				setAlwaysOnTop(true);

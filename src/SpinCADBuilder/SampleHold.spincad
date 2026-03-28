@@ -1,4 +1,5 @@
 @name SampleHold
+@color "0xf2f224"
 
 @controlInput input1 Control_In
 @controlInput rate Rate

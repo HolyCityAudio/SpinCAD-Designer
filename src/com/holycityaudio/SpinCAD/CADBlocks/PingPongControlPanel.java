@@ -20,7 +20,6 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -32,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class PingPongControlPanel extends JFrame implements ChangeListener, ActionListener {
@@ -187,7 +187,7 @@ class PingPongControlPanel extends JFrame implements ChangeListener, ActionListe
 
 		this.setVisible(true);
 		this.pack();
-		this.setLocation(new Point(pong.getX() + 200, pong.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 	}
 
 	@Override

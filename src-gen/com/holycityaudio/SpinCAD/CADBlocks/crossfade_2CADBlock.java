@@ -36,7 +36,7 @@
 			public crossfade_2CADBlock(int x, int y) {
 				super(x, y);
 				setName("Crossfade 2");					
-			setBorderColor(new Color(0xf2f224));
+			setBorderColor(new Color(0x2468f2));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Audio In 1");
 				addInputPin(this, "Audio In 2");

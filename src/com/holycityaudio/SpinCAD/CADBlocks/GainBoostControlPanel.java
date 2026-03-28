@@ -24,7 +24,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -32,6 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class GainBoostControlPanel implements ChangeListener {
 
@@ -80,7 +80,7 @@ public class GainBoostControlPanel implements ChangeListener {
 				gainSlider.setValue((int) Math.round(pC.getGain()));
 				updateGainField();
 
-				frame.setLocation(pC.getX() + 200, pC.getY() + 150);
+				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.setVisible(true);
 				frame.pack();
 				frame.setAlwaysOnTop(true);

@@ -1,5 +1,5 @@
 @name 'Crossfade 3'
-@color "0xf2f224"
+@color "0x2468f2"
 @audioInput inputOne "Audio In 1"
 @audioInput inputTwo "Audio In 2"
 @controlInput controlIn 'Control Input'

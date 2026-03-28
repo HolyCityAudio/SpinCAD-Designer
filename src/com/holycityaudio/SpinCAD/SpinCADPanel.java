@@ -27,11 +27,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
@@ -46,6 +42,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.ToolTipManager;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -116,7 +113,11 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 		drawingPane.setPreferredSize(new Dimension(3840,2160));
 		drawingPane.addMouseListener(this);
 		drawingPane.addMouseMotionListener(this);
-		
+
+		ToolTipManager ttm = ToolTipManager.sharedInstance();
+		ttm.setInitialDelay(0);
+		ttm.setReshowDelay(0);
+
 		JScrollPane scroller = new JScrollPane(drawingPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
 				, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		setLayout(new BorderLayout(0,0));
@@ -206,34 +207,12 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 	}
 
 	private void moveMouse(Point p) {
-		GraphicsEnvironment ge = 
-				GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] gs = ge.getScreenDevices();
-
-		// Search the devices for the one that draws the specified point.
-		for (GraphicsDevice device: gs) { 
-			GraphicsConfiguration[] configurations =
-					device.getConfigurations();
-			for (GraphicsConfiguration config: configurations) {
-				Rectangle bounds = config.getBounds();
-				if(bounds.contains(p)) {
-					// Set point to screen coordinates.
-					Point b = bounds.getLocation(); 
-					Point s = new Point(p.x - b.x, p.y - b.y);
-
-					try {
-						Robot r = new Robot(device);
-						r.mouseMove(s.x, s.y);
-					} catch (AWTException e) {
-						e.printStackTrace();
-					}
-
-					return;
-				}
-			}
+		try {
+			Robot r = new Robot();
+			r.mouseMove(p.x, p.y);
+		} catch (AWTException e) {
+			e.printStackTrace();
 		}
-		// Couldn't move to the point, it may be off screen.
-		return;
 	}
 
 
@@ -294,10 +273,10 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 			repaint();
 		}
 		Point point = getNearbyPoint();
-		if(point != null) {		
+		if(point != null) {
 			// we're near a pin, so iterate through the model and see which one it is
-			// then show the pin name
-			SpinCADBlock b = null;	
+			// then show the pin name as a tooltip
+			SpinCADBlock b = null;
 			Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
 			while(itr.hasNext()) {
 				b = itr.next();
@@ -306,13 +285,13 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 				while(itrPin.hasNext()) {
 					currentPin = itrPin.next();
 					if(hitPin(e, b, currentPin)) {
-						f.etb.pinName.setText(currentPin.getName());
+						drawingPane.setToolTipText(currentPin.getName());
 						return;
 					}
 				}
 			}
 		}
-		f.etb.pinName.setText("");
+		drawingPane.setToolTipText(null);
 	}
 	
 	private static int RANGE = 5;

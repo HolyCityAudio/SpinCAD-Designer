@@ -19,19 +19,18 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class FBInputControlPanel extends JFrame implements ChangeListener, ActionListener {
 	/**
@@ -79,7 +78,7 @@ class FBInputControlPanel extends JFrame implements ChangeListener, ActionListen
 		this.pack();
 		this.setAlwaysOnTop(true);
 		this.setVisible(true);
-		this.setLocation(new Point(inBlock.getX() + 200, inBlock.getY() + 150));
+		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setResizable(false);
 	}
 

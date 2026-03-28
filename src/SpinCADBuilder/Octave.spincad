@@ -1,4 +1,5 @@
 @name Octave
+@color "0xff0000"
 @audioInput adcl Input
 @audioOutput output1 Audio_Output  
 

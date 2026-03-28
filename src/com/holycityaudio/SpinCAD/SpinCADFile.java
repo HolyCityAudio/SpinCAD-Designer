@@ -225,8 +225,6 @@ public class SpinCADFile {
 			char c = 'c';
 			int nBytes= 0;
 			int nLines = 0;
-			int address = 0;
-			int recordType = 0;
 			int data = 0;
 			for(String line; (line = br.readLine()) != null; ) {
 				c = line.charAt(0);
@@ -240,10 +238,8 @@ public class SpinCADFile {
 						nBytes = Integer.parseInt(byteString, 16);
 						//						System.out.println(byteString + " Bytes= " + nBytes);
 						//						System.out.println("Address: " + line.substring(3,7));
-						address =  Integer.parseInt(line.substring(3,7), 16);
 						//						System.out.printf("Address: %x\n", address);
 						//						System.out.println("recordType: " + line.substring(7,9));
-						recordType= Integer.parseInt(line.substring(7,9), 16);
 						//						System.out.println("recordType: " + recordType);
 						data = (int) Long.parseLong(line.substring(9,9 + (2 * nBytes)), 16);
 						//						System.out.println(line.substring(9,9 + (2 * nBytes)));
@@ -955,7 +951,7 @@ public class SpinCADFile {
 				if (sb.length() > 0) {
 					sb.append(File.pathSeparator);
 				}
-				String fp = file.getPath();
+				//				String fp = file.getPath();
 				//				System.out.println(fp + " Path Length = " + fp.length());
 				sb.append(file.getPath());
 				//				System.out.println("RUFL Length = " + sb.length());
@@ -1010,8 +1006,6 @@ public class SpinCADFile {
 		System.out.print(listOfFiles);
 		
 		if (listOfFiles != null ) {
-
-			Integer listLength = listOfFiles.length();
 
 			if (fc == null) {
 				String savedPath = prefs.get("MRUBankFolder", "");

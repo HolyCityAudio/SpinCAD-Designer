@@ -18,6 +18,8 @@
  */ 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
 
@@ -32,6 +34,7 @@ public class ClipControlCADBlock extends ControlCADBlock{
 
 	public ClipControlCADBlock(int x, int y) {
 		super(x, y);
+		setBorderColor(new Color(0xf2f224));
 		hasControlPanel = true;
 		addControlInputPin(this);
 		addControlOutputPin(this);	//	feedback
