@@ -49,6 +49,7 @@
 			setBorderColor(new Color(0xf2f224));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addOutputPin(this, "Output");
 				addControlInputPin(this, "Attack");
 				addControlInputPin(this, "Decay");
 				addControlInputPin(this, "Sensitivity");
