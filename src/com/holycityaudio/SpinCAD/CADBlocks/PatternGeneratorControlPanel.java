@@ -23,10 +23,15 @@ import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -90,7 +95,7 @@ public class PatternGeneratorControlPanel implements ChangeListener {
 				frame.add(buildSliderPanel(numStepsField, numStepsSlider));
 
 				// Threshold slider
-				thresholdSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 50, (int) (gCB.getthreshold() * 100.0));
+				thresholdSlider = new FineControlSlider(JSlider.HORIZONTAL, 10, 90, (int) (gCB.getthreshold() * 100.0));
 				thresholdSlider.addChangeListener(PatternGeneratorControlPanel.this);
 				thresholdField = new JTextField();
 				thresholdField.setHorizontalAlignment(JTextField.CENTER);
@@ -101,7 +106,7 @@ public class PatternGeneratorControlPanel implements ChangeListener {
 						try {
 							double val = Double.parseDouble(thresholdField.getText().replaceAll("[^0-9.\\-]", ""));
 							int sliderVal = (int) Math.round(val * 100.0);
-							sliderVal = Math.max(0, Math.min(50, sliderVal));
+							sliderVal = Math.max(10, Math.min(90, sliderVal));
 							thresholdSlider.setValue(sliderVal);
 							gCB.setthreshold(sliderVal / 100.0);
 							updateThresholdLabel();
@@ -112,6 +117,25 @@ public class PatternGeneratorControlPanel implements ChangeListener {
 				});
 				updateThresholdLabel();
 				frame.add(buildSliderPanel(thresholdField, thresholdSlider));
+
+				// Slope (trigger edge) selector
+				String[] slopeNames = { "Positive", "Negative", "Both" };
+				JComboBox<String> slopeCombo = new JComboBox<>(slopeNames);
+				slopeCombo.setSelectedIndex(gCB.getSlope());
+				slopeCombo.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						gCB.setSlope(slopeCombo.getSelectedIndex());
+					}
+				});
+				JPanel slopePanel = new JPanel();
+				slopePanel.setLayout(new BoxLayout(slopePanel, BoxLayout.X_AXIS));
+				slopePanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+				slopePanel.add(Box.createRigidArea(new Dimension(5, 4)));
+				slopePanel.add(new JLabel("Trigger Slope: "));
+				slopePanel.add(slopeCombo);
+				slopePanel.add(Box.createRigidArea(new Dimension(5, 4)));
+				frame.add(slopePanel);
 
 				// Step sliders
 				for (int i = 0; i < MAX_STEPS; i++) {

@@ -415,6 +415,16 @@ public class SpinCADJsonSerializer {
 						params.put(field.getName(), value);
 					} else if (ft == String.class) {
 						params.put(field.getName(), value);
+					} else if (ft == double[].class) {
+						double[] arr = (double[]) value;
+						List<Object> list = new ArrayList<>();
+						for (double d : arr) list.add(d);
+						params.put(field.getName(), list);
+					} else if (ft == int[].class) {
+						int[] arr = (int[]) value;
+						List<Object> list = new ArrayList<>();
+						for (int v : arr) list.add(v);
+						params.put(field.getName(), list);
 					}
 				} catch (IllegalAccessException e) {
 					System.err.println("WARNING: Could not read field " + field.getName() +
@@ -455,6 +465,20 @@ public class SpinCADJsonSerializer {
 						field.setBoolean(block, (Boolean) value);
 					} else if (ft == String.class) {
 						field.set(block, value);
+					} else if (ft == double[].class && value instanceof List) {
+						@SuppressWarnings("unchecked")
+						List<Object> list = (List<Object>) value;
+						double[] arr = (double[]) field.get(block);
+						for (int i = 0; i < Math.min(arr.length, list.size()); i++) {
+							arr[i] = toDouble(list.get(i));
+						}
+					} else if (ft == int[].class && value instanceof List) {
+						@SuppressWarnings("unchecked")
+						List<Object> list = (List<Object>) value;
+						int[] arr = (int[]) field.get(block);
+						for (int i = 0; i < Math.min(arr.length, list.size()); i++) {
+							arr[i] = toInt(list.get(i));
+						}
 					}
 				} catch (Exception e) {
 					System.err.println("WARNING: Could not set field " + fieldName +

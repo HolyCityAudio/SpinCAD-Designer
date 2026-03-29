@@ -33,8 +33,13 @@ public class PatternGeneratorCADBlock extends SpinCADBlock {
 
 	private transient PatternGeneratorControlPanel cp = null;
 
+	public static final int SLOPE_POSITIVE = 0;
+	public static final int SLOPE_NEGATIVE = 1;
+	public static final int SLOPE_BOTH = 2;
+
 	private double threshold = 0.25;
 	private double numSteps = 8;
+	private int slope = SLOPE_POSITIVE;
 	private double[] steps = { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };
 
 	public PatternGeneratorCADBlock(int x, int y) {
@@ -99,92 +104,131 @@ public class PatternGeneratorCADBlock extends SpinCADBlock {
 		}
 
 		if (this.getPin("Trigger").isConnected()) {
-			// === Edge detection ===
-			// Instruction layout after "skp NEG, gateOff":
-			//   [1]  rdax gate, -1.0
-			//   [2]  skp NEG, gateHigh
-			//   [3]  ldax counter
-			//   [4..3+2*(n-1)]  (n-1) x {sof, skp NEG}    = 2*(n-1) instr
-			//   [+1] sof 0.0, step[n] (default)
-			//   [+2] skp RUN, gotStep
-			//   sel labels: (n-2) x {sof, skp RUN} + 1 sof = 2*(n-2)+1 = 2n-3 instr
-			//   [+1] wrax hold, 0  (gotStep)
-			//   [+3] rdax counter / sof stepWidth / wrax counter
-			//   [+3] sof -wrapBase / rdax rangeVal / skp NEG
-			//   [+2] clr / wrax counter
-			//   [+3] sof 0.999 / wrax gate / skp RUN  (gateHigh)
+			boolean isBoth = (slope == SLOPE_BOTH);
+
+			// === Edge detection preamble ===
+			// The cascade + counter + wrap sections are identical for all modes.
+			// Cascade total: ldax(1) + pairs(2*(n-1)) + default(2) + sel(2n-3) + gotStep(1) = 4n-1
+			// Counter advance: 8 instructions
 			//
-			// Totals (instructions between skip and target):
-			//   cascade = 1 + 2*(n-1) + 2 = 2n+1
-			//   sel     = 2n-3
-			//   skipToGateOff  = 2 + cascade + sel + 1 + 3 + 3 + 2 + 3 = 4n+12
-			//   skipToGateHigh = cascade + sel + 1 + 3 + 3 + 2 = 4n+7
-			// Verified: n=8 → skipToGateOff=44, skipToGateHigh=39 (matches known-good values)
+			// Positive/Negative: 5-instruction preamble, 7-instruction postamble
+			//   skipToGateOff  = gateCheck(2) + cascade(4n-1) + counter(8) + gateHigh(3) = 4n+12
+			//   skipToGateHigh = cascade(4n-1) + counter(8) = 4n+7
+			//
+			// Both: 11-instruction preamble, 7-instruction postamble
+			//   skipToNoEdge = cascade(4n-1) + counter(8) + updateGate(3) = 4n+10
 
-			sfxb.loadAccumulator(trigger);
-			sfxb.scaleOffset(1.0, -threshold);
-			sfxb.skip(NEG, 4 * nSteps + 12);               // → gateOff
+			if (isBoth) {
+				// "Both" edge detection: trigger on any threshold crossing.
+				// Uses tempState register to track above/below, compares with gate.
+				int tempState = sfxb.allocateReg();
+				sfxb.loadAccumulator(trigger);
+				sfxb.scaleOffset(1.0, -threshold);           // ACC = trigger - threshold
+				sfxb.skip(NEG, 2);                            // below → skip to clr
+				sfxb.scaleOffset(0.0, 0.9990234375);         // above: state = 0.999
+				sfxb.skip(RUN, 1);                            // skip past clr
+				sfxb.clear();                                  // below: state = 0
+				sfxb.writeRegister(tempState, 1.0);           // save state, keep in ACC
+				sfxb.readRegister(gate, -1.0);                // ACC = state - gate
+				sfxb.absa();                                   // ACC = |state - gate|
+				sfxb.scaleOffset(1.0, -0.5);                  // ACC = |diff| - 0.5
+				sfxb.skip(NEG, 4 * nSteps + 10);             // → noEdge (no crossing)
 
-			sfxb.readRegister(gate, -1.0);
-			sfxb.skip(NEG, 4 * nSteps + 7);                 // → gateHigh
+				// === Step selection cascade (shared) ===
+				generateCascade(sfxb, nSteps, stepWidth, counter, hold);
 
-			// === Step selection cascade ===
-			// All cascade SKP NEGs have the same skip distance: 2*(n-1)
-			// Verified: n=8 → cascadeSkip=14 (matches known-good value)
-			sfxb.loadAccumulator(counter);
-			for (int i = 0; i < nSteps - 1; i++) {
-				sfxb.scaleOffset(1.0, -stepWidth);
-				sfxb.skip(NEG, 2 * nSteps - 2);             // → sel[i]
-			}
+				// === Counter advance + wrap (shared) ===
+				generateCounterAdvance(sfxb, nSteps, stepWidth, counter, rangeVal);
 
-			// Default: last step value
-			sfxb.scaleOffset(0.0, steps[nSteps - 1]);
-			sfxb.skip(RUN, 2 * nSteps - 3);                 // → gotStep
+				// === Update gate to current state (edge path) ===
+				sfxb.loadAccumulator(tempState);
+				sfxb.writeRegister(gate, 0);
+				sfxb.skip(RUN, 2);                            // → done
 
-			// === Sel labels ===
-			for (int i = 0; i < nSteps - 1; i++) {
-				sfxb.scaleOffset(0.0, steps[i]);
-				if (i < nSteps - 2) {
-					sfxb.skip(RUN, 2 * (nSteps - i - 3) + 1); // → gotStep
+				// === noEdge: update gate to current state ===
+				sfxb.loadAccumulator(tempState);
+				sfxb.writeRegister(gate, 0);
+			} else {
+				// Positive or Negative edge detection.
+				// Positive: trigger when signal rises above threshold.
+				// Negative: trigger when signal drops below threshold
+				//   (invert comparison so "active zone" is below threshold).
+				sfxb.loadAccumulator(trigger);
+				if (slope == SLOPE_NEGATIVE) {
+					sfxb.scaleOffset(-1.0, threshold);        // ACC = threshold - trigger
+				} else {
+					sfxb.scaleOffset(1.0, -threshold);        // ACC = trigger - threshold
 				}
-				// Last sel falls through to gotStep
+				sfxb.skip(NEG, 4 * nSteps + 12);             // → gateOff
+
+				sfxb.readRegister(gate, -1.0);
+				sfxb.skip(NEG, 4 * nSteps + 7);              // → gateHigh
+
+				// === Step selection cascade (shared) ===
+				generateCascade(sfxb, nSteps, stepWidth, counter, hold);
+
+				// === Counter advance + wrap (shared) ===
+				generateCounterAdvance(sfxb, nSteps, stepWidth, counter, rangeVal);
+
+				// === gateHigh ===
+				sfxb.scaleOffset(0.0, 0.9990234375);
+				sfxb.writeRegister(gate, 0);
+				sfxb.skip(RUN, 2);                            // → done
+
+				// === gateOff ===
+				sfxb.clear();
+				sfxb.writeRegister(gate, 0);
 			}
 
-			// === gotStep ===
-			sfxb.writeRegister(hold, 0);
-
-			// === Counter advance ===
-			sfxb.readRegister(counter, 1.0);
-			sfxb.scaleOffset(1.0, stepWidth);
-			sfxb.writeRegister(counter, 1.0);
-
-			// === Wrap check ===
-			// Range=0 → wrap at MIN_STEPS*stepWidth, Range=1 → wrap at nSteps*stepWidth
-			double wrapBase = MIN_STEPS * stepWidth;
-			if (wrapBase > 0.9990234375) wrapBase = 0.9990234375;
-			double wrapScale = (nSteps - MIN_STEPS) * stepWidth * 0.999;
-
-			sfxb.scaleOffset(1.0, -wrapBase);
-			sfxb.readRegister(rangeVal, -wrapScale);
-			sfxb.skip(NEG, 2);                               // → gateHigh
-			sfxb.clear();
-			sfxb.writeRegister(counter, 0);
-
-			// === gateHigh ===
-			sfxb.scaleOffset(0.0, 0.9990234375);
-			sfxb.writeRegister(gate, 0);
-			sfxb.skip(RUN, 2);                               // → done
-
-			// === gateOff ===
-			sfxb.clear();
-			sfxb.writeRegister(gate, 0);
-
-			// === done ===
+			// === done (shared) ===
 			sfxb.readRegister(hold, 1.0);
 			sfxb.writeRegister(output, 0);
 
 			this.getPin("Level").setRegister(output);
 		}
+	}
+
+	private void generateCascade(SpinFXBlock sfxb, int nSteps, double stepWidth, int counter, int hold) {
+		// All cascade SKP NEGs have the same skip distance: 2*(n-1)
+		sfxb.loadAccumulator(counter);
+		for (int i = 0; i < nSteps - 1; i++) {
+			sfxb.scaleOffset(1.0, -stepWidth);
+			sfxb.skip(NEG, 2 * nSteps - 2);                 // → sel[i]
+		}
+
+		// Default: last step value
+		sfxb.scaleOffset(0.0, steps[nSteps - 1]);
+		sfxb.skip(RUN, 2 * nSteps - 3);                     // → gotStep
+
+		// === Sel labels ===
+		for (int i = 0; i < nSteps - 1; i++) {
+			sfxb.scaleOffset(0.0, steps[i]);
+			if (i < nSteps - 2) {
+				sfxb.skip(RUN, 2 * (nSteps - i - 3) + 1);   // → gotStep
+			}
+			// Last sel falls through to gotStep
+		}
+
+		// === gotStep ===
+		sfxb.writeRegister(hold, 0);
+	}
+
+	private void generateCounterAdvance(SpinFXBlock sfxb, int nSteps, double stepWidth,
+			int counter, int rangeVal) {
+		sfxb.readRegister(counter, 1.0);
+		sfxb.scaleOffset(1.0, stepWidth);
+		sfxb.writeRegister(counter, 1.0);
+
+		// Wrap check: Range=0 → wrap at MIN_STEPS*stepWidth, Range=1 → wrap at nSteps*stepWidth
+		double wrapBase = MIN_STEPS * stepWidth;
+		if (wrapBase > 0.9990234375) wrapBase = 0.9990234375;
+		double wrapScale = (nSteps - MIN_STEPS) * stepWidth * 0.999;
+
+		sfxb.scaleOffset(1.0, -wrapBase);
+		sfxb.readRegister(rangeVal, -wrapScale);
+		sfxb.skip(NEG, 2);                                   // → postamble
+		sfxb.clear();
+		sfxb.writeRegister(counter, 0);
 	}
 
 	// Getters and setters for control panel
@@ -193,6 +237,9 @@ public class PatternGeneratorCADBlock extends SpinCADBlock {
 
 	public void setnumSteps(double val) { numSteps = val; }
 	public double getnumSteps() { return numSteps; }
+
+	public void setSlope(int val) { slope = val; }
+	public int getSlope() { return slope; }
 
 	public void setstep(int index, double val) {
 		if (index >= 0 && index < MAX_STEPS) steps[index] = val;
