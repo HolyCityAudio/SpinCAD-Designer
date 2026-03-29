@@ -31,9 +31,10 @@
 			private StutterControlPanel cp = null;
 			
 			private int output;
+			private int fadeFilt;
+			private int fadeOut;
 			private double delayLength = 32767;
 			private double fadeTimeFilt = 0.0015;
-			private int fadeFilt;
 
 			public StutterCADBlock(int x, int y) {
 				super(x, y);
@@ -43,6 +44,7 @@
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
 				addControlInputPin(this, "Stutter");
+				addControlOutputPin(this, "Fade_Filter");
 			// if any control panel elements declared, set hasControlPanel to true
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -84,6 +86,8 @@
 			
 			// finally, generate the instructions
 			output = sfxb.allocateReg();
+			fadeFilt = sfxb.allocateReg();
+			fadeOut = sfxb.allocateReg();
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayRam", delayLength); 
 			if(this.getPin("Input").isConnected() == true) {
@@ -106,7 +110,6 @@
 			}
 			
 			} else {
-			fadeFilt = sfxb.allocateReg();
 			sfxb.readRegister(stutter, 1.0);
 			sfxb.scaleOffset(1.0, -0.5);
 			sfxb.skip(NEG, 2);
@@ -115,11 +118,14 @@
 			sfxb.scaleOffset(0.0, 0.9990234375);
 			sfxb.readRegisterFilter(fadeFilt, fadeTimeFilt);
 			sfxb.writeRegister(fadeFilt, 0.0000000000);
-			sfxb.FXreadDelay("delayRam", 0, -0.5000000000);
-			sfxb.FXreadDelay("delayRam#", 0, 0.5000000000);
+			sfxb.FXreadDelay("delayRam", 0, -1.0);
+			sfxb.FXreadDelay("delayRam#", 0, 1.0);
 			sfxb.mulx(fadeFilt);
-			sfxb.FXreadDelay("delayRam", 0, 0.5000000000);
+			sfxb.FXreadDelay("delayRam", 0, 1.0);
 			sfxb.writeRegister(output, 0.0000000000);
+			sfxb.readRegister(fadeFilt, 1.0);
+			sfxb.writeRegister(fadeOut, 0.0);
+			this.getPin("Fade_Filter").setRegister(fadeOut);
 			}
 			
 			}

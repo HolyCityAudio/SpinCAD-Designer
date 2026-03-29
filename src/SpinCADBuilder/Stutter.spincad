@@ -2,11 +2,13 @@
 @color "0x6060c4"  
 @audioInput input Input
 @audioOutput output Output
-@controlInput stutter Stutter  
-; @controlInput delay Delay
+@controlInput stutter Stutter
+@controlOutput fadeOut 'Fade_Filter'
 
-;REGISTERS 
-equ   output  reg0       
+;REGISTERS
+equ   output  reg0
+equ   fadeFilt reg1
+equ   fadeOut reg2
 
 equ delayLength 32767 
 @sliderLabel delayLength 'Delay Time (ms): ' 32 32767 16384 1 0 LENGTHTOTIME
@@ -46,8 +48,6 @@ wrax output, 0.0
 ; fade time is not zero, use smoother filter and crossfade
 @else 
 
-equ fadeFilt reg1
-
 rdax	stutter, 1.0
 sof		1.0, -0.5
 skp		neg, play1
@@ -60,11 +60,15 @@ playDelay1:
 rdfx fadeFilt, fadeTimeFilt
 wrax fadeFilt,0.0000000000
 ;------ Crossfade
-rda  delayRam,-0.5000000000
-rda  delayRam#,0.5000000000
+rda  delayRam,-1.0
+rda  delayRam#,1.0
 mulx fadeFilt
-rda  delayRam,0.5000000000
+rda  delayRam,1.0
 wrax output,0.0000000000
+
+rdax fadeFilt, 1.0
+wrax fadeOut, 0.0
+@setOutputPin 'Fade_Filter' fadeOut
 
 @endif 	; isEqualTo fadeTime 0
 
