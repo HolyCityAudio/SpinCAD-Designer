@@ -588,14 +588,17 @@ public class SpinCADBlock extends SpinFXBlock {
 			return 1 - Math.pow(Math.E, -omega);
 		} else 
 		{
-			return -1.0;
+			return 0.0;
 		}
 	}
 
 	//	This takes filter coefficient and converts to rise time in seconds 
 	public static double filtToTime(double filt) {
+		if (filt == 0.0) {
+			return 0.0;
+		}
 		double freq = -(Math.log(1 - filt)) * ElmProgram.getSamplerate()/(2 * Math.PI);
-		return 0.35/freq;	
+		return 0.35/freq;
 	}
 
 	public static int logvalToSlider(double value, double multiplier) {

@@ -1,0 +1,93 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "stutter.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1064",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 290,
+      "y": 30,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 123,
+      "y": 163,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.StutterCADBlock",
+      "blockNum": 2,
+      "x": 281,
+      "y": 157,
+      "name": "Stutter",
+      "params": {
+        "output": 32,
+        "delayLength": 32767.0,
+        "fadeTimeFilt": 0.0015,
+        "fadeFilt": 33
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 3,
+      "x": 290,
+      "y": 345,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 2,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 2,
+      "toPin": "Stutter"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Output",
+      "toBlockIndex": 3,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 2",
+      "toBlockIndex": 3,
+      "toPin": "Input 2"
+    }
+  ]
+}
