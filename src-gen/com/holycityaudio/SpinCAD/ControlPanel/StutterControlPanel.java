@@ -116,7 +116,7 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					fadeTimeFiltSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (50 * 1.0), (int) SpinCADBlock.filtToTime(gCB.getfadeTimeFilt() * 1.0));
+					fadeTimeFiltSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 1.0),(int) (50 * 1.0), (int) (SpinCADBlock.filtToTime(gCB.getfadeTimeFilt()) * 1000 * 1.0));
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
@@ -132,8 +132,8 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(fadeTimeFiltField.getText().replaceAll("[^0-9.\\-]", ""));
-						double filt = SpinCADBlock.timeToFilt(val);
-						int sliderVal = (int) Math.round(filt * 1.0);
+						double filt = SpinCADBlock.timeToFilt(val / 1000.0);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(fadeTimeFiltSlider.getMinimum(), Math.min(fadeTimeFiltSlider.getMaximum(), sliderVal));
 						fadeTimeFiltSlider.setValue(sliderVal);
 						gCB.setfadeTimeFilt(filt);
@@ -173,7 +173,7 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == fadeTimeFiltSlider) {
-			gCB.setfadeTimeFilt((double) SpinCADBlock.timeToFilt(fadeTimeFiltSlider.getValue()/1.0));
+			gCB.setfadeTimeFilt((double) SpinCADBlock.timeToFilt(fadeTimeFiltSlider.getValue()/1.0/1000.0));
 				updatefadeTimeFiltLabel();
 			}
 			}
@@ -197,7 +197,7 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		
 		private void updatefadeTimeFiltLabel() {
-		fadeTimeFiltField.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt())) + " ms");		
+		fadeTimeFiltField.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt()) * 1000) + " ms");		
 		}		
 		
 		class MyWindowListener implements WindowListener

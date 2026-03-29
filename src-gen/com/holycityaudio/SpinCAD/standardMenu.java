@@ -74,6 +74,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.New_OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.PatternGeneratorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
@@ -802,6 +803,15 @@
 		}
 	});
 	mn_control.add(mntm_SampleHold);
+		
+	final JMenuItem mntm_PatternGenerator = new JMenuItem("Pattern Gen");
+	mntm_PatternGenerator.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new PatternGeneratorCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_PatternGenerator);
 		
 	final JMenuItem mntm_tremolizer = new JMenuItem("Tremolizer");
 	mntm_tremolizer.addActionListener(new ActionListener() {

@@ -1,0 +1,126 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "pattern generator.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1064",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    26.0,
+    0.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock",
+      "blockNum": 0,
+      "x": 104,
+      "y": 133,
+      "name": "LFO 0",
+      "params": {
+        "lfoRate": 108,
+        "lfoWidth": 32767,
+        "lfoSel": 0,
+        "outputRange": 1
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 93,
+      "y": 220,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.PatternGeneratorCADBlock",
+      "blockNum": 2,
+      "x": 237,
+      "y": 130,
+      "name": "PatternGenerator",
+      "params": {
+        "output": 33,
+        "gate": 34,
+        "counter": 35,
+        "hold": 36,
+        "rangeVal": 37,
+        "threshold": 0.25,
+        "step1": 0.19,
+        "step2": 0.74,
+        "step3": 0.4,
+        "step4": 0.0,
+        "step5": 0.74,
+        "step6": 0.4,
+        "step7": 0.999,
+        "step8": 0.23
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock",
+      "blockNum": 3,
+      "x": 396,
+      "y": 125,
+      "name": "Smoother",
+      "params": {
+        "filtReg": 39,
+        "filt": 0.0024337107894708554
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 4,
+      "x": 404,
+      "y": 319,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Sine",
+      "toBlockIndex": 2,
+      "toPin": "Trigger"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 2,
+      "toPin": "Range"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Level",
+      "toBlockIndex": 3,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Level",
+      "toBlockIndex": 4,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Control Output",
+      "toBlockIndex": 4,
+      "toPin": "Input 2"
+    }
+  ]
+}

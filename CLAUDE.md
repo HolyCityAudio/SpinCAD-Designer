@@ -28,6 +28,7 @@ Java Swing application for creating and simulating audio patches for the Spin FV
 - Generator source: `SpinCAD-Builder/com.holycityaudio.spincad/src/com/holycityaudio/spincad/generator/`
 - When a change is needed for a generated block, edit the `.spincad` file in `src/SpinCADBuilder/`
 - Some blocks exist only in `src/` (not generated) — those can be edited directly
+- code regeneration from .spincad to .java must be triggered by "Project->Clean" in Eclipse.
 
 ## Key Packages
 

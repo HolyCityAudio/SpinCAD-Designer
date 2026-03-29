@@ -121,7 +121,7 @@
 //@menuitem "Pluck" Pluck
 @menuitem "Ramp Sample/Hold" SampleHold
 //@menuitem "4-Phase Sample/Hold" Sine_Sample_Hold
-//@menuitem "Pattern Gen" PatternGenerator
+@menuitem "Pattern Gen" PatternGenerator
 @menuitem "Tremolizer" tremolizer
 //@menuitem "Peak/Envelope" Peak_Envelope
 @menuitem "Invert" InvertControl
