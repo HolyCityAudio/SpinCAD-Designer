@@ -50,20 +50,9 @@
       "y": 130,
       "name": "PatternGenerator",
       "params": {
-        "output": 33,
-        "gate": 34,
-        "counter": 35,
-        "hold": 36,
-        "rangeVal": 37,
-        "threshold": 0.25,
-        "step1": 0.19,
-        "step2": 0.74,
-        "step3": 0.4,
-        "step4": 0.0,
-        "step5": 0.74,
-        "step6": 0.4,
-        "step7": 0.999,
-        "step8": 0.23
+        "threshold": 0.06,
+        "numSteps": 8.0,
+        "slope": 2
       }
     },
     {
@@ -73,7 +62,7 @@
       "y": 125,
       "name": "Smoother",
       "params": {
-        "filtReg": 39,
+        "filtReg": 40,
         "filt": 0.0024337107894708554
       }
     },

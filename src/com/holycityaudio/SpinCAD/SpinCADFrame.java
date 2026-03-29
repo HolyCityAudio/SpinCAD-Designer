@@ -154,7 +154,49 @@ public class SpinCADFrame extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+	public static void logCrash(String context, Throwable e) {
+		try {
+			java.io.File logFile = new java.io.File(System.getProperty("user.home"), "spincad-crash.log");
+			java.io.PrintWriter pw = new java.io.PrintWriter(
+				new java.io.FileWriter(logFile, true));
+			pw.println("=== " + new java.util.Date() + " === " + context + " ===");
+			e.printStackTrace(pw);
+			pw.println();
+			pw.close();
+			System.err.println("Crash logged to: " + logFile.getAbsolutePath());
+		} catch (Exception ex) {
+			// last resort
+		}
+		System.err.println(context + ": " + e);
+		e.printStackTrace();
+	}
+
 	public static void main(String[] args) {
+		// Install global handler so uncaught exceptions are always visible
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				logCrash("Uncaught exception on thread " + t.getName(), e);
+			}
+		});
+		// Shutdown hook to detect unexpected JVM exits
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			System.out.println("=== JVM SHUTDOWN HOOK FIRED ===");
+			logCrash("JVM SHUTDOWN", new Exception("Shutdown hook - trace of all threads"));
+			// Dump all thread stack traces
+			try {
+				java.io.File logFile = new java.io.File(System.getProperty("user.home"), "spincad-crash.log");
+				java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(logFile, true));
+				pw.println("=== Thread dump at shutdown ===");
+				for (java.util.Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+					pw.println("Thread: " + entry.getKey().getName() + " state=" + entry.getKey().getState());
+					for (StackTraceElement ste : entry.getValue()) {
+						pw.println("  at " + ste);
+					}
+				}
+				pw.close();
+			} catch (Exception ex) { ex.printStackTrace(); }
+		}));
 		checkJavaVersion();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -896,63 +938,67 @@ public class SpinCADFrame extends JFrame {
 	// edit functions cut/copy/paste/undo
 
 	public void saveModel() {
-		try { 
+		try {
 			modelSave = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(modelSave); 
-			oos.writeObject(getPatch().patchModel); 
-			oos.flush(); 
-			oos.close(); 
-		} 
-		catch(Exception e) { 
-			System.out.println("saveModel: Exception during serialization: " + e); 
-		} 
+			ObjectOutputStream oos = new ObjectOutputStream(modelSave);
+			oos.writeObject(getPatch().patchModel);
+			oos.flush();
+			oos.close();
+		}
+		catch(Throwable e) {
+			logCrash("saveModel", e);
+		}
 		canUndo = 1;
 	}
 
 	public void saveModelToPasteBuffer() {
-		try { 
+		try {
 			pasteBuffer = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(pasteBuffer); 
-			oos.writeObject(getPatch().patchModel); 
-			oos.flush(); 
-			oos.close(); 
-		} 
-		catch(Exception e) { 
-			System.out.println("saveModelToPasteBuffer: Exception during serialization: " + e); 
-		} 
+			ObjectOutputStream oos = new ObjectOutputStream(pasteBuffer);
+			oos.writeObject(getPatch().patchModel);
+			oos.flush();
+			oos.close();
+		}
+		catch(Throwable e) {
+			logCrash("saveModelToPasteBuffer", e);
+		}
 		canUndo = 1;
 	}
 
 	public void delete() {
-		saveModel();
-		SpinCADBlock block;
+		try {
+			saveModel();
+			SpinCADBlock block;
 
-		// If deleting a feedback block, also select its partner
-		for (SpinCADBlock b : getPatch().patchModel.blockList) {
-			if (b.selected) {
-				if (b instanceof FBInputCADBlock || b instanceof FBOutputCADBlock) {
-					for (SpinCADBlock partner : getPatch().patchModel.blockList) {
-						if (partner != b && partner.getIndex() == b.getIndex()) {
-							if ((b instanceof FBInputCADBlock && partner instanceof FBOutputCADBlock) ||
-								(b instanceof FBOutputCADBlock && partner instanceof FBInputCADBlock)) {
-								partner.selected = true;
+			// If deleting a feedback block, also select its partner
+			for (SpinCADBlock b : getPatch().patchModel.blockList) {
+				if (b.selected) {
+					if (b instanceof FBInputCADBlock || b instanceof FBOutputCADBlock) {
+						for (SpinCADBlock partner : getPatch().patchModel.blockList) {
+							if (partner != b && partner.getIndex() == b.getIndex()) {
+								if ((b instanceof FBInputCADBlock && partner instanceof FBOutputCADBlock) ||
+									(b instanceof FBOutputCADBlock && partner instanceof FBInputCADBlock)) {
+									partner.selected = true;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
 
-		Iterator<SpinCADBlock> itr = getPatch().patchModel.blockList.iterator();
-		while(itr.hasNext()) {
-			block = itr.next();
-			if(block.selected == true) {
-				block.deleteControlPanel();
-				deleteBlockConnection(getPatch().patchModel, block);
-				itr.remove();
+			Iterator<SpinCADBlock> itr = getPatch().patchModel.blockList.iterator();
+			while(itr.hasNext()) {
+				block = itr.next();
+				if(block.selected == true) {
+					block.deleteControlPanel();
+					deleteBlockConnection(getPatch().patchModel, block);
+					itr.remove();
+				}
 			}
+			updateAll();
+		} catch (Throwable e) {
+			logCrash("delete", e);
 		}
-		updateAll();
 	}
 
 	public void undo() {
@@ -964,11 +1010,9 @@ public class SpinCADFrame extends JFrame {
 				is.close(); 
 				// System.out.println("m: " + m); 
 			} 
-			catch(Exception e) { 
-				System.out.println("Undo: Exception during deserialization: " + 
-						e); 
-				System.exit(0); 
-			} 
+			catch(Throwable e) {
+				logCrash("undo", e);
+			}
 			canUndo = 0;		
 		}
 		contentPane.repaint();
@@ -987,11 +1031,10 @@ public class SpinCADFrame extends JFrame {
 			is.close(); 
 			// System.out.println("m: " + m); 
 		} 
-		catch(Exception e) { 
-			System.out.println("paste: Exception during deserialization: " + 
-					e); 
-			System.exit(0); 
-		} 
+		catch(Throwable e) {
+			logCrash("paste", e);
+			return;
+		}
 		Iterator<SpinCADBlock> itr = copyBuffer.blockList.iterator();
 		SpinCADBlock b = new SpinCADBlock(0,0);
 		// delete all pin connections from unselected blocks
