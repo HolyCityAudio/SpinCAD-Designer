@@ -42,10 +42,15 @@ public class SpinSimulator extends Thread {
 	int pot2 = 0;
 	volatile boolean runSimulator = true;
 	boolean loopMode = true;
+	boolean realTimeMode = false;
 	String inputFilename = null;
 	String outputFilename = null;
 	LinkedList<AudioSink> audioSinks = null;
 	public LevelLogger scope = null;
+
+	// Scope probe registers — set by SpinCADSimulator when a ScopeProbeCADBlock is present
+	int scopeReg1 = -1;
+	int scopeReg2 = -1;
 
 	/**
 	 * Creates a simulator.
@@ -146,8 +151,12 @@ public class SpinSimulator extends Thread {
 		// process file
 		int inBuf[] = new int[8192];
 		int outBuf[] = new int[8192];
-		System.out.println("processing file");
+		int scopeBuf[] = new int[8192];
+		boolean hasProbes = (scopeReg1 >= 0 || scopeReg2 >= 0);
+		System.out.println("processing file: loopMode=" + loopMode + " realTimeMode=" + realTimeMode
+				+ " output=" + (outputFilename == null ? "SoundCard" : "File:" + outputFilename));
 		while (runSimulator) {
+			long bufStartNanos = realTimeMode ? System.nanoTime() : 0;
 			int ret = input.read(inBuf);
 			if (ret < 1) {
 				runSimulator = false;
@@ -157,7 +166,6 @@ public class SpinSimulator extends Thread {
 				}
 
 				for (int i = 0; i < ret; i += 2) {
-					// for(int i = 0; i < 20; i += 2) {
 					state.setRegVal(ElmProgram.ADCL, inBuf[i]);
 					state.setRegVal(ElmProgram.ADCR, inBuf[i + 1]);
 					state.setRegVal(ElmProgram.POT0, pot0);
@@ -166,17 +174,34 @@ public class SpinSimulator extends Thread {
 					processSample();
 					outBuf[i] = state.getRegVal(ElmProgram.DACL);
 					outBuf[i + 1] = state.getRegVal(ElmProgram.DACR);
-					// uncomment these two lines to bypass the effect to check
-					// the audio I/O
-					// outBuf[i] = inBuf[i];
-					// outBuf[i + 1] = inBuf[i + 1];
+					if (hasProbes) {
+						scopeBuf[i]     = (scopeReg1 >= 0) ? state.getRegVal(scopeReg1) : 0;
+						scopeBuf[i + 1] = (scopeReg2 >= 0) ? state.getRegVal(scopeReg2) : 0;
+					}
 				}
 
+				// write scope probe data before writeDac so it's available for overlay rendering
+				if (hasProbes && scope != null) {
+					scope.writeScopeData(scopeBuf, ret);
+				}
 				// write all the outputs
 				for (int i = 0; i < audioSinks.size(); i++) {
 					audioSinks.get(i).writeDac(outBuf, ret);
 				}
 				totalSamps += outBuf.length / 2;
+
+				// Real-time throttle: sleep to match wall-clock time
+				if (realTimeMode && runSimulator) {
+					long samplesInBuf = ret / 2;
+					long targetNanos = (samplesInBuf * 1000000000L) / ElmProgram.SAMPLERATE;
+					long elapsed = System.nanoTime() - bufStartNanos;
+					long sleepNanos = targetNanos - elapsed;
+					if (sleepNanos > 0) {
+						try {
+							Thread.sleep(sleepNanos / 1000000, (int)(sleepNanos % 1000000));
+						} catch (InterruptedException ignored) {}
+					}
+				}
 			}
 		}
 
@@ -299,6 +324,15 @@ if (false) {
 
 	public void setLoopMode(boolean loopMode) {
 		this.loopMode = loopMode;
+	}
+
+	public void setRealTimeMode(boolean realTimeMode) {
+		this.realTimeMode = realTimeMode;
+	}
+
+	public void setScopeRegisters(int reg1, int reg2) {
+		this.scopeReg1 = reg1;
+		this.scopeReg2 = reg2;
 	}
 
 	/**

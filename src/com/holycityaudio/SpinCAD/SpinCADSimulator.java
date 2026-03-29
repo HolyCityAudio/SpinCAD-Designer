@@ -93,6 +93,10 @@ public class SpinCADSimulator {
 			}
 		});
 		prefs = Preferences.userNodeForPackage(this.getClass());
+		// Restore output file mode from preferences
+		if (prefs.getBoolean("OUTPUT_FILE_MODE", false)) {
+			setOutputFileMode(true);
+		}
 	}
 
 	public boolean isSimRunning() { return simRunning; }
@@ -116,7 +120,41 @@ public class SpinCADSimulator {
 	}
 
 	public void setOutputFileMode(Boolean state) {
-		outputFile = state ? prefs.get("SIMULATOR_OUT_FILE", "") : null;
+		if (state) {
+			String path = prefs.get("SIMULATOR_OUT_FILE", "");
+			outputFile = (path != null && !path.isEmpty()) ? path : null;
+		} else {
+			outputFile = null;
+		}
+	}
+
+	// Track whether scope probes are active for toolbar button visibility
+	boolean probe1Active = false;
+	boolean probe2Active = false;
+
+	private void scanForScopeProbe() {
+		probe1Active = false;
+		probe2Active = false;
+		if (patch == null || patch.patchModel == null) return;
+		java.util.Iterator<SpinCADBlock> itr = patch.patchModel.blockList.iterator();
+		while (itr.hasNext()) {
+			SpinCADBlock b = itr.next();
+			if (b instanceof com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock) {
+				com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock probe =
+						(com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock) b;
+				int reg1 = probe.getScope1Reg();
+				int reg2 = probe.getScope2Reg();
+				probe1Active = (reg1 >= 0);
+				probe2Active = (reg2 >= 0);
+				sim.setScopeRegisters(reg1, reg2);
+				if (sim.scope != null) {
+					sim.scope.setProbe1Active(probe1Active);
+					sim.scope.setProbe2Active(probe2Active);
+				}
+				break;  // only use the first probe block
+			}
+		}
+		stb.updateProbeButtons(probe1Active, probe2Active);
 	}
 
 	// ======================================================================================================
@@ -220,7 +258,29 @@ public class SpinCADSimulator {
 								testWavFileName, outputFile,
 								patch.getPotVal(0), patch.getPotVal(1), patch.getPotVal(2));
 
+						// Apply loop mode and real-time mode from preferences
+						boolean realTime = prefs.getBoolean("REALTIME_FILE_SIM", false);
+						if (outputFile != null && realTime) {
+							sim.setLoopMode(true);
+							sim.setRealTimeMode(true);
+							System.out.println("Simulator: File mode (real-time), loop=true, outputFile=" + outputFile);
+						} else if (outputFile != null) {
+							sim.setLoopMode(false);
+							sim.setRealTimeMode(false);
+							System.out.println("Simulator: File mode (fast), loop=false, outputFile=" + outputFile);
+						} else {
+							// Sound Card mode: always loop (sound card blocks, needs continuous audio)
+							sim.setLoopMode(true);
+							sim.setRealTimeMode(false);
+							System.out.println("Simulator: Sound Card mode, loop=true");
+						}
+
 						sim.showDisplay(scopePanel);
+
+						// Scan for ScopeProbeCADBlock and configure scope registers
+						// (must be after showDisplay which creates the LevelLogger)
+						scanForScopeProbe();
+
 						// Apply current display mode (scope or logger)
 						if(displayMode == 1) {
 							sim.setDisplayMode(1);
@@ -400,11 +460,18 @@ public class SpinCADSimulator {
 		final Color MODE_SCOPE_COLOR  = new Color(60, 80, 130);
 		final Color MODE_LOGGER_COLOR = new Color(100, 60, 120);
 
+		final Color PROBE1_COLOR = new Color(0, 160, 180);    // cyan
+		final Color PROBE2_COLOR = new Color(180, 0, 180);    // magenta
+
 		// Custom-painted buttons — immune to LAF background overrides
 		final TraceButton btnModeToggle = new TraceButton("Scope", MODE_SCOPE_COLOR, Color.WHITE);
 		final TraceButton btnCh1Enable = new TraceButton("● Ch 1", CH1_COLOR, Color.WHITE);
 		final TraceButton btnCh2Enable = new TraceButton("● Ch 2", CH2_COLOR, Color.BLACK);
 		final TraceButton btnFreeze    = new TraceButton("❚❚ Freeze", FREEZE_OFF_COLOR, Color.WHITE);
+
+		// Probe buttons — created once, shown/hidden based on ScopeProbeCADBlock presence
+		final TraceButton btnProbe1 = new TraceButton("● Probe 1", PROBE1_COLOR, Color.WHITE);
+		final TraceButton btnProbe2 = new TraceButton("● Probe 2", PROBE2_COLOR, Color.WHITE);
 
 		final JLabel ch1_Vertical_Gain_Label = new JLabel(" Ch 1 Gain: ");
 		String[] gainLabels = new String[] {"1x", "2x", "4x", "8x", "16x"};
@@ -453,6 +520,20 @@ public class SpinCADSimulator {
 			btnFreeze.addActionListener(this);
 			add(btnFreeze);
 
+			addSeparator(new Dimension(6, 24));
+
+			btnProbe1.setToolTipText("Toggle Probe 1 trace on/off");
+			btnProbe1.addActionListener(this);
+			btnProbe1.setVisible(false);
+			add(btnProbe1);
+
+			addSeparator(new Dimension(6, 24));
+
+			btnProbe2.setToolTipText("Toggle Probe 2 trace on/off");
+			btnProbe2.addActionListener(this);
+			btnProbe2.setVisible(false);
+			add(btnProbe2);
+
 			scopeSeparators.add(addScopeSeparator(8));
 
 			ch1_Vertical_Gain.setToolTipText("Ch 1 vertical gain");
@@ -498,6 +579,11 @@ public class SpinCADSimulator {
 			}
 		}
 
+		public void updateProbeButtons(boolean p1Active, boolean p2Active) {
+			btnProbe1.setVisible(p1Active && displayMode == 0);
+			btnProbe2.setVisible(p2Active && displayMode == 0);
+		}
+
 		/** Add a separator and return it so it can be tracked for visibility. */
 		private javax.swing.JToolBar.Separator addScopeSeparator(int width) {
 			javax.swing.JToolBar.Separator sep = new javax.swing.JToolBar.Separator(new Dimension(width, 24));
@@ -519,6 +605,9 @@ public class SpinCADSimulator {
 			// Update mode toggle button
 			btnModeToggle.setLabel(visible ? "Scope" : "Levels");
 			btnModeToggle.setBgColor(visible ? MODE_SCOPE_COLOR : MODE_LOGGER_COLOR);
+			// Show/hide probe buttons based on scope mode and probe presence
+			btnProbe1.setVisible(visible && probe1Active);
+			btnProbe2.setVisible(visible && probe2Active);
 			// Disable Lin/dB toggle in logger mode — logger is always dB
 			btnLinDb.setEnabled(visible);
 			if(!visible) {
@@ -624,6 +713,16 @@ public class SpinCADSimulator {
 				String val = (String) timebase.getSelectedItem();
 				try { applyMsPerDiv(Double.parseDouble(val)); }
 				catch(NumberFormatException ignored) {}
+			} else if(arg0.getSource() == btnProbe1) {
+				if(sim != null && sim.scope != null) {
+					sim.scope.setProbe1Enabled(!sim.scope.isProbe1Enabled());
+					btnProbe1.setEnabled2(sim.scope.isProbe1Enabled());
+				}
+			} else if(arg0.getSource() == btnProbe2) {
+				if(sim != null && sim.scope != null) {
+					sim.scope.setProbe2Enabled(!sim.scope.isProbe2Enabled());
+					btnProbe2.setEnabled2(sim.scope.isProbe2Enabled());
+				}
 			}
 		}
 

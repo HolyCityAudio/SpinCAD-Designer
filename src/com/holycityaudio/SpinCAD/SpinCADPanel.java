@@ -449,6 +449,30 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 			switch(e.getActionCommand()) {
 			case "Control Panel":
 				unselectAll(f);
+				// Reset stale flag: if the control panel was closed but clearCP()
+				// didn't reset controlPanelOpen, detect it here.
+				if (spcb.controlPanelOpen) {
+					boolean stillOpen = false;
+					if (spcb.controlPanelFrame != null && spcb.controlPanelFrame.isDisplayable()) {
+						stillOpen = true;
+					} else {
+						// Generated panels don't set controlPanelFrame — scan windows
+						for (java.awt.Window w : java.awt.Window.getWindows()) {
+							if (w instanceof JFrame && w.isDisplayable() && w.isVisible()) {
+								try {
+									for (java.lang.reflect.Field field : w.getClass().getDeclaredFields()) {
+										if (SpinCADBlock.class.isAssignableFrom(field.getType())) {
+											field.setAccessible(true);
+											if (field.get(w) == spcb) { stillOpen = true; break; }
+										}
+									}
+								} catch (Exception ignored) {}
+								if (stillOpen) break;
+							}
+						}
+					}
+					if (!stillOpen) spcb.controlPanelOpen = false;
+				}
 				if (!spcb.controlPanelOpen) {
 					spcb.controlPanelOpen = true;
 					spcb.editBlock();

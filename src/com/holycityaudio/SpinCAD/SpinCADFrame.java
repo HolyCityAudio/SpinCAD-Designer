@@ -33,14 +33,11 @@ import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -99,7 +96,7 @@ public class SpinCADFrame extends JFrame {
 	}
 
 
-	int buildNum = 1064;
+	int buildNum = 1066;
 
 	// Swing things
 	private JPanel contentPane;
@@ -109,6 +106,10 @@ public class SpinCADFrame extends JFrame {
 	//=====================s====================================================================
 	// pb shows instructions, registers, and RAM used.  It also shows allocation state of LFOs
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
+	// scopeProbeBar: visible only when a ScopeProbeCADBlock is in the patch
+	private final JToolBar scopeProbeBar = new JToolBar();
+	private final JLabel scopeProbeLabel = new JLabel(
+			"  Scope Probe active: optimization disabled for simulation.  Saved Spin ASM and Hex are still optimized.");
 
 	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
@@ -264,6 +265,12 @@ public class SpinCADFrame extends JFrame {
 
 		etb.setFloatable(false);
 		toolBarPanel.add(etb, BorderLayout.SOUTH);
+
+		scopeProbeBar.setFloatable(false);
+		scopeProbeLabel.setForeground(new java.awt.Color(0, 160, 180));
+		scopeProbeBar.add(scopeProbeLabel);
+		scopeProbeBar.setVisible(false);
+		toolBarPanel.add(scopeProbeBar, BorderLayout.SOUTH);
 
 		pb.setFloatable(false);
 		toolBarPanel.add(pb, BorderLayout.SOUTH);
@@ -461,7 +468,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveAsm = new JMenuItem("Save Patch as ASM");
 		mntmSaveAsm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				eeprom.patch[bankIndex].patchModel.sortAlignGen();
+				eeprom.patch[bankIndex].patchModel.sortAlignGen(true);
 				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				f.fileSaveAsm(eeprom.patch[bankIndex]);
 			}
@@ -471,7 +478,7 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmCopyToClipboard = new JMenuItem("Copy ASM to Clipboard");
 		mntmCopyToClipboard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				eeprom.patch[bankIndex].patchModel.sortAlignGen();
+				eeprom.patch[bankIndex].patchModel.sortAlignGen(true);
 				StringSelection stringSelection = new StringSelection (eeprom.patch[bankIndex].cb.getComments() + eeprom.patch[bankIndex].patchModel.getRenderBlock().getProgramListing(1));
 				Clipboard clpbrd = Toolkit.getDefaultToolkit ().getSystemClipboard ();
 				clpbrd.setContents (stringSelection, null);	
@@ -571,6 +578,11 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSaveHex = new JMenuItem("Export Bank to Hex");
 		mntmSaveHex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				for (int i = 0; i < 8; i++) {
+					if (!eeprom.patch[i].isHexFile) {
+						eeprom.patch[i].patchModel.sortAlignGen(true);
+					}
+				}
 				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				f.fileSaveHex(eeprom);
 			}
@@ -581,6 +593,11 @@ public class SpinCADFrame extends JFrame {
 		JMenuItem mntmSavePrj = new JMenuItem("Export Bank to Spin Project");
 		mntmSavePrj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				for (int i = 0; i < 8; i++) {
+					if (!eeprom.patch[i].isHexFile) {
+						eeprom.patch[i].patchModel.sortAlignGen(true);
+					}
+				}
 				SpinCADFile f = new SpinCADFile(SpinCADFrame.this);
 				f.fileSaveSpj(eeprom);
 			}
@@ -595,6 +612,7 @@ public class SpinCADFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				PreferencesDialog dlg = new PreferencesDialog(SpinCADFrame.this);
 				dlg.setVisible(true);
+				updateAll();
 			}
 		});
 		mnFileMenu.add(mntmPreferences);
@@ -665,10 +683,10 @@ public class SpinCADFrame extends JFrame {
 		mntm_Undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
 		mn_edit.add(mntm_Undo);
 
-		JMenu mn_io_mix = new JMenu("Loop");
-		menuBar.add(mn_io_mix);
+		JMenu mn_special = new JMenu("Special");
+		menuBar.add(mn_special);
 
-		final JMenuItem mntm_AddFB = new JMenuItem("Add");
+		final JMenuItem mntm_AddFB = new JMenuItem("Feedback Loop");
 		mntm_AddFB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int i =  eeprom.patch[bankIndex].patchModel.getIndexFB();
@@ -680,107 +698,37 @@ public class SpinCADFrame extends JFrame {
 				eeprom.patch[bankIndex].patchModel.setIndexFB(i + 1);
 			}
 		});
-		mn_io_mix.add(mntm_AddFB);
+		mn_special.add(mntm_AddFB);
+
+		final JMenuItem mntm_AddScopeProbe = new JMenuItem("Scope Probe");
+		mntm_AddScopeProbe.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock probe =
+						new com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock(50, 200);
+				dropBlock(panel, probe);
+			}
+		});
+		mn_special.add(mntm_AddScopeProbe);
 
 		// most of the menu is generated right here.
 		// standardmenu is generated by the spincadmenu DSL
 		new standardMenu(this, panel, menuBar);
 
+		// Restore display preference at startup
+		java.util.prefs.Preferences simPrefs = java.util.prefs.Preferences.userNodeForPackage(SpinCADSimulator.class);
+		simX.displayIsVisible = simPrefs.getBoolean("ENABLE_DISPLAY", false);
+
 		final JMenu mnSimulator = new JMenu("Simulator");
 		menuBar.add(mnSimulator);
 
-		final JCheckBoxMenuItem mntmEnableDisplay = new JCheckBoxMenuItem("Enable Display");
-		// Restore from preferences
-		java.util.prefs.Preferences simPrefs = java.util.prefs.Preferences.userNodeForPackage(SpinCADSimulator.class);
-		boolean savedDisplayEnabled = simPrefs.getBoolean("ENABLE_DISPLAY", false);
-		mntmEnableDisplay.setSelected(savedDisplayEnabled);
-		simX.displayIsVisible = savedDisplayEnabled;
-		mntmEnableDisplay.addActionListener(new ActionListener() {
+		JMenuItem mntmSimOptions = new JMenuItem("Simulator Options...");
+		mntmSimOptions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				simX.displayIsVisible = mntmEnableDisplay.isSelected();
-				simPrefs.putBoolean("ENABLE_DISPLAY", mntmEnableDisplay.isSelected());
-				if(simX.isSimRunning()) simX.switchDisplay();
+				SimulatorOptionsDialog dlg = new SimulatorOptionsDialog(SpinCADFrame.this, simX);
+				dlg.setVisible(true);
 			}
 		});
-		mnSimulator.add(mntmEnableDisplay);
-
-		mnSimulator.addSeparator();
-		JMenuItem mntmSimSendToFile = new JRadioButtonMenuItem("Simulator->File");
-		mntmSimSendToFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				simX.setOutputFileMode(true);
-				simX.sim.setLoopMode(false);
-			}
-		});
-		mnSimulator.add(mntmSimSendToFile);
-
-		JMenuItem mntmSimSendToSound = new JRadioButtonMenuItem("Simulator->Sound Card", true);
-		mntmSimSendToSound.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				simX.outputFile = null;
-				simX.sim.setLoopMode(true);
-			}
-		});
-		mnSimulator.add(mntmSimSendToSound);
-
-		ButtonGroup bg = new ButtonGroup();
-		bg.add(mntmSimSendToFile);
-		bg.add(mntmSimSendToSound);
-		mnSimulator.addSeparator();
-
-		JMenuItem mntmSimOutFile = new JMenuItem("Set Simulator Output File");
-		mntmSimOutFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				simX.setSimulatorOutputFile();
-			}
-		});
-		mnSimulator.add(mntmSimOutFile);
-
-		JMenuItem mntmSourceFile = new JMenuItem("Set Simulator Source file");
-		mntmSourceFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					simX.getSimulatorFile();
-				} catch (UnsupportedAudioFileException e) {
-					SpinCADDialogs.MessageBox(SpinCADFrame.this, "Simulator File Error", "Make sure that your simulator source\n"
-							+ "file is a stereo 16 bit WAV file sampled \nat 32768, 44100, or 48000 Hz.");
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		mnSimulator.add(mntmSourceFile);		
-
-		mnSimulator.addSeparator();
-		JMenuItem mntmSetSampleRate = new JMenuItem("Set Sample Rate");
-		mntmSetSampleRate.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (sampleRateDialog != null && sampleRateDialog.isVisible()) {
-					sampleRateDialog.toFront();
-					return;
-				}
-				sampleRateDialog = new SampleRateComboBox(SpinCADFrame.this);
-			}
-		});
-		mnSimulator.add(mntmSetSampleRate);
-
-		if(Debug.DEBUG == true) {
-			mnSimulator.addSeparator();
-			JMenuItem mntmDebugFile = new JMenuItem("Set Simulator Debug file");
-			mntmDebugFile.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					try {
-						simX.setSimulatorDebugFile();
-					} catch (IOException e) {
-						SpinCADDialogs.MessageBox(SpinCADFrame.this, "Simulator Debug File Error", "Uhmmmm....");
-					}
-				}
-			});
-			mnSimulator.add(mntmDebugFile);
-		}
+		mnSimulator.add(mntmSimOptions);
 
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -820,11 +768,15 @@ public class SpinCADFrame extends JFrame {
 		try {
 			SpinCADPatch patch = eeprom.patch[bankIndex];
 			if (patch.patchModel.blockList.size() > 0) {
-				patch.patchModel.sortAlignGen();
+				patch.patchModel.sortAlignGen(true);
 				SpinFXBlock rb = patch.patchModel.getRenderBlock();
 				if (rb != null) {
 					asmTextArea.setText(rb.getProgramListing(1));
 					asmTextArea.setCaretPosition(0);
+				}
+				// Restore un-optimized state so simulator probe registers stay valid
+				if (patch.patchModel.hasScopeProbe()) {
+					patch.patchModel.sortAlignGen();
 				}
 			} else {
 				asmTextArea.setText("");
@@ -1394,6 +1346,7 @@ public class SpinCADFrame extends JFrame {
 	public void updateAll() {
 		simX.updateSliders(eeprom.patch[bankIndex]);
 		pb.update(eeprom.patch[bankIndex]);
+		scopeProbeBar.setVisible(pb.hasScopeProbe());
 		if(eeprom.patch[bankIndex].isHexFile == true) {
 			simX.sctb.setVisible(false);
 			etb.pinName.setText("Hex file: " + eeprom.patch[bankIndex].patchFileName);

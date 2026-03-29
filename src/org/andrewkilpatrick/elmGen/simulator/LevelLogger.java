@@ -70,6 +70,12 @@ public class LevelLogger implements AudioSink {
 	private boolean pendingFreeze  = false;
 	private volatile boolean paused = false;
 
+	// Scope probe channels
+	private boolean probe1Enabled = true;
+	private boolean probe2Enabled = true;
+	private boolean probe1Active  = false;
+	private boolean probe2Active  = false;
+
 	// ms per division for time grid
 	private double msPerDivision = 10.0;
 
@@ -80,6 +86,16 @@ public class LevelLogger implements AudioSink {
 	private double[] pendingL = new double[4096];
 	private double[] pendingR = new double[4096];
 	private int pendingCount = 0;
+
+	// Probe data: raw buffer set by writeScopeData before writeDac
+	private int[] probeRawBuf = null;
+	private int probeRawLen = 0;
+
+	// Probe data pending rendering (decimated, same count as pendingL/R)
+	private double[] pendingP1 = new double[4096];
+	private double[] pendingP2 = new double[4096];
+	private int oldP1 = 0;
+	private int oldP2 = 0;
 
 	private static final double FV1_FULL_SCALE = 8388608.0;
 	private static final int TOP_PAD = 5;
@@ -286,7 +302,9 @@ public class LevelLogger implements AudioSink {
 	public void writeDac(int[] buf, int len) {
 		if(paused) return;
 		int dbuf[] = delay.process(buf, 50000);
+		boolean hasProbes = (probeRawBuf != null && probeRawLen >= len);
 		pendingCount = 0;
+		double p1val = 0, p2val = 0;
 		for(int i = 0; i < len; i += 2) {
 			if(logMode == 1) {
 				left  = Math.abs(Util.regToDouble(dbuf[i])     + 0.00001);
@@ -298,12 +316,20 @@ public class LevelLogger implements AudioSink {
 			} else if(logMode == 0) {
 				left  = (double) Util.regToInt(dbuf[i]);
 				right = (double) Util.regToInt(dbuf[i + 1]);
+				if(hasProbes) {
+					p1val = (double) Util.regToInt(probeRawBuf[i]);
+					p2val = (double) Util.regToInt(probeRawBuf[i + 1]);
+				}
 			}
 			windowCount++;
 			if(windowCount >= windowRatio) {
 				if(!frozen && pendingCount < pendingL.length) {
 					pendingL[pendingCount] = (logMode == 1) ? maxL : left;
 					pendingR[pendingCount] = (logMode == 1) ? maxR : right;
+					if(hasProbes) {
+						pendingP1[pendingCount] = p1val;
+						pendingP2[pendingCount] = p2val;
+					}
 					pendingCount++;
 				}
 				windowCount = 0;
@@ -313,6 +339,9 @@ public class LevelLogger implements AudioSink {
 		if(pendingCount > 0 && !frozen) {
 			panel.updateLevelsBatch(pendingL, pendingR, pendingCount);
 		}
+		// Clear probe buffer after use
+		probeRawBuf = null;
+		probeRawLen = 0;
 	}
 
 	// =========================================================================
@@ -471,6 +500,23 @@ public class LevelLogger implements AudioSink {
 						if(ch2Enabled) {
 							g2.setColor(new Color(210, 170, 0));
 							g2.drawLine(xPos, oldR, xPos + 1, newR);
+						}
+						// ---- PROBE TRACES (scope mode only) ----
+						if(probe1Active && probe1Enabled && p < pendingP1.length) {
+							double normP1 = pendingP1[p] / FV1_FULL_SCALE;
+							int newP1 = centerY - (int)(normP1 * halfH);
+							if(xPos < 1) oldP1 = newP1;
+							g2.setColor(new Color(0, 200, 220));   // cyan
+							g2.drawLine(xPos, oldP1, xPos + 1, newP1);
+							oldP1 = newP1;
+						}
+						if(probe2Active && probe2Enabled && p < pendingP2.length) {
+							double normP2 = pendingP2[p] / FV1_FULL_SCALE;
+							int newP2 = centerY - (int)(normP2 * halfH);
+							if(xPos < 1) oldP2 = newP2;
+							g2.setColor(new Color(220, 0, 220));   // magenta
+							g2.drawLine(xPos, oldP2, xPos + 1, newP2);
+							oldP2 = newP2;
 						}
 					}
 
@@ -662,4 +708,25 @@ public class LevelLogger implements AudioSink {
 	public void unfreeze()      { frozen = false; pendingFreeze = false; }
 	public void setFrozen(boolean f) { if(f) requestFreeze(); else unfreeze(); }
 	public boolean isFrozen() { return frozen || pendingFreeze; }
+
+	// Scope probe channel accessors
+	public void setProbe1Enabled(boolean enabled) { probe1Enabled = enabled; }
+	public void setProbe2Enabled(boolean enabled) { probe2Enabled = enabled; }
+	public boolean isProbe1Enabled() { return probe1Enabled; }
+	public boolean isProbe2Enabled() { return probe2Enabled; }
+	public void setProbe1Active(boolean active) { probe1Active = active; }
+	public void setProbe2Active(boolean active) { probe2Active = active; }
+	public boolean isProbe1Active() { return probe1Active; }
+	public boolean isProbe2Active() { return probe2Active; }
+
+	/**
+	 * Accept scope probe data for the current buffer.
+	 * Must be called BEFORE writeDac() for the same buffer,
+	 * so that writeDac can overlay probe traces in the same rendering pass.
+	 */
+	public void writeScopeData(int[] buf, int len) {
+		if (paused || logMode != 0) return;  // probes only in scope mode
+		probeRawBuf = buf;
+		probeRawLen = len;
+	}
 }
