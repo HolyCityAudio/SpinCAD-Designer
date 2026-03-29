@@ -140,7 +140,6 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 
 				freqSlider.setValue((int)Math.round(hPF.getFreq()));
 				updateFreqLabel();
-				setAlwaysOnTop(true);
 				setVisible(true);
 				setLocationRelativeTo(SpinCADFrame.getInstance());
 				pack();

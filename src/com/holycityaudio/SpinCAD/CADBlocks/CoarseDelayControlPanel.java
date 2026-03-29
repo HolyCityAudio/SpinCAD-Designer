@@ -51,6 +51,7 @@ class CoarseDelayControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame();
+				mD.controlPanelFrame = frame;
 				frame.setTitle("Servo Delay");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				// XXX debug, this may not be correct
@@ -107,7 +108,6 @@ class CoarseDelayControlPanel {
 				updateDelayFieldFine();
 
 				frame.setVisible(true);
-				frame.setAlwaysOnTop(true);
 				frame.pack();
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 			}

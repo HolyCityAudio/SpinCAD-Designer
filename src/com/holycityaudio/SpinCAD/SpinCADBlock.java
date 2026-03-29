@@ -69,7 +69,7 @@ public class SpinCADBlock extends SpinFXBlock {
 	boolean selected = false;	// for multi-select in panel
 	private String name = null;
 	public transient spinCADControlPanel scCP = null;			// control panel for editing parameters
-	public transient javax.swing.JFrame controlPanelFrame = null;  // tracks the open control panel window
+	public transient java.awt.Window controlPanelFrame = null;  // tracks the open control panel window
 	protected boolean hasControlPanel = false;	// used to determine whether to offer a control panel
 	protected transient boolean controlPanelOpen = false;	// prevents opening multiple panels on the same block
 
@@ -492,6 +492,10 @@ public class SpinCADBlock extends SpinFXBlock {
 		return hasControlPanel;
 	}
 
+	/** Override in subclasses to clear the cached control panel reference. */
+	public void clearCP() {
+	}
+
 	public java.awt.Point getControlPanelLocation(int offsetX, int offsetY) {
 		// Convert block-relative coordinates to screen coordinates
 		// by finding the main SpinCADFrame window location
@@ -505,6 +509,43 @@ public class SpinCADBlock extends SpinFXBlock {
 		}
 		// Fallback: use block coordinates directly (single monitor behavior)
 		return new java.awt.Point(getX() + offsetX, getY() + offsetY);
+	}
+
+	/**
+	 * Position a control panel window below (preferred) or above this block.
+	 * Uses the mouse pointer location as a proxy for the block's screen position
+	 * (since the user just right-clicked on the block).
+	 */
+	public void positionControlPanel(java.awt.Window panel) {
+		java.awt.Point mouse = java.awt.MouseInfo.getPointerInfo().getLocation();
+		java.awt.Dimension panelSize = panel.getSize();
+		java.awt.GraphicsConfiguration gc = panel.getGraphicsConfiguration();
+		java.awt.Rectangle screenBounds = gc != null ? gc.getBounds() :
+			java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+		java.awt.Insets insets = java.awt.Toolkit.getDefaultToolkit().getScreenInsets(
+			gc != null ? gc : java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration());
+		int usableBottom = screenBounds.y + screenBounds.height - insets.bottom;
+
+		// Center horizontally on the mouse X, clamped to screen
+		int x = mouse.x - panelSize.width / 2;
+		x = Math.max(screenBounds.x + insets.left,
+			Math.min(x, screenBounds.x + screenBounds.width - insets.right - panelSize.width));
+
+		// Place below block (offset down from mouse) if room, otherwise above
+		int gap = 10;
+		int belowY = mouse.y + height / 2 + gap;
+		int aboveY = mouse.y - height / 2 - panelSize.height - gap;
+
+		int y;
+		if (belowY + panelSize.height <= usableBottom) {
+			y = belowY;
+		} else {
+			y = Math.max(screenBounds.y + insets.top, aboveY);
+		}
+
+		panel.setLocation(x, y);
 	}
 
 	public void deleteControlPanel() {
@@ -522,15 +563,15 @@ public class SpinCADBlock extends SpinFXBlock {
 				cpField.setAccessible(true);
 				Object cpObj = cpField.get(this);
 				if (cpObj != null) {
-					if (cpObj instanceof javax.swing.JFrame) {
-						((javax.swing.JFrame) cpObj).dispose();
+					if (cpObj instanceof java.awt.Window) {
+						((java.awt.Window) cpObj).dispose();
 					} else {
 						try {
 							java.lang.reflect.Field frameField = cpObj.getClass().getDeclaredField("frame");
 							frameField.setAccessible(true);
 							Object frameObj = frameField.get(cpObj);
-							if (frameObj instanceof javax.swing.JFrame) {
-								((javax.swing.JFrame) frameObj).dispose();
+							if (frameObj instanceof java.awt.Window) {
+								((java.awt.Window) frameObj).dispose();
 							}
 						} catch (NoSuchFieldException ignored) {}
 					}
@@ -542,9 +583,9 @@ public class SpinCADBlock extends SpinFXBlock {
 			}
 		}
 
-		// Scan all open JFrames for any referencing this block
+		// Scan all open windows (JFrame or JDialog) for any referencing this block
 		for (java.awt.Window w : java.awt.Window.getWindows()) {
-			if (w instanceof javax.swing.JFrame && w.isDisplayable()) {
+			if ((w instanceof javax.swing.JFrame || w instanceof javax.swing.JDialog) && w.isDisplayable()) {
 				try {
 					for (java.lang.reflect.Field f : w.getClass().getDeclaredFields()) {
 						if (SpinCADBlock.class.isAssignableFrom(f.getType())) {

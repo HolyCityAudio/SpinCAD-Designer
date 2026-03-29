@@ -79,7 +79,6 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 		lfoSlider.setValue((int)Math.round(100000.0 * outBlock.getLFO()));
 		updateLFOLabel();
 		this.setLocationRelativeTo(SpinCADFrame.getInstance());
-		this.setAlwaysOnTop(true);
 
 		this.setVisible(true);
 		this.pack();

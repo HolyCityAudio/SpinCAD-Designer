@@ -131,7 +131,6 @@ class OverdriveControlPanel extends JFrame implements ChangeListener, ActionList
 		this.setVisible(true);
 		this.pack();
 		this.setLocationRelativeTo(SpinCADFrame.getInstance());
-		this.setAlwaysOnTop(true);
 	}
 
 	@Override

@@ -56,6 +56,7 @@ class Mixer4_1ControlPanel {
 			public void run() {
 
 				frame = new JFrame();
+				spbMix.controlPanelFrame = frame;
 				frame.setTitle("Mixer 4-1");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -94,7 +95,6 @@ class Mixer4_1ControlPanel {
 
 				updateGainLabels();
 				frame.setVisible(true);
-				frame.setAlwaysOnTop(true);
 				frame.setResizable(false);
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.pack();

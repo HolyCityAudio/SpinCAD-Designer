@@ -84,7 +84,6 @@ class LPF1PControlPanel extends JFrame {
 				freqSlider.setValue((int)Math.round(LPF.getFreq() * 10));
 				updateFreqLabel();
 				setVisible(true);
-				setAlwaysOnTop(true);
 				setLocationRelativeTo(SpinCADFrame.getInstance());
 				pack();
 				setResizable(false);

@@ -47,6 +47,7 @@ class QuantizerControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame();
+				BC.controlPanelFrame = frame;
 				frame.setTitle("Quantizer");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				bitSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 16, BC.getBits());
@@ -70,7 +71,6 @@ class QuantizerControlPanel {
 				frame.add(bitField);
 				frame.add(bitSlider);
 				updateBitLabel();
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);
 				frame.pack();
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());

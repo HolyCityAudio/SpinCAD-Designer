@@ -187,7 +187,6 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 		this.pack();
 		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setResizable(false);
-		this.setAlwaysOnTop(true);
 
 	}
 

@@ -243,7 +243,6 @@ public class SixBandEQControlPanel extends JFrame {
 				setLocationRelativeTo(SpinCADFrame.getInstance());
 				pack();
 				setResizable(false);
-				setAlwaysOnTop(true);
 			}
 		});
 	}

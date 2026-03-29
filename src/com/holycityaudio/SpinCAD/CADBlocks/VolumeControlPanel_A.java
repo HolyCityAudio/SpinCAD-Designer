@@ -50,6 +50,7 @@ class VolumeControlPanel_A {
 			public void run() {
 
 				frame = new JFrame();
+				spbVol.controlPanelFrame = frame;
 				frame.setTitle("Volume");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -80,7 +81,6 @@ class VolumeControlPanel_A {
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setAlwaysOnTop(true);
 			}
 		});
 	}

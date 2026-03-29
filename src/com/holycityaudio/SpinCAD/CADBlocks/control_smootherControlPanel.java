@@ -18,7 +18,7 @@
  *
  */
 package com.holycityaudio.SpinCAD.CADBlocks;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -41,7 +41,7 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class control_smootherControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 
 	private control_smootherCADBlock gCB;
 
@@ -56,8 +56,8 @@ public class control_smootherControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
-				frame.setTitle("Smoother");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Smoother");
+				gCB.controlPanelFrame = frame;
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				// Slider: log scale for rise time in ms
@@ -113,7 +113,7 @@ public class control_smootherControlPanel {
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
-				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
+				gCB.positionControlPanel(frame);
 				frame.setVisible(true);
 			}
 		});

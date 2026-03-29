@@ -56,6 +56,7 @@ class BassmanEQControlPanel {
 			public void run() {
 
 				frame = new JFrame();
+				spbBMEQ.controlPanelFrame = frame;
 				frame.setTitle("Bassman '59 EQ");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -140,7 +141,6 @@ class BassmanEQControlPanel {
 				frame.getContentPane().add(tSlider);
 
 				frame.setVisible(true);
-				frame.setAlwaysOnTop(true);
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());

@@ -76,7 +76,6 @@ class FBInputControlPanel extends JFrame implements ChangeListener, ActionListen
 		lGainSlider.setValue((int)Math.round(100.0 * inBlock.getLGain()));
 		updateLGainField();
 		this.pack();
-		this.setAlwaysOnTop(true);
 		this.setVisible(true);
 		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.setResizable(false);

@@ -61,6 +61,7 @@ class BiQuadControlPanel {
 			public void run() {
 
 				frame = new JFrame();
+				spbBQF.controlPanelFrame = frame;
 				frame.setTitle("BiQuad Filter");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -119,7 +120,6 @@ class BiQuadControlPanel {
 				updateResField();
 				frame.getContentPane().add(resSlider);
 
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);
 				frame.pack();
 				frame.setResizable(false);

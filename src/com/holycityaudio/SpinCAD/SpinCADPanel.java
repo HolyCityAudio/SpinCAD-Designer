@@ -449,59 +449,43 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 			switch(e.getActionCommand()) {
 			case "Control Panel":
 				unselectAll(f);
-				// Reset stale flag: if the control panel was closed but clearCP()
-				// didn't reset controlPanelOpen, detect it here.
+				// If flagged as open, verify the window is actually still showing.
 				if (spcb.controlPanelOpen) {
-					boolean stillOpen = false;
-					if (spcb.controlPanelFrame != null && spcb.controlPanelFrame.isDisplayable()) {
-						stillOpen = true;
-					} else {
-						// Generated panels don't set controlPanelFrame — scan windows
-						for (java.awt.Window w : java.awt.Window.getWindows()) {
-							if (w instanceof JFrame && w.isDisplayable() && w.isVisible()) {
-								try {
-									for (java.lang.reflect.Field field : w.getClass().getDeclaredFields()) {
-										if (SpinCADBlock.class.isAssignableFrom(field.getType())) {
-											field.setAccessible(true);
-											if (field.get(w) == spcb) { stillOpen = true; break; }
-										}
-									}
-								} catch (Exception ignored) {}
-								if (stillOpen) break;
-							}
-						}
+					if (spcb.controlPanelFrame != null && spcb.controlPanelFrame.isDisplayable()
+							&& spcb.controlPanelFrame.isVisible()) {
+						// Panel is still open — bring it to front
+						spcb.controlPanelFrame.toFront();
+						spcb.controlPanelFrame.repaint();
+						break;
 					}
-					if (!stillOpen) spcb.controlPanelOpen = false;
+					// Panel was closed or disposed — reset state
+					spcb.controlPanelOpen = false;
+					spcb.controlPanelFrame = null;
+					spcb.clearCP();
 				}
-				if (!spcb.controlPanelOpen) {
-					spcb.controlPanelOpen = true;
-					spcb.editBlock();
-					// Attach a listener to clear the flag when the panel window closes.
-					// Use invokeLater because some panels create their frame in invokeLater.
-					SwingUtilities.invokeLater(() -> {
-						for (java.awt.Window w : java.awt.Window.getWindows()) {
-							if (w instanceof JFrame && w.isDisplayable() && w.isVisible()) {
-								try {
-									for (java.lang.reflect.Field field : w.getClass().getDeclaredFields()) {
-										if (SpinCADBlock.class.isAssignableFrom(field.getType())) {
-											field.setAccessible(true);
-											if (field.get(w) == spcb) {
-												w.addWindowListener(new WindowAdapter() {
-													public void windowClosing(WindowEvent ev) {
-														spcb.controlPanelOpen = false;
-													}
-													public void windowClosed(WindowEvent ev) {
-														spcb.controlPanelOpen = false;
-													}
-												});
-											}
-										}
-									}
-								} catch (Exception ignored) {}
+				// Open a new control panel
+				spcb.controlPanelOpen = true;
+				spcb.editBlock();
+				// Position and attach cleanup listener via controlPanelFrame
+				// (set in invokeLater by panels, so this must also be invokeLater)
+				SwingUtilities.invokeLater(() -> {
+					java.awt.Window cpf = spcb.controlPanelFrame;
+					if (cpf != null && cpf.isDisplayable()) {
+						spcb.positionControlPanel(cpf);
+						cpf.addWindowListener(new WindowAdapter() {
+							public void windowClosing(WindowEvent ev) {
+								spcb.controlPanelOpen = false;
+								spcb.controlPanelFrame = null;
+								spcb.clearCP();
 							}
-						}
-					});
-				}
+							public void windowClosed(WindowEvent ev) {
+								spcb.controlPanelOpen = false;
+								spcb.controlPanelFrame = null;
+								spcb.clearCP();
+							}
+						});
+					}
+				});
 				break;
 			case "Move":
 				syncMouse();

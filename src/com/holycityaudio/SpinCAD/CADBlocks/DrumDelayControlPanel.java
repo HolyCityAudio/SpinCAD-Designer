@@ -370,7 +370,6 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocation(gCB.getControlPanelLocation(100, 100));
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);
 			}
 		});

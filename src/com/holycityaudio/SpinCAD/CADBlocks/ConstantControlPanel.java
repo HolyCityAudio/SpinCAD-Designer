@@ -80,7 +80,6 @@ public class ConstantControlPanel extends JFrame implements ChangeListener {
 				pack();
 				setLocationRelativeTo(SpinCADFrame.getInstance());
 				setResizable(false);
-				setAlwaysOnTop(true);
 			}
 		});
 	}

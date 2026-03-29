@@ -103,7 +103,6 @@ public class RootControlControlPanel extends JFrame {
 				invert.setSelected(pC.isInvert());
 				flip.setSelected(pC.isFlip());
 				setLocationRelativeTo(SpinCADFrame.getInstance());
-				setAlwaysOnTop(true);
 				setVisible(true);
 				pack();
 //				graph.repaint();

@@ -121,7 +121,6 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 		freqSlider.setValue((ppcb.getFreq()));
 
 		this.setVisible(true);
-		this.setAlwaysOnTop(true);
 		this.pack();
 		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 	}

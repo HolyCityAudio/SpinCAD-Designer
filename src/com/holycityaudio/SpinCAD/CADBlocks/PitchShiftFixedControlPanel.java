@@ -102,6 +102,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Ramp LFO");
+				pong.controlPanelFrame = frame;
 				frame.setTitle("Pitch Shift Fixed");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				frame.setResizable(false);
@@ -136,7 +137,6 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 				freqSlider.setValue((pong.getFreq()));
 
 				frame.setVisible(true);
-				frame.setAlwaysOnTop(true);
 				frame.pack();
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());			}
 		});

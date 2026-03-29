@@ -139,7 +139,6 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 
 				freqSlider.setValue((int)Math.round(LPF.getFreq()));
 				updateFreqLabel();
-				setAlwaysOnTop(true);
 				setVisible(true);
 				setLocationRelativeTo(SpinCADFrame.getInstance());
 				pack();

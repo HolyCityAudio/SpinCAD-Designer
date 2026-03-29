@@ -80,6 +80,7 @@ public class ClipControlControlPanel implements ChangeListener, ActionListener, 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Clip Control");
+				pC.controlPanelFrame = frame;
 				frame.setTitle("Control Clipper");
 				frame.setResizable(false);
 				graph = new ClipPanel();
@@ -106,7 +107,6 @@ public class ClipControlControlPanel implements ChangeListener, ActionListener, 
 				flip.setSelected(pC.getFlip());
 
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
-				frame.setAlwaysOnTop(true);
 				frame.setVisible(true);
 				frame.pack();
 				graph.repaint();

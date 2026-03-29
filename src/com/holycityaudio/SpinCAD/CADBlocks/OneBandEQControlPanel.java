@@ -134,7 +134,6 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 
 		qSlider.setValue((int) Math.round((b.getQLevel() * 100.0)));
 		updateQLabel();
-		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 		this.pack();
 	}

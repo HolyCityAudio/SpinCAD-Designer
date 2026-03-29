@@ -107,7 +107,6 @@ public class PowerControlControlPanel extends JFrame {
 				invert.setSelected(pC.getInvert());
 				flip.setSelected(pC.getFlip());
 				setLocationRelativeTo(SpinCADFrame.getInstance());
-				setAlwaysOnTop(true);
 				setVisible(true);
 				pack();
 //				graph.repaint();

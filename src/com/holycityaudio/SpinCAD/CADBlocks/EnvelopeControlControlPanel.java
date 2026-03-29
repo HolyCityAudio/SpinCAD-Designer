@@ -125,6 +125,7 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame = new JFrame("Envelope");
+				pC.controlPanelFrame = frame;
 				frame.setTitle("Envelope");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
@@ -151,7 +152,6 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.setVisible(true);
 				frame.pack();
-				frame.setAlwaysOnTop(true);
 			}
 		});
 	}

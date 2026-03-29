@@ -76,7 +76,6 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 		lfoSlider.setValue((int)Math.round(500.0 * outBlock.getLFO()));
 		updateLFOLabel();
 		this.setVisible(true);
-		this.setAlwaysOnTop(true);
 		this.pack();
 		this.setLocationRelativeTo(SpinCADFrame.getInstance());
 	}

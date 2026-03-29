@@ -103,7 +103,6 @@ class SingleDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 
 		this.setVisible(true);
 		this.setLocationRelativeTo(SpinCADFrame.getInstance());
-		this.setAlwaysOnTop(true);
 		this.pack();
 	}
 
