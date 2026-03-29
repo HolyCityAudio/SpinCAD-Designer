@@ -36,13 +36,31 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'org.junit.platform:junit-platform-launcher:1.10.2'
+    testImplementation 'org.assertj:assertj-swing-junit:3.17.1'
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        excludeTags 'gui'
+    }
 
     // Run Swing code headless in CI
     jvmArgs '-Djava.awt.headless=true'
+
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        showStandardStreams = true
+        exceptionFormat 'full'
+    }
+}
+
+// GUI tests require a real display (non-headless)
+task guiTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'gui'
+    }
+    description = 'Run GUI tests (requires a real display)'
+    group = 'verification'
 
     testLogging {
         events 'passed', 'skipped', 'failed'

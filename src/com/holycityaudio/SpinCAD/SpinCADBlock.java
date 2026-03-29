@@ -113,9 +113,29 @@ public class SpinCADBlock extends SpinFXBlock {
 	Color borderColor = new Color(0x09B545);
 
 	/**
+	 * Custom serialization: null out non-transient control panel fields
+	 * (e.g. 'cp') in subclasses before writing, so that non-serializable
+	 * Swing objects don't break copy/paste/undo.
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+		// Null out any 'cp' or 'cP' field in the subclass before serialization
+		for (String fieldName : new String[]{"cp", "cP"}) {
+			try {
+				java.lang.reflect.Field f = getClass().getDeclaredField(fieldName);
+				f.setAccessible(true);
+				f.set(this, null);
+			} catch (NoSuchFieldException ignored) {
+			} catch (Exception e) {
+				System.err.println("writeObject: could not null " + fieldName + ": " + e);
+			}
+		}
+		out.defaultWriteObject();
+	}
+
+	/**
 	 * SpinCADBlock class extends the idea of a functional block
 	 * to a graphical idea with inputs and outputs
-	 * 
+	 *
 	 * @param x the x-location on the screen of the block's upper left corner
 	 * @param y the y-location on the screen of the block's upper left corner
 	 */
@@ -408,7 +428,31 @@ public class SpinCADBlock extends SpinFXBlock {
 	public void editBlock() {
 		// this is over ridden for each actual block
 		System.out.println("Unimplemented edit block for " + name);
-	}	
+	}
+
+	/**
+	 * Opens the control panel by calling editBlock(), then automatically
+	 * captures the newly created window into controlPanelFrame.
+	 * This handles both hand-written and generated blocks that create
+	 * their own JFrame/JDialog in invokeLater without setting controlPanelFrame.
+	 */
+	public void openControlPanel() {
+		// Snapshot existing windows before editBlock() creates a new one
+		java.util.Set<java.awt.Window> before = new java.util.HashSet<>(
+			java.util.Arrays.asList(java.awt.Window.getWindows()));
+		editBlock();
+		// After editBlock's invokeLater creates the window, capture it
+		javax.swing.SwingUtilities.invokeLater(() -> {
+			if (controlPanelFrame != null) return; // already set by editBlock
+			for (java.awt.Window w : java.awt.Window.getWindows()) {
+				if (!before.contains(w) && w.isDisplayable()
+						&& (w instanceof javax.swing.JFrame || w instanceof javax.swing.JDialog)) {
+					controlPanelFrame = w;
+					break;
+				}
+			}
+		});
+	}
 
 	/**
 	 * Set the current block's number (order within the model)
@@ -583,8 +627,11 @@ public class SpinCADBlock extends SpinFXBlock {
 			}
 		}
 
-		// Scan all open windows (JFrame or JDialog) for any referencing this block
+		// Scan all open windows (JFrame or JDialog) for any referencing this block.
+		// Skip the main application frame — it has a SpinCADBlock field (blk) that
+		// can transiently reference a pasted block; disposing it kills the app.
 		for (java.awt.Window w : java.awt.Window.getWindows()) {
+			if (w instanceof com.holycityaudio.SpinCAD.SpinCADFrame) continue;
 			if ((w instanceof javax.swing.JFrame || w instanceof javax.swing.JDialog) && w.isDisplayable()) {
 				try {
 					for (java.lang.reflect.Field f : w.getClass().getDeclaredFields()) {

@@ -128,56 +128,61 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 
 		//=======================================================================================================
 		public void paintComponent( Graphics g ) {
-			super.paintComponent(g);
-			Graphics2D g2 = (Graphics2D)g; 
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-			SpinCADBlock block;
-			Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
-			while(itr.hasNext()) {
-				block = itr.next();
-				//			System.out.printf("X = %d y = %d\n", block.getX(), block.getY() );
-				block.drawRect(g2);	   
-				Iterator<SpinCADPin> itrPin = block.pinList.iterator();
-				SpinCADPin currentPin;
-				while(itrPin.hasNext()) {
-					currentPin = itrPin.next();
-					currentPin.setColor(Color.BLACK);
-					if(currentPin.isControlOutputPin()) {
-						currentPin.setX(block.width);		// deal with variable block width, only affects control outputs			
-					}
-					currentPin.paintComponent(g);								
-
-					if(currentPin.getPinConnection() != null && currentPin.getBlockConnection() != null) {
-						Point startPt = null;
-						Point stopPt = null;
-						stopPin = currentPin.getPinConnection();
-						stopBlock = currentPin.getBlockConnection();
-						stopPt = stopBlock.getPinXY(stopPin);
-						startPt = block.getPinXY(currentPin);
-						Line2D line = new Line2D.Double(startPt, stopPt);
-						if(currentPin.isMuted()) {
-							g2.setColor(Color.RED);
-						} else if(currentPin.getName().contains("Control")) {
-							g2.setColor(Color.BLUE);
-						} else {
-							g2.setColor(Color.black);
+			try {
+				super.paintComponent(g);
+				Graphics2D g2 = (Graphics2D)g;
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
+				SpinCADBlock block;
+				Iterator<SpinCADBlock> itr = f.getPatch().patchModel.blockList.iterator();
+				while(itr.hasNext()) {
+					block = itr.next();
+					block.drawRect(g2);
+					Iterator<SpinCADPin> itrPin = block.pinList.iterator();
+					SpinCADPin currentPin;
+					while(itrPin.hasNext()) {
+						currentPin = itrPin.next();
+						currentPin.setColor(Color.BLACK);
+						if(currentPin.isControlOutputPin()) {
+							currentPin.setX(block.width);
 						}
-						g2.setStroke(new BasicStroke(2));
-						g2.draw(line);
-						currentPin = null;
+						currentPin.paintComponent(g);
+
+						if(currentPin.getPinConnection() != null && currentPin.getBlockConnection() != null) {
+							Point startPt = null;
+							Point stopPt = null;
+							stopPin = currentPin.getPinConnection();
+							stopBlock = currentPin.getBlockConnection();
+							stopPt = stopBlock.getPinXY(stopPin);
+							startPt = block.getPinXY(currentPin);
+							Line2D line = new Line2D.Double(startPt, stopPt);
+							if(currentPin.isMuted()) {
+								g2.setColor(Color.RED);
+							} else if(currentPin.getName().contains("Control")) {
+								g2.setColor(Color.BLUE);
+							} else {
+								g2.setColor(Color.black);
+							}
+							g2.setStroke(new BasicStroke(2));
+							g2.draw(line);
+							currentPin = null;
+						}
 					}
 				}
-			}		 
-			if(dragLine != null) {
-				g2.setStroke(new BasicStroke(3));
-				g2.setColor(Color.CYAN);
-				g2.draw(dragLine);
-			}
-			if(dragRect != null) {
-				g2.setStroke(new BasicStroke(1));
-				g2.setColor(Color.BLUE);
-				g2.draw(dragRect);
+				if(dragLine != null) {
+					g2.setStroke(new BasicStroke(3));
+					g2.setColor(Color.CYAN);
+					g2.draw(dragLine);
+				}
+				if(dragRect != null) {
+					g2.setStroke(new BasicStroke(1));
+					g2.setColor(Color.BLUE);
+					g2.draw(dragRect);
+				}
+			} catch (Throwable e) {
+				System.out.println("paintComponent CRASH: " + e);
+				e.printStackTrace();
+				SpinCADFrame.logCrash("paintComponent", e);
 			}
 		}
 	}
@@ -465,7 +470,7 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 				}
 				// Open a new control panel
 				spcb.controlPanelOpen = true;
-				spcb.editBlock();
+				spcb.openControlPanel();
 				// Position and attach cleanup listener via controlPanelFrame
 				// (set in invokeLater by panels, so this must also be invokeLater)
 				SwingUtilities.invokeLater(() -> {
