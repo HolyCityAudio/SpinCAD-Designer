@@ -60,10 +60,10 @@ playDelay1:
 rdfx fadeFilt, fadeTimeFilt
 wrax fadeFilt,0.0000000000
 ;------ Crossfade
-rda  delayRam,-0.5000000000
-rda  delayRam#,0.5000000000
+rda  delayRam,-1.0
+rda  delayRam#,1.0
 mulx fadeFilt
-rda  delayRam,0.5000000000
+rda  delayRam,1.0
 wrax output,0.0000000000
 
 @endif 	; isEqualTo fadeTime 0

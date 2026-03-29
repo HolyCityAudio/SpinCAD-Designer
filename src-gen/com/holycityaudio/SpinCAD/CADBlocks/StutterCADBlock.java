@@ -115,10 +115,10 @@
 			sfxb.scaleOffset(0.0, 0.9990234375);
 			sfxb.readRegisterFilter(fadeFilt, fadeTimeFilt);
 			sfxb.writeRegister(fadeFilt, 0.0000000000);
-			sfxb.FXreadDelay("delayRam", 0, -0.5000000000);
-			sfxb.FXreadDelay("delayRam#", 0, 0.5000000000);
+			sfxb.FXreadDelay("delayRam", 0, -1.0);
+			sfxb.FXreadDelay("delayRam#", 0, 1.0);
 			sfxb.mulx(fadeFilt);
-			sfxb.FXreadDelay("delayRam", 0, 0.5000000000);
+			sfxb.FXreadDelay("delayRam", 0, 1.0);
 			sfxb.writeRegister(output, 0.0000000000);
 			}
 			
