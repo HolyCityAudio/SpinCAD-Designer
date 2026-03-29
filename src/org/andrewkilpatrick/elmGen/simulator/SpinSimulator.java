@@ -42,6 +42,7 @@ public class SpinSimulator extends Thread {
 	int pot2 = 0;
 	volatile boolean runSimulator = true;
 	boolean loopMode = true;
+	private volatile Exception simulationException = null;
 	String inputFilename = null;
 	String outputFilename = null;
 	LinkedList<AudioSink> audioSinks = null;
@@ -108,9 +109,17 @@ public class SpinSimulator extends Thread {
 		} catch (Exception e) {
 			System.err.println("Simulator thread failed unexpectedly: " + e);
 			e.printStackTrace();
+			simulationException = e;
 		}
 		runSimulator = false;
 		System.out.println("Simulation ended.");
+	}
+
+	/**
+	 * Returns any exception that occurred during simulation, or null if none.
+	 */
+	public Exception getSimulationException() {
+		return simulationException;
 	}
 
 	/**
