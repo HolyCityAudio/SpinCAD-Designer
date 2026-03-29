@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock;
 
 public class SpinCADModel implements Serializable {
 
@@ -173,24 +174,60 @@ public class SpinCADModel implements Serializable {
 	}
 
 	public int sortAlignGen() {
+		return sortAlignGen(false);
+	}
+
+	/**
+	 * Sort, align, generate code, and optionally optimize.
+	 *
+	 * @param forExport when true, always optimize and compact even if a
+	 *                  ScopeProbeCADBlock is present (used for ASM/Hex/Spj saves
+	 *                  and clipboard).  When false, skip optimization and
+	 *                  compaction if a scope probe is present so that the
+	 *                  simulator can read probed registers.
+	 */
+	public int sortAlignGen(boolean forExport) {
 		Iterator<SpinCADBlock> itr = blockList.iterator();
 		while (itr.hasNext()) {
 			itr.next();
 			if(modelSort() == 0)
 				break;
-		}		
+		}
 		realign();
 		generateCode();
-	    // ADD THESE - get the ElmProgram from renderBlock and optimize
-		if (!new SpinCADFile().getDisableOptimizer()) {
+
+		// Skip optimization and register compaction when a scope probe is
+		// present — the optimizer can eliminate the probed register entirely,
+		// and compaction remaps addresses so the stored register ID goes stale.
+		boolean hasScopeProbe = false;
+		for (SpinCADBlock b : blockList) {
+			if (b instanceof ScopeProbeCADBlock) { hasScopeProbe = true; break; }
+		}
+
+		boolean skipOptimize = hasScopeProbe && !forExport;
+		if (hasScopeProbe) {
+			System.out.println("sortAlignGen: scopeProbe=" + hasScopeProbe
+					+ " forExport=" + forExport + " skipOptimize=" + skipOptimize);
+		}
+
+		if (!skipOptimize && !new SpinCADFile().getDisableOptimizer()) {
 			renderBlock.optimizeProgram();
 			renderBlock.optimizeOutputRegisters();
 		}
-		renderBlock.compactRegisters();
+		if (!skipOptimize) {
+			renderBlock.compactRegisters();
+		}
 		renderBlock.checkCodeLen();
 		int i = renderBlock.getCodeLen();
-	    
+
 		return i;
+	}
+
+	public boolean hasScopeProbe() {
+		for (SpinCADBlock b : blockList) {
+			if (b instanceof ScopeProbeCADBlock) return true;
+		}
+		return false;
 	}
 
 	public int generateCode() {
