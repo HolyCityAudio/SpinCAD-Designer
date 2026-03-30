@@ -114,6 +114,7 @@
 @menuitem "Pot 2" Pot2 
 // @menuitem "Pot Skip" PotSkip 
 @menuitem "Smoother" control_smoother
+@menuitem "Adj Smoother" control_adjustable_smoother
 @menuitem "Sin/Cos LFO" SinCosLFOA
 @menuitem "LFO Value" LFO_Value 
 @menuitem "Ramp LFO" RampLFO
