@@ -29,6 +29,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class AllBlocksGUITest {
 
     private SpinCADFrame frame;
+    private boolean savedAutoReload;
 
     static Stream<String> allBlockClassNames() {
         return BlockDiscovery.findAllBlockClassNames().stream();
@@ -36,6 +37,13 @@ public class AllBlocksGUITest {
 
     @BeforeEach
     void setUp() throws Exception {
+        // Disable auto-reload of last file to avoid loading a large patch on every test
+        SpinCADFile scf = new SpinCADFile();
+        savedAutoReload = scf.getAutoReloadLastFile();
+        if (savedAutoReload) {
+            scf.setAutoReloadLastFile(false);
+        }
+
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<SpinCADFrame> ref = new AtomicReference<>();
         SwingUtilities.invokeLater(() -> {
@@ -54,6 +62,10 @@ public class AllBlocksGUITest {
     void tearDown() throws Exception {
         if (frame != null) {
             SwingUtilities.invokeAndWait(() -> frame.dispose());
+        }
+        // Restore auto-reload preference
+        if (savedAutoReload) {
+            new SpinCADFile().setAutoReloadLastFile(true);
         }
     }
 

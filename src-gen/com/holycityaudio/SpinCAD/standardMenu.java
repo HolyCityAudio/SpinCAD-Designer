@@ -74,6 +74,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.New_OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Sine_Sample_HoldCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PatternGeneratorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.tremolizerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.InvertControlCADBlock;
@@ -803,6 +804,15 @@
 		}
 	});
 	mn_control.add(mntm_SampleHold);
+		
+	final JMenuItem mntm_Sine_Sample_Hold = new JMenuItem("4-Phase Sample/Hold");
+	mntm_Sine_Sample_Hold.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Sine_Sample_HoldCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Sine_Sample_Hold);
 		
 	final JMenuItem mntm_PatternGenerator = new JMenuItem("Pattern Gen");
 	mntm_PatternGenerator.addActionListener(new ActionListener() {

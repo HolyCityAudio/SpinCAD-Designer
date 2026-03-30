@@ -87,12 +87,15 @@ public class SpinCADSimulator {
 				boolean nowDB = !ampLabelPanel.isDBMode();
 				ampLabelPanel.setDBMode(nowDB);
 				btnLinDb.setLabel(nowDB ? "dB" : "Lin");
+				prefs.putBoolean("LIN_MODE", !nowDB);
 				if(sim != null && sim.scope != null) {
 					sim.scope.setLinMode(!nowDB);
 				}
 			}
 		});
 		prefs = Preferences.userNodeForPackage(this.getClass());
+		// Restore display mode from preferences
+		displayMode = prefs.getInt("DISPLAY_MODE", 0);
 		// Restore output file mode from preferences
 		if (prefs.getBoolean("OUTPUT_FILE_MODE", false)) {
 			setOutputFileMode(true);
@@ -354,6 +357,28 @@ public class SpinCADSimulator {
 			stb.timebase.addActionListener(stb);
 			sim.scope.setMsPerDivision(msVal);
 			stb.applyMsPerDiv(msVal);
+
+			// Restore channel enable states
+			boolean ch1on = prefs.getBoolean("CH1_ENABLED", true);
+			boolean ch2on = prefs.getBoolean("CH2_ENABLED", true);
+			sim.scope.setCh1Enabled(ch1on);
+			sim.scope.setCh2Enabled(ch2on);
+
+			// Restore probe enable states
+			boolean p1on = prefs.getBoolean("PROBE1_ENABLED", true);
+			boolean p2on = prefs.getBoolean("PROBE2_ENABLED", true);
+			sim.scope.setProbe1Enabled(p1on);
+			sim.scope.setProbe2Enabled(p2on);
+			stb.btnProbe1.setEnabled2(p1on);
+			stb.btnProbe2.setEnabled2(p2on);
+
+			// Restore Lin/dB mode
+			boolean linMode = prefs.getBoolean("LIN_MODE", false);
+			if(ampLabelPanel != null) ampLabelPanel.setDBMode(!linMode);
+			sim.scope.setLinMode(linMode);
+			btnLinDb.setLabel(linMode ? "Lin" : "dB");
+
+			stb.refreshButtonStates();
 		}
 	}
 
@@ -656,6 +681,7 @@ public class SpinCADSimulator {
 			if(arg0.getSource() == btnModeToggle) {
 				// Toggle between scope (0) and logger (1)
 				displayMode = (displayMode == 0) ? 1 : 0;
+				prefs.putInt("DISPLAY_MODE", displayMode);
 				if(sim != null) {
 					sim.setDisplayMode(displayMode);
 					if(displayMode == 0) {
@@ -671,12 +697,14 @@ public class SpinCADSimulator {
 			} else if(arg0.getSource() == btnCh1Enable) {
 				if(sim != null && sim.scope != null) {
 					sim.scope.setCh1Enabled(!sim.scope.isCh1Enabled());
+					prefs.putBoolean("CH1_ENABLED", sim.scope.isCh1Enabled());
 					refreshButtonStates();
 					sim.scope.redrawFrozen();
 				}
 			} else if(arg0.getSource() == btnCh2Enable) {
 				if(sim != null && sim.scope != null) {
 					sim.scope.setCh2Enabled(!sim.scope.isCh2Enabled());
+					prefs.putBoolean("CH2_ENABLED", sim.scope.isCh2Enabled());
 					refreshButtonStates();
 					sim.scope.redrawFrozen();
 				}
@@ -716,11 +744,13 @@ public class SpinCADSimulator {
 			} else if(arg0.getSource() == btnProbe1) {
 				if(sim != null && sim.scope != null) {
 					sim.scope.setProbe1Enabled(!sim.scope.isProbe1Enabled());
+					prefs.putBoolean("PROBE1_ENABLED", sim.scope.isProbe1Enabled());
 					btnProbe1.setEnabled2(sim.scope.isProbe1Enabled());
 				}
 			} else if(arg0.getSource() == btnProbe2) {
 				if(sim != null && sim.scope != null) {
 					sim.scope.setProbe2Enabled(!sim.scope.isProbe2Enabled());
+					prefs.putBoolean("PROBE2_ENABLED", sim.scope.isProbe2Enabled());
 					btnProbe2.setEnabled2(sim.scope.isProbe2Enabled());
 				}
 			}

@@ -47,46 +47,118 @@ wrax SIN1_RATE, 0
 @endif
 @endif
 
-@isEqualTo lfoSel 0 
-ldax sinreg
+@isEqualTo lfoSel 0
+; sine zero-crossing: multiply current*previous, negative = crossing
+clr
 cho rdal, sin0
-skp zrc, crossSine
+mulx sinreg
+skp neg, crossSine0
+; no crossing: save current value
+clr
+cho rdal, sin0
 wrax testpoint, 1
 wrax sinreg, 0
-skp zro, nocrossing
+skp zro, nocrossing0
 
-crossSine:
-skp neg, sinneg
+crossSine0:
+; crossing detected: re-read current, check direction
+clr
+cho rdal, sin0
+skp neg, sinneg0
 wrax sinreg, 0
-ldax   input1 ; read the last control input value
+ldax   input1
 wrax output1, 0
-skp zro, finish
-sinneg:
+skp zro, finish0
+sinneg0:
 wrax sinreg, 0
-ldax   input1 ; read the last control input value
+ldax   input1
 wrax output3, 0
-skp zro, finish
+skp zro, finish0
 
-nocrossing:
-ldax cosreg
+nocrossing0:
+; cosine zero-crossing: multiply current*previous
+clr
 cho rdal, 8
-skp zrc, crossCos
+mulx cosreg
+skp neg, crossCos0
+; no crossing: save current value
+clr
+cho rdal, 8
 wrax cosreg, 0
-skp zro, nocrossingCos
+skp zro, nocrossingCos0
 
-crossCos:
-skp neg, cosneg
+crossCos0:
+; crossing detected: re-read current, check direction
+clr
+cho rdal, 8
+skp neg, cosneg0
 wrax cosreg, 0
-ldax   input1 ; read the last control input value
+ldax   input1
 wrax output2, 0
-skp zro, nocrossingCos
-cosneg:
+skp zro, nocrossingCos0
+cosneg0:
 wrax cosreg, 0
-ldax   input1 ; read the last control input value
+ldax   input1
 wrax output4, 0
 
-nocrossingCos:
-finish:
+nocrossingCos0:
+finish0:
+@else
+; sine zero-crossing: multiply current*previous, negative = crossing
+clr
+cho rdal, sin1
+mulx sinreg
+skp neg, crossSine1
+; no crossing: save current value
+clr
+cho rdal, sin1
+wrax testpoint, 1
+wrax sinreg, 0
+skp zro, nocrossing1
+
+crossSine1:
+; crossing detected: re-read current, check direction
+clr
+cho rdal, sin1
+skp neg, sinneg1
+wrax sinreg, 0
+ldax   input1
+wrax output1, 0
+skp zro, finish1
+sinneg1:
+wrax sinreg, 0
+ldax   input1
+wrax output3, 0
+skp zro, finish1
+
+nocrossing1:
+; cosine zero-crossing: multiply current*previous
+clr
+cho rdal, 9
+mulx cosreg
+skp neg, crossCos1
+; no crossing: save current value
+clr
+cho rdal, 9
+wrax cosreg, 0
+skp zro, nocrossingCos1
+
+crossCos1:
+; crossing detected: re-read current, check direction
+clr
+cho rdal, 9
+skp neg, cosneg1
+wrax cosreg, 0
+ldax   input1
+wrax output2, 0
+skp zro, nocrossingCos1
+cosneg1:
+wrax cosreg, 0
+ldax   input1
+wrax output4, 0
+
+nocrossingCos1:
+finish1:
 @endif
 
 @setOutputPin "S/H Output 1" output1

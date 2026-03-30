@@ -1,0 +1,129 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "4-phase-sample-and-hold-test.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    44.0,
+    0.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.noise_amzCADBlock",
+      "blockNum": 0,
+      "x": 117,
+      "y": 17,
+      "name": "Noise_AMZ",
+      "params": {
+        "gain": 1.0,
+        "controlRange": 0.0,
+        "LFSR": 32,
+        "TEMP": 33,
+        "output1": 34
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 48,
+      "y": 111,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Sine_Sample_HoldCADBlock",
+      "blockNum": 2,
+      "x": 184,
+      "y": 93,
+      "name": "4-Phase Sample/Hold",
+      "params": {
+        "rateMax": 511.0,
+        "number6554000": 6554000.0,
+        "output1": 35,
+        "output2": 36,
+        "output3": 37,
+        "output4": 38,
+        "sinreg": 39,
+        "cosreg": 40,
+        "testpoint": 41,
+        "rate": 50.0,
+        "lfoSel": 0.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 3,
+      "x": 291,
+      "y": 210,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock",
+      "blockNum": 4,
+      "x": 389,
+      "y": 193,
+      "name": "Scope Probe",
+      "params": {
+        "scope1Reg": 36,
+        "scope2Reg": 35
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output",
+      "toBlockIndex": 2,
+      "toPin": "Source"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 2,
+      "toPin": "LFO Rate"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Test Point",
+      "toBlockIndex": 3,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "S/H Output 4",
+      "toBlockIndex": 3,
+      "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "S/H Output 2",
+      "toBlockIndex": 4,
+      "toPin": "Scope 1"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "S/H Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Scope 2"
+    }
+  ]
+}
