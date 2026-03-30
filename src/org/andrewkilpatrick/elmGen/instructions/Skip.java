@@ -98,6 +98,10 @@ public class Skip extends Instruction {
 	// Suggested remedy will be:
 	// match flags with current bit. if true, clear that bit and continue.
 	
+	public int getNskip() {
+		return nskip;
+	}
+
 	@Override
 	public void simulate(SimulatorState state) {
 		boolean skip = false;

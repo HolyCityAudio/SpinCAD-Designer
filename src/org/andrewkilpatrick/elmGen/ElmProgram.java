@@ -471,6 +471,23 @@ public String optimizeProgram() {
     Map<Integer, Integer> readCount = countRegisterReads();
 
     // ----------------------------------------------------------
+    // Phase 1b: build set of instruction indices that lie within
+    // any SKP instruction's jump range or are its landing target.
+    // Removing or collapsing instructions at these positions would
+    // break SKP offsets, so they must be left alone.
+    // ----------------------------------------------------------
+    Set<Integer> skpProtected = new TreeSet<>();
+    for (int si = 0; si < instList.size(); si++) {
+        if (instList.get(si) instanceof Skip) {
+            int nskip = ((Skip) instList.get(si)).getNskip();
+            // Protect instructions within the skip range and the landing target
+            for (int pi = si + 1; pi <= si + nskip + 1 && pi < instList.size(); pi++) {
+                skpProtected.add(pi);
+            }
+        }
+    }
+
+    // ----------------------------------------------------------
     // Phase 2: single forward pass – find adjacent wrax/rdax
     // pairs (with optional comments in between) and apply the
     // appropriate case.
@@ -526,6 +543,14 @@ public String optimizeProgram() {
 
         // Registers must match
         if (rdaxAddr != wraxAddr) {
+            optList.add(inst);
+            i++;
+            continue;
+        }
+
+        // Don't optimize if either instruction is within a SKP jump range
+        // or at a SKP target — removing/collapsing would break SKP offsets.
+        if (skpProtected.contains(i) || skpProtected.contains(j)) {
             optList.add(inst);
             i++;
             continue;
@@ -622,6 +647,11 @@ private Map<Integer, Integer> countRegisterReads() {
             // *** ADJUST IF NEEDED ***
             int addr = ((Mulx) inst).getAddr();
             counts.merge(addr, 1, Integer::sum);
+
+        } else if (inst instanceof LoadAccumulator) {
+            // ldax reads the register
+            int addr = ((LoadAccumulator) inst).getAddr();
+            counts.merge(addr, 1, Integer::sum);
         }
         // WriteRegister, WriteRegisterLowshelf, WriteRegisterHighshelf
         // are writes only – do not count them here.
@@ -631,40 +661,90 @@ private Map<Integer, Integer> countRegisterReads() {
     return counts;
 }
 
+/** Returns true if any instruction between fromExcl and toExcl reads or writes the given register. */
+private boolean isRegisterReferencedBetween(int fromExcl, int toExcl, int addr) {
+    for (int i = fromExcl + 1; i < toExcl; i++) {
+        Instruction inst = instList.get(i);
+        // Reads
+        if (inst instanceof ReadRegister && ((ReadRegister) inst).getAddr() == addr) return true;
+        if (inst instanceof ReadRegisterFilter && ((ReadRegisterFilter) inst).getAddr() == addr) return true;
+        if (inst instanceof Maxx && ((Maxx) inst).getAddr() == addr) return true;
+        if (inst instanceof Mulx && ((Mulx) inst).getAddr() == addr) return true;
+        if (inst instanceof LoadAccumulator && ((LoadAccumulator) inst).getAddr() == addr) return true;
+        // Writes
+        if (inst instanceof WriteRegister && ((WriteRegister) inst).getAddr() == addr) return true;
+        if (inst instanceof WriteRegisterLowshelf && ((WriteRegisterLowshelf) inst).getAddr() == addr) return true;
+        if (inst instanceof WriteRegisterHighshelf && ((WriteRegisterHighshelf) inst).getAddr() == addr) return true;
+    }
+    return false;
+}
+
+/** Returns true if any non-Comment instruction exists between fromExcl and toExcl. */
+private boolean hasNonCommentBetween(int fromExcl, int toExcl) {
+    for (int i = fromExcl + 1; i < toExcl; i++) {
+        if (!(instList.get(i) instanceof Comment)) return true;
+    }
+    return false;
+}
+
 // ============================================================
-//  Second-pass output-register optimizer.
+//  Second-pass shuttle-register optimizer.
 //
 //  Handles non-adjacent WRAX REGx / RDAX REGx patterns where
-//  the register is only used to shuttle a value to DAC outputs.
+//  a register is used only to shuttle a value to subsequent
+//  writes (any target register, not just DAC outputs).
 //
-//  Case 4 – WRAX REGx,0.0 → N × (RDAX REGx,1.0 / WRAX DACy,0.0)
+//  Case 4 – WRAX REGx,0.0 → N × (RDAX REGx,1.0 / WRAX REGy,0.0)
 //           REGx not used elsewhere, all gains 1.0
-//           → Replace WRAX REGx with chain of WRAX DACy.
+//           → Replace WRAX REGx with chain of WRAX REGy.
 //           Saves: N+1 instructions, 1 register
 //
-//  Case 5 – RDAX REGx,1.0 / WRAX DACy,0.0 in output section
+//  Case 5 – RDAX REGx,1.0 / WRAX REGy,0.0
 //           REGx IS used elsewhere (e.g. filter state via RDFX)
 //           Only applies when WRAX REGx has scale=1.0 (ACC unchanged).
-//           → Insert WRAX DACy,1.0 after the WRAX REGx,1.0
-//           Saves: 1 instruction per output pair
+//           → Insert WRAX REGy,1.0 after the WRAX REGx,1.0
+//           Saves: 1 instruction per shuttle pair
 //
-//  Case 6 – WRAX REGx,0.0 → N × (RDAX REGx,g_i / WRAX DACy,0.0)
+//  Case 6 – WRAX REGx,0.0 → N × (RDAX REGx,g_i / WRAX REGy,0.0)
 //           REGx not used elsewhere, gains differ
 //           → Replace WRAX REGx,0.0 with WRAX REGx,g1, then
-//             chain WRAX DACy with ratio-scaled gains.
+//             chain WRAX REGy with ratio-scaled gains.
 //           Saves: N instructions
+//
+//  Case 7 – WRAX REGx,1.0 / WRAX REGa,0.0 / RDAX REGx,1.0 / WRAX REGb,0.0
+//           REGx not used elsewhere, source keeps ACC, standalone write
+//           between source and first pair uses ACC directly.
+//           → WRAX REGa,1.0 / WRAX REGb,0.0 (register eliminated)
+//           Saves: N+1 instructions, 1 register
+//
+//  Safety: target writes are only moved earlier if no instruction
+//  reads the target register between the new and original positions.
+//  When the source scale changes (0→non-zero), no non-comment
+//  instructions may exist between source and first pair (ACC
+//  integrity).
 // ============================================================
 public void optimizeOutputRegisters() {
 
     Map<Integer, Integer> readCount = countRegisterReads();
     final int USER_REG_MIN = REG0;  // 0x20
 
+    // Build set of instruction indices protected by SKP jump ranges.
+    Set<Integer> skpProtected = new TreeSet<>();
+    for (int si = 0; si < instList.size(); si++) {
+        if (instList.get(si) instanceof Skip) {
+            int nskip = ((Skip) instList.get(si)).getNskip();
+            for (int pi = si + 1; pi <= si + nskip + 1 && pi < instList.size(); pi++) {
+                skpProtected.add(pi);
+            }
+        }
+    }
+
     // ----------------------------------------------------------
-    // Phase 1: Find all "output pairs" in the instruction list.
-    // An output pair is: RDAX REGx, gain / WRAX DACy, 0.0
-    // where DACy is DACL or DACR and REGx is a user register.
+    // Phase 1: Find all "shuttle pairs" in the instruction list.
+    // A shuttle pair is: RDAX REGx, gain / WRAX REGy, 0.0
+    // where REGx is a user register and REGy != REGx.
     // ----------------------------------------------------------
-    // Each entry: [rdaxIdx, wraxDacIdx, regAddr, dacAddr]
+    // Each entry: [rdaxIdx, wraxIdx, srcReg, tgtReg]
     List<int[]> pairInfo = new ArrayList<>();
     List<Double> pairGains = new ArrayList<>();
 
@@ -673,19 +753,33 @@ public void optimizeOutputRegisters() {
         ReadRegister rdax = (ReadRegister) instList.get(i);
         if (rdax.getAddr() < USER_REG_MIN) continue;
 
+        // ACC must be 0 before the RDAX for this to be a pure shuttle
+        // (otherwise the RDAX accumulates, not loads).
+        // Check: previous non-comment instruction must be WRAX with scale 0.
+        int prev = i - 1;
+        while (prev >= 0 && instList.get(prev) instanceof Comment) prev--;
+        if (prev >= 0) {
+            if (!(instList.get(prev) instanceof WriteRegister)
+                    || ((WriteRegister) instList.get(prev)).getScale() != 0.0) {
+                continue;
+            }
+        }
+
         // Skip comments to find next non-comment instruction
         int j = i + 1;
         while (j < instList.size() && instList.get(j) instanceof Comment) j++;
         if (j >= instList.size()) continue;
         if (!(instList.get(j) instanceof WriteRegister)) continue;
 
-        WriteRegister wraxDac = (WriteRegister) instList.get(j);
-        if ((wraxDac.getAddr() != DACL && wraxDac.getAddr() != DACR)
-                || wraxDac.getScale() != 0.0) {
+        WriteRegister wraxTgt = (WriteRegister) instList.get(j);
+        if (wraxTgt.getScale() != 0.0 || wraxTgt.getAddr() == rdax.getAddr()) {
             continue;
         }
 
-        pairInfo.add(new int[]{i, j, rdax.getAddr(), wraxDac.getAddr()});
+        // Don't optimize pairs within SKP jump ranges
+        if (skpProtected.contains(i) || skpProtected.contains(j)) continue;
+
+        pairInfo.add(new int[]{i, j, rdax.getAddr(), wraxTgt.getAddr()});
         pairGains.add(rdax.getScale());
     }
 
@@ -694,7 +788,7 @@ public void optimizeOutputRegisters() {
     }
 
     // ----------------------------------------------------------
-    // Phase 2: Group output pairs by source register.
+    // Phase 2: Group shuttle pairs by source register.
     // ----------------------------------------------------------
     Map<Integer, List<Integer>> groups = new LinkedHashMap<>();
     for (int idx = 0; idx < pairInfo.size(); idx++) {
@@ -735,6 +829,22 @@ public void optimizeOutputRegisters() {
             }
         }
         if (srcWrIdx < 0) continue;  // couldn't find the source write
+        // Skip if source already claimed by another group's transformation
+        if (removeSet.contains(srcWrIdx) || replaceMap.containsKey(srcWrIdx)) continue;
+        // Skip if source write is within a SKP jump range
+        if (skpProtected.contains(srcWrIdx)) continue;
+
+        // Safety: if the register has multiple writes before the first pair,
+        // it likely has conditional branches (SKP) routing through different
+        // writes. We can only safely optimize if there's exactly one write.
+        int writeCount = 0;
+        for (int i = 0; i < firstOPIdx; i++) {
+            if (instList.get(i) instanceof WriteRegister
+                    && ((WriteRegister) instList.get(i)).getAddr() == reg) {
+                writeCount++;
+            }
+        }
+        if (writeCount > 1) continue;
 
         // ----- All reads in output, WRAX has scale 0.0 -----
         if (onlyInOutput && srcWrScale == 0.0) {
@@ -745,8 +855,22 @@ public void optimizeOutputRegisters() {
 
             if (allGainsOne) {
                 // === Case 4: same register, all gains 1.0, not used elsewhere ===
-                // Replace WRAX REGx,0.0 with chain:  WRAX DAC_0,1.0 / ... / WRAX DAC_N,0.0
+                // Replace WRAX REGx,0.0 with chain:  WRAX tgt_0,1.0 / ... / WRAX tgt_N,0.0
                 int n = pis.size();
+
+                // Safety: if n>1, ACC changes from 0 to non-zero at source position
+                if (n > 1 && hasNonCommentBetween(srcWrIdx, firstOPIdx)) continue;
+
+                // Safety: target registers must not be read between source and original positions
+                boolean targetSafe = true;
+                for (int pi : pis) {
+                    if (isRegisterReferencedBetween(srcWrIdx, pairInfo.get(pi)[1], pairInfo.get(pi)[3])) {
+                        targetSafe = false;
+                        break;
+                    }
+                }
+                if (!targetSafe) continue;
+
                 replaceMap.put(srcWrIdx,
                     new WriteRegister(pairInfo.get(pis.get(0))[3], n > 1 ? 1.0 : 0.0));
 
@@ -769,7 +893,21 @@ public void optimizeOutputRegisters() {
 
             } else {
                 // === Case 6: same register, different gains, not used elsewhere ===
-                // Replace WRAX REGx,0.0 with WRAX REGx,g1 then chain of WRAX DACy
+                // Replace WRAX REGx,0.0 with WRAX REGx,g1 then chain of WRAX REGy
+
+                // Safety: ACC changes from 0 to g0*V at source position
+                if (hasNonCommentBetween(srcWrIdx, firstOPIdx)) continue;
+
+                // Safety: target registers must not be read between source and original positions
+                boolean targetSafe = true;
+                for (int pi : pis) {
+                    if (isRegisterReferencedBetween(srcWrIdx, pairInfo.get(pi)[1], pairInfo.get(pi)[3])) {
+                        targetSafe = false;
+                        break;
+                    }
+                }
+                if (!targetSafe) continue;
+
                 double g0 = pairGains.get(pis.get(0));
                 replaceMap.put(srcWrIdx, new WriteRegister(reg, g0));
 
@@ -798,14 +936,24 @@ public void optimizeOutputRegisters() {
 
         // ----- Register used elsewhere, WRAX scale is 1.0 -----
         } else if (!onlyInOutput && srcWrScale == 1.0) {
-            // === Case 5: insert WRAX DACy,1.0 after the WRAX REGx,1.0 ===
+            // === Case 5: insert WRAX REGy,1.0 after the WRAX REGx,1.0 ===
             // ACC after WRAX REGx,1.0 still holds the value, so we can
-            // piggyback DAC writes directly.
+            // piggyback target writes directly.
             boolean allGainsOne = true;
             for (int pi : pis) {
                 if (pairGains.get(pi) != 1.0) { allGainsOne = false; break; }
             }
             if (!allGainsOne) continue;
+
+            // Safety: target registers must not be read between source and original positions
+            boolean targetSafe = true;
+            for (int pi : pis) {
+                if (isRegisterReferencedBetween(srcWrIdx, pairInfo.get(pi)[1], pairInfo.get(pi)[3])) {
+                    targetSafe = false;
+                    break;
+                }
+            }
+            if (!targetSafe) continue;
 
             List<Instruction> inserts = insertMap.getOrDefault(srcWrIdx, new ArrayList<>());
             for (int pi : pis) {
@@ -816,6 +964,75 @@ public void optimizeOutputRegisters() {
             insertMap.put(srcWrIdx, inserts);
 
             savedInst += pis.size();
+
+        // ----- Register only used in shuttle pairs, WRAX scale is 1.0,
+        //       standalone write uses ACC directly -----
+        } else if (onlyInOutput && srcWrScale == 1.0) {
+            // Pattern: WRAX REGx,1 / WRAX REGa,0 / RDAX REGx,1 / WRAX REGb,0
+            // The source keeps ACC, a standalone WRAX REGa uses it, then
+            // RDAX re-reads the register for subsequent writes.
+            // Optimized: WRAX REGa,1 / WRAX REGb,0  (shuttle register eliminated)
+            boolean allGainsOne = true;
+            for (int pi : pis) {
+                if (pairGains.get(pi) != 1.0) { allGainsOne = false; break; }
+            }
+            if (allGainsOne) {
+                int firstRdaxIdx = pairInfo.get(pis.get(0))[0];
+
+                // Find standalone WRAX REGa,0 between source and first pair
+                int standaloneIdx = -1;
+                for (int si = srcWrIdx + 1; si < firstRdaxIdx; si++) {
+                    if (instList.get(si) instanceof Comment) continue;
+                    if (instList.get(si) instanceof WriteRegister) {
+                        WriteRegister w = (WriteRegister) instList.get(si);
+                        if (w.getScale() == 0.0 && w.getAddr() != reg) {
+                            standaloneIdx = si;
+                        }
+                    }
+                    break; // only check first non-comment instruction
+                }
+
+                if (standaloneIdx >= 0) {
+                    // Safety: ACC changes from 0 to non-zero after standalone
+                    if (hasNonCommentBetween(standaloneIdx, firstRdaxIdx)) continue;
+
+                    // Safety: pair target registers must not be read between
+                    // standalone and their original positions
+                    boolean targetSafe = true;
+                    for (int pi : pis) {
+                        if (isRegisterReferencedBetween(standaloneIdx, pairInfo.get(pi)[1], pairInfo.get(pi)[3])) {
+                            targetSafe = false;
+                            break;
+                        }
+                    }
+                    if (!targetSafe) continue;
+
+                    // Remove source WRAX REGx,1.0
+                    removeSet.add(srcWrIdx);
+
+                    // Change standalone WRAX REGa,0.0 → WRAX REGa,1.0
+                    WriteRegister sWr = (WriteRegister) instList.get(standaloneIdx);
+                    replaceMap.put(standaloneIdx,
+                        new WriteRegister(sWr.getAddr(), pis.size() > 0 ? 1.0 : 0.0));
+
+                    // Insert target writes from the pairs after the standalone
+                    List<Instruction> inserts = new ArrayList<>();
+                    for (int k = 0; k < pis.size(); k++) {
+                        double s = (k < pis.size() - 1) ? 1.0 : 0.0;
+                        inserts.add(new WriteRegister(pairInfo.get(pis.get(k))[3], s));
+                    }
+                    insertMap.put(standaloneIdx, inserts);
+
+                    // Remove all RDAX/WRAX pairs
+                    for (int pi : pis) {
+                        removeSet.add(pairInfo.get(pi)[0]);  // RDAX
+                        removeSet.add(pairInfo.get(pi)[1]);  // WRAX REGy
+                    }
+
+                    savedInst += 1 + pis.size();  // source WRAX + one RDAX per pair
+                    savedRegs += 1;
+                }
+            }
         }
         // All other combinations: leave as-is
     }
@@ -847,7 +1064,7 @@ public void optimizeOutputRegisters() {
         if (inst instanceof Comment) nComments++;
     }
 
-    System.out.println("Output register optimization complete: saved "
+    System.out.println("Shuttle register optimization complete: saved "
         + savedInst + " instruction(s) and " + savedRegs + " register(s).");
 }
 
