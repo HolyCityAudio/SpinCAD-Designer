@@ -1,0 +1,444 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "dynamic-formant-morph.spcdj",
+  "comments": {
+    "fileName": "dynamic-formant-morph",
+    "version": "Patch saved from SpinCAD Designer version 1062",
+    "lines": [
+      "Pot 0: Sensitivity (envelope depth)",
+      "Pot 1: Attack (envelope response)",
+      "Pot 2: Speed (vowel drift rate)",
+      "Dynamic Formant Morph - two SVF bandpass formants",
+      "Envelope-driven vowel articulation with slow LFO drift"
+    ]
+  },
+  "potValues": [
+    0.5,
+    0.5,
+    0.3
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 200,
+      "y": 30,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock",
+      "blockNum": 1,
+      "x": 200,
+      "y": 130,
+      "name": "Gain Boost",
+      "params": {
+        "gain": 3
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 2,
+      "x": 50,
+      "y": 300,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 3,
+      "x": 50,
+      "y": 130,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 4,
+      "x": 50,
+      "y": 500,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock",
+      "blockNum": 5,
+      "x": 350,
+      "y": 130,
+      "name": "Envelope",
+      "params": {
+        "attackCoeff": 5.0E-4,
+        "gain": 2,
+        "decayCoeff": 2.0E-4
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock",
+      "blockNum": 6,
+      "x": 500,
+      "y": 200,
+      "name": "Power",
+      "params": {
+        "power": 2.0,
+        "invert": false,
+        "flip": false
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.MultiplyCADBlock",
+      "blockNum": 7,
+      "x": 500,
+      "y": 300,
+      "name": "Multiply"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 8,
+      "x": 650,
+      "y": 230,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.06,
+        "outHigh": 0.45
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 9,
+      "x": 650,
+      "y": 360,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.31,
+        "outHigh": 0.96
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 10,
+      "x": 200,
+      "y": 500,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.01,
+        "outHigh": 0.20
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock",
+      "blockNum": 11,
+      "x": 350,
+      "y": 500,
+      "name": "Ramp LFO 0",
+      "params": {
+        "lfoRate": -500,
+        "lfoWidth": 3,
+        "whichLFO": 0,
+        "invert": false,
+        "flip": false
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 12,
+      "x": 500,
+      "y": 460,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": -0.05,
+        "outHigh": 0.05
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 13,
+      "x": 500,
+      "y": 560,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": -0.10,
+        "outHigh": 0.10
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock",
+      "blockNum": 14,
+      "x": 800,
+      "y": 230,
+      "name": "Control Mixer"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock",
+      "blockNum": 15,
+      "x": 800,
+      "y": 380,
+      "name": "Control Mixer"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock",
+      "blockNum": 16,
+      "x": 950,
+      "y": 230,
+      "name": "Smoother",
+      "params": {
+        "filtReg": 0,
+        "filt": 3.0E-4
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock",
+      "blockNum": 17,
+      "x": 950,
+      "y": 380,
+      "name": "Smoother",
+      "params": {
+        "filtReg": 0,
+        "filt": 3.0E-4
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SVF_2P_adjustableCADBlock",
+      "blockNum": 18,
+      "x": 1100,
+      "y": 130,
+      "name": "SVF 2 Pole",
+      "params": {
+        "freq": 0.50,
+        "qMax": 10.0,
+        "qMin": 1.0,
+        "output": 0,
+        "z1": 0,
+        "z2": 0,
+        "lpf": 0,
+        "hpf": 0,
+        "brf": 0,
+        "number1": 1.0,
+        "temp": 0,
+        "scaledQ": 0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SVF_2P_adjustableCADBlock",
+      "blockNum": 19,
+      "x": 1100,
+      "y": 350,
+      "name": "SVF 2 Pole",
+      "params": {
+        "freq": 0.50,
+        "qMax": 8.0,
+        "qMin": 1.0,
+        "output": 0,
+        "z1": 0,
+        "z2": 0,
+        "lpf": 0,
+        "hpf": 0,
+        "brf": 0,
+        "number1": 1.0,
+        "temp": 0,
+        "scaledQ": 0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock",
+      "blockNum": 20,
+      "x": 1300,
+      "y": 230,
+      "name": "Mixer 2:1",
+      "params": {
+        "gain1": 1.0,
+        "gain2": 0.6,
+        "output": 0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 21,
+      "x": 1300,
+      "y": 380,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 1,
+      "toPin": "Audio Input"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 5,
+      "toPin": "Audio Input 1"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Sensitivity"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Single Slope",
+      "toBlockIndex": 6,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 6,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 7,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 7,
+      "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 7,
+      "fromPin": "Output",
+      "toBlockIndex": 8,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 7,
+      "fromPin": "Output",
+      "toBlockIndex": 9,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 10,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 10,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 11,
+      "toPin": "Rate"
+    },
+    {
+      "fromBlockIndex": 11,
+      "fromPin": "Ramp LFO",
+      "toBlockIndex": 12,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 11,
+      "fromPin": "Ramp LFO",
+      "toBlockIndex": 13,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 8,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 14,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 12,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 14,
+      "toPin": "Control Input 2"
+    },
+    {
+      "fromBlockIndex": 9,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 15,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 13,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 15,
+      "toPin": "Control Input 2"
+    },
+    {
+      "fromBlockIndex": 14,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 16,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 15,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 17,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 16,
+      "fromPin": "Control Output",
+      "toBlockIndex": 18,
+      "toPin": "Frequency"
+    },
+    {
+      "fromBlockIndex": 17,
+      "fromPin": "Control Output",
+      "toBlockIndex": 19,
+      "toPin": "Frequency"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 18,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 19,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 18,
+      "fromPin": "Band Pass Output",
+      "toBlockIndex": 20,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 19,
+      "fromPin": "Band Pass Output",
+      "toBlockIndex": 20,
+      "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 20,
+      "fromPin": "Output",
+      "toBlockIndex": 21,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 20,
+      "fromPin": "Output",
+      "toBlockIndex": 21,
+      "toPin": "Input 2"
+    }
+  ]
+}

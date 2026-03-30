@@ -1,0 +1,106 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "pattern generator-2.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1066",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    100.0,
+    0.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock",
+      "blockNum": 0,
+      "x": 104,
+      "y": 133,
+      "name": "LFO 0",
+      "params": {
+        "lfoRate": 108,
+        "lfoWidth": 32767,
+        "lfoSel": 0,
+        "outputRange": 1
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.PatternGeneratorCADBlock",
+      "blockNum": 1,
+      "x": 253,
+      "y": 142,
+      "name": "Pattern Gen",
+      "params": {
+        "threshold": 0.25,
+        "numSteps": 8.0,
+        "slope": 2,
+        "steps": [
+          0.089,
+          0.773,
+          0.936,
+          0.131,
+          0.862,
+          0.794,
+          0.747,
+          0.647,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock",
+      "blockNum": 2,
+      "x": 396,
+      "y": 125,
+      "name": "Smoother",
+      "params": {
+        "filtReg": 40,
+        "filt": 0.0024337107894708554
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 3,
+      "x": 404,
+      "y": 319,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Sine",
+      "toBlockIndex": 1,
+      "toPin": "Trigger"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Level",
+      "toBlockIndex": 2,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output",
+      "toBlockIndex": 3,
+      "toPin": "Input 2"
+    }
+  ]
+}

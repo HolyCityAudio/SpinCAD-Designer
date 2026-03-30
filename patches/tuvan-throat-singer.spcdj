@@ -1,0 +1,356 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "tuvan-throat-singer.spcdj",
+  "comments": {
+    "fileName": "tuvan-throat-singer.spcdj",
+    "version": "Patch saved from SpinCAD Designer version 1062",
+    "lines": [
+      "Pot 0: Sensitivity",
+      "Pot 1: Tuning",
+      "Pot 2: ",
+      "Tuvan Throat Singer by Digital Larry",
+      "Recreated from hand-edited FV-1 assembly listing"
+    ]
+  },
+  "potValues": [
+    20.0,
+    23.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 50,
+      "y": 30,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock",
+      "blockNum": 1,
+      "x": 50,
+      "y": 130,
+      "name": "Gain Boost",
+      "params": {
+        "gain": 7
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 2,
+      "x": 50,
+      "y": 250,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.VolumeCADBlock",
+      "blockNum": 3,
+      "x": 200,
+      "y": 200,
+      "name": "Volume",
+      "params": {
+        "gain": 1.0,
+        "output": 33
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock",
+      "blockNum": 4,
+      "x": 350,
+      "y": 200,
+      "name": "Envelope",
+      "params": {
+        "attackCoeff": 4.73E-4,
+        "gain": 3,
+        "decayCoeff": 1.0E-4
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 5,
+      "x": 50,
+      "y": 400,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 6,
+      "x": 200,
+      "y": 400,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.14,
+        "outHigh": 0.56
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock",
+      "blockNum": 7,
+      "x": 500,
+      "y": 200,
+      "name": "Power",
+      "params": {
+        "power": 3.0,
+        "invert": false,
+        "flip": false
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 8,
+      "x": 650,
+      "y": 150,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.0,
+        "outHigh": 0.56
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 9,
+      "x": 650,
+      "y": 280,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.0,
+        "outHigh": -0.42
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock",
+      "blockNum": 10,
+      "x": 800,
+      "y": 170,
+      "name": "Control Mixer"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 11,
+      "x": 200,
+      "y": 520,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.68,
+        "outHigh": 0.93
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ControlMixerCADBlock",
+      "blockNum": 12,
+      "x": 800,
+      "y": 380,
+      "name": "Control Mixer"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.LPF4PCADBlock",
+      "blockNum": 13,
+      "x": 950,
+      "y": 80,
+      "name": "LP 2P",
+      "params": {
+        "f0": 880.0,
+        "kql": 0.025,
+        "is4Pole": false
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.HPF2PCADBlock",
+      "blockNum": 14,
+      "x": 950,
+      "y": 300,
+      "name": "HP 2P",
+      "params": {
+        "f0": 880.0,
+        "kqh": 0.05,
+        "is4Pole": false
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock",
+      "blockNum": 15,
+      "x": 1100,
+      "y": 80,
+      "name": "Gain Boost",
+      "params": {
+        "gain": 2
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock",
+      "blockNum": 16,
+      "x": 1100,
+      "y": 250,
+      "name": "Mixer 2:1",
+      "params": {
+        "gain1": 0.53,
+        "gain2": 0.54,
+        "output": 55
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 17,
+      "x": 1073,
+      "y": 402,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 1,
+      "toPin": "Audio Input"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 3,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 3,
+      "toPin": "Volume"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Output",
+      "toBlockIndex": 4,
+      "toPin": "Audio Input 1"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 6,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Single Slope",
+      "toBlockIndex": 7,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 7,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 8,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 7,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 9,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 8,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 10,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 6,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 10,
+      "toPin": "Control Input 2"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 11,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 9,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 12,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 11,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 12,
+      "toPin": "Control Input 2"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 13,
+      "toPin": "Audio Input"
+    },
+    {
+      "fromBlockIndex": 10,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 13,
+      "toPin": "Frequency"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 14,
+      "toPin": "Audio Input"
+    },
+    {
+      "fromBlockIndex": 12,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 14,
+      "toPin": "Frequency"
+    },
+    {
+      "fromBlockIndex": 13,
+      "fromPin": "Low Pass",
+      "toBlockIndex": 15,
+      "toPin": "Audio Input"
+    },
+    {
+      "fromBlockIndex": 15,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 16,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 14,
+      "fromPin": "High Pass",
+      "toBlockIndex": 16,
+      "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 16,
+      "fromPin": "Output",
+      "toBlockIndex": 17,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 16,
+      "fromPin": "Output",
+      "toBlockIndex": 17,
+      "toPin": "Input 2"
+    }
+  ]
+}
