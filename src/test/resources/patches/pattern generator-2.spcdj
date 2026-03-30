@@ -97,6 +97,12 @@
       "toPin": "Control Input"
     },
     {
+      "fromBlockIndex": 1,
+      "fromPin": "Level",
+      "toBlockIndex": 3,
+      "toPin": "Input 1"
+    },
+    {
       "fromBlockIndex": 2,
       "fromPin": "Control Output",
       "toBlockIndex": 3,

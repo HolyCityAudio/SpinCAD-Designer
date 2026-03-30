@@ -64,6 +64,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Glitch_shiftCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffset1_2CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ArpeggiatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
@@ -711,6 +712,15 @@
 		}
 	});
 	mn_pitch.add(mntm_pitchoffset1_2);
+		
+	final JMenuItem mntm_Arpeggiator = new JMenuItem("Arpeggiator");
+	mntm_Arpeggiator.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ArpeggiatorCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_pitch.add(mntm_Arpeggiator);
 		
 	JMenu mn_control = new JMenu("Control");
 	menuBar.add(mn_control);
