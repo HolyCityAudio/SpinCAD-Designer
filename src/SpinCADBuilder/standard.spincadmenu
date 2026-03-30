@@ -73,8 +73,9 @@
 @menuitem "ROM Reverb 1" rom_rev1 
 @menuitem "ROM Reverb 2" rom_rev2 
 @menuitem "Adjustable Reverb" reverb
+@menuitem "Reverb Designer" ReverbDesigner
 // @menuitem "Reverb Delay Line 01" reverb_delay_line_01
-//@menuitem "Shimmer Reverb" shimmer_verb 
+//@menuitem "Shimmer Reverb" shimmer_verb
 
 @menu "Modulation"  
 @menuitem "1-voice Chorus" Chorus 
@@ -135,6 +136,7 @@
 @menuitem "Vee" Vee
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Envelope II" New_Envelope
+@menuitem "Gated RT Ctrl" GatedReverbControl  // hand-written in src/
 @menuitem "Mixer 2:1" ControlMixer_2_to_1
 @menuitem "Mixer 3:1" ControlMixer_3_to_1
 @menuitem "Tap Tempo" TapTempo

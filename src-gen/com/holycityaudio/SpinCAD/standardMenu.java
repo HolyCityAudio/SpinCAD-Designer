@@ -52,6 +52,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ReverbDesignerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusQuadCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
@@ -69,6 +70,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.control_adjustable_smootherCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LFO_ValueCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock;
@@ -87,6 +89,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.VeeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.GatedReverbControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_3_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
@@ -599,6 +602,15 @@
 	});
 	mn_reverb.add(mntm_reverb);
 		
+	final JMenuItem mntm_ReverbDesigner = new JMenuItem("Reverb Designer");
+	mntm_ReverbDesigner.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ReverbDesignerCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_ReverbDesigner);
+		
 	JMenu mn_modulation = new JMenu("Modulation");
 	menuBar.add(mn_modulation);
 	
@@ -761,6 +773,15 @@
 	});
 	mn_control.add(mntm_control_smoother);
 		
+	final JMenuItem mntm_control_adjustable_smoother = new JMenuItem("Adj Smoother");
+	mntm_control_adjustable_smoother.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new control_adjustable_smootherCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_control_adjustable_smoother);
+		
 	final JMenuItem mntm_SinCosLFOA = new JMenuItem("Sin/Cos LFO");
 	mntm_SinCosLFOA.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -922,6 +943,15 @@
 		}
 	});
 	mn_control.add(mntm_New_Envelope);
+		
+	final JMenuItem mntm_GatedReverbControl = new JMenuItem("Gated RT Ctrl");
+	mntm_GatedReverbControl.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new GatedReverbControlCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_GatedReverbControl);
 		
 	final JMenuItem mntm_ControlMixer_2_to_1 = new JMenuItem("Mixer 2:1");
 	mntm_ControlMixer_2_to_1.addActionListener(new ActionListener() {
