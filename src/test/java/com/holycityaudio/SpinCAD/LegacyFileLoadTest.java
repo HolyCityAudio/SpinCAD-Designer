@@ -41,11 +41,9 @@ public class LegacyFileLoadTest {
 
     private static final File ASM_OUTPUT_DIR = new File("build/test-asm");
 
-    // Known-failing patches to skip until root cause is fixed
+    // Known-failing patches to skip (negative tests or known issues)
     private static final Set<String> SKIP_PATCHES = new HashSet<>(Arrays.asList(
-        "1039_WaveShaper_Blocks_2.spcd",
-        "double-stutter-03.spcd",
-        "rom-reverb-02-hf-control.spcd"
+        "double-stutter-03.spcd"   // intentional: exceeds instruction limit
     ));
 
     // Test result tracking for summary

@@ -17,6 +17,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.ConstantCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Mixer_3_to_1CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Mixer_4_to_1CADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 
 /**
@@ -110,18 +113,48 @@ public class AllBlocksCodeGenTest {
             }
         }
 
-        // Wire first audio output of block under test to the output block
-        SpinCADPin blockAudioOut = null;
+        // Collect all output pins (audio and control treated the same)
+        List<SpinCADPin> outputPins = new ArrayList<>();
         for (SpinCADPin pin : blockUnderTest.pinList) {
-            if (pin.getType() == pinType.AUDIO_OUT) {
-                blockAudioOut = pin;
-                break;
+            if (pin.getType() == pinType.AUDIO_OUT || pin.getType() == pinType.CONTROL_OUT) {
+                outputPins.add(pin);
             }
         }
-        if (blockAudioOut != null) {
-            SpinCADPin outputIn = outputBlock.getPin("Input 1");
-            if (outputIn != null) {
-                outputIn.setConnection(blockUnderTest, blockAudioOut);
+
+        // Wire outputs to DACL/DACR through the Output block:
+        //   1 output  → both Input 1 (DACL) and Input 2 (DACR)
+        //   2 outputs → first to Input 1 (DACL), second to Input 2 (DACR)
+        //   3 outputs → first to DACL, other 2 through Mixer_2_to_1 to DACR
+        //   4 outputs → first to DACL, other 3 through Mixer_3_to_1 to DACR
+        //   5 outputs → first to DACL, other 4 through Mixer_4_to_1 to DACR
+        if (outputPins.size() == 1) {
+            SpinCADPin out = outputPins.get(0);
+            outputBlock.getPin("Input 1").setConnection(blockUnderTest, out);
+            outputBlock.getPin("Input 2").setConnection(blockUnderTest, out);
+        } else if (outputPins.size() == 2) {
+            outputBlock.getPin("Input 1").setConnection(blockUnderTest, outputPins.get(0));
+            outputBlock.getPin("Input 2").setConnection(blockUnderTest, outputPins.get(1));
+        } else if (outputPins.size() >= 3) {
+            // First output → DACL
+            outputBlock.getPin("Input 1").setConnection(blockUnderTest, outputPins.get(0));
+
+            // Remaining outputs → mixer → DACR
+            List<SpinCADPin> remainingOuts = outputPins.subList(1, outputPins.size());
+            SpinCADBlock mixer = createMixer(remainingOuts.size());
+            if (mixer != null) {
+                model.addBlock(mixer);
+                // Wire block outputs to mixer inputs
+                for (int i = 0; i < remainingOuts.size(); i++) {
+                    SpinCADPin mixerIn = mixer.getPin("Input " + (i + 1));
+                    if (mixerIn != null) {
+                        mixerIn.setConnection(blockUnderTest, remainingOuts.get(i));
+                    }
+                }
+                // Wire mixer output to Output block Input 2 (DACR)
+                SpinCADPin mixerOut = findOutputPin(mixer);
+                if (mixerOut != null) {
+                    outputBlock.getPin("Input 2").setConnection(mixer, mixerOut);
+                }
             }
         }
 
@@ -172,6 +205,15 @@ public class AllBlocksCodeGenTest {
         assertTrue(ramUsed <= ElmProgram.MAX_DELAY_MEM,
                 simpleName + ": delay RAM (" + ramUsed + ") exceeds max " + ElmProgram.MAX_DELAY_MEM);
 
+        // 7. Assert the generated code writes to both DACL and DACR
+        if (!outputPins.isEmpty()) {
+            String listing = renderBlock.getProgramListing(1);
+            assertTrue(listing.contains("WRAX DACL"),
+                    simpleName + ": generated code missing WRAX DACL");
+            assertTrue(listing.contains("WRAX DACR"),
+                    simpleName + ": generated code missing WRAX DACR");
+        }
+
         System.out.printf("  OK: %s — %d instr, %d regs, %d RAM%n",
                 simpleName, instrCount, regsUsed, ramUsed);
     }
@@ -203,6 +245,18 @@ public class AllBlocksCodeGenTest {
             System.err.println("Could not instantiate " + className + ": " + e.getMessage());
             return null;
         }
+    }
+
+    private SpinCADBlock createMixer(int inputCount) {
+        if (inputCount <= 2) {
+            return new Mixer_2_to_1CADBlock(50, 150);
+        } else if (inputCount <= 3) {
+            return new Mixer_3_to_1CADBlock(50, 150);
+        } else if (inputCount <= 4) {
+            return new Mixer_4_to_1CADBlock(50, 150);
+        }
+        // More than 4 remaining outputs: use Mixer_4_to_1 for the first 4
+        return new Mixer_4_to_1CADBlock(50, 150);
     }
 
     private SpinCADPin findOutputPin(SpinCADBlock block) {

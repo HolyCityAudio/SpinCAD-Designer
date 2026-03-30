@@ -106,10 +106,6 @@ public class SpinCADFrame extends JFrame {
 	//=====================s====================================================================
 	// pb shows instructions, registers, and RAM used.  It also shows allocation state of LFOs
 	private final ModelResourcesToolBar pb = new ModelResourcesToolBar();
-	// scopeProbeBar: visible only when a ScopeProbeCADBlock is in the patch
-	private final JToolBar scopeProbeBar = new JToolBar();
-	private final JLabel scopeProbeLabel = new JLabel(
-			"  Scope Probe active: optimization disabled for simulation.  Saved Spin ASM and Hex are still optimized.");
 
 	// etb is used to show the pin name when you hover
 	public final EditResourcesToolBar etb = new EditResourcesToolBar();
@@ -307,12 +303,6 @@ public class SpinCADFrame extends JFrame {
 
 		etb.setFloatable(false);
 		toolBarPanel.add(etb, BorderLayout.SOUTH);
-
-		scopeProbeBar.setFloatable(false);
-		scopeProbeLabel.setForeground(new java.awt.Color(0, 160, 180));
-		scopeProbeBar.add(scopeProbeLabel);
-		scopeProbeBar.setVisible(false);
-		toolBarPanel.add(scopeProbeBar, BorderLayout.SOUTH);
 
 		pb.setFloatable(false);
 		toolBarPanel.add(pb, BorderLayout.SOUTH);
@@ -1389,7 +1379,6 @@ public class SpinCADFrame extends JFrame {
 	public void updateAll() {
 		simX.updateSliders(eeprom.patch[bankIndex]);
 		pb.update(eeprom.patch[bankIndex]);
-		scopeProbeBar.setVisible(pb.hasScopeProbe());
 		if(eeprom.patch[bankIndex].isHexFile == true) {
 			simX.sctb.setVisible(false);
 			etb.pinName.setText("Hex file: " + eeprom.patch[bankIndex].patchFileName);

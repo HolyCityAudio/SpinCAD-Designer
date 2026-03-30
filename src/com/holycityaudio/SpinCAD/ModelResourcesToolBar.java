@@ -31,7 +31,6 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 	final JTextField sine0Bar = new JTextField("SIN 0", 6);
 	final JTextField sine1Bar = new JTextField("SIN 1", 6);
 	private SpinCADModel model;
-	private boolean hasScopeProbe = false;
 
 	class Task extends SwingWorker<Void, Void> {
 		/*
@@ -123,27 +122,17 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 	 */
 
 	public void actionPerformed(ActionEvent evt) {
-		this.hasScopeProbe = model.hasScopeProbe();
-
-		// For display, use un-optimized counts when scope probe is present
-		int codeLength = model.sortAlignGen();
+		// Always show optimized counts in the toolbar.
+		// If a scope probe is present, re-run without optimization afterward
+		// so the simulator can still access probed registers.
+		int codeLength = model.sortAlignGen(true);
 		System.out.println("Code: " + codeLength);
 
 		int nRegs = model.getRenderBlock().getNumRegs() - 32;
 		int ramUsed = model.getRenderBlock().getDelayMemAllocated();
 
-		// When scope probe is present, also compute optimized counts for tooltips
-		String optCodeTip = "";
-		String optRegsTip = "";
-		String optRamTip = "";
-		if (hasScopeProbe) {
-			int optCodeLength = model.sortAlignGen(true);
-			int optRegs = model.getRenderBlock().getNumRegs() - 32;
-			int optRam = model.getRenderBlock().getDelayMemAllocated();
-			optCodeTip = " (optimized: " + optCodeLength + ")";
-			optRegsTip = " (optimized: " + optRegs + ")";
-			optRamTip = " (optimized: " + optRam + ")";
-			// Re-run without optimization so simulator registers stay valid
+		// Restore un-optimized state so simulator probe registers stay valid
+		if (model.hasScopeProbe()) {
 			model.sortAlignGen();
 		}
 
@@ -157,7 +146,7 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 			progressBar_2.setForeground(Color.red);
 		}
 
-		progressBar_2.setToolTipText("Code Length: " + codeLength + optCodeTip);
+		progressBar_2.setToolTipText("Code Length: " + codeLength);
 		progressBar_2.setValue(codeLength);
 
 		if (nRegs < 20) {
@@ -169,7 +158,7 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 		} else {
 			progressBar.setForeground(Color.red);
 		}
-		progressBar.setToolTipText("Registers used: " + nRegs + optRegsTip);
+		progressBar.setToolTipText("Registers used: " + nRegs);
 		progressBar.setValue(nRegs);
 
 		if (ramUsed < 20000) {
@@ -182,7 +171,7 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 			progressBar_1.setForeground(Color.red);
 		}
 
-		progressBar_1.setToolTipText("RAM Used: " + ramUsed + optRamTip);
+		progressBar_1.setToolTipText("RAM Used: " + ramUsed);
 		progressBar_1.setValue(ramUsed);
 
 		int rampLFO_0 = SpinCADModel.countLFOReferences(model,"WLDR 0,");
@@ -232,10 +221,6 @@ public class ModelResourcesToolBar extends JToolBar implements ActionListener {
 			sine1Bar.setBackground(Color.RED);
 			sine1Bar.setForeground(Color.white);
 		}
-	}
-
-	public boolean hasScopeProbe() {
-		return hasScopeProbe;
 	}
 
 	public void update(SpinCADPatch p) {

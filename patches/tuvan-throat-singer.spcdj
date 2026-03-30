@@ -14,8 +14,8 @@
     ]
   },
   "potValues": [
-    20.0,
-    23.0,
+    16.0,
+    29.0,
     0.0
   ],
   "blocks": [
@@ -162,8 +162,8 @@
     {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.LPF4PCADBlock",
       "blockNum": 13,
-      "x": 950,
-      "y": 80,
+      "x": 923,
+      "y": 81,
       "name": "LP 2P",
       "params": {
         "f0": 880.0,
@@ -184,10 +184,21 @@
       }
     },
     {
-      "className": "com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock",
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock",
       "blockNum": 15,
-      "x": 1100,
-      "y": 80,
+      "x": 1025,
+      "y": 97,
+      "name": "Smoother",
+      "params": {
+        "filtReg": 55,
+        "filt": 0.0063886191609549
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock",
+      "blockNum": 16,
+      "x": 1099,
+      "y": 163,
       "name": "Gain Boost",
       "params": {
         "gain": 2
@@ -195,19 +206,30 @@
     },
     {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.Mixer_2_to_1CADBlock",
-      "blockNum": 16,
+      "blockNum": 17,
       "x": 1100,
       "y": 250,
       "name": "Mixer 2:1",
       "params": {
         "gain1": 0.53,
         "gain2": 0.54,
-        "output": 55
+        "output": 57
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock",
+      "blockNum": 18,
+      "x": 883,
+      "y": 510,
+      "name": "Scope Probe",
+      "params": {
+        "scope1Reg": 44,
+        "scope2Reg": 42
       }
     },
     {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
-      "blockNum": 17,
+      "blockNum": 19,
       "x": 1073,
       "y": 402,
       "name": "Output",
@@ -326,30 +348,48 @@
       "fromBlockIndex": 13,
       "fromPin": "Low Pass",
       "toBlockIndex": 15,
-      "toPin": "Audio Input"
+      "toPin": "Control Input"
     },
     {
       "fromBlockIndex": 15,
-      "fromPin": "Audio Output",
+      "fromPin": "Control Output",
       "toBlockIndex": 16,
+      "toPin": "Audio Input"
+    },
+    {
+      "fromBlockIndex": 16,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 17,
       "toPin": "Input 1"
     },
     {
       "fromBlockIndex": 14,
       "fromPin": "High Pass",
-      "toBlockIndex": 16,
+      "toBlockIndex": 17,
       "toPin": "Input 2"
     },
     {
-      "fromBlockIndex": 16,
+      "fromBlockIndex": 12,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 18,
+      "toPin": "Scope 1"
+    },
+    {
+      "fromBlockIndex": 10,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 18,
+      "toPin": "Scope 2"
+    },
+    {
+      "fromBlockIndex": 17,
       "fromPin": "Output",
-      "toBlockIndex": 17,
+      "toBlockIndex": 19,
       "toPin": "Input 1"
     },
     {
-      "fromBlockIndex": 16,
+      "fromBlockIndex": 17,
       "fromPin": "Output",
-      "toBlockIndex": 17,
+      "toBlockIndex": 19,
       "toPin": "Input 2"
     }
   ]

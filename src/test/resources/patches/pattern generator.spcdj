@@ -3,7 +3,7 @@
   "type": "patch",
   "patchFileName": "pattern generator.spcdj",
   "comments": {
-    "fileName": "Untitled",
+    "fileName": "pattern generator.spcdj",
     "version": "Patch saved from SpinCAD Designer version 1064",
     "lines": [
       "Pot 0: ",
@@ -14,7 +14,7 @@
     ]
   },
   "potValues": [
-    26.0,
+    96.0,
     0.0,
     0.0
   ],
@@ -46,13 +46,27 @@
     {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.PatternGeneratorCADBlock",
       "blockNum": 2,
-      "x": 237,
-      "y": 130,
-      "name": "PatternGenerator",
+      "x": 215,
+      "y": 160,
+      "name": "Pattern Gen",
       "params": {
-        "threshold": 0.06,
+        "threshold": 0.25,
         "numSteps": 8.0,
-        "slope": 2
+        "slope": 0,
+        "steps": [
+          0.999,
+          0.401,
+          0.726,
+          0.163,
+          0.915,
+          0.401,
+          0.237,
+          0.379,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
       }
     },
     {
@@ -62,7 +76,7 @@
       "y": 125,
       "name": "Smoother",
       "params": {
-        "filtReg": 40,
+        "filtReg": 39,
         "filt": 0.0024337107894708554
       }
     },

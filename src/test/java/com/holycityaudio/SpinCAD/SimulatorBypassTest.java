@@ -43,7 +43,6 @@ public class SimulatorBypassTest {
 
     // Known-failing patches (unconnected pins cause reg -1 in simulator)
     private static final Set<String> SKIP_PATCHES = new HashSet<>(Arrays.asList(
-        "br-007.spcd",
         "plate reverb-chorus-01.spcd",
         "rom-reverb-01-hf-control.spcd",
         "rom-reverb-01-lf-control.spcd"
