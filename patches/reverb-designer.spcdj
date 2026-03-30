@@ -1,0 +1,138 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "reverb-designer.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1067",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    90.0,
+    100.0,
+    82.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 290,
+      "y": 30,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 100,
+      "y": 109,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 2,
+      "x": 94,
+      "y": 160,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 3,
+      "x": 99,
+      "y": 213,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ReverbDesignerCADBlock",
+      "blockNum": 4,
+      "x": 287,
+      "y": 133,
+      "name": "Reverb Designer",
+      "params": {
+        "topology": 0,
+        "sizePreset": 0,
+        "stereoOutput": true,
+        "shimmerMode": 2,
+        "shimmerPitchSemitones": 7,
+        "lfoDepth": 2,
+        "preDelayEnabled": false,
+        "reverbTime": 0.7,
+        "hfDamping": 0.4,
+        "lfDamping": 0.02,
+        "dryWet": 0.5,
+        "preDelayAmount": 0.3,
+        "inputBandwidth": 0.5,
+        "diffusion": 0.5,
+        "shimmerLevel": 0.7
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 5,
+      "x": 290,
+      "y": 345,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Audio In"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Reverb_Time"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 4,
+      "toPin": "HF_Damping"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Mix"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Out L",
+      "toBlockIndex": 5,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Out R",
+      "toBlockIndex": 5,
+      "toPin": "Input 2"
+    }
+  ]
+}

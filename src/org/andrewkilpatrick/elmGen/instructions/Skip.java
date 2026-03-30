@@ -104,50 +104,42 @@ public class Skip extends Instruction {
 
 	@Override
 	public void simulate(SimulatorState state) {
-		boolean skip = false;
-		if((flags & ElmProgram.RUN) > 0) {
+		// All set flags must be satisfied (AND logic) for the skip to occur.
+		// The original else-if chain only checked the first matching flag,
+		// breaking combined flags like SKP ZRC | NEG.
+		boolean skip = true;
+
+		if((flags & ElmProgram.RUN) != 0) {
 			if(state.isFirstRun()) {
 				skip = false;
 			}
-			else {
-				skip = true;
-			}
 		}
-		else if((flags & ElmProgram.ZRC) > 0) {
-			int accv = state.getACCVal();
-			int paccv = state.getPACCVal();
-			
-			if((state.getACCVal() < 0 && state.getPACCVal() >= 0) ||
-					state.getACCVal() >= 0 && state.getPACCVal() < 0) {
-				skip = true;
-			}
-			else {
+		if((flags & ElmProgram.ZRC) != 0) {
+			boolean zeroCrossing =
+				(state.getACCVal() < 0 && state.getPACCVal() >= 0) ||
+				(state.getACCVal() >= 0 && state.getPACCVal() < 0);
+			if(!zeroCrossing) {
 				skip = false;
 			}
 		}
-		else if((flags & ElmProgram.ZRO) > 0) {
-			if(state.getACCVal() == 0) {
-				skip = true;
-			}
-			else {
+		if((flags & ElmProgram.ZRO) != 0) {
+			if(state.getACCVal() != 0) {
 				skip = false;
 			}
 		}
-		else if((flags & ElmProgram.GEZ) > 0) {
-			if(state.getACCVal() > 0) {
-				skip = true;
-			}
-			else {
+		if((flags & ElmProgram.GEZ) != 0) {
+			if(state.getACCVal() < 0) {   // >= 0 means GEZ is satisfied
 				skip = false;
 			}
 		}
-		else if((flags & ElmProgram.NEG) > 0) {
-			if(state.getACCVal() < 0) {
-				skip = true;
-			}
-			else {
+		if((flags & ElmProgram.NEG) != 0) {
+			if(state.getACCVal() >= 0) {   // < 0 means NEG is satisfied
 				skip = false;
 			}
+		}
+		// If no flags are set, don't skip
+		if(flags == 0) {
+			skip = false;
 		}
 		if(skip) {
 			state.skipInst(nskip);

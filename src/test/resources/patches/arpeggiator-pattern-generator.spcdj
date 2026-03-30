@@ -1,0 +1,241 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "arpeggiator-pattern-generator.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1067",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    55.0,
+    100.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 0,
+      "x": 12,
+      "y": 133,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock",
+      "blockNum": 1,
+      "x": 117,
+      "y": 134,
+      "name": "LFO 0",
+      "params": {
+        "lfoRate": 231,
+        "lfoWidth": 32767,
+        "lfoSel": 0,
+        "outputRange": 1
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.PatternGeneratorCADBlock",
+      "blockNum": 2,
+      "x": 212,
+      "y": 228,
+      "name": "Pattern Gen",
+      "params": {
+        "threshold": 0.66,
+        "numSteps": 3.0,
+        "slope": 0,
+        "steps": [
+          0.605,
+          0.137,
+          0.936,
+          0.452,
+          0.862,
+          0.794,
+          0.747,
+          0.647,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 3,
+      "x": 424,
+      "y": 28,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ArpeggiatorCADBlock",
+      "blockNum": 4,
+      "x": 439,
+      "y": 176,
+      "name": "Arpeggiator",
+      "params": {
+        "threshold": 0.25,
+        "numSteps": 3.0,
+        "slope": 1,
+        "semitones": [
+          0,
+          4,
+          7,
+          -12,
+          -7,
+          4,
+          0,
+          -12,
+          0,
+          0,
+          0,
+          0
+        ],
+        "lfoSel": 0,
+        "bufferSize": 4096
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock",
+      "blockNum": 5,
+      "x": 328,
+      "y": 287,
+      "name": "Smoother",
+      "params": {
+        "filtReg": 44,
+        "filt": 0.005828131350409049
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 6,
+      "x": 277,
+      "y": 436,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.VolumeCADBlock",
+      "blockNum": 7,
+      "x": 457,
+      "y": 300,
+      "name": "Volume",
+      "params": {
+        "gain": 1.0,
+        "output": 45
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.crossfade_3CADBlock",
+      "blockNum": 8,
+      "x": 438,
+      "y": 453,
+      "name": "Crossfade 3",
+      "params": {
+        "gain1": 0.5,
+        "gain2": 0.5,
+        "output1": 46,
+        "temp": 47
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 9,
+      "x": 423,
+      "y": 575,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 1,
+      "toPin": "Speed"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Sine",
+      "toBlockIndex": 2,
+      "toPin": "Trigger"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Audio In"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Cosine",
+      "toBlockIndex": 4,
+      "toPin": "Trigger"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Level",
+      "toBlockIndex": 5,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Pitch Out",
+      "toBlockIndex": 7,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Control Output",
+      "toBlockIndex": 7,
+      "toPin": "Volume"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Output 1",
+      "toBlockIndex": 8,
+      "toPin": "Audio In 1"
+    },
+    {
+      "fromBlockIndex": 7,
+      "fromPin": "Output",
+      "toBlockIndex": 8,
+      "toPin": "Audio In 2"
+    },
+    {
+      "fromBlockIndex": 6,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 8,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 8,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 9,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 8,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 9,
+      "toPin": "Input 2"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "gated-reverb-designer.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1067",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    90.0,
+    100.0,
+    82.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 371,
+      "y": 8,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 100,
+      "y": 109,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 2,
+      "x": 94,
+      "y": 160,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 3,
+      "x": 99,
+      "y": 213,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.GatedReverbControlCADBlock",
+      "blockNum": 4,
+      "x": 216,
+      "y": 165,
+      "name": "Gated RT Ctrl",
+      "params": {
+        "detectMode": 1,
+        "gain": 2,
+        "attackCoeff": 0.001,
+        "releaseCoeff": 8.0E-5,
+        "threshold": 0.1,
+        "activeRT": 0.9,
+        "idleRT": 0.1,
+        "smoothCoeff": 2.0E-4
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ReverbDesignerCADBlock",
+      "blockNum": 5,
+      "x": 394,
+      "y": 262,
+      "name": "Reverb Designer",
+      "params": {
+        "topology": 0,
+        "sizePreset": 0,
+        "stereoOutput": true,
+        "shimmerMode": 0,
+        "shimmerPitchSemitones": 7,
+        "lfoDepth": 2,
+        "preDelayEnabled": false,
+        "reverbTime": 0.7,
+        "hfDamping": 0.4,
+        "lfDamping": 0.02,
+        "dryWet": 0.5,
+        "preDelayAmount": 0.3,
+        "inputBandwidth": 0.5,
+        "diffusion": 0.5,
+        "shimmerLevel": 0.7
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 6,
+      "x": 397,
+      "y": 474,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock",
+      "blockNum": 7,
+      "x": 306,
+      "y": 411,
+      "name": "Scope Probe",
+      "params": {
+        "scope1Reg": 32,
+        "scope2Reg": 33
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Audio Input 1"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Audio In"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "CV Out",
+      "toBlockIndex": 5,
+      "toPin": "Reverb_Time"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 5,
+      "toPin": "HF_Damping"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Mix"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Out L",
+      "toBlockIndex": 6,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Out R",
+      "toBlockIndex": 6,
+      "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Envelope",
+      "toBlockIndex": 7,
+      "toPin": "Scope 1"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "CV Out",
+      "toBlockIndex": 7,
+      "toPin": "Scope 2"
+    }
+  ]
+}
