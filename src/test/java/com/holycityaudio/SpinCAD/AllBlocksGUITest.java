@@ -3,7 +3,6 @@ package com.holycityaudio.SpinCAD;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -19,9 +18,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Parameterized GUI tests that exercise every CADBlock for:
- *   1. Copy / paste / delete of the pasted copy (the crash-fix regression test)
- *   2. Opening and closing the control panel 3 times
+ * Parameterized GUI test that exercises every CADBlock in a single pass:
+ *   1. Open and close the control panel 3 times
+ *   2. Copy / paste / delete of the pasted copy
  *
  * Run via: ./gradlew guiTest
  */
@@ -70,47 +69,11 @@ public class AllBlocksGUITest {
     }
 
     // ------------------------------------------------------------------
-    // Test 1: copy-paste-delete for every block type
+    // Combined test: control panel x3 + copy-paste-delete per block
     // ------------------------------------------------------------------
-    @ParameterizedTest(name = "copy-paste-delete {0}")
+    @ParameterizedTest(name = "gui-test {0}")
     @MethodSource("allBlockClassNames")
-    void copyPasteDelete(String className) throws Exception {
-        runOnEDTAndWait(() -> {
-            SpinCADBlock block = createBlock(className, 100, 100);
-            frame.getPatch().patchModel.addBlock(block);
-            block.selected = true;
-
-            frame.saveModelToPasteBuffer();
-            frame.paste();
-        });
-
-        // Should now have 2 instances
-        runOnEDTAndWait(() -> {
-            List<SpinCADBlock> blocks = frame.getPatch().patchModel.blockList;
-            assertEquals(2, blocks.size(),
-                "Should have 2 blocks after paste of " + simpleName(className));
-
-            // Unselect all, then select the pasted copy (second one) and delete
-            for (SpinCADBlock b : blocks) b.selected = false;
-            blocks.get(1).selected = true;
-            frame.delete();
-        });
-
-        // Frame must survive
-        assertFrameAlive();
-
-        runOnEDTAndWait(() -> {
-            assertEquals(1, frame.getPatch().patchModel.blockList.size(),
-                "Should have 1 block after deleting pasted copy of " + simpleName(className));
-        });
-    }
-
-    // ------------------------------------------------------------------
-    // Test 2: open and close control panel 3 times for every block
-    // ------------------------------------------------------------------
-    @ParameterizedTest(name = "control-panel x3 {0}")
-    @MethodSource("allBlockClassNames")
-    void openCloseControlPanel3Times(String className) throws Exception {
+    void controlPanelAndCopyPasteDelete(String className) throws Exception {
         final AtomicReference<SpinCADBlock> blockRef = new AtomicReference<>();
         runOnEDTAndWait(() -> {
             SpinCADBlock block = createBlock(className, 100, 100);
@@ -119,46 +82,62 @@ public class AllBlocksGUITest {
         });
 
         SpinCADBlock block = blockRef.get();
-        if (!block.hasControlPanel()) {
-            // No control panel to test — pass automatically
-            return;
+
+        // --- Phase 1: open/close control panel 3 times ---
+        if (block.hasControlPanel()) {
+            for (int i = 1; i <= 3; i++) {
+                final int iteration = i;
+
+                runOnEDTAndWait(() -> {
+                    block.controlPanelOpen = true;
+                    block.openControlPanel();
+                });
+
+                drainEDT();
+
+                runOnEDTAndWait(() -> {
+                    assertTrue(block.controlPanelOpen,
+                        simpleName(className) + " controlPanelOpen should be true (iteration " + iteration + ")");
+                });
+
+                runOnEDTAndWait(() -> {
+                    block.deleteControlPanel();
+                });
+
+                drainEDT();
+
+                runOnEDTAndWait(() -> {
+                    assertFalse(block.controlPanelOpen,
+                        simpleName(className) + " controlPanelOpen should be false after close (iteration " + iteration + ")");
+                    assertNull(block.controlPanelFrame,
+                        simpleName(className) + " controlPanelFrame should be null after close (iteration " + iteration + ")");
+                });
+            }
         }
 
-        for (int i = 1; i <= 3; i++) {
-            final int iteration = i;
+        // --- Phase 2: copy-paste-delete ---
+        runOnEDTAndWait(() -> {
+            block.selected = true;
+            frame.saveModelToPasteBuffer();
+            frame.paste();
+        });
 
-            // Open the control panel (uses the same path as the UI)
-            runOnEDTAndWait(() -> {
-                block.controlPanelOpen = true;
-                block.openControlPanel();
-            });
+        runOnEDTAndWait(() -> {
+            List<SpinCADBlock> blocks = frame.getPatch().patchModel.blockList;
+            assertEquals(2, blocks.size(),
+                "Should have 2 blocks after paste of " + simpleName(className));
 
-            // Let invokeLater callbacks (positioning, listener attachment) execute
-            drainEDT();
-
-            // Verify control panel opened
-            runOnEDTAndWait(() -> {
-                assertTrue(block.controlPanelOpen,
-                    simpleName(className) + " controlPanelOpen should be true (iteration " + iteration + ")");
-            });
-
-            // Close the control panel
-            runOnEDTAndWait(() -> {
-                block.deleteControlPanel();
-            });
-
-            drainEDT();
-
-            // Verify it closed cleanly
-            runOnEDTAndWait(() -> {
-                assertFalse(block.controlPanelOpen,
-                    simpleName(className) + " controlPanelOpen should be false after close (iteration " + iteration + ")");
-                assertNull(block.controlPanelFrame,
-                    simpleName(className) + " controlPanelFrame should be null after close (iteration " + iteration + ")");
-            });
-        }
+            for (SpinCADBlock b : blocks) b.selected = false;
+            blocks.get(1).selected = true;
+            frame.delete();
+        });
 
         assertFrameAlive();
+
+        runOnEDTAndWait(() -> {
+            assertEquals(1, frame.getPatch().patchModel.blockList.size(),
+                "Should have 1 block after deleting pasted copy of " + simpleName(className));
+        });
     }
 
     // ------------------------------------------------------------------
