@@ -1,0 +1,163 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "gated-reverb-designer-fdn.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1067",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    90.0,
+    100.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 371,
+      "y": 8,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 1,
+      "x": 99,
+      "y": 213,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.GatedReverbControlCADBlock",
+      "blockNum": 2,
+      "x": 216,
+      "y": 165,
+      "name": "Gated RT Ctrl",
+      "params": {
+        "detectMode": 2,
+        "gain": 2,
+        "attackCoeff": 0.009012257711474514,
+        "releaseCoeff": 0.001889675865494378,
+        "threshold": 0.52,
+        "activeRT": 0.9,
+        "idleRT": 0.0,
+        "smoothCoeff": 0.0016843485582908047
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ReverbDesignerCADBlock",
+      "blockNum": 3,
+      "x": 359,
+      "y": 186,
+      "name": "Reverb Designer",
+      "params": {
+        "topology": 1,
+        "sizePreset": 1,
+        "stereoOutput": true,
+        "shimmerMode": 0,
+        "shimmerPitchSemitones": 12,
+        "lfoDepth": 1,
+        "preDelayEnabled": false,
+        "reverbTime": 0.7,
+        "hfDamping": 0.4,
+        "lfDamping": 0.02,
+        "dryWet": 0.5,
+        "preDelayAmount": 0.3,
+        "inputBandwidth": 0.5,
+        "diffusion": 0.5,
+        "shimmerLevel": 0.3,
+        "inputGain": 0.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock",
+      "blockNum": 4,
+      "x": 306,
+      "y": 411,
+      "name": "Scope Probe",
+      "params": {
+        "scope1Reg": 32,
+        "scope2Reg": 33
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 5,
+      "x": 397,
+      "y": 474,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 2,
+      "toPin": "Audio Input 1"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 3,
+      "toPin": "Audio In"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 2",
+      "toBlockIndex": 3,
+      "toPin": "Audio In 2"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "CV Out",
+      "toBlockIndex": 3,
+      "toPin": "Reverb_Time"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 3,
+      "toPin": "Mix"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Envelope",
+      "toBlockIndex": 4,
+      "toPin": "Scope 1"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "CV Out",
+      "toBlockIndex": 4,
+      "toPin": "Scope 2"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Out L",
+      "toBlockIndex": 5,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Out R",
+      "toBlockIndex": 5,
+      "toPin": "Input 2"
+    }
+  ]
+}

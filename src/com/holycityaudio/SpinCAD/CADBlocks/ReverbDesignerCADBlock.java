@@ -159,16 +159,16 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	// =====================================================
 	public int estimateInstructions() {
 		int count = 12; // input section always
-		count += 2; // DC blocker (RDFX + WRHX)
 		switch (topology) {
 		case TOPOLOGY_TWO_LOOP:
-			count += 20; // tank + output base
+			count += 22; // tank + output base + DC blocker
 			break;
 		case TOPOLOGY_DATTORRO:
-			count += 42; // tank + output base
+			count += 44; // tank + output base + DC blocker
 			break;
 		case TOPOLOGY_RING_FDN:
-			count += (getRingStages() == 3) ? 32 : 42;
+			// HP/DC at stage 0 only (2 instr), no per-stage HP shelf
+			count += (getRingStages() == 3) ? 16 : 20;
 			break;
 		}
 		if (stereoOutput) count += 5;
@@ -748,16 +748,14 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		int outputR = stereoOutput ? sfxb.allocateReg() : -1;
 		int temp = sfxb.allocateReg();
 		int bwReg = sfxb.allocateReg();
-		// HP and LP filter state per stage
-		int[] hpRegs = new int[stages];
+		int hpReg = sfxb.allocateReg();       // single HP filter for LF damping at ring wrap
+		// LP filter state per stage
 		int[] lpRegs = new int[stages];
 		for (int i = 0; i < stages; i++) {
-			hpRegs[i] = sfxb.allocateReg();
 			lpRegs[i] = sfxb.allocateReg();
 		}
 		int shimLp = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
 		int shimOut = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
-		int dcBlock = sfxb.allocateReg(); // DC blocker filter state
 
 		// === Init section ===
 		int skipCount = 0;
@@ -808,8 +806,9 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 
 		// === Ring stages ===
 		// Each stage reads from previous stage's delay end, multiplies by RT,
-		// adds input (apout), runs through AP, applies HP/LP shelving filters,
-		// then writes the filtered result to the delay (single write).
+		// adds input (apout), runs through AP, applies LP filter, writes to delay.
+		// LF damping (highpass) is applied only at the ring wrap point (stage 0)
+		// to control low-frequency buildup without the per-stage cost.
 		String lastDel = "rdl" + (stages - 1); // ring wraps around
 		for (int i = 0; i < stages; i++) {
 			String curAp = "rap" + i;
@@ -824,10 +823,10 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			} else {
 				sfxb.FXreadDelay(prevDel + "#", 0, reverbTime);
 			}
-			// DC blocker at ring wrap point (~5 Hz highpass)
+			// LF damping + DC blocker at ring wrap point only (stage 0)
 			if (i == 0) {
-				sfxb.readRegisterFilter(dcBlock, 0.001);
-				sfxb.writeRegisterHighshelf(dcBlock, -1.0);
+				sfxb.readRegisterFilter(hpReg, lfDamping);
+				sfxb.writeRegisterHighshelf(hpReg, -1.0);
 			}
 			// Add input
 			sfxb.readRegister(apout, 1.0);
@@ -837,17 +836,8 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			// Ring allpass
 			sfxb.FXreadDelay(curAp + "#", 0, 0.6);
 			sfxb.FXwriteAllpass(curAp, 0, -0.6);
-			// HP shelf (LF damping) — applied before delay write
-			sfxb.writeRegister(temp, 1.0);
-			sfxb.readRegisterFilter(hpRegs[i], lfDamping);
-			sfxb.writeRegisterLowshelf(hpRegs[i], -1.0);
-			sfxb.scaleOffset(-0.5, 0.0);
-			sfxb.readRegister(temp, 1.0);
-			sfxb.writeRegister(temp, 1.0);
-			// LP filter (HF damping) — applied before delay write
+			// LP filter (HF damping)
 			if (hfPin >= 0) {
-				// Pot-controlled: crossfade between unfiltered and filtered
-				// When pot=0: no damping. When pot=1: full LP filtering.
 				sfxb.writeRegister(temp, 1.0);           // save unfiltered
 				sfxb.readRegisterFilter(lpRegs[i], 0.5); // 1-pole LPF
 				sfxb.writeRegister(lpRegs[i], 1.0);      // save filter state, keep filtered
@@ -855,11 +845,10 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 				sfxb.mulx(hfPin);                         // ACC = (filtered - unfiltered) * pot
 				sfxb.readRegister(temp, 1.0);             // ACC = unfiltered + (filtered-unfiltered)*pot
 			} else {
-				// Fixed coefficient LPF
 				sfxb.readRegisterFilter(lpRegs[i], hfDamping);
 				sfxb.writeRegister(lpRegs[i], 1.0);      // save state, keep filtered output
 			}
-			// Write filtered result to delay (single write)
+			// Write to delay
 			sfxb.FXwriteDelay(curDel, 0, 0.0);
 		}
 

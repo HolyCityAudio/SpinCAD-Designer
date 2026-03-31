@@ -65,9 +65,9 @@ public class AudioCardOutput implements AudioSink {
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		line = (SourceDataLine) AudioSystem.getLine(info);
 
-		// 0.5 seconds of buffer at the output rate
+		// ~100ms of buffer at the output rate (enough to prevent underrun)
 		int bytesPerFrame = 4;  // 2 channels × 2 bytes (16-bit)
-		int bufferFrames = OUTPUT_RATE / 2;
+		int bufferFrames = OUTPUT_RATE / 10;
 		int bufferBytes = bufferFrames * bytesPerFrame;
 		line.open(format, bufferBytes);
 		line.start();

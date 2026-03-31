@@ -79,7 +79,7 @@ public class LevelLogger implements AudioSink {
 	// ms per division for time grid
 	private double msPerDivision = 10.0;
 
-	AudioDelay delay;
+	// AudioDelay removed — scope displays real-time, audio card handles its own buffering
 
 	// Batched rendering: accumulate pixel values during writeDac(),
 	// draw them all in one Graphics2D pass at the end of each buffer.
@@ -280,7 +280,6 @@ public class LevelLogger implements AudioSink {
 				frame.setVisible(true);
 			}
 		});
-		delay = new AudioDelay();
 	}
 
 	/**
@@ -290,7 +289,6 @@ public class LevelLogger implements AudioSink {
 	 */
 	public LevelLogger(final JPanel p) {
 		panel = new LoggerPanel(p);  // set synchronously so audio thread never sees null
-		delay = new AudioDelay();
 		filter[0] = 0.0;
 		filter[1] = 0.0;
 		filter[2] = 0.0;
@@ -301,21 +299,20 @@ public class LevelLogger implements AudioSink {
 
 	public void writeDac(int[] buf, int len) {
 		if(paused) return;
-		int dbuf[] = delay.process(buf, 50000);
 		boolean hasProbes = (probeRawBuf != null && probeRawLen >= len);
 		pendingCount = 0;
 		double p1val = 0, p2val = 0;
 		for(int i = 0; i < len; i += 2) {
 			if(logMode == 1) {
-				left  = Math.abs(Util.regToDouble(dbuf[i])     + 0.00001);
-				right = Math.abs(Util.regToDouble(dbuf[i + 1]) + 0.00001);
+				left  = Math.abs(Util.regToDouble(buf[i])     + 0.00001);
+				right = Math.abs(Util.regToDouble(buf[i + 1]) + 0.00001);
 				if(left  > maxL) maxL = left;
 				if(right > maxR) maxR = right;
 				maxL *= decayval;
 				maxR *= decayval;
 			} else if(logMode == 0) {
-				left  = (double) Util.regToInt(dbuf[i]);
-				right = (double) Util.regToInt(dbuf[i + 1]);
+				left  = (double) Util.regToInt(buf[i]);
+				right = (double) Util.regToInt(buf[i + 1]);
 				if(hasProbes) {
 					p1val = (double) Util.regToInt(probeRawBuf[i]);
 					p2val = (double) Util.regToInt(probeRawBuf[i + 1]);
