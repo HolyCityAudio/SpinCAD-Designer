@@ -279,6 +279,9 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sp = this.getPin("Audio In 2").getPinConnection();
 		int audioIn2 = (sp != null) ? sp.getRegister() : -1;
 
+		// Stereo output is determined by whether Out R is connected
+		stereoOutput = this.getPin("Out R").isConnected();
+
 		// Resolve control input pins
 		sp = this.getPin("Reverb_Time").getPinConnection();
 		int rtPin = (sp != null) ? sp.getRegister() : -1;

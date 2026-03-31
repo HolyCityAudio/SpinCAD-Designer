@@ -54,7 +54,7 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 	// Design-time controls
 	private JComboBox<String> topologyCombo;
 	private JComboBox<String> sizeCombo;
-	private JCheckBox stereoCheck;
+
 	private JComboBox<String> lfoCombo;
 	private JComboBox<String> shimmerCombo;
 	private JComboBox<String> shimmerPitchCombo;
@@ -139,11 +139,8 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		designPanel.add(row1);
 		designPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-		// Row 2: Stereo, Shimmer, Shimmer Pitch
-		JPanel row2 = new JPanel(new GridLayout(1, 3, 5, 0));
-		stereoCheck = new JCheckBox("Stereo Output", gCB.isStereoOutput());
-		stereoCheck.addActionListener(this);
-		row2.add(stereoCheck);
+		// Row 2: Shimmer, Shimmer Pitch
+		JPanel row2 = new JPanel(new GridLayout(1, 2, 5, 0));
 
 		JPanel shimPanel = labeledCombo("Shimmer");
 		shimmerCombo = new JComboBox<String>(new String[] { "Off", "Input Only", "Input + Feedback" });
@@ -413,8 +410,6 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 			gCB.setTopology(topologyCombo.getSelectedIndex());
 		} else if (src == sizeCombo) {
 			gCB.setSizePreset(sizeCombo.getSelectedIndex());
-		} else if (src == stereoCheck) {
-			gCB.setStereoOutput(stereoCheck.isSelected());
 		} else if (src == lfoCombo) {
 			gCB.setLfoDepth(lfoCombo.getSelectedIndex());
 		} else if (src == shimmerCombo) {
