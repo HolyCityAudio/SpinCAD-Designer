@@ -63,11 +63,15 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	private double hfDamping = 0.4;
 	private double lfDamping = 0.02;
 	private double dryWet = 0.5;
-	private double preDelayAmount = 0.3;
+	private int preDelaySamples = 1024; // 0-4096 samples
 	private double inputBandwidth = 0.5; // filter coefficient
 	private double diffusion = 0.5;
 	private double shimmerLevel = 0.3;
 	private double inputGain = 0.0;  // dB, -12 to 0
+	private int lfoFreq = 12;         // SIN0 LFO frequency parameter (rate/512 Hz)
+	private int lfoExcursion = 20;    // SIN0 LFO excursion in samples
+	private int lfoFreq2 = 15;       // SIN1 LFO frequency parameter (Wide mode)
+	private int lfoExcursion2 = 20;   // SIN1 LFO excursion in samples (Wide mode)
 
 	private transient ReverbDesignerControlPanel cp = null;
 
@@ -82,6 +86,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		addControlInputPin(this, "Reverb_Time");
 		addControlInputPin(this, "HF_Damping");
 		addControlInputPin(this, "Mix");
+		addControlInputPin(this, "Pre_Delay");
 		hasControlPanel = true;
 	}
 
@@ -173,7 +178,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		}
 		if (stereoOutput) count += 5;
 		if (shimmerMode != SHIMMER_OFF) count += 14;
-		if (preDelayEnabled) count += 2;
+		if (preDelayEnabled) count += 8; // rdax + wra + clr + or + mulx + sof + wrax ADDR_PTR + rmpa
 		if (lfoDepth == LFO_SUBTLE) count += 9;
 		else if (lfoDepth == LFO_WIDE) count += 15;
 		// dry/wet mix
@@ -202,7 +207,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			break;
 		}
 		if (shimmerMode != SHIMMER_OFF) mem += 4097; // 4096 + 1 temp
-		if (preDelayEnabled) mem += (int)(3276 * preDelayAmount) + 1;
+		if (preDelayEnabled) mem += preDelaySamples;
 		return mem;
 	}
 
@@ -253,7 +258,8 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sfxb.comment("LFO Mod: " + getLfoName());
 		sfxb.comment("Shimmer: " + getShimmerName()
 				+ (shimmerMode != SHIMMER_OFF ? " pitch=" + shimmerPitchSemitones + " semi" : ""));
-		sfxb.comment("Pre-Delay: " + (preDelayEnabled ? "On (" + String.format("%.0f", preDelayAmount * 100) + " ms)" : "Off"));
+		sfxb.comment("Pre-Delay: " + (preDelayEnabled ? "On (" + preDelaySamples + " samples, "
+				+ String.format("%.1f", preDelaySamples * 1000.0 / 32768) + " ms)" : "Off"));
 		sfxb.comment("--- Runtime Params ---");
 		sfxb.comment("Reverb Time: " + (rtPin >= 0 ? "POT" : String.format("%.2f", reverbTime)));
 		sfxb.comment("HF Damping: " + (hfPin >= 0 ? "POT" : String.format("%.2f", hfDamping)));
@@ -292,6 +298,9 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sp = this.getPin("Mix").getPinConnection();
 		int mixPin = (sp != null) ? sp.getRegister() : -1;
 
+		sp = this.getPin("Pre_Delay").getPinConnection();
+		int pdPin = (sp != null) ? sp.getRegister() : -1;
+
 		emitSettingsComments(sfxb, rtPin, hfPin, mixPin);
 
 		// === Input processing: save dry signals and create mono reverb input ===
@@ -322,13 +331,13 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 
 		switch (topology) {
 		case TOPOLOGY_TWO_LOOP:
-			generateTwoLoop(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin);
+			generateTwoLoop(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin, pdPin);
 			break;
 		case TOPOLOGY_DATTORRO:
-			generateDattorro(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin);
+			generateDattorro(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin, pdPin);
 			break;
 		case TOPOLOGY_RING_FDN:
-			generateRingFDN(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin);
+			generateRingFDN(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin, pdPin);
 			break;
 		}
 	}
@@ -336,7 +345,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	// =====================================================
 	// Two-Loop Topology
 	// =====================================================
-	private void generateTwoLoop(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin) {
+	private void generateTwoLoop(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin, int pdPin) {
 		// Allocate delay memory
 		sfxb.FXallocDelayMem("api1", scaled(TL_INPUT_AP[0]));
 		sfxb.FXallocDelayMem("api2", scaled(TL_INPUT_AP[1]));
@@ -353,9 +362,10 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			sfxb.FXallocDelayMem("stimp", 1);
 		}
 
-		// Pre-delay: fixed delay line sized to slider setting
-		int preDelaySamples = preDelayEnabled ? Math.max(1, (int)(3276 * preDelayAmount)) : 0;
+		// Pre-delay memory allocation
+		int pdDelayOffset = -1;
 		if (preDelayEnabled) {
+			pdDelayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("pdel", preDelaySamples);
 		}
 
@@ -381,18 +391,14 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 				sfxb.loadRampLFO(0, semitoneToCoefficient(shimmerPitchSemitones), 4096);
 			}
 			if (lfoDepth != LFO_NONE) {
-				int exc = (lfoDepth == LFO_SUBTLE) ? 20 : 50;
-				sfxb.loadSinLFO(0, 12, exc);
-				sfxb.loadSinLFO(1, 15, exc);
+				sfxb.loadSinLFO(0, lfoFreq, lfoExcursion);
+				sfxb.loadSinLFO(1, lfoFreq2, lfoExcursion2);
 			}
 		}
 
-		// === Pre-delay (fixed delay line, read from end) ===
+		// === Pre-delay ===
 		if (preDelayEnabled) {
-			sfxb.comment("--- Pre-delay ---");
-			sfxb.readRegister(reverbIn, 0.25);
-			sfxb.FXwriteDelay("pdel", 0, 0.0);    // write input to delay start
-			sfxb.FXreadDelay("pdel#", 0, 1.0);     // read from delay end = pre-delayed signal
+			generatePreDelay(sfxb, reverbIn, pdPin, pdDelayOffset, preDelaySamples);
 		} else {
 			sfxb.readRegister(reverbIn, 0.25);
 		}
@@ -488,13 +494,12 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		// === LFO modulation of loop allpasses ===
 		if (lfoDepth != LFO_NONE) {
 			sfxb.comment("--- LFO modulation ---");
-			int exc = (lfoDepth == LFO_SUBTLE) ? 20 : 50;
-			sfxb.FXchorusReadDelay(SIN0, SIN | COMPC, "lap1+", exc);
-			sfxb.FXchorusReadDelay(SIN0, SIN, "lap1+", exc + 1);
-			sfxb.FXwriteDelay("lap1+", exc * 2, 0.0);
-			sfxb.FXchorusReadDelay(SIN1, COS | COMPC, "lap2+", exc);
-			sfxb.FXchorusReadDelay(SIN1, COS, "lap2+", exc + 1);
-			sfxb.FXwriteDelay("lap2+", exc * 2, 0.0);
+			sfxb.FXchorusReadDelay(SIN0, SIN | COMPC, "lap1+", lfoExcursion);
+			sfxb.FXchorusReadDelay(SIN0, SIN, "lap1+", lfoExcursion + 1);
+			sfxb.FXwriteDelay("lap1+", lfoExcursion * 2, 0.0);
+			sfxb.FXchorusReadDelay(SIN1, COS | COMPC, "lap2+", lfoExcursion);
+			sfxb.FXchorusReadDelay(SIN1, COS, "lap2+", lfoExcursion + 1);
+			sfxb.FXwriteDelay("lap2+", lfoExcursion * 2, 0.0);
 		}
 
 		// === Dry/Wet mix and output ===
@@ -504,25 +509,23 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	// =====================================================
 	// Dattorro Plate Topology
 	// =====================================================
-	private void generateDattorro(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin) {
-		int lfoExcursion = 0;
-		if (lfoDepth == LFO_SUBTLE) lfoExcursion = 8;
-		else if (lfoDepth == LFO_WIDE) lfoExcursion = 64;
+	private void generateDattorro(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin, int pdPin) {
 
 		// Allocate delay memory: 4 input APs + 4 tank APs + 4 tank delays
 		sfxb.FXallocDelayMem("dapi1", scaled(DAT_INPUT_AP[0]));
 		sfxb.FXallocDelayMem("dapi2", scaled(DAT_INPUT_AP[1]));
 		sfxb.FXallocDelayMem("dapi3", scaled(DAT_INPUT_AP[2]));
 		sfxb.FXallocDelayMem("dapi4", scaled(DAT_INPUT_AP[3]));
-		// Tank side A
+		// Tank side A: tap1 modulated by SIN0, tap2 by SIN1 (Wide only)
+		int exc2 = (lfoDepth == LFO_WIDE) ? lfoExcursion2 : 0;
 		sfxb.FXallocDelayMem("tap1", scaled(DAT_TANK_AP[0]) + lfoExcursion);
 		sfxb.FXallocDelayMem("tdl1", scaled(DAT_TANK_DEL[0]));
-		sfxb.FXallocDelayMem("tap2", scaled(DAT_TANK_AP[1]) + lfoExcursion);
+		sfxb.FXallocDelayMem("tap2", scaled(DAT_TANK_AP[1]) + exc2);
 		sfxb.FXallocDelayMem("tdl2", scaled(DAT_TANK_DEL[1]));
-		// Tank side B
+		// Tank side B: tap3 modulated by SIN0, tap4 by SIN1 (Wide only)
 		sfxb.FXallocDelayMem("tap3", scaled(DAT_TANK_AP[2]) + lfoExcursion);
 		sfxb.FXallocDelayMem("tdl3", scaled(DAT_TANK_DEL[2]));
-		sfxb.FXallocDelayMem("tap4", scaled(DAT_TANK_AP[3]) + lfoExcursion);
+		sfxb.FXallocDelayMem("tap4", scaled(DAT_TANK_AP[3]) + exc2);
 		sfxb.FXallocDelayMem("tdl4", scaled(DAT_TANK_DEL[3]));
 
 		// Shimmer delay if needed
@@ -531,10 +534,11 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			sfxb.FXallocDelayMem("stimp", 1);
 		}
 
-		// Pre-delay: fixed delay line sized to slider setting
-		int dPreDelaySamples = preDelayEnabled ? Math.max(1, (int)(3276 * preDelayAmount)) : 0;
+		// Pre-delay memory allocation
+		int pdDelayOffset = -1;
 		if (preDelayEnabled) {
-			sfxb.FXallocDelayMem("pdel", dPreDelaySamples);
+			pdDelayOffset = sfxb.getDelayMemAllocated() + 1;
+			sfxb.FXallocDelayMem("pdel", preDelaySamples);
 		}
 
 		// Allocate registers
@@ -559,17 +563,14 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 				sfxb.loadRampLFO(0, semitoneToCoefficient(shimmerPitchSemitones), 4096);
 			}
 			if (lfoDepth != LFO_NONE) {
-				sfxb.loadSinLFO(0, 27, lfoExcursion);
-				sfxb.loadSinLFO(1, 23, lfoExcursion);
+				sfxb.loadSinLFO(0, lfoFreq, lfoExcursion);
+				sfxb.loadSinLFO(1, lfoFreq2, lfoExcursion2);
 			}
 		}
 
-		// === Pre-delay (fixed delay line, read from end) ===
+		// === Pre-delay ===
 		if (preDelayEnabled) {
-			sfxb.comment("--- Pre-delay ---");
-			sfxb.readRegister(reverbIn, 0.25);
-			sfxb.FXwriteDelay("pdel", 0, 0.0);
-			sfxb.FXreadDelay("pdel#", 0, 1.0);
+			generatePreDelay(sfxb, reverbIn, pdPin, pdDelayOffset, preDelaySamples);
 		} else {
 			sfxb.readRegister(reverbIn, 0.25);
 		}
@@ -700,12 +701,12 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 
 			if (lfoDepth == LFO_WIDE) {
 				// Also modulate tap2 and tap4 with SIN1
-				sfxb.FXchorusReadDelay(SIN1, COS | COMPC, "tap2+", lfoExcursion);
-				sfxb.FXchorusReadDelay(SIN1, COS, "tap2+", lfoExcursion + 1);
-				sfxb.FXwriteDelay("tap2+", lfoExcursion * 2, 0.0);
-				sfxb.FXchorusReadDelay(SIN1, SIN | COMPC, "tap4+", lfoExcursion);
-				sfxb.FXchorusReadDelay(SIN1, SIN, "tap4+", lfoExcursion + 1);
-				sfxb.FXwriteDelay("tap4+", lfoExcursion * 2, 0.0);
+				sfxb.FXchorusReadDelay(SIN1, COS | COMPC, "tap2+", lfoExcursion2);
+				sfxb.FXchorusReadDelay(SIN1, COS, "tap2+", lfoExcursion2 + 1);
+				sfxb.FXwriteDelay("tap2+", lfoExcursion2 * 2, 0.0);
+				sfxb.FXchorusReadDelay(SIN1, SIN | COMPC, "tap4+", lfoExcursion2);
+				sfxb.FXchorusReadDelay(SIN1, SIN, "tap4+", lfoExcursion2 + 1);
+				sfxb.FXwriteDelay("tap4+", lfoExcursion2 * 2, 0.0);
 			}
 		}
 
@@ -716,11 +717,8 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	// =====================================================
 	// Ring FDN Topology
 	// =====================================================
-	private void generateRingFDN(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin) {
+	private void generateRingFDN(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin, int pdPin) {
 		int stages = getRingStages();
-		int lfoExcursion = 0;
-		if (lfoDepth == LFO_SUBTLE) lfoExcursion = 20;
-		else if (lfoDepth == LFO_WIDE) lfoExcursion = 40;
 
 		// Allocate delay memory: 4 input APs + N ring stages (AP + delay each)
 		sfxb.FXallocDelayMem("rapi1", scaled(RING_INPUT_AP[0]));
@@ -729,7 +727,9 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sfxb.FXallocDelayMem("rapi4", scaled(RING_INPUT_AP[3]));
 
 		for (int i = 0; i < stages; i++) {
-			sfxb.FXallocDelayMem("rap" + i, scaled(RING_STAGE_AP[i]) + lfoExcursion);
+			// rap0/rap1 modulated by SIN0, rap2/rap3 by SIN1 (Wide only)
+			int apExc = (i < 2) ? lfoExcursion : ((lfoDepth == LFO_WIDE) ? lfoExcursion2 : 0);
+			sfxb.FXallocDelayMem("rap" + i, scaled(RING_STAGE_AP[i]) + apExc);
 			sfxb.FXallocDelayMem("rdl" + i, scaled(RING_STAGE_DEL[i]));
 		}
 
@@ -739,10 +739,11 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			sfxb.FXallocDelayMem("stimp", 1);
 		}
 
-		// Pre-delay: fixed delay line sized to slider setting
-		int rPreDelaySamples = preDelayEnabled ? Math.max(1, (int)(3276 * preDelayAmount)) : 0;
+		// Pre-delay memory allocation
+		int pdDelayOffset = -1;
 		if (preDelayEnabled) {
-			sfxb.FXallocDelayMem("pdel", rPreDelaySamples);
+			pdDelayOffset = sfxb.getDelayMemAllocated() + 1;
+			sfxb.FXallocDelayMem("pdel", preDelaySamples);
 		}
 
 		// Allocate registers
@@ -770,17 +771,14 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 				sfxb.loadRampLFO(0, semitoneToCoefficient(shimmerPitchSemitones), 4096);
 			}
 			if (lfoDepth != LFO_NONE) {
-				sfxb.loadSinLFO(0, 12, lfoExcursion);
-				sfxb.loadSinLFO(1, 15, lfoExcursion);
+				sfxb.loadSinLFO(0, lfoFreq, lfoExcursion);
+				sfxb.loadSinLFO(1, lfoFreq2, lfoExcursion2);
 			}
 		}
 
-		// === Pre-delay (fixed delay line, read from end) ===
+		// === Pre-delay ===
 		if (preDelayEnabled) {
-			sfxb.comment("--- Pre-delay ---");
-			sfxb.readRegister(reverbIn, 0.25);
-			sfxb.FXwriteDelay("pdel", 0, 0.0);
-			sfxb.FXreadDelay("pdel#", 0, 1.0);
+			generatePreDelay(sfxb, reverbIn, pdPin, pdDelayOffset, preDelaySamples);
 		} else {
 			sfxb.readRegister(reverbIn, 0.25);
 		}
@@ -886,19 +884,42 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			sfxb.FXwriteDelay("rap1+", lfoExcursion * 2, 0.0);
 
 			if (lfoDepth == LFO_WIDE && stages >= 3) {
-				sfxb.FXchorusReadDelay(SIN1, SIN | COMPC, "rap2+", lfoExcursion);
-				sfxb.FXchorusReadDelay(SIN1, SIN, "rap2+", lfoExcursion + 1);
-				sfxb.FXwriteDelay("rap2+", lfoExcursion * 2, 0.0);
+				sfxb.FXchorusReadDelay(SIN1, SIN | COMPC, "rap2+", lfoExcursion2);
+				sfxb.FXchorusReadDelay(SIN1, SIN, "rap2+", lfoExcursion2 + 1);
+				sfxb.FXwriteDelay("rap2+", lfoExcursion2 * 2, 0.0);
 				if (stages >= 4) {
-					sfxb.FXchorusReadDelay(SIN1, COS | COMPC, "rap3+", lfoExcursion);
-					sfxb.FXchorusReadDelay(SIN1, COS, "rap3+", lfoExcursion + 1);
-					sfxb.FXwriteDelay("rap3+", lfoExcursion * 2, 0.0);
+					sfxb.FXchorusReadDelay(SIN1, COS | COMPC, "rap3+", lfoExcursion2);
+					sfxb.FXchorusReadDelay(SIN1, COS, "rap3+", lfoExcursion2 + 1);
+					sfxb.FXwriteDelay("rap3+", lfoExcursion2 * 2, 0.0);
 				}
 			}
 		}
 
 		// === Dry/Wet mix and output ===
 		generateMixOutput(sfxb, dryL, dryR, outputL, outputR, mixPin);
+	}
+
+	// =====================================================
+	// Pre-delay (shared by all topologies)
+	// =====================================================
+	private void generatePreDelay(SpinFXBlock sfxb, int reverbIn, int pdPin, int pdDelayOffset, int maxSamples) {
+		sfxb.comment("--- Pre-delay (" + maxSamples + " samples, "
+				+ String.format("%.1f", maxSamples * 1000.0 / 32768) + " ms max) ---");
+		// Write input to delay start
+		sfxb.readRegister(reverbIn, 0.25);
+		sfxb.FXwriteDelay("pdel", 0, 0.0);
+		if (pdPin >= 0) {
+			// Control-driven: use RMPA to read at variable position
+			sfxb.clear();
+			sfxb.or(0x7FFF00);
+			sfxb.mulx(pdPin);
+			sfxb.scaleOffset((double) maxSamples / 32768.0, (double) pdDelayOffset / 32768.0);
+			sfxb.writeRegister(ADDR_PTR, 0);
+			sfxb.readDelayPointer(1.0);
+		} else {
+			// Fixed: read from delay end
+			sfxb.FXreadDelay("pdel#", 0, 1.0);
+		}
 	}
 
 	// =====================================================
@@ -1017,8 +1038,8 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	public double getDryWet() { return dryWet; }
 	public void setDryWet(double v) { dryWet = v; }
 
-	public double getPreDelayAmount() { return preDelayAmount; }
-	public void setPreDelayAmount(double v) { preDelayAmount = v; }
+	public int getPreDelaySamples() { return preDelaySamples; }
+	public void setPreDelaySamples(int v) { preDelaySamples = Math.max(1, Math.min(4096, v)); }
 
 	public double getInputBandwidth() { return inputBandwidth; }
 	public void setInputBandwidth(double v) { inputBandwidth = v; }
@@ -1031,4 +1052,16 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 
 	public double getInputGain() { return inputGain; }
 	public void setInputGain(double v) { inputGain = v; }
+
+	public int getLfoFreq() { return lfoFreq; }
+	public void setLfoFreq(int v) { lfoFreq = Math.max(1, Math.min(511, v)); }
+
+	public int getLfoExcursion() { return lfoExcursion; }
+	public void setLfoExcursion(int v) { lfoExcursion = Math.max(1, Math.min(100, v)); }
+
+	public int getLfoFreq2() { return lfoFreq2; }
+	public void setLfoFreq2(int v) { lfoFreq2 = Math.max(1, Math.min(511, v)); }
+
+	public int getLfoExcursion2() { return lfoExcursion2; }
+	public void setLfoExcursion2(int v) { lfoExcursion2 = Math.max(1, Math.min(100, v)); }
 }

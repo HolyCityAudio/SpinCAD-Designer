@@ -81,6 +81,18 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 	private FineControlSlider shimmerLevelSlider;
 	private JTextField shimmerLevelField;
 	private JPanel shimmerLevelPanel;
+	private FineControlSlider lfoFreqSlider;
+	private JTextField lfoFreqField;
+	private JPanel lfoFreqPanel;
+	private FineControlSlider lfoDepthSlider;
+	private JTextField lfoDepthField;
+	private JPanel lfoDepthPanel;
+	private FineControlSlider lfoFreq2Slider;
+	private JTextField lfoFreq2Field;
+	private JPanel lfoFreq2Panel;
+	private FineControlSlider lfoDepth2Slider;
+	private JTextField lfoDepth2Field;
+	private JPanel lfoDepth2Panel;
 
 	// Resource display
 	private JLabel resourceLabel;
@@ -213,8 +225,8 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		paramPanel.add(makeSliderRow("Dry/Wet Mix", dryWetField, dryWetSlider));
 		updateDryWetLabel();
 
-		// Pre-Delay Amount
-		preDelaySlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 100, (int)(gCB.getPreDelayAmount() * 100));
+		// Pre-Delay Amount (1-4096 samples)
+		preDelaySlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 4096, gCB.getPreDelaySamples());
 		preDelaySlider.addChangeListener(this);
 		preDelayField = new JTextField();
 		preDelayField.setEditable(false);
@@ -262,6 +274,50 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		shimmerLevelPanel.setVisible(gCB.getShimmerMode() != ReverbDesignerCADBlock.SHIMMER_OFF);
 		paramPanel.add(shimmerLevelPanel);
 		updateShimmerLevelLabel();
+
+		// LFO 1 Frequency (SIN LFO rate parameter: freq = rate/512 Hz)
+		lfoFreqSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 200, gCB.getLfoFreq());
+		lfoFreqSlider.addChangeListener(this);
+		lfoFreqField = new JTextField();
+		lfoFreqField.setEditable(false);
+		lfoFreqField.setHorizontalAlignment(JTextField.CENTER);
+		lfoFreqPanel = makeSliderRow("LFO 1 Freq", lfoFreqField, lfoFreqSlider);
+		lfoFreqPanel.setVisible(gCB.getLfoDepth() != ReverbDesignerCADBlock.LFO_NONE);
+		paramPanel.add(lfoFreqPanel);
+		updateLfoFreqLabel();
+
+		// LFO 1 Depth (excursion in samples)
+		lfoDepthSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 100, gCB.getLfoExcursion());
+		lfoDepthSlider.addChangeListener(this);
+		lfoDepthField = new JTextField();
+		lfoDepthField.setEditable(false);
+		lfoDepthField.setHorizontalAlignment(JTextField.CENTER);
+		lfoDepthPanel = makeSliderRow("LFO 1 Depth", lfoDepthField, lfoDepthSlider);
+		lfoDepthPanel.setVisible(gCB.getLfoDepth() != ReverbDesignerCADBlock.LFO_NONE);
+		paramPanel.add(lfoDepthPanel);
+		updateLfoDepthLabel();
+
+		// LFO 2 Frequency (only visible in Wide mode)
+		lfoFreq2Slider = new FineControlSlider(JSlider.HORIZONTAL, 1, 200, gCB.getLfoFreq2());
+		lfoFreq2Slider.addChangeListener(this);
+		lfoFreq2Field = new JTextField();
+		lfoFreq2Field.setEditable(false);
+		lfoFreq2Field.setHorizontalAlignment(JTextField.CENTER);
+		lfoFreq2Panel = makeSliderRow("LFO 2 Freq", lfoFreq2Field, lfoFreq2Slider);
+		lfoFreq2Panel.setVisible(gCB.getLfoDepth() == ReverbDesignerCADBlock.LFO_WIDE);
+		paramPanel.add(lfoFreq2Panel);
+		updateLfoFreq2Label();
+
+		// LFO 2 Depth (only visible in Wide mode)
+		lfoDepth2Slider = new FineControlSlider(JSlider.HORIZONTAL, 1, 100, gCB.getLfoExcursion2());
+		lfoDepth2Slider.addChangeListener(this);
+		lfoDepth2Field = new JTextField();
+		lfoDepth2Field.setEditable(false);
+		lfoDepth2Field.setHorizontalAlignment(JTextField.CENTER);
+		lfoDepth2Panel = makeSliderRow("LFO 2 Depth", lfoDepth2Field, lfoDepth2Slider);
+		lfoDepth2Panel.setVisible(gCB.getLfoDepth() == ReverbDesignerCADBlock.LFO_WIDE);
+		paramPanel.add(lfoDepth2Panel);
+		updateLfoDepth2Label();
 
 		frame.add(paramPanel);
 	}
@@ -322,8 +378,9 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 	}
 
 	private void updatePreDelayLabel() {
-		double ms = gCB.getPreDelayAmount() * 100.0; // 0-100ms
-		preDelayField.setText(String.format("Pre-Delay: %.0f ms", ms));
+		int samples = gCB.getPreDelaySamples();
+		double ms = samples * 1000.0 / 32768.0;
+		preDelayField.setText(String.format("Pre-Delay: %d samples (%.1f ms)", samples, ms));
 	}
 
 	private void updateInputBwLabel() {
@@ -340,6 +397,24 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 
 	private void updateShimmerLevelLabel() {
 		shimmerLevelField.setText(String.format("Shimmer Level: %.2f", gCB.getShimmerLevel()));
+	}
+
+	private void updateLfoFreqLabel() {
+		double hz = gCB.getLfoFreq() / 512.0;
+		lfoFreqField.setText(String.format("LFO 1 Freq: %d (%.3f Hz)", gCB.getLfoFreq(), hz));
+	}
+
+	private void updateLfoDepthLabel() {
+		lfoDepthField.setText(String.format("LFO 1 Depth: %d samples", gCB.getLfoExcursion()));
+	}
+
+	private void updateLfoFreq2Label() {
+		double hz = gCB.getLfoFreq2() / 512.0;
+		lfoFreq2Field.setText(String.format("LFO 2 Freq: %d (%.3f Hz)", gCB.getLfoFreq2(), hz));
+	}
+
+	private void updateLfoDepth2Label() {
+		lfoDepth2Field.setText(String.format("LFO 2 Depth: %d samples", gCB.getLfoExcursion2()));
 	}
 
 	private void updateResourceLabel() {
@@ -386,7 +461,7 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 			gCB.setDryWet(dryWetSlider.getValue() / 100.0);
 			updateDryWetLabel();
 		} else if (src == preDelaySlider) {
-			gCB.setPreDelayAmount(preDelaySlider.getValue() / 100.0);
+			gCB.setPreDelaySamples(preDelaySlider.getValue());
 			updatePreDelayLabel();
 		} else if (src == inputBwSlider) {
 			gCB.setInputBandwidth(inputBwSlider.getValue() / 100.0);
@@ -400,6 +475,18 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		} else if (src == shimmerLevelSlider) {
 			gCB.setShimmerLevel(shimmerLevelSlider.getValue() / 100.0);
 			updateShimmerLevelLabel();
+		} else if (src == lfoFreqSlider) {
+			gCB.setLfoFreq(lfoFreqSlider.getValue());
+			updateLfoFreqLabel();
+		} else if (src == lfoDepthSlider) {
+			gCB.setLfoExcursion(lfoDepthSlider.getValue());
+			updateLfoDepthLabel();
+		} else if (src == lfoFreq2Slider) {
+			gCB.setLfoFreq2(lfoFreq2Slider.getValue());
+			updateLfoFreq2Label();
+		} else if (src == lfoDepth2Slider) {
+			gCB.setLfoExcursion2(lfoDepth2Slider.getValue());
+			updateLfoDepth2Label();
 		}
 		updateResourceLabel();
 	}
@@ -412,6 +499,13 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 			gCB.setSizePreset(sizeCombo.getSelectedIndex());
 		} else if (src == lfoCombo) {
 			gCB.setLfoDepth(lfoCombo.getSelectedIndex());
+			boolean lfoOn = lfoCombo.getSelectedIndex() != 0;
+			boolean lfoWide = lfoCombo.getSelectedIndex() == ReverbDesignerCADBlock.LFO_WIDE;
+			lfoFreqPanel.setVisible(lfoOn);
+			lfoDepthPanel.setVisible(lfoOn);
+			lfoFreq2Panel.setVisible(lfoWide);
+			lfoDepth2Panel.setVisible(lfoWide);
+			frame.pack();
 		} else if (src == shimmerCombo) {
 			gCB.setShimmerMode(shimmerCombo.getSelectedIndex());
 			boolean shimOn = shimmerCombo.getSelectedIndex() != 0;

@@ -1,6 +1,6 @@
 @name Shimmer_reverb
 @color "0x7100fc"
-@audioInput revin Input
+@audioInput input Input
 @audioOutput output1 Output  
 
 @controlInput input0 Damping
@@ -85,16 +85,16 @@ START:
 ;PreparePOT2 for Decay
 
 @isPinConnected Decay
-rdax   pot2,1 
-sof   0.65,0.3   ;Scale by 0.65 and add 0.3  
+rdax   pot2,1
+sof   0.4225,0.3   ;Scale by 0.4225 and add 0.3
 @else
 sof 0.0, 0.65
 @endif
 
-wrax   rt, 0          ;rt ranges 0.3 to 0.95 
+wrax   rt, 0          ;rt ranges 0.3 to 0.7225
 
 ;REVERB 
-rdax   revin,   gain   ;Read reverb in   
+rdax   input,   gain   ;Read reverb in
 rda   iap1#,   kiap 
 wrap   iap1,   -kiap      
 rda   iap2#,   kiap    
@@ -205,13 +205,9 @@ rdax temp, -0.5
 rdax   temp,   1    
 wra   del4,   0      
 
-;take outputs as taps from reverb ring: 
-rda   del1,      0.8 
-rda   del2,      0.8 
-rda   del3+2876,   1.5 
-rda   del1+2093,   1.1          
-rda   del4+1234,   1.1 
-wrax   revout,      1   ;Write to revout register, keep in ACC for pitch shifting 
+;take output tap from reverb ring:
+rda   del3+2876,   1.0
+wrax   revout,      1   ;Write to revout register, keep in ACC for pitch shifting
 
 ;PITCH SHIFT +1 OCTAVE 
 

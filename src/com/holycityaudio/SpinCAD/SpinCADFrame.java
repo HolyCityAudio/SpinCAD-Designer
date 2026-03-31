@@ -254,7 +254,7 @@ public class SpinCADFrame extends JFrame {
 		if (iconURL != null) {
 			setIconImage(new javax.swing.ImageIcon(iconURL).getImage());
 		}
-		setBounds(100, 100, 800, 600);
+		restoreWindowBounds();
 		simX.updateSliders(eeprom.patch[0]);
 
 		double time = SpinCADBlock.filtToTime(SpinCADBlock.timeToFilt(0.356));
@@ -899,11 +899,41 @@ public class SpinCADFrame extends JFrame {
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, null, null);
 				if (confirm == JOptionPane.YES_OPTION) {
+					saveWindowBounds();
 					System.exit(0);
 				}
 			}
 		};
 		return exitListener;
+	}
+
+	private void saveWindowBounds() {
+		java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(SpinCADFrame.class);
+		java.awt.Rectangle b = getBounds();
+		prefs.putInt("window_x", b.x);
+		prefs.putInt("window_y", b.y);
+		prefs.putInt("window_w", b.width);
+		prefs.putInt("window_h", b.height);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		prefs.putInt("screen_w", screen.width);
+		prefs.putInt("screen_h", screen.height);
+	}
+
+	private void restoreWindowBounds() {
+		java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(SpinCADFrame.class);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int savedScreenW = prefs.getInt("screen_w", -1);
+		int savedScreenH = prefs.getInt("screen_h", -1);
+		if (savedScreenW != screen.width || savedScreenH != screen.height || savedScreenW == -1) {
+			// Screen dimensions changed or first run — go full screen
+			setBounds(0, 0, screen.width, screen.height);
+		} else {
+			int x = prefs.getInt("window_x", 100);
+			int y = prefs.getInt("window_y", 100);
+			int w = prefs.getInt("window_w", 800);
+			int h = prefs.getInt("window_h", 600);
+			setBounds(x, y, w, h);
+		}
 	}
 
 	public void dropBlock(SpinCADPanel p, SpinCADBlock b) {

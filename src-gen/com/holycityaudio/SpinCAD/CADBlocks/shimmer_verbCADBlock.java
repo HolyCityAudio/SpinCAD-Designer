@@ -54,6 +54,7 @@
 			private double kfl = 0.4;
 			private double kiap = 0.5;
 			private double klap = 0.6;
+			private int shimmerMode = 0; // 0=Shift (one-shot), 1=Shimmer (feedback loop)
 
 			public shimmer_verbCADBlock(int x, int y) {
 				super(x, y);
@@ -93,9 +94,9 @@
 					
 			// Iterate through pin definitions and connect or assign as needed
 			sp = this.getPin("Input").getPinConnection();
-			int revin = -1;
+			int input = -1;
 			if(sp != null) {
-				revin = sp.getRegister();
+				input = sp.getRegister();
 			}
 			sp = this.getPin("Damping").getPinConnection();
 			int input0 = -1;
@@ -154,13 +155,13 @@
 			sfxb.loadRampLFO((int) 0, (int) 16384, (int) 4096);
 			if(this.getPin("Decay").isConnected() == true) {
 			sfxb.readRegister(input2, 1);
-			sfxb.scaleOffset(0.65, 0.3);
+			sfxb.scaleOffset(0.4225, 0.3);
 			} else {
 			sfxb.scaleOffset(0.0, 0.65);
 			}
 			
 			sfxb.writeRegister(rt, 0);
-			sfxb.readRegister(revin, gain);
+			sfxb.readRegister(input, gain);
 			sfxb.FXreadDelay("iap1#", 0, kiap);
 			sfxb.FXwriteAllpass("iap1", 0, -kiap);
 			sfxb.FXreadDelay("iap2#", 0, kiap);
@@ -173,6 +174,12 @@
 			sfxb.FXreadDelay("del4#", 0, 1);
 			sfxb.mulx(rt);
 			sfxb.readRegister(iapout, 1);
+			// In Shimmer mode, inject pitch feedback directly into the ring
+			if (shimmerMode == 1) {
+				sfxb.readRegister(pitchout, 0.95);
+				sfxb.scaleOffset(-2.0, 0.0);
+				sfxb.scaleOffset(-1.0, 0.0);  // restore sign: net × 2
+			}
 			sfxb.FXreadDelay("ap1#", 0, klap);
 			sfxb.FXwriteAllpass("ap1", 0, -klap);
 			sfxb.FXreadDelay("ap1b#", 0, klap);
@@ -252,11 +259,7 @@
 			
 			sfxb.readRegister(temp, 1);
 			sfxb.FXwriteDelay("del4", 0, 0);
-			sfxb.FXreadDelay("del1", 0, 0.8);
-			sfxb.FXreadDelay("del2", 0, 0.8);
-			sfxb.FXreadDelay("del3+", (int)(2876 * 1.0), 1.5);
-			sfxb.FXreadDelay("del1+", (int)(2093 * 1.0), 1.1);
-			sfxb.FXreadDelay("del4+", (int)(1234 * 1.0), 1.1);
+			sfxb.FXreadDelay("del3+", (int)(2876 * 1.0), 1.0);
 			sfxb.writeRegister(revout, 1);
 			sfxb.FXwriteDelay("delayl", 0, 0);
 			sfxb.FXchorusReadDelay(RMP0, REG|COMPC, "delayl", 0);
@@ -306,4 +309,7 @@
 			public double getgain() {
 				return gain;
 			}
-		}	
+
+			public int getShimmerMode() { return shimmerMode; }
+			public void setShimmerMode(int m) { shimmerMode = m; }
+		}

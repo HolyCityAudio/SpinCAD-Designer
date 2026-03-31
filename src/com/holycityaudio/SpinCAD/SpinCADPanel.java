@@ -768,6 +768,18 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 		private static final long serialVersionUID = 1L;
 
 		public PinPopUpMenu(SpinCADBlock block, SpinCADPin pin) {
+			JCheckBoxMenuItem mutePin = new JCheckBoxMenuItem("Mute This Pin", pin.isMuted());
+			mutePin.addActionListener(e -> {
+				pin.setMuted(!pin.isMuted());
+				if (f.simX.isSimRunning()) {
+					f.etb.statusMessage.setText("Change will take place after simulator stops.");
+				} else {
+					f.updateAll(true);
+				}
+				repaint();
+			});
+			add(mutePin);
+
 			JMenuItem deleteWire = new JMenuItem("Delete Wire");
 			deleteWire.addActionListener(e -> {
 				pin.deletePinConnection();
@@ -781,18 +793,6 @@ public class SpinCADPanel extends JPanel implements MouseListener, MouseMotionLi
 				repaint();
 			});
 			add(deleteWire);
-
-			JCheckBoxMenuItem mutePin = new JCheckBoxMenuItem("Mute This Pin", pin.isMuted());
-			mutePin.addActionListener(e -> {
-				pin.setMuted(!pin.isMuted());
-				if (f.simX.isSimRunning()) {
-					f.etb.statusMessage.setText("Change will take place after simulator stops.");
-				} else {
-					f.updateAll(true);
-				}
-				repaint();
-			});
-			add(mutePin);
 		}
 	}
 

@@ -76,7 +76,7 @@
 @menuitem "Adjustable Reverb" reverb
 @menuitem "Reverb Designer" ReverbDesigner
 // @menuitem "Reverb Delay Line 01" reverb_delay_line_01
-//@menuitem "Shimmer Reverb" shimmer_verb
+// @menuitem "Shimmer Reverb" shimmer_verb
 
 @menu "Modulation"  
 @menuitem "1-voice Chorus" Chorus 
