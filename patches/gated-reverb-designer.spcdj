@@ -16,7 +16,7 @@
   "potValues": [
     90.0,
     100.0,
-    82.0
+    0.0
   ],
   "blocks": [
     {
@@ -66,14 +66,14 @@
       "y": 165,
       "name": "Gated RT Ctrl",
       "params": {
-        "detectMode": 1,
+        "detectMode": 2,
         "gain": 2,
-        "attackCoeff": 0.001,
-        "releaseCoeff": 8.0E-5,
-        "threshold": 0.1,
+        "attackCoeff": 0.009012257711474514,
+        "releaseCoeff": 0.001889675865494378,
+        "threshold": 0.52,
         "activeRT": 0.9,
-        "idleRT": 0.1,
-        "smoothCoeff": 2.0E-4
+        "idleRT": 0.0,
+        "smoothCoeff": 0.0016843485582908047
       }
     },
     {
@@ -84,13 +84,13 @@
       "name": "Reverb Designer",
       "params": {
         "topology": 0,
-        "sizePreset": 0,
+        "sizePreset": 1,
         "stereoOutput": true,
         "shimmerMode": 0,
         "shimmerPitchSemitones": 7,
         "lfoDepth": 2,
         "preDelayEnabled": false,
-        "reverbTime": 0.7,
+        "reverbTime": 0.87,
         "hfDamping": 0.4,
         "lfDamping": 0.02,
         "dryWet": 0.5,

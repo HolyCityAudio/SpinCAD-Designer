@@ -25,6 +25,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.NoiseGateCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.GatedReverbControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
@@ -89,7 +90,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.VeeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.GatedReverbControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_3_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
@@ -349,6 +349,15 @@
 		}
 	});
 	mn_dynamics.add(mntm_NoiseGate);
+		
+	final JMenuItem mntm_GatedReverbControl = new JMenuItem("Gate CV");
+	mntm_GatedReverbControl.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new GatedReverbControlCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_dynamics.add(mntm_GatedReverbControl);
 		
 	JMenu mn_filters = new JMenu("Filters");
 	menuBar.add(mn_filters);
@@ -943,15 +952,6 @@
 		}
 	});
 	mn_control.add(mntm_New_Envelope);
-		
-	final JMenuItem mntm_GatedReverbControl = new JMenuItem("Gated RT Ctrl");
-	mntm_GatedReverbControl.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new GatedReverbControlCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_GatedReverbControl);
 		
 	final JMenuItem mntm_ControlMixer_2_to_1 = new JMenuItem("Mixer 2:1");
 	mntm_ControlMixer_2_to_1.addActionListener(new ActionListener() {

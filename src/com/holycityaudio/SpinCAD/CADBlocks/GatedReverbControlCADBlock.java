@@ -67,9 +67,9 @@ public class GatedReverbControlCADBlock extends ControlCADBlock {
 
 	public GatedReverbControlCADBlock(int x, int y) {
 		super(x, y);
-		setBorderColor(new Color(0xfc7100));
+		setBorderColor(new Color(0x009595));
 		hasControlPanel = true;
-		setName("Gated RT Ctrl");
+		setName("Gate CV");
 		addInputPin(this);                          // Audio Input 1
 		addControlOutputPin(this, "CV Out");        // control voltage output
 		addControlOutputPin(this, "Envelope");      // raw envelope for monitoring

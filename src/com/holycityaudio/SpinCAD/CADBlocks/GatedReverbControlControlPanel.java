@@ -67,7 +67,7 @@ public class GatedReverbControlControlPanel implements ChangeListener, ActionLis
 	// Time slider range: log10(ms) * 100
 	// 1 ms = 0, 10 ms = 100, 100 ms = 200, 1000 ms = 300, 2000 ms = 330
 	private static final int TIME_SLIDER_MIN = 0;     // 1 ms
-	private static final int TIME_SLIDER_MAX = 330;    // ~2000 ms
+	private static final int TIME_SLIDER_MAX = 269;    // 500 ms
 
 	public GatedReverbControlControlPanel(GatedReverbControlCADBlock block) {
 		this.block = block;
@@ -122,9 +122,9 @@ public class GatedReverbControlControlPanel implements ChangeListener, ActionLis
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Gated RT Controller");
+				frame = new JFrame("Gate CV");
 				block.controlPanelFrame = frame;
-				frame.setTitle("Gated RT Controller");
+				frame.setTitle("Gate CV");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 

@@ -67,6 +67,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	private double inputBandwidth = 0.5; // filter coefficient
 	private double diffusion = 0.5;
 	private double shimmerLevel = 0.3;
+	private double inputGain = 0.0;  // dB, -12 to 0
 
 	private transient ReverbDesignerControlPanel cp = null;
 
@@ -75,6 +76,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		setName("Reverb Designer");
 		setBorderColor(new Color(0x7100fc));
 		addInputPin(this, "Audio In");
+		addInputPin(this, "Audio In 2");
 		addOutputPin(this, "Out L");
 		addOutputPin(this, "Out R");
 		addControlInputPin(this, "Reverb_Time");
@@ -257,6 +259,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sfxb.comment("HF Damping: " + (hfPin >= 0 ? "POT" : String.format("%.2f", hfDamping)));
 		sfxb.comment("LF Damping: " + String.format("%.3f", lfDamping));
 		sfxb.comment("Dry/Wet: " + (mixPin >= 0 ? "POT" : String.format("%.2f", dryWet)));
+		sfxb.comment("Input Gain: " + String.format("%.1f", inputGain) + " dB");
 		sfxb.comment("Input BW: " + String.format("%.2f", inputBandwidth));
 		sfxb.comment("Diffusion: " + String.format("%.2f", diffusion));
 		if (shimmerMode != SHIMMER_OFF) {
@@ -271,7 +274,10 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 
 		SpinCADPin sp = this.getPin("Audio In").getPinConnection();
 		if (sp == null) return;
-		int audioIn = sp.getRegister();
+		int audioIn1 = sp.getRegister();
+
+		sp = this.getPin("Audio In 2").getPinConnection();
+		int audioIn2 = (sp != null) ? sp.getRegister() : -1;
 
 		// Resolve control input pins
 		sp = this.getPin("Reverb_Time").getPinConnection();
@@ -285,15 +291,41 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 
 		emitSettingsComments(sfxb, rtPin, hfPin, mixPin);
 
+		// === Input processing: save dry signals and create mono reverb input ===
+		int dryL = sfxb.allocateReg();
+		int dryR = sfxb.allocateReg();
+		int reverbIn = sfxb.allocateReg();
+
+		sfxb.comment("--- Save dry signals ---");
+		sfxb.readRegister(audioIn1, 1.0);
+		sfxb.writeRegister(dryL, 0.0);
+		if (audioIn2 >= 0) {
+			sfxb.readRegister(audioIn2, 1.0);
+		} else {
+			sfxb.readRegister(audioIn1, 1.0);
+		}
+		sfxb.writeRegister(dryR, 0.0);
+
+		// Create mono mix with input gain for reverb feed
+		double gainLinear = Math.pow(10.0, inputGain / 20.0);
+		sfxb.comment("--- Mono mix + input gain (" + String.format("%.1f", inputGain) + " dB) ---");
+		if (audioIn2 >= 0) {
+			sfxb.readRegister(audioIn1, 0.5 * gainLinear);
+			sfxb.readRegister(audioIn2, 0.5 * gainLinear);
+		} else {
+			sfxb.readRegister(audioIn1, gainLinear);
+		}
+		sfxb.writeRegister(reverbIn, 0.0);
+
 		switch (topology) {
 		case TOPOLOGY_TWO_LOOP:
-			generateTwoLoop(sfxb, audioIn, rtPin, hfPin, mixPin);
+			generateTwoLoop(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin);
 			break;
 		case TOPOLOGY_DATTORRO:
-			generateDattorro(sfxb, audioIn, rtPin, hfPin, mixPin);
+			generateDattorro(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin);
 			break;
 		case TOPOLOGY_RING_FDN:
-			generateRingFDN(sfxb, audioIn, rtPin, hfPin, mixPin);
+			generateRingFDN(sfxb, reverbIn, dryL, dryR, rtPin, hfPin, mixPin);
 			break;
 		}
 	}
@@ -301,7 +333,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	// =====================================================
 	// Two-Loop Topology
 	// =====================================================
-	private void generateTwoLoop(SpinFXBlock sfxb, int audioIn, int rtPin, int hfPin, int mixPin) {
+	private void generateTwoLoop(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin) {
 		// Allocate delay memory
 		sfxb.FXallocDelayMem("api1", scaled(TL_INPUT_AP[0]));
 		sfxb.FXallocDelayMem("api2", scaled(TL_INPUT_AP[1]));
@@ -331,7 +363,6 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		int lp1 = sfxb.allocateReg();
 		int lp2 = sfxb.allocateReg();
 		int bwReg = sfxb.allocateReg();
-		int dry = sfxb.allocateReg();
 		int temp = sfxb.allocateReg();
 		int shimLp = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
 		int shimOut = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
@@ -353,19 +384,14 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			}
 		}
 
-		// === Save dry signal for mix ===
-		sfxb.comment("--- Save dry signal ---");
-		sfxb.readRegister(audioIn, 1.0);
-		sfxb.writeRegister(dry, 0.0);
-
 		// === Pre-delay (fixed delay line, read from end) ===
 		if (preDelayEnabled) {
 			sfxb.comment("--- Pre-delay ---");
-			sfxb.readRegister(audioIn, 0.25);
+			sfxb.readRegister(reverbIn, 0.25);
 			sfxb.FXwriteDelay("pdel", 0, 0.0);    // write input to delay start
 			sfxb.FXreadDelay("pdel#", 0, 1.0);     // read from delay end = pre-delayed signal
 		} else {
-			sfxb.readRegister(audioIn, 0.25);
+			sfxb.readRegister(reverbIn, 0.25);
 		}
 
 		// === Input bandwidth filter ===
@@ -469,13 +495,13 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		}
 
 		// === Dry/Wet mix and output ===
-		generateMixOutput(sfxb, dry, outputL, outputR, mixPin);
+		generateMixOutput(sfxb, dryL, dryR, outputL, outputR, mixPin);
 	}
 
 	// =====================================================
 	// Dattorro Plate Topology
 	// =====================================================
-	private void generateDattorro(SpinFXBlock sfxb, int audioIn, int rtPin, int hfPin, int mixPin) {
+	private void generateDattorro(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin) {
 		int lfoExcursion = 0;
 		if (lfoDepth == LFO_SUBTLE) lfoExcursion = 8;
 		else if (lfoDepth == LFO_WIDE) lfoExcursion = 64;
@@ -515,7 +541,6 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		int lpA = sfxb.allocateReg(); // HF damp side A
 		int lpB = sfxb.allocateReg(); // HF damp side B
 		int bwReg = sfxb.allocateReg();
-		int dry = sfxb.allocateReg();
 		int temp = sfxb.allocateReg();
 		int shimLp = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
 		int shimOut = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
@@ -536,19 +561,14 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			}
 		}
 
-		// === Save dry signal ===
-		sfxb.comment("--- Save dry signal ---");
-		sfxb.readRegister(audioIn, 1.0);
-		sfxb.writeRegister(dry, 0.0);
-
 		// === Pre-delay (fixed delay line, read from end) ===
 		if (preDelayEnabled) {
 			sfxb.comment("--- Pre-delay ---");
-			sfxb.readRegister(audioIn, 0.25);
+			sfxb.readRegister(reverbIn, 0.25);
 			sfxb.FXwriteDelay("pdel", 0, 0.0);
 			sfxb.FXreadDelay("pdel#", 0, 1.0);
 		} else {
-			sfxb.readRegister(audioIn, 0.25);
+			sfxb.readRegister(reverbIn, 0.25);
 		}
 
 		// === Input bandwidth filter ===
@@ -687,13 +707,13 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		}
 
 		// === Dry/Wet mix and output ===
-		generateMixOutput(sfxb, dry, outputL, outputR, mixPin);
+		generateMixOutput(sfxb, dryL, dryR, outputL, outputR, mixPin);
 	}
 
 	// =====================================================
 	// Ring FDN Topology
 	// =====================================================
-	private void generateRingFDN(SpinFXBlock sfxb, int audioIn, int rtPin, int hfPin, int mixPin) {
+	private void generateRingFDN(SpinFXBlock sfxb, int reverbIn, int dryL, int dryR, int rtPin, int hfPin, int mixPin) {
 		int stages = getRingStages();
 		int lfoExcursion = 0;
 		if (lfoDepth == LFO_SUBTLE) lfoExcursion = 20;
@@ -728,7 +748,6 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		int outputR = stereoOutput ? sfxb.allocateReg() : -1;
 		int temp = sfxb.allocateReg();
 		int bwReg = sfxb.allocateReg();
-		int dry = sfxb.allocateReg();
 		// HP and LP filter state per stage
 		int[] hpRegs = new int[stages];
 		int[] lpRegs = new int[stages];
@@ -755,19 +774,14 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			}
 		}
 
-		// === Save dry signal ===
-		sfxb.comment("--- Save dry signal ---");
-		sfxb.readRegister(audioIn, 1.0);
-		sfxb.writeRegister(dry, 0.0);
-
 		// === Pre-delay (fixed delay line, read from end) ===
 		if (preDelayEnabled) {
 			sfxb.comment("--- Pre-delay ---");
-			sfxb.readRegister(audioIn, 0.25);
+			sfxb.readRegister(reverbIn, 0.25);
 			sfxb.FXwriteDelay("pdel", 0, 0.0);
 			sfxb.FXreadDelay("pdel#", 0, 1.0);
 		} else {
-			sfxb.readRegister(audioIn, 0.25);
+			sfxb.readRegister(reverbIn, 0.25);
 		}
 
 		// === Input bandwidth filter ===
@@ -892,7 +906,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		}
 
 		// === Dry/Wet mix and output ===
-		generateMixOutput(sfxb, dry, outputL, outputR, mixPin);
+		generateMixOutput(sfxb, dryL, dryR, outputL, outputR, mixPin);
 	}
 
 	// =====================================================
@@ -927,34 +941,36 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	// =====================================================
 	// Dry/Wet mix and output assignment (shared)
 	// =====================================================
-	private void generateMixOutput(SpinFXBlock sfxb, int dry, int outputL, int outputR, int mixPin) {
+	private void generateMixOutput(SpinFXBlock sfxb, int dryL, int dryR, int outputL, int outputR, int mixPin) {
 		sfxb.comment("--- Dry/Wet mix ---");
 		int finalL = sfxb.allocateReg();
 		int finalR = stereoOutput ? sfxb.allocateReg() : -1;
 
 		if (mixPin >= 0) {
-			// Crossfade: output = dry + (wet - dry) * mix
+			// Crossfade: outputL = dryL + (wetL - dryL) * mix
 			sfxb.readRegister(outputL, 1.0);
-			sfxb.readRegister(dry, -1.0);
+			sfxb.readRegister(dryL, -1.0);
 			sfxb.mulx(mixPin);
-			sfxb.readRegister(dry, 1.0);
+			sfxb.readRegister(dryL, 1.0);
 			sfxb.writeRegister(finalL, 0.0);
 
 			if (stereoOutput) {
+				// outputR = dryR + (wetR - dryR) * mix
 				sfxb.readRegister(outputR, 1.0);
-				sfxb.readRegister(dry, -1.0);
+				sfxb.readRegister(dryR, -1.0);
 				sfxb.mulx(mixPin);
-				sfxb.readRegister(dry, 1.0);
+				sfxb.readRegister(dryR, 1.0);
 				sfxb.writeRegister(finalR, 0.0);
 			}
 		} else {
-			// Fixed mix: output = dry * (1-mix) + wet * mix
-			sfxb.readRegister(dry, 1.0 - dryWet);
+			// Fixed mix: outputL = dryL * (1-mix) + wetL * mix
+			sfxb.readRegister(dryL, 1.0 - dryWet);
 			sfxb.readRegister(outputL, dryWet);
 			sfxb.writeRegister(finalL, 0.0);
 
 			if (stereoOutput) {
-				sfxb.readRegister(dry, 1.0 - dryWet);
+				// outputR = dryR * (1-mix) + wetR * mix
+				sfxb.readRegister(dryR, 1.0 - dryWet);
 				sfxb.readRegister(outputR, dryWet);
 				sfxb.writeRegister(finalR, 0.0);
 			}
@@ -1020,4 +1036,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 
 	public double getShimmerLevel() { return shimmerLevel; }
 	public void setShimmerLevel(double v) { shimmerLevel = v; }
+
+	public double getInputGain() { return inputGain; }
+	public void setInputGain(double v) { inputGain = v; }
 }

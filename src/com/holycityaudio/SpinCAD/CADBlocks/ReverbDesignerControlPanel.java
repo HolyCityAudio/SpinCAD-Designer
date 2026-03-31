@@ -76,6 +76,8 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 	private JTextField inputBwField;
 	private FineControlSlider diffusionSlider;
 	private JTextField diffusionField;
+	private FineControlSlider inputGainSlider;
+	private JTextField inputGainField;
 	private FineControlSlider shimmerLevelSlider;
 	private JTextField shimmerLevelField;
 	private JPanel shimmerLevelPanel;
@@ -234,6 +236,16 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		paramPanel.add(makeSliderRow("Input Bandwidth", inputBwField, inputBwSlider));
 		updateInputBwLabel();
 
+		// Input Gain: -24 to 0 in slider units = -12.0 to 0.0 dB in 0.5 dB steps
+		inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, -24, 0,
+				(int)(gCB.getInputGain() * 2));
+		inputGainSlider.addChangeListener(this);
+		inputGainField = new JTextField();
+		inputGainField.setEditable(false);
+		inputGainField.setHorizontalAlignment(JTextField.CENTER);
+		paramPanel.add(makeSliderRow("Input Gain", inputGainField, inputGainSlider));
+		updateInputGainLabel();
+
 		// Diffusion
 		diffusionSlider = new FineControlSlider(JSlider.HORIZONTAL, 10, 75, (int)(gCB.getDiffusion() * 100));
 		diffusionSlider.addChangeListener(this);
@@ -325,6 +337,10 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		diffusionField.setText(String.format("Diffusion: %.2f", gCB.getDiffusion()));
 	}
 
+	private void updateInputGainLabel() {
+		inputGainField.setText(String.format("Input Gain: %.1f dB", gCB.getInputGain()));
+	}
+
 	private void updateShimmerLevelLabel() {
 		shimmerLevelField.setText(String.format("Shimmer Level: %.2f", gCB.getShimmerLevel()));
 	}
@@ -381,6 +397,9 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		} else if (src == diffusionSlider) {
 			gCB.setDiffusion(diffusionSlider.getValue() / 100.0);
 			updateDiffusionLabel();
+		} else if (src == inputGainSlider) {
+			gCB.setInputGain(inputGainSlider.getValue() / 2.0);
+			updateInputGainLabel();
 		} else if (src == shimmerLevelSlider) {
 			gCB.setShimmerLevel(shimmerLevelSlider.getValue() / 100.0);
 			updateShimmerLevelLabel();

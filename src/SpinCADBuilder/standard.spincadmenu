@@ -31,6 +31,7 @@
 @menuitem "RMS Limiter" rms_limiter
 @menuitem "Soft Knee Limiter" soft_knee_limiter
 @menuitem "Noise Gate" NoiseGate
+@menuitem "Gate CV" GatedReverbControl  // hand-written in src/
 //@menuitem "Slow Gear" slow_gear
 
 @menu "Filters"
@@ -136,7 +137,6 @@
 @menuitem "Vee" Vee
 @menuitem "Envelope" EnvelopeControl
 @menuitem "Envelope II" New_Envelope
-@menuitem "Gated RT Ctrl" GatedReverbControl  // hand-written in src/
 @menuitem "Mixer 2:1" ControlMixer_2_to_1
 @menuitem "Mixer 3:1" ControlMixer_3_to_1
 @menuitem "Tap Tempo" TapTempo
