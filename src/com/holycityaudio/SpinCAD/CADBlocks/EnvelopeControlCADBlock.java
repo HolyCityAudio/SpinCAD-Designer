@@ -93,8 +93,6 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 			this.getPin("Dual Slope").setRegister(LAVG);
 		}
 
-		System.out.println("Envelope control code gen!");
-
 	}
 	
 	public void editBlock(){
