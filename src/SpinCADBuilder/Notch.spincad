@@ -10,7 +10,7 @@ equ freq 0.15
 // variable - Name - low - high - multiplier - precision - option
 @sliderLabel freq 'Frequency (Hz)' 20 5000 100.0 100.0 1 LOGFREQ2
 
-equ qMax 50
+equ qMax 5
 // variable - Name - low - high - multiplier - precision - option
 @sliderLabel qMax 'Max Resonance' 1.0 200.0 100.0 1000.0 1
 
@@ -23,6 +23,8 @@ equ z2 Reg1
 equ lpf reg2
 equ hpf reg3
 equ notch reg4
+equ temp reg5
+equ scaledQ reg6
 
 // number1 is used in q calculations
 equ number1 1.0
@@ -46,8 +48,6 @@ wrax temp, 0
 @divideDouble y number1 qMin
 @divideDouble x1 number1 qMax
 @minusDouble q x1 y
-equ temp reg5
-equ scaledQ reg6
 
 rdax qControl, 1
 sof -q, -y

@@ -31,7 +31,7 @@
 			private NotchControlPanel cp = null;
 			
 			private double freq = 0.15;
-			private double qMax = 50;
+			private double qMax = 5;
 			private double qMin = 1;
 			private int z1;
 			private int z2;
@@ -103,23 +103,23 @@
 			lpf = sfxb.allocateReg();
 			hpf = sfxb.allocateReg();
 			notch = sfxb.allocateReg();
+			temp = sfxb.allocateReg();
+			scaledQ = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.clear();
 			sfxb.readRegister(z1, freq);
 			if(this.getPin("Frequency").isConnected() == true) {
 			sfxb.mulx(freqControl);
 			}
-			
+
 			sfxb.readRegister(z2, 1);
 			sfxb.writeRegister(lpf, 1);
 			sfxb.writeRegister(z2, -1);
 			if(this.getPin("Resonance").isConnected() == true) {
 			sfxb.writeRegister(temp, 0);
-			double y = number1 / qMin; 
-			double x1 = number1 / qMax; 
+			double y = number1 / qMin;
+			double x1 = number1 / qMax;
 			double q = x1 - y;
-			temp = sfxb.allocateReg();
-			scaledQ = sfxb.allocateReg();
 			sfxb.readRegister(qControl, 1);
 			sfxb.scaleOffset(-q, -y);
 			sfxb.writeRegister(scaledQ, 0);

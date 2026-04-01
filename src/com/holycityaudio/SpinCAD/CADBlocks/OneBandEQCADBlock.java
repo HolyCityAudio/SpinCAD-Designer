@@ -137,7 +137,7 @@ public class OneBandEQCADBlock extends SpinCADBlock{
 		return fZero;
 	}
 
-	void setFreq(double f) {
+	public void setFreq(double f) {
 		fZero = f;
 		setCoefficients();
 	}
