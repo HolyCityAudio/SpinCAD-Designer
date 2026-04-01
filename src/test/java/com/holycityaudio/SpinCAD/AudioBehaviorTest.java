@@ -77,7 +77,8 @@ public class AudioBehaviorTest {
         "MultiplyCADBlock",
         "Ted_Rev_ReverbCADBlock",
         "slow_gearCADBlock",
-        "reverb_plateCADBlock"
+        "reverb_plateCADBlock",
+        "LongDelayCADBlock"  // interleaved delay needs more samples than test provides
     ));
 
     @BeforeAll

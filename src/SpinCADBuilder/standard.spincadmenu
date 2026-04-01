@@ -49,9 +49,10 @@
 @menuitem "1-Band EQ" OneBandEQ 
 @menuitem "6-Band EQ" SixBandEQ 
 
-@menu "Delay" 
+@menu "Delay"
 // @menuitem "Single Delay" SingleDelay
-// @menuitem "Coarse Delay" CoarseDelay 
+// @menuitem "Coarse Delay" CoarseDelay
+@menuitem "Long Delay" LongDelay
 @menuitem "ThreeTap" TripleTap 
 @menuitem "MN3011" MN3011a 
 @menuitem "Drum Delay" DrumDelay 

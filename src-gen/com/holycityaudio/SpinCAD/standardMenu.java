@@ -37,6 +37,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.NotchCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OneBandEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SixBandEQCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.LongDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.DrumDelayCADBlock;
@@ -466,6 +467,15 @@
 	JMenu mn_delay = new JMenu("Delay");
 	menuBar.add(mn_delay);
 	
+	final JMenuItem mntm_LongDelay = new JMenuItem("Long Delay");
+	mntm_LongDelay.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new LongDelayCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_delay.add(mntm_LongDelay);
+		
 	final JMenuItem mntm_TripleTap = new JMenuItem("ThreeTap");
 	mntm_TripleTap.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
