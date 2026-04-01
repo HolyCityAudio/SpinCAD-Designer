@@ -75,6 +75,7 @@
 @menuitem "ROM Reverb 2" rom_rev2 
 @menuitem "Adjustable Reverb" reverb
 @menuitem "Reverb Designer" ReverbDesigner
+@menuitem "Ambience" Ambience  // hand-written in src/
 // @menuitem "Reverb Delay Line 01" reverb_delay_line_01
 // @menuitem "Shimmer Reverb" shimmer_verb
 

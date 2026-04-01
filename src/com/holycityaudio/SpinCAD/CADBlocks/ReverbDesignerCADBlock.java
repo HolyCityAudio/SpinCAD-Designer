@@ -49,6 +49,27 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	public static final int LFO_SUBTLE = 1;
 	public static final int LFO_WIDE = 2;
 
+	// Pin destination constants
+	public static final int DEST_NONE = 0;
+	public static final int DEST_REVERB_TIME = 1;
+	public static final int DEST_HF_DAMPING = 2;
+	public static final int DEST_LF_DAMPING = 3;
+	public static final int DEST_MIX = 4;
+	public static final int DEST_SHIMMER_LEVEL = 5;
+	public static final int DEST_INPUT_BW = 6;
+	public static final int DEST_PRE_DELAY = 7;
+
+	public static final String[] DEST_NAMES = {
+		"None", "Reverb Time", "HF Damping", "LF Damping",
+		"Dry/Wet Mix", "Shimmer Level", "Input BW", "Pre-Delay"
+	};
+
+	// Short names for pin tooltips
+	private static final String[] DEST_PIN_NAMES = {
+		"Ctrl", "RT", "HF_Damp", "LF_Damp",
+		"Mix", "Shimmer", "BW", "Pre_Delay"
+	};
+
 	// Design-time parameters
 	private int topology = TOPOLOGY_DATTORRO;
 	private int sizePreset = SIZE_MEDIUM;
@@ -57,6 +78,9 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	private int shimmerPitchSemitones = 12; // octave up
 	private int lfoDepth = LFO_SUBTLE;
 	private boolean preDelayEnabled = false;
+
+	// Pin-to-parameter assignment: 4 control input pins, each mapped to a destination
+	private int[] pinDestination = { DEST_REVERB_TIME, DEST_HF_DAMPING, DEST_MIX, DEST_NONE };
 
 	// Runtime parameter defaults (used when not pot-controlled)
 	private double reverbTime = 0.7;
@@ -83,11 +107,96 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		addInputPin(this, "Audio In 2");
 		addOutputPin(this, "Out L");
 		addOutputPin(this, "Out R");
-		addControlInputPin(this, "Reverb_Time");
-		addControlInputPin(this, "HF_Damping");
-		addControlInputPin(this, "Mix");
-		addControlInputPin(this, "Pre_Delay");
+		addControlInputPin(this, "Ctrl 1");
+		addControlInputPin(this, "Ctrl 2");
+		addControlInputPin(this, "Ctrl 3");
+		addControlInputPin(this, "Ctrl 4");
+		updatePinNames();
 		hasControlPanel = true;
+	}
+
+	// =====================================================
+	// Pin-to-parameter assignment
+	// =====================================================
+
+	/**
+	 * Get the control pin name for a given pin index (0-3).
+	 * Uses DEST_PIN_NAMES for assigned destinations, or "Ctrl N" for unassigned.
+	 */
+	private String getPinName(int pinIndex) {
+		int dest = pinDestination[pinIndex];
+		if (dest == DEST_NONE) return "Ctrl " + (pinIndex + 1);
+		return DEST_PIN_NAMES[dest];
+	}
+
+	/**
+	 * Update all 4 control input pin tooltip names to reflect current assignments.
+	 */
+	public void updatePinNames() {
+		for (int i = 0; i < 4; i++) {
+			SpinCADPin pin = getControlInputPin(i);
+			if (pin != null) {
+				pin.setName(getPinName(i));
+			}
+		}
+	}
+
+	/**
+	 * Get the i-th control input pin (0-based).
+	 */
+	private SpinCADPin getControlInputPin(int index) {
+		int count = 0;
+		for (SpinCADPin pin : pinList) {
+			if (pin.isControlInputPin()) {
+				if (count == index) return pin;
+				count++;
+			}
+		}
+		return null;
+	}
+
+	public int getPinDestination(int pinIndex) {
+		return pinDestination[pinIndex];
+	}
+
+	/**
+	 * Set the destination for a control input pin.
+	 * If the destination is already assigned to another pin, that pin is cleared to DEST_NONE.
+	 */
+	public void setPinDestination(int pinIndex, int dest) {
+		if (dest != DEST_NONE) {
+			// Clear any other pin that has this destination
+			for (int i = 0; i < 4; i++) {
+				if (i != pinIndex && pinDestination[i] == dest) {
+					pinDestination[i] = DEST_NONE;
+				}
+			}
+		}
+		pinDestination[pinIndex] = dest;
+		updatePinNames();
+	}
+
+	/**
+	 * Find which pin index is assigned to a given destination, or -1 if none.
+	 */
+	private int findPinForDest(int dest) {
+		for (int i = 0; i < 4; i++) {
+			if (pinDestination[i] == dest) return i;
+		}
+		return -1;
+	}
+
+	/**
+	 * Resolve the register for a given destination parameter.
+	 * Returns the connected pin's register if a pin is assigned and connected, or -1.
+	 */
+	private int resolveDestRegister(int dest) {
+		int pinIdx = findPinForDest(dest);
+		if (pinIdx < 0) return -1;
+		SpinCADPin pin = getControlInputPin(pinIdx);
+		if (pin == null) return -1;
+		SpinCADPin conn = pin.getPinConnection();
+		return (conn != null) ? conn.getRegister() : -1;
 	}
 
 	public void editBlock() {
@@ -177,7 +286,8 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			break;
 		}
 		if (stereoOutput) count += 5;
-		if (shimmerMode != SHIMMER_OFF) count += 14;
+		if (shimmerMode == SHIMMER_INPUT_ONLY) count += 14;  // shift: 13 + 1 RDAX shimOut
+		else if (shimmerMode == SHIMMER_INPUT_AND_FEEDBACK) count += 15; // shimmer: inline in feedback
 		if (preDelayEnabled) count += 8; // rdax + wra + clr + or + mulx + sof + wrax ADDR_PTR + rmpa
 		if (lfoDepth == LFO_SUBTLE) count += 9;
 		else if (lfoDepth == LFO_WIDE) count += 15;
@@ -235,8 +345,8 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	private String getShimmerName() {
 		switch (shimmerMode) {
 		case SHIMMER_OFF: return "Off";
-		case SHIMMER_INPUT_ONLY: return "Input Only";
-		case SHIMMER_INPUT_AND_FEEDBACK: return "Input + Feedback";
+		case SHIMMER_INPUT_ONLY: return "Shift";
+		case SHIMMER_INPUT_AND_FEEDBACK: return "Shimmer";
 		default: return "Unknown";
 		}
 	}
@@ -250,7 +360,12 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		}
 	}
 
-	private void emitSettingsComments(SpinFXBlock sfxb, int rtPin, int hfPin, int mixPin) {
+	private String paramLabel(String name, int pinReg, double value, String fmt) {
+		return name + ": " + (pinReg >= 0 ? "POT" : String.format(fmt, value));
+	}
+
+	private void emitSettingsComments(SpinFXBlock sfxb, int rtPin, int hfPin, int mixPin,
+			int lfPin, int shimPin, int bwPin, int pdPin) {
 		sfxb.comment("=== Reverb Designer Settings ===");
 		sfxb.comment("Topology: " + getTopologyName());
 		sfxb.comment("Size: " + getSizeName() + " (scale=" + getSizeScale() + ")");
@@ -261,16 +376,22 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sfxb.comment("Pre-Delay: " + (preDelayEnabled ? "On (" + preDelaySamples + " samples, "
 				+ String.format("%.1f", preDelaySamples * 1000.0 / 32768) + " ms)" : "Off"));
 		sfxb.comment("--- Runtime Params ---");
-		sfxb.comment("Reverb Time: " + (rtPin >= 0 ? "POT" : String.format("%.2f", reverbTime)));
-		sfxb.comment("HF Damping: " + (hfPin >= 0 ? "POT" : String.format("%.2f", hfDamping)));
-		sfxb.comment("LF Damping: " + String.format("%.3f", lfDamping));
-		sfxb.comment("Dry/Wet: " + (mixPin >= 0 ? "POT" : String.format("%.2f", dryWet)));
+		sfxb.comment(paramLabel("Reverb Time", rtPin, reverbTime, "%.2f"));
+		sfxb.comment(paramLabel("HF Damping", hfPin, hfDamping, "%.2f"));
+		sfxb.comment(paramLabel("LF Damping", lfPin, lfDamping, "%.3f"));
+		sfxb.comment(paramLabel("Dry/Wet", mixPin, dryWet, "%.2f"));
+		sfxb.comment(paramLabel("Input BW", bwPin, inputBandwidth, "%.2f"));
 		sfxb.comment("Input Gain: " + String.format("%.1f", inputGain) + " dB");
-		sfxb.comment("Input BW: " + String.format("%.2f", inputBandwidth));
 		sfxb.comment("Diffusion: " + String.format("%.2f", diffusion));
 		if (shimmerMode != SHIMMER_OFF) {
-			sfxb.comment("Shimmer Level: " + String.format("%.2f", shimmerLevel));
+			sfxb.comment(paramLabel("Shimmer Level", shimPin, shimmerLevel, "%.2f"));
 		}
+		if (preDelayEnabled) {
+			sfxb.comment(paramLabel("Pre-Delay Amt", pdPin, preDelaySamples / 4096.0, "%.2f"));
+		}
+		sfxb.comment("Pin assignments: " + DEST_NAMES[pinDestination[0]] + ", "
+				+ DEST_NAMES[pinDestination[1]] + ", " + DEST_NAMES[pinDestination[2]] + ", "
+				+ DEST_NAMES[pinDestination[3]]);
 		sfxb.comment("Est. instr: ~" + estimateInstructions() + "  mem: ~" + estimateMemory());
 		sfxb.comment("================================");
 	}
@@ -288,20 +409,16 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		// Stereo output is determined by whether Out R is connected
 		stereoOutput = this.getPin("Out R").isConnected();
 
-		// Resolve control input pins
-		sp = this.getPin("Reverb_Time").getPinConnection();
-		int rtPin = (sp != null) ? sp.getRegister() : -1;
+		// Resolve control input pins from destination assignments
+		int rtPin = resolveDestRegister(DEST_REVERB_TIME);
+		int hfPin = resolveDestRegister(DEST_HF_DAMPING);
+		int mixPin = resolveDestRegister(DEST_MIX);
+		int pdPin = resolveDestRegister(DEST_PRE_DELAY);
+		int lfPin = resolveDestRegister(DEST_LF_DAMPING);
+		int shimPin = resolveDestRegister(DEST_SHIMMER_LEVEL);
+		int bwPin = resolveDestRegister(DEST_INPUT_BW);
 
-		sp = this.getPin("HF_Damping").getPinConnection();
-		int hfPin = (sp != null) ? sp.getRegister() : -1;
-
-		sp = this.getPin("Mix").getPinConnection();
-		int mixPin = (sp != null) ? sp.getRegister() : -1;
-
-		sp = this.getPin("Pre_Delay").getPinConnection();
-		int pdPin = (sp != null) ? sp.getRegister() : -1;
-
-		emitSettingsComments(sfxb, rtPin, hfPin, mixPin);
+		emitSettingsComments(sfxb, rtPin, hfPin, mixPin, lfPin, shimPin, bwPin, pdPin);
 
 		// === Input processing: save dry signals and create mono reverb input ===
 		int dryL = sfxb.allocateReg();
@@ -378,7 +495,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		int bwReg = sfxb.allocateReg();
 		int temp = sfxb.allocateReg();
 		int shimLp = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
-		int shimOut = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
+		int shimOut = (shimmerMode == SHIMMER_INPUT_ONLY) ? sfxb.allocateReg() : -1;
 		int dcBlock = sfxb.allocateReg(); // DC blocker filter state
 
 		// === Init section (LFOs) ===
@@ -419,10 +536,9 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sfxb.FXwriteAllpass("api4", 0, -diffusion);
 		sfxb.writeRegister(apout, 0.0);
 
-		// === Shimmer processing ===
-		if (shimmerMode != SHIMMER_OFF) {
-			generateShimmerSection(sfxb, apout, shimLp, shimOut,
-					shimmerMode == SHIMMER_INPUT_AND_FEEDBACK);
+		// === Shift: one-shot pitch shift before tank ===
+		if (shimmerMode == SHIMMER_INPUT_ONLY) {
+			generateShiftSection(sfxb, apout, shimLp, shimOut);
 		}
 
 		// === Loop 1: read del2 end * RT, add apout, AP, HF damp, write del1 ===
@@ -436,9 +552,13 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		// DC blocker (~5 Hz highpass) prevents DC offset buildup in feedback
 		sfxb.readRegisterFilter(dcBlock, 0.001);
 		sfxb.writeRegisterHighshelf(dcBlock, -1.0);
+		// Shimmer: pitch shift inside feedback loop
+		if (shimmerMode == SHIMMER_INPUT_AND_FEEDBACK) {
+			generateInlineShimmer(sfxb, temp, shimLp);
+		}
 		sfxb.readRegister(apout, 1.0);
-		if (shimmerMode != SHIMMER_OFF) {
-			sfxb.readRegister(shimOut, 1.0); // add shimmer
+		if (shimmerMode == SHIMMER_INPUT_ONLY) {
+			sfxb.readRegister(shimOut, 1.0); // add shifted signal
 		}
 		sfxb.FXreadDelay("lap1#", 0, -0.6);
 		sfxb.FXwriteAllpass("lap1", 0, 0.6);
@@ -550,7 +670,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		int bwReg = sfxb.allocateReg();
 		int temp = sfxb.allocateReg();
 		int shimLp = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
-		int shimOut = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
+		int shimOut = (shimmerMode == SHIMMER_INPUT_ONLY) ? sfxb.allocateReg() : -1;
 		int dcBlock = sfxb.allocateReg(); // DC blocker filter state
 
 		// === Init section ===
@@ -591,10 +711,9 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sfxb.FXwriteAllpass("dapi4", 0, -DAT_INPUT_DIFF_2);
 		sfxb.writeRegister(apout, 0.0);
 
-		// === Shimmer processing ===
-		if (shimmerMode != SHIMMER_OFF) {
-			generateShimmerSection(sfxb, apout, shimLp, shimOut,
-					shimmerMode == SHIMMER_INPUT_AND_FEEDBACK);
+		// === Shift: one-shot pitch shift before tank ===
+		if (shimmerMode == SHIMMER_INPUT_ONLY) {
+			generateShiftSection(sfxb, apout, shimLp, shimOut);
 		}
 
 		// === Tank Side A ===
@@ -609,8 +728,12 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		// DC blocker (~5 Hz highpass) prevents DC offset buildup in feedback
 		sfxb.readRegisterFilter(dcBlock, 0.001);
 		sfxb.writeRegisterHighshelf(dcBlock, -1.0);
+		// Shimmer: pitch shift inside feedback loop
+		if (shimmerMode == SHIMMER_INPUT_AND_FEEDBACK) {
+			generateInlineShimmer(sfxb, temp, shimLp);
+		}
 		sfxb.readRegister(apout, 1.0);
-		if (shimmerMode != SHIMMER_OFF) {
+		if (shimmerMode == SHIMMER_INPUT_ONLY) {
 			sfxb.readRegister(shimOut, 1.0);
 		}
 		// Tank AP1 (modulated via LFO if enabled)
@@ -759,7 +882,7 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 			lpRegs[i] = sfxb.allocateReg();
 		}
 		int shimLp = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
-		int shimOut = (shimmerMode != SHIMMER_OFF) ? sfxb.allocateReg() : -1;
+		int shimOut = (shimmerMode == SHIMMER_INPUT_ONLY) ? sfxb.allocateReg() : -1;
 
 		// === Init section ===
 		int skipCount = 0;
@@ -799,10 +922,9 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sfxb.FXwriteAllpass("rapi4", 0, -diffusion);
 		sfxb.writeRegister(apout, 0.0);
 
-		// === Shimmer processing ===
-		if (shimmerMode != SHIMMER_OFF) {
-			generateShimmerSection(sfxb, apout, shimLp, shimOut,
-					shimmerMode == SHIMMER_INPUT_AND_FEEDBACK);
+		// === Shift: one-shot pitch shift before tank ===
+		if (shimmerMode == SHIMMER_INPUT_ONLY) {
+			generateShiftSection(sfxb, apout, shimLp, shimOut);
 		}
 
 		// === Ring stages ===
@@ -829,9 +951,13 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 				sfxb.readRegisterFilter(hpReg, lfDamping);
 				sfxb.writeRegisterHighshelf(hpReg, -1.0);
 			}
+			// Shimmer: pitch shift inside feedback loop at ring wrap
+			if (i == 0 && shimmerMode == SHIMMER_INPUT_AND_FEEDBACK) {
+				generateInlineShimmer(sfxb, temp, shimLp);
+			}
 			// Add input
 			sfxb.readRegister(apout, 1.0);
-			if (i == 0 && shimmerMode != SHIMMER_OFF) {
+			if (i == 0 && shimmerMode == SHIMMER_INPUT_ONLY) {
 				sfxb.readRegister(shimOut, 1.0);
 			}
 			// Ring allpass
@@ -923,20 +1049,13 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 	}
 
 	// =====================================================
-	// Shimmer section (shared by all topologies)
+	// Shift section: one-shot pitch shift before tank (SHIMMER_INPUT_ONLY)
+	// Processes apout, stores result in shimOut for injection at tank input
 	// =====================================================
-	private void generateShimmerSection(SpinFXBlock sfxb, int apout, int shimLp, int shimOut, boolean useFeedback) {
-		sfxb.comment("--- Shimmer pitch shift ---");
-		// Read input from diffused signal
+	private void generateShiftSection(SpinFXBlock sfxb, int apout, int shimLp, int shimOut) {
+		sfxb.comment("--- Pitch shift (one-shot, before tank) ---");
 		sfxb.readRegister(apout, shimmerLevel);
-		// Self-feedback: read previous shimmer output for cascading pitch shifts
-		// Each recirculation shifts up another octave, LPF tames brightness buildup
-		if (useFeedback) {
-			sfxb.readRegister(shimOut, shimmerLevel * 0.6);
-		}
-		// Write to shimmer delay
 		sfxb.FXwriteDelay("shim", 0, 0.0);
-		// Pitch shift via RMP0 crossfade
 		sfxb.FXchorusReadDelay(RMP0, REG | COMPC, "shim", 0);
 		sfxb.FXchorusReadDelay(RMP0, 0, "shim+", 1);
 		sfxb.FXwriteDelay("stimp", 0, 0.0);
@@ -944,11 +1063,34 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 		sfxb.FXchorusReadDelay(RMP0, RPTR2, "shim+", 1);
 		sfxb.chorusScaleOffset(RMP0, NA | COMPC, 0);
 		sfxb.FXchorusReadDelay(RMP0, NA, "stimp", 0);
-		// Post-shift LPF to tame brightness
 		sfxb.readRegisterFilter(shimLp, 0.4);
-		sfxb.writeRegister(shimLp, 1.0);      // save filter state, keep filtered in ACC
-		// Store shimmer output
+		sfxb.writeRegister(shimLp, 1.0);
 		sfxb.writeRegister(shimOut, 0.0);
+	}
+
+	// =====================================================
+	// Inline shimmer: pitch shift INSIDE the feedback loop
+	// (SHIMMER_INPUT_AND_FEEDBACK)
+	// ACC = feedback signal on entry.
+	// On exit ACC = original feedback + pitch_shifted * shimmerLevel
+	// The reverb loop itself provides the recirculation,
+	// so each full loop cycle shifts up another octave.
+	// =====================================================
+	private void generateInlineShimmer(SpinFXBlock sfxb, int temp, int shimLp) {
+		sfxb.comment("--- Shimmer (in-loop pitch shift) ---");
+		sfxb.writeRegister(temp, 1.0);        // save feedback, keep in ACC
+		sfxb.FXwriteDelay("shim", 0, 0.0);   // write to shimmer delay, clear ACC
+		sfxb.FXchorusReadDelay(RMP0, REG | COMPC, "shim", 0);
+		sfxb.FXchorusReadDelay(RMP0, 0, "shim+", 1);
+		sfxb.FXwriteDelay("stimp", 0, 0.0);
+		sfxb.FXchorusReadDelay(RMP0, RPTR2 | COMPC, "shim", 0);
+		sfxb.FXchorusReadDelay(RMP0, RPTR2, "shim+", 1);
+		sfxb.chorusScaleOffset(RMP0, NA | COMPC, 0);
+		sfxb.FXchorusReadDelay(RMP0, NA, "stimp", 0);
+		sfxb.readRegisterFilter(shimLp, 0.4);
+		sfxb.writeRegister(shimLp, 1.0);      // LPF to tame brightness
+		sfxb.scaleOffset(shimmerLevel, 0.0);  // scale shifted signal
+		sfxb.readRegister(temp, 1.0);         // add back original feedback
 	}
 
 	// =====================================================
@@ -1064,4 +1206,6 @@ public class ReverbDesignerCADBlock extends SpinCADBlock {
 
 	public int getLfoExcursion2() { return lfoExcursion2; }
 	public void setLfoExcursion2(int v) { lfoExcursion2 = Math.max(1, Math.min(100, v)); }
+
+	public int[] getPinDestinations() { return pinDestination; }
 }

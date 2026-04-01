@@ -152,7 +152,11 @@ public class SpinCADPin implements Serializable {
 
 	public String getName() {
 		return name;
-	}	
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public boolean isInputPin() {
 		if((type == pinType.AUDIO_IN) | (type == pinType.CONTROL_IN)) 

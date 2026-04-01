@@ -54,6 +54,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rom_rev2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ReverbDesignerCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.AmbienceCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusQuadCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
@@ -619,6 +620,15 @@
 		}
 	});
 	mn_reverb.add(mntm_ReverbDesigner);
+		
+	final JMenuItem mntm_Ambience = new JMenuItem("Ambience");
+	mntm_Ambience.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new AmbienceCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_Ambience);
 		
 	JMenu mn_modulation = new JMenu("Modulation");
 	menuBar.add(mn_modulation);

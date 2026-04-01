@@ -94,6 +94,10 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 	private JTextField lfoDepth2Field;
 	private JPanel lfoDepth2Panel;
 
+	// Pin assignment combos
+	@SuppressWarnings("unchecked")
+	private JComboBox<String>[] pinDestCombos = new JComboBox[4];
+
 	// Resource display
 	private JLabel resourceLabel;
 
@@ -108,6 +112,7 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 				frame.addWindowListener(ReverbDesignerControlPanel.this);
 
 				buildDesignSection();
+				buildPinAssignmentSection();
 				buildParameterSection();
 				buildResourceSection();
 
@@ -155,7 +160,7 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		JPanel row2 = new JPanel(new GridLayout(1, 2, 5, 0));
 
 		JPanel shimPanel = labeledCombo("Shimmer");
-		shimmerCombo = new JComboBox<String>(new String[] { "Off", "Input Only", "Input + Feedback" });
+		shimmerCombo = new JComboBox<String>(new String[] { "Off", "Shift", "Shimmer" });
 		shimmerCombo.setSelectedIndex(gCB.getShimmerMode());
 		shimmerCombo.addActionListener(this);
 		shimPanel.add(shimmerCombo);
@@ -180,6 +185,24 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		designPanel.add(preDelayCheck);
 
 		frame.add(designPanel);
+	}
+
+	private void buildPinAssignmentSection() {
+		JPanel pinPanel = new JPanel(new GridLayout(1, 4, 5, 0));
+		pinPanel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(), "Control Pin Assignments",
+				TitledBorder.LEFT, TitledBorder.TOP));
+
+		for (int i = 0; i < 4; i++) {
+			JPanel col = labeledCombo("Pin " + (i + 1));
+			pinDestCombos[i] = new JComboBox<String>(ReverbDesignerCADBlock.DEST_NAMES);
+			pinDestCombos[i].setSelectedIndex(gCB.getPinDestination(i));
+			pinDestCombos[i].addActionListener(this);
+			col.add(pinDestCombos[i]);
+			pinPanel.add(col);
+		}
+
+		frame.add(pinPanel);
 	}
 
 	private void buildParameterSection() {
@@ -491,8 +514,35 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		updateResourceLabel();
 	}
 
+	private boolean updatingPinCombos = false;
+
+	/**
+	 * Sync all pin assignment combos to match the block's current state.
+	 * Called after setPinDestination which may auto-clear conflicts.
+	 */
+	private void syncPinCombos() {
+		updatingPinCombos = true;
+		for (int i = 0; i < 4; i++) {
+			pinDestCombos[i].setSelectedIndex(gCB.getPinDestination(i));
+		}
+		updatingPinCombos = false;
+	}
+
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
+
+		// Check pin assignment combos
+		if (!updatingPinCombos) {
+			for (int i = 0; i < 4; i++) {
+				if (src == pinDestCombos[i]) {
+					gCB.setPinDestination(i, pinDestCombos[i].getSelectedIndex());
+					syncPinCombos(); // refresh all combos (conflict may have cleared another)
+					updateResourceLabel();
+					return;
+				}
+			}
+		}
+
 		if (src == topologyCombo) {
 			gCB.setTopology(topologyCombo.getSelectedIndex());
 		} else if (src == sizeCombo) {
