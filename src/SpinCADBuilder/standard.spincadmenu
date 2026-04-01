@@ -46,8 +46,10 @@
 @menuitem "2P/4P Highpass" HPF2P 
 @menuitem "Notch" Notch 
 // @menuitem "4P L-R Crossover" Crossover_4P 
-@menuitem "1-Band EQ" OneBandEQ 
-@menuitem "6-Band EQ" SixBandEQ 
+@menuitem "1-Band EQ" OneBandEQ
+@menuitem "6-Band EQ" SixBandEQ
+@menuitem "Comb Filter" CombFilter
+@menuitem "Resonator" Resonator
 
 @menu "Delay"
 // @menuitem "Single Delay" SingleDelay
@@ -77,6 +79,9 @@
 @menuitem "Adjustable Reverb" reverb
 @menuitem "Reverb Designer" ReverbDesigner
 @menuitem "Ambience" Ambience  // hand-written in src/
+@menuitem "Freeverb" Freeverb
+@menuitem "Spring Reverb" SpringReverb
+@menuitem "Plate Reverb" DattorroPlateReverb  // hand-written in src/
 // @menuitem "Reverb Delay Line 01" reverb_delay_line_01
 // @menuitem "Shimmer Reverb" shimmer_verb
 

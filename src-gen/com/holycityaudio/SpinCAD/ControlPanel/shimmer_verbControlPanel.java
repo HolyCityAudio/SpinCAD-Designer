@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * shimmer_verbControlPanel.java
- * Copyright (C) 2013 - 2026 - Gary Worsham 
+ * Copyright (C) 2015 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
  *   This program is free software: you can redistribute it and/or modify 
@@ -57,7 +57,6 @@ public class shimmer_verbControlPanel extends spinCADControlPanel {
 	// declare the controls
 	FineControlSlider gainSlider;
 	JTextField  gainField;
-	JComboBox<String> modeCombo;
 
 public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 		
@@ -72,16 +71,6 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-				// Mode selector: Shift (one-shot) vs Shimmer (feedback loop)
-					modeCombo = new JComboBox<>(new String[]{"Shift", "Shimmer"});
-					modeCombo.setSelectedIndex(gCB.getShimmerMode());
-					modeCombo.addActionListener(new shimmer_verbActionListener());
-					JPanel modePanel = new JPanel();
-					modePanel.setLayout(new BoxLayout(modePanel, BoxLayout.X_AXIS));
-					modePanel.add(new JLabel("Mode: "));
-					modePanel.add(modeCombo);
-					frame.add(modePanel);
-
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
@@ -150,12 +139,9 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class shimmer_verbActionListener implements java.awt.event.ActionListener {
+		class shimmer_verbActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (arg0.getSource() == modeCombo) {
-					gCB.setShimmerMode(modeCombo.getSelectedIndex());
-				}
 			}
 		}
 		private void updategainLabel() {

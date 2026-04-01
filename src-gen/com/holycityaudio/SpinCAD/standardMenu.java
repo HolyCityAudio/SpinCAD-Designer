@@ -37,6 +37,8 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.NotchCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OneBandEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SixBandEQCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.CombFilterCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ResonatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LongDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
@@ -56,6 +58,9 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ReverbDesignerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.AmbienceCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.FreeverbCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.SpringReverbCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.DattorroPlateReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusQuadCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.FlangerCADBlock;
@@ -464,6 +469,24 @@
 	});
 	mn_filters.add(mntm_SixBandEQ);
 		
+	final JMenuItem mntm_CombFilter = new JMenuItem("Comb Filter");
+	mntm_CombFilter.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new CombFilterCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_filters.add(mntm_CombFilter);
+		
+	final JMenuItem mntm_Resonator = new JMenuItem("Resonator");
+	mntm_Resonator.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ResonatorCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_filters.add(mntm_Resonator);
+		
 	JMenu mn_delay = new JMenu("Delay");
 	menuBar.add(mn_delay);
 	
@@ -640,6 +663,33 @@
 		}
 	});
 	mn_reverb.add(mntm_Ambience);
+		
+	final JMenuItem mntm_Freeverb = new JMenuItem("Freeverb");
+	mntm_Freeverb.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new FreeverbCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_Freeverb);
+		
+	final JMenuItem mntm_SpringReverb = new JMenuItem("Spring Reverb");
+	mntm_SpringReverb.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new SpringReverbCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_SpringReverb);
+		
+	final JMenuItem mntm_DattorroPlateReverb = new JMenuItem("Plate Reverb");
+	mntm_DattorroPlateReverb.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new DattorroPlateReverbCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_DattorroPlateReverb);
 		
 	JMenu mn_modulation = new JMenu("Modulation");
 	menuBar.add(mn_modulation);

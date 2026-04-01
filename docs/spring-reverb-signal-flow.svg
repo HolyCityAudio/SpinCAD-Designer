@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 780" font-family="Consolas, monospace" font-size="12">
+  <title>Spring Reverb Signal Flow</title>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333"/>
+    </marker>
+    <marker id="arr-red" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e293b">Spring Reverb Signal Flow</text>
+  <text x="500" y="48" text-anchor="middle" font-size="11" fill="#64748b">Cross-coupled delay loops with shelving LP + dispersive allpass chirp chain</text>
+
+  <!-- ========== INPUT SECTION ========== -->
+  <rect x="30" y="70" width="80" height="30" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="70" y="89" text-anchor="middle" font-size="11" fill="#1e40af">Input L</text>
+  <rect x="30" y="108" width="80" height="30" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="70" y="127" text-anchor="middle" font-size="11" fill="#1e40af">Input R (opt)</text>
+
+  <!-- Gain circles -->
+  <circle cx="150" cy="85" r="12" fill="#fef3c7" stroke="#d97706" stroke-width="1.2"/>
+  <text x="150" y="89" text-anchor="middle" font-size="9" fill="#92400e">gain</text>
+  <circle cx="150" cy="123" r="12" fill="#fef3c7" stroke="#d97706" stroke-width="1.2"/>
+  <text x="150" y="127" text-anchor="middle" font-size="9" fill="#92400e">gain</text>
+
+  <!-- Sum -->
+  <circle cx="195" cy="104" r="11" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="195" y="108" text-anchor="middle" font-size="13" fill="#333">+</text>
+
+  <!-- temp -->
+  <rect x="220" y="90" width="50" height="28" rx="3" fill="#e0e7ff" stroke="#4f46e5" stroke-width="1"/>
+  <text x="245" y="108" text-anchor="middle" font-size="10" fill="#3730a3">temp</text>
+
+  <!-- Wires -->
+  <line x1="110" y1="85" x2="138" y2="85" stroke="#333" stroke-width="1.1" marker-end="url(#arr)"/>
+  <line x1="110" y1="123" x2="138" y2="123" stroke="#333" stroke-width="1.1" marker-end="url(#arr)"/>
+  <line x1="162" y1="85" x2="184" y2="98" stroke="#333" stroke-width="1.1" marker-end="url(#arr)"/>
+  <line x1="162" y1="123" x2="184" y2="110" stroke="#333" stroke-width="1.1" marker-end="url(#arr)"/>
+  <line x1="206" y1="104" x2="220" y2="104" stroke="#333" stroke-width="1.1" marker-end="url(#arr)"/>
+
+  <!-- LFO init -->
+  <rect x="30" y="155" width="100" height="24" rx="3" fill="#f3e8ff" stroke="#9333ea" stroke-width="1"/>
+  <text x="80" y="171" text-anchor="middle" font-size="9" fill="#6b21a8">SIN0 LFO (15, 40)</text>
+
+  <!-- ========== LOOP 1 (top) ========== -->
+  <rect x="100" y="200" width="550" height="150" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="375" y="218" text-anchor="middle" font-size="12" font-weight="bold" fill="#b45309">Reverb Loop 1</text>
+
+  <!-- d1 delay -->
+  <rect x="120" y="230" width="90" height="30" rx="3" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+  <text x="165" y="249" text-anchor="middle" font-size="10" fill="#713f12">d1 (1445)</text>
+  <text x="165" y="274" text-anchor="middle" font-size="8" fill="#92400e">read end x krt</text>
+
+  <!-- krt / Reverb_Time CV -->
+  <rect x="225" y="230" width="60" height="30" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="1"/>
+  <text x="255" y="244" text-anchor="middle" font-size="9" fill="#7c2d12">krt</text>
+  <text x="255" y="256" text-anchor="middle" font-size="8" fill="#7c2d12">or CV</text>
+
+  <!-- LP filter -->
+  <rect x="300" y="230" width="70" height="30" rx="3" fill="#fce7f3" stroke="#db2777" stroke-width="1"/>
+  <text x="335" y="244" text-anchor="middle" font-size="9" fill="#9d174d">LP lp1</text>
+  <text x="335" y="256" text-anchor="middle" font-size="8" fill="#9d174d">(krf shelf)</text>
+
+  <!-- Damping CV -->
+  <rect x="300" y="270" width="70" height="22" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="0.8"/>
+  <text x="335" y="285" text-anchor="middle" font-size="8" fill="#7c2d12">Damping CV</text>
+
+  <!-- Loop allpasses -->
+  <rect x="390" y="230" width="70" height="30" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+  <text x="425" y="244" text-anchor="middle" font-size="9" fill="#166534">AP lap1a</text>
+  <text x="425" y="256" text-anchor="middle" font-size="8" fill="#166534">(404)</text>
+
+  <rect x="475" y="230" width="70" height="30" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+  <text x="510" y="244" text-anchor="middle" font-size="9" fill="#166534">AP lap1b</text>
+  <text x="510" y="256" text-anchor="middle" font-size="8" fill="#166534">(967)</text>
+
+  <!-- Add temp -->
+  <circle cx="575" cy="245" r="11" fill="#fff" stroke="#333" stroke-width="1.2"/>
+  <text x="575" y="249" text-anchor="middle" font-size="12" fill="#333">+</text>
+  <text x="575" y="270" text-anchor="middle" font-size="8" fill="#64748b">+ temp</text>
+
+  <!-- d2 write -->
+  <rect x="600" y="230" width="36" height="30" rx="3" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+  <text x="618" y="249" text-anchor="middle" font-size="9" fill="#075985">d2</text>
+  <text x="618" y="260" text-anchor="middle" font-size="7" fill="#075985">write</text>
+
+  <!-- Loop 1 wiring -->
+  <line x1="210" y1="245" x2="225" y2="245" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="285" y1="245" x2="300" y2="245" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="370" y1="245" x2="390" y2="245" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="460" y1="245" x2="475" y2="245" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="545" y1="245" x2="564" y2="245" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="586" y1="245" x2="600" y2="245" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- temp to loop 1 sum -->
+  <line x1="270" y1="104" x2="575" y2="104" stroke="#64748b" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="575" y1="104" x2="575" y2="234" stroke="#64748b" stroke-width="0.8" stroke-dasharray="3,2" marker-end="url(#arr)"/>
+
+  <!-- ========== LOOP 2 (bottom) ========== -->
+  <rect x="100" y="370" width="550" height="150" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="375" y="388" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d4ed8">Reverb Loop 2</text>
+
+  <!-- d2 delay -->
+  <rect x="120" y="400" width="90" height="30" rx="3" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+  <text x="165" y="419" text-anchor="middle" font-size="10" fill="#075985">d2 (1013)</text>
+  <text x="165" y="444" text-anchor="middle" font-size="8" fill="#0369a1">read end x krt</text>
+
+  <!-- krt / CV -->
+  <rect x="225" y="400" width="60" height="30" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="1"/>
+  <text x="255" y="414" text-anchor="middle" font-size="9" fill="#7c2d12">krt</text>
+  <text x="255" y="426" text-anchor="middle" font-size="8" fill="#7c2d12">or CV</text>
+
+  <!-- LP filter -->
+  <rect x="300" y="400" width="70" height="30" rx="3" fill="#fce7f3" stroke="#db2777" stroke-width="1"/>
+  <text x="335" y="414" text-anchor="middle" font-size="9" fill="#9d174d">LP lp2</text>
+  <text x="335" y="426" text-anchor="middle" font-size="8" fill="#9d174d">(krf shelf)</text>
+
+  <!-- Damping CV -->
+  <rect x="300" y="440" width="70" height="22" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="0.8"/>
+  <text x="335" y="455" text-anchor="middle" font-size="8" fill="#7c2d12">Damping CV</text>
+
+  <!-- Loop allpasses -->
+  <rect x="390" y="400" width="70" height="30" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+  <text x="425" y="414" text-anchor="middle" font-size="9" fill="#166534">AP lap2a</text>
+  <text x="425" y="426" text-anchor="middle" font-size="8" fill="#166534">(608)</text>
+
+  <rect x="475" y="400" width="70" height="30" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+  <text x="510" y="414" text-anchor="middle" font-size="9" fill="#166534">AP lap2b</text>
+  <text x="510" y="426" text-anchor="middle" font-size="8" fill="#166534">(893)</text>
+
+  <!-- Add temp -->
+  <circle cx="575" cy="415" r="11" fill="#fff" stroke="#333" stroke-width="1.2"/>
+  <text x="575" y="419" text-anchor="middle" font-size="12" fill="#333">+</text>
+  <text x="575" y="440" text-anchor="middle" font-size="8" fill="#64748b">+ temp</text>
+
+  <!-- d1 write -->
+  <rect x="600" y="400" width="36" height="30" rx="3" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+  <text x="618" y="419" text-anchor="middle" font-size="9" fill="#713f12">d1</text>
+  <text x="618" y="430" text-anchor="middle" font-size="7" fill="#713f12">write</text>
+
+  <!-- Loop 2 wiring -->
+  <line x1="210" y1="415" x2="225" y2="415" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="285" y1="415" x2="300" y2="415" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="370" y1="415" x2="390" y2="415" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="460" y1="415" x2="475" y2="415" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="545" y1="415" x2="564" y2="415" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="586" y1="415" x2="600" y2="415" stroke="#333" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- temp to loop 2 sum -->
+  <line x1="575" y1="104" x2="590" y2="104" stroke="#64748b" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="590" y1="104" x2="590" y2="405" stroke="#64748b" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="590" y1="405" x2="575" y2="405" stroke="#64748b" stroke-width="0.8" stroke-dasharray="3,2"/>
+
+  <!-- Cross-coupling arrows -->
+  <!-- d2 write (loop1) -> d2 read (loop2) -->
+  <path d="M636,260 L660,260 L660,400 L210,400 L210,415" stroke="#dc2626" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arr-red)"/>
+  <text x="670" y="335" font-size="9" fill="#dc2626" transform="rotate(90,670,335)">cross-couple</text>
+
+  <!-- d1 write (loop2) -> d1 read (loop1) -->
+  <path d="M636,430 L680,430 L680,330 L80,330 L80,245 L120,245" stroke="#dc2626" stroke-width="1.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arr-red)"/>
+
+  <!-- LFO modulation on lap1b, lap2b -->
+  <line x1="130" y1="167" x2="510" y2="167" stroke="#9333ea" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="510" y1="167" x2="510" y2="230" stroke="#9333ea" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <text x="512" y="222" font-size="7" fill="#9333ea">LFO mod</text>
+  <line x1="510" y1="167" x2="510" y2="400" stroke="#9333ea" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <text x="512" y="393" font-size="7" fill="#9333ea">LFO mod</text>
+
+  <!-- ========== OUTPUT MIXING ========== -->
+  <!-- lp1 + lp2 sum -->
+  <rect x="700" y="310" width="70" height="55" rx="4" fill="#f1f5f9" stroke="#475569" stroke-width="1.2"/>
+  <text x="735" y="328" text-anchor="middle" font-size="9" fill="#334155">lp1 x 0.6</text>
+  <text x="735" y="340" text-anchor="middle" font-size="9" fill="#334155">+</text>
+  <text x="735" y="352" text-anchor="middle" font-size="9" fill="#334155">lp2 x 0.6</text>
+
+  <!-- Lines from LP regs -->
+  <line x1="335" y1="260" x2="335" y2="296" stroke="#475569" stroke-width="0.8"/>
+  <line x1="335" y1="296" x2="700" y2="326" stroke="#475569" stroke-width="0.8" marker-end="url(#arr)"/>
+  <line x1="335" y1="400" x2="335" y2="380" stroke="#475569" stroke-width="0.8"/>
+  <line x1="335" y1="380" x2="700" y2="348" stroke="#475569" stroke-width="0.8" marker-end="url(#arr)"/>
+
+  <!-- Output R (pre-chirp) -->
+  <rect x="860" y="270" width="100" height="30" rx="4" fill="#fbcfe8" stroke="#db2777" stroke-width="1.5"/>
+  <text x="910" y="289" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">Output R</text>
+  <line x1="770" y1="325" x2="810" y2="325" stroke="#333" stroke-width="1.1"/>
+  <line x1="810" y1="325" x2="810" y2="285" stroke="#333" stroke-width="1.1"/>
+  <line x1="810" y1="285" x2="860" y2="285" stroke="#333" stroke-width="1.1" marker-end="url(#arr)"/>
+  <text x="810" y="270" text-anchor="middle" font-size="8" fill="#64748b">pre-chirp</text>
+
+  <!-- ========== CHIRP ALLPASS CHAIN ========== -->
+  <rect x="700" y="390" width="270" height="130" rx="6" fill="#fefce8" stroke="#eab308" stroke-width="1.5"/>
+  <text x="835" y="408" text-anchor="middle" font-size="11" font-weight="bold" fill="#a16207">Chirp Dispersion Chain (13 allpasses)</text>
+
+  <!-- Row 1: ap1-ap4 -->
+  <g transform="translate(710, 415)">
+    <rect x="0" y="0" width="55" height="22" rx="2" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.8"/>
+    <text x="28" y="15" text-anchor="middle" font-size="8" fill="#713f12">ap1 k=.70</text>
+  </g>
+  <line x1="765" y1="426" x2="772" y2="426" stroke="#333" stroke-width="0.8" marker-end="url(#arr)"/>
+  <g transform="translate(778, 415)">
+    <rect x="0" y="0" width="55" height="22" rx="2" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.8"/>
+    <text x="28" y="15" text-anchor="middle" font-size="8" fill="#713f12">ap2 k=.65</text>
+  </g>
+  <line x1="833" y1="426" x2="840" y2="426" stroke="#333" stroke-width="0.8" marker-end="url(#arr)"/>
+  <g transform="translate(846, 415)">
+    <rect x="0" y="0" width="55" height="22" rx="2" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.8"/>
+    <text x="28" y="15" text-anchor="middle" font-size="8" fill="#713f12">ap3 k=.60</text>
+  </g>
+  <line x1="901" y1="426" x2="908" y2="426" stroke="#333" stroke-width="0.8" marker-end="url(#arr)"/>
+  <g transform="translate(914, 415)">
+    <rect x="0" y="0" width="50" height="22" rx="2" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.8"/>
+    <text x="25" y="15" text-anchor="middle" font-size="8" fill="#713f12">ap4 k=.50</text>
+  </g>
+
+  <!-- Row 2: ap5-ap9 -->
+  <text x="712" y="453" font-size="8" fill="#713f12">ap5-ap9 (len=4, k cycles .70/.65/.60/.50)</text>
+
+  <!-- Row 3: ap10-ap13 -->
+  <text x="712" y="468" font-size="8" fill="#713f12">ap10-ap13 (len=7, k cycles .65/.60/.50/.70)</text>
+
+  <text x="712" y="490" font-size="8" fill="#64748b">Short allpasses create frequency-dependent</text>
+  <text x="712" y="502" font-size="8" fill="#64748b">group delay = spring "boing" dispersion</text>
+
+  <!-- Wire from sum to chirp -->
+  <line x1="770" y1="340" x2="770" y2="390" stroke="#333" stroke-width="1.1"/>
+  <line x1="770" y1="390" x2="710" y2="415" stroke="#333" stroke-width="1.1" marker-end="url(#arr)"/>
+
+  <!-- Output L (post-chirp) -->
+  <rect x="860" y="540" width="100" height="30" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="910" y="559" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803d">Output L</text>
+  <line x1="940" y1="520" x2="940" y2="540" stroke="#333" stroke-width="1.1" marker-end="url(#arr)"/>
+  <text x="950" y="533" font-size="8" fill="#64748b">post-chirp</text>
+
+  <!-- Control inputs -->
+  <rect x="30" y="240" width="70" height="24" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="1"/>
+  <text x="65" y="256" text-anchor="middle" font-size="8" fill="#7c2d12">Reverb Time</text>
+  <text x="65" y="272" text-anchor="middle" font-size="7" fill="#64748b">(opt CV)</text>
+
+  <rect x="30" y="290" width="70" height="24" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="1"/>
+  <text x="65" y="306" text-anchor="middle" font-size="8" fill="#7c2d12">Damping</text>
+  <text x="65" y="322" text-anchor="middle" font-size="7" fill="#64748b">(opt CV)</text>
+
+  <!-- Legend -->
+  <rect x="30" y="700" width="940" height="70" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="50" y="718" font-size="10" font-weight="bold" fill="#334155">Key characteristics:</text>
+  <text x="50" y="735" font-size="9" fill="#475569">Two cross-coupled delay loops create reverberant field. LP shelving filter damps high frequencies over time.</text>
+  <text x="50" y="750" font-size="9" fill="#475569">13 short allpass filters create frequency-dependent group delay, simulating spring dispersion ("boing").</text>
+  <text x="50" y="765" font-size="9" fill="#475569">R output = diffuse reverb (pre-chirp). L output = dispersed/chirped reverb. SIN0 LFO modulates loop allpasses.</text>
+</svg>

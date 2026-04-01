@@ -1,0 +1,172 @@
+@name Spring_Reverb
+@color "0x7100fc"
+@audioInput input Input_L
+@audioInput inputR Input_R
+@audioOutput outputL OutputL
+@audioOutput outputR OutputR
+
+@controlInput input0 Reverb_Time
+@controlInput input1 Damping
+
+equ gain 0.5
+@sliderLabel gain 'Input Gain' -24 0 -6 1.0 1 DBLEVEL
+
+equ krt 0.85
+@sliderLabel krt 'Reverb Time' 0.3 0.95 0.85 100.0 2
+
+equ krf 0.55
+@sliderLabel krf 'HF Damping' 0.1 0.8 0.55 100.0 2
+
+; Spring reverb with dispersive allpass output
+; Two cross-coupled delay loops with shelving LP
+; into a chain of allpass filters that produce the
+; characteristic "boingy" spring dispersion
+; Based on the spectral delay filter approach
+
+@isPinConnected Input_L
+
+; Reverb loop allpasses and delays
+; Lengths scaled for Accutronics 2-spring delay times
+equ klap 0.6
+
+mem lap1a 404
+mem lap1b 967
+mem d1 1445
+
+mem lap2a 608
+mem lap2b 893
+mem d2 1013
+
+; Chirp allpass chain with graduated lengths for dispersion
+equ kap0 -0.70
+equ kap1 -0.65
+equ kap2 -0.60
+equ kap3 -0.50
+
+equ baselen1 4
+equ baselen2 7
+
+mem ap1 baselen1
+mem ap2 baselen1
+mem ap3 baselen1
+mem ap4 baselen1
+mem ap5 baselen1
+mem ap6 baselen1
+mem ap7 baselen1
+mem ap8 baselen1
+mem ap9 baselen1
+mem ap10 baselen2
+mem ap11 baselen2
+mem ap12 baselen2
+mem ap13 baselen2
+
+; Registers
+equ outputL reg0
+equ outputR reg1
+equ lp1 reg2
+equ lp2 reg3
+equ temp reg4
+
+; Initialize LFOs for smearing reverb allpasses
+skp run, endinit
+wlds sin0, 15, 40
+endinit:
+
+; Read input (mix L+R to mono, either can be unconnected)
+rdax input, gain
+@isPinConnected Input_R
+rdax inputR, gain
+@endif
+wrax temp, 0
+
+; Reverb loop 1: d1 output -> LP -> allpasses -> add input -> d2
+rda d1#, krt
+
+@isPinConnected Reverb_Time
+mulx input0
+@endif
+
+rdfx lp1, krf
+wrlx lp1, -1
+
+@isPinConnected Damping
+mulx input1
+@endif
+
+rda lap1a#, klap
+wrap lap1a, -klap
+rda lap1b#, klap
+wrap lap1b, -klap
+rdax temp, 1.0
+wra d2, 0
+
+; Reverb loop 2: d2 output -> LP -> allpasses -> add input -> d1
+rda d2#, krt
+
+@isPinConnected Reverb_Time
+mulx input0
+@endif
+
+rdfx lp2, krf
+wrlx lp2, -1
+
+@isPinConnected Damping
+mulx input1
+@endif
+
+rda lap2a#, klap
+wrap lap2a, -klap
+rda lap2b#, klap
+wrap lap2b, -klap
+rdax temp, 1.0
+wra d1, 0
+
+; Get reverb output, run through chirp allpass chain
+rdax lp1, 0.6
+rdax lp2, 0.6
+
+; Save pre-chirp reverb for R output
+wrax outputR, 1.0
+
+; Chirp allpasses - create spring dispersion
+rda ap1#, kap0
+wrap ap1, -kap0
+rda ap2#, kap1
+wrap ap2, -kap1
+rda ap3#, kap2
+wrap ap3, -kap2
+rda ap4#, kap3
+wrap ap4, -kap3
+rda ap5#, kap0
+wrap ap5, -kap0
+rda ap6#, kap1
+wrap ap6, -kap1
+rda ap7#, kap2
+wrap ap7, -kap2
+rda ap8#, kap3
+wrap ap8, -kap3
+rda ap9#, kap0
+wrap ap9, -kap0
+rda ap10#, kap1
+wrap ap10, -kap1
+rda ap11#, kap2
+wrap ap11, -kap2
+rda ap12#, kap3
+wrap ap12, -kap3
+rda ap13#, kap0
+wrap ap13, -kap0
+
+; Chirp output goes to L
+wrax outputL, 0
+
+; Smear reverb allpasses with LFO modulation
+cho rda, sin0, sin|reg|compc, lap1b+25
+cho rda, sin0, sin, lap1b+26
+wra lap1b+50, 0
+cho rda, sin0, cos|reg|compc, lap2b+25
+cho rda, sin0, cos, lap2b+26
+wra lap2b+50, 0
+
+@setOutputPin OutputL outputL
+@setOutputPin OutputR outputR
+@endif
