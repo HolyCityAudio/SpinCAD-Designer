@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
- * Copyright (C) 2015 - Gary Worsham
+ * Copyright (C) 2013 - 2026 - Gary Worsham
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by

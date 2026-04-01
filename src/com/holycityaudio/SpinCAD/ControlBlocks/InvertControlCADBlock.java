@@ -1,5 +1,5 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C)2013 - Gary Worsham 
+ * Copyright (C) 2013 - 2026 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
  *   This program is free software: you can redistribute it and/or modify 
