@@ -1,0 +1,184 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "freeverb.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1068",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    68.0,
+    56.0,
+    82.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 290,
+      "y": 30,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 100,
+      "y": 109,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 2,
+      "x": 94,
+      "y": 160,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 3,
+      "x": 99,
+      "y": 213,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.FreeverbCADBlock",
+      "blockNum": 4,
+      "x": 382,
+      "y": 284,
+      "name": "Freeverb",
+      "params": {
+        "gain": 0.35481338923357547,
+        "krt": 0.42,
+        "damping": 0.5,
+        "allpassamt": 0.5,
+        "outputL": 32,
+        "outputR": 33,
+        "filt1": 34,
+        "filt2": 35,
+        "filt3": 36,
+        "filt4": 37,
+        "filt5": 38,
+        "filt6": 39,
+        "filt7": 40,
+        "filt8": 41,
+        "mono": 42,
+        "combsum": 43
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Mixer_4_to_2CADBlock",
+      "blockNum": 5,
+      "x": 255,
+      "y": 422,
+      "name": "Mixer 4:2",
+      "params": {
+        "gain1": 1.0,
+        "gain2": 1.0,
+        "gain3": 1.0,
+        "gain4": 1.0,
+        "output1": 44,
+        "output2": 45
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 6,
+      "x": 262,
+      "y": 575,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Input_L"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 2",
+      "toBlockIndex": 4,
+      "toPin": "Input_R"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Reverb_Time"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Input 1a"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "OutputL",
+      "toBlockIndex": 5,
+      "toPin": "Input 1b"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 2",
+      "toBlockIndex": 5,
+      "toPin": "Input 2a"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "OutputR",
+      "toBlockIndex": 5,
+      "toPin": "Input 2b"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Level 1b"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Level 2b"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Output1",
+      "toBlockIndex": 6,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Output2",
+      "toBlockIndex": 6,
+      "toPin": "Input 2"
+    }
+  ]
+}
