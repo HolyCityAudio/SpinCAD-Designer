@@ -73,11 +73,15 @@ mulx freqControl
 rdax z1, 1
 wrax z1, 0
 
+@isPinConnected Output_Notch
 // NOTCH = LP + HP
 rdax lpf, 1
 rdax hpf, 1
 wrax notch, 0
-
-@setOutputPin Output_Bandpass z1
 @setOutputPin Output_Notch notch
+@endif
+
+@isPinConnected Output_Bandpass
+@setOutputPin Output_Bandpass z1
+@endif
 @endif

@@ -66,9 +66,11 @@ mulx fadeFilt
 rda  delayRam,1.0
 wrax output,0.0000000000
 
+@isPinConnected 'Fade_Filter'
 rdax fadeFilt, 1.0
 wrax fadeOut, 0.0
 @setOutputPin 'Fade_Filter' fadeOut
+@endif
 
 @endif 	; isEqualTo fadeTime 0
 

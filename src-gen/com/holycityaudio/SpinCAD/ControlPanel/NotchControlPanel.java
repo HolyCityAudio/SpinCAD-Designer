@@ -1,22 +1,22 @@
-/* SpinCAD Designer - DSP Development Tool for the Spin FV-1
+/* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * NotchControlPanel.java
- * Copyright (C) 2015 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+ * Copyright (C) 2015 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick 
+ * 
+ *   This program is free software: you can redistribute it and/or modify 
+ *   it under the terms of the GNU General Public License as published by 
+ *   the Free Software Foundation, either version 3 of the License, or 
+ *   (at your option) any later version. 
+ * 
+ *   This program is distributed in the hope that it will be useful, 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *   GNU General Public License for more details. 
+ * 
+ *   You should have received a copy of the GNU General Public License 
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+ *     
+ */ 
 package com.holycityaudio.SpinCAD.ControlPanel;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
@@ -63,7 +63,7 @@ public class NotchControlPanel extends spinCADControlPanel {
 	JTextField  qMinField;
 
 public NotchControlPanel(NotchCADBlock genericCADBlock) {
-
+		
 		gCB = genericCADBlock;
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -81,7 +81,7 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// multiplier is points per decade here
 						freqSlider = SpinCADBlock.LogSlider(20,5000,gCB.getfreq(), "LOGFREQ2", 100.0);
-					// ---------------------------------------------
+					// ---------------------------------------------						
 						freqSlider.addChangeListener(new NotchListener());
 						freqField = new JTextField();
 						freqField.setHorizontalAlignment(JTextField.CENTER);
@@ -103,17 +103,17 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 							}
 						});
 						updatefreqLabel();
-
+			
 						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel freqinnerPanel = new JPanel();
-
+			
 						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
 						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
 						freqinnerPanel.add(freqField);
 						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
 						freqinnerPanel.add(freqSlider);
 						freqinnerPanel.setBorder(freqborder2);
-
+			
 						frame.add(freqinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
@@ -140,17 +140,17 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 							}
 						});
 						updateqMaxLabel();
-
+			
 						Border qMaxborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel qMaxinnerPanel = new JPanel();
-
+			
 						qMaxinnerPanel.setLayout(new BoxLayout(qMaxinnerPanel, BoxLayout.Y_AXIS));
 						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
 						qMaxinnerPanel.add(qMaxField);
 						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
 						qMaxinnerPanel.add(qMaxSlider);
 						qMaxinnerPanel.setBorder(qMaxborder2);
-
+			
 						frame.add(qMaxinnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
@@ -177,29 +177,29 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 							}
 						});
 						updateqMinLabel();
-
+			
 						Border qMinborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
 						JPanel qMininnerPanel = new JPanel();
-
+			
 						qMininnerPanel.setLayout(new BoxLayout(qMininnerPanel, BoxLayout.Y_AXIS));
 						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
 						qMininnerPanel.add(qMinField);
 						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
 						qMininnerPanel.add(qMinSlider);
 						qMininnerPanel.setBorder(qMinborder2);
-
+			
 						frame.add(qMininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
-				frame.setVisible(true);
+				frame.setVisible(true);		
 			}
 		});
 		}
 
-		// add change listener for Sliders, Spinners
-		class NotchListener implements ChangeListener {
+		// add change listener for Sliders, Spinners 
+		class NotchListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
 			gCB.setfreq((double) SpinCADBlock.freqToFiltSVF(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
@@ -217,29 +217,29 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 		}
 
 		// add item state changed listener for Checkbox
-		class NotchItemListener implements java.awt.event.ItemListener {
-
+		class NotchItemListener implements java.awt.event.ItemListener { 
+			
 		@Override
 			public void itemStateChanged(ItemEvent arg0) {
 			}
 		}
-
+		
 		// add action listener for Combo Box
-		class NotchActionListener implements java.awt.event.ActionListener {
+		class NotchActionListener implements java.awt.event.ActionListener { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqLabel() {
-		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");
-		}
+		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");		
+		}		
 		private void updateqMaxLabel() {
-		qMaxField.setText("Max Resonance " + String.format("%4.1f", gCB.getqMax()));
-		}
+		qMaxField.setText("Max Resonance " + String.format("%4.1f", gCB.getqMax()));		
+		}		
 		private void updateqMinLabel() {
-		qMinField.setText("Min Resonance " + String.format("%4.1f", gCB.getqMin()));
-		}
-
+		qMinField.setText("Min Resonance " + String.format("%4.1f", gCB.getqMin()));		
+		}		
+		
 		class MyWindowListener implements WindowListener
 		{
 		@Override
@@ -272,5 +272,5 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 			public void windowOpened(WindowEvent arg0) {
 			}
 		}
-
+		
 	}
