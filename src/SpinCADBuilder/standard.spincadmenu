@@ -118,6 +118,7 @@
 // @menuitem "Pot Skip" PotSkip 
 @menuitem "Smoother" control_smoother
 @menuitem "Adj Smoother" control_adjustable_smoother
+@menuitem "Adj Change Detect" control_adjustable_change_detect  // hand-written in src/
 @menuitem "Sin/Cos LFO" SinCosLFOA
 @menuitem "LFO Value" LFO_Value 
 @menuitem "Ramp LFO" RampLFO
