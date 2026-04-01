@@ -22,7 +22,6 @@ import java.awt.Color;
 
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
-import com.holycityaudio.SpinCAD.ControlBlocks.RampLFOControlPanel;
 
 public class RampLFOCADBlock extends ControlCADBlock{
 	/**

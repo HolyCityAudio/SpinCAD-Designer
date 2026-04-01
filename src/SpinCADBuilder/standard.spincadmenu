@@ -101,7 +101,7 @@
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Octave Up/Down" pitchupdown 
 @menuitem "Glitch Shift Adjustable" Glitch_shift 
-//@menuitem "Pitch Four" pitch_four 
+@menuitem "Pitch Four" pitch_four
 @menuitem "Pitch Offset" pitchoffset 
 @menuitem "Dual Output Pitch Offset" pitchoffset1_2
 @menuitem "Arpeggiator" Arpeggiator  // hand-written in src/

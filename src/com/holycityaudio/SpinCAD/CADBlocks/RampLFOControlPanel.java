@@ -17,7 +17,7 @@
  *
  */
 
-package com.holycityaudio.SpinCAD.ControlBlocks;
+package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;

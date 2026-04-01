@@ -155,8 +155,10 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 	}
 
 	public void updateFreqLabel() {
-		freqField.setText("Shift (semitones) " + String.format("%d", pong.getFreq()));
-
+		int semi = pong.getFreq();
+		String sign = semi > 0 ? "+" : "";
+		String interval = ArpeggiatorCADBlock.intervalName(semi);
+		freqField.setText("Shift: " + sign + semi + " (" + interval + ")");
 	}
 
 	public void updateAmpLabel(int i) {
