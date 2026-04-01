@@ -74,7 +74,7 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
-						freqSlider = SpinCADBlock.LogSlider(80,5000,gCB.getfreq(), "LOGFREQ", 100.0);
+						freqSlider = SpinCADBlock.LogSlider(20,5000,gCB.getfreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						

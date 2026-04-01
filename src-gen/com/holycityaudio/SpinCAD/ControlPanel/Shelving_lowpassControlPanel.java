@@ -76,7 +76,7 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ is used for single pole filters
 					// multiplier is points per decade here
-						freqSlider = SpinCADBlock.LogSlider(80,2500,gCB.getfreq(), "LOGFREQ", 100.0);
+						freqSlider = SpinCADBlock.LogSlider(20,2500,gCB.getfreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
