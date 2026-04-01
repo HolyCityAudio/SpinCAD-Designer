@@ -229,6 +229,7 @@
 			sfxb.FXreadDelay("tap2#", 0, 0.5);
 			sfxb.FXwriteAllpass("tap2", 0, -0.5);
 			sfxb.FXwriteDelay("tdel+", (int)(1001 * 1.0), 0);
+			if(this.getPin("OutputL").isConnected() == true) {
 			sfxb.FXreadDelay("tdel+", (int)(2701 * 1.0), 0.5);
 			sfxb.FXreadDelay("tdel+", (int)(2256 * 1.0), 0.8);
 			sfxb.FXreadDelay("tdel+", (int)(3409 * 1.0), 0.8);
@@ -241,6 +242,8 @@
 			}
 			
 			sfxb.writeRegister(outputL, 0);
+			}
+			
 			if(this.getPin("OutputR").isConnected() == true) {
 			sfxb.FXreadDelay("tdel+", (int)(2800 * 1.0), 0.5);
 			sfxb.FXreadDelay("tdel+", (int)(2256 * 1.0), 0.6);

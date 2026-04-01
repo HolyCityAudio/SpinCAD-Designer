@@ -38,9 +38,9 @@
 			private int lpf;
 			private int hpf;
 			private int notch;
-			private double number1 = 1.0;
 			private int temp;
 			private int scaledQ;
+			private double number1 = 1.0;
 
 			public NotchCADBlock(int x, int y) {
 				super(x, y);
@@ -111,14 +111,14 @@
 			if(this.getPin("Frequency").isConnected() == true) {
 			sfxb.mulx(freqControl);
 			}
-
+			
 			sfxb.readRegister(z2, 1);
 			sfxb.writeRegister(lpf, 1);
 			sfxb.writeRegister(z2, -1);
 			if(this.getPin("Resonance").isConnected() == true) {
 			sfxb.writeRegister(temp, 0);
-			double y = number1 / qMin;
-			double x1 = number1 / qMax;
+			double y = number1 / qMin; 
+			double x1 = number1 / qMax; 
 			double q = x1 - y;
 			sfxb.readRegister(qControl, 1);
 			sfxb.scaleOffset(-q, -y);
@@ -139,11 +139,17 @@
 			
 			sfxb.readRegister(z1, 1);
 			sfxb.writeRegister(z1, 0);
+			if(this.getPin("Output_Notch").isConnected() == true) {
 			sfxb.readRegister(lpf, 1);
 			sfxb.readRegister(hpf, 1);
 			sfxb.writeRegister(notch, 0);
-			this.getPin("Output_Bandpass").setRegister(z1);
 			this.getPin("Output_Notch").setRegister(notch);
+			}
+			
+			if(this.getPin("Output_Bandpass").isConnected() == true) {
+			this.getPin("Output_Bandpass").setRegister(z1);
+			}
+			
 			}
 			
 

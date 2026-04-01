@@ -123,9 +123,12 @@
 			sfxb.mulx(fadeFilt);
 			sfxb.FXreadDelay("delayRam", 0, 1.0);
 			sfxb.writeRegister(output, 0.0000000000);
+			if(this.getPin("Fade_Filter").isConnected() == true) {
 			sfxb.readRegister(fadeFilt, 1.0);
 			sfxb.writeRegister(fadeOut, 0.0);
 			this.getPin("Fade_Filter").setRegister(fadeOut);
+			}
+			
 			}
 			
 			}

@@ -148,10 +148,7 @@
 			this.getPin("Smooth").setRegister(output);
 			}
 			
-			if(this.getPin("Raw").isConnected() == true) {
 			this.getPin("Raw").setRegister(old);
-			}
-			
 			}
 			
 
