@@ -30,7 +30,6 @@
 @menuitem "RMS Lim/Exp" rms_lim_exp
 @menuitem "RMS Limiter" rms_limiter
 @menuitem "Soft Knee Limiter" soft_knee_limiter
-@menuitem "Var Slope Compressor" var_slope_compressor
 @menuitem "Peak Compressor" peak_compressor
 @menuitem "RMS Compressor" rms_compressor
 @menuitem "Noise Gate" NoiseGate

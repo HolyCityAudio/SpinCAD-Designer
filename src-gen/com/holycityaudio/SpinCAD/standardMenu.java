@@ -24,7 +24,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.var_slope_compressorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.peak_compressorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_compressorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.NoiseGateCADBlock;
@@ -342,15 +341,7 @@
 	});
 	mn_dynamics.add(mntm_soft_knee_limiter);
 		
-	final JMenuItem mntm_var_slope_compressor = new JMenuItem("Var Slope Compressor");
-	mntm_var_slope_compressor.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new var_slope_compressorCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_dynamics.add(mntm_var_slope_compressor);
-		
+	
 	final JMenuItem mntm_peak_compressor = new JMenuItem("Peak Compressor");
 	mntm_peak_compressor.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
