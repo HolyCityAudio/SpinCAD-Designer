@@ -30,6 +30,7 @@ import java.util.Iterator;
 import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.VUMeterCADBlock;
 
 public class SpinCADModel implements Serializable {
 
@@ -196,17 +197,19 @@ public class SpinCADModel implements Serializable {
 		realign();
 		generateCode();
 
-		// Skip optimization and register compaction when a scope probe is
-		// present — the optimizer can eliminate the probed register entirely,
+		// Skip optimization and register compaction when a scope probe or VU meter
+		// is present — the optimizer can eliminate the probed register entirely,
 		// and compaction remaps addresses so the stored register ID goes stale.
-		boolean hasScopeProbe = false;
+		boolean hasProbeBlock = false;
 		for (SpinCADBlock b : blockList) {
-			if (b instanceof ScopeProbeCADBlock) { hasScopeProbe = true; break; }
+			if (b instanceof ScopeProbeCADBlock || b instanceof VUMeterCADBlock) {
+				hasProbeBlock = true; break;
+			}
 		}
 
-		boolean skipOptimize = hasScopeProbe && !forExport;
-		if (hasScopeProbe) {
-			System.out.println("sortAlignGen: scopeProbe=" + hasScopeProbe
+		boolean skipOptimize = hasProbeBlock && !forExport;
+		if (hasProbeBlock) {
+			System.out.println("sortAlignGen: probeBlock=" + hasProbeBlock
 					+ " forExport=" + forExport + " skipOptimize=" + skipOptimize);
 		}
 
@@ -225,7 +228,7 @@ public class SpinCADModel implements Serializable {
 
 	public boolean hasScopeProbe() {
 		for (SpinCADBlock b : blockList) {
-			if (b instanceof ScopeProbeCADBlock) return true;
+			if (b instanceof ScopeProbeCADBlock || b instanceof VUMeterCADBlock) return true;
 		}
 		return false;
 	}

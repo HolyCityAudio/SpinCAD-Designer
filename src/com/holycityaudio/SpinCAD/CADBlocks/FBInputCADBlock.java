@@ -38,7 +38,7 @@ public class FBInputCADBlock extends SpinCADBlock{
 		super(x, y);
 		hasControlPanel = true;
 		addInputPin(this, "Feedback Input");
-		setBorderColor(new Color(0x80b000));
+		setBorderColor(new Color(0xFFA000));
 		// change this to allocate letters A B C D E etc.
 		// actually assigning registers can be done at code generation time
 		setName("FB In " + getIndex());
@@ -48,7 +48,7 @@ public class FBInputCADBlock extends SpinCADBlock{
 		super(x, y);
 		hasControlPanel = true;
 		addInputPin(this, "Feedback Input");
-		setBorderColor(new Color(0x80b000));
+		setBorderColor(new Color(0xFFA000));
 		setIndex(ind);
 		// change this to allocate letters A B C D E etc.
 		// actually assigning registers can be done at code generation time

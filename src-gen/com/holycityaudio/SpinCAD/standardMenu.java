@@ -350,7 +350,6 @@
 	});
 	mn_dynamics.add(mntm_soft_knee_limiter);
 		
-	
 	final JMenuItem mntm_peak_compressor = new JMenuItem("Peak Compressor");
 	mntm_peak_compressor.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {

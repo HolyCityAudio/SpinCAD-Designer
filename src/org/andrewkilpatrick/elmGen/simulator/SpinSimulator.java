@@ -48,10 +48,15 @@ public class SpinSimulator extends Thread {
 	String outputFilename = null;
 	LinkedList<AudioSink> audioSinks = null;
 	public LevelLogger scope = null;
+	public VUMeterDisplay vuMeter = null;
 
 	// Scope probe registers — set by SpinCADSimulator when a ScopeProbeCADBlock is present
 	int scopeReg1 = -1;
 	int scopeReg2 = -1;
+
+	// VU meter registers — set by SpinCADSimulator when a VUMeterCADBlock is present
+	int vuReg1 = -1;
+	int vuReg2 = -1;
 
 	/**
 	 * Creates a simulator.
@@ -161,7 +166,9 @@ public class SpinSimulator extends Thread {
 		int inBuf[] = new int[8192];
 		int outBuf[] = new int[8192];
 		int scopeBuf[] = new int[8192];
+		int vuBuf[] = new int[8192];
 		boolean hasProbes = (scopeReg1 >= 0 || scopeReg2 >= 0);
+		boolean hasVU = (vuReg1 >= 0 || vuReg2 >= 0);
 		System.out.println("processing file: loopMode=" + loopMode + " realTimeMode=" + realTimeMode
 				+ " output=" + (outputFilename == null ? "SoundCard" : "File:" + outputFilename));
 		while (runSimulator) {
@@ -187,11 +194,22 @@ public class SpinSimulator extends Thread {
 						scopeBuf[i]     = (scopeReg1 >= 0) ? state.getRegVal(scopeReg1) : 0;
 						scopeBuf[i + 1] = (scopeReg2 >= 0) ? state.getRegVal(scopeReg2) : 0;
 					}
+					if (hasVU) {
+						vuBuf[i]     = (vuReg1 >= 0) ? state.getRegVal(vuReg1) : 0;
+						vuBuf[i + 1] = (vuReg2 >= 0) ? state.getRegVal(vuReg2) : 0;
+					}
 				}
 
 				// write scope probe data before writeDac so it's available for overlay rendering
 				if (hasProbes && scope != null) {
 					scope.writeScopeData(scopeBuf, ret);
+				}
+				// update VU meter display
+				if (vuMeter != null) {
+					if (hasVU) {
+						vuMeter.writeVUData(vuBuf, ret);
+					}
+					vuMeter.update(outBuf, ret);
 				}
 				// write all the outputs
 				for (int i = 0; i < audioSinks.size(); i++) {
@@ -344,6 +362,11 @@ if (false) {
 		this.scopeReg2 = reg2;
 	}
 
+	public void setVURegisters(int reg1, int reg2) {
+		this.vuReg1 = reg1;
+		this.vuReg2 = reg2;
+	}
+
 	/**
 	 * Add a single display sink (scope/logger) to the simulator.
 	 * Starts in scope mode (logMode=0). Use setDisplayMode() to switch.
@@ -353,6 +376,10 @@ if (false) {
 		scope.setLogMode(0);
 		scope.windowRatio = 8;
 		audioSinks.add(scope);
+	}
+
+	public void showVUMeter() {
+		vuMeter = new VUMeterDisplay();
 	}
 
 	/**

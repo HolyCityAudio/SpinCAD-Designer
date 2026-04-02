@@ -160,6 +160,29 @@ public class SpinCADSimulator {
 		stb.updateProbeButtons(probe1Active, probe2Active);
 	}
 
+	private void scanForVUMeter() {
+		if (patch == null || patch.patchModel == null) return;
+		java.util.Iterator<SpinCADBlock> itr = patch.patchModel.blockList.iterator();
+		while (itr.hasNext()) {
+			SpinCADBlock b = itr.next();
+			if (b instanceof com.holycityaudio.SpinCAD.CADBlocks.VUMeterCADBlock) {
+				com.holycityaudio.SpinCAD.CADBlocks.VUMeterCADBlock vu =
+						(com.holycityaudio.SpinCAD.CADBlocks.VUMeterCADBlock) b;
+				int reg1 = vu.getVU1Reg();
+				int reg2 = vu.getVU2Reg();
+				sim.setVURegisters(reg1, reg2);
+				sim.showVUMeter();
+				// Wire up dock host so VU meter can dock in ASM panel
+				sim.vuMeter.setDockHost(new org.andrewkilpatrick.elmGen.simulator.VUMeterDisplay.DockHost() {
+					public void dockVUMeter(javax.swing.JPanel panel) { frame.dockVUMeter(panel); }
+					public void undockVUMeter() { frame.undockVUMeter(); }
+					public java.awt.Window getOwnerWindow() { return frame; }
+				});
+				break;  // only use the first VU meter block
+			}
+		}
+	}
+
 	// ======================================================================================================
 	class simControlToolBar extends JToolBar implements ActionListener, ChangeListener {
 
@@ -241,6 +264,7 @@ public class SpinCADSimulator {
 					if(displayColumn != null) displayColumn.setVisible(false);
 					levelMonitor.setVisible(false);
 					btnStartSimulation.setText(" Start Simulator");
+					if (sim.vuMeter != null) sim.vuMeter.close();
 					sim.stopSimulator();
 					stb.updateVisibility(false);
 					frame.etb.statusMessage.setText("");
@@ -283,6 +307,7 @@ public class SpinCADSimulator {
 						// Scan for ScopeProbeCADBlock and configure scope registers
 						// (must be after showDisplay which creates the LevelLogger)
 						scanForScopeProbe();
+						scanForVUMeter();
 
 						// Apply current display mode (scope or logger)
 						if(displayMode == 1) {
