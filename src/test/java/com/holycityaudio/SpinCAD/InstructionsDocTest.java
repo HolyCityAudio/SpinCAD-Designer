@@ -37,7 +37,7 @@ public class InstructionsDocTest {
 
     @Test
     void generateInstructionPlots() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // === Absolute Value ===

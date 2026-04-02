@@ -87,7 +87,7 @@ public class ReverbDocTest {
 
     @Test
     void generateReverbPlots() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // === Adjustable Reverb (reverbCADBlock) ===

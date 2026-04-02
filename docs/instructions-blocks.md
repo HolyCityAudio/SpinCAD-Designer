@@ -17,7 +17,7 @@ to positive. Uses the FV-1 ABSA instruction. There is no control panel.
 
 Implements: `output = |input|`
 
-![Absolute Value](instructions-absa.png)
+![Absolute Value](images/instructions-absa.png)
 
 ---
 
@@ -34,7 +34,7 @@ the accumulator when the input is negative. There is no control panel.
 
 Implements: `output = max(input, 0)`
 
-![Half Wave](instructions-halfwave.png)
+![Half Wave](images/instructions-halfwave.png)
 
 ---
 
@@ -58,7 +58,7 @@ to linear, or for creating exponential curves for control voltages.
 
 The FV-1 EXP instruction computes: `output = C * 2^(input * 16) + D`
 
-![Exp](instructions-exp.png)
+![Exp](images/instructions-exp.png)
 
 ---
 
@@ -83,7 +83,7 @@ fractional powers when paired with EXP.
 
 The FV-1 LOG instruction computes: `output = C * log2(|input|) + D`
 
-![Log](instructions-log.png)
+![Log](images/instructions-log.png)
 
 ---
 
@@ -111,7 +111,7 @@ The Invert option transforms the input via `x' = -x + 1.0` before the
 root computation. The Flip option applies the same transformation to
 the output. These are useful for inverting the shape of the curve.
 
-![Root](instructions-root.png)
+![Root](images/instructions-root.png)
 
 ---
 
@@ -137,4 +137,4 @@ through scaled by the gain parameter.
 The MAXX instruction compares `|accumulator|` with `|register * gain|`
 and keeps the larger value.
 
-![Maximum](instructions-maximum.png)
+![Maximum](images/instructions-maximum.png)

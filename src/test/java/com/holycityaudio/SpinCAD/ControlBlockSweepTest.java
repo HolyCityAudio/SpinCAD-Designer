@@ -53,7 +53,7 @@ public class ControlBlockSweepTest {
 
     @Test
     void sweepAllControlBlocks() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
         int sinePoints = 200;
 

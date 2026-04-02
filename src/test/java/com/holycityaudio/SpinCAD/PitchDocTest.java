@@ -35,7 +35,7 @@ public class PitchDocTest {
 
     @Test
     void generatePitchPlots() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         File sineWav = generateSineWav(SIM_DURATION, FREQ, 0.5);

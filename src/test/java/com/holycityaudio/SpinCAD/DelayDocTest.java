@@ -32,7 +32,7 @@ public class DelayDocTest {
 
     @Test
     void generateDelayPlots() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // === Six Tap ===

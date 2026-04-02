@@ -38,7 +38,7 @@ public class FilterDocTest {
 
     @Test
     void generateFilterPlots() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         File chirpWav = generateChirpWav(SIM_DURATION, CHIRP_F0, CHIRP_F1, AMPLITUDE);

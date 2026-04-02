@@ -27,7 +27,7 @@ a delay line tap. Produces a thickening, detuning effect on the input signal.
 | Width | samples | 30 | LFO modulation depth |
 | LFO Select | 0/1 | 0 | Selects SIN0 or SIN1 LFO |
 
-![Chorus output waveform](modulation-chorus.png)
+![Chorus output waveform](images/modulation-chorus.png)
 
 ---
 
@@ -61,7 +61,7 @@ ensemble-like effect. All four voices share the same LFO.
 | Width | samples | 64 | LFO modulation depth |
 | LFO Select | 0/1 | 0 | Selects SIN0 or SIN1 LFO |
 
-![4-Voice Chorus output waveform](modulation-chorusquad.png)
+![4-Voice Chorus output waveform](images/modulation-chorusquad.png)
 
 ---
 
@@ -92,7 +92,7 @@ provides the raw delayed signal before mixing.
 | Width | samples | 30 | LFO modulation depth |
 | LFO Select | 0/1 | 0 | Selects SIN0 or SIN1 LFO |
 
-![Flanger output waveform](modulation-flanger.png)
+![Flanger output waveform](images/modulation-flanger.png)
 
 ---
 
@@ -121,7 +121,7 @@ phase-shifted signal alone.
 | LFO Rate | 0-1.0 | 0.5 | LFO speed |
 | LFO Width | 0-1.0 | 0.5 | LFO depth |
 
-![Phaser output waveform](modulation-phaser.png)
+![Phaser output waveform](images/modulation-phaser.png)
 
 ---
 
@@ -147,7 +147,7 @@ at the default LFO coefficient.
 The oscillator implements a quadrature pair (sine and cosine) using
 feedback integration. The maximum frequency is Fs / (2 * pi).
 
-![Ring Modulator output waveform](modulation-ringmod.png)
+![Ring Modulator output waveform](images/modulation-ringmod.png)
 
 ---
 
@@ -178,4 +178,4 @@ flanging and chorus effects.
 | Tap 1 Ratio | 0-1.0 | 0.025 | Delay tap position ratio |
 | Delay Length | samples | 4096 | Delay buffer size |
 
-![Servo Flanger output waveform](modulation-servo.png)
+![Servo Flanger output waveform](images/modulation-servo.png)

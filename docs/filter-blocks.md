@@ -22,7 +22,7 @@ set from the control panel or modulated via the Frequency control input.
 |-----------|-------|---------|-------------|
 | Frequency | 0.0-1.0 | 0.15 | Filter coefficient (higher = higher cutoff) |
 
-![LPF 1-Pole frequency response at three cutoff settings](filter-lpf1p.png)
+![LPF 1-Pole frequency response at three cutoff settings](images/filter-lpf1p.png)
 
 ---
 
@@ -43,7 +43,7 @@ signal from the input to produce a highpass response.
 |-----------|-------|---------|-------------|
 | Frequency | 0.0-1.0 | 0.015 | Filter coefficient (higher = higher cutoff) |
 
-![HPF 1-Pole frequency response at three cutoff settings](filter-hpf1p.png)
+![HPF 1-Pole frequency response at three cutoff settings](images/filter-hpf1p.png)
 
 ---
 
@@ -67,7 +67,7 @@ highpass outputs. The frequency and Q (resonance) are adjustable.
 | Frequency | Hz | 740 | Center/cutoff frequency |
 | Q | 0.5-20 | 1.0 | Resonance (higher = sharper peak) |
 
-![SVF 2-Pole lowpass response at three frequency settings](filter-svf2p.png)
+![SVF 2-Pole lowpass response at three frequency settings](images/filter-svf2p.png)
 
 ---
 
@@ -95,7 +95,7 @@ Q can be modulated via control inputs.
 | Q Max | 1-100 | 50 | Maximum Q value |
 | Q Min | 0.5-10 | 1 | Minimum Q value |
 
-![SVF 2-Pole Adjustable lowpass response at three frequency settings](filter-svf2padj.png)
+![SVF 2-Pole Adjustable lowpass response at three frequency settings](images/filter-svf2padj.png)
 
 ---
 
@@ -120,7 +120,7 @@ produce a steeper rolloff similar to classic analog synth filters.
 | Q | 0.0-1.0 | 0.2 | Resonance amount |
 | 4-Pole | on/off | off | Enables 4-pole (24 dB/oct) mode |
 
-![LPF 2/4-Pole frequency response at three cutoff settings](filter-lpf4p.png)
+![LPF 2/4-Pole frequency response at three cutoff settings](images/filter-lpf4p.png)
 
 ---
 
@@ -144,7 +144,7 @@ A resonant highpass filter with selectable 2-pole (12 dB/octave) or
 | Q | 0.0-1.0 | 0.2 | Resonance amount |
 | 4-Pole | on/off | off | Enables 4-pole (24 dB/oct) mode |
 
-![HPF 2/4-Pole frequency response at three cutoff settings](filter-hpf2p.png)
+![HPF 2/4-Pole frequency response at three cutoff settings](images/filter-hpf2p.png)
 
 ---
 
@@ -170,7 +170,7 @@ notch -- higher Q produces a narrower rejection band.
 | Q Max | 1-100 | 5 | Maximum Q value |
 | Q Min | 0.5-10 | 1 | Minimum Q value |
 
-![Notch filter response at three frequency settings](filter-notch.png)
+![Notch filter response at three frequency settings](images/filter-notch.png)
 
 ---
 
@@ -194,7 +194,7 @@ cutoff rather than rolling off completely.
 | Frequency | 0.0-1.0 | 0.15 | Shelf corner frequency coefficient |
 | Shelf | 0.0-1.0 | 0.5 | Shelf depth (0 = full cut, 1 = no cut) |
 
-![Shelving lowpass response at three shelf settings](filter-shelvinglp.png)
+![Shelving lowpass response at three shelf settings](images/filter-shelvinglp.png)
 
 ---
 
@@ -217,7 +217,7 @@ Shelving Lowpass block.
 | Frequency | 0.0-1.0 | 0.15 | Shelf corner frequency coefficient |
 | Shelf | 0.0-1.0 | 0.5 | Shelf depth (0 = full cut, 1 = no cut) |
 
-![Shelving highpass response at three shelf settings](filter-shelvinghp.png)
+![Shelving highpass response at three shelf settings](images/filter-shelvinghp.png)
 
 ---
 
@@ -240,7 +240,7 @@ a resonant peak from the input signal.
 | Q | 0.5-10 | 1.2 | Bandwidth (higher = narrower) |
 | EQ Level | -1.0 to 1.0 | 0 | Boost/cut amount |
 
-![1-Band EQ response showing cut, flat, and boost](filter-1bandeq.png)
+![1-Band EQ response showing cut, flat, and boost](images/filter-1bandeq.png)
 
 ---
 
@@ -267,7 +267,7 @@ and a global Q parameter sets the bandwidth of all bands.
 | Band 6 (2560 Hz) | -1.0 to 1.0 | 0 | Boost/cut at 2560 Hz |
 | Q | 0.5-10 | 1.2 | Bandwidth for all bands |
 
-![6-Band EQ showing low boost, mid scoop, and high boost curves](filter-6bandeq.png)
+![6-Band EQ showing low boost, mid scoop, and high boost curves](images/filter-6bandeq.png)
 
 ---
 
@@ -294,7 +294,7 @@ in the feedback path.
 | Feedback | 0.0-1.0 | 0.7 | Feedback amount |
 | Damping | 0.0-1.0 | 0.5 | Lowpass damping in feedback path |
 
-![Comb filter response at three delay length settings](filter-comb.png)
+![Comb filter response at three delay length settings](images/filter-comb.png)
 
 ---
 
@@ -318,4 +318,4 @@ pitched filtering effects or as a simple sine oscillator.
 | Frequency | 0.0-1.0 | 0.2 | Filter coefficient |
 | Resonance | 0.0-1.0 | 0.01 | Resonance amount (higher = sharper peak) |
 
-![Resonator response at three frequency settings](filter-resonator.png)
+![Resonator response at three frequency settings](images/filter-resonator.png)

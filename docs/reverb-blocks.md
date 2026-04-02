@@ -32,7 +32,7 @@ can be applied to the delay taps for chorus-like movement.
 | LF Filter | 0-1 | 0.4 | Low-frequency filter coefficient |
 | HF Filter | 0-1 | 0.01 | High-frequency filter coefficient |
 
-![Adjustable Reverb impulse response](reverb-reverb.png)
+![Adjustable Reverb impulse response](images/reverb-reverb.png)
 
 ---
 
@@ -58,7 +58,7 @@ feedback loops. Useful as a building block or for subtle ambience.
 | AP4 Length | samples | 1500 | Fourth allpass delay length |
 | AP Coeff | 0-1 | 0.5 | Allpass coefficient |
 
-![Allpass impulse response](reverb-allpass.png)
+![Allpass impulse response](images/reverb-allpass.png)
 
 ---
 
@@ -85,7 +85,7 @@ a long reverb tail.
 | Decay | 0-1 | 0.5 | Decay amount |
 | Filter Freq | 2000-8000 Hz | 4000 | Low-pass filter corner frequency |
 
-![Ambience impulse response](reverb-ambience.png)
+![Ambience impulse response](images/reverb-ambience.png)
 
 ---
 
@@ -110,7 +110,7 @@ different times.
 | Stretch | 1-8 | 4 | Geometric stretch factor for delay lengths |
 | AP Coeff | 0-1 | 0.5 | Allpass coefficient |
 
-![Chirp Reverb impulse response](reverb-chirp.png)
+![Chirp Reverb impulse response](images/reverb-chirp.png)
 
 ---
 
@@ -136,7 +136,7 @@ separate left and right output paths for stereo spread.
 | Reverb Time | 0-1 | 0.42 | Comb filter feedback (decay time) |
 | Damping | 0-1 | 0.5 | High-frequency damping in feedback |
 
-![Freeverb impulse response](reverb-freeverb.png)
+![Freeverb impulse response](images/reverb-freeverb.png)
 
 ---
 
@@ -165,11 +165,11 @@ the direct sound from the reverb onset, simulating a large acoustic space.
 | Input AP | 0-1 | 0.5 | Input allpass / pre-delay coefficient |
 | Delay AP | 0-1 | 0.5 | Delay loop allpass coefficient |
 
-![Hall Reverb impulse response](reverb-hall.png)
+![Hall Reverb impulse response](images/reverb-hall.png)
 
 **Pre-delay effect:**
 
-![Hall Reverb pre-delay comparison](reverb-hall-predelay.png)
+![Hall Reverb pre-delay comparison](images/reverb-hall-predelay.png)
 
 ---
 
@@ -198,7 +198,7 @@ plate-style reverb.
 | Damping | 0-0.95 | 0.5 | HF damping in tank |
 | Bandwidth | 0.1-0.7 | 0.32 | Input bandwidth filter |
 
-![Dattorro Plate Reverb impulse response](reverb-dattorro.png)
+![Dattorro Plate Reverb impulse response](images/reverb-dattorro.png)
 
 ---
 
@@ -234,7 +234,7 @@ most flexible reverb block available.
 | LFO Depth | None / Subtle / Wide | Subtle | Modulation depth |
 | Pre-Delay | on/off | off | Enable pre-delay |
 
-![Reverb Designer impulse response](reverb-reverbdesigner.png)
+![Reverb Designer impulse response](images/reverb-reverbdesigner.png)
 
 ---
 
@@ -265,7 +265,7 @@ low-frequency and high-frequency response controls.
 | LF Filter | 0-1 | 0.4 | Low-frequency filter |
 | HF Filter | 0-1 | 0.01 | High-frequency filter |
 
-![ROM Reverb 1 impulse response](reverb-rom_rev1.png)
+![ROM Reverb 1 impulse response](images/reverb-rom_rev1.png)
 
 ---
 
@@ -295,7 +295,7 @@ low/high frequency response controls.
 | LF Filter | 0-1 | 0.4 | Low-frequency filter |
 | HF Filter | 0-1 | 0.01 | High-frequency filter |
 
-![ROM Reverb 2 impulse response](reverb-rom_rev2.png)
+![ROM Reverb 2 impulse response](images/reverb-rom_rev2.png)
 
 ---
 
@@ -324,11 +324,11 @@ simulate a smaller acoustic space.
 | Input AP | 0-1 | 0.5 | Input allpass / pre-delay coefficient |
 | Delay AP | 0-1 | 0.5 | Delay loop allpass coefficient |
 
-![Room Reverb impulse response](reverb-room.png)
+![Room Reverb impulse response](images/reverb-room.png)
 
 **Pre-delay effect:**
 
-![Room Reverb pre-delay comparison](reverb-room-predelay.png)
+![Room Reverb pre-delay comparison](images/reverb-room-predelay.png)
 
 ---
 
@@ -348,7 +348,7 @@ is set via the control input pin only.
 No control panel parameters (reverb time is controlled exclusively by
 the control input pin).
 
-![Min Reverb impulse response](reverb-minreverb.png)
+![Min Reverb impulse response](images/reverb-minreverb.png)
 
 ---
 
@@ -375,7 +375,7 @@ moderate instruction count.
 | Loop AP | 0-1 | 0.6 | Loop allpass coefficient (controls decay) |
 | AP/Delay lengths | samples | various | Individual allpass and delay lengths |
 
-![Small Reverb impulse response](reverb-minreverb2.png)
+![Small Reverb impulse response](images/reverb-minreverb2.png)
 
 ---
 
@@ -402,4 +402,4 @@ and metallic coloration.
 | Reverb Time | 0-1 | 0.85 | Feedback coefficient (decay time) |
 | Damping | 0-1 | 0.55 | Spring resonance / damping |
 
-![Spring Reverb impulse response](reverb-spring.png)
+![Spring Reverb impulse response](images/reverb-spring.png)

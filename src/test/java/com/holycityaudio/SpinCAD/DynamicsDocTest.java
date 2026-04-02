@@ -38,7 +38,7 @@ public class DynamicsDocTest {
 
     @Test
     void generateNoiseGatePlot() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // Use three threshold settings to show gating behavior
@@ -93,7 +93,7 @@ public class DynamicsDocTest {
 
     @Test
     void generatePeakCompressorPlot() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         double[] thresholds = {-6.0, -12.0, -18.0};
@@ -148,7 +148,7 @@ public class DynamicsDocTest {
 
     @Test
     void generateRmsCompressorPlot() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         double[] thresholds = {-6.0, -12.0, -18.0};
@@ -203,7 +203,7 @@ public class DynamicsDocTest {
 
     @Test
     void generateRmsLimExpPlot() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // No setters -- show output at three input levels
@@ -253,7 +253,7 @@ public class DynamicsDocTest {
 
     @Test
     void generateRmsLimiterPlot() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // Show output at three input levels; side chain is wired to same input
@@ -306,7 +306,7 @@ public class DynamicsDocTest {
 
     @Test
     void generateSoftKneeLimiterPlot() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // No setters -- show output at three input levels

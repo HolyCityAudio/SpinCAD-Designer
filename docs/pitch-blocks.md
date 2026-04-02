@@ -26,7 +26,7 @@ through a delay buffer to create the pitch change.
 | Amp | buffer size | 512 | Delay buffer size (512/1024/2048/4096) |
 | LFO Sel | 0-1 | 0 | Select RMP0 or RMP1 |
 
-![Pitch Shift Fixed output](pitch-pitchshiftfixed.png)
+![Pitch Shift Fixed output](images/pitch-pitchshiftfixed.png)
 
 ---
 
@@ -54,7 +54,7 @@ control input can modulate it further based on the control range setting.
 When the Pitch Control pin is disconnected, the block uses only the
 fixed pitchCoeff value.
 
-![Pitch Shift Adjustable output](pitch-pitch_shift_test.png)
+![Pitch Shift Adjustable output](images/pitch-pitch_shift_test.png)
 
 ---
 
@@ -70,7 +70,7 @@ rate settings. There is no control panel.
 | Pitch_Down_Out | Audio Out | One octave down |
 | Pitch_Up_Out | Audio Out | One octave up |
 
-![Octave Up/Down output](pitch-pitchupdown.png)
+![Octave Up/Down output](images/pitch-pitchupdown.png)
 
 ---
 
@@ -95,7 +95,7 @@ controllable via the Pitch Control input.
 | lfoSel | 0-1 | 0 | Select RMP0 or RMP1 |
 | lfoWidth | samples | 0 | Ramp LFO width setting |
 
-![Glitch Shift Adjustable output](pitch-glitch_shift.png)
+![Glitch Shift Adjustable output](images/pitch-glitch_shift.png)
 
 ---
 
@@ -121,7 +121,7 @@ the four pitch presets (default: -12, -7, +7, +12 semitones).
 | pitch4 | semitones | +12 | Fourth pitch preset |
 | lfoSel | 0-1 | 0 | Select RMP0 or RMP1 |
 
-![Pitch Four output](pitch-pitch_four.png)
+![Pitch Four output](images/pitch-pitch_four.png)
 
 ---
 
@@ -142,7 +142,7 @@ The offset amount is set by the Pitch_Offset control input.
 
 No control panel parameters. All control comes from the Pitch_Offset pin.
 
-![Pitch Offset output](pitch-pitchoffset.png)
+![Pitch Offset output](images/pitch-pitchoffset.png)
 
 ---
 
@@ -162,7 +162,7 @@ for creating detuned stereo effects or dual-voice pitch shifting.
 
 No control panel parameters. All control comes from the Offset pins.
 
-![Dual Output Pitch Offset output](pitch-pitchoffset1_2.png)
+![Dual Output Pitch Offset output](images/pitch-pitchoffset1_2.png)
 
 ---
 
@@ -194,4 +194,4 @@ for editing the step sequence.
 
 Default pattern: 0, +4, +7, +12, +7, +4, 0, -12 (major arpeggio up and back).
 
-![Arpeggiator output](pitch-arpeggiator.png)
+![Arpeggiator output](images/pitch-arpeggiator.png)

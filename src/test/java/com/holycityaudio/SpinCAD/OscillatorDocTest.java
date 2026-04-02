@@ -29,7 +29,7 @@ public class OscillatorDocTest {
 
     @Test
     void generateOscillatorPlots() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // === Sin/Cos LFO ===

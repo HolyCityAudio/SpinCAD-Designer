@@ -22,7 +22,7 @@ Implements: `output = input^3`
 At low levels the effect is subtle; at higher levels the signal is
 compressed toward the peaks, producing warm saturation.
 
-![Cube](waveshaper-cubegain.png)
+![Cube](images/waveshaper-cubegain.png)
 
 ---
 
@@ -38,7 +38,7 @@ in odd harmonics. There is no control panel.
 | Audio Input 1 | Audio In | Audio signal |
 | Audio Output 1 | Audio Out | Distorted output |
 
-![Distortion](waveshaper-distortion.png)
+![Distortion](images/waveshaper-distortion.png)
 
 ---
 
@@ -65,7 +65,7 @@ high-frequency harshness.
 When the Drive control pin is connected, the input is multiplied by
 the control value instead of the fixed gain setting.
 
-![Overdrive](waveshaper-overdrive.png)
+![Overdrive](images/waveshaper-overdrive.png)
 
 ---
 
@@ -82,7 +82,7 @@ frequency, creating an aggressive octave-up tone.
 
 There is no control panel.
 
-![Octave Fuzz](waveshaper-octavefuzz.png)
+![Octave Fuzz](images/waveshaper-octavefuzz.png)
 
 ---
 
@@ -100,7 +100,7 @@ creates an unusual compression/expansion characteristic.
 
 There is no control panel.
 
-![T/X](waveshaper-toverx.png)
+![T/X](images/waveshaper-toverx.png)
 
 ---
 
@@ -119,7 +119,7 @@ Two outputs are provided: a smoothed version and the raw decimated signal.
 
 There is no control panel; the Rip control input sets the effect depth.
 
-![Aliaser](waveshaper-aliaser.png)
+![Aliaser](images/waveshaper-aliaser.png)
 
 ---
 
@@ -145,4 +145,4 @@ Lower bit values produce more aggressive quantization. When the control
 input is connected, the number of quantization levels varies between
 the panel setting and a coarser resolution based on the control value.
 
-![Quantizer](waveshaper-quantizer.png)
+![Quantizer](images/waveshaper-quantizer.png)

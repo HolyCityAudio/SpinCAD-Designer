@@ -38,7 +38,7 @@ public class WaveShaperDocTest {
 
     @Test
     void generateWaveShaperPlots() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         // === Cube (CubeGain) ===

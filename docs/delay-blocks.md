@@ -33,7 +33,7 @@ available as a separate output for feedback routing.
 | Tap 1-5 Ratio | 0-1 | 0.1-0.5 | Tap position as fraction of delay |
 | Tap 1-6 Gain | linear | 0.5-0.8 | Individual tap levels |
 
-![Six Tap impulse response](delay-sixtap.png)
+![Six Tap impulse response](images/delay-sixtap.png)
 
 ---
 
@@ -62,7 +62,7 @@ separate output for feedback.
 | Delay Length | samples | 32767 | Delay buffer size |
 | Tap 1-8 Gain | linear | 0.5 | Individual tap levels |
 
-![Eight Tap impulse response](delay-eighttap.png)
+![Eight Tap impulse response](images/delay-eighttap.png)
 
 ---
 
@@ -94,7 +94,7 @@ delay buffer.
 | Delay Length | samples | 32767 | Delay buffer size |
 | Tap 1-4 Ratio | 0-1 | 0.25-0.85 | Head positions as fraction of delay |
 
-![Drum Delay impulse response](delay-drumdelay.png)
+![Drum Delay impulse response](images/delay-drumdelay.png)
 
 ---
 
@@ -126,7 +126,7 @@ Note: The interleaved memory technique trades bandwidth for delay
 length. Higher interleave factors produce longer delays but reduce
 the effective sample rate, rolling off high frequencies.
 
-![Long Delay impulse response](delay-longdelay.png)
+![Long Delay impulse response](images/delay-longdelay.png)
 
 ---
 
@@ -159,7 +159,7 @@ The fixed tap ratios mirror the MN3011 datasheet:
 tap 1 = 11.9%, tap 2 = 19.9%, tap 3 = 35.9%, tap 4 = 51.9%,
 tap 5 = 83.8%, tap 6 = 100%.
 
-![MN3011 impulse response](delay-mn3011a.png)
+![MN3011 impulse response](images/delay-mn3011a.png)
 
 ---
 
@@ -177,7 +177,7 @@ continuous reversed output without clicks.
 This block has no control panel parameters. The delay length is fixed
 at 32767 samples (approximately 1 second at the FV-1 sample rate).
 
-![Reverse Delay impulse response](delay-reversedelay.png)
+![Reverse Delay impulse response](images/delay-reversedelay.png)
 
 ---
 
@@ -202,7 +202,7 @@ buffer records normally.
 | Delay Length | samples | 32767 | Loop buffer size |
 | Fade Time Filter | linear | 0.0015 | Crossfade smoothing coefficient |
 
-![Stutter impulse response](delay-stutter.png)
+![Stutter impulse response](images/delay-stutter.png)
 
 ---
 
@@ -234,4 +234,4 @@ own delay time control input.
 | Delay Length | samples | 32767 | Delay buffer size |
 | Tap 1-3 Ratio | 0-1 | 0.45-0.85 | Tap positions as fraction of delay |
 
-![Triple Tap impulse response](delay-tripletap.png)
+![Triple Tap impulse response](images/delay-tripletap.png)

@@ -35,7 +35,7 @@ public class ModulationDocTest {
 
     @Test
     void generateModulationPlots() throws Exception {
-        File docsDir = new File("docs");
+        File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
         plotChorus(docsDir);

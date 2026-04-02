@@ -32,7 +32,7 @@ modulation effects.
 The FV-1 has only two SIN/COS LFO units (LFO 0 and LFO 1). If two
 Sin/Cos LFO blocks are used, they must be assigned to different LFO units.
 
-![Sin/Cos LFO](oscillator-sincos-lfo.png)
+![Sin/Cos LFO](images/oscillator-sincos-lfo.png)
 
 ---
 
@@ -62,7 +62,7 @@ scale-and-absolute-value operation. The Width parameter controls both the
 ramp sweep range and the triangle shape. If the Triangle LFO output is
 not connected, fewer instructions are generated.
 
-![Ramp LFO](oscillator-ramp-lfo.png)
+![Ramp LFO](images/oscillator-ramp-lfo.png)
 
 ---
 
@@ -89,7 +89,7 @@ When the LFO Speed input is connected, the frequency control signal is
 multiplied with the internal rate coefficient, allowing external modulation.
 Both outputs produce sinusoidal waveforms phase-shifted by 90 degrees.
 
-![Oscillator](oscillator-oscillator.png)
+![Oscillator](images/oscillator-oscillator.png)
 
 ---
 
@@ -119,7 +119,7 @@ waveform: positive half-cycles produce +0.5, negative half-cycles produce
 are scaled by the width control value. The Square Output is only generated
 (and instructions are only spent) when the pin is connected.
 
-![New Oscillator](oscillator-new-oscillator.png)
+![New Oscillator](images/oscillator-new-oscillator.png)
 
 ---
 
@@ -146,4 +146,4 @@ initialized elsewhere in the patch (by a Sin/Cos LFO block, a Ramp LFO
 block, or any effect block that configures an LFO). If the Output pin
 is not connected, no instructions are generated.
 
-![LFO Value](oscillator-lfo-value.png)
+![LFO Value](images/oscillator-lfo-value.png)
