@@ -1,0 +1,131 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "legacy shimmer updated.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1068",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    90.0,
+    94.0,
+    100.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 371,
+      "y": 8,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 1,
+      "x": 217,
+      "y": 225,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 2,
+      "x": 219,
+      "y": 270,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.shimmer_verbCADBlock",
+      "blockNum": 3,
+      "x": 419,
+      "y": 264,
+      "name": "Shimmer_reverb",
+      "params": {
+        "gain": 0.5,
+        "revin": 32,
+        "revout": 33,
+        "pitchout": 34,
+        "LPF": 35,
+        "temp": 36,
+        "hpf1": 37,
+        "hpf2": 38,
+        "hpf3": 39,
+        "hpf4": 40,
+        "lpf1": 41,
+        "lpf2": 42,
+        "lpf3": 43,
+        "lpf4": 44,
+        "rt": 45,
+        "iapout": 46,
+        "output1": 47,
+        "output2": 48,
+        "LPFF": 0.3,
+        "LPFSH": -0.5,
+        "kfh": 0.01,
+        "kfl": 0.4,
+        "kiap": 0.5,
+        "klap": 0.6,
+        "shimmerMode": 0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 4,
+      "x": 392,
+      "y": 488,
+      "name": "Output",
+      "params": {
+        "mono": true,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 3,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 3,
+      "toPin": "Feedback"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 3,
+      "toPin": "Decay"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Output",
+      "toBlockIndex": 4,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Input 2"
+    }
+  ]
+}

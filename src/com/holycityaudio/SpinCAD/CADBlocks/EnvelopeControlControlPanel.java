@@ -30,6 +30,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
@@ -148,6 +151,13 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 
 				decaySlider.setValue((int) SpinCADBlock.logvalToSlider(SpinCADBlock.filtToFreq(pC.getDecay()), 100.0));
 				updateDecayField();
+
+				frame.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent e) {
+						frame.dispose();
+					}
+				});
 
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
 				frame.setVisible(true);

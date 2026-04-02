@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="Consolas, monospace" font-size="13">
+  <defs>
+    <marker id="arrow1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#334"/>
+    </marker>
+    <marker id="arrow1g" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2a7"/>
+    </marker>
+    <linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8f9fb"/>
+      <stop offset="100%" stop-color="#eef0f4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="620" rx="12" fill="url(#bg1)" stroke="#c0c4cc" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="450" y="34" text-anchor="middle" font-size="18" font-weight="bold" fill="#223">testSoftKneeLimiter_limitsSignal</text>
+  <text x="450" y="54" text-anchor="middle" font-size="12" fill="#667">soft_knee_limiterCADBlock  &#8212;  AudioBlockFunctionTest.java</text>
+
+  <!-- ================================================================ -->
+  <!-- INPUT SIGNAL SECTION -->
+  <!-- ================================================================ -->
+  <rect x="30" y="72" width="260" height="175" rx="8" fill="#fff" stroke="#b0b8c4" stroke-width="1"/>
+  <text x="160" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#334">Input Signal</text>
+
+  <!-- Sine wave -->
+  <g transform="translate(50,108)">
+    <!-- Axes -->
+    <line x1="0" y1="55" x2="220" y2="55" stroke="#aab" stroke-width="0.8"/>
+    <line x1="0" y1="0" x2="0" y2="110" stroke="#aab" stroke-width="0.8"/>
+    <!-- Labels -->
+    <text x="-5" y="8" text-anchor="end" font-size="10" fill="#778">+0.25</text>
+    <text x="-5" y="59" text-anchor="end" font-size="10" fill="#778">0</text>
+    <text x="-5" y="113" text-anchor="end" font-size="10" fill="#778">-0.25</text>
+    <text x="110" y="128" text-anchor="middle" font-size="10" fill="#778">0.5 s  (16384 samples @ 32768 Hz)</text>
+    <!-- Sine curve -->
+    <path d="M0,55 C4,30 8,5 12,5 C16,5 20,30 24,55 C28,80 32,105 36,105 C40,105 44,80 48,55
+             C52,30 56,5 60,5 C64,5 68,30 72,55 C76,80 80,105 84,105 C88,105 92,80 96,55
+             C100,30 104,5 108,5 C112,5 116,30 120,55 C124,80 128,105 132,105 C136,105 140,80 144,55
+             C148,30 152,5 156,5 C160,5 164,30 168,55 C172,80 176,105 180,105 C184,105 188,80 192,55
+             C196,30 200,5 204,5 C208,5 212,30 216,55"
+          fill="none" stroke="#3577d4" stroke-width="2"/>
+  </g>
+
+  <!-- Input specs -->
+  <text x="50" y="258" font-size="11" fill="#445">1 kHz sine  &#183;  amplitude = 0.25</text>
+
+  <!-- ================================================================ -->
+  <!-- SIGNAL FLOW DIAGRAM -->
+  <!-- ================================================================ -->
+  <rect x="310" y="72" width="560" height="175" rx="8" fill="#fff" stroke="#b0b8c4" stroke-width="1"/>
+  <text x="590" y="92" text-anchor="middle" font-size="14" font-weight="bold" fill="#334">Block Signal Flow</text>
+
+  <!-- Input box -->
+  <rect x="328" y="140" width="60" height="32" rx="4" fill="#e3ecf7" stroke="#6b8fc0" stroke-width="1.2"/>
+  <text x="358" y="161" text-anchor="middle" font-size="11" fill="#334">Input</text>
+
+  <!-- Square box -->
+  <rect x="410" y="108" width="52" height="28" rx="4" fill="#fef3e0" stroke="#d4a54a" stroke-width="1.2"/>
+  <text x="436" y="127" text-anchor="middle" font-size="11" fill="#665">x&#178;</text>
+
+  <!-- LP filter -->
+  <rect x="480" y="108" width="72" height="28" rx="4" fill="#fef3e0" stroke="#d4a54a" stroke-width="1.2"/>
+  <text x="516" y="127" text-anchor="middle" font-size="10" fill="#665">LP 0.001</text>
+
+  <!-- Log box -->
+  <rect x="570" y="108" width="68" height="28" rx="4" fill="#f3e8f9" stroke="#9a6cb8" stroke-width="1.2"/>
+  <text x="604" y="122" text-anchor="middle" font-size="9" fill="#554">LOG</text>
+  <text x="604" y="133" text-anchor="middle" font-size="9" fill="#554">-0.4, -0.25</text>
+
+  <!-- Exp box -->
+  <rect x="656" y="108" width="52" height="28" rx="4" fill="#f3e8f9" stroke="#9a6cb8" stroke-width="1.2"/>
+  <text x="682" y="127" text-anchor="middle" font-size="10" fill="#554">EXP</text>
+
+  <!-- Multiply -->
+  <circle cx="726" cy="156" r="14" fill="#e8f5e9" stroke="#4a9" stroke-width="1.5"/>
+  <text x="726" y="160" text-anchor="middle" font-size="14" fill="#2a7">&#215;</text>
+
+  <!-- x6 scale -->
+  <rect x="756" y="140" width="44" height="32" rx="4" fill="#e8f5e9" stroke="#4a9" stroke-width="1.2"/>
+  <text x="778" y="161" text-anchor="middle" font-size="11" fill="#2a7">&#215;6</text>
+
+  <!-- Output box -->
+  <rect x="812" y="140" width="46" height="32" rx="4" fill="#e3ecf7" stroke="#6b8fc0" stroke-width="1.2"/>
+  <text x="835" y="161" text-anchor="middle" font-size="10" fill="#334">Out</text>
+
+  <!-- Arrows: detection path (top) -->
+  <line x1="370" y1="140" x2="370" y2="122" stroke="#d4a54a" stroke-width="1.2" marker-end="url(#arrow1)"/>
+  <line x1="388" y1="122" x2="408" y2="122" stroke="#d4a54a" stroke-width="1.2" marker-end="url(#arrow1)"/>
+  <line x1="462" y1="122" x2="478" y2="122" stroke="#d4a54a" stroke-width="1.2" marker-end="url(#arrow1)"/>
+  <line x1="552" y1="122" x2="568" y2="122" stroke="#d4a54a" stroke-width="1.2" marker-end="url(#arrow1)"/>
+  <line x1="638" y1="122" x2="654" y2="122" stroke="#d4a54a" stroke-width="1.2" marker-end="url(#arrow1)"/>
+
+  <!-- Arrow: gain down to multiply -->
+  <line x1="708" y1="122" x2="726" y2="122" stroke="#9a6cb8" stroke-width="1.2"/>
+  <line x1="726" y1="122" x2="726" y2="140" stroke="#9a6cb8" stroke-width="1.2" marker-end="url(#arrow1)"/>
+  <text x="732" y="118" font-size="9" fill="#9a6cb8">gain</text>
+
+  <!-- Arrow: input straight to multiply -->
+  <line x1="388" y1="156" x2="710" y2="156" stroke="#3577d4" stroke-width="1.5" marker-end="url(#arrow1g)"/>
+  <text x="540" y="170" text-anchor="middle" font-size="9" fill="#3577d4">dry signal path</text>
+
+  <!-- Arrow: multiply to x6 -->
+  <line x1="740" y1="156" x2="754" y2="156" stroke="#2a7" stroke-width="1.2" marker-end="url(#arrow1g)"/>
+  <!-- Arrow: x6 to output -->
+  <line x1="800" y1="156" x2="810" y2="156" stroke="#2a7" stroke-width="1.2" marker-end="url(#arrow1g)"/>
+
+  <!-- Label: detection sidechain -->
+  <text x="530" y="103" text-anchor="middle" font-size="10" fill="#d4a54a">envelope detection path</text>
+
+  <!-- ================================================================ -->
+  <!-- OUTPUT SIGNAL SECTION -->
+  <!-- ================================================================ -->
+  <rect x="30" y="265" width="410" height="175" rx="8" fill="#fff" stroke="#b0b8c4" stroke-width="1"/>
+  <text x="235" y="285" text-anchor="middle" font-size="14" font-weight="bold" fill="#334">Output Signal</text>
+
+  <g transform="translate(50,300)">
+    <!-- Axes -->
+    <line x1="0" y1="55" x2="370" y2="55" stroke="#aab" stroke-width="0.8"/>
+    <line x1="0" y1="0" x2="0" y2="110" stroke="#aab" stroke-width="0.8"/>
+    <!-- Dashed center -->
+    <line x1="185" y1="0" x2="185" y2="110" stroke="#ccd" stroke-width="0.8" stroke-dasharray="4,3"/>
+    <text x="185" y="125" text-anchor="middle" font-size="9" fill="#99a">0.25 s (transient)</text>
+    <text x="278" y="125" text-anchor="middle" font-size="9" fill="#2a7">steady-state measurement</text>
+
+    <!-- Labels -->
+    <text x="-5" y="8" text-anchor="end" font-size="10" fill="#778">+</text>
+    <text x="-5" y="59" text-anchor="end" font-size="10" fill="#778">0</text>
+    <text x="-5" y="113" text-anchor="end" font-size="10" fill="#778">-</text>
+
+    <!-- Output sine (slightly attenuated, gain-reduced) -->
+    <path d="M0,55 C3,34 7,12 10,12 C13,12 17,34 20,55 C23,76 27,98 30,98 C33,98 37,76 40,55
+             C43,34 47,12 50,12 C53,12 57,34 60,55 C63,76 67,98 70,98 C73,98 77,76 80,55
+             C83,34 87,14 90,14 C93,14 97,35 100,55 C103,75 107,96 110,96 C113,96 117,75 120,55
+             C123,35 127,16 130,16 C133,16 137,36 140,55 C143,74 147,94 150,94 C153,94 157,74 160,55
+             C163,36 167,18 170,18 C173,18 177,37 180,55"
+          fill="none" stroke="#3577d4" stroke-width="1.5" opacity="0.35"/>
+    <!-- Steady-state portion (brighter) -->
+    <path d="M185,55 C188,36 192,18 195,18 C198,18 202,37 205,55 C208,73 212,92 215,92 C218,92 222,73 225,55
+             C228,37 232,18 235,18 C238,18 242,37 245,55 C248,73 252,92 255,92 C258,92 262,73 265,55
+             C268,37 272,18 275,18 C278,18 282,37 285,55 C288,73 292,92 295,92 C298,92 302,73 305,55
+             C308,37 312,18 315,18 C318,18 322,37 325,55 C328,73 332,92 335,92 C338,92 342,73 345,55
+             C348,37 352,18 355,18 C358,18 362,37 365,55"
+          fill="none" stroke="#2a7" stroke-width="2"/>
+
+    <!-- Measurement bracket -->
+    <rect x="185" y="-4" width="185" height="118" rx="4" fill="none" stroke="#2a7" stroke-width="1" stroke-dasharray="3,2"/>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- TEST CRITERIA SECTION -->
+  <!-- ================================================================ -->
+  <rect x="460" y="265" width="410" height="175" rx="8" fill="#fff" stroke="#b0b8c4" stroke-width="1"/>
+  <text x="665" y="285" text-anchor="middle" font-size="14" font-weight="bold" fill="#334">Test Criteria</text>
+
+  <!-- Criterion boxes -->
+  <rect x="480" y="300" width="370" height="40" rx="6" fill="#eef7ee" stroke="#4a9" stroke-width="1"/>
+  <text x="495" y="316" font-size="12" font-weight="bold" fill="#2a7">ASSERT 1: assertNotNull(gain)</text>
+  <text x="495" y="332" font-size="11" fill="#445">Simulation must complete without error</text>
+
+  <rect x="480" y="350" width="370" height="40" rx="6" fill="#eef7ee" stroke="#4a9" stroke-width="1"/>
+  <text x="495" y="366" font-size="12" font-weight="bold" fill="#2a7">ASSERT 2: gain &gt; -20.0 dB</text>
+  <text x="495" y="382" font-size="11" fill="#445">Limiter must pass signal through (possibly attenuated)</text>
+
+  <!-- dB scale bar -->
+  <g transform="translate(490,402)">
+    <rect x="0" y="8" width="350" height="18" rx="3" fill="#f0f2f5" stroke="#ccd" stroke-width="0.8"/>
+    <!-- -80 to 0 range -->
+    <rect x="0" y="8" width="263" height="18" rx="3" fill="#fee" stroke="none"/>
+    <rect x="263" y="8" width="87" height="18" rx="3" fill="#dfd" stroke="none"/>
+    <line x1="263" y1="6" x2="263" y2="28" stroke="#c44" stroke-width="1.5"/>
+    <text x="263" y="4" text-anchor="middle" font-size="10" fill="#c44" font-weight="bold">-20 dB</text>
+    <text x="350" y="4" text-anchor="end" font-size="10" fill="#2a7">0 dB</text>
+    <text x="0" y="4" font-size="10" fill="#c44">-80 dB</text>
+    <text x="306" y="21" text-anchor="middle" font-size="9" fill="#2a7" font-weight="bold">PASS</text>
+    <text x="130" y="21" text-anchor="middle" font-size="9" fill="#c44">FAIL</text>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- MEASUREMENT METHOD -->
+  <!-- ================================================================ -->
+  <rect x="30" y="458" width="840" height="145" rx="8" fill="#fff" stroke="#b0b8c4" stroke-width="1"/>
+  <text x="450" y="480" text-anchor="middle" font-size="14" font-weight="bold" fill="#334">Measurement Method</text>
+
+  <text x="50" y="502" font-size="12" fill="#445">1. Generate stereo 16-bit WAV: 1 kHz sine, amplitude 0.25, duration 0.5 s, sample rate 32768 Hz</text>
+  <text x="50" y="522" font-size="12" fill="#445">2. Wire: InputCADBlock &#8594; soft_knee_limiterCADBlock &#8594; OutputCADBlock ("Audio_Output" pin)</text>
+  <text x="50" y="542" font-size="12" fill="#445">3. Run SpinSimulator (loopMode=false, pot values 0.5/0.5/0.5)</text>
+  <text x="50" y="562" font-size="12" fill="#445">4. Measure: RMS of left channel, second half only (samples 8192&#8211;16383) to skip transient</text>
+  <text x="50" y="582" font-size="12" fill="#445">5. Gain = 20 &#183; log&#8321;&#8320;( outputRMS / inputRMS )  where inputRMS = 0.25 &#215; 32767 / &#8730;2</text>
+</svg>

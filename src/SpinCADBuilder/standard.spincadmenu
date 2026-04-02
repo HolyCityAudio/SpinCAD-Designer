@@ -30,8 +30,10 @@
 @menuitem "RMS Lim/Exp" rms_lim_exp
 @menuitem "RMS Limiter" rms_limiter
 @menuitem "Soft Knee Limiter" soft_knee_limiter
+@menuitem "Peak Compressor" peak_compressor
+@menuitem "RMS Compressor" rms_compressor
 @menuitem "Noise Gate" NoiseGate
-@menuitem "Gate CV" GatedReverbControl  // hand-written in src/
+//@menuitem "Gate CV" GatedReverbControl  // deprecated: use Envelope Follower in Control menu
 //@menuitem "Slow Gear" slow_gear
 
 @menu "Filters"
@@ -143,8 +145,9 @@
 @menuitem "Slicer" Slicer
 @menuitem "Two Stage" Two_Stage
 @menuitem "Vee" Vee
-@menuitem "Envelope" EnvelopeControl
-@menuitem "Envelope II" New_Envelope
+@menuitem "Envelope Follower" EnvelopeFollower  // hand-written in src/
+//@menuitem "Envelope" EnvelopeControl  // deprecated: use Envelope Follower
+//@menuitem "Envelope II" New_Envelope  // deprecated: use Envelope Follower
 @menuitem "Mixer 2:1" ControlMixer_2_to_1
 @menuitem "Mixer 3:1" ControlMixer_3_to_1
 @menuitem "Tap Tempo" TapTempo

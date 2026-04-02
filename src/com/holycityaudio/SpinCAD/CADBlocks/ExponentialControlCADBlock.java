@@ -53,8 +53,6 @@ public class ExponentialControlCADBlock extends ControlCADBlock{
 		sfxb.writeRegister(Exp,0);
 
 		this.getPin("Control Output 1").setRegister(Exp);
-		System.out.println("Envelope control code gen!");
-
 	}
 
 }

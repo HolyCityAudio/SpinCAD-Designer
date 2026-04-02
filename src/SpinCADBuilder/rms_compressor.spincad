@@ -1,0 +1,114 @@
+@name RMS_Compressor
+@color "0x009595"
+@audioInput input Input
+@audioOutput output Audio_Output
+@controlOutput gainOut 'Gain Reduction'
+
+; RMS Compressor (Faust RMS_compression_gain_mono_db style)
+; True threshold clamping — signals below threshold pass unchanged.
+;
+; Signal chain:
+;   input -> square -> short RMS avg -> LOG 0.5,0 -> threshold compare ->
+;   [above: strength compression | below: unity] -> att/rel smoothing -> EXP -> multiply
+;
+; LOG 0.5,0 on squared average undoes squaring in log domain:
+;   0.5 * log2(A^2)/16 = log2(A)/16 (actual amplitude level)
+; This puts us in the same log2/16 domain as the peak compressor,
+; so the same threshold conversion (dB / 96.33) works for both.
+
+equ	sigin	reg0
+equ	avg	reg1
+equ	gain	reg2
+equ	output	reg3
+equ	gainOut	reg4
+
+equ inGain 1.0
+@sliderLabel inGain Input_Gain 0.1 2.0 1.0 100.0 2
+
+; Strength: 0 = no compression, 0.5 ~ 2:1, 1.0 = limiter
+equ strength 0.5
+@sliderLabel strength Strength 0.0 1.0 0.5 100.0 2
+
+; negStrength = -strength for gain reduction: excess * (-strength)
+equ zero 0.0
+@minusDouble negStrength zero strength
+
+; Threshold: convert dB to FV-1 log domain
+equ threshDb -25.0
+@sliderLabel threshDb 'Threshold (dB)' -50.0 -5.0 -25.0 10.0 1
+equ negLogScale -96.33
+@divideDouble negThreshAcc threshDb negLogScale
+
+; Attack time (post-LOG smoothing)
+equ attTime 0.01
+@sliderLabel attTime Attack 1 50 0.01 10.0 1 FILTTOTIME
+
+; Release time (post-LOG smoothing)
+equ relTime 0.001
+@sliderLabel relTime Release 50 500 0.001 10.0 1 FILTTOTIME
+
+; Short fixed RMS window coefficient (~6 ms at 32768 Hz)
+equ rmsCoeff 0.005
+
+; Makeup gain in log domain (dB / 96.33)
+equ makeupDb 0.0
+@sliderLabel makeupDb 'Makeup (dB)' 0.0 30.0 0.0 10.0 1
+equ logScale 96.33
+@divideDouble makeupAcc makeupDb logScale
+
+equ trim 1.0
+@sliderLabel trim Output_Trim 0.25 2.0 1.0 100.0 2
+
+@isPinConnected Input
+
+; Read input, apply input gain
+rdax	input, inGain
+wrax	sigin, 1
+
+; RMS detection: square the input
+mulx	sigin
+
+; Short RMS average (smooths rectification only)
+rdfx	avg, rmsCoeff
+wrax	avg, 0
+
+; --- Gain computation with true threshold clamping ---
+rdax	avg, 1
+log	0.5, 0			; C=0.5 undoes squaring: ACC ~ log2(|A|)/16
+sof	1, negThreshAcc		; ACC = level - threshold (excess)
+skp	gez, rms_above		; excess >= 0: above threshold -> compress
+sof	0, 0			; below threshold: ACC = 0 (unity gain)
+skp	gez, rms_apply		; skip to apply (always taken: 0 >= 0)
+rms_above:
+sof	negStrength, 0		; ACC = excess * (-strength) = gain reduction
+
+rms_apply:
+sof	1, makeupAcc		; add makeup gain in log domain
+
+; Post-LOG attack/release smoothing (dB-linear dynamics)
+rdax	gain, -1		; diff = new_gain - smooth_gain
+skp	neg, rms_att		; if attacking (going more negative), use fast coeff
+sof	relTime, 0		; releasing: slow coeff
+skp	gez, rms_done		; skip attack path
+rms_att:
+sof	attTime, 0		; attacking: fast coeff
+rms_done:
+rdax	gain, 1			; smooth + scaled diff
+wrax	gain, 1			; save smoothed gain, keep in ACC
+
+; Convert back to linear
+exp	1, 0
+
+; Apply gain to dry signal with trim
+mulx	sigin
+sof	trim, 0
+wrax	output, 0
+
+; Gain reduction monitor
+rdax	gain, 1
+rdfx	gainOut, 0.001
+wrax	gainOut, 0
+
+@setOutputPin Audio_Output output
+@setOutputPin 'Gain Reduction' gainOut
+@endif

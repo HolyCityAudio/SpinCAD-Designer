@@ -24,8 +24,9 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_lim_expCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.rms_limiterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.soft_knee_limiterCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.peak_compressorCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.rms_compressorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.NoiseGateCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.GatedReverbControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF_RDFXCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF_RDFXCADBlock;
@@ -97,8 +98,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Two_StageCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.VeeCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeControlCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.New_EnvelopeCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.EnvelopeFollowerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_3_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
@@ -350,6 +350,25 @@
 	});
 	mn_dynamics.add(mntm_soft_knee_limiter);
 		
+	
+	final JMenuItem mntm_peak_compressor = new JMenuItem("Peak Compressor");
+	mntm_peak_compressor.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new peak_compressorCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_dynamics.add(mntm_peak_compressor);
+		
+	final JMenuItem mntm_rms_compressor = new JMenuItem("RMS Compressor");
+	mntm_rms_compressor.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new rms_compressorCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_dynamics.add(mntm_rms_compressor);
+		
 	final JMenuItem mntm_NoiseGate = new JMenuItem("Noise Gate");
 	mntm_NoiseGate.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -358,15 +377,6 @@
 		}
 	});
 	mn_dynamics.add(mntm_NoiseGate);
-		
-	final JMenuItem mntm_GatedReverbControl = new JMenuItem("Gate CV");
-	mntm_GatedReverbControl.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new GatedReverbControlCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_dynamics.add(mntm_GatedReverbControl);
 		
 	JMenu mn_filters = new JMenu("Filters");
 	menuBar.add(mn_filters);
@@ -1025,23 +1035,14 @@
 	});
 	mn_control.add(mntm_Vee);
 		
-	final JMenuItem mntm_EnvelopeControl = new JMenuItem("Envelope");
-	mntm_EnvelopeControl.addActionListener(new ActionListener() {
+	final JMenuItem mntm_EnvelopeFollower = new JMenuItem("Envelope Follower");
+	mntm_EnvelopeFollower.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new EnvelopeControlCADBlock(50, 100);
+			SpinCADBlock pcB = new EnvelopeFollowerCADBlock(50, 100);
 			f.dropBlock(panel, pcB);
 		}
 	});
-	mn_control.add(mntm_EnvelopeControl);
-		
-	final JMenuItem mntm_New_Envelope = new JMenuItem("Envelope II");
-	mntm_New_Envelope.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new New_EnvelopeCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_New_Envelope);
+	mn_control.add(mntm_EnvelopeFollower);
 		
 	final JMenuItem mntm_ControlMixer_2_to_1 = new JMenuItem("Mixer 2:1");
 	mntm_ControlMixer_2_to_1.addActionListener(new ActionListener() {
