@@ -302,14 +302,14 @@ public class ControlBlockBehaviorTest {
     }
 
     // ==================== 9. Vee ====================
-    // Output 1: max(0, 1 - 2*input) — decreasing from 1 to 0 as input goes 0 to 0.5
-    // Output 2: max(0, 2*input - 1) — increasing from 0 to 1 as input goes 0.5 to 1
+    // Three modes depending on which outputs are connected:
+    //   Both: Output 1 = max(0, -2*input + 0.999), Output 2 = max(0, 2*input - 1)
+    //   Output 1 only: V-shape via ABSA = |x - 0.5| * 1.999
+    //   Output 2 only: Inverted V via ABSA = |x - 0.5| * (-2.0) + 0.999
 
     @Test
-    void testVee_vShapeOutputs() {
-        System.out.println("\n=== Vee ===");
-        // Out1 = |x - 0.5| * 1.999  (V-shape: high at edges, zero at center)
-        // Out2 = |x - 0.5| * -2.0 + 0.999  (inverted V: zero at edges, high at center)
+    void testVee_bothConnected_halfRamps() {
+        System.out.println("\n=== Vee (both connected) ===");
         int[] inputs = {100, 300, 500, 700, 900};
 
         for (int val : inputs) {
@@ -319,15 +319,54 @@ public class ControlBlockBehaviorTest {
 
             assertNotNull(result);
             double x = val / 1000.0;
-            double dist = Math.abs(x - 0.5);
-            double expectedOut1 = dist * 1.999;
-            double expectedOut2 = Math.max(0, dist * -2.0 + 0.999);
+            double expectedOut1 = Math.max(0, -2.0 * x + 0.999);
+            double expectedOut2 = Math.max(0, 2.0 * x - 1.0);
             System.out.printf("  input=%.1f  out1=%.3f (exp=%.3f)  out2=%.3f (exp=%.3f)%n",
                 x, result[0], expectedOut1, result[1], expectedOut2);
             assertEquals(expectedOut1, result[0], DC_TOLERANCE,
                 String.format("Vee out1 input=%.1f", x));
             assertEquals(expectedOut2, result[1], DC_TOLERANCE,
                 String.format("Vee out2 input=%.1f", x));
+        }
+    }
+
+    @Test
+    void testVee_singleOutput1_vShape() {
+        System.out.println("\n=== Vee (Output 1 only) ===");
+        int[] inputs = {100, 300, 500, 700, 900};
+
+        for (int val : inputs) {
+            VeeCADBlock block = new VeeCADBlock(100, 100);
+            double[] result = simulateControlDC(block,
+                Map.of("Input", val), "Output 1", null);
+
+            assertNotNull(result);
+            double x = val / 1000.0;
+            double expectedOut1 = Math.abs(x - 0.5) * 1.999;
+            System.out.printf("  input=%.1f  out1=%.3f (exp=%.3f)%n",
+                x, result[0], expectedOut1);
+            assertEquals(expectedOut1, result[0], DC_TOLERANCE,
+                String.format("Vee out1 only input=%.1f", x));
+        }
+    }
+
+    @Test
+    void testVee_singleOutput2_invertedV() {
+        System.out.println("\n=== Vee (Output 2 only) ===");
+        int[] inputs = {100, 300, 500, 700, 900};
+
+        for (int val : inputs) {
+            VeeCADBlock block = new VeeCADBlock(100, 100);
+            double[] result = simulateControlDC(block,
+                Map.of("Input", val), "Output 2", null);
+
+            assertNotNull(result);
+            double x = val / 1000.0;
+            double expectedOut2 = Math.max(0, Math.abs(x - 0.5) * -2.0 + 0.999);
+            System.out.printf("  input=%.1f  out2=%.3f (exp=%.3f)%n",
+                x, result[0], expectedOut2);
+            assertEquals(expectedOut2, result[0], DC_TOLERANCE,
+                String.format("Vee out2 only input=%.1f", x));
         }
     }
 

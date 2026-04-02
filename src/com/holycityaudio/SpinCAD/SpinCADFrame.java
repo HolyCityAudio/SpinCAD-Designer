@@ -85,6 +85,9 @@ import com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock;
 import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
 
 public class SpinCADFrame extends JFrame {
 
@@ -889,6 +892,11 @@ public class SpinCADFrame extends JFrame {
 			int bottomY = vis.y + vis.height - 80;
 			eeprom.patch[bankIndex].patchModel.addBlock(new InputCADBlock(cx, topY));
 			eeprom.patch[bankIndex].patchModel.addBlock(new OutputCADBlock(cx, bottomY));
+			int leftX = vis.x + 30;
+			int spacing = (bottomY - topY) / 4;
+			eeprom.patch[bankIndex].patchModel.addBlock(new Pot0CADBlock(leftX, topY + spacing));
+			eeprom.patch[bankIndex].patchModel.addBlock(new Pot1CADBlock(leftX, topY + spacing * 2));
+			eeprom.patch[bankIndex].patchModel.addBlock(new Pot2CADBlock(leftX, topY + spacing * 3));
 		}
 	}
 

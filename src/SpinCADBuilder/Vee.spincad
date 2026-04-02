@@ -4,28 +4,55 @@
 @controlOutput output1 'Output 1'
 @controlOutput output2 'Output 2'
 
-;REGISTERS 
+;REGISTERS
 
 @isPinConnected Input
+
 @isPinConnected 'Output 1'
+@isPinConnected 'Output 2'
+; Both connected: Output 1 half-ramp via SKP/CLR
+; max(0, -2*input + 0.999): ramps 1→0 over first half, stays at 0
 equ   output1     reg0
+rdax input, 1.0
+sof -2.0, 0.99902
+skp gez, positive
+clr
+positive:
+wrax    output1,0
+@else
+; Output 1 only: V-shape via ABSA
+; |x - 0.5| * 1.999: high at edges, zero at center
 rdax input, 1
 sof 1, -0.5
 absa
 sof 1.999, 0
 wrax    output1,0
 @endif
+@endif
 
 @isPinConnected 'Output 2'
+@isPinConnected 'Output 1'
+; Both connected: Output 2 half-ramp via SKP/CLR
+; max(0, 2*input - 1): stays at 0 over first half, ramps 0→1
 equ   output2     reg1
+sof 0, 0.99902
+rdax input, -0.99902
+sof -1.99804, 0.99902
+skp gez, pos
+clr
+pos:
+wrax    output2,0
+@else
+; Output 2 only: inverted V via ABSA
+; |x - 0.5| * (-2.0) + 0.999: zero at edges, high at center
 rdax input, 1
 sof 1, -0.5
 absa
 sof -2.0, 0.99902
 wrax    output2,0
 @endif
+@endif
 
 @setOutputPin 'Output 1' output1
 @setOutputPin 'Output 2' output2
 @endif
-

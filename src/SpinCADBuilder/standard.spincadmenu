@@ -1,165 +1,167 @@
 // Standard Menu
 
 @menu "I/O - Mix"
-@menuitem "Input" Input
-@menuitem "Output" Output 
-@menuitem "Volume" Volume
-@menuitem "Gain Boost" GainBoost
-@menuitem "Phase Invert" Phase_Invert
+@menuitem "2:1 (x2) Mixer" Mixer_4_to_2
+@menuitem "2:1 Mixer" Mixer_2_to_1
+@menuitem "3:1 Mixer" Mixer_3_to_1
+@menuitem "4:1 Mixer" Mixer_4_to_1
 @menuitem "Crossfade" crossfade
 @menuitem "Crossfade 2" crossfade_2
 @menuitem "Crossfade 3" crossfade_3
+@menuitem "Gain Boost" GainBoost
+@menuitem "Input" Input
+@menuitem "Output" Output
 @menuitem "Panner" panner
-@menuitem "2:1 Mixer" Mixer_2_to_1
-@menuitem "2:1 (x2) Mixer" Mixer_4_to_2
-@menuitem "3:1 Mixer" Mixer_3_to_1
-@menuitem "4:1 Mixer" Mixer_4_to_1
+@menuitem "Phase Invert" Phase_Invert
+@menuitem "Volume" Volume
 
-@menu "Wave Shaper" 
-@menuitem "Aliaser" Aliaser 
-@menuitem "Cube" CubeGain 
-@menuitem "Distortion" Distortion 
-@menuitem "Noise AMZ" noise_amz 
-@menuitem "Octave Fuzz" Octave 
-@menuitem "Overdrive" Overdrive 
-@menuitem "Quantizer" Quantizer 
-@menuitem "T/X" ToverX 
-// @menuitem "Test" InstructionTest 
+@menu "Wave Shaper"
+@menuitem "Aliaser" Aliaser
+@menuitem "Cube" CubeGain
+@menuitem "Distortion" Distortion
+@menuitem "Noise AMZ" noise_amz
+@menuitem "Octave Fuzz" Octave
+@menuitem "Overdrive" Overdrive
+@menuitem "Quantizer" Quantizer
+@menuitem "T/X" ToverX
+// @menuitem "Test" InstructionTest
 
 @menu "Dynamics"
+@menuitem "Noise Gate" NoiseGate
+@menuitem "Peak Compressor" peak_compressor
+@menuitem "RMS Compressor" rms_compressor
 @menuitem "RMS Lim/Exp" rms_lim_exp
 @menuitem "RMS Limiter" rms_limiter
 @menuitem "Soft Knee Limiter" soft_knee_limiter
-@menuitem "Peak Compressor" peak_compressor
-@menuitem "RMS Compressor" rms_compressor
-@menuitem "Noise Gate" NoiseGate
 //@menuitem "Gate CV" GatedReverbControl  // deprecated: use Envelope Follower in Control menu
 //@menuitem "Slow Gear" slow_gear
 
 @menu "Filters"
-//@menuitem "Bassman '59" BassmanEQ 
-@menuitem "1P Lowpass" LPF_RDFX
-@menuitem "Shelving Lowpass" Shelving_lowpass 
-@menuitem "1P Hipass" HPF_RDFX
-@menuitem "Shelving Hipass" Shelving_Hipass 
-@menuitem "2P SVF Fixed Q" SVF2P 
-@menuitem "2P SVF Adjustable" SVF_2P_adjustable 
-@menuitem "2P/4P Lowpass" LPF4P 
-@menuitem "2P/4P Highpass" HPF2P 
-@menuitem "Notch" Notch 
-// @menuitem "4P L-R Crossover" Crossover_4P 
 @menuitem "1-Band EQ" OneBandEQ
+@menuitem "1P Hipass" HPF_RDFX
+@menuitem "1P Lowpass" LPF_RDFX
+@menuitem "2P SVF Adjustable" SVF_2P_adjustable
+@menuitem "2P SVF Fixed Q" SVF2P
+@menuitem "2P/4P Highpass" HPF2P
+@menuitem "2P/4P Lowpass" LPF4P
 @menuitem "6-Band EQ" SixBandEQ
 @menuitem "Comb Filter" CombFilter
+@menuitem "Notch" Notch
 @menuitem "Resonator" Resonator
+@menuitem "Shelving Hipass" Shelving_Hipass
+@menuitem "Shelving Lowpass" Shelving_lowpass
+//@menuitem "Bassman '59" BassmanEQ
+// @menuitem "4P L-R Crossover" Crossover_4P
 
 @menu "Delay"
-// @menuitem "Single Delay" SingleDelay
-// @menuitem "Coarse Delay" CoarseDelay
+@menuitem "6-Tap Stereo" sixtap
+@menuitem "8-Tap" eighttap
+@menuitem "Drum Delay" DrumDelay
 @menuitem "Long Delay" LongDelay
-@menuitem "ThreeTap" TripleTap 
-@menuitem "MN3011" MN3011a 
-@menuitem "Drum Delay" DrumDelay 
-@menuitem "6-Tap Stereo" sixtap 
-@menuitem "8-Tap" eighttap 
-@menuitem "Stutter" Stutter 
-@menuitem "Reverse" ReverseDelay 
+@menuitem "MN3011" MN3011a
+@menuitem "Reverse" ReverseDelay
+@menuitem "Stutter" Stutter
+@menuitem "ThreeTap" TripleTap
+// @menuitem "Coarse Delay" CoarseDelay
+// @menuitem "Single Delay" SingleDelay
 
-@menu "Reverb" 
-@menuitem "Allpass" allpass 
-@menuitem "Chirp" Chirp 
-@menuitem "Small Reverb" MinReverb 
-@menuitem "Small Reverb 2" MinReverb2 
-@menuitem "Room Reverb" reverb_room 
-@menuitem "Hall Reverb" reverb_hall 
-// @menuitem "Ted Reverb" Ted_Rev_Reverb 
-//@menuitem "Plate Reverb" reverb_plate 
-//@menuitem "Reverb Plate Filters" reverb_plate_filters 
-// @menuitem "Gated Reverb" gated_verb 
-@menuitem "ROM Reverb 1" rom_rev1 
-@menuitem "ROM Reverb 2" rom_rev2 
+@menu "Reverb"
 @menuitem "Adjustable Reverb" reverb
-@menuitem "Reverb Designer" ReverbDesigner
+@menuitem "Allpass" allpass
 @menuitem "Ambience" Ambience  // hand-written in src/
+@menuitem "Chirp" Chirp
 @menuitem "Freeverb" Freeverb
-@menuitem "Spring Reverb" SpringReverb
+@menuitem "Hall Reverb" reverb_hall
 @menuitem "Plate Reverb" DattorroPlateReverb  // hand-written in src/
+@menuitem "Reverb Designer" ReverbDesigner
+@menuitem "ROM Reverb 1" rom_rev1
+@menuitem "ROM Reverb 2" rom_rev2
+@menuitem "Room Reverb" reverb_room
+@menuitem "Small Reverb" MinReverb
+@menuitem "Small Reverb 2" MinReverb2
+@menuitem "Spring Reverb" SpringReverb
+// @menuitem "Gated Reverb" gated_verb
 // @menuitem "Reverb Delay Line 01" reverb_delay_line_01
 // @menuitem "Shimmer Reverb" shimmer_verb
+// @menuitem "Ted Reverb" Ted_Rev_Reverb
+//@menuitem "Plate Reverb" reverb_plate
+//@menuitem "Reverb Plate Filters" reverb_plate_filters
 
-@menu "Modulation"  
-@menuitem "1-voice Chorus" Chorus 
-@menuitem "4-voice Chorus" ChorusQuad 
-@menuitem "LFO Flanger" Flanger 
+@menu "Modulation"
+@menuitem "1-voice Chorus" Chorus
+@menuitem "4-voice Chorus" ChorusQuad
+@menuitem "LFO Flanger" Flanger
+@menuitem "Phaser" Phaser
+@menuitem "Ring Modulator" RingMod
 @menuitem "Servo Flanger" servo
-@menuitem "Phaser" Phaser 
-@menuitem "Ring Modulator" RingMod 
 
 @menu "Pitch"
-//@menuitem "Pitch Test" PitchTest 
-@menuitem "Pitch Shift Fixed" PitchShiftFixed 
-@menuitem "Pitch Shift Adjustable" Pitch_shift_test 
-// @menuitem "Pitch Up" PitchUp 
-// @menuitem "Pitch Up/Down J" PitchUpDownJ 
-@menuitem "Octave Up/Down" pitchupdown 
-@menuitem "Glitch Shift Adjustable" Glitch_shift 
-@menuitem "Pitch Four" pitch_four
-@menuitem "Pitch Offset" pitchoffset 
-@menuitem "Dual Output Pitch Offset" pitchoffset1_2
 @menuitem "Arpeggiator" Arpeggiator  // hand-written in src/
+@menuitem "Dual Output Pitch Offset" pitchoffset1_2
+@menuitem "Glitch Shift Adjustable" Glitch_shift
+@menuitem "Octave Up/Down" pitchupdown
+@menuitem "Pitch Four" pitch_four
+@menuitem "Pitch Offset" pitchoffset
+@menuitem "Pitch Shift Adjustable" Pitch_shift_test
+@menuitem "Pitch Shift Fixed" PitchShiftFixed
+// @menuitem "Pitch Up" PitchUp
+// @menuitem "Pitch Up/Down J" PitchUpDownJ
+//@menuitem "Pitch Test" PitchTest
 
 //@menu "Guitar"
-//@menuitem "GA Chorus" ga_demo_chorus 
-//@menuitem "GA Echo Repeat" ga_demo_echo_repeat 
-//@menuitem "GA Flanger" ga_demo_flanger 
+//@menuitem "GA Chorus" ga_demo_chorus
+//@menuitem "GA Echo Repeat" ga_demo_echo_repeat
+//@menuitem "GA Flanger" ga_demo_flanger
 //@menuitem "Ramp LFO Test" ramp_lfo_test
-//@menuitem "GA Phaser" ga_demo_phaser 
-//@menuitem "GA Vibrato" ga_demo_vibrato 
-//@menuitem "GA Wah" ga_demo_wah 
+//@menuitem "GA Phaser" ga_demo_phaser
+//@menuitem "GA Vibrato" ga_demo_vibrato
+//@menuitem "GA Wah" ga_demo_wah
 
-// @menu "Pots"
+@menu "Pots"
+@menuitem "Pot 0" Pot0
+@menuitem "Pot 1" Pot1
+@menuitem "Pot 2" Pot2
+// @menuitem "Pot Skip" PotSkip
+
+@menu "Oscillators"
+@menuitem "LFO Value" LFO_Value
+@menuitem "New Oscillator" New_Oscillator
+@menuitem "Oscillator" Oscillator
+@menuitem "Ramp LFO" RampLFO
+@menuitem "Sin/Cos LFO" SinCosLFOA
+@menuitem "Tremolizer" tremolizer
+//@menuitem "Pluck" Pluck
 
 @menu "Control"
-@menuitem "Pot 0" Pot0 
-@menuitem "Pot 1" Pot1 
-@menuitem "Pot 2" Pot2 
-// @menuitem "Pot Skip" PotSkip 
-@menuitem "Smoother" control_smoother
-@menuitem "Adj Smoother" control_adjustable_smoother
-@menuitem "Adj Change Detect" control_adjustable_change_detect  // hand-written in src/
-@menuitem "Sin/Cos LFO" SinCosLFOA
-@menuitem "LFO Value" LFO_Value 
-@menuitem "Ramp LFO" RampLFO
-@menuitem "Oscillator" Oscillator
-@menuitem "New Oscillator" New_Oscillator
-//@menuitem "Pluck" Pluck
-@menuitem "Ramp Sample/Hold" SampleHold
 @menuitem "4-Phase Sample/Hold" Sine_Sample_Hold
-@menuitem "Pattern Gen" PatternGenerator  // hand-written in src/
-@menuitem "Tremolizer" tremolizer
-//@menuitem "Peak/Envelope" Peak_Envelope
-@menuitem "Invert" InvertControl
-@menuitem "Power" PowerControl
-@menuitem "Ratio" Ratio
+@menuitem "Adj Change Detect" control_adjustable_change_detect  // hand-written in src/
+@menuitem "Adj Smoother" control_adjustable_smoother
 @menuitem "Clip" ClipControl
-@menuitem "Slicer" Slicer
-@menuitem "Two Stage" Two_Stage
-@menuitem "Vee" Vee
 @menuitem "Envelope Follower" EnvelopeFollower  // hand-written in src/
-//@menuitem "Envelope" EnvelopeControl  // deprecated: use Envelope Follower
-//@menuitem "Envelope II" New_Envelope  // deprecated: use Envelope Follower
+@menuitem "Invert" InvertControl
 @menuitem "Mixer 2:1" ControlMixer_2_to_1
 @menuitem "Mixer 3:1" ControlMixer_3_to_1
+@menuitem "Pattern Gen" PatternGenerator  // hand-written in src/
+@menuitem "Power" PowerControl
+@menuitem "Ramp Sample/Hold" SampleHold
+@menuitem "Ratio" Ratio
+@menuitem "Slicer" Slicer
+@menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo
+@menuitem "Two Stage" Two_Stage
+@menuitem "Vee" Vee
+//@menuitem "Peak/Envelope" Peak_Envelope
+//@menuitem "Envelope" EnvelopeControl  // deprecated: use Envelope Follower
+//@menuitem "Envelope II" New_Envelope  // deprecated: use Envelope Follower
 
 @menu "Instructions"
-@menuitem "Scale/Offset" ScaleOffsetControl
+@menuitem "Absolute Value" Absa
+@menuitem "Constant" Constant
+@menuitem "Exp" Exp
+@menuitem "Half Wave" Half_Wave
+@menuitem "Log" Log
 @menuitem "Maximum" maxx
 @menuitem "Multiply" Multiply
-@menuitem "Half Wave" Half_Wave
-@menuitem "Absolute Value" Absa
-@menuitem "Exp" Exp
-@menuitem "Log" Log
 @menuitem "Root" Root
-@menuitem "Constant" Constant 
-// @menuitem "Control Panel Test" ControlPanelTest 
+@menuitem "Scale/Offset" ScaleOffsetControl
+// @menuitem "Control Panel Test" ControlPanelTest
