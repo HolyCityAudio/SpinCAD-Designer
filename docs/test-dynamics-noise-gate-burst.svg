@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 750" font-family="Consolas, monospace" font-size="12">
+  <defs>
+    <linearGradient id="bgng" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8f9fb"/>
+      <stop offset="100%" stop-color="#eef0f4"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="750" rx="12" fill="url(#bgng)" stroke="#c0c4cc" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="480" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#223">Noise Gate &#8212; Tone Burst Envelope Test</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#667">DynamicsEnvelopeTest.java  &#183;  440 Hz bursts, 200 ms on / 200 ms off, -80 to 0 dBFS  &#183;  thresh=0.02</text>
+
+  <!-- ================================================================ -->
+  <!-- INPUT STAIRCASE -->
+  <!-- ================================================================ -->
+  <rect x="30" y="62" width="900" height="130" rx="8" fill="#fff" stroke="#b0b8c4"/>
+  <text x="40" y="80" font-size="13" font-weight="bold" fill="#334">Input Signal</text>
+
+  <g transform="translate(60,88)">
+    <line x1="0" y1="0" x2="0" y2="85" stroke="#aab" stroke-width="0.8"/>
+    <line x1="0" y1="85" x2="840" y2="85" stroke="#aab" stroke-width="0.8"/>
+    <text x="-8" y="6" text-anchor="end" font-size="9" fill="#778">0 dB</text>
+    <text x="-8" y="48" text-anchor="end" font-size="9" fill="#778">-40</text>
+    <text x="-8" y="88" text-anchor="end" font-size="9" fill="#778">-80</text>
+
+    <!-- 9 bursts -->
+    <rect x="0" y="84" width="43" height="1" fill="#3577d4" opacity="0.4"/>
+    <rect x="93" y="81" width="43" height="4" fill="#3577d4" opacity="0.4"/>
+    <rect x="186" y="74" width="43" height="11" fill="#3577d4" opacity="0.5"/>
+    <rect x="279" y="64" width="43" height="21" fill="#3577d4" opacity="0.5"/>
+    <rect x="372" y="43" width="43" height="42" fill="#3577d4" opacity="0.6"/>
+    <rect x="465" y="22" width="43" height="63" fill="#3577d4" opacity="0.7"/>
+    <rect x="558" y="11" width="43" height="74" fill="#3577d4" opacity="0.8"/>
+    <rect x="651" y="5" width="43" height="80" fill="#3577d4" opacity="0.85"/>
+    <rect x="744" y="1" width="43" height="84" fill="#3577d4" opacity="0.9"/>
+    <!-- Labels -->
+    <text x="23" y="98" text-anchor="middle" font-size="8" fill="#99a">-80</text>
+    <text x="116" y="98" text-anchor="middle" font-size="8" fill="#99a">-70</text>
+    <text x="209" y="98" text-anchor="middle" font-size="8" fill="#99a">-60</text>
+    <text x="302" y="98" text-anchor="middle" font-size="8" fill="#99a">-50</text>
+    <text x="395" y="98" text-anchor="middle" font-size="8" fill="#99a">-40</text>
+    <text x="488" y="98" text-anchor="middle" font-size="8" fill="#99a">-30</text>
+    <text x="581" y="98" text-anchor="middle" font-size="8" fill="#99a">-20</text>
+    <text x="674" y="98" text-anchor="middle" font-size="8" fill="#99a">-10</text>
+    <text x="767" y="98" text-anchor="middle" font-size="8" fill="#99a">0</text>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- OUTPUT ENVELOPE WITH ATTACK RAMPS -->
+  <!-- ================================================================ -->
+  <rect x="30" y="200" width="900" height="155" rx="8" fill="#fff" stroke="#b0b8c4"/>
+  <text x="40" y="220" font-size="13" font-weight="bold" fill="#334">Output Envelope (showing level-dependent attack time)</text>
+
+  <g transform="translate(60,232)">
+    <line x1="0" y1="0" x2="0" y2="100" stroke="#aab" stroke-width="0.8"/>
+    <line x1="0" y1="100" x2="840" y2="100" stroke="#aab" stroke-width="0.8"/>
+    <text x="-8" y="6" text-anchor="end" font-size="9" fill="#778">0 dB</text>
+    <text x="-8" y="31" text-anchor="end" font-size="9" fill="#778">-20</text>
+    <text x="-8" y="56" text-anchor="end" font-size="9" fill="#778">-40</text>
+    <text x="-8" y="81" text-anchor="end" font-size="9" fill="#778">-60</text>
+    <text x="-8" y="103" text-anchor="end" font-size="9" fill="#778">-80</text>
+
+    <!-- Burst boundaries -->
+    <line x1="93" y1="0" x2="93" y2="100" stroke="#eef" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <line x1="186" y1="0" x2="186" y2="100" stroke="#eef" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <line x1="279" y1="0" x2="279" y2="100" stroke="#eef" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <line x1="372" y1="0" x2="372" y2="100" stroke="#eef" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <line x1="465" y1="0" x2="465" y2="100" stroke="#eef" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <line x1="558" y1="0" x2="558" y2="100" stroke="#eef" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <line x1="651" y1="0" x2="651" y2="100" stroke="#eef" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <line x1="744" y1="0" x2="744" y2="100" stroke="#eef" stroke-width="0.5" stroke-dasharray="2,2"/>
+
+    <!-- -80, -70: below noise floor, no visible output -->
+
+    <!-- -60 dBFS: output -84.8 dB, slow attack 117.2ms (25 of 43px) -->
+    <path d="M186,100 L186,100 C200,100 210,95 211,95 L229,95" fill="none" stroke="#2a7" stroke-width="2" opacity="0.5"/>
+
+    <!-- -50 dBFS: output -65.1 dB, attack 130.9ms (28 of 43px) -->
+    <path d="M279,100 L279,100 C295,90 307,82 308,82 L322,82" fill="none" stroke="#2a7" stroke-width="2" opacity="0.6"/>
+
+    <!-- -40 dBFS: output -45.1 dB, attack 130.9ms (28px), steady at y=56 -->
+    <path d="M372,100 L372,100 C388,80 400,56 401,56 L415,56" fill="none" stroke="#2a7" stroke-width="2" opacity="0.7"/>
+    <!-- Attack arrow -->
+    <line x1="372" y1="112" x2="400" y2="112" stroke="#d45" stroke-width="1.5"/>
+    <text x="386" y="122" text-anchor="middle" font-size="8" fill="#d45">131ms</text>
+
+    <!-- -30 dBFS: output -33 dB, attack 33.2ms (7px), steady at y=41 -->
+    <path d="M465,100 L465,100 C468,70 472,41 472,41 L508,41" fill="none" stroke="#2a7" stroke-width="2" opacity="0.8"/>
+    <line x1="465" y1="112" x2="472" y2="112" stroke="#d45" stroke-width="1.5"/>
+    <text x="475" y="122" text-anchor="middle" font-size="8" fill="#d45">33ms</text>
+
+    <!-- -20 dBFS: output -23 dB, attack 5.9ms (~1px), steady at y=29 -->
+    <path d="M558,100 L559,29 L601,29" fill="none" stroke="#2a7" stroke-width="2" opacity="0.85"/>
+    <text x="568" y="122" text-anchor="middle" font-size="8" fill="#d45">6ms</text>
+
+    <!-- -10 dBFS: output -13 dB, attack 2ms (instant), steady at y=16 -->
+    <path d="M651,100 L652,16 L694,16" fill="none" stroke="#2a7" stroke-width="2.5" opacity="0.9"/>
+    <text x="658" y="122" text-anchor="middle" font-size="8" fill="#d45">2ms</text>
+
+    <!-- 0 dBFS: output -3 dB, instant, steady at y=4 -->
+    <path d="M744,100 L745,4 L787,4" fill="none" stroke="#2a7" stroke-width="2.5"/>
+    <text x="756" y="122" text-anchor="middle" font-size="8" fill="#d45">&lt;2ms</text>
+
+    <!-- Silence drops (instant for all - MULX makes output zero) -->
+    <line x1="229" y1="95" x2="229" y2="100" stroke="#2a7" stroke-width="1" opacity="0.5"/>
+    <line x1="322" y1="82" x2="322" y2="100" stroke="#2a7" stroke-width="1" opacity="0.6"/>
+    <line x1="415" y1="56" x2="415" y2="100" stroke="#2a7" stroke-width="1" opacity="0.7"/>
+    <line x1="508" y1="41" x2="508" y2="100" stroke="#2a7" stroke-width="1" opacity="0.8"/>
+    <line x1="601" y1="29" x2="601" y2="100" stroke="#2a7" stroke-width="1" opacity="0.85"/>
+    <line x1="694" y1="16" x2="694" y2="100" stroke="#2a7" stroke-width="1" opacity="0.9"/>
+    <line x1="787" y1="4" x2="787" y2="100" stroke="#2a7" stroke-width="1"/>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- ATTACK TIME vs INPUT LEVEL -->
+  <!-- ================================================================ -->
+  <rect x="30" y="368" width="440" height="210" rx="8" fill="#fff" stroke="#b0b8c4"/>
+  <text x="250" y="388" text-anchor="middle" font-size="13" font-weight="bold" fill="#334">Attack Time vs Input Level</text>
+
+  <g transform="translate(90,400)">
+    <!-- Axes -->
+    <line x1="0" y1="0" x2="0" y2="150" stroke="#aab" stroke-width="0.8"/>
+    <line x1="0" y1="150" x2="350" y2="150" stroke="#aab" stroke-width="0.8"/>
+    <!-- Y: 0 to 150ms -->
+    <text x="-8" y="5" text-anchor="end" font-size="9" fill="#778">150</text>
+    <text x="-8" y="55" text-anchor="end" font-size="9" fill="#778">100</text>
+    <text x="-8" y="105" text-anchor="end" font-size="9" fill="#778">50</text>
+    <text x="-8" y="155" text-anchor="end" font-size="9" fill="#778">0</text>
+    <text x="-30" y="80" text-anchor="middle" font-size="10" fill="#556" transform="rotate(-90,-30,80)">Attack (ms)</text>
+    <!-- X axis -->
+    <text x="0" y="166" text-anchor="middle" font-size="9" fill="#778">-80</text>
+    <text x="44" y="166" text-anchor="middle" font-size="9" fill="#778">-70</text>
+    <text x="88" y="166" text-anchor="middle" font-size="9" fill="#778">-60</text>
+    <text x="131" y="166" text-anchor="middle" font-size="9" fill="#778">-50</text>
+    <text x="175" y="166" text-anchor="middle" font-size="9" fill="#778">-40</text>
+    <text x="219" y="166" text-anchor="middle" font-size="9" fill="#778">-30</text>
+    <text x="262" y="166" text-anchor="middle" font-size="9" fill="#778">-20</text>
+    <text x="306" y="166" text-anchor="middle" font-size="9" fill="#778">-10</text>
+    <text x="350" y="166" text-anchor="middle" font-size="9" fill="#778">0</text>
+    <text x="175" y="180" text-anchor="middle" font-size="10" fill="#556">Input (dBFS)</text>
+    <!-- Grid -->
+    <line x1="0" y1="50" x2="350" y2="50" stroke="#eef" stroke-width="0.5"/>
+    <line x1="0" y1="100" x2="350" y2="100" stroke="#eef" stroke-width="0.5"/>
+
+    <!-- Measured: -80=n/a, -70=n/a, -60=117.2, -50=130.9, -40=130.9, -30=33.2, -20=5.9, -10=2.0, 0=0 -->
+    <!-- Y scale: 150ms = 0px, 0ms = 150px. 1ms = 1px -->
+    <!-- Plot from -60 onward (below that = unmeasurable) -->
+    <polyline points="88,33 131,19 175,19 219,117 262,144 306,148 350,150"
+              fill="none" stroke="#d45" stroke-width="2.5"/>
+    <circle cx="88" cy="33" r="4" fill="#d45"/>
+    <circle cx="131" cy="19" r="4" fill="#d45"/>
+    <circle cx="175" cy="19" r="4" fill="#d45"/>
+    <circle cx="219" cy="117" r="4" fill="#d45"/>
+    <circle cx="262" cy="144" r="4" fill="#d45"/>
+    <circle cx="306" cy="148" r="4" fill="#d45"/>
+    <circle cx="350" cy="150" r="4" fill="#d45"/>
+
+    <!-- Labels -->
+    <text x="94" y="28" font-size="9" fill="#d45">117ms</text>
+    <text x="137" y="14" font-size="9" fill="#d45">131ms</text>
+    <text x="225" y="113" font-size="9" fill="#d45">33ms</text>
+    <text x="268" y="140" font-size="9" fill="#d45">6ms</text>
+    <text x="312" y="144" font-size="9" fill="#d45">2ms</text>
+
+    <!-- n/a markers -->
+    <text x="0" y="8" text-anchor="middle" font-size="8" fill="#99a">n/a</text>
+    <text x="44" y="8" text-anchor="middle" font-size="8" fill="#99a">n/a</text>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- GAIN TRANSFER CURVE -->
+  <!-- ================================================================ -->
+  <rect x="490" y="368" width="440" height="210" rx="8" fill="#fff" stroke="#b0b8c4"/>
+  <text x="710" y="388" text-anchor="middle" font-size="13" font-weight="bold" fill="#334">Gain vs Input Level</text>
+
+  <g transform="translate(550,400)">
+    <!-- Axes -->
+    <line x1="0" y1="0" x2="0" y2="150" stroke="#aab" stroke-width="0.8"/>
+    <line x1="0" y1="150" x2="350" y2="150" stroke="#aab" stroke-width="0.8"/>
+    <!-- Y: gain +5 to -25 dB. 0 dB at y=17, scale: 5px per dB -->
+    <text x="-8" y="5" text-anchor="end" font-size="9" fill="#778">+5</text>
+    <text x="-8" y="30" text-anchor="end" font-size="9" fill="#778">0</text>
+    <text x="-8" y="80" text-anchor="end" font-size="9" fill="#778">-10</text>
+    <text x="-8" y="130" text-anchor="end" font-size="9" fill="#778">-20</text>
+    <text x="-30" y="80" text-anchor="middle" font-size="10" fill="#556" transform="rotate(-90,-30,80)">Gain (dB)</text>
+    <!-- X axis -->
+    <text x="0" y="166" text-anchor="middle" font-size="9" fill="#778">-80</text>
+    <text x="44" y="166" text-anchor="middle" font-size="9" fill="#778">-70</text>
+    <text x="88" y="166" text-anchor="middle" font-size="9" fill="#778">-60</text>
+    <text x="131" y="166" text-anchor="middle" font-size="9" fill="#778">-50</text>
+    <text x="175" y="166" text-anchor="middle" font-size="9" fill="#778">-40</text>
+    <text x="219" y="166" text-anchor="middle" font-size="9" fill="#778">-30</text>
+    <text x="262" y="166" text-anchor="middle" font-size="9" fill="#778">-20</text>
+    <text x="306" y="166" text-anchor="middle" font-size="9" fill="#778">-10</text>
+    <text x="350" y="166" text-anchor="middle" font-size="9" fill="#778">0</text>
+    <text x="175" y="180" text-anchor="middle" font-size="10" fill="#556">Input (dBFS)</text>
+    <!-- Grid -->
+    <line x1="0" y1="25" x2="350" y2="25" stroke="#dde" stroke-width="0.5"/>
+    <line x1="0" y1="75" x2="350" y2="75" stroke="#dde" stroke-width="0.5"/>
+    <line x1="0" y1="125" x2="350" y2="125" stroke="#dde" stroke-width="0.5"/>
+
+    <!-- Measured gain: -11.3, -20.6, -21.7, -12.1, -2.0, 0.0, 0.0, 0.0, 0.0 -->
+    <!-- Y: +5=0, 0=25, -10=75, -20=125. Scale: 5px per dB -->
+    <polyline points="0,82 44,128 88,134 131,86 175,35 219,25 262,25 306,25 350,25"
+              fill="none" stroke="#2a7" stroke-width="2.5"/>
+    <circle cx="0" cy="82" r="3" fill="#2a7"/>
+    <circle cx="44" cy="128" r="3" fill="#2a7"/>
+    <circle cx="88" cy="134" r="3" fill="#2a7"/>
+    <circle cx="131" cy="86" r="3" fill="#2a7"/>
+    <circle cx="175" cy="35" r="3" fill="#2a7"/>
+    <circle cx="219" cy="25" r="3" fill="#2a7"/>
+    <circle cx="262" cy="25" r="3" fill="#2a7"/>
+    <circle cx="306" cy="25" r="3" fill="#2a7"/>
+    <circle cx="350" cy="25" r="3" fill="#2a7"/>
+
+    <!-- Labels -->
+    <text x="6" y="78" font-size="8" fill="#2a7">-11.3</text>
+    <text x="94" y="130" font-size="8" fill="#2a7">-21.7</text>
+    <text x="137" y="82" font-size="8" fill="#2a7">-12.1</text>
+    <text x="181" y="31" font-size="8" fill="#2a7">-2.0</text>
+    <text x="225" y="21" font-size="8" fill="#2a7">0.0</text>
+
+    <!-- Gate threshold annotation -->
+    <rect x="155" y="2" width="100" height="16" rx="3" fill="#fff8e8" stroke="#d4a54a" stroke-width="0.8"/>
+    <text x="205" y="13" text-anchor="middle" font-size="9" fill="#d4a54a" font-weight="bold">gate opens ~-40 dB</text>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- TEST ASSERTIONS -->
+  <!-- ================================================================ -->
+  <rect x="30" y="590" width="900" height="148" rx="8" fill="#fff" stroke="#b0b8c4"/>
+  <text x="40" y="610" font-size="13" font-weight="bold" fill="#334">Test Assertions</text>
+
+  <rect x="50" y="620" width="400" height="28" rx="4" fill="#eef7ee" stroke="#4a9"/>
+  <text x="60" y="639" font-size="11" fill="#2a7" font-weight="bold">0 dBFS input: output &gt; -20 dB</text>
+
+  <rect x="470" y="620" width="440" height="28" rx="4" fill="#eef7ee" stroke="#4a9"/>
+  <text x="480" y="639" font-size="11" fill="#2a7" font-weight="bold">Quiet signals attenuated more than loud</text>
+
+  <text x="50" y="672" font-size="11" fill="#334" font-weight="bold">Key finding: Level-dependent attack time</text>
+  <text x="50" y="688" font-size="10" fill="#667">The gate envelope uses RDFX(0.9998) which tracks input near-instantly, but the absolute</text>
+  <text x="50" y="702" font-size="10" fill="#667">level of the gate register builds up slower for weaker signals. At -60 dBFS, the gate takes</text>
+  <text x="50" y="716" font-size="10" fill="#667">117 ms to open; at 0 dBFS it opens in &lt;2 ms. Release is instant (MULX zeroes output when input stops).</text>
+</svg>

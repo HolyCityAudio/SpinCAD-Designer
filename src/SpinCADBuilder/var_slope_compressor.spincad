@@ -3,18 +3,29 @@
 @audioInput input Input
 @controlInput threshIn Threshold
 @controlInput ratioIn Ratio
-@controlInput attackIn Attack
 @audioOutput output Audio_Output
 @controlOutput gainOut 'Gain Reduction'
 
 ; Variable Slope Compressor with soft knee
-; Adding a constant (knee) to the averaged squared signal
-; before LOG/EXP gain computation produces a compressor
-; whose ratio increases with signal level and has a
-; smooth transition into compression.
+; Based on SpinSemi application note (pgm_quick.html#compressors)
 ;
-; Control inputs for Threshold, Ratio, and Attack
-; scale the corresponding slider values via CV.
+; FV-1 LOG/EXP math (with internal /16 and *16 scaling):
+;   LOG C, D  ->  ACC = C * log2(|ACC|) / 16 + D
+;   EXP C, D  ->  ACC = C * 2^(ACC * 16) + D
+;
+;   sof  0, X       ; X = knee (soft knee roundness)
+;   rdax sqavg, 1   ; add averaged squared input
+;   log  Y, Z       ; Y = slope, Z = threshold
+;   exp  1, 0       ; back to linear gain
+;
+; X (knee): small constant added to avg; controls knee roundness
+; Y (slope): controls compression ratio at high levels
+;   slope = -0.5 * (1 - 1/ratio)
+; Z (thresh): controls threshold; more negative = more compression
+;   App note default: -0.25
+;
+; Threshold CV adds a post-LOG offset to shift threshold at runtime.
+; Ratio CV crossfades between unity and compressed gain.
 
 equ	sigin	reg0
 equ	avg	reg1
@@ -25,36 +36,49 @@ equ	gainOut	reg4
 equ inGain 1.0
 @sliderLabel inGain Input_Gain 0.1 2.0 1.0 100.0 2
 
-equ avgTime 0.001
-@sliderLabel avgTime Attack 1 100 0.001 10.0 1 FILTTOTIME
+equ avgTime 0.013333
+@sliderLabel avgTime Attack 1 50 0.013333 10.0 1 FILTTOTIME
+
+equ relTime 0.000447
+@sliderLabel relTime Release 50 250 0.000447 10.0 1 FILTTOTIME
 
 equ knee 0.0625
 @sliderLabel knee Knee 0.001 0.25 0.0625 1000.0 4
 
-; Ratio slider: 1.0 (no compression) to 8.0 (hard limiting)
-; Internally converted to LOG coefficient: slope = ratio * -0.0625
-; ratio 1 -> slope -0.0625 (gentle compression)
-; ratio 2 -> slope -0.125
-; ratio 4 -> slope -0.25
-; ratio 8 -> slope -0.5 (hard limiting)
-equ ratio 2.0
-@sliderLabel ratio Ratio 1.0 8.0 2.0 10.0 1
+; Ratio slider: compression ratio from 1.5:1 to infinity (limiter)
+; Mapped to LOG C coefficient: slope = -0.5 * (1 - 1/ratio)
+equ ratio 4.0
+@sliderLabel ratio Ratio 1.5 100.0 4.0 10.0 1
 
-; Convert ratio to LOG slope coefficient: slope = ratio * -0.0625
-equ negSixteenth -0.0625
-@multiplyDouble slope ratio negSixteenth
+; slope = -0.5 * (1 - 1/ratio)
+equ one 1.0
+equ negHalf -0.5
+@divideDouble invRatio one ratio
+@minusDouble oneMinusInv one invRatio
+@multiplyDouble slope negHalf oneMinusInv
 
-; Threshold controls onset of compression (LOG Z coefficient)
-; More negative = lower threshold (compresses more)
-equ thresh 0.25
-@sliderLabel thresh Threshold 0.05 0.5 0.25 1000.0 3
+; Threshold in dB below full scale
+; Converted to LOG Z coefficient: Z = threshDb / 100
+;   -5 dB -> Z = -0.05 (light)
+;  -25 dB -> Z = -0.25 (app note default)
+;  -50 dB -> Z = -0.50 (heavy)
+equ threshDb -25.0
+@sliderLabel threshDb 'Threshold (dB)' -50.0 -5.0 -25.0 10.0 1
+equ hundred 100.0
+@divideDouble thresh threshDb hundred
 
-; Negate for LOG Z coefficient
-equ negOne -1.0
-@multiplyDouble negThresh negOne thresh
+; Threshold CV scale for post-LOG offset
+equ threshScale -0.125
 
-equ makeupGain 1.5
-@sliderLabel makeupGain Makeup_Gain 0.5 6.0 1.5 100.0 2
+; Makeup gain in dB, applied as offset in log domain before EXP
+; gain_boost = 2^(makeupZ * 16), so makeupZ = makeupDb / 100
+; gives ~0 to 30 dB range (makeupZ 0 to 0.3)
+equ makeupDb 0.0
+@sliderLabel makeupDb 'Makeup (dB)' 0.0 30.0 0.0 10.0 1
+@divideDouble makeupZ makeupDb hundred
+
+equ trim 1.0
+@sliderLabel trim Output_Trim 0.25 2.0 1.0 100.0 2
 
 @isPinConnected Input
 
@@ -65,30 +89,33 @@ wrax	sigin, 1		; save input signal
 ; RMS detection: square the input
 mulx	sigin			; ACC = sigin^2
 
-; Average the squared signal (attack time)
-; When Attack CV is connected, it modulates the filter coefficient
-@isPinConnected Attack
+; Average with separate attack/release time constants
+; diff = squared - avg: positive = attack, negative = release
 rdax	avg, -1			; ACC = squared - avg
-mulx	attackIn		; ACC = (squared - avg) * attack_cv
-rdax	avg, 1			; ACC = avg + (squared - avg) * cv
-@else
-rdfx	avg, avgTime		; fixed coefficient lowpass filter
-@endif
+skp	neg, comp_rel		; if falling, use release coeff
+sof	avgTime, 0		; attack: scale diff by fast coeff
+skp	gez, comp_done		; skip over release path
+comp_rel:
+sof	relTime, 0		; release: scale diff by slow coeff
+comp_done:
+rdax	avg, 1			; avg + scaled diff
 wrax	avg, 0			; save avg, clear ACC
 
-; Soft knee compressor gain computation
-; When Threshold CV is connected, it scales the knee offset
-@isPinConnected Threshold
-rdax	threshIn, knee		; ACC = threshold_cv * knee
-@else
-sof	0, knee			; ACC = knee constant
-@endif
-rdax	avg, 1			; ACC = knee_value + avg
+; Compressor gain computation (matches app note structure)
+sof	0, knee			; ACC = knee (X)
+rdax	avg, 1			; ACC = knee + avg
 
-; LOG/EXP: sqrt, 1/x, and threshold combined
-; slope controls compression ratio
-; negThresh controls onset level
-log	slope, negThresh	; combined sqrt and 1/x
+; LOG/EXP gain computation
+log	slope, thresh		; Y = slope, Z = thresh
+sof	1, makeupZ		; makeup gain in log domain
+
+; Threshold CV: shift threshold at runtime
+; CV = 0: no shift (slider threshold only)
+; CV > 0: threshold shifts more negative (more compression)
+@isPinConnected Threshold
+rdax	threshIn, threshScale	; add negative offset to LOG output
+@endif
+
 exp	1, 0			; back to linear domain
 wrax	gain, 0			; save gain value, clear ACC
 
@@ -104,14 +131,15 @@ sof	-1, 0.999		; ACC = 1.0 - (1.0 - gain) * ratio_cv
 wrax	gain, 0			; effective gain with variable ratio
 @endif
 
-; Output gain reduction for monitoring
+; Output gain reduction for monitoring (smoothed)
 rdax	gain, 1
+rdfx	gainOut, 0.001
 wrax	gainOut, 0
 
-; Apply gain to input signal
+; Apply gain to input signal with trim
 rdax	gain, 1
 mulx	input
-sof	makeupGain, 0		; makeup gain
+sof	trim, 0
 wrax	output, 0
 
 @setOutputPin Audio_Output output

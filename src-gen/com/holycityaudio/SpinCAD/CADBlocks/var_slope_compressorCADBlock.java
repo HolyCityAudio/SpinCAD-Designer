@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
  * var_slope_compressorCADBlock.java
- * Copyright (C) 2015 - Gary Worsham 
+ * Copyright (C) 2013 - 2026 - Gary Worsham 
  * Based on ElmGen by Andrew Kilpatrick 
  * 
  *   This program is free software: you can redistribute it and/or modify 
@@ -36,13 +36,17 @@
 			private int output;
 			private int gainOut;
 			private double inGain = 1.0;
-			private double avgTime = 0.001;
+			private double avgTime = 0.013333;
+			private double relTime = 0.000447;
 			private double knee = 0.0625;
-			private double ratio = 2.0;
-			private double negSixteenth = -0.0625;
-			private double thresh = 0.25;
-			private double negOne = -1.0;
-			private double makeupGain = 1.5;
+			private double ratio = 4.0;
+			private double one = 1.0;
+			private double negHalf = -0.5;
+			private double threshDb = -25.0;
+			private double hundred = 100.0;
+			private double threshScale = -0.125;
+			private double makeupDb = 0.0;
+			private double trim = 1.0;
 
 			public var_slope_compressorCADBlock(int x, int y) {
 				super(x, y);
@@ -52,10 +56,11 @@
 				addInputPin(this, "Input");
 				addControlInputPin(this, "Threshold");
 				addControlInputPin(this, "Ratio");
-				addControlInputPin(this, "Attack");
 				addOutputPin(this, "Audio_Output");
 				addControlOutputPin(this, "Gain Reduction");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -102,11 +107,6 @@
 			if(sp != null) {
 				ratioIn = sp.getRegister();
 			}
-			sp = this.getPin("Attack").getPinConnection();
-			int attackIn = -1;
-			if(sp != null) {
-				attackIn = sp.getRegister();
-			}
 			
 			// finally, generate the instructions
 			sigin = sfxb.allocateReg();
@@ -114,29 +114,30 @@
 			gain = sfxb.allocateReg();
 			output = sfxb.allocateReg();
 			gainOut = sfxb.allocateReg();
-			double slope = ratio * negSixteenth;
-			double negThresh = negOne * thresh;
+			double invRatio = one / ratio; 
+			double oneMinusInv = one - invRatio;
+			double slope = negHalf * oneMinusInv;
+			double thresh = threshDb / hundred; 
+			double makeupZ = makeupDb / hundred; 
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, inGain);
 			sfxb.writeRegister(sigin, 1);
 			sfxb.mulx(sigin);
-			if(this.getPin("Attack").isConnected() == true) {
 			sfxb.readRegister(avg, -1);
-			sfxb.mulx(attackIn);
+			sfxb.skip(NEG, 2);
+			sfxb.scaleOffset(avgTime, 0);
+			sfxb.skip(GEZ, 1);
+			sfxb.scaleOffset(relTime, 0);
 			sfxb.readRegister(avg, 1);
-			} else {
-			sfxb.readRegisterFilter(avg, avgTime);
-			}
-			
 			sfxb.writeRegister(avg, 0);
-			if(this.getPin("Threshold").isConnected() == true) {
-			sfxb.readRegister(threshIn, knee);
-			} else {
 			sfxb.scaleOffset(0, knee);
+			sfxb.readRegister(avg, 1);
+			sfxb.log(slope, thresh);
+			sfxb.scaleOffset(1, makeupZ);
+			if(this.getPin("Threshold").isConnected() == true) {
+			sfxb.readRegister(threshIn, threshScale);
 			}
 			
-			sfxb.readRegister(avg, 1);
-			sfxb.log(slope, negThresh);
 			sfxb.exp(1, 0);
 			sfxb.writeRegister(gain, 0);
 			if(this.getPin("Ratio").isConnected() == true) {
@@ -148,10 +149,11 @@
 			}
 			
 			sfxb.readRegister(gain, 1);
+			sfxb.readRegisterFilter(gainOut, 0.001);
 			sfxb.writeRegister(gainOut, 0);
 			sfxb.readRegister(gain, 1);
 			sfxb.mulx(input);
-			sfxb.scaleOffset(makeupGain, 0);
+			sfxb.scaleOffset(trim, 0);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Audio_Output").setRegister(output);
 			this.getPin("Gain Reduction").setRegister(gainOut);
@@ -175,6 +177,13 @@
 			public double getavgTime() {
 				return avgTime;
 			}
+			public void setrelTime(double __param) {
+				relTime = __param;	
+			}
+			
+			public double getrelTime() {
+				return relTime;
+			}
 			public void setknee(double __param) {
 				knee = __param;	
 			}
@@ -189,18 +198,25 @@
 			public double getratio() {
 				return ratio;
 			}
-			public void setthresh(double __param) {
-				thresh = __param;	
+			public void setthreshDb(double __param) {
+				threshDb = __param;	
 			}
 			
-			public double getthresh() {
-				return thresh;
+			public double getthreshDb() {
+				return threshDb;
 			}
-			public void setmakeupGain(double __param) {
-				makeupGain = __param;	
+			public void setmakeupDb(double __param) {
+				makeupDb = __param;	
 			}
 			
-			public double getmakeupGain() {
-				return makeupGain;
+			public double getmakeupDb() {
+				return makeupDb;
+			}
+			public void settrim(double __param) {
+				trim = __param;	
+			}
+			
+			public double gettrim() {
+				return trim;
 			}
 		}	

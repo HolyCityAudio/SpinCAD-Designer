@@ -4,7 +4,7 @@
   "patchFileName": "compressor-test.spcdj",
   "comments": {
     "fileName": "Untitled",
-    "version": "Patch saved from SpinCAD Designer version 1068",
+    "version": "Patch saved from SpinCAD Designer version 1069",
     "lines": [
       "Pot 0: ",
       "Pot 1: ",
@@ -14,34 +14,23 @@
     ]
   },
   "potValues": [
-    78.0,
-    51.0,
+    0.0,
+    100.0,
     0.0
   ],
   "blocks": [
     {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
       "blockNum": 0,
-      "x": 371,
-      "y": 8,
+      "x": 737,
+      "y": 30,
       "name": "Input"
     },
     {
-      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
-      "blockNum": 1,
-      "x": 99,
-      "y": 213,
-      "name": "Pot 2",
-      "params": {
-        "speedup": false,
-        "potRegister": 18
-      }
-    },
-    {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
-      "blockNum": 2,
-      "x": 110,
-      "y": 107,
+      "blockNum": 1,
+      "x": 547,
+      "y": 151,
       "name": "Pot 0",
       "params": {
         "speedup": false,
@@ -50,9 +39,9 @@
     },
     {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
-      "blockNum": 3,
-      "x": 106,
-      "y": 159,
+      "blockNum": 2,
+      "x": 553,
+      "y": 206,
       "name": "Pot 1",
       "params": {
         "speedup": false,
@@ -60,10 +49,21 @@
       }
     },
     {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 3,
+      "x": 558,
+      "y": 276,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.var_slope_compressorCADBlock",
       "blockNum": 4,
-      "x": 445,
-      "y": 183,
+      "x": 737,
+      "y": 217,
       "name": "Var_Slope_Compressor",
       "params": {
         "sigin": 32,
@@ -72,26 +72,43 @@
         "output": 35,
         "gainOut": 36,
         "inGain": 1.0,
-        "avgTime": 6.708914463279259E-4,
-        "knee": 0.0625,
-        "ratio": 8.0,
-        "negSixteenth": -0.0625,
-        "thresh": 0.455,
+        "avgTime": 0.0195451902308329,
+        "relTime": 4.47E-4,
+        "knee": 0.14,
+        "ratio": 5.6,
+        "one": 1.0,
         "negOne": -1.0,
-        "makeupGain": 1.5
+        "negHalf": -0.5,
+        "threshDb": -23.0,
+        "twenty": 20.0,
+        "ten": 10.0,
+        "two": 2.0,
+        "sixteen": 16.0,
+        "trim": 1.0
       }
     },
     {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
       "blockNum": 5,
-      "x": 397,
-      "y": 474,
+      "x": 737,
+      "y": 775,
       "name": "Output",
       "params": {
         "mono": false,
         "offset0": false,
         "gain1": 1.0,
         "gain2": 1.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScopeProbeCADBlock",
+      "blockNum": 6,
+      "x": 966,
+      "y": 305,
+      "name": "Scope Probe",
+      "params": {
+        "scope1Reg": 36,
+        "scope2Reg": -1
       }
     }
   ],
@@ -103,22 +120,16 @@
       "toPin": "Input"
     },
     {
-      "fromBlockIndex": 2,
+      "fromBlockIndex": 1,
       "fromPin": "Control Output 1",
       "toBlockIndex": 4,
       "toPin": "Threshold"
     },
     {
-      "fromBlockIndex": 3,
+      "fromBlockIndex": 2,
       "fromPin": "Control Output 1",
       "toBlockIndex": 4,
       "toPin": "Ratio"
-    },
-    {
-      "fromBlockIndex": 1,
-      "fromPin": "Control Output 1",
-      "toBlockIndex": 4,
-      "toPin": "Attack"
     },
     {
       "fromBlockIndex": 0,
@@ -131,6 +142,12 @@
       "fromPin": "Audio_Output",
       "toBlockIndex": 5,
       "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Gain Reduction",
+      "toBlockIndex": 6,
+      "toPin": "Scope 1"
     }
   ]
 }

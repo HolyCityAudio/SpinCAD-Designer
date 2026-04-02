@@ -1,0 +1,568 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="2900" viewBox="0 0 1200 2900">
+  <defs>
+    <style>
+      text { font-family: Consolas, monospace; font-size: 11px; fill: #222; }
+      .title { font-size: 18px; font-weight: bold; fill: #1a1a2e; }
+      .subtitle { font-size: 14px; font-weight: bold; fill: #16213e; }
+      .label { font-size: 10px; fill: #555; }
+      .coeff { font-size: 9px; fill: #888; font-style: italic; }
+      .block { fill: #e8f0fe; stroke: #4a86c8; stroke-width: 1.5; rx: 4; }
+      .delay { fill: #fff3e0; stroke: #e6910e; stroke-width: 1.5; rx: 4; }
+      .filter { fill: #e8f5e9; stroke: #4caf50; stroke-width: 1.5; rx: 4; }
+      .shimmer { fill: #fce4ec; stroke: #e91e63; stroke-width: 1.5; rx: 4; }
+      .mixer { fill: #f3e5f5; stroke: #9c27b0; stroke-width: 1.5; rx: 4; }
+      .pot { fill: #fff9c4; stroke: #f9a825; stroke-width: 1.5; rx: 10; }
+      .sum { fill: white; stroke: #333; stroke-width: 1.5; }
+      .arrow { fill: none; stroke: #333; stroke-width: 1.2; marker-end: url(#arrowhead); }
+      .arrow-fb { fill: none; stroke: #c62828; stroke-width: 1.2; stroke-dasharray: 6,3; marker-end: url(#arrowhead-red); }
+      .arrow-shim { fill: none; stroke: #e91e63; stroke-width: 1.2; marker-end: url(#arrowhead-pink); }
+      .section-bg { fill: #f8f9fa; stroke: #dee2e6; stroke-width: 1; rx: 8; }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+    <marker id="arrowhead-red" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#c62828"/>
+    </marker>
+    <marker id="arrowhead-pink" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#e91e63"/>
+    </marker>
+  </defs>
+
+  <!-- ============================================================ -->
+  <!-- COMMON INPUT SECTION                                         -->
+  <!-- ============================================================ -->
+  <rect x="20" y="15" width="1160" height="210" class="section-bg"/>
+  <text x="600" y="42" text-anchor="middle" class="title">SpinCAD Reverb Designer - Signal Flow</text>
+  <text x="600" y="62" text-anchor="middle" class="subtitle">Common Input Section (all topologies)</text>
+
+  <!-- ADCL -->
+  <rect x="50" y="85" width="70" height="30" class="block"/>
+  <text x="85" y="105" text-anchor="middle">ADCL</text>
+
+  <line x1="120" y1="100" x2="155" y2="100" class="arrow"/>
+
+  <!-- dry save -->
+  <rect x="158" y="85" width="85" height="30" class="block"/>
+  <text x="200" y="100" text-anchor="middle">save dry</text>
+  <text x="200" y="112" text-anchor="middle" class="coeff">x 1.0</text>
+
+  <!-- input path (below) -->
+  <line x1="120" y1="100" x2="140" y2="100" stroke="#333" stroke-width="1.2"/>
+  <line x1="140" y1="100" x2="140" y2="150" stroke="#333" stroke-width="1.2"/>
+  <line x1="140" y1="150" x2="158" y2="150" class="arrow"/>
+
+  <rect x="161" y="135" width="60" height="30" class="block"/>
+  <text x="191" y="155" text-anchor="middle">x 0.25</text>
+
+  <!-- optional pre-delay -->
+  <line x1="221" y1="150" x2="250" y2="150" class="arrow"/>
+  <rect x="253" y="135" width="90" height="30" class="delay"/>
+  <text x="298" y="150" text-anchor="middle">Pre-Delay</text>
+  <text x="298" y="162" text-anchor="middle" class="coeff">(optional)</text>
+
+  <!-- BW filter -->
+  <line x1="343" y1="150" x2="375" y2="150" class="arrow"/>
+  <rect x="378" y="135" width="90" height="30" class="filter"/>
+  <text x="423" y="150" text-anchor="middle">BW Filter</text>
+  <text x="423" y="162" text-anchor="middle" class="coeff">RDFX k=0.5</text>
+
+  <!-- 4 input APs -->
+  <line x1="468" y1="150" x2="498" y2="150" class="arrow"/>
+  <rect x="501" y="132" width="55" height="35" class="delay"/>
+  <text x="528" y="150" text-anchor="middle">AP1</text>
+  <line x1="556" y1="150" x2="575" y2="150" class="arrow"/>
+  <rect x="578" y="132" width="55" height="35" class="delay"/>
+  <text x="605" y="150" text-anchor="middle">AP2</text>
+  <line x1="633" y1="150" x2="652" y2="150" class="arrow"/>
+  <rect x="655" y="132" width="55" height="35" class="delay"/>
+  <text x="682" y="150" text-anchor="middle">AP3</text>
+  <line x1="710" y1="150" x2="729" y2="150" class="arrow"/>
+  <rect x="732" y="132" width="55" height="35" class="delay"/>
+  <text x="759" y="150" text-anchor="middle">AP4</text>
+  <text x="630" y="178" text-anchor="middle" class="coeff">4 diffusion allpasses, k = diffusion coefficient</text>
+
+  <!-- apout -->
+  <line x1="787" y1="150" x2="825" y2="150" class="arrow"/>
+  <rect x="828" y="135" width="80" height="30" class="block"/>
+  <text x="868" y="155" text-anchor="middle" font-weight="bold">apout</text>
+
+  <!-- Shift box (before tank) -->
+  <rect x="828" y="185" width="310" height="35" class="shimmer" style="stroke-dasharray: 4,2;"/>
+  <text x="983" y="200" text-anchor="middle" font-weight="bold">"Shift" mode: one-shot pitch shift here (before tank)</text>
+  <text x="983" y="213" text-anchor="middle" class="coeff">apout x level --> RMP0 pitch shift --> LPF --> shimOut, added at tank stage 0</text>
+  <line x1="868" y1="165" x2="868" y2="185" class="arrow-shim"/>
+
+  <!-- POTs legend -->
+  <rect x="50" y="185" width="280" height="35" rx="6" fill="#fffde7" stroke="#f9a825" stroke-width="1"/>
+  <text x="190" y="206" text-anchor="middle" class="label">POT0=RT  |  POT1=HF Damp  |  POT2=Mix  (or fixed if no pin)</text>
+
+  <!-- ============================================================ -->
+  <!-- TOPOLOGY 1: TWO-LOOP                                         -->
+  <!-- ============================================================ -->
+  <rect x="20" y="240" width="1160" height="460" class="section-bg"/>
+  <text x="600" y="265" text-anchor="middle" class="subtitle">Topology 1: Two-Loop Tank</text>
+
+  <!-- Loop 1 -->
+  <rect x="50" y="280" width="790" height="170" rx="6" fill="none" stroke="#4a86c8" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="430" y="298" text-anchor="middle" font-weight="bold" fill="#4a86c8">Loop 1 (del2# --> del1)</text>
+
+  <!-- feedback read -->
+  <rect x="70" y="315" width="85" height="35" class="delay"/>
+  <text x="112" y="333" text-anchor="middle">RDA del2#</text>
+  <text x="112" y="345" text-anchor="middle" class="coeff">x RT</text>
+
+  <!-- DC block -->
+  <line x1="155" y1="332" x2="173" y2="332" class="arrow"/>
+  <rect x="176" y="320" width="55" height="25" class="filter"/>
+  <text x="203" y="337" text-anchor="middle" class="label">DC blk</text>
+
+  <!-- SHIMMER INLINE -->
+  <line x1="231" y1="332" x2="248" y2="332" class="arrow-shim"/>
+  <rect x="251" y="310" width="150" height="45" class="shimmer"/>
+  <text x="326" y="328" text-anchor="middle" font-weight="bold" font-size="10">"Shimmer" mode:</text>
+  <text x="326" y="340" text-anchor="middle" font-size="9">RMP0 pitch shift in-loop</text>
+  <text x="326" y="352" text-anchor="middle" class="coeff">ACC = fb + shifted*level</text>
+
+  <!-- sum -->
+  <line x1="401" y1="332" x2="425" y2="332" class="arrow"/>
+  <circle cx="437" cy="332" r="12" class="sum"/>
+  <text x="437" y="336" text-anchor="middle" font-weight="bold">+</text>
+  <text x="437" y="360" text-anchor="middle" class="coeff">+apout (+shimOut if Shift)</text>
+
+  <!-- loop AP -->
+  <line x1="449" y1="332" x2="470" y2="332" class="arrow"/>
+  <rect x="473" y="317" width="65" height="30" class="delay"/>
+  <text x="505" y="332" text-anchor="middle">AP</text>
+  <text x="505" y="344" text-anchor="middle" class="coeff">lap1 k=0.6</text>
+
+  <!-- HF damp -->
+  <line x1="538" y1="332" x2="558" y2="332" class="arrow"/>
+  <rect x="561" y="315" width="70" height="35" class="filter"/>
+  <text x="596" y="330" text-anchor="middle">HF Damp</text>
+  <text x="596" y="343" text-anchor="middle" class="coeff">LP xfade</text>
+
+  <!-- write delay -->
+  <line x1="631" y1="332" x2="655" y2="332" class="arrow"/>
+  <rect x="658" y="317" width="55" height="30" class="delay"/>
+  <text x="685" y="336" text-anchor="middle">del1</text>
+
+  <!-- output tap -->
+  <line x1="685" y1="347" x2="685" y2="370" stroke="#333" stroke-width="1"/>
+  <line x1="685" y1="370" x2="730" y2="370" class="arrow"/>
+  <text x="770" y="375" text-anchor="middle" class="label">--> outL</text>
+
+  <!-- Loop 2 -->
+  <rect x="50" y="460" width="790" height="120" rx="6" fill="none" stroke="#16213e" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="430" y="478" text-anchor="middle" font-weight="bold" fill="#16213e">Loop 2 (del1# --> del2)</text>
+
+  <rect x="70" y="495" width="85" height="35" class="delay"/>
+  <text x="112" y="513" text-anchor="middle">RDA del1#</text>
+  <text x="112" y="525" text-anchor="middle" class="coeff">x RT</text>
+
+  <line x1="155" y1="512" x2="425" y2="512" class="arrow"/>
+  <circle cx="437" cy="512" r="12" class="sum"/>
+  <text x="437" y="516" text-anchor="middle" font-weight="bold">+</text>
+  <text x="437" y="540" text-anchor="middle" class="coeff">+apout</text>
+
+  <line x1="449" y1="512" x2="470" y2="512" class="arrow"/>
+  <rect x="473" y="497" width="65" height="30" class="delay"/>
+  <text x="505" y="512" text-anchor="middle">AP</text>
+  <text x="505" y="524" text-anchor="middle" class="coeff">lap2 k=0.6</text>
+
+  <line x1="538" y1="512" x2="558" y2="512" class="arrow"/>
+  <rect x="561" y="495" width="70" height="35" class="filter"/>
+  <text x="596" y="510" text-anchor="middle">HF Damp</text>
+  <text x="596" y="523" text-anchor="middle" class="coeff">LP xfade</text>
+
+  <line x1="631" y1="512" x2="655" y2="512" class="arrow"/>
+  <rect x="658" y="497" width="55" height="30" class="delay"/>
+  <text x="685" y="516" text-anchor="middle">del2</text>
+
+  <line x1="685" y1="527" x2="685" y2="548" stroke="#333" stroke-width="1"/>
+  <line x1="685" y1="548" x2="730" y2="548" class="arrow"/>
+  <text x="770" y="553" text-anchor="middle" class="label">--> outR</text>
+
+  <!-- cross-feedback arrows -->
+  <path d="M 713,512 L 745,512 L 745,292 L 55,292 L 55,332 L 68,332" class="arrow-fb"/>
+  <path d="M 713,332 L 755,332 L 755,450 L 55,450 L 55,512 L 68,512" class="arrow-fb"/>
+
+  <!-- LFO + Mix boxes -->
+  <rect x="870" y="300" width="280" height="55" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1"/>
+  <text x="1010" y="320" text-anchor="middle" font-weight="bold" fill="#1976d2">LFO Modulation (optional)</text>
+  <text x="1010" y="335" text-anchor="middle" class="label">SIN0-->lap1, SIN1-->lap2</text>
+  <text x="1010" y="348" text-anchor="middle" class="label">Modulates AP delay for chorus</text>
+
+  <rect x="870" y="370" width="280" height="55" class="mixer"/>
+  <text x="1010" y="390" text-anchor="middle" font-weight="bold">Dry/Wet Mix (POT2)</text>
+  <text x="1010" y="405" text-anchor="middle">out = dry + (wet - dry) x mix</text>
+  <text x="1010" y="418" text-anchor="middle" class="label">Stereo: L-->DACL, R-->DACR</text>
+
+  <!-- ============================================================ -->
+  <!-- TOPOLOGY 2: DATTORRO PLATE                                   -->
+  <!-- ============================================================ -->
+  <rect x="20" y="720" width="1160" height="530" class="section-bg"/>
+  <text x="600" y="745" text-anchor="middle" class="subtitle">Topology 2: Dattorro Plate Reverb</text>
+
+  <!-- Tank Side A -->
+  <rect x="50" y="760" width="1100" height="170" rx="6" fill="none" stroke="#4a86c8" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="600" y="778" text-anchor="middle" font-weight="bold" fill="#4a86c8">Tank Side A (tdl4# --> AP1 --> tdl1 --> HF damp --> AP2 --> tdl2)</text>
+
+  <rect x="70" y="795" width="85" height="35" class="delay"/>
+  <text x="112" y="813" text-anchor="middle">RDA tdl4#</text>
+  <text x="112" y="825" text-anchor="middle" class="coeff">x RT</text>
+
+  <line x1="155" y1="812" x2="173" y2="812" class="arrow"/>
+  <rect x="176" y="800" width="55" height="25" class="filter"/>
+  <text x="203" y="817" text-anchor="middle" class="label">DC blk</text>
+
+  <!-- SHIMMER INLINE -->
+  <line x1="231" y1="812" x2="248" y2="812" class="arrow-shim"/>
+  <rect x="251" y="795" width="120" height="35" class="shimmer"/>
+  <text x="311" y="810" text-anchor="middle" font-size="9" font-weight="bold">"Shimmer" in-loop</text>
+  <text x="311" y="822" text-anchor="middle" class="coeff">pitch shift feedback</text>
+
+  <line x1="371" y1="812" x2="393" y2="812" class="arrow"/>
+  <circle cx="405" cy="812" r="12" class="sum"/>
+  <text x="405" y="816" text-anchor="middle" font-weight="bold">+</text>
+  <text x="405" y="840" text-anchor="middle" class="coeff">+apout (+shimOut)</text>
+
+  <line x1="417" y1="812" x2="438" y2="812" class="arrow"/>
+  <rect x="441" y="797" width="60" height="30" class="delay"/>
+  <text x="471" y="812" text-anchor="middle">AP1</text>
+  <text x="471" y="824" text-anchor="middle" class="coeff">k=0.7</text>
+
+  <line x1="501" y1="812" x2="518" y2="812" class="arrow"/>
+  <rect x="521" y="797" width="55" height="30" class="delay"/>
+  <text x="548" y="816" text-anchor="middle">tdl1</text>
+
+  <line x1="576" y1="812" x2="596" y2="812" class="arrow"/>
+  <rect x="599" y="797" width="70" height="30" class="filter"/>
+  <text x="634" y="816" text-anchor="middle">HF Damp</text>
+
+  <line x1="669" y1="812" x2="690" y2="812" class="arrow"/>
+  <rect x="693" y="797" width="60" height="30" class="delay"/>
+  <text x="723" y="812" text-anchor="middle">AP2</text>
+  <text x="723" y="824" text-anchor="middle" class="coeff">k=0.5</text>
+
+  <line x1="753" y1="812" x2="773" y2="812" class="arrow"/>
+  <rect x="776" y="797" width="55" height="30" class="delay"/>
+  <text x="803" y="816" text-anchor="middle">tdl2</text>
+
+  <!-- Tank Side B -->
+  <rect x="50" y="940" width="1100" height="150" rx="6" fill="none" stroke="#16213e" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="600" y="958" text-anchor="middle" font-weight="bold" fill="#16213e">Tank Side B (tdl2# --> AP3 --> tdl3 --> HF damp --> AP4 --> tdl4)</text>
+
+  <rect x="70" y="975" width="85" height="35" class="delay"/>
+  <text x="112" y="993" text-anchor="middle">RDA tdl2#</text>
+  <text x="112" y="1005" text-anchor="middle" class="coeff">x RT</text>
+
+  <line x1="155" y1="992" x2="393" y2="992" class="arrow"/>
+  <circle cx="405" cy="992" r="12" class="sum"/>
+  <text x="405" y="996" text-anchor="middle" font-weight="bold">+</text>
+  <text x="405" y="1018" text-anchor="middle" class="coeff">+apout</text>
+
+  <line x1="417" y1="992" x2="438" y2="992" class="arrow"/>
+  <rect x="441" y="977" width="60" height="30" class="delay"/>
+  <text x="471" y="992" text-anchor="middle">AP3</text>
+  <text x="471" y="1004" text-anchor="middle" class="coeff">k=0.7</text>
+
+  <line x1="501" y1="992" x2="518" y2="992" class="arrow"/>
+  <rect x="521" y="977" width="55" height="30" class="delay"/>
+  <text x="548" y="996" text-anchor="middle">tdl3</text>
+
+  <line x1="576" y1="992" x2="596" y2="992" class="arrow"/>
+  <rect x="599" y="977" width="70" height="30" class="filter"/>
+  <text x="634" y="996" text-anchor="middle">HF Damp</text>
+
+  <line x1="669" y1="992" x2="690" y2="992" class="arrow"/>
+  <rect x="693" y="977" width="60" height="30" class="delay"/>
+  <text x="723" y="992" text-anchor="middle">AP4</text>
+  <text x="723" y="1004" text-anchor="middle" class="coeff">k=0.5</text>
+
+  <line x1="753" y1="992" x2="773" y2="992" class="arrow"/>
+  <rect x="776" y="977" width="55" height="30" class="delay"/>
+  <text x="803" y="996" text-anchor="middle">tdl4</text>
+
+  <!-- Cross-feedback -->
+  <path d="M 831,812 L 860,812 L 860,935 L 55,935 L 55,992 L 68,992" class="arrow-fb"/>
+  <path d="M 831,992 L 870,992 L 870,755 L 55,755 L 55,812 L 68,812" class="arrow-fb"/>
+
+  <!-- Output taps -->
+  <rect x="70" y="1105" width="430" height="70" class="mixer"/>
+  <text x="285" y="1125" text-anchor="middle" font-weight="bold">Output Taps (4 per channel)</text>
+  <text x="285" y="1143" text-anchor="middle">L = tdl1 + tdl2 - tdl3 + tdl4 (various offsets)</text>
+  <text x="285" y="1158" text-anchor="middle">R = tdl1 - tdl2 + tdl3 + tdl4 (different offsets)</text>
+
+  <!-- LFO -->
+  <rect x="540" y="1105" width="260" height="50" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1"/>
+  <text x="670" y="1125" text-anchor="middle" font-weight="bold" fill="#1976d2">LFO: SIN0 --> tap1,tap3</text>
+  <text x="670" y="1143" text-anchor="middle" class="label">Wide: + SIN1 --> tap2,tap4</text>
+
+  <!-- ============================================================ -->
+  <!-- TOPOLOGY 3: RING FDN                                         -->
+  <!-- ============================================================ -->
+  <rect x="20" y="1270" width="1160" height="720" class="section-bg"/>
+  <text x="600" y="1295" text-anchor="middle" class="subtitle">Topology 3: Ring Feedback Delay Network (3-4 stages)</text>
+
+  <!-- Stage 0 -->
+  <rect x="50" y="1315" width="1100" height="130" rx="6" fill="none" stroke="#4a86c8" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="120" y="1333" font-weight="bold" fill="#4a86c8">Stage 0 (ring wrap point)</text>
+
+  <rect x="70" y="1350" width="95" height="35" class="delay"/>
+  <text x="117" y="1368" text-anchor="middle">RDA rdl(N-1)#</text>
+  <text x="117" y="1380" text-anchor="middle" class="coeff">x RT</text>
+
+  <line x1="165" y1="1367" x2="183" y2="1367" class="arrow"/>
+  <rect x="186" y="1353" width="65" height="28" class="filter"/>
+  <text x="218" y="1371" text-anchor="middle" class="label">LF damp</text>
+
+  <!-- SHIMMER INLINE at stage 0 -->
+  <line x1="251" y1="1367" x2="270" y2="1367" class="arrow-shim"/>
+  <rect x="273" y="1345" width="155" height="45" class="shimmer"/>
+  <text x="350" y="1362" text-anchor="middle" font-weight="bold" font-size="10">"Shimmer" in-loop</text>
+  <text x="350" y="1374" text-anchor="middle" font-size="9">RMP0 pitch shift on feedback</text>
+  <text x="350" y="1386" text-anchor="middle" class="coeff">ACC = fb + shifted x level</text>
+
+  <line x1="428" y1="1367" x2="450" y2="1367" class="arrow"/>
+  <circle cx="462" cy="1367" r="12" class="sum"/>
+  <text x="462" y="1371" text-anchor="middle" font-weight="bold">+</text>
+  <text x="462" y="1395" text-anchor="middle" class="coeff">+apout (+shimOut if Shift)</text>
+
+  <line x1="474" y1="1367" x2="498" y2="1367" class="arrow"/>
+  <rect x="501" y="1352" width="65" height="30" class="delay"/>
+  <text x="533" y="1367" text-anchor="middle">AP</text>
+  <text x="533" y="1379" text-anchor="middle" class="coeff">rap0 k=0.6</text>
+
+  <line x1="566" y1="1367" x2="590" y2="1367" class="arrow"/>
+  <rect x="593" y="1348" width="80" height="35" class="filter"/>
+  <text x="633" y="1365" text-anchor="middle">LP Damp</text>
+  <text x="633" y="1378" text-anchor="middle" class="coeff">HF xfade</text>
+
+  <line x1="673" y1="1367" x2="700" y2="1367" class="arrow"/>
+  <rect x="703" y="1352" width="70" height="30" class="delay"/>
+  <text x="738" y="1371" text-anchor="middle">WRA rdl0</text>
+
+  <!-- Stage 1 -->
+  <rect x="50" y="1455" width="1100" height="100" rx="6" fill="none" stroke="#16213e" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="120" y="1473" font-weight="bold" fill="#16213e">Stage 1</text>
+
+  <rect x="70" y="1488" width="85" height="35" class="delay"/>
+  <text x="112" y="1506" text-anchor="middle">RDA rdl0#</text>
+  <text x="112" y="1518" text-anchor="middle" class="coeff">x RT</text>
+
+  <line x1="155" y1="1505" x2="450" y2="1505" class="arrow"/>
+  <circle cx="462" cy="1505" r="12" class="sum"/>
+  <text x="462" y="1509" text-anchor="middle" font-weight="bold">+</text>
+  <text x="462" y="1530" text-anchor="middle" class="coeff">+apout</text>
+
+  <line x1="474" y1="1505" x2="498" y2="1505" class="arrow"/>
+  <rect x="501" y="1490" width="65" height="30" class="delay"/>
+  <text x="533" y="1505" text-anchor="middle">AP</text>
+  <text x="533" y="1517" text-anchor="middle" class="coeff">rap1</text>
+
+  <line x1="566" y1="1505" x2="590" y2="1505" class="arrow"/>
+  <rect x="593" y="1490" width="80" height="30" class="filter"/>
+  <text x="633" y="1509" text-anchor="middle">LP Damp</text>
+
+  <line x1="673" y1="1505" x2="700" y2="1505" class="arrow"/>
+  <rect x="703" y="1490" width="70" height="30" class="delay"/>
+  <text x="738" y="1509" text-anchor="middle">WRA rdl1</text>
+
+  <!-- Stage 2 -->
+  <rect x="50" y="1565" width="1100" height="100" rx="6" fill="none" stroke="#2e7d32" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="120" y="1583" font-weight="bold" fill="#2e7d32">Stage 2</text>
+
+  <rect x="70" y="1598" width="85" height="35" class="delay"/>
+  <text x="112" y="1616" text-anchor="middle">RDA rdl1#</text>
+  <text x="112" y="1628" text-anchor="middle" class="coeff">x RT</text>
+
+  <line x1="155" y1="1615" x2="450" y2="1615" class="arrow"/>
+  <circle cx="462" cy="1615" r="12" class="sum"/>
+  <text x="462" y="1619" text-anchor="middle" font-weight="bold">+</text>
+  <text x="462" y="1640" text-anchor="middle" class="coeff">+apout</text>
+
+  <line x1="474" y1="1615" x2="498" y2="1615" class="arrow"/>
+  <rect x="501" y="1600" width="65" height="30" class="delay"/>
+  <text x="533" y="1615" text-anchor="middle">AP</text>
+  <text x="533" y="1627" text-anchor="middle" class="coeff">rap2</text>
+
+  <line x1="566" y1="1615" x2="590" y2="1615" class="arrow"/>
+  <rect x="593" y="1600" width="80" height="30" class="filter"/>
+  <text x="633" y="1619" text-anchor="middle">LP Damp</text>
+
+  <line x1="673" y1="1615" x2="700" y2="1615" class="arrow"/>
+  <rect x="703" y="1600" width="70" height="30" class="delay"/>
+  <text x="738" y="1619" text-anchor="middle">WRA rdl2</text>
+
+  <!-- Ring feedback arrow -->
+  <path d="M 773,1615 L 810,1615 L 810,1680 L 40,1680 L 40,1367 L 68,1367" class="arrow-fb"/>
+  <text x="830" y="1660" class="coeff" fill="#c62828">Ring wraps: rdl2# --> Stage 0</text>
+
+  <!-- Stage flow arrows -->
+  <path d="M 773,1367 L 800,1367 L 800,1440 L 40,1440 L 40,1505 L 68,1505" class="arrow" style="stroke:#4a86c8"/>
+  <path d="M 773,1505 L 800,1505 L 800,1555 L 40,1555 L 40,1615 L 68,1615" class="arrow" style="stroke:#16213e"/>
+
+  <!-- Output taps + LFO -->
+  <rect x="70" y="1700" width="430" height="60" class="mixer"/>
+  <text x="285" y="1720" text-anchor="middle" font-weight="bold">Output Taps (1 per stage per channel)</text>
+  <text x="285" y="1738" text-anchor="middle">L/R: different offsets + polarity for stereo decorrelation</text>
+
+  <rect x="540" y="1700" width="260" height="50" rx="6" fill="#e3f2fd" stroke="#1976d2" stroke-width="1"/>
+  <text x="670" y="1720" text-anchor="middle" font-weight="bold" fill="#1976d2">LFO: SIN0 --> rap0,rap1</text>
+  <text x="670" y="1738" text-anchor="middle" class="label">Wide: + SIN1 --> rap2,rap3</text>
+
+  <!-- ============================================================ -->
+  <!-- SHIMMER MODES DETAIL                                         -->
+  <!-- ============================================================ -->
+  <rect x="20" y="2010" width="1160" height="340" class="section-bg"/>
+  <text x="600" y="2038" text-anchor="middle" class="subtitle">Shimmer Modes Detail</text>
+
+  <!-- SHIFT MODE -->
+  <rect x="50" y="2060" width="1100" height="110" rx="6" fill="none" stroke="#e91e63" stroke-width="1"/>
+  <text x="110" y="2080" font-weight="bold" fill="#e91e63">"Shift" Mode</text>
+  <text x="110" y="2095" class="label">One-shot pitch shift BEFORE the tank. No feedback through pitch shifter.</text>
+
+  <rect x="70" y="2110" width="70" height="25" class="block"/>
+  <text x="105" y="2127" text-anchor="middle">apout</text>
+  <text x="105" y="2148" text-anchor="middle" class="coeff">x level</text>
+
+  <line x1="140" y1="2122" x2="170" y2="2122" class="arrow"/>
+  <rect x="173" y="2110" width="75" height="25" class="delay"/>
+  <text x="210" y="2127" text-anchor="middle">WRA shim</text>
+
+  <line x1="248" y1="2122" x2="275" y2="2122" class="arrow"/>
+  <rect x="278" y="2105" width="180" height="35" class="shimmer"/>
+  <text x="368" y="2122" text-anchor="middle" font-weight="bold">RMP0 Pitch Shift</text>
+  <text x="368" y="2135" text-anchor="middle" class="coeff">CHO RDA crossfade (AN-0001)</text>
+
+  <line x1="458" y1="2122" x2="488" y2="2122" class="arrow"/>
+  <rect x="491" y="2110" width="70" height="25" class="filter"/>
+  <text x="526" y="2127" text-anchor="middle">LPF k=0.4</text>
+
+  <line x1="561" y1="2122" x2="595" y2="2122" class="arrow"/>
+  <rect x="598" y="2110" width="75" height="25" class="block"/>
+  <text x="635" y="2127" text-anchor="middle" font-weight="bold">shimOut</text>
+
+  <line x1="673" y1="2122" x2="710" y2="2122" class="arrow"/>
+  <rect x="713" y="2108" width="180" height="30" class="block"/>
+  <text x="803" y="2127" text-anchor="middle">Added to tank stage 0 at unity</text>
+
+  <!-- SHIMMER MODE -->
+  <rect x="50" y="2180" width="1100" height="150" rx="6" fill="none" stroke="#e91e63" stroke-width="1.5"/>
+  <text x="110" y="2200" font-weight="bold" fill="#e91e63">"Shimmer" Mode</text>
+  <text x="110" y="2215" class="label">Pitch shift INSIDE the feedback loop. Each full tank cycle = another octave up.</text>
+  <text x="110" y="2230" class="label">Reverb time controls how many octave shifts accumulate. LPF tames brightness.</text>
+
+  <rect x="70" y="2250" width="100" height="25" class="delay"/>
+  <text x="120" y="2267" text-anchor="middle">feedback sig</text>
+  <text x="120" y="2282" text-anchor="middle" class="coeff">(from tank end x RT)</text>
+
+  <line x1="170" y1="2262" x2="195" y2="2262" class="arrow"/>
+  <rect x="198" y="2250" width="70" height="25" class="block"/>
+  <text x="233" y="2267" text-anchor="middle">save temp</text>
+
+  <line x1="268" y1="2262" x2="295" y2="2262" class="arrow"/>
+  <rect x="298" y="2250" width="75" height="25" class="delay"/>
+  <text x="335" y="2267" text-anchor="middle">WRA shim</text>
+
+  <line x1="373" y1="2262" x2="400" y2="2262" class="arrow"/>
+  <rect x="403" y="2245" width="160" height="35" class="shimmer"/>
+  <text x="483" y="2262" text-anchor="middle" font-weight="bold">RMP0 Pitch Shift</text>
+  <text x="483" y="2275" text-anchor="middle" class="coeff">CHO RDA crossfade</text>
+
+  <line x1="563" y1="2262" x2="590" y2="2262" class="arrow"/>
+  <rect x="593" y="2250" width="70" height="25" class="filter"/>
+  <text x="628" y="2267" text-anchor="middle">LPF k=0.4</text>
+
+  <line x1="663" y1="2262" x2="690" y2="2262" class="arrow"/>
+  <rect x="693" y="2248" width="100" height="28" class="block"/>
+  <text x="743" y="2266" text-anchor="middle">x shimLevel</text>
+  <text x="743" y="2290" text-anchor="middle" class="coeff">SOF level, 0</text>
+
+  <line x1="793" y1="2262" x2="818" y2="2262" class="arrow"/>
+  <circle cx="830" cy="2262" r="12" class="sum"/>
+  <text x="830" y="2266" text-anchor="middle" font-weight="bold">+</text>
+  <text x="860" y="2290" text-anchor="middle" class="coeff">+ original feedback</text>
+  <text x="860" y="2302" text-anchor="middle" class="coeff">(from temp)</text>
+
+  <line x1="842" y1="2262" x2="880" y2="2262" class="arrow"/>
+  <rect x="883" y="2250" width="140" height="25" class="block"/>
+  <text x="953" y="2267" text-anchor="middle">continues into tank...</text>
+  <text x="953" y="2288" text-anchor="middle" class="coeff">+ apout, then AP, filters, delay</text>
+
+  <!-- ============================================================ -->
+  <!-- HF DAMPING DETAIL                                            -->
+  <!-- ============================================================ -->
+  <rect x="20" y="2370" width="1160" height="170" class="section-bg"/>
+  <text x="600" y="2398" text-anchor="middle" class="subtitle">HF Damping Crossfade (pot-controlled, gain &lt;= 1.0)</text>
+
+  <rect x="70" y="2420" width="65" height="25" class="block"/>
+  <text x="102" y="2437" text-anchor="middle">signal</text>
+
+  <line x1="135" y1="2432" x2="158" y2="2432" class="arrow"/>
+  <rect x="161" y="2420" width="75" height="25" class="block"/>
+  <text x="198" y="2437" text-anchor="middle">save temp</text>
+
+  <line x1="236" y1="2432" x2="260" y2="2432" class="arrow"/>
+  <rect x="263" y="2420" width="85" height="25" class="filter"/>
+  <text x="305" y="2437" text-anchor="middle">RDFX LPF</text>
+
+  <line x1="348" y1="2432" x2="375" y2="2432" class="arrow"/>
+  <circle cx="387" cy="2432" r="12" class="sum"/>
+  <text x="387" y="2436" text-anchor="middle" font-size="12" font-weight="bold">-</text>
+  <text x="387" y="2418" text-anchor="middle" class="coeff">filtered - unfilt</text>
+
+  <line x1="198" y1="2445" x2="198" y2="2470" stroke="#333" stroke-width="1"/>
+  <line x1="198" y1="2470" x2="387" y2="2470" stroke="#333" stroke-width="1"/>
+  <line x1="387" y1="2470" x2="387" y2="2444" class="arrow"/>
+
+  <line x1="399" y1="2432" x2="425" y2="2432" class="arrow"/>
+  <rect x="428" y="2420" width="85" height="25" class="pot"/>
+  <text x="470" y="2437" text-anchor="middle">MULX POT1</text>
+
+  <line x1="513" y1="2432" x2="540" y2="2432" class="arrow"/>
+  <circle cx="552" cy="2432" r="12" class="sum"/>
+  <text x="552" y="2436" text-anchor="middle" font-weight="bold">+</text>
+
+  <line x1="198" y1="2470" x2="552" y2="2470" stroke="#333" stroke-width="1"/>
+  <line x1="552" y1="2470" x2="552" y2="2444" class="arrow"/>
+
+  <line x1="564" y1="2432" x2="595" y2="2432" class="arrow"/>
+  <rect x="598" y="2420" width="65" height="25" class="block"/>
+  <text x="630" y="2437" text-anchor="middle">output</text>
+
+  <text x="400" y="2510" text-anchor="middle" class="label">POT1=0: no damping (pass-through)  |  POT1=1: full LPF  |  Gain always &lt;= 1.0</text>
+
+  <!-- ============================================================ -->
+  <!-- LEGEND                                                       -->
+  <!-- ============================================================ -->
+  <rect x="20" y="2560" width="1160" height="80" class="section-bg"/>
+  <text x="80" y="2585" class="subtitle">Legend:</text>
+
+  <rect x="140" y="2575" width="40" height="18" class="delay"/>
+  <text x="192" y="2588" class="label">Delay/AP</text>
+
+  <rect x="260" y="2575" width="40" height="18" class="filter"/>
+  <text x="312" y="2588" class="label">Filter</text>
+
+  <rect x="370" y="2575" width="40" height="18" class="shimmer"/>
+  <text x="422" y="2588" class="label">Shimmer</text>
+
+  <rect x="490" y="2575" width="40" height="18" class="mixer"/>
+  <text x="542" y="2588" class="label">Mix/Out</text>
+
+  <rect x="600" y="2575" width="40" height="18" class="block"/>
+  <text x="652" y="2588" class="label">Signal/Reg</text>
+
+  <line x1="720" y1="2584" x2="755" y2="2584" class="arrow"/>
+  <text x="775" y="2588" class="label">Signal</text>
+
+  <line x1="820" y1="2584" x2="855" y2="2584" class="arrow-fb"/>
+  <text x="880" y="2588" class="label">Feedback</text>
+
+  <line x1="940" y1="2584" x2="975" y2="2584" class="arrow-shim"/>
+  <text x="1010" y="2588" class="label">Shimmer path</text>
+
+  <text x="600" y="2625" text-anchor="middle" class="coeff">SpinCAD Designer - Reverb Designer | FV-1: 128 instructions, 32768 samples delay RAM, 32768 Hz sample rate</text>
+</svg>
