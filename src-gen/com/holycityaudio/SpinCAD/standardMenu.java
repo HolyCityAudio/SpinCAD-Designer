@@ -76,6 +76,9 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.pitchoffsetCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Pitch_shift_testCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PitchShiftFixedCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LFO_ValueCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.New_OscillatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OscillatorCADBlock;
@@ -91,9 +94,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_2_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_3_to_1CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PatternGeneratorCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RatioCADBlock;
@@ -833,6 +833,36 @@
 	});
 	mn_pitch.add(mntm_PitchShiftFixed);
 		
+	JMenu mn_pots = new JMenu("Pots");
+	menuBar.add(mn_pots);
+	
+	final JMenuItem mntm_Pot0 = new JMenuItem("Pot 0");
+	mntm_Pot0.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Pot0CADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_pots.add(mntm_Pot0);
+		
+	final JMenuItem mntm_Pot1 = new JMenuItem("Pot 1");
+	mntm_Pot1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Pot1CADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_pots.add(mntm_Pot1);
+		
+	final JMenuItem mntm_Pot2 = new JMenuItem("Pot 2");
+	mntm_Pot2.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new Pot2CADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_pots.add(mntm_Pot2);
+		
 	JMenu mn_oscillators = new JMenu("Oscillators");
 	menuBar.add(mn_oscillators);
 	
@@ -973,33 +1003,6 @@
 		}
 	});
 	mn_control.add(mntm_PatternGenerator);
-		
-	final JMenuItem mntm_Pot0 = new JMenuItem("Pot 0");
-	mntm_Pot0.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new Pot0CADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_Pot0);
-		
-	final JMenuItem mntm_Pot1 = new JMenuItem("Pot 1");
-	mntm_Pot1.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new Pot1CADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_Pot1);
-		
-	final JMenuItem mntm_Pot2 = new JMenuItem("Pot 2");
-	mntm_Pot2.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new Pot2CADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_control.add(mntm_Pot2);
 		
 	final JMenuItem mntm_PowerControl = new JMenuItem("Power");
 	mntm_PowerControl.addActionListener(new ActionListener() {

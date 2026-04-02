@@ -2,7 +2,17 @@
 
 ## Block Reference
 
+- [I/O - Mix Blocks](io-mix-blocks.md) -- input, output, volume, gain, panning, crossfade, and mixer blocks
+- [Wave Shaper Blocks](wave-shaper-blocks.md) -- distortion, overdrive, fuzz, and bit-reduction effects
+- [Dynamics Blocks](dynamics-blocks.md) -- compressors, limiters, expanders, and noise gates
+- [Filter Blocks](filter-blocks.md) -- low-pass, high-pass, and state-variable filters
+- [Delay Blocks](delay-blocks.md) -- multi-tap delays, drum echo, BBD emulation, and reverse delay
+- [Reverb Blocks](reverb-blocks.md) -- allpass, room, hall, plate, spring, and algorithmic reverbs
+- [Modulation Blocks](modulation-blocks.md) -- chorus, flanger, phaser, ring modulator, and servo effects
+- [Pitch Blocks](pitch-blocks.md) -- pitch shifters, arpeggiator, and glitch effects
+- [Oscillator Blocks](oscillators-blocks.md) -- LFOs and oscillators for modulation sources
 - [Control Blocks](control-blocks.md) -- transfer functions and usage for control-signal shaping blocks
+- [Instructions Blocks](instructions-blocks.md) -- math/utility blocks (abs, exp, log, sqrt, max)
 - [DSP References](DSP-references.md) -- links to external DSP learning resources
 
 ---
