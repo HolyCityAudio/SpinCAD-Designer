@@ -40,7 +40,7 @@ the multiplier C is S1.14 format and the offset D is S.10 format.)
 | Control Input 1 | Control In | 0-1 control signal |
 | Control Output 1 | Control Out | Inverted signal (1 -> 0) |
 
-![Invert transfer curve](control-invert.svg)
+![Invert transfer curve](control-invert.png)
 
 **Transfer function:** output = 1 - input
 
@@ -73,7 +73,7 @@ block lets you convert that linear taper into a more natural-feeling curve.
 | Invert | on/off | off | Invert input before raising to power |
 | Flip | on/off | off | Invert output after raising to power |
 
-![Power transfer curves](control-power.svg)
+![Power transfer curves](control-power.png)
 
 The four combinations of Invert and Flip produce different curve shapes:
 
@@ -84,10 +84,10 @@ The four combinations of Invert and Flip produce different curve shapes:
 | off | on | y = 1 - x^p | Output inverted; high at low input, drops at high end |
 | on | on | y = 1 - (1-x)^p | S-curve feel; slow start, fast finish |
 
-![Power: no invert, no flip](control-power-0.svg)
-![Power: invert only](control-power-1.svg)
-![Power: flip only](control-power-2.svg)
-![Power: invert + flip](control-power-3.svg)
+![Power: no invert, no flip](control-power-0.png)
+![Power: invert only](control-power-1.png)
+![Power: flip only](control-power-2.png)
+![Power: invert + flip](control-power-3.png)
 
 At power=2, a linear pot sweep becomes a quadratic taper. At power=5, most
 of the output change happens in the upper quarter of the input range.
@@ -117,7 +117,7 @@ a pot) and generates two outputs that divide the pot travel in half.
 | Stage 1 | Control Out | Active in lower half of input (0 to 0.5) |
 | Stage 2 | Control Out | Active in upper half of input (0.5 to 1.0) |
 
-![Two Stage transfer curves](control-two-stage.svg)
+![Two Stage transfer curves](control-two-stage.png)
 
 **Transfer function:**
 
@@ -154,7 +154,7 @@ depends on which output pins are connected.
 When both outputs are wired, each covers half the input range with a linear
 ramp and stays clamped at zero for the other half.
 
-![Vee transfer curves (both outputs connected)](control-vee.svg)
+![Vee transfer curves (both outputs connected)](control-vee.png)
 
 As the input goes from 0 to 0.5:
 - Output 1 goes linearly from 1.0 to 0
@@ -169,7 +169,7 @@ As the input goes from 0.5 to 1.0:
 When only one output is connected, it covers the full input range as a
 symmetric V (or inverted V), implemented with the ABSA instruction.
 
-![Vee transfer curves (single output connected)](control-vee-single.svg)
+![Vee transfer curves (single output connected)](control-vee-single.png)
 
 - **Output 1 only:** V-shape — high at edges (1.0), zero at center (0.5)
 - **Output 2 only:** Inverted V — zero at edges, high at center (1.0)
@@ -216,7 +216,7 @@ The **FullRange** output is a linear ramp:
 
 This starts at 1/ratio when x=0 and ramps linearly to 1 when x=1.
 
-![Ratio FullRange output](control-ratio-fullrange.svg)
+![Ratio FullRange output](control-ratio-fullrange.png)
 
 The **Ratio** output is an inverse curve:
 
@@ -224,14 +224,14 @@ The **Ratio** output is an inverse curve:
 
 This starts at 1 when x=0 and decreases to 1/ratio when x=1.
 
-![Ratio output](control-ratio-ratio.svg)
+![Ratio output](control-ratio-ratio.png)
 
 **Key property:** Multiply these together, and the product is the constant
 value 1/ratio across the entire input range. For each ratio setting, the
 FullRange curve intersects the y-axis (x=0) at the same value as the Ratio
 curve intersects the x=1 line.
 
-![Ratio FullRange x Ratio product](control-ratio-product.svg)
+![Ratio FullRange x Ratio product](control-ratio-product.png)
 
 This is implemented on the FV-1 using the LOG and EXP instructions, which
 compute the inverse function in the logarithmic domain.
@@ -264,7 +264,7 @@ rotation, after which it ramps linearly to 1 (or 0)."
 | Flip | on/off | off | Reverse input direction before clipping |
 | Invert | on/off | off | Invert output after clipping |
 
-![Clip transfer curves at different gains](control-clip.svg)
+![Clip transfer curves at different gains](control-clip.png)
 
 The four combinations of Flip and Invert (shown here at gain=10):
 
@@ -275,10 +275,10 @@ The four combinations of Flip and Invert (shown here at gain=10):
 | off | on | x <= 0.1: y = 1 - 10x; x > 0.1: y = 0 | Drops fast from 1, then stays at 0 |
 | on | on | x <= 0.9: y = 0; x > 0.9: y = 10(x - 0.9) | Stays low, ramps up at the end |
 
-![Clip: normal (no flip, no invert)](control-clip-0.svg)
-![Clip: flip only](control-clip-1.svg)
-![Clip: invert only](control-clip-2.svg)
-![Clip: flip + invert](control-clip-3.svg)
+![Clip: normal (no flip, no invert)](control-clip-0.png)
+![Clip: flip only](control-clip-1.png)
+![Clip: invert only](control-clip-2.png)
+![Clip: flip + invert](control-clip-3.png)
 
 **Typical use:** Smoothly "switch" between settings at either extreme end of
 the pot travel. For example, in a delay with infinite feedback hold: over most
@@ -302,7 +302,7 @@ to zero) instruction followed by `CLR` (clear accumulator).
 | Input | Control In | Control signal (may include negative values) |
 | Output | Control Out | max(0, input) |
 
-![Half Wave DC transfer](control-halfwave.svg)
+![Half Wave DC transfer](control-halfwave.png)
 
 **Transfer function:** output = max(0, input)
 
@@ -314,7 +314,7 @@ a bipolar LFO, or modulation.
 Applied to a full-range sine wave (-1 to +1), the output retains only the
 positive half-cycles:
 
-![Half Wave on sine wave](control-halfwave-sine.svg)
+![Half Wave on sine wave](control-halfwave-sine.png)
 
 **Typical use:** Clamp the output of a mixer or difference block to prevent
 negative control values from causing unexpected behavior in downstream blocks.
@@ -350,15 +350,15 @@ the threshold.)
 - **0 -> +1**: output is 0 (low) or ~1.0 (high)
 - **-1 -> +1**: output is -1.0 (low) or +1.0 (high)
 
-![Slicer DC transfer at different thresholds](control-slicer.svg)
+![Slicer DC transfer at different thresholds](control-slicer.png)
 
 **Pulse Width Modulation:** When a sine wave LFO feeds the Control In, the
 Slicer produces a square wave. Varying the Slice Level changes the duty cycle,
 creating classic PWM:
 
-![Slicer PWM: slice level 25%](control-slicer-sine-0.svg)
-![Slicer PWM: slice level 50%](control-slicer-sine-1.svg)
-![Slicer PWM: slice level 75%](control-slicer-sine-2.svg)
+![Slicer PWM: slice level 25%](control-slicer-sine-0.png)
+![Slicer PWM: slice level 50%](control-slicer-sine-1.png)
+![Slicer PWM: slice level 75%](control-slicer-sine-2.png)
 
 When a Pot is connected to the Slice Level input, varying the pot modulates
 the pulse width over its full range. At pot=0, pulses stop entirely (slice
@@ -411,12 +411,12 @@ At depth=1.0, the output goes from 1.0 (when LFO=0) down to 0.0 (when LFO=1),
 giving "full chop" tremolo. At lower depth values, the output doesn't go as
 low, producing a gentler volume modulation.
 
-![Tremolizer DC transfer at different depths](control-tremolizer.svg)
+![Tremolizer DC transfer at different depths](control-tremolizer.png)
 
 Applied to a 0-1 sine wave LFO, the Tremolizer produces an inverted volume
 envelope:
 
-![Tremolizer volume envelope from sine LFO](control-tremolizer-sine.svg)
+![Tremolizer volume envelope from sine LFO](control-tremolizer-sine.png)
 
 **Typical use:** Build a tremolo patch by connecting a Sine LFO (scaled 0 to 1)
 to the Tremolizer's LFO Input, then connect the Tremolizer output to a Volume

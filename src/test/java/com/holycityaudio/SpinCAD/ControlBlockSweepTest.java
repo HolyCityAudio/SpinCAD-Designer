@@ -2,9 +2,12 @@ package com.holycityaudio.SpinCAD;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
@@ -19,7 +22,7 @@ import com.holycityaudio.SpinCAD.SpinCADPin.pinType;
 /**
  * Sweep test for control-menu blocks.
  * Measures the DC transfer function of each block by sweeping a constant
- * control input from 0 to 1, then renders individual SVG plots per block
+ * control input from 0 to 1, then renders individual PNG plots per block
  * into docs/.
  */
 public class ControlBlockSweepTest {
@@ -61,7 +64,7 @@ public class ControlBlockSweepTest {
         double[] unity = new double[NUM_POINTS];
         for (int i = 0; i < NUM_POINTS; i++) unity[i] = SWEEP_X[i];
 
-        writeSinglePlot(new File(docsDir, "control-invert.svg"),
+        writeSinglePlot(new File(docsDir, "control-invert.png"),
             "Invert", "Control In", "Control Out", 0, 1,
             new double[][]{invertOut, unity},
             new String[]{"1 - x", "Unity (ref)"},
@@ -76,7 +79,7 @@ public class ControlBlockSweepTest {
                 () -> { PowerControlCADBlock b = new PowerControlCADBlock(100, 100); b.setPower(pw); return b; },
                 "Control Input 1", "Control Output 1", null);
         }
-        writeSinglePlot(new File(docsDir, "control-power.svg"),
+        writeSinglePlot(new File(docsDir, "control-power.png"),
             "Power", "Control In", "Control Out", 0, 1,
             powerCurves,
             new String[]{"x\u00B2", "x\u00B3", "x\u2074", "x\u2075"},
@@ -100,7 +103,7 @@ public class ControlBlockSweepTest {
                     if (flp) b.setFlip(true);
                     return b;
                 }, "Control Input 1", "Control Output 1", null);
-            writeSinglePlot(new File(docsDir, "control-power-" + m + ".svg"),
+            writeSinglePlot(new File(docsDir, "control-power-" + m + ".png"),
                 "Power (p=3): " + pwModes[m][0].split(":")[0].trim(), "Control In", "Control Out", 0, 1,
                 new double[][]{curve},
                 new String[]{pwModes[m][0]},
@@ -117,7 +120,7 @@ public class ControlBlockSweepTest {
             ts1[i] = r != null ? r[0] : Double.NaN;
             ts2[i] = r != null ? r[1] : Double.NaN;
         }
-        writeSinglePlot(new File(docsDir, "control-two-stage.svg"),
+        writeSinglePlot(new File(docsDir, "control-two-stage.png"),
             "Two Stage", "Control In", "Control Out", 0, 1,
             new double[][]{ts1, ts2},
             new String[]{"Stage 1", "Stage 2"},
@@ -133,7 +136,7 @@ public class ControlBlockSweepTest {
             veeOut1[i] = r != null ? r[0] : Double.NaN;
             veeOut2[i] = r != null ? r[1] : Double.NaN;
         }
-        writeSinglePlot(new File(docsDir, "control-vee.svg"),
+        writeSinglePlot(new File(docsDir, "control-vee.png"),
             "Vee (both outputs connected)", "Control In", "Control Out", 0, 1,
             new double[][]{veeOut1, veeOut2},
             new String[]{"Output 1", "Output 2"},
@@ -153,7 +156,7 @@ public class ControlBlockSweepTest {
                 Map.of("Input", SWEEP_VALS[i]), "Output 2", null);
             veeOnly2[i] = r2 != null ? r2[0] : Double.NaN;
         }
-        writeSinglePlot(new File(docsDir, "control-vee-single.svg"),
+        writeSinglePlot(new File(docsDir, "control-vee-single.png"),
             "Vee (single output connected)", "Control In", "Control Out", 0, 1,
             new double[][]{veeOnly1, veeOnly2},
             new String[]{"Output 1 only", "Output 2 only"},
@@ -174,12 +177,12 @@ public class ControlBlockSweepTest {
                 ratioCurves[ri][i] = r != null ? r[1] : Double.NaN;
             }
         }
-        writeSinglePlot(new File(docsDir, "control-ratio-fullrange.svg"),
+        writeSinglePlot(new File(docsDir, "control-ratio-fullrange.png"),
             "Ratio: FullRange Output", "Control In", "Control Out", 0, 1,
             ratioFullRange,
             new String[]{"1:2", "1:5", "1:10", "1:50"},
             new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]}, null);
-        writeSinglePlot(new File(docsDir, "control-ratio-ratio.svg"),
+        writeSinglePlot(new File(docsDir, "control-ratio-ratio.png"),
             "Ratio: Ratio Output", "Control In", "Control Out", 0, 1,
             ratioCurves,
             new String[]{"1:2", "1:5", "1:10", "1:50"},
@@ -193,7 +196,7 @@ public class ControlBlockSweepTest {
                 ratioProduct[ri][i] = fr * ra;
             }
         }
-        writeSinglePlot(new File(docsDir, "control-ratio-product.svg"),
+        writeSinglePlot(new File(docsDir, "control-ratio-product.png"),
             "Ratio: FullRange \u00D7 Ratio", "Control In", "Product", 0, 1,
             ratioProduct,
             new String[]{"1:2", "1:5", "1:10", "1:50"},
@@ -208,7 +211,7 @@ public class ControlBlockSweepTest {
                 () -> { ClipControlCADBlock b = new ClipControlCADBlock(100, 100); b.setGain(g); return b; },
                 "Control Input 1", "Control Output 1", null);
         }
-        writeSinglePlot(new File(docsDir, "control-clip.svg"),
+        writeSinglePlot(new File(docsDir, "control-clip.png"),
             "Clip", "Control In", "Control Out", 0, 1,
             clipCurves,
             new String[]{"1x", "2x", "4x", "8x"},
@@ -232,7 +235,7 @@ public class ControlBlockSweepTest {
                     if (flp) b.setFlip(true);
                     return b;
                 }, "Control Input 1", "Control Output 1", null);
-            writeSinglePlot(new File(docsDir, "control-clip-" + m + ".svg"),
+            writeSinglePlot(new File(docsDir, "control-clip-" + m + ".png"),
                 "Clip (gain=10): " + clModes[m][0], "Control In", "Control Out", 0, 1,
                 new double[][]{curve},
                 new String[]{clModes[m][0]},
@@ -243,7 +246,7 @@ public class ControlBlockSweepTest {
         double[] halfWaveOut = sweepControl(
             () -> new Half_WaveCADBlock(100, 100),
             "Input", "Output", null);
-        writeSinglePlot(new File(docsDir, "control-halfwave.svg"),
+        writeSinglePlot(new File(docsDir, "control-halfwave.png"),
             "Half Wave", "Control In", "Control Out", 0, 1,
             new double[][]{halfWaveOut},
             new String[]{"max(0, input)"}, new String[]{COLORS[0]}, null);
@@ -257,7 +260,7 @@ public class ControlBlockSweepTest {
             sineIn[i] = Math.sin(2 * Math.PI * 2 * sineX[i]);
             sineHW[i] = Math.max(0, sineIn[i]);
         }
-        writeTimeDomainPlot(new File(docsDir, "control-halfwave-sine.svg"),
+        writeTimeDomainPlot(new File(docsDir, "control-halfwave-sine.png"),
             "Half Wave on Sine", "Time", "Amplitude", -1, 1,
             sineX, new double[][]{sineIn, sineHW},
             new String[]{"Input", "Output"},
@@ -272,7 +275,7 @@ public class ControlBlockSweepTest {
                 () -> { SlicerCADBlock b = new SlicerCADBlock(100, 100); b.setslice(sl); return b; },
                 "Control In", "Slicer Out", null);
         }
-        writeSinglePlot(new File(docsDir, "control-slicer.svg"),
+        writeSinglePlot(new File(docsDir, "control-slicer.png"),
             "Slicer", "Control In", "Control Out", 0, 1,
             slicerCurves,
             new String[]{"slice=0.2", "slice=0.5", "slice=0.8"},
@@ -292,7 +295,7 @@ public class ControlBlockSweepTest {
             }
             // Horizontal threshold lines as extra annotation
             HLine hline = new HLine(sliceLevels[si], COLORS[si]);
-            writeTimeDomainPlot(new File(docsDir, "control-slicer-sine-" + si + ".svg"),
+            writeTimeDomainPlot(new File(docsDir, "control-slicer-sine-" + si + ".png"),
                 String.format("Slicer: slice=%.1f", sliceLevels[si]),
                 "Time (2 cycles)", "Amplitude", 0, 1,
                 sliceSineX, new double[][]{sliceSineIn, sliceOut},
@@ -309,7 +312,7 @@ public class ControlBlockSweepTest {
                 () -> { tremolizerCADBlock b = new tremolizerCADBlock(100, 100); b.setdepth(d); return b; },
                 "LFO Input", "Control Output", null);
         }
-        writeSinglePlot(new File(docsDir, "control-tremolizer.svg"),
+        writeSinglePlot(new File(docsDir, "control-tremolizer.png"),
             "Tremolizer", "LFO Input", "Control Out", 0, 1,
             tremCurves,
             new String[]{"depth=0.5", "depth=0.75", "depth=1.0"},
@@ -330,13 +333,13 @@ public class ControlBlockSweepTest {
         double[][] tremSineAll = new double[4][sinePoints];
         tremSineAll[0] = tremSineIn;
         System.arraycopy(tremSineOut, 0, tremSineAll, 1, 3);
-        writeTimeDomainPlot(new File(docsDir, "control-tremolizer-sine.svg"),
+        writeTimeDomainPlot(new File(docsDir, "control-tremolizer-sine.png"),
             "Tremolizer: LFO \u2192 Volume Envelope", "Time (2 cycles)", "Amplitude", 0, 1,
             tremSineX, tremSineAll,
             new String[]{"LFO input", "depth=0.5", "depth=0.75", "depth=1.0"},
             new String[]{"#aaa", COLORS[0], COLORS[1], COLORS[2]}, null);
 
-        System.out.println("\nAll SVGs written to docs/");
+        System.out.println("\nAll PNGs written to docs/");
     }
 
     // ==================== Sweep helpers ====================
@@ -354,7 +357,7 @@ public class ControlBlockSweepTest {
         return out;
     }
 
-    // ==================== SVG rendering ====================
+    // ==================== PNG rendering ====================
 
     private static final int PLOT_W = 360, PLOT_H = 280;
     private static final int PAD_L = 50, PAD_R = 20, PAD_T = 35, PAD_B = 85;
@@ -366,34 +369,36 @@ public class ControlBlockSweepTest {
         HLine(double y, String color) { this.y = y; this.color = color; }
     }
 
-    /** Write a single-plot SVG with 0-1 x-axis and overlaid curves. */
+    private static Color parseColor(String hex) {
+        return Color.decode(hex);
+    }
+
+    /** Write a single-plot PNG with 0-1 x-axis and overlaid curves. */
     private void writeSinglePlot(File file, String title, String xLabel, String yLabel,
             double yMin, double yMax,
             double[][] curves, String[] labels, String[] colors, HLine hline) throws IOException {
         int totalW = PAD_L + PLOT_W + PAD_R;
         int totalH = PAD_T + PLOT_H + PAD_B;
 
-        PrintWriter pw = new PrintWriter(new FileWriter(file));
-        pw.printf("<svg xmlns='http://www.w3.org/2000/svg' width='%d' height='%d' ", totalW, totalH);
-        pw.println("font-family='Arial, sans-serif'>");
-        pw.printf("<rect width='%d' height='%d' fill='white'/>%n", totalW, totalH);
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
 
         int px = PAD_L, py = PAD_T;
-        drawPlot(pw, px, py, PLOT_W, PLOT_H, title, xLabel, yLabel, 0, 1, yMin, yMax);
+        drawPlot(g, px, py, PLOT_W, PLOT_H, title, xLabel, yLabel, 0, 1, yMin, yMax);
 
-        if (hline != null) drawHLine(pw, px, py, PLOT_W, PLOT_H, yMin, yMax, hline);
+        if (hline != null) drawHLine(g, px, py, PLOT_W, PLOT_H, yMin, yMax, hline);
 
         for (int ci = 0; ci < curves.length; ci++) {
-            drawCurve(pw, SWEEP_X, curves[ci], px, py, PLOT_W, PLOT_H, 0, 1, yMin, yMax, colors[ci]);
+            drawCurve(g, SWEEP_X, curves[ci], px, py, PLOT_W, PLOT_H, 0, 1, yMin, yMax, colors[ci]);
         }
 
-        drawLegend(pw, px, py + PLOT_H + 52, labels, colors);
+        drawLegend(g, px, py + PLOT_H + 52, labels, colors);
 
-        pw.println("</svg>");
-        pw.close();
+        g.dispose();
+        ImageIO.write(img, "png", file);
     }
 
-    /** Write a time-domain plot SVG with arbitrary x/y data arrays. */
+    /** Write a time-domain plot PNG with arbitrary x/y data arrays. */
     private void writeTimeDomainPlot(File file, String title, String xLabel, String yLabel,
             double yMin, double yMax,
             double[] xData, double[][] curves,
@@ -401,128 +406,162 @@ public class ControlBlockSweepTest {
         int totalW = PAD_L + PLOT_W + PAD_R;
         int totalH = PAD_T + PLOT_H + PAD_B;
 
-        PrintWriter pw = new PrintWriter(new FileWriter(file));
-        pw.printf("<svg xmlns='http://www.w3.org/2000/svg' width='%d' height='%d' ", totalW, totalH);
-        pw.println("font-family='Arial, sans-serif'>");
-        pw.printf("<rect width='%d' height='%d' fill='white'/>%n", totalW, totalH);
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
 
         int px = PAD_L, py = PAD_T;
-        drawPlot(pw, px, py, PLOT_W, PLOT_H, title, xLabel, yLabel, 0, 1, yMin, yMax);
+        drawPlot(g, px, py, PLOT_W, PLOT_H, title, xLabel, yLabel, 0, 1, yMin, yMax);
 
-        if (hline != null) drawHLine(pw, px, py, PLOT_W, PLOT_H, yMin, yMax, hline);
+        if (hline != null) drawHLine(g, px, py, PLOT_W, PLOT_H, yMin, yMax, hline);
 
         for (int ci = 0; ci < curves.length; ci++) {
-            drawCurve(pw, xData, curves[ci], px, py, PLOT_W, PLOT_H, 0, 1, yMin, yMax, colors[ci]);
+            drawCurve(g, xData, curves[ci], px, py, PLOT_W, PLOT_H, 0, 1, yMin, yMax, colors[ci]);
         }
 
-        drawLegend(pw, px, py + PLOT_H + 52, labels, colors);
+        drawLegend(g, px, py + PLOT_H + 52, labels, colors);
 
-        pw.println("</svg>");
-        pw.close();
+        g.dispose();
+        ImageIO.write(img, "png", file);
+    }
+
+    /** Create a Graphics2D context with antialiasing and white background. */
+    private Graphics2D createGraphics(BufferedImage img, int w, int h) {
+        Graphics2D g = img.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, w, h);
+        g.setFont(new Font("Arial", Font.PLAIN, 10));
+        return g;
     }
 
     /** Draw a horizontal dotted reference line with label. */
-    private void drawHLine(PrintWriter pw, int px, int py, int plotW, int plotH,
+    private void drawHLine(Graphics2D g, int px, int py, int plotW, int plotH,
             double yMin, double yMax, HLine hline) {
         double frac = (hline.y - yMin) / (yMax - yMin);
         int gy = py + (int)((1.0 - frac) * plotH);
-        pw.printf("<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='%s' stroke-width='1.5' stroke-dasharray='6,4'/>%n",
-                px, gy, px + plotW, gy, hline.color);
-        pw.printf("<text x='%d' y='%d' font-size='9' fill='%s'>slice=%.1f</text>%n",
-                px + plotW + 2, gy + 3, hline.color, hline.y);
+        Stroke old = g.getStroke();
+        g.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[]{6, 4}, 0));
+        g.setColor(parseColor(hline.color));
+        g.drawLine(px, gy, px + plotW, gy);
+        g.setStroke(old);
+        g.setFont(new Font("Arial", Font.PLAIN, 9));
+        g.drawString(String.format("slice=%.1f", hline.y), px + plotW + 2, gy + 3);
     }
 
     /** Draw plot frame with grid, labels, and optional unity diagonal. */
-    private void drawPlot(PrintWriter pw, int px, int py, int plotW, int plotH,
+    private void drawPlot(Graphics2D g, int px, int py, int plotW, int plotH,
             String title, String xLabel, String yLabel,
             double xMin, double xMax, double yMin, double yMax) {
-        pw.printf("<rect x='%d' y='%d' width='%d' height='%d' fill='#f8f8f8' stroke='#ccc'/>%n",
-                px, py, plotW, plotH);
-        pw.printf("<text x='%d' y='%d' text-anchor='middle' font-size='13' font-weight='bold'>%s</text>%n",
-                px + plotW / 2, py - 10, escapeXml(title));
+        // Plot background
+        g.setColor(new Color(0xf8, 0xf8, 0xf8));
+        g.fillRect(px, py, plotW, plotH);
+        g.setColor(new Color(0xcc, 0xcc, 0xcc));
+        g.drawRect(px, py, plotW, plotH);
+
+        // Title
+        g.setFont(new Font("Arial", Font.BOLD, 13));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(title, px + plotW / 2 - fm.stringWidth(title) / 2, py - 10);
 
         double yRange = yMax - yMin;
         int numTicks = 5;
+
+        // X-axis grid and labels
+        g.setFont(new Font("Arial", Font.PLAIN, 9));
         for (int tick = 0; tick <= numTicks; tick++) {
             double frac = tick / (double) numTicks;
             double xVal = xMin + frac * (xMax - xMin);
             int gx = px + (int)(frac * plotW);
-            pw.printf("<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='#ddd' stroke-width='0.5'/>%n",
-                    gx, py, gx, py + plotH);
-            pw.printf("<text x='%d' y='%d' text-anchor='middle' font-size='9' fill='#666'>%.1f</text>%n",
-                    gx, py + plotH + 13, xVal);
+            g.setColor(new Color(0xdd, 0xdd, 0xdd));
+            g.drawLine(gx, py, gx, py + plotH);
+            g.setColor(new Color(0x66, 0x66, 0x66));
+            String label = String.format("%.1f", xVal);
+            fm = g.getFontMetrics();
+            g.drawString(label, gx - fm.stringWidth(label) / 2, py + plotH + 13);
         }
+
+        // Y-axis grid and labels
         for (int tick = 0; tick <= numTicks; tick++) {
             double frac = tick / (double) numTicks;
             double yVal = yMin + frac * yRange;
             int gy = py + (int)((1.0 - frac) * plotH);
-            pw.printf("<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='#ddd' stroke-width='0.5'/>%n",
-                    px, gy, px + plotW, gy);
+            g.setColor(new Color(0xdd, 0xdd, 0xdd));
+            g.drawLine(px, gy, px + plotW, gy);
+            g.setColor(new Color(0x66, 0x66, 0x66));
             String label;
             if (yVal == (int) yVal) label = String.valueOf((int) yVal);
             else label = String.format("%.1f", yVal);
-            pw.printf("<text x='%d' y='%d' text-anchor='end' font-size='9' fill='#666'>%s</text>%n",
-                    px - 4, gy + 3, label);
+            fm = g.getFontMetrics();
+            g.drawString(label, px - 4 - fm.stringWidth(label), gy + 3);
         }
 
+        // Unity diagonal
         if (Math.abs(yMin - xMin) < 0.01 && Math.abs(yMax - xMax) < 0.01) {
-            pw.printf("<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='#bbb' stroke-width='0.8' stroke-dasharray='4,3'/>%n",
-                    px, py + plotH, px + plotW, py);
+            Stroke old = g.getStroke();
+            g.setStroke(new BasicStroke(0.8f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[]{4, 3}, 0));
+            g.setColor(new Color(0xbb, 0xbb, 0xbb));
+            g.drawLine(px, py + plotH, px + plotW, py);
+            g.setStroke(old);
         }
 
-        pw.printf("<text x='%d' y='%d' text-anchor='middle' font-size='10' fill='#333'>%s</text>%n",
-                px + plotW / 2, py + plotH + 30, escapeXml(xLabel));
-        pw.printf("<text x='%d' y='%d' text-anchor='middle' font-size='10' fill='#333' ",
-                px - 35, py + plotH / 2);
-        pw.printf("transform='rotate(-90,%d,%d)'>%s</text>%n",
-                px - 35, py + plotH / 2, escapeXml(yLabel));
+        // X-axis label
+        g.setFont(new Font("Arial", Font.PLAIN, 10));
+        g.setColor(new Color(0x33, 0x33, 0x33));
+        fm = g.getFontMetrics();
+        g.drawString(xLabel, px + plotW / 2 - fm.stringWidth(xLabel) / 2, py + plotH + 30);
 
-        pw.printf("<rect x='%d' y='%d' width='%d' height='%d' fill='none' stroke='#999'/>%n",
-                px, py, plotW, plotH);
+        // Y-axis label (rotated)
+        java.awt.geom.AffineTransform origTransform = g.getTransform();
+        g.rotate(-Math.PI / 2, px - 35, py + plotH / 2);
+        fm = g.getFontMetrics();
+        g.drawString(yLabel, px - 35 - fm.stringWidth(yLabel) / 2, py + plotH / 2 + 4);
+        g.setTransform(origTransform);
+
+        // Plot border
+        g.setColor(new Color(0x99, 0x99, 0x99));
+        g.drawRect(px, py, plotW, plotH);
     }
 
     /** Draw a curve from x/y data arrays. */
-    private void drawCurve(PrintWriter pw, double[] xData, double[] yData,
+    private void drawCurve(Graphics2D g, double[] xData, double[] yData,
             int px, int py, int plotW, int plotH,
             double xMin, double xMax, double yMin, double yMax, String color) {
-        StringBuilder path = new StringBuilder();
-        boolean started = false;
         double xRange = xMax - xMin;
         double yRange = yMax - yMin;
+        int[] xPoints = new int[xData.length];
+        int[] yPoints = new int[xData.length];
+        int count = 0;
         for (int i = 0; i < xData.length; i++) {
             if (i >= yData.length || Double.isNaN(yData[i])) continue;
             double fx = (xData[i] - xMin) / xRange;
             double fy = (yData[i] - yMin) / yRange;
             fy = Math.max(0, Math.min(1, fy));
-            int sx = px + (int)(fx * plotW);
-            int sy = py + (int)((1.0 - fy) * plotH);
-            if (!started) {
-                path.append(String.format("M%d,%d", sx, sy));
-                started = true;
-            } else {
-                path.append(String.format(" L%d,%d", sx, sy));
-            }
+            xPoints[count] = px + (int)(fx * plotW);
+            yPoints[count] = py + (int)((1.0 - fy) * plotH);
+            count++;
         }
-        if (started) {
-            pw.printf("<path d='%s' fill='none' stroke='%s' stroke-width='2'/>%n", path, color);
+        if (count > 1) {
+            g.setColor(parseColor(color));
+            g.setStroke(new BasicStroke(2.0f));
+            g.drawPolyline(Arrays.copyOf(xPoints, count), Arrays.copyOf(yPoints, count), count);
         }
     }
 
     /** Draw legend below x-axis label. */
-    private void drawLegend(PrintWriter pw, int x, int y, String[] labels, String[] colors) {
+    private void drawLegend(Graphics2D g, int x, int y, String[] labels, String[] colors) {
+        g.setFont(new Font("Arial", Font.PLAIN, 9));
         int offset = 0;
         for (int i = 0; i < labels.length; i++) {
             int lx = x + offset;
-            pw.printf("<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='%s' stroke-width='2.5'/>%n",
-                    lx, y - 3, lx + 15, y - 3, colors[i]);
-            pw.printf("<text x='%d' y='%d' font-size='9' fill='%s'>%s</text>%n",
-                    lx + 18, y, colors[i], escapeXml(labels[i]));
-            offset += 18 + labels[i].length() * 6 + 8;
+            g.setColor(parseColor(colors[i]));
+            g.setStroke(new BasicStroke(2.5f));
+            g.drawLine(lx, y - 3, lx + 15, y - 3);
+            g.drawString(labels[i], lx + 18, y);
+            FontMetrics fm = g.getFontMetrics();
+            offset += 18 + fm.stringWidth(labels[i]) + 8;
         }
-    }
-
-    private static String escapeXml(String s) {
-        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
     // ==================== Simulation engine ====================
