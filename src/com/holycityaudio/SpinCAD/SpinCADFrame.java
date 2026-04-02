@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * SpinCADFrame.java
- * Copyright (C) 2013 - 2015 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * Copyright (C) 2013 - 2026 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2026.  Look for GSW in code.
  * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -781,7 +781,7 @@ public class SpinCADFrame extends JFrame {
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SpinCADDialogs.MessageBox(SpinCADFrame.this, "About SpinCAD Designer", "Version 0.99 Build " + buildNum + "\n"
-						+ "Copyright 2026 Gary Worsham, Holy City Audio\n" +
+						+ "Copyright 2013 - 2026 Gary Worsham, Holy City Audio\n" +
 						" This program is distributed in the hope that it will be useful," +
 						"\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\n" +
 						"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");

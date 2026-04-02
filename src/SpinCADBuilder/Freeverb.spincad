@@ -1,0 +1,207 @@
+@name Freeverb
+@color "0x7100fc"
+@audioInput input Input_L
+@audioInput inputR Input_R
+@audioOutput outputL OutputL
+@audioOutput outputR OutputR
+
+@controlInput input0 Reverb_Time
+
+equ gain 0.5
+@sliderLabel gain 'Input Gain' -24 0 -6 1.0 1 DBLEVEL
+
+equ krt 0.42
+@sliderLabel krt 'Reverb Time' 0.2 0.57 0.42 100.0 2
+
+equ damping 0.5
+@sliderLabel damping 'HF Damping' 0.1 0.9 0.5 100.0 2
+
+; Freeverb (Schroeder-Moorer) reverb algorithm
+; 8 parallel comb filters with LP damping in feedback path
+; -> 4 series allpass filters for diffusion
+; Stereo output via offset allpass delay lengths
+; Based on the classic Freeverb algorithm by Jezar
+
+@isPinConnected Input_L
+
+equ allpassamt 0.5
+
+; 8 comb filter delay lines (standard Freeverb lengths)
+mem comb1 1116
+mem comb2 1188
+mem comb3 1277
+mem comb4 1356
+mem comb5 1422
+mem comb6 1491
+mem comb7 1557
+mem comb8 1617
+
+; Left allpass chain
+mem ap1L 556
+mem ap2L 441
+mem ap3L 341
+mem ap4L 225
+
+; Right allpass chain (offset by stereospread=23)
+mem ap1R 579
+mem ap2R 464
+mem ap3R 364
+mem ap4R 248
+
+; Registers
+equ outputL reg0
+equ outputR reg1
+equ filt1 reg2
+equ filt2 reg3
+equ filt3 reg4
+equ filt4 reg5
+equ filt5 reg6
+equ filt6 reg7
+equ filt7 reg8
+equ filt8 reg9
+equ mono reg10
+equ combsum reg11
+
+; Read input (mix L+R to mono, either can be unconnected)
+rdax input, gain
+@isPinConnected Input_R
+rdax inputR, gain
+@endif
+wrax mono, 0
+
+; === 8 parallel comb filters with LP damping ===
+; Feedback applied via wrax coefficient (slider) or mulx (control input)
+
+; Comb 1
+rda comb1#, 1.0
+rdfx filt1, damping
+@isPinConnected Reverb_Time
+wrax filt1, 1.0
+mulx input0
+@else
+wrax filt1, krt
+@endif
+rdax mono, 1.0
+wra comb1, 0
+
+; Comb 2
+rda comb2#, 1.0
+rdfx filt2, damping
+@isPinConnected Reverb_Time
+wrax filt2, 1.0
+mulx input0
+@else
+wrax filt2, krt
+@endif
+rdax mono, 1.0
+wra comb2, 0
+
+; Comb 3
+rda comb3#, 1.0
+rdfx filt3, damping
+@isPinConnected Reverb_Time
+wrax filt3, 1.0
+mulx input0
+@else
+wrax filt3, krt
+@endif
+rdax mono, 1.0
+wra comb3, 0
+
+; Comb 4
+rda comb4#, 1.0
+rdfx filt4, damping
+@isPinConnected Reverb_Time
+wrax filt4, 1.0
+mulx input0
+@else
+wrax filt4, krt
+@endif
+rdax mono, 1.0
+wra comb4, 0
+
+; Comb 5
+rda comb5#, 1.0
+rdfx filt5, damping
+@isPinConnected Reverb_Time
+wrax filt5, 1.0
+mulx input0
+@else
+wrax filt5, krt
+@endif
+rdax mono, 1.0
+wra comb5, 0
+
+; Comb 6
+rda comb6#, 1.0
+rdfx filt6, damping
+@isPinConnected Reverb_Time
+wrax filt6, 1.0
+mulx input0
+@else
+wrax filt6, krt
+@endif
+rdax mono, 1.0
+wra comb6, 0
+
+; Comb 7
+rda comb7#, 1.0
+rdfx filt7, damping
+@isPinConnected Reverb_Time
+wrax filt7, 1.0
+mulx input0
+@else
+wrax filt7, krt
+@endif
+rdax mono, 1.0
+wra comb7, 0
+
+; Comb 8
+rda comb8#, 1.0
+rdfx filt8, damping
+@isPinConnected Reverb_Time
+wrax filt8, 1.0
+mulx input0
+@else
+wrax filt8, krt
+@endif
+rdax mono, 1.0
+wra comb8, 0
+
+; === Sum all comb outputs ===
+rda comb1#, 0.2
+rda comb2#, 0.2
+rda comb3#, 0.2
+rda comb4#, 0.2
+rda comb5#, 0.2
+rda comb6#, 0.2
+rda comb7#, 0.2
+rda comb8#, 0.2
+wrax combsum, 1.0
+
+; === Left allpass diffusion chain ===
+rda ap1L#, -allpassamt
+wrap ap1L, allpassamt
+rda ap2L#, -allpassamt
+wrap ap2L, allpassamt
+rda ap3L#, -allpassamt
+wrap ap3L, allpassamt
+rda ap4L#, -allpassamt
+wrap ap4L, allpassamt
+wrax outputL, 0
+
+; === Right allpass diffusion chain ===
+rdax combsum, 1.0
+rda ap1R#, -allpassamt
+wrap ap1R, allpassamt
+rda ap2R#, -allpassamt
+wrap ap2R, allpassamt
+rda ap3R#, -allpassamt
+wrap ap3R, allpassamt
+rda ap4R#, -allpassamt
+wrap ap4R, allpassamt
+wrax outputR, 0
+
+@setOutputPin OutputL outputL
+@setOutputPin OutputR outputR
+@endif

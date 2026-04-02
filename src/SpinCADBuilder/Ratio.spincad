@@ -24,14 +24,18 @@ equ logOffset 0.4
 @ratioToLogOffset logOffset invRatio 
  
 @isPinConnected Input
-rdax    input,1    ;read input signal 
+rdax    input,1    ;read input signal
 sof	scale, offsetVal
 wrax    fullRange,1    ;output to fullRange pin
+@isPinConnected Ratio
 log -1.0, logOffset
 exp 1.0, 0
-wrax    ratioOut,0    ;output to fullRange pin
-
-@setOutputPin FullRange fullRange
+wrax    ratioOut,0    ;output to ratio pin
 @setOutputPin Ratio ratioOut
+@endif
+
+@isPinConnected FullRange
+@setOutputPin FullRange fullRange
+@endif
 @endif
 

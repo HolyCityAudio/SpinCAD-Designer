@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * GatedReverbControlCADBlock.java
- * Copyright (C) 2024 - Gary Worsham
+ * Copyright (C) 2013 - 2026 - Gary Worsham
  * Based on ElmGen by Andrew Kilpatrick
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -147,49 +147,53 @@ public class GatedReverbControlCADBlock extends ControlCADBlock {
 		}
 
 		// === Step 3: Threshold comparison and CV crossfade ===
-		// The envelope is positive (0 to ~1). We scale it so that the
-		// threshold level maps to ~1.0, then use it as a crossfade between
-		// idleRT and activeRT. The FV-1 clips at ~0.999 which provides
-		// natural saturation above threshold.
-		//
-		// For RMS mode, the envelope is squared, so we compare against
-		// threshold^2 to match.
+		// Only needed if CV Out is connected
+		if (this.getPin("CV Out").isConnected()) {
+			// The envelope is positive (0 to ~1). We scale it so that the
+			// threshold level maps to ~1.0, then use it as a crossfade between
+			// idleRT and activeRT. The FV-1 clips at ~0.999 which provides
+			// natural saturation above threshold.
+			//
+			// For RMS mode, the envelope is squared, so we compare against
+			// threshold^2 to match.
 
-		sfxb.comment("--- Threshold and CV crossfade ---");
-		sfxb.readRegister(envReg, 1.0);              // ACC = envelope
+			sfxb.comment("--- Threshold and CV crossfade ---");
+			sfxb.readRegister(envReg, 1.0);              // ACC = envelope
 
-		// Compute effective threshold for scaling
-		double effectiveThreshold = threshold;
-		if (detectMode == DETECT_RMS) {
-			effectiveThreshold = threshold * threshold; // match squared domain
-		}
-
-		// Scale envelope so that threshold level -> ~1.0
-		// Use SOF for multiplication: each SOF(-2,0) + SOF(-1,0) = *2
-		if (effectiveThreshold > 0.001) {
-			double scaleFactor = 1.0 / effectiveThreshold;
-			while (scaleFactor > 2.0) {
-				sfxb.scaleOffset(-2.0, 0.0);
-				sfxb.scaleOffset(-1.0, 0.0);
-				scaleFactor /= 2.0;
+			// Compute effective threshold for scaling
+			double effectiveThreshold = threshold;
+			if (detectMode == DETECT_RMS) {
+				effectiveThreshold = threshold * threshold; // match squared domain
 			}
-			if (scaleFactor > 1.001) {
-				sfxb.scaleOffset(-scaleFactor, 0.0);
-				sfxb.scaleOffset(-1.0, 0.0);
+
+			// Scale envelope so that threshold level -> ~1.0
+			// Use SOF for multiplication: each SOF(-2,0) + SOF(-1,0) = *2
+			if (effectiveThreshold > 0.001) {
+				double scaleFactor = 1.0 / effectiveThreshold;
+				while (scaleFactor > 2.0) {
+					sfxb.scaleOffset(-2.0, 0.0);
+					sfxb.scaleOffset(-1.0, 0.0);
+					scaleFactor /= 2.0;
+				}
+				if (scaleFactor > 1.001) {
+					sfxb.scaleOffset(-scaleFactor, 0.0);
+					sfxb.scaleOffset(-1.0, 0.0);
+				}
 			}
+			// ACC is now envelope/threshold, naturally clipped at ~0.999
+
+			// Crossfade: output = idleRT + (activeRT - idleRT) * crossfade
+			double rtRange = activeRT - idleRT;
+			sfxb.scaleOffset(rtRange, idleRT);           // ACC = rtRange * crossfade + idleRT
+
+			// Smooth the output with a lowpass filter for glitch-free transitions
+			sfxb.readRegisterFilter(cvReg, smoothCoeff); // RDFX
+			sfxb.writeRegister(cvReg, 0.0);
+
+			this.getPin("CV Out").setRegister(cvReg);
 		}
-		// ACC is now envelope/threshold, naturally clipped at ~0.999
-
-		// Crossfade: output = idleRT + (activeRT - idleRT) * crossfade
-		double rtRange = activeRT - idleRT;
-		sfxb.scaleOffset(rtRange, idleRT);           // ACC = rtRange * crossfade + idleRT
-
-		// Smooth the output with a lowpass filter for glitch-free transitions
-		sfxb.readRegisterFilter(cvReg, smoothCoeff); // RDFX
-		sfxb.writeRegister(cvReg, 0.0);
 
 		// === Set output pins ===
-		this.getPin("CV Out").setRegister(cvReg);
 		this.getPin("Envelope").setRegister(envReg);
 	}
 

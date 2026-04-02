@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1 
- * Copyright (C) 2013 - 2014 - Gary Worsham 
- * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code. 
+ * Copyright (C) 2013 - 2026 - Gary Worsham 
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2026.  Look for GSW in code. 
  * 
  *   This program is free software: you can redistribute it and/or modify 
  *   it under the terms of the GNU General Public License as published by 
@@ -75,22 +75,24 @@ public class EnvelopeControlCADBlock extends ControlCADBlock{
 			sfxb.readRegisterFilter(AVG, attackCoeff);
 			//				wrax	avg,0		;write avg level, pass on
 			sfxb.writeRegister(AVG, 0);
-			//				rdax	lavg,0
-			sfxb.readRegister(LAVG,1);
-			//				sof	-0.01,0	
-			sfxb.scaleOffset(-decayCoeff, 0);
-			//				rdax	lavg,1	
-			sfxb.readRegister(LAVG,1);
-			//				wrax	temp,0
-			sfxb.writeRegister(TEMP, 0);
-			//				rdax	avg,1
-			sfxb.readRegister(AVG,1);
-			//				maxx	temp,1		;filter a long average
-			sfxb.maxx(TEMP,1);
-			//				wrax	lavg,0
-			sfxb.writeRegister(LAVG,0);
 			this.getPin("Single Slope").setRegister(AVG);
-			this.getPin("Dual Slope").setRegister(LAVG);
+			if (this.getPin("Dual Slope").isConnected()) {
+				//				rdax	lavg,0
+				sfxb.readRegister(LAVG,1);
+				//				sof	-0.01,0
+				sfxb.scaleOffset(-decayCoeff, 0);
+				//				rdax	lavg,1
+				sfxb.readRegister(LAVG,1);
+				//				wrax	temp,0
+				sfxb.writeRegister(TEMP, 0);
+				//				rdax	avg,1
+				sfxb.readRegister(AVG,1);
+				//				maxx	temp,1		;filter a long average
+				sfxb.maxx(TEMP,1);
+				//				wrax	lavg,0
+				sfxb.writeRegister(LAVG,0);
+				this.getPin("Dual Slope").setRegister(LAVG);
+			}
 		}
 
 		System.out.println("Envelope control code gen!");

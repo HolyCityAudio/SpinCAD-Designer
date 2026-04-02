@@ -55,6 +55,12 @@ public class NotchControlPanel extends spinCADControlPanel {
 	private JDialog frame;
 	private NotchCADBlock gCB;
 	// declare the controls
+	FineControlSlider freqSlider;
+	JTextField  freqField;
+	FineControlSlider qMaxSlider;
+	JTextField  qMaxField;
+	FineControlSlider qMinSlider;
+	JTextField  qMinField;
 
 public NotchControlPanel(NotchCADBlock genericCADBlock) {
 		
@@ -66,6 +72,123 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 				frame = new JDialog(SpinCADFrame.getInstance(), "Notch");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// multiplier is points per decade here
+						freqSlider = SpinCADBlock.LogSlider(20,5000,gCB.getfreq(), "LOGFREQ2", 100.0);
+					// ---------------------------------------------						
+						freqSlider.addChangeListener(new NotchListener());
+						freqField = new JTextField();
+						freqField.setHorizontalAlignment(JTextField.CENTER);
+						Border freqBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						freqField.setBorder(freqBorder1);
+						freqField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(freqField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+						sliderVal = Math.max(freqSlider.getMinimum(), Math.min(freqSlider.getMaximum(), sliderVal));
+						freqSlider.setValue(sliderVal);
+						gCB.setfreq(SpinCADBlock.freqToFiltSVF(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
+									updatefreqLabel();
+								} catch (NumberFormatException ex) {
+									updatefreqLabel();
+								}
+							}
+						});
+						updatefreqLabel();
+			
+						Border freqborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel freqinnerPanel = new JPanel();
+			
+						freqinnerPanel.setLayout(new BoxLayout(freqinnerPanel, BoxLayout.Y_AXIS));
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						freqinnerPanel.add(freqField);
+						freqinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						freqinnerPanel.add(freqSlider);
+						freqinnerPanel.setBorder(freqborder2);
+			
+						frame.add(freqinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					qMaxSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (200.0 * 1000.0), (int) (gCB.getqMax() * 1000.0));
+						qMaxSlider.addChangeListener(new NotchListener());
+						qMaxField = new JTextField();
+						qMaxField.setHorizontalAlignment(JTextField.CENTER);
+						Border qMaxBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						qMaxField.setBorder(qMaxBorder1);
+						qMaxField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(qMaxField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(qMaxSlider.getMinimum(), Math.min(qMaxSlider.getMaximum(), sliderVal));
+						qMaxSlider.setValue(sliderVal);
+						gCB.setqMax((double) sliderVal / 1000.0);
+									updateqMaxLabel();
+								} catch (NumberFormatException ex) {
+									updateqMaxLabel();
+								}
+							}
+						});
+						updateqMaxLabel();
+			
+						Border qMaxborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel qMaxinnerPanel = new JPanel();
+			
+						qMaxinnerPanel.setLayout(new BoxLayout(qMaxinnerPanel, BoxLayout.Y_AXIS));
+						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						qMaxinnerPanel.add(qMaxField);
+						qMaxinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						qMaxinnerPanel.add(qMaxSlider);
+						qMaxinnerPanel.setBorder(qMaxborder2);
+			
+						frame.add(qMaxinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					qMinSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (50.0 * 1000.0), (int) (gCB.getqMin() * 1000.0));
+						qMinSlider.addChangeListener(new NotchListener());
+						qMinField = new JTextField();
+						qMinField.setHorizontalAlignment(JTextField.CENTER);
+						Border qMinBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						qMinField.setBorder(qMinBorder1);
+						qMinField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(qMinField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1000.0);
+						sliderVal = Math.max(qMinSlider.getMinimum(), Math.min(qMinSlider.getMaximum(), sliderVal));
+						qMinSlider.setValue(sliderVal);
+						gCB.setqMin((double) sliderVal / 1000.0);
+									updateqMinLabel();
+								} catch (NumberFormatException ex) {
+									updateqMinLabel();
+								}
+							}
+						});
+						updateqMinLabel();
+			
+						Border qMinborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel qMininnerPanel = new JPanel();
+			
+						qMininnerPanel.setLayout(new BoxLayout(qMininnerPanel, BoxLayout.Y_AXIS));
+						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						qMininnerPanel.add(qMinField);
+						qMininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						qMininnerPanel.add(qMinSlider);
+						qMininnerPanel.setBorder(qMinborder2);
+			
+						frame.add(qMininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -78,6 +201,18 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class NotchListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == freqSlider) {
+			gCB.setfreq((double) SpinCADBlock.freqToFiltSVF(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
+				updatefreqLabel();
+			}
+			if(ce.getSource() == qMaxSlider) {
+			gCB.setqMax((double) (qMaxSlider.getValue()/1000.0));
+				updateqMaxLabel();
+			}
+			if(ce.getSource() == qMinSlider) {
+			gCB.setqMin((double) (qMinSlider.getValue()/1000.0));
+				updateqMinLabel();
+			}
 			}
 		}
 
@@ -95,6 +230,15 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updatefreqLabel() {
+		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");		
+		}		
+		private void updateqMaxLabel() {
+		qMaxField.setText("Max Resonance " + String.format("%4.1f", gCB.getqMax()));		
+		}		
+		private void updateqMinLabel() {
+		qMinField.setText("Min Resonance " + String.format("%4.1f", gCB.getqMin()));		
+		}		
 		
 		class MyWindowListener implements WindowListener
 		{

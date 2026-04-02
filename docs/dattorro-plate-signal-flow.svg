@@ -1,0 +1,276 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1050 920" font-family="Consolas, monospace" font-size="12">
+  <title>Dattorro Plate Reverb Signal Flow</title>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333"/>
+    </marker>
+    <marker id="a-tank" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="525" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e293b">Dattorro Plate Reverb Signal Flow</text>
+  <text x="525" y="46" text-anchor="middle" font-size="11" fill="#64748b">From "Effect Design Part 1" (Jon Dattorro, 1997) -- Input diffusers + cross-coupled modulated tank</text>
+
+  <!-- ========== INPUT SECTION ========== -->
+  <rect x="20" y="65" width="80" height="28" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="60" y="83" text-anchor="middle" font-size="10" fill="#1e40af">Input L</text>
+  <rect x="20" y="100" width="80" height="28" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="60" y="118" text-anchor="middle" font-size="10" fill="#1e40af">Input R (opt)</text>
+
+  <!-- Gain -->
+  <circle cx="135" cy="79" r="11" fill="#fef3c7" stroke="#d97706" stroke-width="1.2"/>
+  <text x="135" y="83" text-anchor="middle" font-size="8" fill="#92400e">gain</text>
+  <circle cx="135" cy="114" r="11" fill="#fef3c7" stroke="#d97706" stroke-width="1.2"/>
+  <text x="135" y="118" text-anchor="middle" font-size="8" fill="#92400e">gain</text>
+
+  <circle cx="175" cy="96" r="10" fill="#fff" stroke="#333" stroke-width="1.2"/>
+  <text x="175" y="100" text-anchor="middle" font-size="12" fill="#333">+</text>
+
+  <line x1="100" y1="79" x2="124" y2="79" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="100" y1="114" x2="124" y2="114" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="146" y1="79" x2="165" y2="91" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+  <line x1="146" y1="114" x2="165" y2="101" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+
+  <!-- Pre-delay -->
+  <rect x="200" y="82" width="80" height="28" rx="3" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+  <text x="240" y="100" text-anchor="middle" font-size="10" fill="#075985">Pre-delay</text>
+  <text x="240" y="120" text-anchor="middle" font-size="8" fill="#64748b">(655 samples)</text>
+  <line x1="185" y1="96" x2="200" y2="96" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+
+  <!-- Bandwidth LP -->
+  <rect x="300" y="82" width="80" height="28" rx="3" fill="#fce7f3" stroke="#db2777" stroke-width="1"/>
+  <text x="340" y="96" text-anchor="middle" font-size="9" fill="#9d174d">Bandwidth</text>
+  <text x="340" y="106" text-anchor="middle" font-size="9" fill="#9d174d">LP filter</text>
+  <line x1="280" y1="96" x2="300" y2="96" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+
+  <!-- ========== INPUT DIFFUSERS ========== -->
+  <rect x="400" y="65" width="420" height="60" rx="5" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.2"/>
+  <text x="610" y="80" text-anchor="middle" font-size="10" font-weight="bold" fill="#15803d">Input Diffusers (4 series allpasses)</text>
+
+  <line x1="380" y1="96" x2="412" y2="96" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+
+  <rect x="412" y="86" width="80" height="26" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+  <text x="452" y="103" text-anchor="middle" font-size="9" fill="#166534">iap1 (156)</text>
+  <text x="452" y="80" text-anchor="middle" font-size="7" fill="#64748b">k=0.75</text>
+  <line x1="492" y1="99" x2="505" y2="99" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <rect x="505" y="86" width="80" height="26" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+  <text x="545" y="103" text-anchor="middle" font-size="9" fill="#166534">iap2 (117)</text>
+  <text x="545" y="80" text-anchor="middle" font-size="7" fill="#64748b">k=0.75</text>
+  <line x1="585" y1="99" x2="598" y2="99" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <rect x="598" y="86" width="80" height="26" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+  <text x="638" y="103" text-anchor="middle" font-size="9" fill="#166534">iap3 (417)</text>
+  <text x="638" y="80" text-anchor="middle" font-size="7" fill="#64748b">k=0.625</text>
+  <line x1="678" y1="99" x2="691" y2="99" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <rect x="691" y="86" width="80" height="26" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1"/>
+  <text x="731" y="103" text-anchor="middle" font-size="9" fill="#166534">iap4 (305)</text>
+  <text x="731" y="80" text-anchor="middle" font-size="7" fill="#64748b">k=0.625</text>
+
+  <!-- diffin register -->
+  <rect x="790" y="86" width="50" height="26" rx="3" fill="#e0e7ff" stroke="#4f46e5" stroke-width="1"/>
+  <text x="815" y="103" text-anchor="middle" font-size="9" fill="#3730a3">diffin</text>
+  <line x1="771" y1="99" x2="790" y2="99" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+
+  <!-- ========== TANK ========== -->
+  <rect x="40" y="150" width="960" height="520" rx="8" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="520" y="170" text-anchor="middle" font-size="14" font-weight="bold" fill="#6d28d9">Cross-Coupled Modulated Tank</text>
+
+  <!-- LFO boxes -->
+  <rect x="60" y="175" width="90" height="22" rx="3" fill="#f3e8ff" stroke="#9333ea" stroke-width="1"/>
+  <text x="105" y="190" text-anchor="middle" font-size="9" fill="#6b21a8">SIN0 (f=27, a=8)</text>
+  <rect x="60" y="200" width="90" height="22" rx="3" fill="#f3e8ff" stroke="#9333ea" stroke-width="1"/>
+  <text x="105" y="215" text-anchor="middle" font-size="9" fill="#6b21a8">SIN1 (f=23, a=8)</text>
+
+  <!-- Decay / dd2 computation -->
+  <rect x="180" y="175" width="100" height="45" rx="3" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+  <text x="230" y="192" text-anchor="middle" font-size="9" fill="#92400e">rt = decay</text>
+  <text x="230" y="205" text-anchor="middle" font-size="9" fill="#92400e">dd2 = clamp</text>
+  <text x="230" y="216" text-anchor="middle" font-size="8" fill="#92400e">(rt+.15, .25, .5)</text>
+
+  <!-- Damping computation -->
+  <rect x="310" y="175" width="100" height="45" rx="3" fill="#fce7f3" stroke="#db2777" stroke-width="1"/>
+  <text x="360" y="192" text-anchor="middle" font-size="9" fill="#9d174d">damp = damping</text>
+  <text x="360" y="208" text-anchor="middle" font-size="9" fill="#9d174d">1-damp</text>
+
+  <!-- ======= LEFT TANK HALF ======= -->
+  <rect x="60" y="240" width="920" height="190" rx="5" fill="#faf5ff" stroke="#a78bfa" stroke-width="1"/>
+  <text x="520" y="258" text-anchor="middle" font-size="11" font-weight="bold" fill="#6d28d9">Left Tank Half</text>
+
+  <!-- del59# read -->
+  <rect x="80" y="270" width="70" height="30" rx="3" fill="#e0e7ff" stroke="#4f46e5" stroke-width="1"/>
+  <text x="115" y="285" text-anchor="middle" font-size="8" fill="#3730a3">del59#</text>
+  <text x="115" y="296" text-anchor="middle" font-size="7" fill="#3730a3">read end</text>
+
+  <!-- x rt -->
+  <circle cx="175" cy="285" r="12" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+  <text x="175" y="289" text-anchor="middle" font-size="8" fill="#92400e">x rt</text>
+  <line x1="150" y1="285" x2="163" y2="285" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+
+  <!-- + diffin -->
+  <circle cx="215" cy="285" r="10" fill="#fff" stroke="#333" stroke-width="1.2"/>
+  <text x="215" y="289" text-anchor="middle" font-size="10" fill="#333">+</text>
+  <text x="215" y="310" text-anchor="middle" font-size="7" fill="#64748b">+ diffin</text>
+  <line x1="187" y1="285" x2="205" y2="285" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- diffin line from top -->
+  <line x1="815" y1="112" x2="815" y2="140" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="815" y1="140" x2="950" y2="140" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="950" y1="140" x2="950" y2="480" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <line x1="950" y1="285" x2="940" y2="285" stroke="#4f46e5" stroke-width="0.8"/>
+  <line x1="950" y1="480" x2="940" y2="480" stroke="#4f46e5" stroke-width="0.8"/>
+  <!-- diffin to left sum -->
+  <line x1="215" y1="260" x2="215" y2="252" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="215" y1="252" x2="940" y2="252" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="940" y1="252" x2="940" y2="285" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="2,2"/>
+
+  <!-- Mod AP tap23 (Type 1, SIN0 sin) -->
+  <rect x="240" y="270" width="100" height="30" rx="3" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="290" y="285" text-anchor="middle" font-size="8" fill="#5b21b6">Mod AP tap23</text>
+  <text x="290" y="296" text-anchor="middle" font-size="7" fill="#5b21b6">(748) SIN0-sin kd1=.70</text>
+  <line x1="225" y1="285" x2="240" y2="285" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- del24 -->
+  <rect x="360" y="270" width="70" height="30" rx="3" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+  <text x="395" y="289" text-anchor="middle" font-size="9" fill="#075985">del24</text>
+  <text x="395" y="310" text-anchor="middle" font-size="7" fill="#075985">(4903)</text>
+  <line x1="340" y1="285" x2="360" y2="285" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- Tank LP 1 -->
+  <rect x="450" y="270" width="80" height="30" rx="3" fill="#fce7f3" stroke="#db2777" stroke-width="1"/>
+  <text x="490" y="285" text-anchor="middle" font-size="8" fill="#9d174d">Tank LP1</text>
+  <text x="490" y="296" text-anchor="middle" font-size="7" fill="#9d174d">in*(1-damp)+prev*damp</text>
+  <line x1="430" y1="285" x2="450" y2="285" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- x rt -->
+  <circle cx="560" cy="285" r="12" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+  <text x="560" y="289" text-anchor="middle" font-size="8" fill="#92400e">x rt</text>
+  <line x1="530" y1="285" x2="548" y2="285" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- Mod AP tap31 (Type 2, SIN1 cos) -->
+  <rect x="590" y="270" width="100" height="30" rx="3" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="640" y="285" text-anchor="middle" font-size="8" fill="#5b21b6">Mod AP tap31</text>
+  <text x="640" y="296" text-anchor="middle" font-size="7" fill="#5b21b6">(1990) SIN1-cos dd2</text>
+  <line x1="572" y1="285" x2="590" y2="285" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- del33 -->
+  <rect x="710" y="270" width="70" height="30" rx="3" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+  <text x="745" y="289" text-anchor="middle" font-size="9" fill="#075985">del33</text>
+  <text x="745" y="310" text-anchor="middle" font-size="7" fill="#075985">(4096)</text>
+  <line x1="690" y1="285" x2="710" y2="285" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- Arrow from del33 end down to right tank -->
+  <line x1="780" y1="285" x2="810" y2="285" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#a-tank)"/>
+  <path d="M810,285 L810,340 L810,460" stroke="#7c3aed" stroke-width="1.5" fill="none"/>
+
+  <!-- ======= RIGHT TANK HALF ======= -->
+  <rect x="60" y="440" width="920" height="190" rx="5" fill="#fdf4ff" stroke="#d946ef" stroke-width="1"/>
+  <text x="520" y="458" text-anchor="middle" font-size="11" font-weight="bold" fill="#a21caf">Right Tank Half</text>
+
+  <!-- del33# read -> x rt -->
+  <rect x="80" y="467" width="70" height="30" rx="3" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+  <text x="115" y="482" text-anchor="middle" font-size="8" fill="#075985">del33#</text>
+  <text x="115" y="493" text-anchor="middle" font-size="7" fill="#075985">read end</text>
+
+  <circle cx="175" cy="482" r="12" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+  <text x="175" y="486" text-anchor="middle" font-size="8" fill="#92400e">x rt</text>
+  <line x1="150" y1="482" x2="163" y2="482" stroke="#333" stroke-width="1" marker-end="url(#a)"/>
+
+  <!-- + diffin -->
+  <circle cx="215" cy="482" r="10" fill="#fff" stroke="#333" stroke-width="1.2"/>
+  <text x="215" y="486" text-anchor="middle" font-size="10" fill="#333">+</text>
+  <text x="215" y="507" text-anchor="middle" font-size="7" fill="#64748b">+ diffin</text>
+  <line x1="187" y1="482" x2="205" y2="482" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- diffin to right sum -->
+  <line x1="215" y1="460" x2="215" y2="452" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="215" y1="452" x2="940" y2="452" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="2,2"/>
+  <line x1="940" y1="452" x2="940" y2="480" stroke="#4f46e5" stroke-width="0.8" stroke-dasharray="2,2"/>
+
+  <!-- Mod AP tap46 (Type 1, SIN0 cos) -->
+  <rect x="240" y="467" width="100" height="30" rx="3" fill="#fae8ff" stroke="#c026d3" stroke-width="1"/>
+  <text x="290" y="482" text-anchor="middle" font-size="8" fill="#86198f">Mod AP tap46</text>
+  <text x="290" y="493" text-anchor="middle" font-size="7" fill="#86198f">(1008) SIN0-cos kd1=.70</text>
+  <line x1="225" y1="482" x2="240" y2="482" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- del48 -->
+  <rect x="360" y="467" width="70" height="30" rx="3" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+  <text x="395" y="486" text-anchor="middle" font-size="9" fill="#075985">del48</text>
+  <text x="395" y="507" text-anchor="middle" font-size="7" fill="#075985">(4643)</text>
+  <line x1="340" y1="482" x2="360" y2="482" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- Tank LP 2 -->
+  <rect x="450" y="467" width="80" height="30" rx="3" fill="#fce7f3" stroke="#db2777" stroke-width="1"/>
+  <text x="490" y="482" text-anchor="middle" font-size="8" fill="#9d174d">Tank LP2</text>
+  <text x="490" y="493" text-anchor="middle" font-size="7" fill="#9d174d">in*(1-damp)+prev*damp</text>
+  <line x1="430" y1="482" x2="450" y2="482" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- x rt -->
+  <circle cx="560" cy="482" r="12" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+  <text x="560" y="486" text-anchor="middle" font-size="8" fill="#92400e">x rt</text>
+  <line x1="530" y1="482" x2="548" y2="482" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- Mod AP tap55 (Type 2, SIN1 sin) -->
+  <rect x="590" y="467" width="100" height="30" rx="3" fill="#fae8ff" stroke="#c026d3" stroke-width="1"/>
+  <text x="640" y="482" text-anchor="middle" font-size="8" fill="#86198f">Mod AP tap55</text>
+  <text x="640" y="493" text-anchor="middle" font-size="7" fill="#86198f">(2932) SIN1-sin dd2</text>
+  <line x1="572" y1="482" x2="590" y2="482" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- del59 -->
+  <rect x="710" y="467" width="70" height="30" rx="3" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+  <text x="745" y="486" text-anchor="middle" font-size="9" fill="#075985">del59</text>
+  <text x="745" y="507" text-anchor="middle" font-size="7" fill="#075985">(3483)</text>
+  <line x1="690" y1="482" x2="710" y2="482" stroke="#333" stroke-width="0.8" marker-end="url(#a)"/>
+
+  <!-- Cross-coupling: del59 end back to left tank input -->
+  <path d="M780,482 L820,482 L820,540 L40,540 L40,285 L80,285" stroke="#7c3aed" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#a-tank)"/>
+  <text x="420" y="555" text-anchor="middle" font-size="9" fill="#7c3aed">cross-coupling: del59# feeds back to left tank input</text>
+
+  <!-- Cross-coupling: del33 end to right tank input -->
+  <path d="M810,340 L830,340 L830,460 L150,460 L150,482" stroke="#7c3aed" stroke-width="1.5" fill="none" stroke-dasharray="5,3"/>
+  <text x="830" y="400" font-size="8" fill="#7c3aed" transform="rotate(90,830,400)">del33# -> R tank</text>
+
+  <!-- ========== STEREO OUTPUT TAPS ========== -->
+  <rect x="60" y="660" width="450" height="120" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2"/>
+  <text x="285" y="678" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803d">Left Output (7 taps from tank)</text>
+  <text x="80" y="696" font-size="9" fill="#166534">+ del48[292]   x0.6</text>
+  <text x="80" y="710" font-size="9" fill="#166534">+ del48[3274]  x0.6</text>
+  <text x="80" y="724" font-size="9" fill="#166534">- tap55[2107]  x0.6</text>
+  <text x="80" y="738" font-size="9" fill="#166534">+ del59[2198]  x0.6</text>
+  <text x="290" y="696" font-size="9" fill="#166534">- del24[2192]  x0.6</text>
+  <text x="290" y="710" font-size="9" fill="#166534">- tap31[205]   x0.6</text>
+  <text x="290" y="724" font-size="9" fill="#166534">- del33[1174]  x0.6</text>
+
+  <rect x="540" y="660" width="450" height="120" rx="5" fill="#fdf2f8" stroke="#db2777" stroke-width="1.2"/>
+  <text x="765" y="678" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">Right Output (7 taps from tank)</text>
+  <text x="560" y="696" font-size="9" fill="#9d174d">+ del24[389]   x0.6</text>
+  <text x="560" y="710" font-size="9" fill="#9d174d">+ del24[3993]  x0.6</text>
+  <text x="560" y="724" font-size="9" fill="#9d174d">- tap31[1352]  x0.6</text>
+  <text x="560" y="738" font-size="9" fill="#9d174d">+ del33[2943]  x0.6</text>
+  <text x="770" y="696" font-size="9" fill="#9d174d">- del48[2325]  x0.6</text>
+  <text x="770" y="710" font-size="9" fill="#9d174d">- tap55[369]   x0.6</text>
+  <text x="770" y="724" font-size="9" fill="#9d174d">- del59[133]   x0.6</text>
+
+  <!-- Output boxes -->
+  <rect x="200" y="790" width="100" height="30" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="250" y="809" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803d">Output L</text>
+  <line x1="285" y1="780" x2="250" y2="790" stroke="#333" stroke-width="1.1" marker-end="url(#a)"/>
+
+  <rect x="710" y="790" width="100" height="30" rx="4" fill="#fbcfe8" stroke="#db2777" stroke-width="1.5"/>
+  <text x="760" y="809" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">Output R</text>
+  <line x1="765" y1="780" x2="760" y2="790" stroke="#333" stroke-width="1.1" marker-end="url(#a)"/>
+
+  <!-- Control inputs -->
+  <rect x="20" y="840" width="100" height="24" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="1"/>
+  <text x="70" y="856" text-anchor="middle" font-size="9" fill="#7c2d12">Reverb Time (opt)</text>
+  <rect x="140" y="840" width="100" height="24" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="1"/>
+  <text x="190" y="856" text-anchor="middle" font-size="9" fill="#7c2d12">HF Loss (opt)</text>
+
+  <!-- Legend -->
+  <rect x="60" y="875" width="930" height="38" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="80" y="892" font-size="9" fill="#475569">Modulated APs use CHO RDA (SIN0/SIN1 LFOs) for pitch modulation to reduce flutter echo.</text>
+  <text x="80" y="906" font-size="9" fill="#475569">Tank LP filters: filtered = input*(1-damp) + prev*damp. dd2 = adaptive decay diffusion clamped to [0.25, 0.5].</text>
+</svg>

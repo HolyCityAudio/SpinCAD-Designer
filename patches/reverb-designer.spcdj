@@ -73,14 +73,25 @@
         "shimmerPitchSemitones": 7,
         "lfoDepth": 2,
         "preDelayEnabled": false,
+        "pinDestination": [
+          1,
+          2,
+          4,
+          0
+        ],
         "reverbTime": 0.7,
         "hfDamping": 0.4,
         "lfDamping": 0.02,
         "dryWet": 0.5,
-        "preDelayAmount": 0.3,
+        "preDelaySamples": 1024,
         "inputBandwidth": 0.5,
         "diffusion": 0.5,
-        "shimmerLevel": 0.7
+        "shimmerLevel": 0.7,
+        "inputGain": 0.0,
+        "lfoFreq": 12,
+        "lfoExcursion": 20,
+        "lfoFreq2": 15,
+        "lfoExcursion2": 20
       }
     },
     {
@@ -105,16 +116,22 @@
       "toPin": "Audio In"
     },
     {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 2",
+      "toBlockIndex": 4,
+      "toPin": "Audio In 2"
+    },
+    {
       "fromBlockIndex": 1,
       "fromPin": "Control Output 1",
       "toBlockIndex": 4,
-      "toPin": "Reverb_Time"
+      "toPin": "RT"
     },
     {
       "fromBlockIndex": 2,
       "fromPin": "Control Output 1",
       "toBlockIndex": 4,
-      "toPin": "HF_Damping"
+      "toPin": "HF_Damp"
     },
     {
       "fromBlockIndex": 3,

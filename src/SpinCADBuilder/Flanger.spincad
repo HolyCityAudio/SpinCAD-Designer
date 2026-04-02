@@ -120,13 +120,16 @@ rdax input, inputGain
 ; Write it to delay and clear ACC
 wra delayl,0
 
-@readChorusTap lfoSel 0 tap1Center delayLength delayOffset 
+@isPinConnected Output
+@readChorusTap lfoSel 0 tap1Center delayLength delayOffset
 
-; @readChorusTap 0 1 tap2Center delayLength delayOffset 
+; @readChorusTap 0 1 tap2Center delayLength delayOffset
 
 ; Interpolated sample in ACC, write it to DACL and clear ACC
 wrax output1,0
 ; That's it!
+@setOutputPin Output output1
+@endif
 @isPinConnected Tap
 equ center reg1
 rda delayl^, 1
@@ -134,6 +137,5 @@ wrax center, 0
 @setOutputPin Tap center
 @endif
 
-@setOutputPin Output output1
 @endif
 

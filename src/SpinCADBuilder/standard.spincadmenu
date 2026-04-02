@@ -46,12 +46,15 @@
 @menuitem "2P/4P Highpass" HPF2P 
 @menuitem "Notch" Notch 
 // @menuitem "4P L-R Crossover" Crossover_4P 
-@menuitem "1-Band EQ" OneBandEQ 
-@menuitem "6-Band EQ" SixBandEQ 
+@menuitem "1-Band EQ" OneBandEQ
+@menuitem "6-Band EQ" SixBandEQ
+@menuitem "Comb Filter" CombFilter
+@menuitem "Resonator" Resonator
 
-@menu "Delay" 
+@menu "Delay"
 // @menuitem "Single Delay" SingleDelay
-// @menuitem "Coarse Delay" CoarseDelay 
+// @menuitem "Coarse Delay" CoarseDelay
+@menuitem "Long Delay" LongDelay
 @menuitem "ThreeTap" TripleTap 
 @menuitem "MN3011" MN3011a 
 @menuitem "Drum Delay" DrumDelay 
@@ -75,6 +78,10 @@
 @menuitem "ROM Reverb 2" rom_rev2 
 @menuitem "Adjustable Reverb" reverb
 @menuitem "Reverb Designer" ReverbDesigner
+@menuitem "Ambience" Ambience  // hand-written in src/
+@menuitem "Freeverb" Freeverb
+@menuitem "Spring Reverb" SpringReverb
+@menuitem "Plate Reverb" DattorroPlateReverb  // hand-written in src/
 // @menuitem "Reverb Delay Line 01" reverb_delay_line_01
 // @menuitem "Shimmer Reverb" shimmer_verb
 
@@ -94,7 +101,7 @@
 // @menuitem "Pitch Up/Down J" PitchUpDownJ 
 @menuitem "Octave Up/Down" pitchupdown 
 @menuitem "Glitch Shift Adjustable" Glitch_shift 
-//@menuitem "Pitch Four" pitch_four 
+@menuitem "Pitch Four" pitch_four
 @menuitem "Pitch Offset" pitchoffset 
 @menuitem "Dual Output Pitch Offset" pitchoffset1_2
 @menuitem "Arpeggiator" Arpeggiator  // hand-written in src/
@@ -117,6 +124,7 @@
 // @menuitem "Pot Skip" PotSkip 
 @menuitem "Smoother" control_smoother
 @menuitem "Adj Smoother" control_adjustable_smoother
+@menuitem "Adj Change Detect" control_adjustable_change_detect  // hand-written in src/
 @menuitem "Sin/Cos LFO" SinCosLFOA
 @menuitem "LFO Value" LFO_Value 
 @menuitem "Ramp LFO" RampLFO

@@ -54,7 +54,6 @@
 			private double kfl = 0.4;
 			private double kiap = 0.5;
 			private double klap = 0.6;
-			private int shimmerMode = 0; // 0=Shift (one-shot), 1=Shimmer (feedback loop)
 
 			public shimmer_verbCADBlock(int x, int y) {
 				super(x, y);
@@ -174,12 +173,6 @@
 			sfxb.FXreadDelay("del4#", 0, 1);
 			sfxb.mulx(rt);
 			sfxb.readRegister(iapout, 1);
-			// In Shimmer mode, inject pitch feedback directly into the ring
-			if (shimmerMode == 1) {
-				sfxb.readRegister(pitchout, 0.95);
-				sfxb.scaleOffset(-2.0, 0.0);
-				sfxb.scaleOffset(-1.0, 0.0);  // restore sign: net × 2
-			}
 			sfxb.FXreadDelay("ap1#", 0, klap);
 			sfxb.FXwriteAllpass("ap1", 0, -klap);
 			sfxb.FXreadDelay("ap1b#", 0, klap);
@@ -309,7 +302,4 @@
 			public double getgain() {
 				return gain;
 			}
-
-			public int getShimmerMode() { return shimmerMode; }
-			public void setShimmerMode(int m) { shimmerMode = m; }
-		}
+		}	

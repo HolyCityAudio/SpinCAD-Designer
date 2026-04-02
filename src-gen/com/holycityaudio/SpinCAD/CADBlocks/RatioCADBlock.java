@@ -89,11 +89,17 @@
 			sfxb.readRegister(input, 1);
 			sfxb.scaleOffset(scale, offsetVal);
 			sfxb.writeRegister(fullRange, 1);
+			if(this.getPin("Ratio").isConnected() == true) {
 			sfxb.log(-1.0, logOffset);
 			sfxb.exp(1.0, 0);
 			sfxb.writeRegister(ratioOut, 0);
-			this.getPin("FullRange").setRegister(fullRange);
 			this.getPin("Ratio").setRegister(ratioOut);
+			}
+			
+			if(this.getPin("FullRange").isConnected() == true) {
+			this.getPin("FullRange").setRegister(fullRange);
+			}
+			
 			}
 			
 

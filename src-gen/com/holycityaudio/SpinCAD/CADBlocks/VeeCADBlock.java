@@ -77,20 +77,19 @@
 			if(this.getPin("Input").isConnected() == true) {
 			if(this.getPin("Output 1").isConnected() == true) {
 			output1 = sfxb.allocateReg();
-			sfxb.readRegister(input, 1.0);
-			sfxb.scaleOffset(-2.0, 0.99902);
-			sfxb.skip(GEZ, 1);
-			sfxb.clear();
+			sfxb.readRegister(input, 1);
+			sfxb.scaleOffset(1, -0.5);
+			sfxb.absa();
+			sfxb.scaleOffset(1.999, 0);
 			sfxb.writeRegister(output1, 0);
 			}
 			
 			if(this.getPin("Output 2").isConnected() == true) {
 			output2 = sfxb.allocateReg();
-			sfxb.scaleOffset(0, 0.99902);
-			sfxb.readRegister(input, -0.99902);
-			sfxb.scaleOffset(-1.99804, 0.99902);
-			sfxb.skip(GEZ, 1);
-			sfxb.clear();
+			sfxb.readRegister(input, 1);
+			sfxb.scaleOffset(1, -0.5);
+			sfxb.absa();
+			sfxb.scaleOffset(-2.0, 0.99902);
 			sfxb.writeRegister(output2, 0);
 			}
 			

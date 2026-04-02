@@ -190,6 +190,7 @@ wra	tdel+1001,0
 
 ;now combine initial sound with reverb out to DACs:
 
+@isPinConnected OutputL
 rda	tdel+2701,0.5
 rda	tdel+2256,0.8
 rda	tdel+3409,0.8
@@ -203,6 +204,7 @@ rda	d2#,0.8
 
 ;rdax input, 1
 wrax	outputL,0
+@endif
 
 @isPinConnected OutputR
 rda	tdel+2800,0.5

@@ -49,6 +49,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.CADBlocks.pitch_fourCADBlock;
+import com.holycityaudio.SpinCAD.CADBlocks.ArpeggiatorCADBlock;
 
 @SuppressWarnings("unused")
 public class pitch_fourControlPanel extends spinCADControlPanel {
@@ -279,16 +280,24 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitch1Label() {
-		pitch1Field.setText("Pitch 1 " + String.format("%4.0f", gCB.getpitch1()));		
-		}		
+		int semi = (int) gCB.getpitch1();
+		String sign = semi > 0 ? "+" : "";
+		pitch1Field.setText("Pitch 1: " + sign + semi + " (" + ArpeggiatorCADBlock.intervalName(semi) + ")");
+		}
 		private void updatepitch2Label() {
-		pitch2Field.setText("Pitch 2 " + String.format("%4.0f", gCB.getpitch2()));		
-		}		
+		int semi = (int) gCB.getpitch2();
+		String sign = semi > 0 ? "+" : "";
+		pitch2Field.setText("Pitch 2: " + sign + semi + " (" + ArpeggiatorCADBlock.intervalName(semi) + ")");
+		}
 		private void updatepitch3Label() {
-		pitch3Field.setText("Pitch 3 " + String.format("%4.0f", gCB.getpitch3()));		
-		}		
+		int semi = (int) gCB.getpitch3();
+		String sign = semi > 0 ? "+" : "";
+		pitch3Field.setText("Pitch 3: " + sign + semi + " (" + ArpeggiatorCADBlock.intervalName(semi) + ")");
+		}
 		private void updatepitch4Label() {
-		pitch4Field.setText("Pitch 4 " + String.format("%4.0f", gCB.getpitch4()));		
+		int semi = (int) gCB.getpitch4();
+		String sign = semi > 0 ? "+" : "";
+		pitch4Field.setText("Pitch 4: " + sign + semi + " (" + ArpeggiatorCADBlock.intervalName(semi) + ")");
 		}		
 		
 		class MyWindowListener implements WindowListener

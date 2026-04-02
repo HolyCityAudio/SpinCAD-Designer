@@ -1,0 +1,148 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "long-delay-test.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1068",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    99.0,
+    100.0,
+    82.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 290,
+      "y": 30,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 100,
+      "y": 109,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot1CADBlock",
+      "blockNum": 2,
+      "x": 94,
+      "y": 160,
+      "name": "Pot 1",
+      "params": {
+        "speedup": false,
+        "potRegister": 17
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot2CADBlock",
+      "blockNum": 3,
+      "x": 99,
+      "y": 213,
+      "name": "Pot 2",
+      "params": {
+        "speedup": false,
+        "potRegister": 18
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.FBOutputCADBlock",
+      "blockNum": 4,
+      "x": 400,
+      "y": 88,
+      "name": "FB Out 1",
+      "params": {
+        "register": 32
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.LongDelayCADBlock",
+      "blockNum": 5,
+      "x": 357,
+      "y": 176,
+      "name": "Long Delay",
+      "params": {
+        "interleave": 3,
+        "feedbackLevel": 0.5,
+        "inputGain": 1.0,
+        "filterEnabled": true
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock",
+      "blockNum": 6,
+      "x": 434,
+      "y": 273,
+      "name": "FB In 1",
+      "params": {
+        "register": 32,
+        "lGain": 1.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 7,
+      "x": 290,
+      "y": 345,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Audio Input"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Feedback Output",
+      "toBlockIndex": 5,
+      "toPin": "Feedback"
+    },
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Feedback Gain"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 6,
+      "toPin": "Feedback Input"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 7,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Audio Output",
+      "toBlockIndex": 7,
+      "toPin": "Input 2"
+    }
+  ]
+}

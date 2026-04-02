@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * SpinCADPin.java
- * Copyright (C) 2013 - 2014 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * Copyright (C) 2013 - 2026 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2026.  Look for GSW in code.
  * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -152,7 +152,11 @@ public class SpinCADPin implements Serializable {
 
 	public String getName() {
 		return name;
-	}	
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public boolean isInputPin() {
 		if((type == pinType.AUDIO_IN) | (type == pinType.CONTROL_IN)) 

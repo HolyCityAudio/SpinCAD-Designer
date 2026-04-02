@@ -1,6 +1,6 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
- * Copyright (C) 2013 - 2014 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * Copyright (C) 2013 - 2026 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2026.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.holycityaudio.SpinCAD.FineControlSlider;
+import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class OneBandEQControlPanel extends JFrame implements ChangeListener {
@@ -57,7 +58,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 		eqSlider0 = new FineControlSlider(JSlider.HORIZONTAL, -100, 199, 0);
 		eqSlider0.addChangeListener(this);
 
-		freqSlider0 = new FineControlSlider(JSlider.HORIZONTAL, 80, 3200, 440);
+		freqSlider0 = SpinCADBlock.LogSlider(20, 3200, SpinCADBlock.freqToFilt(b.getFreq()), "LOGFREQ", 100.0);
 		freqSlider0.addChangeListener(this);
 
 		qSlider = new FineControlSlider(JSlider.HORIZONTAL, 100, 400, 100);
@@ -104,9 +105,10 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double val = Double.parseDouble(freqField.getText().replaceAll("[^0-9.\\-]", ""));
-					val = Math.max(80.0, Math.min(3200.0, val));
-					filter.setFreq(val);
-					freqSlider0.setValue((int) Math.round(val));
+					int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+					sliderVal = Math.max(freqSlider0.getMinimum(), Math.min(freqSlider0.getMaximum(), sliderVal));
+					freqSlider0.setValue(sliderVal);
+					filter.setFreq(SpinCADBlock.sliderToLogval(sliderVal, 100.0));
 					updateFreqLabel();
 				} catch (NumberFormatException ex) {
 					updateFreqLabel();
@@ -129,7 +131,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 		eqSlider0.setValue((int) Math.round(((b.getEqLevel()) * 100.0)));
 		updateEqLabel();
 
-		freqSlider0.setValue((int) Math.round(b.getFreq()));
+		freqSlider0.setValue(SpinCADBlock.logvalToSlider(b.getFreq(), 100.0));
 		updateFreqLabel();
 
 		qSlider.setValue((int) Math.round((b.getQLevel() * 100.0)));
@@ -143,7 +145,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 			filter.setEqLevel((double) eqSlider0.getValue() / 100.0);
 			updateEqLabel();
 		} else if (ce.getSource() == freqSlider0) {
-			filter.setFreq((double) freqSlider0.getValue());
+			filter.setFreq(SpinCADBlock.sliderToLogval((int) freqSlider0.getValue(), 100.0));
 			updateFreqLabel();
 		}  else if (ce.getSource() == qSlider) {
 			filter.setqLevel((double) qSlider.getValue() / 100.0);

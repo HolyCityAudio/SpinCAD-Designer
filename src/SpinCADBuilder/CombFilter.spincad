@@ -1,0 +1,54 @@
+@name Comb_Filter
+@color "0x7100fc"
+@audioInput input Input
+@audioOutput output1 Output
+
+@controlInput fbIn Feedback
+
+equ gain 0.5
+@sliderLabel gain 'Input Gain' -18 0 -6 1.0 1 DBLEVEL
+
+equ delayLength 1116
+@sliderLabel delayLength 'Delay Length' 100 4095 1116 1 0 LENGTHTOTIME
+
+equ feedback 0.7
+@sliderLabel feedback 'Feedback' 0.0 0.95 0.7 100.0 2
+
+equ damping 0.5
+@sliderLabel damping 'LP Damping' 0.0 0.99 0.5 100.0 2
+
+; Comb filter: delay line with one-pole LP damping in feedback path
+; output = delay_end
+; delay_head = input + LP_filtered(output) * feedback
+; LP filter: filtered = output*(1-damping) + prev_filtered*damping
+
+@isPinConnected Input
+
+equ output1 reg0
+equ filtReg reg1
+
+mem combDelay delayLength
+
+; Read delay output (this is the comb output)
+rda combDelay#, 1.0
+wrax output1, 1.0
+
+; One-pole LP filter in feedback path (rdfx pattern)
+rdfx filtReg, damping
+
+; Save filtered value and apply feedback
+@isPinConnected Feedback
+wrax filtReg, 1.0
+mulx fbIn
+@else
+wrax filtReg, feedback
+@endif
+
+; Add input signal
+rdax input, gain
+
+; Write to delay head
+wra combDelay, 0
+
+@setOutputPin Output output1
+@endif

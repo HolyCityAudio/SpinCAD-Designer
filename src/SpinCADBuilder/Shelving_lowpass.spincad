@@ -7,7 +7,7 @@
 
 equ freq 0.15
 // variable - Name - low - high - multiplier - precision - option 
-@sliderLabel freq Frequency 80 2500 100.0 100.0 1 LOGFREQ 
+@sliderLabel freq Frequency 20 2500 100.0 100.0 1 LOGFREQ
 
 equ shelf 0.5
 @sliderLabel shelf 'Shelf Depth' -40 -3 -6 1.0 1 DBLEVEL

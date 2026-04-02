@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" font-family="Consolas, monospace" font-size="12">
+  <title>Freeverb Signal Flow</title>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e293b">Freeverb (Schroeder-Moorer) Signal Flow</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#64748b">8 parallel comb filters with LP damping -> 4 series allpasses for stereo diffusion</text>
+
+  <!-- Input section -->
+  <rect x="30" y="70" width="90" height="32" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="75" y="90" text-anchor="middle" font-size="11" fill="#1e40af">Input L</text>
+  <rect x="30" y="112" width="90" height="32" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="75" y="132" text-anchor="middle" font-size="11" fill="#1e40af">Input R (opt)</text>
+
+  <!-- Gain -->
+  <circle cx="170" cy="86" r="14" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="170" y="90" text-anchor="middle" font-size="10" fill="#92400e">gain</text>
+  <circle cx="170" cy="128" r="14" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="170" y="132" text-anchor="middle" font-size="10" fill="#92400e">gain</text>
+
+  <!-- Summing node -->
+  <circle cx="220" cy="107" r="12" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="220" y="111" text-anchor="middle" font-size="14" fill="#333">+</text>
+
+  <!-- Mono register -->
+  <rect x="250" y="93" width="60" height="28" rx="3" fill="#e0e7ff" stroke="#4f46e5" stroke-width="1"/>
+  <text x="280" y="111" text-anchor="middle" font-size="10" fill="#3730a3">mono</text>
+
+  <!-- Lines: inputs to gain to sum to mono -->
+  <line x1="120" y1="86" x2="156" y2="86" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="120" y1="128" x2="156" y2="128" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="184" y1="86" x2="208" y2="100" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="184" y1="128" x2="208" y2="114" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="232" y1="107" x2="250" y2="107" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- 8 Parallel Comb Filters -->
+  <rect x="340" y="64" width="320" height="260" rx="6" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="500" y="80" text-anchor="middle" font-size="11" font-weight="bold" fill="#475569">8 Parallel Comb Filters</text>
+
+  <!-- Comb filter template - showing 4 representative ones with "..." -->
+  <!-- Comb 1 -->
+  <g transform="translate(360, 90)">
+    <rect x="0" y="0" width="280" height="30" rx="3" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+    <text x="8" y="19" font-size="9" fill="#713f12">comb1 (1116)</text>
+    <rect x="100" y="4" width="36" height="22" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="0.8"/>
+    <text x="118" y="19" text-anchor="middle" font-size="8" fill="#78350f">LP filt1</text>
+    <rect x="145" y="4" width="46" height="22" rx="2" fill="#fed7aa" stroke="#c2410c" stroke-width="0.8"/>
+    <text x="168" y="19" text-anchor="middle" font-size="8" fill="#7c2d12">krt/CV</text>
+    <text x="200" y="19" font-size="8" fill="#713f12">+ mono</text>
+    <path d="M252,15 C270,15 280,15 280,0 L280,-5" stroke="#ca8a04" stroke-width="0.8" fill="none" marker-end="url(#arrow)"/>
+    <path d="M0,15 C-18,15 -20,15 -20,0 L-20,-5" stroke="#ca8a04" stroke-width="0.8" fill="none"/>
+  </g>
+
+  <!-- Comb 2 -->
+  <g transform="translate(360, 128)">
+    <rect x="0" y="0" width="280" height="30" rx="3" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+    <text x="8" y="19" font-size="9" fill="#713f12">comb2 (1188)</text>
+    <rect x="100" y="4" width="36" height="22" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="0.8"/>
+    <text x="118" y="19" text-anchor="middle" font-size="8" fill="#78350f">LP filt2</text>
+    <rect x="145" y="4" width="46" height="22" rx="2" fill="#fed7aa" stroke="#c2410c" stroke-width="0.8"/>
+    <text x="168" y="19" text-anchor="middle" font-size="8" fill="#7c2d12">krt/CV</text>
+    <text x="200" y="19" font-size="8" fill="#713f12">+ mono</text>
+  </g>
+
+  <!-- Comb 3 -->
+  <g transform="translate(360, 166)">
+    <rect x="0" y="0" width="280" height="30" rx="3" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+    <text x="8" y="19" font-size="9" fill="#713f12">comb3 (1277)</text>
+    <rect x="100" y="4" width="36" height="22" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="0.8"/>
+    <text x="118" y="19" text-anchor="middle" font-size="8" fill="#78350f">LP filt3</text>
+    <rect x="145" y="4" width="46" height="22" rx="2" fill="#fed7aa" stroke="#c2410c" stroke-width="0.8"/>
+    <text x="168" y="19" text-anchor="middle" font-size="8" fill="#7c2d12">krt/CV</text>
+    <text x="200" y="19" font-size="8" fill="#713f12">+ mono</text>
+  </g>
+
+  <!-- Comb 4 -->
+  <g transform="translate(360, 204)">
+    <rect x="0" y="0" width="280" height="30" rx="3" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+    <text x="8" y="19" font-size="9" fill="#713f12">comb4 (1356)</text>
+    <rect x="100" y="4" width="36" height="22" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="0.8"/>
+    <text x="118" y="19" text-anchor="middle" font-size="8" fill="#78350f">LP filt4</text>
+    <rect x="145" y="4" width="46" height="22" rx="2" fill="#fed7aa" stroke="#c2410c" stroke-width="0.8"/>
+    <text x="168" y="19" text-anchor="middle" font-size="8" fill="#7c2d12">krt/CV</text>
+    <text x="200" y="19" font-size="8" fill="#713f12">+ mono</text>
+  </g>
+
+  <!-- Dots for combs 5-8 -->
+  <text x="500" y="256" text-anchor="middle" font-size="14" fill="#64748b">...</text>
+
+  <!-- Comb 8 -->
+  <g transform="translate(360, 270)">
+    <rect x="0" y="0" width="280" height="30" rx="3" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+    <text x="8" y="19" font-size="9" fill="#713f12">comb8 (1617)</text>
+    <rect x="100" y="4" width="36" height="22" rx="2" fill="#fde68a" stroke="#b45309" stroke-width="0.8"/>
+    <text x="118" y="19" text-anchor="middle" font-size="8" fill="#78350f">LP filt8</text>
+    <rect x="145" y="4" width="46" height="22" rx="2" fill="#fed7aa" stroke="#c2410c" stroke-width="0.8"/>
+    <text x="168" y="19" text-anchor="middle" font-size="8" fill="#7c2d12">krt/CV</text>
+    <text x="200" y="19" font-size="8" fill="#713f12">+ mono</text>
+  </g>
+
+  <!-- Comb detail annotation -->
+  <rect x="340" y="310" width="320" height="48" rx="3" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8"/>
+  <text x="350" y="326" font-size="9" fill="#475569">Each comb: read end -> LP filter (damping) -> feedback</text>
+  <text x="350" y="339" font-size="9" fill="#475569">(krt coeff or Reverb_Time CV) -> add mono input -> write start</text>
+  <text x="350" y="352" font-size="9" fill="#475569">Comb outputs summed x0.2 each -> combsum</text>
+
+  <!-- Mono to combs -->
+  <line x1="310" y1="107" x2="340" y2="107" stroke="#333" stroke-width="1.2"/>
+  <line x1="340" y1="107" x2="340" y2="290" stroke="#333" stroke-width="1.2"/>
+  <line x1="340" y1="105" x2="360" y2="105" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="340" y1="143" x2="360" y2="143" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="340" y1="181" x2="360" y2="181" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="340" y1="219" x2="360" y2="219" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="340" y1="285" x2="360" y2="285" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+  <!-- Summing node for comb outputs -->
+  <circle cx="700" cy="200" r="14" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="700" y="204" text-anchor="middle" font-size="10" fill="#333">SUM</text>
+  <text x="700" y="228" text-anchor="middle" font-size="9" fill="#64748b">x0.2 each</text>
+
+  <!-- Lines from combs to sum -->
+  <line x1="640" y1="105" x2="686" y2="195" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="640" y1="143" x2="686" y2="197" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="640" y1="181" x2="686" y2="199" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="640" y1="219" x2="686" y2="201" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+  <line x1="640" y1="285" x2="686" y2="205" stroke="#333" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+  <!-- combsum register -->
+  <rect x="730" y="186" width="70" height="28" rx="3" fill="#e0e7ff" stroke="#4f46e5" stroke-width="1"/>
+  <text x="765" y="204" text-anchor="middle" font-size="10" fill="#3730a3">combsum</text>
+  <line x1="714" y1="200" x2="730" y2="200" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Split to L and R allpass chains -->
+  <line x1="800" y1="200" x2="830" y2="200" stroke="#333" stroke-width="1.2"/>
+  <line x1="830" y1="200" x2="830" y2="430" stroke="#333" stroke-width="1.2"/>
+  <line x1="830" y1="430" x2="360" y2="430" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="830" y1="200" x2="830" y2="560" stroke="#333" stroke-width="1.2"/>
+  <line x1="830" y1="560" x2="360" y2="560" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Left Allpass Chain -->
+  <rect x="340" y="400" width="460" height="60" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="570" y="420" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803d">Left Allpass Diffusion Chain</text>
+
+  <g transform="translate(360, 430)">
+    <rect x="0" y="0" width="70" height="24" rx="3" fill="#bbf7d0" stroke="#22c55e" stroke-width="1"/>
+    <text x="35" y="16" text-anchor="middle" font-size="9" fill="#166534">AP1L (556)</text>
+  </g>
+  <line x1="430" y1="442" x2="440" y2="442" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+  <g transform="translate(448, 430)">
+    <rect x="0" y="0" width="70" height="24" rx="3" fill="#bbf7d0" stroke="#22c55e" stroke-width="1"/>
+    <text x="35" y="16" text-anchor="middle" font-size="9" fill="#166534">AP2L (441)</text>
+  </g>
+  <line x1="518" y1="442" x2="528" y2="442" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+  <g transform="translate(536, 430)">
+    <rect x="0" y="0" width="70" height="24" rx="3" fill="#bbf7d0" stroke="#22c55e" stroke-width="1"/>
+    <text x="35" y="16" text-anchor="middle" font-size="9" fill="#166534">AP3L (341)</text>
+  </g>
+  <line x1="606" y1="442" x2="616" y2="442" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+  <g transform="translate(624, 430)">
+    <rect x="0" y="0" width="70" height="24" rx="3" fill="#bbf7d0" stroke="#22c55e" stroke-width="1"/>
+    <text x="35" y="16" text-anchor="middle" font-size="9" fill="#166534">AP4L (225)</text>
+  </g>
+
+  <text x="370" y="470" font-size="9" fill="#64748b">allpassamt = 0.5</text>
+
+  <!-- Output L -->
+  <rect x="830" y="424" width="100" height="32" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="880" y="444" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803d">Output L</text>
+  <line x1="694" y1="442" x2="830" y2="442" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Right Allpass Chain -->
+  <rect x="340" y="530" width="460" height="60" rx="6" fill="#fce7f3" stroke="#db2777" stroke-width="1.5"/>
+  <text x="570" y="550" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">Right Allpass Diffusion Chain</text>
+
+  <g transform="translate(360, 560)">
+    <rect x="0" y="0" width="70" height="24" rx="3" fill="#fbcfe8" stroke="#ec4899" stroke-width="1"/>
+    <text x="35" y="16" text-anchor="middle" font-size="9" fill="#9d174d">AP1R (579)</text>
+  </g>
+  <line x1="430" y1="572" x2="440" y2="572" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+  <g transform="translate(448, 560)">
+    <rect x="0" y="0" width="70" height="24" rx="3" fill="#fbcfe8" stroke="#ec4899" stroke-width="1"/>
+    <text x="35" y="16" text-anchor="middle" font-size="9" fill="#9d174d">AP2R (464)</text>
+  </g>
+  <line x1="518" y1="572" x2="528" y2="572" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+  <g transform="translate(536, 560)">
+    <rect x="0" y="0" width="70" height="24" rx="3" fill="#fbcfe8" stroke="#ec4899" stroke-width="1"/>
+    <text x="35" y="16" text-anchor="middle" font-size="9" fill="#9d174d">AP3R (364)</text>
+  </g>
+  <line x1="606" y1="572" x2="616" y2="572" stroke="#333" stroke-width="1" marker-end="url(#arrow)"/>
+  <g transform="translate(624, 560)">
+    <rect x="0" y="0" width="70" height="24" rx="3" fill="#fbcfe8" stroke="#ec4899" stroke-width="1"/>
+    <text x="35" y="16" text-anchor="middle" font-size="9" fill="#9d174d">AP4R (248)</text>
+  </g>
+
+  <text x="370" y="600" font-size="9" fill="#64748b">allpassamt = 0.5 (offset lengths for stereo spread = 23)</text>
+
+  <!-- Output R -->
+  <rect x="830" y="554" width="100" height="32" rx="4" fill="#fbcfe8" stroke="#db2777" stroke-width="1.5"/>
+  <text x="880" y="574" text-anchor="middle" font-size="11" font-weight="bold" fill="#be185d">Output R</text>
+  <line x1="694" y1="572" x2="830" y2="572" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+  <!-- Control input -->
+  <rect x="30" y="170" width="110" height="28" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="85" y="188" text-anchor="middle" font-size="10" fill="#92400e">Reverb_Time (opt)</text>
+  <text x="85" y="210" text-anchor="middle" font-size="9" fill="#64748b">Overrides krt slider</text>
+
+  <!-- Legend -->
+  <rect x="30" y="640" width="900" height="70" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="50" y="658" font-size="10" font-weight="bold" fill="#334155">Legend:</text>
+  <rect x="50" y="666" width="16" height="12" rx="2" fill="#fef9c3" stroke="#ca8a04" stroke-width="0.8"/>
+  <text x="72" y="676" font-size="9" fill="#475569">Comb filter with LP damping</text>
+  <rect x="230" y="666" width="16" height="12" rx="2" fill="#bbf7d0" stroke="#22c55e" stroke-width="0.8"/>
+  <text x="252" y="676" font-size="9" fill="#475569">Left allpass</text>
+  <rect x="340" y="666" width="16" height="12" rx="2" fill="#fbcfe8" stroke="#ec4899" stroke-width="0.8"/>
+  <text x="362" y="676" font-size="9" fill="#475569">Right allpass</text>
+  <rect x="460" y="666" width="16" height="12" rx="2" fill="#fed7aa" stroke="#c2410c" stroke-width="0.8"/>
+  <text x="482" y="676" font-size="9" fill="#475569">Feedback gain (krt or CV)</text>
+  <text x="50" y="698" font-size="9" fill="#64748b">Delay lengths in samples @ 32768 Hz. Each comb has independent LP damping filter in feedback loop.</text>
+</svg>

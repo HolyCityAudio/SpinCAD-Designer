@@ -1,7 +1,7 @@
 /* SpinCAD Designer - DSP Development Tool for the Spin FV-1
  * LPF1PControlPanel.java
- * Copyright (C) 2013 - 2014 - Gary Worsham
- * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2014.  Look for GSW in code.
+ * Copyright (C) 2013 - 2026 - Gary Worsham
+ * Based on ElmGen by Andrew Kilpatrick.  Modified by Gary Worsham 2013 - 2026.  Look for GSW in code.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 				}
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-				freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 80, 2500, 1000);
+				freqSlider = SpinCADBlock.LogSlider(20, 2500, SpinCADBlock.freqToFilt(hPF.getFreq()), "LOGFREQ", 100.0);
 				freqSlider.addChangeListener(new LPF1PChangeListener());
 
 				freqField = new JTextField();
@@ -91,10 +91,10 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 						try {
 							String text = freqField.getText().replaceAll("[^\\d.\\-]", "");
 							double val = Double.parseDouble(text);
-							int sliderVal = (int) Math.round(val);
-							sliderVal = Math.max(80, Math.min(2500, sliderVal));
+							int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
+							sliderVal = Math.max(freqSlider.getMinimum(), Math.min(freqSlider.getMaximum(), sliderVal));
 							freqSlider.setValue(sliderVal);
-							hPF.setFreq((double) sliderVal);
+							hPF.setFreq(SpinCADBlock.sliderToLogval(sliderVal, 100.0));
 							updateFreqLabel();
 						} catch (NumberFormatException ex) {
 							updateFreqLabel();
@@ -138,7 +138,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 				getContentPane().add(nPoles);
 				getContentPane().add(Box.createRigidArea(new Dimension(250,4)));
 
-				freqSlider.setValue((int)Math.round(hPF.getFreq()));
+				freqSlider.setValue(SpinCADBlock.logvalToSlider(hPF.getFreq(), 100.0));
 				updateFreqLabel();
 				setVisible(true);
 				setLocationRelativeTo(SpinCADFrame.getInstance());
@@ -151,7 +151,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 	class LPF1PChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-				hPF.setFreq((double) freqSlider.getValue());
+				hPF.setFreq(SpinCADBlock.sliderToLogval((int) freqSlider.getValue(), 100.0));
 				updateFreqLabel();
 			}
 			else if(ce.getSource() == qSlider) {

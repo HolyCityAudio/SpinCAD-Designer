@@ -161,6 +161,7 @@
 			
 			sfxb.readRegister(input, inputGain);
 			sfxb.FXwriteDelay("delayl", 0, 0);
+			if(this.getPin("Output").isConnected() == true) {
 			{
 				// careful to not put center point too close to the end or beginning
 				int chorusCenter = (int) (delayOffset + (0.9 * tap1Center * delayLength) +  0.05 * delayLength); 
@@ -169,6 +170,9 @@
 			sfxb.chorusReadDelay((int)lfoSel, SIN, chorusCenter + 1);
 			}
 			sfxb.writeRegister(output1, 0);
+			this.getPin("Output").setRegister(output1);
+			}
+			
 			if(this.getPin("Tap").isConnected() == true) {
 			center = sfxb.allocateReg();
 			sfxb.FXreadDelay("delayl^", 0, 1);
@@ -176,7 +180,6 @@
 			this.getPin("Tap").setRegister(center);
 			}
 			
-			this.getPin("Output").setRegister(output1);
 			}
 			
 
