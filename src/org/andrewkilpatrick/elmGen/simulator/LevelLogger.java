@@ -613,8 +613,8 @@ public class LevelLogger implements AudioSink {
 			BasicStroke dashed = new BasicStroke(1f, BasicStroke.CAP_BUTT,
 								 BasicStroke.JOIN_MITER, 1f, dash, 0f);
 			BasicStroke solid  = new BasicStroke(1f);
-			// 2 pixels per dB; grid line every 12 dB from 0 to -96
-			for(int db = 0; db <= 96; db += 12) {
+			// 2 pixels per dB; grid line every 12 dB from 0 to -84
+			for(int db = 0; db <= 84; db += 12) {
 				int y = db * 2 + TOP_PAD;
 				if(y >= h) break;
 				g2.setStroke(db == 0 ? solid : dashed);
@@ -627,7 +627,7 @@ public class LevelLogger implements AudioSink {
 		private void redrawLoggerGridSlice(Graphics2D g2, int x, int sliceW, int h) {
 			g2.setStroke(new BasicStroke(1f));
 			g2.setColor(new Color(70, 100, 70));
-			for(int db = 0; db <= 96; db += 12) {
+			for(int db = 0; db <= 84; db += 12) {
 				int y = db * 2 + TOP_PAD;
 				if(y >= h) break;
 				g2.drawLine(x, y, x + sliceW, y);

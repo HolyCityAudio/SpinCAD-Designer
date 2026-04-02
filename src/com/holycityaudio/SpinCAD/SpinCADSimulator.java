@@ -288,6 +288,7 @@ public class SpinCADSimulator {
 						if(displayMode == 1) {
 							sim.setDisplayMode(1);
 						}
+						labelCardLayout.show(labelCards, displayMode == 0 ? "scope" : "logger");
 						restoreScopePrefs();
 
 						// Show/hide display and force layout before audio starts
