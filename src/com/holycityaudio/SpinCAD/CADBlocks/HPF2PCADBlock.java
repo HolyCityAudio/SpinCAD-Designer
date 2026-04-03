@@ -22,6 +22,8 @@ package com.holycityaudio.SpinCAD.CADBlocks;
 
 import java.awt.Color;
 
+import org.andrewkilpatrick.elmGen.ElmProgram;
+
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADPin;
 import com.holycityaudio.SpinCAD.SpinFXBlock;
@@ -92,7 +94,9 @@ public class HPF2PCADBlock extends SpinCADBlock{
 				sfxb.writeRegister(kfh, 0);
 				//				;now derive filter bypass function (at open condition)
 			} else {
-				sfxb.scaleOffset(0, 0.25);	// set dummy value
+				double kfhCoeff = 2.0 * Math.sin(Math.PI * f0 / ElmProgram.SAMPLERATE);
+				kfhCoeff = Math.max(0.001, Math.min(0.999, kfhCoeff));
+				sfxb.scaleOffset(0, kfhCoeff);
 				sfxb.writeRegister(kfh,  0);
 				sfxb.writeRegister(byp,  0);
 			}

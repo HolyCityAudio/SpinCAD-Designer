@@ -69,6 +69,12 @@ highpass outputs. The frequency and Q (resonance) are adjustable.
 
 ![SVF 2-Pole lowpass response at three frequency settings](images/filter-svf2p.png)
 
+![SVF 2-Pole bandpass response at three frequency settings](images/filter-svf2p-bp.png)
+
+![SVF 2-Pole highpass response at three frequency settings](images/filter-svf2p-hp.png)
+
+![SVF 2-Pole lowpass Q variation at 1 kHz](images/filter-svf2p-q.png)
+
 ---
 
 ## SVF 2-Pole Adjustable
@@ -96,6 +102,12 @@ Q can be modulated via control inputs.
 | Q Min | 0.5-10 | 1 | Minimum Q value |
 
 ![SVF 2-Pole Adjustable lowpass response at three frequency settings](images/filter-svf2padj.png)
+
+![SVF 2-Pole Adjustable bandpass response at three frequency settings](images/filter-svf2padj-bp.png)
+
+![SVF 2-Pole Adjustable highpass response at three frequency settings](images/filter-svf2padj-hp.png)
+
+![SVF 2-Pole Adjustable lowpass Q variation at ~1 kHz](images/filter-svf2padj-q.png)
 
 ---
 
