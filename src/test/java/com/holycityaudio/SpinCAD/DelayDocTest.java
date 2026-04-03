@@ -13,7 +13,7 @@ import com.holycityaudio.SpinCAD.CADBlocks.*;
 
 /**
  * Generates documentation plots for Delay menu blocks.
- * Each block is fed an impulse and the output waveform is plotted
+ * Each block is fed a 10 ms tone burst and the output waveform is plotted
  * to reveal tap positions and echo patterns.
  */
 public class DelayDocTest {
@@ -22,7 +22,9 @@ public class DelayDocTest {
     File tempDir;
 
     private static final double SIM_DURATION = 1.0;
-    private static final double IMPULSE_AMPLITUDE = 0.9;
+    private static final double BURST_DURATION_MS = 10.0;
+    private static final double BURST_FREQ = 1000.0;
+    private static final double BURST_AMPLITUDE = 0.9;
     private static final int DECIMATE_FACTOR = 8;
 
     @BeforeAll
@@ -35,64 +37,88 @@ public class DelayDocTest {
         File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
-        // === Six Tap ===
-        plotDelay("sixtap", "Six Tap Delay",
-            () -> new sixtapCADBlock(100, 100),
-            "Mix L Out", null, docsDir);
+        File burstWav = generateToneBurstWav(SIM_DURATION, BURST_DURATION_MS,
+            BURST_FREQ, BURST_AMPLITUDE);
 
-        // === Eight Tap ===
-        plotDelay("eighttap", "Eight Tap Delay",
-            () -> new eighttapCADBlock(100, 100),
-            "Mix 1 Out", null, docsDir);
+        // === Six Tap — distribute 6 taps evenly ===
+        {
+            sixtapCADBlock block = new sixtapCADBlock(100, 100);
+            block.settap1Ratio(1.0 / 6);
+            block.settap2Ratio(2.0 / 6);
+            block.settap3Ratio(3.0 / 6);
+            block.settap4Ratio(4.0 / 6);
+            block.settap5Ratio(5.0 / 6);
+            block.settap6Ratio(1.0);
+            plotDelay("sixtap", "Six Tap Delay", block,
+                "Mix L Out", null, burstWav, docsDir);
+        }
 
-        // === Drum Delay ===
-        plotDelay("drumdelay", "Drum Delay",
-            () -> new DrumDelayCADBlock(100, 100),
-            "Tap 1 Out", null, docsDir);
+        // === Eight Tap — taps already evenly spaced at 1/8 intervals ===
+        {
+            eighttapCADBlock block = new eighttapCADBlock(100, 100);
+            plotDelay("eighttap", "Eight Tap Delay", block,
+                "Mix 1 Out", null, burstWav, docsDir);
+        }
+
+        // === Drum Delay — distribute 4 taps evenly ===
+        {
+            DrumDelayCADBlock block = new DrumDelayCADBlock(100, 100);
+            block.settap1Ratio(0.25);
+            block.settap2Ratio(0.50);
+            block.settap3Ratio(0.75);
+            block.settap4Ratio(1.0);
+            plotDelay("drumdelay", "Drum Delay", block,
+                "Tap 1 Out", null, burstWav, docsDir);
+        }
 
         // === Long Delay ===
         try {
-            plotDelay("longdelay", "Long Delay",
-                () -> new LongDelayCADBlock(100, 100),
-                "Audio Output", null, docsDir);
+            LongDelayCADBlock block = new LongDelayCADBlock(100, 100);
+            plotDelay("longdelay", "Long Delay", block,
+                "Audio Output", null, burstWav, docsDir);
         } catch (Exception e) {
             System.err.println("  SKIP Long Delay: " + e.getMessage());
         }
 
-        // === MN3011 ===
-        plotDelay("mn3011a", "MN3011 BBD Emulation",
-            () -> new MN3011aCADBlock(100, 100),
-            "Mix Out", null, docsDir);
+        // === MN3011 — taps at fixed BBD ratios ===
+        {
+            MN3011aCADBlock block = new MN3011aCADBlock(100, 100);
+            plotDelay("mn3011a", "MN3011 BBD Emulation", block,
+                "Mix Out", null, burstWav, docsDir);
+        }
 
-        // === Reverse Delay ===
-        plotDelay("reversedelay", "Reverse Delay",
-            () -> new ReverseDelayCADBlock(100, 100),
-            "Output", null, docsDir);
+        // === Reverse Delay (no adjustable taps) ===
+        {
+            ReverseDelayCADBlock block = new ReverseDelayCADBlock(100, 100);
+            plotDelay("reversedelay", "Reverse Delay", block,
+                "Output", null, burstWav, docsDir);
+        }
 
-        // === Stutter ===
-        plotDelay("stutter", "Stutter",
-            () -> new StutterCADBlock(100, 100),
-            "Output", null, docsDir);
+        // === Stutter (no adjustable taps) ===
+        {
+            StutterCADBlock block = new StutterCADBlock(100, 100);
+            plotDelay("stutter", "Stutter", block,
+                "Output", null, burstWav, docsDir);
+        }
 
-        // === Triple Tap ===
-        plotDelay("tripletap", "Triple Tap Delay",
-            () -> new TripleTapCADBlock(100, 100),
-            "Tap 1 Out", null, docsDir);
+        // === Triple Tap — distribute 3 taps evenly ===
+        {
+            TripleTapCADBlock block = new TripleTapCADBlock(100, 100);
+            block.settap1Ratio(1.0 / 3);
+            block.settap2Ratio(2.0 / 3);
+            block.settap3Ratio(1.0);
+            plotDelay("tripletap", "Triple Tap Delay", block,
+                "Tap 1 Out", null, burstWav, docsDir);
+        }
 
-        System.out.println("\nAll delay PNGs written to docs/");
+        System.out.println("\nAll delay PNGs written to docs/images/");
     }
 
-    @FunctionalInterface
-    interface BlockFactory { SpinCADBlock create(); }
-
     private void plotDelay(String fileBase, String title,
-            BlockFactory factory, String outputPin1, String outputPin2,
-            File docsDir) throws Exception {
+            SpinCADBlock block, String outputPin1, String outputPin2,
+            File burstWav, File docsDir) throws Exception {
 
-        File impulseWav = generateImpulseWav(SIM_DURATION, IMPULSE_AMPLITUDE);
-        SpinCADBlock block = factory.create();
-
-        short[] stereo = simulate(block, impulseWav, null,
+        short[] stereo = simulate(block, burstWav, null,
             outputPin1, outputPin2, tempDir);
 
         if (stereo == null) {
@@ -103,7 +129,6 @@ public class DelayDocTest {
         short[] left = extractChannel(stereo, 0);
         double[] audio = toDouble(left);
 
-        // Decimate for plotting
         double[] plotAudio = decimate(audio, DECIMATE_FACTOR);
         double[] timeMs = timeAxisMs(plotAudio.length, SAMPLE_RATE / DECIMATE_FACTOR);
 
@@ -113,7 +138,8 @@ public class DelayDocTest {
             title, "Time (ms)", "Amplitude",
             0, maxTime, -1.0, 1.0,
             timeMs, new double[][]{plotAudio},
-            new String[]{"Impulse Response"},
+            new String[]{"Tone Burst Response"},
             new String[]{COLORS[0]});
+        System.out.println("  wrote delay-" + fileBase + ".png");
     }
 }

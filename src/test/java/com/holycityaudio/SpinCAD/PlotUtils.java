@@ -207,6 +207,23 @@ public class PlotUtils {
         return writeWav(data, numFrames, "impulse");
     }
 
+    /** Generate a stereo tone burst WAV (sine burst at burstFreqHz for burstDurationMs, then silence). */
+    public static File generateToneBurstWav(double totalDurationSeconds, double burstDurationMs,
+            double burstFreqHz, double amplitude) throws IOException {
+        int numFrames = (int) (SAMPLE_RATE * totalDurationSeconds);
+        int burstFrames = (int) (SAMPLE_RATE * burstDurationMs / 1000.0);
+        byte[] data = new byte[numFrames * 4];
+        for (int i = 0; i < Math.min(burstFrames, numFrames); i++) {
+            short sample = (short) (amplitude * Short.MAX_VALUE * Math.sin(2 * Math.PI * burstFreqHz * i / SAMPLE_RATE));
+            int offset = i * 4;
+            data[offset] = (byte) (sample & 0xff);
+            data[offset + 1] = (byte) ((sample >> 8) & 0xff);
+            data[offset + 2] = (byte) (sample & 0xff);
+            data[offset + 3] = (byte) ((sample >> 8) & 0xff);
+        }
+        return writeWav(data, numFrames, "toneburst");
+    }
+
     /** Generate a stereo silent WAV. */
     public static File generateSilentWav(double durationSeconds) throws IOException {
         int numFrames = (int) (SAMPLE_RATE * durationSeconds);

@@ -17,6 +17,9 @@ to positive. Uses the FV-1 ABSA instruction. There is no control panel.
 
 Implements: `output = |input|`
 
+The plot shows a sine wave input and the resulting full-wave rectified
+output, with negative half-cycles folded to positive.
+
 ![Absolute Value](images/instructions-absa.png)
 
 ---
@@ -33,6 +36,9 @@ the accumulator when the input is negative. There is no control panel.
 | Output | Control Out | Rectified output (negative values become 0) |
 
 Implements: `output = max(input, 0)`
+
+The plot shows a sine wave input and the half-wave rectified output,
+where negative half-cycles are clamped to zero.
 
 ![Half Wave](images/instructions-halfwave.png)
 
@@ -58,6 +64,10 @@ to linear, or for creating exponential curves for control voltages.
 
 The FV-1 EXP instruction computes: `output = C * 2^(input * 16) + D`
 
+The useful input range is narrow (approximately -0.1 to +0.06) because
+the 2^(x*16) term grows extremely fast. The plot shows three C/D
+combinations over this range.
+
 ![Exp](images/instructions-exp.png)
 
 ---
@@ -81,7 +91,10 @@ fractional powers when paired with EXP.
 | Multiplier | -2.0 to 2.0 | 0.5 | Scale factor (C coefficient) |
 | Offset | -2.0 to 2.0 | 0.5 | DC offset (D coefficient, divided by 16 internally) |
 
-The FV-1 LOG instruction computes: `output = C * log2(|input|) + D`
+The FV-1 LOG instruction computes: `output = C * log2(|input|) / 16 + D`
+
+The plot uses a logarithmic input scale (0.001 to 1.0) to show the
+characteristic linear response of the LOG instruction.
 
 ![Log](images/instructions-log.png)
 
@@ -111,6 +124,12 @@ The Invert option transforms the input via `x' = -x + 1.0` before the
 root computation. The Flip option applies the same transformation to
 the output. These are useful for inverting the shape of the curve.
 
+**Behavior at zero:** Because the Root block uses LOG internally, inputs
+at or very near zero produce extreme values (LOG of zero is negative
+infinity). The FV-1 saturates this to its minimum value, causing a spike
+near zero as shown in the plot. For practical use, ensure inputs stay
+above approximately 0.01.
+
 ![Root](images/instructions-root.png)
 
 ---
@@ -135,6 +154,11 @@ through scaled by the gain parameter.
 | Gain | 0 to 1.0 | 0.5 | Multiplier applied during the MAXX comparison |
 
 The MAXX instruction compares `|accumulator|` with `|register * gain|`
-and keeps the larger value.
+and keeps the larger absolute value. Note that the output is always
+positive — MAXX operates on absolute values.
+
+The plot below shows a sine wave at Input 1 and a constant 0.4 at
+Input 2. The output follows whichever absolute value is larger: the
+sine's peaks when |sine| > 0.4, and the constant 0.4 otherwise.
 
 ![Maximum](images/instructions-maximum.png)
