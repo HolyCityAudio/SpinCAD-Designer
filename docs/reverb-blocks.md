@@ -110,7 +110,18 @@ different times.
 | Stretch | 1-8 | 4 | Geometric stretch factor for delay lengths |
 | AP Coeff | 0-1 | 0.5 | Allpass coefficient |
 
-![Chirp Reverb impulse response](images/reverb-chirp.png)
+![Chirp Reverb impulse response at five AP coefficient settings](images/reverb-chirp.png)
+
+The spectrograms below show how the allpass coefficient controls
+frequency-dependent dispersion. At AP=0 the impulse passes through
+unchanged. As |AP| increases, different frequency bands spread over
+time — this is the characteristic "chirp" sound.
+
+![Chirp spectrogram AP=0.00](images/reverb-chirp-spec-0.00.png)
+![Chirp spectrogram AP=0.50](images/reverb-chirp-spec-0.50.png)
+![Chirp spectrogram AP=0.75](images/reverb-chirp-spec-0.75.png)
+![Chirp spectrogram AP=-0.50](images/reverb-chirp-spec-neg0.50.png)
+![Chirp spectrogram AP=-0.75](images/reverb-chirp-spec-neg0.75.png)
 
 ---
 
