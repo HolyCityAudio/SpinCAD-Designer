@@ -64,9 +64,12 @@ to linear, or for creating exponential curves for control voltages.
 
 The FV-1 EXP instruction computes: `output = C * 2^(input * 16) + D`
 
-The useful input range is narrow (approximately -0.1 to +0.06) because
-the 2^(x*16) term grows extremely fast. The plot shows three C/D
-combinations over this range.
+The useful input range is narrow (approximately -0.1 to +0.07) because
+the 2^(x*16) term grows extremely fast. The D parameter must offset C
+to keep the output in range. For example, with C=1.0, setting D=-1.0
+gives output=0 at x=0 and output=1.0 at x=1/16 — a clean 0-to-1
+exponential mapping. Without offset (D=0), C=1.0 already outputs 1.0
+at x=0 and clips immediately.
 
 ![Exp](images/instructions-exp.png)
 
@@ -93,8 +96,10 @@ fractional powers when paired with EXP.
 
 The FV-1 LOG instruction computes: `output = C * log2(|input|) / 16 + D`
 
-The plot uses a logarithmic input scale (0.001 to 1.0) to show the
-characteristic linear response of the LOG instruction.
+C controls the slope (steepness) of the log curve — doubling C doubles
+the output change per decade of input. D shifts the output vertically.
+Negative C inverts the curve. The plot uses a logarithmic input scale
+(0.001 to 1.0) showing four C/D combinations.
 
 ![Log](images/instructions-log.png)
 
@@ -153,12 +158,11 @@ through scaled by the gain parameter.
 |-----------|-------|---------|-------------|
 | Gain | 0 to 1.0 | 0.5 | Multiplier applied during the MAXX comparison |
 
-The MAXX instruction compares `|accumulator|` with `|register * gain|`
-and keeps the larger absolute value. Note that the output is always
-positive — MAXX operates on absolute values.
+The MAXX instruction compares the accumulator with the register value
+scaled by gain, and keeps the larger of the two.
 
 The plot below shows a sine wave at Input 1 and a constant 0.4 at
-Input 2. The output follows whichever absolute value is larger: the
-sine's peaks when |sine| > 0.4, and the constant 0.4 otherwise.
+Input 2. The output follows the sine when it exceeds the threshold,
+and holds at 0.4 otherwise.
 
 ![Maximum](images/instructions-maximum.png)

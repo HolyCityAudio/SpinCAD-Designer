@@ -99,52 +99,57 @@ public class InstructionsDocTest {
 
     // ================ Exp — DC sweep over useful input range ================
     // FV-1 EXP instruction: output = C * 2^(ACC * 16) + D
-    // Default: C=0.5, D=-0.5
-    // At ACC=0: 0.5 * 2^0 - 0.5 = 0
-    // At ACC=-0.0625 (= -1/16): 0.5 * 2^(-1) - 0.5 = -0.25
-    // At ACC=+0.0625 (= +1/16): 0.5 * 2^(1) - 0.5 = 0.5
-    // Useful range: roughly -0.1 to +0.06 before output clips
+    // At ACC=0: output = C + D.  At ACC=1/16: output = 2C + D.
+    // The curve grows very fast, so D must offset C to keep output in range.
+    // For C=1: at x=0, output = 1+D, so D=-1 keeps output = 0 at x=0
+    //          at x=1/16, output = 2+(-1) = 1 (just reaches full scale)
 
     private void plotExp(File docsDir) throws Exception {
-        // Show three curves with different C,D settings
-        // Curve 1: Default C=0.5, D=-0.5 (standard pot-to-frequency mapping)
-        // Curve 2: C=1.0, D=0  (pure exponential)
-        // Curve 3: C=0.5, D=0  (half-scale exponential)
-
-        // Sweep input from -0.1 to +0.06 (where the interesting behavior is)
+        // Sweep input from -0.1 to +0.07 (where the interesting behavior is)
         double xMin = -0.10;
-        double xMax = 0.06;
+        double xMax = 0.07;
         double[] xData = new double[NUM_POINTS];
         for (int i = 0; i < NUM_POINTS; i++) {
             xData[i] = xMin + (xMax - xMin) * i / (NUM_POINTS - 1);
         }
 
-        // Compute mathematically (the simulation DC sweep is too coarse)
-        double[] curve1 = new double[NUM_POINTS]; // C=0.5, D=-0.5
-        double[] curve2 = new double[NUM_POINTS]; // C=1.0, D=0
-        double[] curve3 = new double[NUM_POINTS]; // C=0.5, D=0
+        // Curve 1: Default C=0.5, D=-0.5 (standard pot-to-frequency mapping)
+        //   At x=0: 0.5-0.5=0.  At x=1/16: 1.0-0.5=0.5.  Stays in range.
+        // Curve 2: C=1.0, D=-1.0 (full-range exponential, no clipping)
+        //   At x=0: 1-1=0.  At x=1/16: 2-1=1.  Perfect 0-to-1 mapping.
+        // Curve 3: C=1.0, D=0 (clips almost immediately)
+        //   At x=0: 1+0=1 already at max!  Shows why D matters.
+        // Curve 4: C=0.5, D=0 (half-scale, clips above x≈1/16)
+
+        double[] curve1 = new double[NUM_POINTS];
+        double[] curve2 = new double[NUM_POINTS];
+        double[] curve3 = new double[NUM_POINTS];
+        double[] curve4 = new double[NUM_POINTS];
 
         for (int i = 0; i < NUM_POINTS; i++) {
             double x = xData[i];
             double exp16 = Math.pow(2, x * 16);
             curve1[i] = Math.max(-1, Math.min(1, 0.5 * exp16 - 0.5));
-            curve2[i] = Math.max(-1, Math.min(1, 1.0 * exp16 + 0));
-            curve3[i] = Math.max(-1, Math.min(1, 0.5 * exp16 + 0));
+            curve2[i] = Math.max(-1, Math.min(1, 1.0 * exp16 - 1.0));
+            curve3[i] = Math.max(-1, Math.min(1, 1.0 * exp16 + 0));
+            curve4[i] = Math.max(-1, Math.min(1, 0.5 * exp16 + 0));
         }
 
         writePlot(new File(docsDir, "instructions-exp.png"),
             "EXP Instruction — C * 2^(x*16) + D", "Input", "Output",
             xMin, xMax, -1.0, 1.0,
-            xData, new double[][]{curve1, curve2, curve3},
-            new String[]{"C=0.5 D=-0.5 (default)", "C=1.0 D=0", "C=0.5 D=0"},
-            new String[]{COLORS[0], COLORS[1], COLORS[2]});
+            xData, new double[][]{curve1, curve2, curve3, curve4},
+            new String[]{"C=0.5 D=-0.5 (default)", "C=1.0 D=-1.0 (full range)",
+                          "C=1.0 D=0 (clips!)", "C=0.5 D=0"},
+            new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]});
         System.out.println("  wrote instructions-exp.png");
     }
 
     // ================ Log — sweep with log-scaled x-axis ================
     // FV-1 LOG: output = C * log2(|ACC|) / 16 + D
-    // Default: C=0.5, D=0.5/16=0.03125
-    // Show log response from small values to ~1.0
+    // C scales the slope (steepness of the log curve).
+    // D shifts the output vertically (DC offset).
+    // Show multiple C/D combinations to illustrate their effect.
 
     private void plotLog(File docsDir) throws Exception {
         // Log-spaced x-axis from 0.001 to 1.0
@@ -156,29 +161,41 @@ public class InstructionsDocTest {
             xData[i] = Math.pow(10, logVal);
         }
 
-        // Compute LOG instruction output mathematically
-        // LOG: output = C * log2(|x|) / 16 + D
-        double C = 0.5;
-        double D = 0.5 / 16.0;
-        double[] logOut = new double[NUM_POINTS];
+        // Curve 1: C=0.5, D=0.5/16 (default) — moderate slope, small offset
+        // Curve 2: C=1.0, D=0.5/16 — steeper slope (C doubles sensitivity)
+        // Curve 3: C=0.5, D=0.25 — same slope, shifted up (D adds DC offset)
+        // Curve 4: C=-0.5, D=0.5/16 — inverted slope (C negative flips curve)
+
+        double[][] curves = new double[4][NUM_POINTS];
+        double[][] params = {
+            {0.5,  0.5/16.0},   // default
+            {1.0,  0.5/16.0},   // double C
+            {0.5,  0.25},       // raised D
+            {-0.5, 0.5/16.0},   // negative C
+        };
+
         for (int i = 0; i < NUM_POINTS; i++) {
             double x = xData[i];
             double log2x = Math.log(Math.abs(x)) / Math.log(2);
-            logOut[i] = Math.max(-1, Math.min(1, C * log2x / 16.0 + D));
+            for (int c = 0; c < 4; c++) {
+                curves[c][i] = Math.max(-1, Math.min(1,
+                    params[c][0] * log2x / 16.0 + params[c][1]));
+            }
         }
 
-        // For log-scale x-axis, plot against log10(x) and relabel
+        // Plot against log10(x) for log-scaled x-axis
         double[] xPlot = new double[NUM_POINTS];
         for (int i = 0; i < NUM_POINTS; i++) {
             xPlot[i] = Math.log10(xData[i]);
         }
 
         writePlot(new File(docsDir, "instructions-log.png"),
-            "LOG Instruction — C=0.5 D=0.5/16", "Input (log scale)", "Output",
-            logMin, logMax, -0.5, 0.1,
-            xPlot, new double[][]{logOut},
-            new String[]{"C*log2(|x|)/16 + D"},
-            new String[]{COLORS[0]});
+            "LOG Instruction — C * log2(|x|) / 16 + D", "Input (log scale)", "Output",
+            logMin, logMax, -0.7, 0.5,
+            xPlot, curves,
+            new String[]{"C=0.5 D=0.03 (default)", "C=1.0 D=0.03 (steeper)",
+                          "C=0.5 D=0.25 (shifted up)", "C=-0.5 D=0.03 (inverted)"},
+            new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]});
         System.out.println("  wrote instructions-log.png");
     }
 
@@ -187,40 +204,37 @@ public class InstructionsDocTest {
     // At x=0, log(0) = -infinity → saturates to -1 → exp clips
 
     private void plotRoot(File docsDir) throws Exception {
-        // Sweep from small positive values to 1.0
-        // Show sqrt (N=2), cbrt (N=3), and 4th root (N=4)
         double[] xData = new double[NUM_POINTS];
         for (int i = 0; i < NUM_POINTS; i++) {
             xData[i] = (double) i / (NUM_POINTS - 1);
         }
 
-        // Simulate sqrt via the actual block
+        // Simulate sqrt (N=2) and cbrt (N=3) via the actual block
         double[] sqrtSim = sweepBlock(
             () -> new RootCADBlock(100, 100),
             "Control Input 1", "Control Output 1",
             0.0, 1.0);
 
-        // Mathematical reference curves
-        double[] sqrtRef = new double[NUM_POINTS];
-        double[] cbrtRef = new double[NUM_POINTS];
-        for (int i = 0; i < NUM_POINTS; i++) {
-            double x = xData[i];
-            sqrtRef[i] = Math.sqrt(x);
-            cbrtRef[i] = Math.cbrt(x);
-        }
+        double[] cbrtSim = sweepBlock(
+            () -> { RootCADBlock b = new RootCADBlock(100, 100); b.setRoot(3); return b; },
+            "Control Input 1", "Control Output 1",
+            0.0, 1.0);
 
+        // Mathematical reference: dashed identity line (drawn by writePlot when ranges match)
+        // Plot simulated curves only — the identity line provides context
         writePlot(new File(docsDir, "instructions-root.png"),
-            "Root Instruction", "Input", "Output",
+            "Root Instruction (FV-1 Simulated)", "Input", "Output",
             0, 1.0, 0, 1.0,
-            xData, new double[][]{sqrtSim, sqrtRef, cbrtRef},
-            new String[]{"FV-1 sqrt (simulated)", "sqrt(x) reference", "cbrt(x) reference"},
-            new String[]{COLORS[0], "#aaaaaa", COLORS[2]});
+            xData, new double[][]{sqrtSim, cbrtSim},
+            new String[]{"sqrt (N=2)", "cbrt (N=3)"},
+            new String[]{COLORS[0], COLORS[2]});
         System.out.println("  wrote instructions-root.png");
     }
 
     // ================ Maximum — show MAXX behavior on sine wave ================
-    // MAXX compares |accumulator| vs |register * gain|, keeps larger absolute value.
-    // Show a sine wave and a fixed threshold — output shows the envelope-like behavior.
+    // MAXX keeps the larger of accumulator and register*gain.
+    // Show a sine wave and a fixed threshold — output follows sine when
+    // above threshold, holds at threshold otherwise.
 
     private void plotMaxx(File docsDir) throws IOException {
         int pts = 400;
@@ -234,12 +248,12 @@ public class InstructionsDocTest {
             timeMs[i] = 10.0 * i / (pts - 1);
             sine[i] = 0.9 * Math.sin(2 * Math.PI * cycles * i / (pts - 1));
             ref[i] = 0.4;
-            // MAXX keeps the larger of |accumulator| and |register*gain|
-            maxxOut[i] = Math.max(Math.abs(sine[i]), 0.4);
+            // MAXX: output = max(input1, input2)
+            maxxOut[i] = Math.max(sine[i], 0.4);
         }
 
         writePlot(new File(docsDir, "instructions-maximum.png"),
-            "MAXX — max(|Input 1|, |Input 2|)", "Time (ms)", "Amplitude",
+            "MAXX — max(Input 1, Input 2)", "Time (ms)", "Amplitude",
             0, 10.0, -1.0, 1.0,
             timeMs, new double[][]{sine, maxxOut, ref},
             new String[]{"Input 1 (sine)", "MAXX output", "Input 2 (0.4)"},
