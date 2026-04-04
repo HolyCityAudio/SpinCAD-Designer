@@ -119,7 +119,8 @@ Two outputs are provided: a smoothed version and the raw decimated signal.
 
 There is no control panel; the Rip control input sets the effect depth.
 
-![Aliaser](images/waveshaper-aliaser.png)
+![Aliaser Smooth (input/output)](images/waveshaper-aliaser-smooth.png)
+![Aliaser Raw (input/output)](images/waveshaper-aliaser-raw.png)
 
 ---
 

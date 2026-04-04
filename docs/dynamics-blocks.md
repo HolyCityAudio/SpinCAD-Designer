@@ -34,13 +34,11 @@ When the input level is above the threshold, the gate opens and passes
 audio. When it drops below, the output fades to silence via the envelope
 follower's decay time.
 
-![Noise Gate response at two thresholds](images/dynamics-noisegate.png)
+![Noise Gate transfer curve](images/dynamics-noisegate.png)
 
-The plot shows the envelope (in dB) of a decaying 440 Hz sine wave processed
-through the noise gate at -40 dB and -80 dB thresholds. The input signal
-decays exponentially from 0 dB. Each gated output diverges from the input
-envelope once the signal drops below its threshold, falling rapidly to
-silence.
+Input-vs-output transfer curve at two threshold settings (-40 dB and
+-80 dB). Above the threshold, the gate passes audio at unity gain.
+Below the threshold, the output drops sharply as the gate closes.
 
 ---
 

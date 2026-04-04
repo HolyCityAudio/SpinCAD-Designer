@@ -147,7 +147,8 @@ at the default LFO coefficient.
 The oscillator implements a quadrature pair (sine and cosine) using
 feedback integration. The maximum frequency is Fs / (2 * pi).
 
-![Ring Modulator output waveform](images/modulation-ringmod.png)
+![Ring Modulator input/output waveform](images/modulation-ringmod.png)
+![Ring Modulator input/output spectrum](images/modulation-ringmod-spectrum.png)
 
 ---
 

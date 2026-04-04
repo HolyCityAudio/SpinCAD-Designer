@@ -135,7 +135,7 @@ public class InstructionsDocTest {
             curve4[i] = Math.max(-1, Math.min(1, 0.5 * exp16 + 0));
         }
 
-        writePlot(new File(docsDir, "instructions-exp.png"),
+        writePlot2x2(new File(docsDir, "instructions-exp.png"),
             "EXP Instruction — C * 2^(x*16) + D", "Input", "Output",
             xMin, xMax, -1.0, 1.0,
             xData, new double[][]{curve1, curve2, curve3, curve4},
@@ -189,7 +189,7 @@ public class InstructionsDocTest {
             xPlot[i] = Math.log10(xData[i]);
         }
 
-        writePlot(new File(docsDir, "instructions-log.png"),
+        writePlot2x2(new File(docsDir, "instructions-log.png"),
             "LOG Instruction — C * log2(|x|) / 16 + D", "Input (log scale)", "Output",
             logMin, logMax, -0.7, 0.5,
             xPlot, curves,

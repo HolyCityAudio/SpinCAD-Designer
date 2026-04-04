@@ -136,17 +136,28 @@ public class ReverbDocTest {
             }
         });
 
-        // === Allpass (300 ms) ===
-        plotReverb("allpass", "Allpass", docsDir, new ReverbPlotter() {
-            public double[] run(int level) throws Exception {
+        // === Allpass — separate charts for short/medium/long (100 ms) ===
+        {
+            double[] kiaps = {0.3, 0.5, 0.7};
+            String[] apLabels = {"Short", "Medium", "Long"};
+            for (int d = 0; d < kiaps.length; d++) {
+                final double kiap = kiaps[d];
+                final String label = apLabels[d];
                 allpassCADBlock b = new allpassCADBlock(100, 100);
-                double[] kiaps = {0.3, 0.5, 0.7};
-                b.setkiap(kiaps[level]);
-                return impulseResponse(b, "Output", null);
+                b.setkiap(kiap);
+                double[] env = impulseResponse(b, "Output", null);
+                if (env == null) {
+                    System.err.println("  SKIP Allpass " + label + ": simulation failed");
+                    continue;
+                }
+                plotIR(new File(docsDir, "reverb-allpass-" + label.toLowerCase() + ".png"),
+                    "Allpass (" + label + ")",
+                    new double[][]{env}, new String[]{label}, env.length, 100);
+                System.out.println("  wrote reverb-allpass-" + label.toLowerCase() + ".png");
             }
-        }, 300);
+        }
 
-        // === Ambience (200 ms) ===
+        // === Ambience (100 ms) ===
         plotReverb("ambience", "Ambience", docsDir, new ReverbPlotter() {
             public double[] run(int level) throws Exception {
                 AmbienceCADBlock b = new AmbienceCADBlock(100, 100);
@@ -154,9 +165,9 @@ public class ReverbDocTest {
                 b.setDecay(decays[level]);
                 return impulseResponse(b, "Audio Output L", "Audio Output R");
             }
-        }, 200);
+        }, 100);
 
-        // === Chirp (20 ms waveform + spectrogram) ===
+        // === Chirp (10 ms waveform + spectrogram) ===
         plotChirp(docsDir);
 
         // === Freeverb (500 ms) ===
@@ -191,15 +202,8 @@ public class ReverbDocTest {
             }
         });
 
-        // === Dattorro Plate Reverb ===
-        plotReverb("dattorro", "Dattorro Plate Reverb", docsDir, new ReverbPlotter() {
-            public double[] run(int level) throws Exception {
-                DattorroPlateReverbCADBlock b = new DattorroPlateReverbCADBlock(100, 100);
-                double[] decays = {0.2, 0.5, 0.9};
-                b.setDecay(decays[level]);
-                return impulseResponse(b, "Audio Output L", "Audio Output R");
-            }
-        });
+        // === Dattorro Plate Reverb — separate charts for short/medium/long ===
+        plotDattorro(docsDir);
 
         // === Reverb Designer ===
         plotReverb("reverbdesigner", "Reverb Designer", docsDir, new ReverbPlotter() {
@@ -292,23 +296,19 @@ public class ReverbDocTest {
     // =========================================================================
 
     // =========================================================================
-    // Chirp: waveform (20ms) + spectrogram on same time scale
+    // Chirp: waveform (10ms) + spectrogram on same time scale
     // =========================================================================
 
     private void plotChirp(File docsDir) throws Exception {
         double[] apCoeffs = {-0.75, -0.5, 0, 0.5, 0.75};
-        String[] apLabels = new String[apCoeffs.length];
-        for (int a = 0; a < apCoeffs.length; a++) {
-            apLabels[a] = String.format("AP=%.2f", apCoeffs[a]);
+        int samples5ms = (int)(SAMPLE_RATE * 0.005);
+
+        double[] timeMs = new double[samples5ms];
+        for (int i = 0; i < samples5ms; i++) {
+            timeMs[i] = 1000.0 * i / SAMPLE_RATE;
         }
 
-        int samples20ms = (int)(SAMPLE_RATE * 0.020);
-
-        // Collect waveforms for all AP coefficients
-        double[][] waveforms = new double[apCoeffs.length][];
-        double[][] audioFull = new double[apCoeffs.length][];
-        double maxAmp = 0;
-
+        // Individual waveform + spectrogram chart per AP coefficient
         for (int a = 0; a < apCoeffs.length; a++) {
             ChirpCADBlock block = new ChirpCADBlock(100, 100);
             block.setkiap(apCoeffs[a]);
@@ -322,46 +322,31 @@ public class ReverbDocTest {
 
             short[] left = extractChannel(stereo, 0);
             double[] audio = toDouble(left);
-            audioFull[a] = audio;
-            int len = Math.min(audio.length, samples20ms);
-            waveforms[a] = Arrays.copyOf(audio, len);
+            int len = Math.min(audio.length, samples5ms);
+            double[] waveform = Arrays.copyOf(audio, len);
 
-            for (double v : waveforms[a]) if (Math.abs(v) > maxAmp) maxAmp = Math.abs(v);
-        }
+            double maxAmp = 0;
+            for (double v : waveform) if (Math.abs(v) > maxAmp) maxAmp = Math.abs(v);
+            if (maxAmp < 0.01) maxAmp = 0.5;
+            maxAmp = Math.min(maxAmp * 1.1, 1.0);
 
-        if (maxAmp < 0.01) maxAmp = 0.5;
-        maxAmp = Math.min(maxAmp * 1.1, 1.0);
-
-        // Build time axis
-        int len = samples20ms;
-        double[] timeMs = new double[len];
-        for (int i = 0; i < len; i++) {
-            timeMs[i] = 1000.0 * i / SAMPLE_RATE;
-        }
-
-        // Ensure all waveforms are same length
-        for (int a = 0; a < apCoeffs.length; a++) {
-            if (waveforms[a] == null) waveforms[a] = new double[len];
-            if (waveforms[a].length < len) waveforms[a] = Arrays.copyOf(waveforms[a], len);
-        }
-
-        // Waveform plot with all AP coefficients overlaid
-        String[] colors = {COLORS[0], COLORS[1], COLORS[2], COLORS[3], COLORS[4]};
-        writePlot(new File(docsDir, "reverb-chirp.png"),
-            "Chirp Reverb — Impulse Response", "Time (ms)", "Amplitude",
-            0, 20.0, -maxAmp, maxAmp,
-            timeMs, waveforms, apLabels, colors);
-        System.out.println("  wrote reverb-chirp.png");
-
-        // Spectrogram for each AP coefficient
-        for (int a = 0; a < apCoeffs.length; a++) {
-            if (audioFull[a] == null) continue;
-            int specLen = Math.min(audioFull[a].length, samples20ms);
             String suffix = String.format("%.2f", apCoeffs[a]).replace("-", "neg");
+            String label = String.format("AP=%.2f", apCoeffs[a]);
+
+            // Waveform
+            writePlot(new File(docsDir, "reverb-chirp-" + suffix + ".png"),
+                "Chirp (AP=" + String.format("%.2f", apCoeffs[a]) + ")", "Time (ms)", "Amplitude",
+                0, 5.0, -maxAmp, maxAmp,
+                timeMs, new double[][]{waveform}, new String[]{label},
+                new String[]{COLORS[0]});
+            System.out.println("  wrote reverb-chirp-" + suffix + ".png");
+
+            // Spectrogram
+            int specLen = Math.min(audio.length, samples5ms);
             writeSpectrogram(
                 new File(docsDir, "reverb-chirp-spec-" + suffix + ".png"),
                 String.format("Chirp Spectrogram (AP=%.2f)", apCoeffs[a]),
-                audioFull[a], specLen, SAMPLE_RATE);
+                audio, specLen, SAMPLE_RATE);
             System.out.println("  wrote reverb-chirp-spec-" + suffix + ".png");
         }
     }
@@ -590,6 +575,30 @@ public class ReverbDocTest {
             new String[]{"Left Output"},
             new String[]{COLORS[0]});
         System.out.println("  wrote reverb-hall-waveform.png");
+    }
+
+    // =========================================================================
+    // Dattorro Plate: 3 separate single-curve charts
+    // =========================================================================
+
+    private void plotDattorro(File docsDir) throws Exception {
+        double[] decays = {0.2, 0.5, 0.9};
+        String[] labels = {"Short", "Medium", "Long"};
+
+        for (int d = 0; d < decays.length; d++) {
+            DattorroPlateReverbCADBlock b = new DattorroPlateReverbCADBlock(100, 100);
+            b.setDecay(decays[d]);
+            double[] env = impulseResponse(b, "Audio Output L", "Audio Output R");
+            if (env == null) {
+                System.err.println("  SKIP Dattorro " + labels[d] + ": simulation failed");
+                continue;
+            }
+
+            plotIR(new File(docsDir, "reverb-dattorro-" + labels[d].toLowerCase() + ".png"),
+                "Dattorro Plate (" + labels[d] + ")",
+                new double[][]{env}, new String[]{labels[d]}, env.length, -1);
+            System.out.println("  wrote reverb-dattorro-" + labels[d].toLowerCase() + ".png");
+        }
     }
 
     /** Blue-black-red-yellow colormap for spectrogram. */

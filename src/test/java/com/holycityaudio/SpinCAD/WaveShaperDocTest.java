@@ -45,10 +45,10 @@ public class WaveShaperDocTest {
         File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
-        // === Cube (CubeGain) ===
-        plotWaveShaper("CubeGain", "Cube",
-            (level) -> new CubeGainCADBlock(100, 100),
-            null, "Audio Output 1", docsDir);
+        // === Cube (CubeGain) — 0 dB only ===
+        plotSingleLevel("CubeGain", "Cube (0 dB)",
+            new CubeGainCADBlock(100, 100), null, "Audio Output 1", docsDir);
+        plotCubeGainTransfer(docsDir);
 
         // === Distortion ===
         plotWaveShaper("Distortion", "Distortion",
@@ -60,25 +60,19 @@ public class WaveShaperDocTest {
             (level) -> { OverdriveCADBlock b = new OverdriveCADBlock(100, 100); return b; },
             Map.of("Drive", 750), "Audio Output 1", docsDir);
 
-        // === Octave Fuzz ===
-        plotWaveShaper("OctaveFuzz", "Octave Fuzz",
-            (level) -> new OctaveCADBlock(100, 100),
-            null, "Audio_Output", docsDir);
+        // === Octave Fuzz — 0 dB only with 80 Hz HPF ===
+        plotOctaveFuzz(docsDir);
 
         // === T/X ===
         plotWaveShaper("ToverX", "T/X",
             (level) -> new ToverXCADBlock(100, 100),
             null, "Audio_Output", docsDir);
 
-        // === Aliaser ===
-        plotWaveShaper("Aliaser", "Aliaser",
-            (level) -> new AliaserCADBlock(100, 100),
-            Map.of("Rip", 500), "Smooth", docsDir);
+        // === Aliaser — separate over/under charts for Smooth and Raw, 500 Hz ===
+        plotAliaserStacked(docsDir);
 
-        // === Quantizer ===
-        plotWaveShaper("Quantizer", "Quantizer",
-            (level) -> new QuantizerCADBlock(100, 100),
-            null, "Audio Output 1", docsDir);
+        // === Quantizer — 0 dB only, 3-bit vs 8-bit ===
+        plotQuantizerComparison(docsDir);
 
         System.out.println("\nAll wave shaper PNGs written to docs/");
     }
@@ -88,8 +82,8 @@ public class WaveShaperDocTest {
         File docsDir = new File("docs/images");
         docsDir.mkdirs();
 
-        // 440 Hz sine at full scale
-        File sineWav = generateSineWav(SIM_DURATION, FREQ, 1.0);
+        // 500 Hz sine at full scale
+        File sineWav = generateSineWav(SIM_DURATION, 500.0, 1.0);
 
         // Rip=500 for moderate aliasing
         int rip = 500;
@@ -300,5 +294,188 @@ public class WaveShaperDocTest {
             0, timeMs[timeMs.length - 1], -1.0, 1.0,
             timeMs, curves, LEVEL_LABELS,
             new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]});
+    }
+
+    /** Plot a single block at 0 dB only. */
+    private void plotSingleLevel(String fileBase, String title,
+            SpinCADBlock block, Map<String, Integer> controlInputs,
+            String outputPin, File docsDir) throws Exception {
+
+        File sineWav = generateSineWav(SIM_DURATION, FREQ, 1.0);
+        short[] stereo = simulate(block, sineWav, controlInputs, outputPin, null, tempDir);
+        if (stereo == null) {
+            System.err.println("  SKIP " + title + ": simulation failed");
+            return;
+        }
+        double[] audio = toDouble(extractChannel(stereo, 0));
+        int start = Math.min(SKIP_SAMPLES, audio.length - DISPLAY_SAMPLES - 1);
+        int end = Math.min(start + DISPLAY_SAMPLES, audio.length);
+        double[] curve = Arrays.copyOfRange(audio, start, end);
+        double[] timeMs = new double[end - start];
+        for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+        writePlot(new File(docsDir, "waveshaper-" + fileBase.toLowerCase() + ".png"),
+            title, "Time (ms)", "Amplitude",
+            0, timeMs[timeMs.length - 1], -1.0, 1.0,
+            timeMs, new double[][]{curve}, new String[]{"0 dB"},
+            new String[]{COLORS[0]});
+    }
+
+    /** Plot Cube Gain static transfer curve: f(x) = -1.4x^3 + 1.5x for x in [-1,1]. */
+    private void plotCubeGainTransfer(File docsDir) throws IOException {
+        int N = 401;
+        double[] x = new double[N];
+        double[] y = new double[N];
+        for (int i = 0; i < N; i++) {
+            x[i] = -1.0 + 2.0 * i / (N - 1);
+            y[i] = -1.4 * x[i] * x[i] * x[i] + 1.5 * x[i];
+        }
+        writePlot(new File(docsDir, "waveshaper-cubegain-transfer.png"),
+            "Cube Gain Transfer", "Input", "Output",
+            -1.0, 1.0, -0.7, 0.7,
+            x, new double[][]{y}, new String[]{"f(x)"},
+            new String[]{COLORS[0]});
+    }
+
+    /** Plot Octave Fuzz at 0 dB with one-pole HPF at 80 Hz to remove DC offset. */
+    private void plotOctaveFuzz(File docsDir) throws Exception {
+        File sineWav = generateSineWav(SIM_DURATION, FREQ, 1.0);
+        OctaveCADBlock block = new OctaveCADBlock(100, 100);
+        short[] stereo = simulate(block, sineWav, null, "Audio_Output", null, tempDir);
+        if (stereo == null) {
+            System.err.println("  SKIP Octave Fuzz: simulation failed");
+            return;
+        }
+        double[] audio = toDouble(extractChannel(stereo, 0));
+
+        // One-pole HPF at 80 Hz: alpha = RC/(RC+dt)
+        double dt = 1.0 / SAMPLE_RATE;
+        double RC = 1.0 / (2 * Math.PI * 80);
+        double alpha = RC / (RC + dt);
+        double[] filtered = new double[audio.length];
+        filtered[0] = audio[0];
+        for (int i = 1; i < audio.length; i++) {
+            filtered[i] = alpha * (filtered[i - 1] + audio[i] - audio[i - 1]);
+        }
+
+        int start = Math.min(SKIP_SAMPLES, filtered.length - DISPLAY_SAMPLES - 1);
+        int end = Math.min(start + DISPLAY_SAMPLES, filtered.length);
+        double[] curve = Arrays.copyOfRange(filtered, start, end);
+        double[] timeMs = new double[end - start];
+        for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+        writePlot(new File(docsDir, "waveshaper-octavefuzz.png"),
+            "Octave Fuzz (0 dB)", "Time (ms)", "Amplitude",
+            0, timeMs[timeMs.length - 1], -1.0, 1.0,
+            timeMs, new double[][]{curve}, new String[]{"0 dB"},
+            new String[]{COLORS[0]});
+    }
+
+    /** Plot Aliaser: separate over/under charts for Smooth and Raw at 500 Hz. */
+    private void plotAliaserStacked(File docsDir) throws Exception {
+        double aliaserFreq = 500.0;
+        int aliaserDisplay = (int)(3.0 / aliaserFreq * SAMPLE_RATE);
+        File sineWav = generateSineWav(SIM_DURATION, aliaserFreq, 1.0);
+
+        for (String outputPin : new String[]{"Smooth", "Raw"}) {
+            AliaserCADBlock block = new AliaserCADBlock(100, 100);
+            short[] stereo = simulate(block, sineWav, Map.of("Rip", 500),
+                outputPin, null, tempDir);
+            if (stereo == null) {
+                System.err.println("  SKIP Aliaser " + outputPin + ": simulation failed");
+                continue;
+            }
+
+            double[] output = toDouble(extractChannel(stereo, 0));
+            double[] input = toDouble(extractChannel(readWavSamples(sineWav), 0));
+
+            int start = Math.min(SKIP_SAMPLES, output.length - aliaserDisplay - 1);
+            int end = Math.min(start + aliaserDisplay, output.length);
+            double[] inputSlice = Arrays.copyOfRange(input, start, Math.min(end, input.length));
+            double[] outputSlice = Arrays.copyOfRange(output, start, end);
+            double[] timeMs = new double[end - start];
+            for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+            writeStackedWaveformPlot(
+                new File(docsDir, "waveshaper-aliaser-" + outputPin.toLowerCase() + ".png"),
+                "Aliaser " + outputPin + " (500 Hz, Rip=500)",
+                timeMs, inputSlice, outputSlice, "Input", outputPin);
+            System.out.println("  wrote waveshaper-aliaser-" + outputPin.toLowerCase() + ".png");
+        }
+    }
+
+    /** Plot Quantizer: 0 dB only, 3-bit vs 8-bit on single chart. */
+    private void plotQuantizerComparison(File docsDir) throws Exception {
+        File sineWav = generateSineWav(SIM_DURATION, FREQ, 1.0);
+        int[] bitSettings = {3, 8};
+        String[] labels = {"3-bit", "8-bit"};
+        double[][] curves = new double[2][];
+        double[] timeMs = null;
+
+        for (int i = 0; i < bitSettings.length; i++) {
+            QuantizerCADBlock block = new QuantizerCADBlock(100, 100);
+            block.setBits(bitSettings[i]);
+            short[] stereo = simulate(block, sineWav, null, "Audio Output 1", null, tempDir);
+            if (stereo == null) {
+                System.err.println("  SKIP Quantizer " + labels[i] + ": simulation failed");
+                return;
+            }
+            double[] audio = toDouble(extractChannel(stereo, 0));
+            int start = Math.min(SKIP_SAMPLES, audio.length - DISPLAY_SAMPLES - 1);
+            int end = Math.min(start + DISPLAY_SAMPLES, audio.length);
+            curves[i] = Arrays.copyOfRange(audio, start, end);
+            if (timeMs == null) {
+                timeMs = new double[end - start];
+                for (int j = 0; j < timeMs.length; j++) timeMs[j] = 1000.0 * j / SAMPLE_RATE;
+            }
+        }
+
+        writePlot(new File(docsDir, "waveshaper-quantizer.png"),
+            "Quantizer (0 dB)", "Time (ms)", "Amplitude",
+            0, timeMs[timeMs.length - 1], -1.0, 1.0,
+            timeMs, curves, labels,
+            new String[]{COLORS[0], COLORS[1]});
+    }
+
+    /** Write a stacked 2-panel waveform plot: input on top, output on bottom. */
+    private void writeStackedWaveformPlot(File file, String title,
+            double[] timeMs, double[] inputData, double[] outputData,
+            String inputLabel, String outputLabel) throws IOException {
+
+        int PLOT_W = 360, PLOT_H = 160;
+        int PAD_L = 50, PAD_R = 20, PAD_T = 35, PAD_B = 15;
+        int GAP = 55;
+        int LEGEND_H = 40;
+        int totalW = PAD_L + PLOT_W + PAD_R;
+        int totalH = PAD_T + PLOT_H + GAP + PLOT_H + PAD_B + LEGEND_H;
+        double xMin = timeMs[0], xMax = timeMs[timeMs.length - 1];
+
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
+
+        int py1 = PAD_T;
+        drawPlot(g, PAD_L, py1, PLOT_W, PLOT_H, inputLabel,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, inputData, PAD_L, py1, PLOT_W, PLOT_H,
+            xMin, xMax, -1.0, 1.0, COLORS[0]);
+
+        int py2 = PAD_T + PLOT_H + GAP;
+        drawPlot(g, PAD_L, py2, PLOT_W, PLOT_H, outputLabel,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, outputData, PAD_L, py2, PLOT_W, PLOT_H,
+            xMin, xMax, -1.0, 1.0, COLORS[1]);
+
+        // Overall title
+        g.setFont(new Font("Arial", Font.BOLD, 11));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(title, PAD_L + PLOT_W / 2 - fm.stringWidth(title) / 2, 14);
+
+        drawLegend(g, PAD_L, py2 + PLOT_H + 52,
+            new String[]{inputLabel, outputLabel},
+            new String[]{COLORS[0], COLORS[1]});
+
+        g.dispose();
+        ImageIO.write(img, "png", file);
     }
 }

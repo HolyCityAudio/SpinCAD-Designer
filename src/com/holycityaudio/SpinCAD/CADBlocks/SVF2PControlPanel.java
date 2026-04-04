@@ -62,7 +62,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 800, 25000, 10000);
 		freqSlider.addChangeListener(this);
 
-		qSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 100, 1);
+		qSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 10, 1);
 		qSlider.addChangeListener(this);
 
 		freqField = new JTextField();
@@ -93,7 +93,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double val = Double.parseDouble(qField.getText().replaceAll("[^0-9.\\-]", ""));
-					val = Math.max(1.0, Math.min(100.0, val));
+					val = Math.max(1.0, Math.min(10.0, val));
 					cadBlock.setQ(val);
 					qSlider.setValue((int) Math.round(val));
 					updateQField();

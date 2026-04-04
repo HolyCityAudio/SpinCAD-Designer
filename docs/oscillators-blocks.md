@@ -146,4 +146,3 @@ initialized elsewhere in the patch (by a Sin/Cos LFO block, a Ramp LFO
 block, or any effect block that configures an LFO). If the Output pin
 is not connected, no instructions are generated.
 
-![LFO Value](images/oscillator-lfo-value.png)

@@ -3,6 +3,7 @@ package com.holycityaudio.SpinCAD;
 import static com.holycityaudio.SpinCAD.PlotUtils.*;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
@@ -35,8 +36,8 @@ public class FilterDocTest {
     private static final int SKIP_SAMPLES = (int)(0.2 * SAMPLE_RATE);
 
     // Default display range: 20 Hz to 15 kHz
-    private static final double DISPLAY_F_MIN = 20;
-    private static final double DISPLAY_F_MAX = 12000;
+    private static final double DISPLAY_F_MIN = 10;
+    private static final double DISPLAY_F_MAX = 5000;
 
     @BeforeAll
     static void setup() {
@@ -115,7 +116,7 @@ public class FilterDocTest {
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-hpf1p.png"),
             "HPF 1-Pole", freqAxis, curves, labels, -40, 6,
-            DISPLAY_F_MIN, 1000, new double[]{0});
+            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-hpf1p.png");
     }
 
@@ -192,7 +193,10 @@ public class FilterDocTest {
     }
 
     // === SVF 2-Pole varying Q at 1 kHz ===
+    // Low amplitude chirp prevents FV-1 internal clipping at high Q
+    // (bandpass peak ≈ Q × input_amplitude, must stay < 1.0)
     private void plotSVF2P_Q(File docsDir, File chirpWav) throws Exception {
+        File lowChirp = generateChirpWav(SIM_DURATION, CHIRP_F0, CHIRP_F1, 0.05);
         double[] qVals = {0.5, 1.0, 5.0, 10.0};
         String[] labels = {"Q=0.5", "Q=1", "Q=5", "Q=10"};
         double[][] curves = new double[4][];
@@ -202,9 +206,9 @@ public class FilterDocTest {
             SVF2PCADBlock block = new SVF2PCADBlock(100, 100);
             block.setFreq(1000);
             block.setQ(qVals[i]);
-            short[] stereo = simulate(block, chirpWav, null, "Lowpass Out", null, tempDir);
+            short[] stereo = simulate(block, lowChirp, null, "Lowpass Out", null, tempDir);
             if (stereo == null) { System.err.println("  SKIP SVF 2P Q at " + labels[i]); continue; }
-            double[] resp = computeFrequencyResponse(chirpWav, stereo);
+            double[] resp = computeFrequencyResponse(lowChirp, stereo);
             if (freqAxis == null) freqAxis = computeFreqAxis(resp.length);
             curves[i] = resp;
         }
@@ -292,9 +296,9 @@ public class FilterDocTest {
     }
 
     // === SVF 2-Pole Adjustable varying Q at 1 kHz ===
+    // Low amplitude chirp prevents FV-1 internal clipping at high Q
     private void plotSVF2PAdj_Q(File docsDir, File chirpWav) throws Exception {
-        // Map freq coefficient to approximate Hz: f_Hz ≈ freq * SAMPLE_RATE / (2*pi)
-        // For 1 kHz: freq ≈ 1000 * 2*pi / SAMPLE_RATE ≈ 0.192
+        File lowChirp = generateChirpWav(SIM_DURATION, CHIRP_F0, CHIRP_F1, 0.05);
         double freqCoeff = 0.19;
         double[] qMaxVals = {1.5, 3, 8, 15};
         String[] labels = {"Q=1.5", "Q=3", "Q=8", "Q=15"};
@@ -306,9 +310,9 @@ public class FilterDocTest {
             block.setfreq(freqCoeff);
             block.setqMax(qMaxVals[i]);
             block.setqMin(qMaxVals[i]);
-            short[] stereo = simulate(block, chirpWav, null, "Low Pass Output", null, tempDir);
+            short[] stereo = simulate(block, lowChirp, null, "Low Pass Output", null, tempDir);
             if (stereo == null) { System.err.println("  SKIP SVF 2P Adj Q at " + labels[i]); continue; }
-            double[] resp = computeFrequencyResponse(chirpWav, stereo);
+            double[] resp = computeFrequencyResponse(lowChirp, stereo);
             if (freqAxis == null) freqAxis = computeFreqAxis(resp.length);
             curves[i] = resp;
         }
@@ -390,22 +394,22 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-notch.png"),
-            "Notch Filter", freqAxis, curves, labels, -40, 6,
+            "Notch Filter", freqAxis, curves, labels, -12, 6,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-notch.png");
     }
 
-    // === Shelving Lowpass ===
+    // === Shelving Lowpass (corner ~200 Hz, display to 500 Hz) ===
     private void plotShelvingLP(File docsDir, File chirpWav) throws Exception {
-        double[] shelves = {0.2, 0.5, 0.8};
-        String[] labels = {"Shelf 0.2", "Shelf 0.5", "Shelf 0.8"};
+        double[] shelvesDb = {-12, -6, 6};
+        String[] labels = {"-12 dB", "-6 dB", "+6 dB"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 
-        for (int i = 0; i < shelves.length; i++) {
+        for (int i = 0; i < shelvesDb.length; i++) {
             Shelving_lowpassCADBlock block = new Shelving_lowpassCADBlock(100, 100);
-            block.setfreq(0.15);
-            block.setshelf(shelves[i]);
+            block.setfreq(0.038);  // ~200 Hz corner
+            block.setshelf(shelvesDb[i]);
             short[] stereo = simulate(block, chirpWav, null, "Output", null, tempDir);
             if (stereo == null) { System.err.println("  SKIP Shelving LP at " + labels[i]); continue; }
             double[] resp = computeFrequencyResponse(chirpWav, stereo);
@@ -414,22 +418,22 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-shelvinglp.png"),
-            "Shelving Lowpass", freqAxis, curves, labels, -40, 6,
+            "Shelving Lowpass (~200 Hz)", freqAxis, curves, labels, -20, 10,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-shelvinglp.png");
     }
 
-    // === Shelving Highpass ===
+    // === Shelving Highpass (corner ~200 Hz, display to 500 Hz) ===
     private void plotShelvingHP(File docsDir, File chirpWav) throws Exception {
-        double[] shelves = {0.2, 0.5, 0.8};
-        String[] labels = {"Shelf 0.2", "Shelf 0.5", "Shelf 0.8"};
+        double[] shelvesDb = {-12, -6, 6};
+        String[] labels = {"-12 dB", "-6 dB", "+6 dB"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 
-        for (int i = 0; i < shelves.length; i++) {
+        for (int i = 0; i < shelvesDb.length; i++) {
             Shelving_HipassCADBlock block = new Shelving_HipassCADBlock(100, 100);
-            block.setfreq(0.15);
-            block.setshelf(shelves[i]);
+            block.setfreq(0.038);  // ~200 Hz corner
+            block.setshelf(shelvesDb[i]);
             short[] stereo = simulate(block, chirpWav, null, "Output", null, tempDir);
             if (stereo == null) { System.err.println("  SKIP Shelving HP at " + labels[i]); continue; }
             double[] resp = computeFrequencyResponse(chirpWav, stereo);
@@ -438,7 +442,7 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-shelvinghp.png"),
-            "Shelving Highpass", freqAxis, curves, labels, -40, 6,
+            "Shelving Highpass (~200 Hz)", freqAxis, curves, labels, -20, 10,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-shelvinghp.png");
     }
@@ -463,7 +467,7 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-1bandeq.png"),
-            "1-Band EQ (800 Hz)", freqAxis, curves, labels, -20, 20,
+            "1-Band EQ (800 Hz)", freqAxis, curves, labels, -12, 12,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-1bandeq.png");
     }
@@ -510,34 +514,27 @@ public class FilterDocTest {
             curves[2] = computeFrequencyResponse(chirpWav, stereo);
         }
         writeFilterPlot(new File(docsDir, "filter-6bandeq.png"),
-            "6-Band EQ", freqAxis, curves, labels, -20, 20,
+            "6-Band EQ", freqAxis, curves, labels, -12, 12,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-6bandeq.png");
     }
 
-    // === Comb Filter ===
+    // === Comb Filter (Long only) ===
     private void plotComb(File docsDir, File chirpWav) throws Exception {
-        double[] delays = {500, 1116, 2000};
-        String[] labels = {"Short", "Medium", "Long"};
-        double[][] curves = new double[3][];
-        double[] freqAxis = null;
+        CombFilterCADBlock block = new CombFilterCADBlock(100, 100);
+        block.setgain(0.5);
+        block.setdelayLength(2000);
+        block.setfeedback(0.7);
+        block.setdamping(0.5);
+        short[] stereo = simulate(block, chirpWav, null, "Output", null, tempDir);
+        if (stereo == null) { System.err.println("  SKIP Comb Long"); return; }
+        double[] resp = computeFrequencyResponse(chirpWav, stereo);
+        double[] freqAxis = computeFreqAxis(resp.length);
 
-        for (int i = 0; i < delays.length; i++) {
-            CombFilterCADBlock block = new CombFilterCADBlock(100, 100);
-            block.setgain(0.5);
-            block.setdelayLength(delays[i]);
-            block.setfeedback(0.7);
-            block.setdamping(0.5);
-            short[] stereo = simulate(block, chirpWav, null, "Output", null, tempDir);
-            if (stereo == null) { System.err.println("  SKIP Comb at " + labels[i]); continue; }
-            double[] resp = computeFrequencyResponse(chirpWav, stereo);
-            if (freqAxis == null) freqAxis = computeFreqAxis(resp.length);
-            curves[i] = resp;
-        }
-        if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-comb.png"),
-            "Comb Filter", freqAxis, curves, labels, -40, 20,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
+            "Comb Filter (Long)", freqAxis, new double[][]{resp}, new String[]{"Long"}, -40, 20,
+            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0},
+            new String[]{COLORS[0]});
         System.out.println("  wrote filter-comb.png");
     }
 
@@ -603,40 +600,119 @@ public class FilterDocTest {
         BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = createGraphics(img, totalW, totalH);
         int px = PAD_L, py = PAD_T;
-        drawPlot(g, px, py, PLOT_W, PLOT_H, title, "Frequency (Hz)", "Gain (dB)",
-            trimmedFreq[0], trimmedFreq[trimmedFreq.length - 1], yMin, yMax);
 
-        // Draw reference lines
-        if (refLines != null) {
-            Stroke old = g.getStroke();
-            g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
-                10, new float[]{6, 4}, 0));
-            for (double ref : refLines) {
-                if (ref >= yMin && ref <= yMax) {
-                    double frac = (ref - yMin) / (yMax - yMin);
-                    int gy = py + (int)((1.0 - frac) * PLOT_H);
-                    if (ref == 0) {
-                        g.setColor(new Color(0x44, 0x44, 0x44));
-                    } else {
-                        g.setColor(new Color(0xaa, 0xaa, 0xaa));
-                    }
-                    g.drawLine(px + 1, gy, px + PLOT_W - 1, gy);
-                    // Label the reference line
-                    g.setFont(new Font("Arial", Font.PLAIN, 8));
-                    String refLabel = (ref == 0) ? "0 dB" : String.format("%+.0f dB", ref);
-                    g.drawString(refLabel, px + PLOT_W - g.getFontMetrics().stringWidth(refLabel) - 2, gy - 2);
-                }
+        double logMin = Math.log10(fMin);
+        double logMax = Math.log10(fMax);
+        double logRange = logMax - logMin;
+        double yRange = yMax - yMin;
+
+        // Background and border
+        g.setColor(new Color(0xf8, 0xf8, 0xf8));
+        g.fillRect(px, py, PLOT_W, PLOT_H);
+        g.setColor(new Color(0xcc, 0xcc, 0xcc));
+        g.drawRect(px, py, PLOT_W, PLOT_H);
+
+        // Title
+        g.setFont(new Font("Arial", Font.BOLD, 13));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(title, px + PLOT_W / 2 - fm.stringWidth(title) / 2, py - 10);
+
+        // Log-scale x-axis grid and ticks
+        g.setFont(new Font("Arial", Font.PLAIN, 9));
+        double[] majorTicks = {10, 100, 1000, 5000};
+        for (double tick : majorTicks) {
+            if (tick < fMin || tick > fMax) continue;
+            double fx = (Math.log10(tick) - logMin) / logRange;
+            int gx = px + (int)(fx * PLOT_W);
+            g.setColor(new Color(0xdd, 0xdd, 0xdd));
+            g.drawLine(gx, py, gx, py + PLOT_H);
+            g.setColor(new Color(0x66, 0x66, 0x66));
+            String label;
+            if (tick >= 1000) label = String.format("%.0fk", tick / 1000);
+            else label = String.format("%.0f", tick);
+            fm = g.getFontMetrics();
+            g.drawString(label, gx - fm.stringWidth(label) / 2, py + PLOT_H + 13);
+        }
+        // Minor grid lines at 20,30,...,90, 200,300,...,900, 2000,3000,4000
+        g.setColor(new Color(0xee, 0xee, 0xee));
+        for (int decade = (int)Math.floor(logMin); decade <= (int)Math.floor(logMax); decade++) {
+            for (int m = 2; m <= 9; m++) {
+                double freq = m * Math.pow(10, decade);
+                if (freq <= fMin || freq >= fMax) continue;
+                double fx = (Math.log10(freq) - logMin) / logRange;
+                int gx = px + (int)(fx * PLOT_W);
+                g.drawLine(gx, py, gx, py + PLOT_H);
             }
-            g.setStroke(old);
         }
 
+        // Y-axis grid at fixed dB intervals: 3 dB for ranges <= 24 dB, 6 dB otherwise
+        int dbStep = (yRange <= 24) ? 3 : 6;
+        // Start from the first multiple of dbStep >= yMin
+        int firstDb = (int)(Math.ceil(yMin / dbStep) * dbStep);
+        g.setFont(new Font("Arial", Font.PLAIN, 9));
+        Stroke normalStroke = g.getStroke();
+        Stroke dashedStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
+            BasicStroke.JOIN_MITER, 10, new float[]{6, 4}, 0);
+        for (int db = firstDb; db <= (int) yMax; db += dbStep) {
+            double frac = (db - yMin) / yRange;
+            int gy = py + (int)((1.0 - frac) * PLOT_H);
+            if (db == 0) {
+                // 0 dB reference: darker dashed line
+                g.setStroke(dashedStroke);
+                g.setColor(new Color(0x44, 0x44, 0x44));
+                g.drawLine(px + 1, gy, px + PLOT_W - 1, gy);
+                g.setStroke(normalStroke);
+            } else {
+                g.setColor(new Color(0xdd, 0xdd, 0xdd));
+                g.drawLine(px, gy, px + PLOT_W, gy);
+            }
+            // Tick label
+            g.setColor(new Color(0x66, 0x66, 0x66));
+            String label = String.valueOf(db);
+            fm = g.getFontMetrics();
+            g.drawString(label, px - 4 - fm.stringWidth(label), gy + 3);
+        }
+
+        // Draw curves with log x mapping
         for (int ci = 0; ci < trimmedCurves.length; ci++) {
-            if (trimmedCurves[ci] != null) {
-                drawCurve(g, trimmedFreq, trimmedCurves[ci], px, py, PLOT_W, PLOT_H,
-                    trimmedFreq[0], trimmedFreq[trimmedFreq.length - 1], yMin, yMax,
-                    colors[ci % colors.length]);
+            if (trimmedCurves[ci] == null) continue;
+            int[] xPoints = new int[displayLen];
+            int[] yPoints = new int[displayLen];
+            int count = 0;
+            for (int i = 0; i < displayLen; i++) {
+                if (trimmedFreq[i] <= 0 || Double.isNaN(trimmedCurves[ci][i])) continue;
+                double fx = (Math.log10(trimmedFreq[i]) - logMin) / logRange;
+                double fy = (trimmedCurves[ci][i] - yMin) / yRange;
+                fy = Math.max(0, Math.min(1, fy));
+                xPoints[count] = px + (int)(fx * PLOT_W);
+                yPoints[count] = py + (int)((1.0 - fy) * PLOT_H);
+                count++;
+            }
+            if (count > 1) {
+                g.setColor(parseColor(colors[ci % colors.length]));
+                g.setStroke(new BasicStroke(2.0f));
+                g.drawPolyline(Arrays.copyOf(xPoints, count), Arrays.copyOf(yPoints, count), count);
             }
         }
+
+        // Axis labels
+        g.setFont(new Font("Arial", Font.PLAIN, 10));
+        g.setColor(new Color(0x33, 0x33, 0x33));
+        fm = g.getFontMetrics();
+        String xLabel = "Frequency (Hz)";
+        g.drawString(xLabel, px + PLOT_W / 2 - fm.stringWidth(xLabel) / 2, py + PLOT_H + 30);
+        AffineTransform origT = g.getTransform();
+        String yLabel = "Gain (dB)";
+        g.rotate(-Math.PI / 2, px - 35, py + PLOT_H / 2);
+        fm = g.getFontMetrics();
+        g.drawString(yLabel, px - 35 - fm.stringWidth(yLabel) / 2, py + PLOT_H / 2 + 4);
+        g.setTransform(origT);
+
+        // Border
+        g.setColor(new Color(0x99, 0x99, 0x99));
+        g.drawRect(px, py, PLOT_W, PLOT_H);
+
         drawLegend(g, px, py + PLOT_H + 52, labels, colors);
         g.dispose();
         ImageIO.write(img, "png", file);

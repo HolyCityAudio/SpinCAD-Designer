@@ -15,9 +15,8 @@ import com.holycityaudio.SpinCAD.CADBlocks.*;
  * Generates documentation plots for Dynamics menu blocks.
  * <p>
  * Compressors: input-vs-output dB transfer curves varying ratio/strength
- * and threshold. Limiters: input-vs-output dB transfer curves across
- * 0 to -80 dB range. Noise gate: envelope-in-dB showing gating at two
- * threshold settings.
+ * and threshold. Limiters and noise gate: input-vs-output dB transfer
+ * curves across 0 to -80 dB range.
  */
 public class DynamicsDocTest {
 
@@ -55,68 +54,44 @@ public class DynamicsDocTest {
         return rmsDb(audio, start, audio.length);
     }
 
-    /** Compute windowed RMS envelope in dB. */
-    private static double[] envelopeDb(double[] audio, int windowSize) {
-        int n = audio.length / windowSize;
-        double[] env = new double[n];
-        for (int i = 0; i < n; i++) {
-            double sumSq = 0;
-            for (int j = 0; j < windowSize; j++) {
-                double s = audio[i * windowSize + j];
-                sumSq += s * s;
-            }
-            double r = Math.sqrt(sumSq / windowSize);
-            env[i] = r > 0 ? 20 * Math.log10(r) : -100;
-        }
-        return env;
-    }
-
     // ==================== Noise Gate ====================
 
     @Test
     void generateNoiseGatePlot() throws Exception {
         File docsDir = new File("docs/images");
         docsDir.mkdirs();
+        double[] inputDb = sweepLevels(-80, 0, 10);
 
-        // Two thresholds: -40 dB and -80 dB (converted to linear for the block)
         double[] threshDb = {-40, -80};
-        double duration = 0.5;
-        // Decay rate 20: reaches -80 dB at ~0.46s
-        File inputWav = generateDecayingSineWav(duration, 440, 1.0, 20.0);
-
-        short[] inputSamples = readWavSamples(inputWav);
-        double[] inputAudio = toDouble(extractChannel(inputSamples, 0));
-
-        int windowSize = 256;
-        int numWindows = inputAudio.length / windowSize;
-        double[] timeMs = new double[numWindows];
-        for (int i = 0; i < numWindows; i++)
-            timeMs[i] = 1000.0 * (i * windowSize + windowSize / 2) / SAMPLE_RATE;
-
-        double[][] curves = new double[1 + threshDb.length][];
-        String[] labels = new String[1 + threshDb.length];
-        curves[0] = envelopeDb(inputAudio, windowSize);
-        labels[0] = "input";
+        String[] labels = new String[threshDb.length];
+        double[][] curves = new double[threshDb.length][];
 
         for (int ti = 0; ti < threshDb.length; ti++) {
             double threshLin = Math.pow(10, threshDb[ti] / 20.0);
-            NoiseGateCADBlock block = new NoiseGateCADBlock(100, 100);
-            block.setthresh(threshLin);
-            short[] stereo = simulate(block, inputWav, null,
-                "Audio Out", null, tempDir);
-            if (stereo == null) {
-                System.err.println("  SKIP NoiseGate at " + threshDb[ti]);
-                return;
+            curves[ti] = new double[inputDb.length];
+            labels[ti] = String.format("thresh=%.0f dB", threshDb[ti]);
+            for (int li = 0; li < inputDb.length; li++) {
+                NoiseGateCADBlock b = new NoiseGateCADBlock(100, 100);
+                b.setthresh(threshLin);
+                curves[ti][li] = measureDb(b, "Audio Out", inputDb[li]);
             }
-            double[] audio = toDouble(extractChannel(stereo, 0));
-            curves[ti + 1] = envelopeDb(audio, windowSize);
-            labels[ti + 1] = String.format("thresh=%.0f dB", threshDb[ti]);
+        }
+
+        // Print table
+        System.out.println("\nNoise Gate transfer:");
+        System.out.printf("  Input dB");
+        for (String l : labels) System.out.printf("  %14s", l);
+        System.out.println();
+        for (int i = 0; i < inputDb.length; i++) {
+            System.out.printf("  %6.0f  ", inputDb[i]);
+            for (int ti = 0; ti < threshDb.length; ti++)
+                System.out.printf("  %14.1f", curves[ti][i]);
+            System.out.println();
         }
 
         writePlot(new File(docsDir, "dynamics-noisegate.png"),
-            "Noise Gate", "Time (ms)", "Level (dB)",
-            0, timeMs[timeMs.length - 1], -100, 0,
-            timeMs, curves, labels,
+            "Noise Gate", "Input (dB)", "Output (dB)",
+            -80, 0, -80, 0, inputDb, curves, labels,
             Arrays.copyOf(COLORS, curves.length));
         System.out.println("  wrote dynamics-noisegate.png");
     }
@@ -359,33 +334,4 @@ public class DynamicsDocTest {
         System.out.println("  wrote dynamics-soft_knee_limiter.png");
     }
 
-    // ==================== Helper: decaying sine WAV ====================
-
-    private static File generateDecayingSineWav(double durationSeconds, double freqHz,
-            double amplitude, double decayRate) throws IOException {
-        int numFrames = (int) (SAMPLE_RATE * durationSeconds);
-        byte[] data = new byte[numFrames * 4];
-        for (int i = 0; i < numFrames; i++) {
-            double t = (double) i / SAMPLE_RATE;
-            double envelope = amplitude * Math.exp(-decayRate * t);
-            short sample = (short) (envelope * Short.MAX_VALUE *
-                Math.sin(2 * Math.PI * freqHz * i / SAMPLE_RATE));
-            int offset = i * 4;
-            data[offset] = (byte) (sample & 0xff);
-            data[offset + 1] = (byte) ((sample >> 8) & 0xff);
-            data[offset + 2] = (byte) (sample & 0xff);
-            data[offset + 3] = (byte) ((sample >> 8) & 0xff);
-        }
-        File wavFile = File.createTempFile("spincad_decay_", ".wav");
-        wavFile.deleteOnExit();
-        javax.sound.sampled.AudioFormat format =
-            new javax.sound.sampled.AudioFormat(SAMPLE_RATE, 16, 2, true, false);
-        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(data);
-        javax.sound.sampled.AudioInputStream ais =
-            new javax.sound.sampled.AudioInputStream(bais, format, numFrames);
-        javax.sound.sampled.AudioSystem.write(ais,
-            javax.sound.sampled.AudioFileFormat.Type.WAVE, wavFile);
-        ais.close();
-        return wavFile;
-    }
 }

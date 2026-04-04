@@ -65,7 +65,12 @@ highpass outputs. The frequency and Q (resonance) are adjustable.
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
 | Frequency | Hz | 740 | Center/cutoff frequency |
-| Q | 0.5-20 | 1.0 | Resonance (higher = sharper peak) |
+| Q | 1-10 | 1.0 | Resonance (higher = sharper peak) |
+
+> **Q and internal clipping:** The SVF bandpass signal peaks at approximately
+> Q x input level at the resonant frequency. Because the FV-1 clips all
+> internal signals at +/-1.0, high Q values cause saturation of the internal
+> state and nonlinear behavior. Q values above 10 are not recommended.
 
 ![SVF 2-Pole lowpass response at three frequency settings](images/filter-svf2p.png)
 
@@ -98,8 +103,12 @@ Q can be modulated via control inputs.
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
 | Frequency | 0.0-1.0 | 0.15 | Filter coefficient |
-| Q Max | 1-100 | 50 | Maximum Q value |
-| Q Min | 0.5-10 | 1 | Minimum Q value |
+| Q Max | 1-10 | 10 | Maximum Q value |
+| Q Min | 1-10 | 1 | Minimum Q value |
+
+> **Q and internal clipping:** See note under SVF 2-Pole above. The same
+> limitation applies — Q values above 10 cause internal saturation on the
+> FV-1.
 
 ![SVF 2-Pole Adjustable lowpass response at three frequency settings](images/filter-svf2padj.png)
 

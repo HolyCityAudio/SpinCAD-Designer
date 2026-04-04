@@ -118,7 +118,7 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					qMaxSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (200.0 * 1000.0), (int) (gCB.getqMax() * 1000.0));
+					qMaxSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (10.0 * 1000.0), (int) (gCB.getqMax() * 1000.0));
 						qMaxSlider.addChangeListener(new SVF_2P_adjustableListener());
 						qMaxField = new JTextField();
 						qMaxField.setHorizontalAlignment(JTextField.CENTER);
@@ -155,7 +155,7 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					qMinSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (50.0 * 1000.0), (int) (gCB.getqMin() * 1000.0));
+					qMinSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(1.0 * 1000.0),(int) (10.0 * 1000.0), (int) (gCB.getqMin() * 1000.0));
 						qMinSlider.addChangeListener(new SVF_2P_adjustableListener());
 						qMinField = new JTextField();
 						qMinField.setHorizontalAlignment(JTextField.CENTER);

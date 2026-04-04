@@ -58,7 +58,9 @@ feedback loops. Useful as a building block or for subtle ambience.
 | AP4 Length | samples | 1500 | Fourth allpass delay length |
 | AP Coeff | 0-1 | 0.5 | Allpass coefficient |
 
-![Allpass impulse response](images/reverb-allpass.png)
+![Allpass impulse response (Short)](images/reverb-allpass-short.png)
+![Allpass impulse response (Medium)](images/reverb-allpass-medium.png)
+![Allpass impulse response (Long)](images/reverb-allpass-long.png)
 
 ---
 
@@ -110,18 +112,25 @@ different times.
 | Stretch | 1-8 | 4 | Geometric stretch factor for delay lengths |
 | AP Coeff | 0-1 | 0.5 | Allpass coefficient |
 
-![Chirp Reverb impulse response at five AP coefficient settings](images/reverb-chirp.png)
-
-The spectrograms below show how the allpass coefficient controls
-frequency-dependent dispersion. At AP=0 the impulse passes through
+Each AP coefficient setting produces a distinct impulse response and
+frequency dispersion pattern. At AP=0 the impulse passes through
 unchanged. As |AP| increases, different frequency bands spread over
 time — this is the characteristic "chirp" sound.
 
-![Chirp spectrogram AP=0.00](images/reverb-chirp-spec-0.00.png)
-![Chirp spectrogram AP=0.50](images/reverb-chirp-spec-0.50.png)
-![Chirp spectrogram AP=0.75](images/reverb-chirp-spec-0.75.png)
-![Chirp spectrogram AP=-0.50](images/reverb-chirp-spec-neg0.50.png)
+![Chirp AP=-0.75](images/reverb-chirp-neg0.75.png)
 ![Chirp spectrogram AP=-0.75](images/reverb-chirp-spec-neg0.75.png)
+
+![Chirp AP=-0.50](images/reverb-chirp-neg0.50.png)
+![Chirp spectrogram AP=-0.50](images/reverb-chirp-spec-neg0.50.png)
+
+![Chirp AP=0.00](images/reverb-chirp-0.00.png)
+![Chirp spectrogram AP=0.00](images/reverb-chirp-spec-0.00.png)
+
+![Chirp AP=0.50](images/reverb-chirp-0.50.png)
+![Chirp spectrogram AP=0.50](images/reverb-chirp-spec-0.50.png)
+
+![Chirp AP=0.75](images/reverb-chirp-0.75.png)
+![Chirp spectrogram AP=0.75](images/reverb-chirp-spec-0.75.png)
 
 ---
 
@@ -209,7 +218,9 @@ plate-style reverb.
 | Damping | 0-0.95 | 0.5 | HF damping in tank |
 | Bandwidth | 0.1-0.7 | 0.32 | Input bandwidth filter |
 
-![Dattorro Plate Reverb impulse response](images/reverb-dattorro.png)
+![Dattorro Plate Reverb (Short)](images/reverb-dattorro-short.png)
+![Dattorro Plate Reverb (Medium)](images/reverb-dattorro-medium.png)
+![Dattorro Plate Reverb (Long)](images/reverb-dattorro-long.png)
 
 ---
 

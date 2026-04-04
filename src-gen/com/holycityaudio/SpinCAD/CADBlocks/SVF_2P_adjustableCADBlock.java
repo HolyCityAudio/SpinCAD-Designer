@@ -31,7 +31,7 @@
 			private SVF_2P_adjustableControlPanel cp = null;
 			
 			private double freq = 0.15;
-			private double qMax = 50;
+			private double qMax = 10;
 			private double qMin = 1;
 			private int output;
 			private int z1;

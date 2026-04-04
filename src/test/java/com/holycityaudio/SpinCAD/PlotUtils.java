@@ -24,7 +24,7 @@ public class PlotUtils {
     public static final long SIM_TIMEOUT = 30000;
 
     public static final String[] COLORS = {
-        "#2266cc", "#cc4422", "#22aa44", "#aa44cc", "#cc8800", "#8844cc", "#cc2288"
+        "#2266cc", "#22aa44", "#cc4422", "#aa44cc", "#cc8800", "#8844cc", "#cc2288"
     };
 
     private static final int PLOT_W = 360, PLOT_H = 280;
@@ -60,6 +60,24 @@ public class PlotUtils {
             drawCurve(g, xData, curves[ci], px, py, PLOT_W, PLOT_H, xMin, xMax, yMin, yMax, colors[ci]);
         }
         drawLegend(g, px, py + PLOT_H + 52, labels, colors);
+        g.dispose();
+        ImageIO.write(img, "png", file);
+    }
+
+    /** Write a single-plot PNG with overlaid curves and 2x2 grid legend. */
+    public static void writePlot2x2(File file, String title, String xLabel, String yLabel,
+            double xMin, double xMax, double yMin, double yMax,
+            double[] xData, double[][] curves, String[] labels, String[] colors) throws IOException {
+        int totalW = PAD_L + PLOT_W + PAD_R;
+        int totalH = PAD_T + PLOT_H + PAD_B;
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
+        int px = PAD_L, py = PAD_T;
+        drawPlot(g, px, py, PLOT_W, PLOT_H, title, xLabel, yLabel, xMin, xMax, yMin, yMax);
+        for (int ci = 0; ci < curves.length; ci++) {
+            drawCurve(g, xData, curves[ci], px, py, PLOT_W, PLOT_H, xMin, xMax, yMin, yMax, colors[ci]);
+        }
+        drawLegend2x2(g, px, py + PLOT_H + 42, labels, colors);
         g.dispose();
         ImageIO.write(img, "png", file);
     }
@@ -175,6 +193,23 @@ public class PlotUtils {
             g.drawString(labels[i], lx + 18, y);
             FontMetrics fm = g.getFontMetrics();
             offset += 18 + fm.stringWidth(labels[i]) + 8;
+        }
+    }
+
+    /** Draw legend in 2x2 grid layout (2 columns, 2 rows). */
+    public static void drawLegend2x2(Graphics2D g, int x, int y, String[] labels, String[] colors) {
+        g.setFont(new Font("Arial", Font.PLAIN, 9));
+        FontMetrics fm = g.getFontMetrics();
+        int colWidth = 180;
+        for (int i = 0; i < labels.length; i++) {
+            int row = i / 2;
+            int col = i % 2;
+            int lx = x + col * colWidth;
+            int ly = y + row * 14;
+            g.setColor(parseColor(colors[i]));
+            g.setStroke(new BasicStroke(2.5f));
+            g.drawLine(lx, ly - 3, lx + 15, ly - 3);
+            g.drawString(labels[i], lx + 18, ly);
         }
     }
 

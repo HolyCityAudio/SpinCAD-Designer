@@ -7,6 +7,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.crossfadeCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.crossfade_2CADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.crossfade_3CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.CrossfadeAdjCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.GainBoostCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock;
@@ -191,6 +192,15 @@
 		}
 	});
 	mn_io_mix.add(mntm_crossfade_3);
+		
+	final JMenuItem mntm_CrossfadeAdj = new JMenuItem("Crossfade Adj");
+	mntm_CrossfadeAdj.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new CrossfadeAdjCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_io_mix.add(mntm_CrossfadeAdj);
 		
 	final JMenuItem mntm_GainBoost = new JMenuItem("Gain Boost");
 	mntm_GainBoost.addActionListener(new ActionListener() {

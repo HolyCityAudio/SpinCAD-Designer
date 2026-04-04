@@ -12,13 +12,13 @@ equ freq 0.15
 // variable - Name - low - high - multiplier - precision - option 
 @sliderLabel freq 'Frequency (Hz)' 20 5000 100.0 100.0 1 LOGFREQ2 
 
-equ qMax 50
-// variable - Name - low - high - multiplier - precision - option 
-@sliderLabel qMax 'Max Resonance' 1.0 200.0 100.0 1000.0 1 
+equ qMax 10
+// variable - Name - low - high - multiplier - precision - option
+@sliderLabel qMax 'Max Resonance' 1.0 10.0 100.0 1000.0 1
 
 equ qMin 1
-// variable - Name - low - high - multiplier - precision - option 
-@sliderLabel qMin 'Min Resonance' 1.0 50.0 100.0 1000.0 1 
+// variable - Name - low - high - multiplier - precision - option
+@sliderLabel qMin 'Min Resonance' 1.0 10.0 100.0 1000.0 1
 
 equ output Reg0
 equ z1 Reg1
