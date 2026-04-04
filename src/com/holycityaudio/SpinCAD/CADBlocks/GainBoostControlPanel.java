@@ -35,7 +35,7 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 public class GainBoostControlPanel implements ChangeListener {
 
-	private FineControlSlider gainSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 8, 1);
+	private FineControlSlider gainSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 48, 1);
 	private JTextField gainField = new JTextField();
 	private JFrame frame;
 
@@ -52,12 +52,10 @@ public class GainBoostControlPanel implements ChangeListener {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					String text = gainField.getText().replaceAll("[^\\d.\\-]", "");
-					double dbVal = Double.parseDouble(text);
-					// display shows pC.getGain() * 6 dB, so gain = dbVal / 6
-					int sliderVal = (int) Math.round(dbVal / 6.0);
-					sliderVal = Math.max(gainSlider.getMinimum(), Math.min(gainSlider.getMaximum(), sliderVal));
-					pC.setGain(sliderVal);
-					gainSlider.setValue(sliderVal);
+					int dbVal = (int) Math.round(Double.parseDouble(text));
+					dbVal = Math.max(gainSlider.getMinimum(), Math.min(gainSlider.getMaximum(), dbVal));
+					pC.setGain(dbVal);
+					gainSlider.setValue(dbVal);
 					updateGainField();
 				} catch (NumberFormatException ex) {
 					updateGainField();
@@ -97,6 +95,6 @@ public class GainBoostControlPanel implements ChangeListener {
 	}
 
 	public void updateGainField() {
-		gainField.setText(String.format("Gain: %2d dB", pC.getGain() * 6));
+		gainField.setText(String.format("Gain: %2d dB", pC.getGain()));
 	}
 }

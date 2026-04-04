@@ -27,10 +27,10 @@ import com.holycityaudio.SpinCAD.SpinFXBlock;
 public class GainBoostCADBlock extends ControlCADBlock{
 
 	/**
-	 * 
+	 *
 	 */
-	// gain is increments of 6 dB, or # of SOF -2.0, 0
-	int gain = 1;
+	// gain in dB (1 dB increments)
+	int gain = 6;
 	
 	private static final long serialVersionUID = -125887536230107216L;
 
@@ -50,15 +50,29 @@ public class GainBoostCADBlock extends ControlCADBlock{
 
 		if(p != null) {
 			input = p.getRegister();
-			int AVG = sfxb.allocateReg();			//
+			int AVG = sfxb.allocateReg();
 
 			sfxb.readRegister(input, 1);
-			for(int i = 0; i < gain; i++) {
-				sfxb.scaleOffset(-2.0,  0.0);
+
+			int full6db = gain / 6;
+			int remainderDb = gain % 6;
+
+			// Each SOF -2.0 doubles the signal (6 dB)
+			for(int i = 0; i < full6db; i++) {
+				sfxb.scaleOffset(-2.0, 0.0);
 			}
-			if((gain & 1) == 1) {
-				sfxb.scaleOffset(-1.0,  0.0);				
+			// Fix sign and apply remainder in one step if possible
+			if(remainderDb > 0) {
+				double linearGain = Math.pow(10.0, remainderDb / 20.0);
+				if((full6db & 1) == 1) {
+					sfxb.scaleOffset(-linearGain, 0.0);
+				} else {
+					sfxb.scaleOffset(linearGain, 0.0);
+				}
+			} else if((full6db & 1) == 1) {
+				sfxb.scaleOffset(-1.0, 0.0);
 			}
+
 			sfxb.writeRegister(AVG, 0);
 			this.getPin("Audio Output").setRegister(AVG);
 		}

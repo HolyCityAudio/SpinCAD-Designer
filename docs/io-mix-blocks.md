@@ -15,8 +15,10 @@ converter). It has no control panel and no adjustable parameters.
 | Output 1 | Audio Out | Left ADC input (ADCL) |
 | Output 2 | Audio Out | Right ADC input (ADCR) |
 
-Every patch needs exactly one Input block. It is placed automatically
-when you create a new patch with Ctrl-N.
+Not all patches require an Input block, but it is the only way to get
+audio into the patch from the ADC. A patch with internal oscillators
+feeding the Output block directly is still valid. The Input block is
+placed automatically when you create a new patch with Ctrl-N.
 
 ---
 
@@ -37,7 +39,7 @@ converter).
 | Gain 1 | dB | 0 dB | Left channel output gain |
 | Gain 2 | dB | 0 dB | Right channel output gain |
 | Mono | on/off | off | Routes both inputs to DACL only |
-| DC Offset | on/off | off | Adds 0.02 DC offset (prevents amp bleed-through) |
+| DC Offset | on/off | off | Adds 0.02 DC offset (compensates for very early FV-1 revisions; probably not needed) |
 
 Every patch needs exactly one Output block.
 
@@ -69,8 +71,9 @@ When the Volume control pin is connected, the output is:
 
 ## Gain Boost
 
-Applies a fixed digital gain in 6 dB increments using cascaded SOF
-instructions. Useful for boosting quiet signals before further processing.
+Applies a fixed digital gain in 1 dB increments. Internally optimized to use
+cascaded `SOF -2.0, 0` instructions for each full 6 dB, with a single SOF
+for the remainder. Useful for boosting quiet signals before further processing.
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -81,9 +84,8 @@ instructions. Useful for boosting quiet signals before further processing.
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain | 6 dB steps | 0 | Number of 6 dB gain stages |
+| Gain | 1-48 dB | 6 dB | Gain boost in 1 dB steps |
 
-Each gain increment adds one `SOF -2.0, 0` instruction (doubles the signal).
 Be careful with high gain values as clipping will occur if the signal
 exceeds the FV-1's -1.0 to +0.999 range.
 
