@@ -34,11 +34,13 @@ When the input level is above the threshold, the gate opens and passes
 audio. When it drops below, the output fades to silence via the envelope
 follower's decay time.
 
-![Noise Gate response at different thresholds](images/dynamics-noisegate.png)
+![Noise Gate response at two thresholds](images/dynamics-noisegate.png)
 
-The plot shows a decaying 440 Hz sine wave processed through the noise gate
-at three threshold settings. Higher thresholds cause the gate to close
-earlier as the signal decays.
+The plot shows the envelope (in dB) of a decaying 440 Hz sine wave processed
+through the noise gate at -40 dB and -80 dB thresholds. The input signal
+decays exponentially from 0 dB. Each gated output diverges from the input
+envelope once the signal drops below its threshold, falling rapidly to
+silence.
 
 ---
 
@@ -74,11 +76,15 @@ Below threshold, the signal passes unaffected (plus any makeup gain).
 The Gain Reduction output can be connected to a VU meter or other
 monitoring block.
 
-![Peak Compressor at different thresholds](images/dynamics-peak_compressor.png)
+![Peak Compressor at different ratios](images/dynamics-peak_compressor.png)
 
-The plot shows a 0 dB, 440 Hz sine wave compressed at ratio 4:1 with three
-different threshold settings. Lower thresholds produce more gain reduction
-and a smaller output amplitude.
+Input-vs-output transfer curve at threshold=-25 dB for three compression
+ratios. Higher ratios produce more gain reduction above the threshold.
+
+![Peak Compressor at different thresholds](images/dynamics-peak_compressor_thresh.png)
+
+Input-vs-output transfer curve at ratio=4:1 for two threshold settings.
+The knee point shifts with the threshold.
 
 ---
 
@@ -114,10 +120,14 @@ gain above threshold. At strength=0, no compression occurs. At strength=1,
 the compressor applies maximum gain reduction (equivalent to hard limiting
 for signals well above threshold).
 
-![RMS Compressor at different thresholds](images/dynamics-rms_compressor.png)
+![RMS Compressor at different strengths](images/dynamics-rms_compressor.png)
 
-The plot shows a 0 dB, 440 Hz sine wave compressed with strength=0.5 at
-three different threshold settings.
+Input-vs-output transfer curve at threshold=-25 dB for three strength
+settings. Higher strength produces more gain reduction above threshold.
+
+![RMS Compressor at different thresholds](images/dynamics-rms_compressor_thresh.png)
+
+Input-vs-output transfer curve at strength=0.75 for two threshold settings.
 
 ---
 
@@ -141,11 +151,11 @@ computing the expansion envelope, providing sensitivity to low-level
 signals. The combination of LOG/EXP for limiting and a second LOG/EXP
 stage for expansion creates a two-slope transfer characteristic.
 
-![RMS Limiter/Expander at different input levels](images/dynamics-rms_lim_exp.png)
+![RMS Limiter/Expander transfer curve](images/dynamics-rms_lim_exp.png)
 
-The plot shows the output waveform for three different input levels. Note
-how the output amplitude range is compressed compared to the input range:
-loud signals are reduced and quiet signals are boosted.
+Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps. Note
+how the output range is compressed compared to the input: loud signals
+are reduced and quiet signals are boosted relative to unity gain.
 
 ---
 
@@ -182,10 +192,15 @@ When the Side Chain input is connected, the limiter's gain reduction is
 driven by the side chain signal rather than the main input. When only the
 Input is connected, the Side Chain defaults to the second ADC channel.
 
-![RMS Limiter at different input levels](images/dynamics-rms_limiter.png)
+![RMS Limiter transfer curve](images/dynamics-rms_limiter.png)
 
-The plot shows the output waveform for three input levels with the side
-chain wired to the same source as the main input.
+Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps.
+
+![RMS Limiter at 0 dB input](images/dynamics-rms_limiter_0db.png)
+
+Waveform at 0 dB input showing distortion. The 1.5x output scale factor
+in the algorithm causes hard clipping when the RMS gain envelope does not
+reduce the signal enough to keep the product below 1.0.
 
 ---
 
@@ -209,11 +224,11 @@ coefficients and an offset, which creates a gradual gain reduction curve.
 A constant offset (`SOF 0, 0.125`) adds a small bias to the RMS detector
 to ensure stable behavior at very low signal levels.
 
-![Soft Knee Limiter at different input levels](images/dynamics-soft_knee_limiter.png)
+![Soft Knee Limiter transfer curve](images/dynamics-soft_knee_limiter.png)
 
-The plot shows the output waveform for three input levels. The soft knee
-behavior is visible as a gradual reduction in output level as the input
-increases, rather than a sharp clamp at a fixed threshold.
+Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps. The soft
+knee behavior is visible as a gradual change in slope rather than a sharp
+break at a fixed threshold.
 
 ---
 
@@ -225,4 +240,4 @@ The per-block PNG plots above are generated by running:
 ./gradlew test --tests "com.holycityaudio.SpinCAD.DynamicsDocTest"
 ```
 
-Individual PNGs are written to the `docs/` directory.
+Individual PNGs are written to the `docs/images/` directory.

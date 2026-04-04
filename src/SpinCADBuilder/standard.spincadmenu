@@ -8,6 +8,7 @@
 @menuitem "Crossfade" crossfade
 @menuitem "Crossfade 2" crossfade_2
 @menuitem "Crossfade 3" crossfade_3
+@menuitem "Crossfade Adj" CrossfadeAdj  // hand-written in src/
 @menuitem "Gain Boost" GainBoost
 @menuitem "Input" Input
 @menuitem "Output" Output
@@ -79,6 +80,7 @@
 @menuitem "Room Reverb" reverb_room
 @menuitem "Small Reverb" MinReverb
 @menuitem "Small Reverb 2" MinReverb2
+@menuitem "Parker Spring" ParkerSpringReverb  // hand-written in src/
 @menuitem "Spring Reverb" SpringReverb
 // @menuitem "Gated Reverb" gated_verb
 // @menuitem "Reverb Delay Line 01" reverb_delay_line_01

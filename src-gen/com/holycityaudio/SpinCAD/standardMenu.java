@@ -61,6 +61,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.reverb_roomCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MinReverb2CADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.ParkerSpringReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SpringReverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ChorusQuadCADBlock;
@@ -691,6 +692,15 @@
 		}
 	});
 	mn_reverb.add(mntm_MinReverb2);
+		
+	final JMenuItem mntm_ParkerSpringReverb = new JMenuItem("Parker Spring");
+	mntm_ParkerSpringReverb.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new ParkerSpringReverbCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_reverb.add(mntm_ParkerSpringReverb);
 		
 	final JMenuItem mntm_SpringReverb = new JMenuItem("Spring Reverb");
 	mntm_SpringReverb.addActionListener(new ActionListener() {

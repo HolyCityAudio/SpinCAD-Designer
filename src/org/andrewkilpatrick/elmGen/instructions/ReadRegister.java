@@ -85,8 +85,18 @@ public class ReadRegister extends Instruction {
 
 	@Override
 	public void simulate(SimulatorState state) {
-		Reg reg = new Reg(state.getRegVal(addr));
-		reg.scale(scale);
-		state.getACC().add(reg.getValue());
+		// On the real FV-1, RDAX computes ACC += C * REG at full intermediate
+		// precision — the product is NOT clamped to 24-bit before the addition.
+		// Only the final result is clamped.  Using Reg.scale() then add() would
+		// clamp the product first, which breaks algorithms like T/X distortion
+		// where -2 * tovrx can momentarily reach -2.0.
+		int regVal = state.getRegVal(addr);
+		int multInt = Util.doubleToScale(scale) >> 8;
+		long product = ((long)regVal * (long)multInt) >> 14;
+		long sum = (long)state.getACCVal() + product;
+		// clamp to 24-bit
+		if (sum > 0x7fffff) sum = 0x7fffff;
+		if (sum < -0x800000) sum = -0x800000;
+		state.setACCVal((int)sum);
 	}
 }

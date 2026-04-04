@@ -281,6 +281,9 @@ public class ReverbDocTest {
             }
         });
 
+        // === Parker Spring Reverb (500 ms IR + spectrogram) ===
+        plotParkerSpring(docsDir);
+
         System.out.println("\nAll reverb PNGs written to docs/");
     }
 
@@ -360,6 +363,38 @@ public class ReverbDocTest {
                 String.format("Chirp Spectrogram (AP=%.2f)", apCoeffs[a]),
                 audioFull[a], specLen, SAMPLE_RATE);
             System.out.println("  wrote reverb-chirp-spec-" + suffix + ".png");
+        }
+    }
+
+    // =========================================================================
+    // Parker Spring: impulse response (500ms) + spectrogram
+    // =========================================================================
+
+    private void plotParkerSpring(File docsDir) throws Exception {
+        // IR at three reverb time settings
+        plotReverb("parker-spring", "Parker Spring Reverb", docsDir, new ReverbPlotter() {
+            public double[] run(int level) throws Exception {
+                ParkerSpringReverbCADBlock b = new ParkerSpringReverbCADBlock(100, 100);
+                double[] rts = {0.4, 0.7, 0.9};
+                b.setReverbTime(rts[level]);
+                return impulseResponse(b, "Output L", "Output R");
+            }
+        }, 500);
+
+        // Spectrogram at default settings — shows chirp dispersion across echoes
+        ParkerSpringReverbCADBlock b = new ParkerSpringReverbCADBlock(100, 100);
+        File impulseWav = generateImpulseWav(SIM_DURATION, IMPULSE_AMP);
+        short[] stereo = simulate(b, impulseWav, null, "Output L", "Output R", tempDir);
+        if (stereo != null) {
+            short[] left = extractChannel(stereo, 0);
+            double[] audio = toDouble(left);
+            int samples500ms = (int)(SAMPLE_RATE * 0.500);
+            int specLen = Math.min(audio.length, samples500ms);
+            writeSpectrogram(
+                new File(docsDir, "reverb-parker-spring-spec.png"),
+                "Parker Spring — Spectrogram (default settings)",
+                audio, specLen, SAMPLE_RATE);
+            System.out.println("  wrote reverb-parker-spring-spec.png");
         }
     }
 
