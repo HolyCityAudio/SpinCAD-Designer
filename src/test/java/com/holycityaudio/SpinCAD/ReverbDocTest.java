@@ -390,7 +390,7 @@ public class ReverbDocTest {
      */
     private void writeSpectrogram(File file, String title,
             double[] audio, int totalSamples, int sampleRate) throws IOException {
-        int fftSize = 64;   // small window for ~2ms time resolution
+        int fftSize = 128;  // doubled from 64 for 2x frequency resolution
         int hopSize = 8;    // ~0.25ms hop for smooth display
         int numFrames = (totalSamples - fftSize) / hopSize;
         if (numFrames < 1) return;
@@ -423,17 +423,21 @@ public class ReverbDocTest {
             }
         }
 
-        // Render spectrogram image
+        // Render spectrogram image — dark background
         int padL = 50, padR = 20, padT = 35, padB = 50;
         int plotW = 360, plotH = 280;
         int totalW = padL + plotW + padR;
         int totalH = padT + plotH + padB;
         BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = createGraphics(img, totalW, totalH);
+        Graphics2D g = img.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.setColor(new Color(0x1a, 0x1a, 0x1a));
+        g.fillRect(0, 0, totalW, totalH);
 
         // Title
         g.setFont(new Font("Arial", Font.BOLD, 13));
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(0xee, 0xee, 0xee));
         FontMetrics fm = g.getFontMetrics();
         g.drawString(title, padL + plotW / 2 - fm.stringWidth(title) / 2, padT - 10);
 
@@ -453,11 +457,11 @@ public class ReverbDocTest {
         }
 
         // Axes
-        g.setColor(new Color(0x99, 0x99, 0x99));
+        g.setColor(new Color(0x66, 0x66, 0x66));
         g.drawRect(padL, padT, plotW, plotH);
 
         g.setFont(new Font("Arial", Font.PLAIN, 9));
-        g.setColor(new Color(0x33, 0x33, 0x33));
+        g.setColor(new Color(0xbb, 0xbb, 0xbb));
 
         // X-axis labels (time in ms)
         double maxTimeMs = 1000.0 * totalSamples / sampleRate;
@@ -484,6 +488,7 @@ public class ReverbDocTest {
 
         // Axis labels
         g.setFont(new Font("Arial", Font.PLAIN, 10));
+        g.setColor(new Color(0xcc, 0xcc, 0xcc));
         fm = g.getFontMetrics();
         String xLabel = "Time (ms)";
         g.drawString(xLabel, padL + plotW / 2 - fm.stringWidth(xLabel) / 2, padT + plotH + 30);

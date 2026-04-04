@@ -64,6 +64,17 @@ not connected, fewer instructions are generated.
 
 ![Ramp LFO](images/oscillator-ramp-lfo.png)
 
+The table below shows measured peak amplitude and frequency for each
+Width setting (at Rate = 8192). Larger widths produce higher amplitude
+but lower frequency, since the ramp takes longer to sweep a wider range.
+
+| Width | Ramp Peak | Triangle Peak | Frequency (Hz) |
+|-------|-----------|---------------|----------------|
+| 512   | 0.0624    | 0.0625        | 30.0           |
+| 1024  | 0.1249    | 0.1250        | 15.0           |
+| 2048  | 0.2499    | 0.2500        | 7.5            |
+| 4096  | 0.4999    | 0.5000        | 2.5            |
+
 ---
 
 ## Oscillator
@@ -91,14 +102,20 @@ Both outputs produce sinusoidal waveforms phase-shifted by 90 degrees.
 
 ![Oscillator](images/oscillator-oscillator.png)
 
+The plot below shows measured output frequency as the LFO Speed control
+input is swept from 0 to 1, with the control panel frequency set to
+1000 Hz. The relationship is linear: the control input acts as a
+direct multiplier on the base frequency.
+
+![Oscillator Freq vs Control](images/oscillator-freq-vs-control.png)
+
 ---
 
-## New Oscillator
+## Sine/Square
 
-An enhanced software oscillator (labeled "Oscillator II" in the UI) that
-adds a square wave output and a width control input. Like the original
-Oscillator, it uses a two-integrator loop for sine generation, but also
-derives a square wave by thresholding the sine output.
+A software oscillator (labeled "Oscillator II" in the UI) that
+produces both sine and square wave outputs using a two-integrator loop.
+The square wave is derived by thresholding the sine output.
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -119,20 +136,20 @@ waveform: positive half-cycles produce +0.5, negative half-cycles produce
 are scaled by the width control value. The Square Output is only generated
 (and instructions are only spent) when the pin is connected.
 
-![New Oscillator](images/oscillator-new-oscillator.png)
+![Sine/Square](images/oscillator-sine-square.png)
 
 ---
 
 ## LFO Value
 
-Reads the current value of any of the FV-1's hardware LFO outputs and
-makes it available as a control signal. This is useful when you need to
-tap into an LFO that was configured by another block (such as a chorus
-or flanger that uses a ramp LFO internally).
+Reads the current value of one of the FV-1's hardware LFO outputs and
+makes it available as a control signal. **This block works only with the
+FV-1's hardware LFOs** (Sin/Cos LFO and Ramp LFO blocks) -- it cannot
+read from the software-based Oscillator or Sine/Square blocks.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Output | Control Out | Current value of the selected LFO |
+| Output | Control Out | Current value of the selected hardware LFO |
 
 **Control panel parameters:**
 
@@ -140,9 +157,8 @@ or flanger that uses a ramp LFO internally).
 |-----------|---------|---------|-------------|
 | LFO Select | Sin 0, Cos 0, Sin 1, Cos 1, Ramp 0, Ramp 1 | Sin 0 | Which hardware LFO output to read |
 
-This block has no input pins. It simply reads the instantaneous value
-of the chosen LFO using the CHO RDAL instruction. The LFO must be
-initialized elsewhere in the patch (by a Sin/Cos LFO block, a Ramp LFO
-block, or any effect block that configures an LFO). If the Output pin
-is not connected, no instructions are generated.
-
+This block has no input pins. It reads the instantaneous value of the
+chosen hardware LFO using the CHO RDAL instruction. The selected LFO
+must be initialized elsewhere in the patch (by a Sin/Cos LFO block, a
+Ramp LFO block, or any effect block that configures a hardware LFO).
+If the Output pin is not connected, no instructions are generated.

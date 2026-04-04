@@ -50,12 +50,20 @@ public class PlotUtils {
     public static void writePlot(File file, String title, String xLabel, String yLabel,
             double xMin, double xMax, double yMin, double yMax,
             double[] xData, double[][] curves, String[] labels, String[] colors) throws IOException {
+        writePlot(file, title, xLabel, yLabel, xMin, xMax, yMin, yMax, xData, curves, labels, colors, 5);
+    }
+
+    /** Write a single-plot PNG with overlaid curves and custom Y-axis tick count. */
+    public static void writePlot(File file, String title, String xLabel, String yLabel,
+            double xMin, double xMax, double yMin, double yMax,
+            double[] xData, double[][] curves, String[] labels, String[] colors,
+            int numYTicks) throws IOException {
         int totalW = PAD_L + PLOT_W + PAD_R;
         int totalH = PAD_T + PLOT_H + PAD_B;
         BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = createGraphics(img, totalW, totalH);
         int px = PAD_L, py = PAD_T;
-        drawPlot(g, px, py, PLOT_W, PLOT_H, title, xLabel, yLabel, xMin, xMax, yMin, yMax);
+        drawPlot(g, px, py, PLOT_W, PLOT_H, title, xLabel, yLabel, xMin, xMax, yMin, yMax, 5, numYTicks);
         for (int ci = 0; ci < curves.length; ci++) {
             drawCurve(g, xData, curves[ci], px, py, PLOT_W, PLOT_H, xMin, xMax, yMin, yMax, colors[ci]);
         }
@@ -93,6 +101,14 @@ public class PlotUtils {
     public static void drawPlot(Graphics2D g, int px, int py, int plotW, int plotH,
             String title, String xLabel, String yLabel,
             double xMin, double xMax, double yMin, double yMax) {
+        drawPlot(g, px, py, plotW, plotH, title, xLabel, yLabel, xMin, xMax, yMin, yMax, 5, 5);
+    }
+
+    /** Draw plot frame with grid, labels, and custom tick counts. */
+    public static void drawPlot(Graphics2D g, int px, int py, int plotW, int plotH,
+            String title, String xLabel, String yLabel,
+            double xMin, double xMax, double yMin, double yMax,
+            int numXTicks, int numYTicks) {
         g.setColor(new Color(0xf8, 0xf8, 0xf8));
         g.fillRect(px, py, plotW, plotH);
         g.setColor(new Color(0xcc, 0xcc, 0xcc));
@@ -104,11 +120,10 @@ public class PlotUtils {
         g.drawString(title, px + plotW / 2 - fm.stringWidth(title) / 2, py - 10);
 
         double yRange = yMax - yMin;
-        int numTicks = 5;
 
         g.setFont(new Font("Arial", Font.PLAIN, 9));
-        for (int tick = 0; tick <= numTicks; tick++) {
-            double frac = tick / (double) numTicks;
+        for (int tick = 0; tick <= numXTicks; tick++) {
+            double frac = tick / (double) numXTicks;
             double xVal = xMin + frac * (xMax - xMin);
             int gx = px + (int)(frac * plotW);
             g.setColor(new Color(0xdd, 0xdd, 0xdd));
@@ -119,8 +134,8 @@ public class PlotUtils {
             g.drawString(label, gx - fm.stringWidth(label) / 2, py + plotH + 13);
         }
 
-        for (int tick = 0; tick <= numTicks; tick++) {
-            double frac = tick / (double) numTicks;
+        for (int tick = 0; tick <= numYTicks; tick++) {
+            double frac = tick / (double) numYTicks;
             double yVal = yMin + frac * yRange;
             int gy = py + (int)((1.0 - frac) * plotH);
             g.setColor(new Color(0xdd, 0xdd, 0xdd));
@@ -128,7 +143,7 @@ public class PlotUtils {
             g.setColor(new Color(0x66, 0x66, 0x66));
             String label;
             if (yVal == (int) yVal) label = String.valueOf((int) yVal);
-            else label = String.format("%.1f", yVal);
+            else label = String.format("%.2g", yVal);
             fm = g.getFontMetrics();
             g.drawString(label, px - 4 - fm.stringWidth(label), gy + 3);
         }

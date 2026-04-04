@@ -474,11 +474,27 @@ public class FilterDocTest {
 
     // === 6-Band EQ ===
     private void plot6BandEQ(File docsDir, File chirpWav) throws Exception {
+        double[] bandFreqs = {80, 160, 320, 640, 1280, 2560};
+        String[] bandLabels = {"80 Hz", "160 Hz", "320 Hz", "640 Hz", "1.3 kHz", "2.6 kHz"};
+
+        // Simulate each band boosted individually (dotted envelopes)
+        double[][] bandCurves = new double[6][];
+        double[] freqAxis = null;
+        for (int band = 0; band < 6; band++) {
+            SixBandEQCADBlock block = new SixBandEQCADBlock(100, 100);
+            block.setqLevel(1.2);
+            for (int b = 0; b < 6; b++) block.seteqLevel(b, 0.0);
+            block.seteqLevel(band, 0.5);  // boost this band only
+            short[] stereo = simulate(block, chirpWav, null, "Audio Output 1", null, tempDir);
+            if (stereo == null) { System.err.println("  SKIP 6-Band EQ band " + band); continue; }
+            double[] resp = computeFrequencyResponse(chirpWav, stereo);
+            if (freqAxis == null) freqAxis = computeFreqAxis(resp.length);
+            bandCurves[band] = resp;
+        }
+
+        // 3 composite curves
         String[] labels = {"Low boost", "Mid scoop", "High boost"};
         double[][] curves = new double[3][];
-        double[] freqAxis = null;
-
-        // Low boost
         {
             SixBandEQCADBlock block = new SixBandEQCADBlock(100, 100);
             block.setqLevel(1.2);
@@ -487,11 +503,8 @@ public class FilterDocTest {
             block.seteqLevel(4, 0.0); block.seteqLevel(5, 0.0);
             short[] stereo = simulate(block, chirpWav, null, "Audio Output 1", null, tempDir);
             if (stereo == null) { System.err.println("  SKIP 6-Band EQ low boost"); return; }
-            double[] resp = computeFrequencyResponse(chirpWav, stereo);
-            if (freqAxis == null) freqAxis = computeFreqAxis(resp.length);
-            curves[0] = resp;
+            curves[0] = computeFrequencyResponse(chirpWav, stereo);
         }
-        // Mid scoop
         {
             SixBandEQCADBlock block = new SixBandEQCADBlock(100, 100);
             block.setqLevel(1.2);
@@ -502,7 +515,6 @@ public class FilterDocTest {
             if (stereo == null) { System.err.println("  SKIP 6-Band EQ mid scoop"); return; }
             curves[1] = computeFrequencyResponse(chirpWav, stereo);
         }
-        // High boost
         {
             SixBandEQCADBlock block = new SixBandEQCADBlock(100, 100);
             block.setqLevel(1.2);
@@ -515,7 +527,9 @@ public class FilterDocTest {
         }
         writeFilterPlot(new File(docsDir, "filter-6bandeq.png"),
             "6-Band EQ", freqAxis, curves, labels, -12, 12,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
+            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0},
+            new String[]{COLORS[0], COLORS[1], COLORS[2]},
+            bandCurves, bandLabels);
         System.out.println("  wrote filter-6bandeq.png");
     }
 
@@ -572,10 +586,29 @@ public class FilterDocTest {
             new String[]{COLORS[0], COLORS[1], COLORS[2]});
     }
 
+    /** Overload with dotted band envelope overlays. */
+    private void writeFilterPlot(File file, String title,
+            double[] freqAxis, double[][] curves, String[] labels,
+            double yMin, double yMax, double fMin, double fMax,
+            double[] refLines, String[] colors,
+            double[][] bandCurves, String[] bandLabels) throws IOException {
+        writeFilterPlot(file, title, freqAxis, curves, labels, yMin, yMax, fMin, fMax,
+            refLines, colors, bandCurves);
+    }
+
     private void writeFilterPlot(File file, String title,
             double[] freqAxis, double[][] curves, String[] labels,
             double yMin, double yMax, double fMin, double fMax,
             double[] refLines, String[] colors) throws IOException {
+        writeFilterPlot(file, title, freqAxis, curves, labels, yMin, yMax, fMin, fMax,
+            refLines, colors, null);
+    }
+
+    private void writeFilterPlot(File file, String title,
+            double[] freqAxis, double[][] curves, String[] labels,
+            double yMin, double yMax, double fMin, double fMax,
+            double[] refLines, String[] colors,
+            double[][] bandCurves) throws IOException {
 
         // Trim data to display range
         int binMin = Math.max(1, (int)(fMin * FFT_SIZE / SAMPLE_RATE));
@@ -674,7 +707,36 @@ public class FilterDocTest {
             g.drawString(label, px - 4 - fm.stringWidth(label), gy + 3);
         }
 
-        // Draw curves with log x mapping
+        // Draw dotted band envelope curves (if provided)
+        if (bandCurves != null) {
+            String[] bandColors = {"#88aadd", "#77bb77", "#dd7766", "#bb88cc", "#ccaa44", "#88bbcc"};
+            Stroke dottedStroke = new BasicStroke(1.2f, BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_MITER, 10, new float[]{4, 4}, 0);
+            for (int bi = 0; bi < bandCurves.length; bi++) {
+                if (bandCurves[bi] == null) continue;
+                int[] xPts = new int[displayLen];
+                int[] yPts = new int[displayLen];
+                int cnt = 0;
+                for (int i = 0; i < displayLen; i++) {
+                    int srcIdx = binMin + i;
+                    if (srcIdx >= bandCurves[bi].length) break;
+                    if (trimmedFreq[i] <= 0 || Double.isNaN(bandCurves[bi][srcIdx])) continue;
+                    double fx = (Math.log10(trimmedFreq[i]) - logMin) / logRange;
+                    double fy = (bandCurves[bi][srcIdx] - yMin) / yRange;
+                    fy = Math.max(0, Math.min(1, fy));
+                    xPts[cnt] = px + (int)(fx * PLOT_W);
+                    yPts[cnt] = py + (int)((1.0 - fy) * PLOT_H);
+                    cnt++;
+                }
+                if (cnt > 1) {
+                    g.setColor(parseColor(bandColors[bi % bandColors.length]));
+                    g.setStroke(dottedStroke);
+                    g.drawPolyline(Arrays.copyOf(xPts, cnt), Arrays.copyOf(yPts, cnt), cnt);
+                }
+            }
+        }
+
+        // Draw main curves with log x mapping
         for (int ci = 0; ci < trimmedCurves.length; ci++) {
             if (trimmedCurves[ci] == null) continue;
             int[] xPoints = new int[displayLen];
@@ -732,27 +794,33 @@ public class FilterDocTest {
         int numWindows = Math.max(1, (usable - FFT_SIZE) / hopSize);
 
         int numBins = FFT_SIZE / 2;
+        // H1 estimator: H(f) = Σ[Y·X*] / Σ[|X|²]
+        // Phase-aware cross-spectral method — robust to group delay
+        double[] crossRe = new double[numBins];
+        double[] crossIm = new double[numBins];
         double[] inputPower = new double[numBins];
-        double[] outputPower = new double[numBins];
 
         for (int w = 0; w < numWindows; w++) {
             int offset = start + w * hopSize;
             double[] inWin = applyHannWindow(inputMono, offset, FFT_SIZE);
             double[] outWin = applyHannWindow(outputMono, offset, FFT_SIZE);
-            double[] inMag = fftMagnitude(inWin);
-            double[] outMag = fftMagnitude(outWin);
+            double[][] inFFT = fftComplex(inWin);
+            double[][] outFFT = fftComplex(outWin);
             for (int b = 0; b < numBins; b++) {
-                inputPower[b] += inMag[b] * inMag[b];
-                outputPower[b] += outMag[b] * outMag[b];
+                double xRe = inFFT[0][b], xIm = inFFT[1][b];
+                double yRe = outFFT[0][b], yIm = outFFT[1][b];
+                // Y · X* = (yRe + j·yIm)(xRe - j·xIm)
+                crossRe[b] += yRe * xRe + yIm * xIm;
+                crossIm[b] += yIm * xRe - yRe * xIm;
+                inputPower[b] += xRe * xRe + xIm * xIm;
             }
         }
 
         double[] gainDb = new double[numBins];
         for (int b = 0; b < numBins; b++) {
-            double inRms = Math.sqrt(inputPower[b] / numWindows);
-            double outRms = Math.sqrt(outputPower[b] / numWindows);
-            if (inRms > 1e-10) {
-                gainDb[b] = 20 * Math.log10(outRms / inRms);
+            if (inputPower[b] > 1e-20) {
+                double hMag = Math.sqrt(crossRe[b] * crossRe[b] + crossIm[b] * crossIm[b]) / inputPower[b];
+                gainDb[b] = 20 * Math.log10(hMag);
             } else {
                 gainDb[b] = -100;
             }
@@ -821,6 +889,50 @@ public class FilterDocTest {
             mag[i] = Math.sqrt(re[i] * re[i] + im[i] * im[i]);
         }
         return mag;
+    }
+
+    private double[][] fftComplex(double[] data) {
+        int n = data.length;
+        double[] re = new double[n];
+        double[] im = new double[n];
+        int bits = Integer.numberOfTrailingZeros(n);
+
+        for (int i = 0; i < n; i++) {
+            int rev = Integer.reverse(i) >>> (32 - bits);
+            re[rev] = data[i];
+        }
+
+        for (int size = 2; size <= n; size *= 2) {
+            int halfSize = size / 2;
+            double angle = -2 * Math.PI / size;
+            double wRe = Math.cos(angle);
+            double wIm = Math.sin(angle);
+
+            for (int start = 0; start < n; start += size) {
+                double curRe = 1.0, curIm = 0.0;
+                for (int j = 0; j < halfSize; j++) {
+                    int even = start + j;
+                    int odd = start + j + halfSize;
+                    double tRe = curRe * re[odd] - curIm * im[odd];
+                    double tIm = curRe * im[odd] + curIm * re[odd];
+                    re[odd] = re[even] - tRe;
+                    im[odd] = im[even] - tIm;
+                    re[even] = re[even] + tRe;
+                    im[even] = im[even] + tIm;
+                    double newRe = curRe * wRe - curIm * wIm;
+                    curIm = curRe * wIm + curIm * wRe;
+                    curRe = newRe;
+                }
+            }
+        }
+
+        int half = n / 2;
+        double[][] result = new double[2][half];
+        for (int i = 0; i < half; i++) {
+            result[0][i] = re[i];
+            result[1][i] = im[i];
+        }
+        return result;
     }
 
     private double[] smooth(double[] data, int windowSize) {
