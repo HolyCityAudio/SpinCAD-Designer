@@ -140,7 +140,7 @@ public class FilterDocTest {
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2p.png"),
             "SVF 2-Pole (Lowpass)", freqAxis, curves, labels, -40, 6,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0, 6, -6});
+            100, 10000, new double[]{0, 6, -6});
         System.out.println("  wrote filter-svf2p.png");
     }
 
@@ -164,7 +164,7 @@ public class FilterDocTest {
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2p-bp.png"),
             "SVF 2-Pole (Bandpass)", freqAxis, curves, labels, -40, 6,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0, 6, -6});
+            100, 10000, new double[]{0, 6, -6});
         System.out.println("  wrote filter-svf2p-bp.png");
     }
 
@@ -188,7 +188,7 @@ public class FilterDocTest {
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2p-hp.png"),
             "SVF 2-Pole (Highpass)", freqAxis, curves, labels, -40, 6,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0, 6, -6});
+            100, 10000, new double[]{0, 6, -6});
         System.out.println("  wrote filter-svf2p-hp.png");
     }
 
@@ -215,7 +215,7 @@ public class FilterDocTest {
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2p-q.png"),
             "SVF 2-Pole LP (Q variation at 1 kHz)", freqAxis, curves, labels, -40, 20,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0, 6, -6},
+            100, 10000, new double[]{0, 6, -6},
             new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]});
         System.out.println("  wrote filter-svf2p-q.png");
     }
@@ -240,8 +240,8 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2padj.png"),
-            "SVF 2-Pole Adj (Lowpass)", freqAxis, curves, labels, -40, 6,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0, 6, -6});
+            "SVF 2-Pole Adj (Lowpass)", freqAxis, curves, labels, -40, 12,
+            100, 10000, new double[]{0, 6, -6});
         System.out.println("  wrote filter-svf2padj.png");
     }
 
@@ -265,8 +265,8 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2padj-bp.png"),
-            "SVF 2-Pole Adj (Bandpass)", freqAxis, curves, labels, -40, 6,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0, 6, -6});
+            "SVF 2-Pole Adj (Bandpass)", freqAxis, curves, labels, -40, 12,
+            100, 10000, new double[]{0, 6, -6});
         System.out.println("  wrote filter-svf2padj-bp.png");
     }
 
@@ -290,8 +290,8 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2padj-hp.png"),
-            "SVF 2-Pole Adj (Highpass)", freqAxis, curves, labels, -40, 6,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0, 6, -6});
+            "SVF 2-Pole Adj (Highpass)", freqAxis, curves, labels, -40, 12,
+            100, 10000, new double[]{0, 6, -6});
         System.out.println("  wrote filter-svf2padj-hp.png");
     }
 
@@ -319,7 +319,7 @@ public class FilterDocTest {
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2padj-q.png"),
             "SVF 2-Pole Adj LP (Q variation ~1 kHz)", freqAxis, curves, labels, -40, 20,
-            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0, 6, -6},
+            100, 10000, new double[]{0, 6, -6},
             new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]});
         System.out.println("  wrote filter-svf2padj-q.png");
     }
@@ -474,17 +474,21 @@ public class FilterDocTest {
 
     // === 6-Band EQ ===
     private void plot6BandEQ(File docsDir, File chirpWav) throws Exception {
-        double[] bandFreqs = {80, 160, 320, 640, 1280, 2560};
-        String[] bandLabels = {"80 Hz", "160 Hz", "320 Hz", "640 Hz", "1.3 kHz", "2.6 kHz"};
+        // Per-band gains matching the 3 composite cases
+        // Low boost: bands 0,1   Mid scoop: bands 2,3   High boost: bands 4,5
+        double[] bandGains = {0.5, 0.3, -0.4, -0.4, 0.3, 0.5};
+        // Color index into COLORS[] matching the composite curve each band belongs to
+        String[] bandColors = {COLORS[0], COLORS[0], COLORS[1], COLORS[1], COLORS[2], COLORS[2]};
 
-        // Simulate each band boosted individually (dotted envelopes)
+        // Simulate each non-zero band individually (dotted envelopes)
         double[][] bandCurves = new double[6][];
         double[] freqAxis = null;
         for (int band = 0; band < 6; band++) {
+            if (bandGains[band] == 0.0) continue;
             SixBandEQCADBlock block = new SixBandEQCADBlock(100, 100);
             block.setqLevel(1.2);
             for (int b = 0; b < 6; b++) block.seteqLevel(b, 0.0);
-            block.seteqLevel(band, 0.5);  // boost this band only
+            block.seteqLevel(band, bandGains[band]);
             short[] stereo = simulate(block, chirpWav, null, "Audio Output 1", null, tempDir);
             if (stereo == null) { System.err.println("  SKIP 6-Band EQ band " + band); continue; }
             double[] resp = computeFrequencyResponse(chirpWav, stereo);
@@ -529,7 +533,7 @@ public class FilterDocTest {
             "6-Band EQ", freqAxis, curves, labels, -12, 12,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0},
             new String[]{COLORS[0], COLORS[1], COLORS[2]},
-            bandCurves, bandLabels);
+            bandCurves, bandColors);
         System.out.println("  wrote filter-6bandeq.png");
     }
 
@@ -586,29 +590,19 @@ public class FilterDocTest {
             new String[]{COLORS[0], COLORS[1], COLORS[2]});
     }
 
-    /** Overload with dotted band envelope overlays. */
-    private void writeFilterPlot(File file, String title,
-            double[] freqAxis, double[][] curves, String[] labels,
-            double yMin, double yMax, double fMin, double fMax,
-            double[] refLines, String[] colors,
-            double[][] bandCurves, String[] bandLabels) throws IOException {
-        writeFilterPlot(file, title, freqAxis, curves, labels, yMin, yMax, fMin, fMax,
-            refLines, colors, bandCurves);
-    }
-
     private void writeFilterPlot(File file, String title,
             double[] freqAxis, double[][] curves, String[] labels,
             double yMin, double yMax, double fMin, double fMax,
             double[] refLines, String[] colors) throws IOException {
         writeFilterPlot(file, title, freqAxis, curves, labels, yMin, yMax, fMin, fMax,
-            refLines, colors, null);
+            refLines, colors, null, null);
     }
 
     private void writeFilterPlot(File file, String title,
             double[] freqAxis, double[][] curves, String[] labels,
             double yMin, double yMax, double fMin, double fMax,
             double[] refLines, String[] colors,
-            double[][] bandCurves) throws IOException {
+            double[][] bandCurves, String[] bandColorArr) throws IOException {
 
         // Trim data to display range
         int binMin = Math.max(1, (int)(fMin * FFT_SIZE / SAMPLE_RATE));
@@ -709,7 +703,6 @@ public class FilterDocTest {
 
         // Draw dotted band envelope curves (if provided)
         if (bandCurves != null) {
-            String[] bandColors = {"#88aadd", "#77bb77", "#dd7766", "#bb88cc", "#ccaa44", "#88bbcc"};
             Stroke dottedStroke = new BasicStroke(1.2f, BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_MITER, 10, new float[]{4, 4}, 0);
             for (int bi = 0; bi < bandCurves.length; bi++) {
@@ -729,7 +722,9 @@ public class FilterDocTest {
                     cnt++;
                 }
                 if (cnt > 1) {
-                    g.setColor(parseColor(bandColors[bi % bandColors.length]));
+                    String bc = (bandColorArr != null && bi < bandColorArr.length)
+                        ? bandColorArr[bi] : COLORS[bi % COLORS.length];
+                    g.setColor(parseColor(bc));
                     g.setStroke(dottedStroke);
                     g.drawPolyline(Arrays.copyOf(xPts, cnt), Arrays.copyOf(yPts, cnt), cnt);
                 }

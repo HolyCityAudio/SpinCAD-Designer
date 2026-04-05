@@ -19,11 +19,15 @@
 
 package com.holycityaudio.SpinCAD.CADBlocks;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -40,6 +44,7 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 	private JTextField gain1Field;
 	private FineControlSlider gain2Slider;
 	private JTextField gain2Field;
+	private CrossfadePanel graph;
 
 	private CrossfadeAdjCADBlock gCB;
 
@@ -64,6 +69,7 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 					gCB.setMidpoint(val);
 					midpointSlider.setValue((int) Math.round(val * 100));
 					updateMidpointLabel();
+					graph.repaint();
 				} catch (NumberFormatException ex) {
 					updateMidpointLabel();
 				}
@@ -86,6 +92,7 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 					gain1Slider.setValue(sliderVal);
 					gCB.setGain1(sliderVal);
 					updateGain1Label();
+					graph.repaint();
 				} catch (NumberFormatException ex) {
 					updateGain1Label();
 				}
@@ -108,11 +115,16 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 					gain2Slider.setValue(sliderVal);
 					gCB.setGain2(sliderVal);
 					updateGain2Label();
+					graph.repaint();
 				} catch (NumberFormatException ex) {
 					updateGain2Label();
 				}
 			}
 		});
+
+		graph = new CrossfadePanel();
+		graph.setBackground(Color.BLACK);
+		graph.setPreferredSize(new Dimension(150, 120));
 
 		this.getContentPane().add(midpointField);
 		this.getContentPane().add(midpointSlider);
@@ -120,6 +132,7 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 		this.getContentPane().add(gain1Slider);
 		this.getContentPane().add(gain2Field);
 		this.getContentPane().add(gain2Slider);
+		this.getContentPane().add(graph);
 
 		updateMidpointLabel();
 		updateGain1Label();
@@ -145,6 +158,7 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			gCB.setGain2(gain2Slider.getValue());
 			updateGain2Label();
 		}
+		graph.repaint();
 	}
 
 	private void updateMidpointLabel() {
@@ -157,5 +171,52 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 
 	private void updateGain2Label() {
 		gain2Field.setText("Input 2 Gain " + String.format("%4.1f dB", 20 * Math.log10(gCB.getGain2())));
+	}
+
+	class CrossfadePanel extends JPanel {
+
+		private static final long serialVersionUID = 1L;
+
+		public CrossfadePanel() {
+			super();
+		}
+
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+
+			double xScale = getWidth();
+			double yScale = getHeight();
+			double m = gCB.getMidpoint();
+			double g1 = gCB.getGain1();
+			double g2 = gCB.getGain2();
+
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, getWidth(), getHeight());
+
+			for (double ctrl = 0; ctrl < 1.0; ctrl += 0.005) {
+				double gain1Curve, gain2Curve;
+
+				if (Math.abs(m - 0.5) < 0.001) {
+					// Linear crossfade
+					gain1Curve = (1.0 - ctrl) * g1;
+					gain2Curve = ctrl * g2;
+				} else if (ctrl < 0.5) {
+					// Low half
+					gain2Curve = ctrl * 2.0 * m * g2;
+					gain1Curve = (1.0 - ctrl * 2.0 * (1.0 - m)) * g1;
+				} else {
+					// High half
+					gain2Curve = (ctrl * 2.0 * (1.0 - m) + (2.0 * m - 1.0)) * g2;
+					gain1Curve = 2.0 * m * (1.0 - ctrl) * g1;
+				}
+
+				// Input 1: cyan, Input 2: yellow
+				int x = (int) (ctrl * xScale);
+				g.setColor(Color.CYAN);
+				g.drawRect(x, (int) ((1.0 - gain1Curve) * yScale), 1, 1);
+				g.setColor(Color.YELLOW);
+				g.drawRect(x, (int) ((1.0 - gain2Curve) * yScale), 1, 1);
+			}
+		}
 	}
 }
