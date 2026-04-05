@@ -3,6 +3,12 @@
 These blocks implement various filter topologies for the FV-1: lowpass, highpass,
 bandpass, notch, shelving EQ, parametric EQ, comb filters, and resonators.
 
+> **Sample rate:** All frequency ranges and default values below assume the
+> FV-1's native sample rate of 32,768 Hz. At other sample rates, frequency
+> parameters scale proportionally: multiply by f<sub>s</sub>/32768. For example,
+> a 1000 Hz cutoff corresponds to approximately 1346 Hz at 44.1 kHz
+> (x 1.346) and 1465 Hz at 48 kHz (x 1.465).
+
 ---
 
 ## 1-Band EQ
@@ -20,11 +26,17 @@ a resonant peak from the input signal.
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Frequency | Hz | 80 | Center frequency of the EQ band |
+| Frequency | 20-3200 Hz | 80 | Center frequency of the EQ band |
 | Q | 0.5-10 | 1.2 | Bandwidth (higher = narrower) |
 | EQ Level | -1.0 to 1.0 | 0 | Boost/cut amount |
 
 ![1-Band EQ response showing cut, flat, and boost](images/filter-1bandeq.png)
+
+The chart below shows the relationship between the EQ Level control value
+and the resulting gain at the center frequency (measured at 1 kHz, Q=1.2).
+This mapping also applies to each band of the 6-Band EQ.
+
+![1-Band EQ control value to gain mapping at 1 kHz](images/filter-1bandeq-gain.png)
 
 ---
 
@@ -58,7 +70,7 @@ and a global Q parameter sets the bandwidth of all bands.
 ## Bassman '59 EQ
 
 An exact digital model of the Fender '59 Bassman tone stack, based on the
-Yeh & Smith symbolic circuit analysis (DAFx-06). The three controls (Bass,
+[Yeh & Smith symbolic circuit analysis (DAFx-06)](https://ccrma.stanford.edu/~dtyeh/papers/yeh06_dafx.pdf). The three controls (Bass,
 Mid, Treble) interact non-orthogonally, just like the real circuit: changing
 one control affects the other bands. The filter is a 3rd-order IIR implemented
 as three parallel 1st-order sections via partial fraction expansion.
@@ -115,6 +127,10 @@ in the feedback path.
 | Damping | 0.0-1.0 | 0.5 | Lowpass damping in feedback path |
 
 ![Comb filter response at three delay length settings](images/filter-comb.png)
+
+> **DC gain:** This comb filter has significant gain at DC and very low
+> frequencies. A highpass filter in series (e.g. HPF 1-Pole) is recommended
+> to remove the DC offset from the output.
 
 ---
 

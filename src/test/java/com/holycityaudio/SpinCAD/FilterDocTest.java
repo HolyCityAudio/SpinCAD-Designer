@@ -67,6 +67,7 @@ public class FilterDocTest {
         plotShelvingLP(docsDir, chirpWav);
         plotShelvingHP(docsDir, chirpWav);
         plot1BandEQ(docsDir, chirpWav);
+        plot1BandEQ_Gain(docsDir, chirpWav);
         plot6BandEQ(docsDir, chirpWav);
         plotComb(docsDir, chirpWav);
         plotResonator(docsDir, chirpWav);
@@ -347,7 +348,7 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-lpf4p.png"),
-            "LPF 2/4-Pole", freqAxis, curves, labels, -40, 12,
+            "LPF 2/4-Pole (Q=10)", freqAxis, curves, labels, -40, 18,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-lpf4p.png");
     }
@@ -372,7 +373,7 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-hpf2p.png"),
-            "HPF 2/4-Pole", freqAxis, curves, labels, -40, 12,
+            "HPF 2/4-Pole (Q=10)", freqAxis, curves, labels, -40, 18,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-hpf2p.png");
     }
@@ -656,6 +657,127 @@ public class FilterDocTest {
             "Bassman '59 — Treble Sweep", freqAxis, curves, labels, -40, 6,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-bassman-treble.png");
+    }
+
+    // === 1-Band EQ: EQ Level vs Gain at 1 kHz ===
+    private void plot1BandEQ_Gain(File docsDir, File chirpWav) throws Exception {
+        int numPoints = 21;
+        double[] eqLevels = new double[numPoints];
+        double[] gainDb = new double[numPoints];
+        int bin1k = (int) Math.round(1000.0 * FFT_SIZE / SAMPLE_RATE);
+
+        for (int i = 0; i < numPoints; i++) {
+            eqLevels[i] = -1.0 + i * (2.0 / (numPoints - 1));
+            OneBandEQCADBlock block = new OneBandEQCADBlock(100, 100);
+            block.setFreq(1000);
+            block.setqLevel(1.2);
+            block.setEqLevel(eqLevels[i]);
+            short[] stereo = simulate(block, chirpWav, null, "Audio Output 1", null, tempDir);
+            if (stereo == null) { gainDb[i] = 0; continue; }
+            double[] resp = computeFrequencyResponse(chirpWav, stereo);
+            gainDb[i] = resp[bin1k];
+        }
+
+        // Draw a simple linear XY chart
+        int PLOT_W = 360, PLOT_H = 280;
+        int PAD_L = 50, PAD_R = 20, PAD_T = 35, PAD_B = 60;
+        int totalW = PAD_L + PLOT_W + PAD_R;
+        int totalH = PAD_T + PLOT_H + PAD_B;
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
+        int px = PAD_L, py = PAD_T;
+
+        double xMin = -1.0, xMax = 1.0;
+        double yMin = -12, yMax = 12;
+        double yRange = yMax - yMin;
+
+        // Background and border
+        g.setColor(new Color(0xf8, 0xf8, 0xf8));
+        g.fillRect(px, py, PLOT_W, PLOT_H);
+        g.setColor(new Color(0xcc, 0xcc, 0xcc));
+        g.drawRect(px, py, PLOT_W, PLOT_H);
+
+        // Title
+        g.setFont(new Font("Arial", Font.BOLD, 13));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        String title = "1-Band EQ: Control Value vs Gain (1 kHz)";
+        g.drawString(title, px + PLOT_W / 2 - fm.stringWidth(title) / 2, py - 10);
+
+        // X-axis grid and labels at -1.0, -0.5, 0, 0.5, 1.0
+        g.setFont(new Font("Arial", Font.PLAIN, 9));
+        Stroke normalStroke = g.getStroke();
+        Stroke dashedStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
+            BasicStroke.JOIN_MITER, 10, new float[]{6, 4}, 0);
+        double[] xTicks = {-1.0, -0.5, 0, 0.5, 1.0};
+        for (double tick : xTicks) {
+            double fx = (tick - xMin) / (xMax - xMin);
+            int gx = px + (int)(fx * PLOT_W);
+            if (tick == 0) {
+                g.setStroke(dashedStroke);
+                g.setColor(new Color(0x44, 0x44, 0x44));
+                g.drawLine(gx, py, gx, py + PLOT_H);
+                g.setStroke(normalStroke);
+            } else {
+                g.setColor(new Color(0xdd, 0xdd, 0xdd));
+                g.drawLine(gx, py, gx, py + PLOT_H);
+            }
+            g.setColor(new Color(0x66, 0x66, 0x66));
+            String label = String.format("%.1f", tick);
+            fm = g.getFontMetrics();
+            g.drawString(label, gx - fm.stringWidth(label) / 2, py + PLOT_H + 13);
+        }
+
+        // Y-axis grid at 3 dB steps
+        for (int db = (int) yMin; db <= (int) yMax; db += 3) {
+            double frac = (db - yMin) / yRange;
+            int gy = py + (int)((1.0 - frac) * PLOT_H);
+            if (db == 0) {
+                g.setStroke(dashedStroke);
+                g.setColor(new Color(0x44, 0x44, 0x44));
+                g.drawLine(px + 1, gy, px + PLOT_W - 1, gy);
+                g.setStroke(normalStroke);
+            } else {
+                g.setColor(new Color(0xdd, 0xdd, 0xdd));
+                g.drawLine(px, gy, px + PLOT_W, gy);
+            }
+            g.setColor(new Color(0x66, 0x66, 0x66));
+            String label = String.valueOf(db);
+            fm = g.getFontMetrics();
+            g.drawString(label, px - 4 - fm.stringWidth(label), gy + 3);
+        }
+
+        // Axis labels
+        g.setFont(new Font("Arial", Font.PLAIN, 10));
+        fm = g.getFontMetrics();
+        String xLabel = "EQ Level";
+        g.setColor(Color.BLACK);
+        g.drawString(xLabel, px + PLOT_W / 2 - fm.stringWidth(xLabel) / 2, py + PLOT_H + 30);
+
+        AffineTransform orig = g.getTransform();
+        g.rotate(-Math.PI / 2);
+        String yLabel = "Gain (dB)";
+        g.drawString(yLabel, -(py + PLOT_H / 2 + fm.stringWidth(yLabel) / 2), 14);
+        g.setTransform(orig);
+
+        // Plot curve
+        g.setColor(Color.decode(COLORS[0]));
+        g.setStroke(new BasicStroke(2.0f));
+        int[] xPts = new int[numPoints];
+        int[] yPts = new int[numPoints];
+        for (int i = 0; i < numPoints; i++) {
+            double fx = (eqLevels[i] - xMin) / (xMax - xMin);
+            double fy = (gainDb[i] - yMin) / yRange;
+            fy = Math.max(0, Math.min(1, fy));
+            xPts[i] = px + (int)(fx * PLOT_W);
+            yPts[i] = py + (int)((1.0 - fy) * PLOT_H);
+        }
+        g.drawPolyline(xPts, yPts, numPoints);
+
+        g.dispose();
+        File out = new File(docsDir, "filter-1bandeq-gain.png");
+        ImageIO.write(img, "PNG", out);
+        System.out.println("  wrote filter-1bandeq-gain.png");
     }
 
     // ==================== Plot helper with reference lines ====================
