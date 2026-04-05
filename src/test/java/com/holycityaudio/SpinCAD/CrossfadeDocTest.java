@@ -2,7 +2,10 @@ package com.holycityaudio.SpinCAD;
 
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import javax.imageio.ImageIO;
 
 /**
  * Generates crossfade curve plots for documentation.
@@ -11,6 +14,8 @@ import java.io.File;
 public class CrossfadeDocTest {
 
     private static final int NUM_POINTS = 200;
+    private static final int PLOT_W = 360, PLOT_H = 280;
+    private static final int PAD_L = 50, PAD_R = 20, PAD_T = 35, PAD_B = 85;
 
     @Test
     void generateCrossfadeCurvePlots() throws Exception {
@@ -45,17 +50,38 @@ public class CrossfadeDocTest {
                 }
             }
 
-            File outFile = new File("docs/images/mix-crossfadeadj-" + fileSuffixes[mi] + ".png");
-            PlotUtils.writePlot(outFile,
-                "Crossfade Adj (midpoint=" + names[mi] + ")",
-                "Control (0=In1, 1=In2)", "Gain",
-                0, 1, 0, 1.1,
-                ctrl,
-                new double[][] { gain1Curve, gain2Curve },
-                new String[] { "Input 1", "Input 2" },
-                new String[] { PlotUtils.COLORS[0], PlotUtils.COLORS[2] },
-                5);
+            String title = "Crossfade Adj (midpoint=" + names[mi] + ")";
+            double yMin = 0, yMax = 1.2;
 
+            int totalW = PAD_L + PLOT_W + PAD_R;
+            int totalH = PAD_T + PLOT_H + PAD_B;
+            BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = PlotUtils.createGraphics(img, totalW, totalH);
+            int px = PAD_L, py = PAD_T;
+
+            // Draw plot frame with 6 Y ticks (0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2)
+            PlotUtils.drawPlot(g, px, py, PLOT_W, PLOT_H, title,
+                "Control (0=In1, 1=In2)", "Gain",
+                0, 1, yMin, yMax, 5, 6);
+
+            // Darker gridline at gain = 1.0
+            double frac10 = (1.0 - yMin) / (yMax - yMin);
+            int gy10 = py + (int)((1.0 - frac10) * PLOT_H);
+            g.setColor(new Color(0x99, 0x99, 0x99));
+            g.setStroke(new BasicStroke(1.0f));
+            g.drawLine(px, gy10, px + PLOT_W, gy10);
+
+            // Draw curves
+            String[] colors = { PlotUtils.COLORS[0], PlotUtils.COLORS[2] };
+            PlotUtils.drawCurve(g, ctrl, gain1Curve, px, py, PLOT_W, PLOT_H, 0, 1, yMin, yMax, colors[0]);
+            PlotUtils.drawCurve(g, ctrl, gain2Curve, px, py, PLOT_W, PLOT_H, 0, 1, yMin, yMax, colors[1]);
+
+            // Legend
+            PlotUtils.drawLegend(g, px, py + PLOT_H + 52, new String[] { "Input 1", "Input 2" }, colors);
+
+            g.dispose();
+            File outFile = new File("docs/images/mix-crossfadeadj-" + fileSuffixes[mi] + ".png");
+            ImageIO.write(img, "png", outFile);
             System.out.println("Wrote " + outFile.getPath());
         }
     }
