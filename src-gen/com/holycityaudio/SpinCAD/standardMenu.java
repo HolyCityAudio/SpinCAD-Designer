@@ -463,7 +463,7 @@
 		}
 	});
 	mn_filters.add(mntm_SixBandEQ);
-
+		
 	final JMenuItem mntm_BassmanEQ = new JMenuItem("Bassman '59 EQ");
 	mntm_BassmanEQ.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -472,7 +472,7 @@
 		}
 	});
 	mn_filters.add(mntm_BassmanEQ);
-
+		
 	final JMenuItem mntm_CombFilter = new JMenuItem("Comb Filter");
 	mntm_CombFilter.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -517,7 +517,7 @@
 		}
 	});
 	mn_filters.add(mntm_Shelving_lowpass);
-
+		
 	JMenu mn_delay = new JMenu("Delay");
 	menuBar.add(mn_delay);
 	
