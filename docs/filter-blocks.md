@@ -340,3 +340,39 @@ pitched filtering effects or as a simple sine oscillator.
 | Resonance | 0.0-1.0 | 0.01 | Resonance amount (higher = sharper peak) |
 
 ![Resonator response at three frequency settings](images/filter-resonator.png)
+
+---
+
+## Bassman '59 EQ
+
+An exact digital model of the Fender '59 Bassman tone stack, based on the
+Yeh & Smith symbolic circuit analysis (DAFx-06). The three controls (Bass,
+Mid, Treble) interact non-orthogonally, just like the real circuit: changing
+one control affects the other bands. The filter is a 3rd-order IIR implemented
+as three parallel 1st-order sections via partial fraction expansion.
+
+In slider-only mode (no CV connected) the block uses ~20 FV-1 instructions.
+When a CV input is connected, coefficients are interpolated in real-time
+(~40-60 instructions depending on how many CVs are connected).
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Audio Input 1 | Audio In | Audio signal |
+| Middle | Control In | Mid control CV (0-1, top priority) |
+| Bass | Control In | Bass control CV (0-1) |
+| Treble | Control In | Treble control CV (0-1) |
+| Audio Output 1 | Audio Out | Filtered output |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Bass | 0.0-1.0 | 0.5 | Low frequency boost/cut |
+| Mid | 0.0-1.0 | 0.5 | Midrange presence (low = deep scoop) |
+| Treble | 0.0-1.0 | 0.5 | High frequency boost/cut |
+
+![Bassman bass sweep with mid and treble at 5](images/filter-bassman-bass.png)
+
+![Bassman mid sweep with bass and treble at 5](images/filter-bassman-mid.png)
+
+![Bassman treble sweep with bass and mid at 5](images/filter-bassman-treble.png)
