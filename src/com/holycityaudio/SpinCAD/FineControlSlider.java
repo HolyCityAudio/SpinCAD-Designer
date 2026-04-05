@@ -32,7 +32,7 @@ public class FineControlSlider extends JSlider {
 	private static final double FINE_SCALE = 0.1;
 
 	public FineControlSlider(int orientation, int min, int max, int value) {
-		super(orientation, min, max, value);
+		super(orientation, min, max, Math.max(min, Math.min(max, value)));
 		enableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK | java.awt.AWTEvent.MOUSE_MOTION_EVENT_MASK);
 	}
 

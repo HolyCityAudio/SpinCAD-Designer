@@ -1,0 +1,334 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "phaser-modulation-test.spcdj",
+  "comments": {
+    "fileName": "phaser-modulation-test.spcdj",
+    "version": "Patch saved from SpinCAD Designer version 1069",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "Phaser modulation linearization test.",
+      "Sine LFO (left) and Ramp/Triangle LFO (right) each shaped via LOG/EXP power-law then mapped to all-pass coefficient range. Mixer 2:1 selects between them (Gain1=sine, Gain2=triangle). Adjust LOG multiplier (default 0.5=sqrt) for more/less curve correction. Final Scale/Offset sets sweep range [0.80, 0.94]."
+    ]
+  },
+  "potValues": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 652,
+      "y": 36,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 227,
+      "y": 71,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 2,
+      "x": 331,
+      "y": 74,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.15,
+        "outHigh": 1.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock",
+      "blockNum": 3,
+      "x": 483,
+      "y": 125,
+      "name": "LFO 0",
+      "params": {
+        "lfoRate": 202,
+        "lfoWidth": 32767,
+        "lfoSel": 0,
+        "outputRange": 1
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 4,
+      "x": 531,
+      "y": 197,
+      "name": "S/O Clamp Sine",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.01,
+        "outHigh": 0.99
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock",
+      "blockNum": 5,
+      "x": 432,
+      "y": 306,
+      "name": "Log",
+      "params": {
+        "multiplier": 0.5,
+        "log_offset": 0.0,
+        "sixteen": 16.0,
+        "output1": 35
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.RampLFOCADBlock",
+      "blockNum": 6,
+      "x": 872,
+      "y": 106,
+      "name": "Ramp LFO 0",
+      "params": {
+        "lfoRate": 11296,
+        "lfoWidth": 3,
+        "whichLFO": 0,
+        "invert": false,
+        "flip": false,
+        "lfoWidths": [
+          512,
+          1024,
+          2048,
+          4096
+        ]
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 7,
+      "x": 872,
+      "y": 206,
+      "name": "S/O Clamp Tri",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 0.5,
+        "outLow": 0.01,
+        "outHigh": 0.99
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock",
+      "blockNum": 8,
+      "x": 872,
+      "y": 306,
+      "name": "Log",
+      "params": {
+        "multiplier": 0.5,
+        "log_offset": 0.0,
+        "sixteen": 16.0,
+        "output1": 39
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock",
+      "blockNum": 9,
+      "x": 872,
+      "y": 406,
+      "name": "Exp",
+      "params": {
+        "multiplier": 1.0,
+        "exp_offset": 0.0,
+        "output1": 40
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 10,
+      "x": 872,
+      "y": 506,
+      "name": "S/O Range Tri",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.8,
+        "outHigh": 0.94
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ExpCADBlock",
+      "blockNum": 11,
+      "x": 432,
+      "y": 406,
+      "name": "Exp",
+      "params": {
+        "multiplier": 1.0,
+        "exp_offset": 0.0,
+        "output1": 42
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 12,
+      "x": 432,
+      "y": 506,
+      "name": "S/O Range Sine",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.61,
+        "outHigh": 0.94
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ControlMixer_2_to_1CADBlock",
+      "blockNum": 13,
+      "x": 652,
+      "y": 586,
+      "name": "Mixer 2:1",
+      "params": {
+        "gain1": 1.0,
+        "gain2": 0.0,
+        "output": 44
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.PhaserCADBlock",
+      "blockNum": 14,
+      "x": 652,
+      "y": 666,
+      "name": "Phaser",
+      "params": {
+        "temp": 52,
+        "temp1": 53,
+        "phase": 0,
+        "stages": 3,
+        "controlMode": 1,
+        "lfoRate": 0.5,
+        "lfoWidth": 0.5
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 15,
+      "x": 652,
+      "y": 806,
+      "name": "Output",
+      "params": {
+        "mono": false,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 2,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 3,
+      "toPin": "Speed"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Sine",
+      "toBlockIndex": 4,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 6,
+      "toPin": "Rate"
+    },
+    {
+      "fromBlockIndex": 6,
+      "fromPin": "Triangle LFO",
+      "toBlockIndex": 7,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 7,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 8,
+      "toPin": "Control Input"
+    },
+    {
+      "fromBlockIndex": 8,
+      "fromPin": "Log Output",
+      "toBlockIndex": 9,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 9,
+      "fromPin": "Exp Output",
+      "toBlockIndex": 10,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 5,
+      "fromPin": "Log Output",
+      "toBlockIndex": 11,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 11,
+      "fromPin": "Exp Output",
+      "toBlockIndex": 12,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 12,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 13,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 10,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 13,
+      "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 10,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 14,
+      "toPin": "Phase"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 14,
+      "toPin": "Audio Input"
+    },
+    {
+      "fromBlockIndex": 14,
+      "fromPin": "Mix Out",
+      "toBlockIndex": 15,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 14,
+      "fromPin": "Mix Out",
+      "toBlockIndex": 15,
+      "toPin": "Input 2"
+    }
+  ]
+}

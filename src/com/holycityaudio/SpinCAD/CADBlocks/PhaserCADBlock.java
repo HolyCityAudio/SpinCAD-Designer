@@ -147,16 +147,14 @@ public class PhaserCADBlock extends SpinCADBlock{
 
 				sfxb.writeRegister(SIN1_RATE, 0);
 
-				sfxb.chorusReadValue(SIN1);
-				sfxb.scaleOffset(0.5, 0.5);
-				sfxb.log(0.5, 0);
-				sfxb.exp(1,0);
-				sfxb.scaleOffset(1.0, -0.5);
-				sfxb.scaleOffset(1.999, 0);
-				sfxb.mulx(depth);
-				//					sof	0.1,0.85
-				sfxb.scaleOffset(0.15 , 0.83);
-				//					wrax	phase,0		;phase variable ranges 0.8 to 0.95
+				sfxb.chorusReadValue(SIN1);		// read sin1 as [-1, 1]
+				sfxb.scaleOffset(0.5, 0.5);		// map to [0, 1]
+				sfxb.scaleOffset(0.98, 0.01);	// clamp to [0.01, 0.99] — protect LOG from 0
+				sfxb.log(0.5, 0);				// power-law shaping (0.5 = sqrt)
+				sfxb.exp(1, 0);					// complete power law → [~0.1, ~0.995]
+				sfxb.scaleOffset(1.999, -1.0);	// map to bipolar [~-0.8, ~0.99]
+				sfxb.mulx(depth);				// scale by LFO Width control
+				sfxb.scaleOffset(0.065, 0.875);	// map to coeff range [0.81, 0.94]
 				sfxb.writeRegister(phase, 0);
 			}
 
