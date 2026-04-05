@@ -61,7 +61,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 		freqSlider0 = SpinCADBlock.LogSlider(20, 3200, SpinCADBlock.freqToFilt(b.getFreq()), "LOGFREQ", 100.0);
 		freqSlider0.addChangeListener(this);
 
-		qSlider = new FineControlSlider(JSlider.HORIZONTAL, 100, 400, 100);
+		qSlider = new FineControlSlider(JSlider.HORIZONTAL, 50, 1000, 120);
 		qSlider.addChangeListener(this);
 
 		eqField0 = new JTextField();
@@ -88,7 +88,7 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double val = Double.parseDouble(qField.getText().replaceAll("[^0-9.\\-]", ""));
-					val = Math.max(1.0, Math.min(4.0, val));
+					val = Math.max(0.5, Math.min(10.0, val));
 					filter.setqLevel(val);
 					qSlider.setValue((int) Math.round(val * 100.0));
 					updateQLabel();
@@ -164,7 +164,6 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 	}
 
 	private void updateQLabel() {
-		qField.setText("Resonance "
-				+ String.format("%2.1f", filter.getQLevel()));
+		qField.setText("Q " + String.format("%2.1f", filter.getQLevel()));
 	}
 }

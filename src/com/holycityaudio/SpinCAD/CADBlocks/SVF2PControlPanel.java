@@ -152,7 +152,7 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 	}
 
 	private void updateQField() {
-		qField.setText("Resonance " + String.format("%2.1f", cadBlock.getQ()));
+		qField.setText("Q " + String.format("%2.1f", cadBlock.getQ()));
 	}
 
 	private void updateFreqField() {

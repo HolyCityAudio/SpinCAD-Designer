@@ -35,6 +35,7 @@ public class LPF4PCADBlock extends SpinCADBlock{
 	private static final long serialVersionUID = 5711126291575876825L;
 	double f0 = 880;
 	double kql = 0.2;
+	double qMin = 1.0;
 	boolean is4Pole = false;
 
 	public LPF4PCADBlock(int x, int y) {
@@ -106,16 +107,17 @@ public class LPF4PCADBlock extends SpinCADBlock{
 			if(p != null) {
 				control2 = p.getRegister();
 				temp = sfxb.allocateReg();
-				// we need to save this so we can multiply the next result by the control input
-				// to get adjustable resonance
+				// sof interpolation: pot=0 -> Q=qMin, pot=1 -> Q=panel value
+				double dampMin = 1.0 / qMin;
+				double dampMax = kql;
 				sfxb.writeRegister(temp, 0);
-				sfxb.readRegister(lp1al,-kql);
-				sfxb.mulx(control2);
-				// then we add it back in later and everything's fine.
-				sfxb.readRegister(temp,1.0);
+				sfxb.readRegister(control2, 1);
+				sfxb.scaleOffset(dampMin - dampMax, -dampMin);
+				sfxb.mulx(lp1al);
+				sfxb.readRegister(temp, 1.0);
 			}
 			else {
-				sfxb.readRegister(lp1al,-kql);				
+				sfxb.readRegister(lp1al,-kql);
 			}
 
 			sfxb.readRegister(input,0.5);
@@ -129,18 +131,17 @@ public class LPF4PCADBlock extends SpinCADBlock{
 				sfxb.mulx(kfl);
 				sfxb.readRegister(lp2bl,1);
 				sfxb.writeRegister(lp2bl, -1);
-				sfxb.readRegister(lp2al,-kql);
 				if(control2 != -1) {
-					// we need to save this so we can multiply the next result by the control input
-					// to get adjustable resonance
+					double dampMin2 = 1.0 / qMin;
+					double dampMax2 = kql;
 					sfxb.writeRegister(temp, 0);
-					sfxb.readRegister(lp2al,-kql);
-					sfxb.mulx(control2);
-					// then we add it back in later and everything's fine.
-					sfxb.readRegister(temp,1.0);
+					sfxb.readRegister(control2, 1);
+					sfxb.scaleOffset(dampMin2 - dampMax2, -dampMin2);
+					sfxb.mulx(lp2al);
+					sfxb.readRegister(temp, 1.0);
 				}
 				else {
-					sfxb.readRegister(lp2al,-kql);				
+					sfxb.readRegister(lp2al,-kql);
 				}
 				sfxb.readRegister(lp1bl,1);
 				sfxb.mulx(kfl);
@@ -173,11 +174,10 @@ public class LPF4PCADBlock extends SpinCADBlock{
 	}
 
 	public void setQ(double value) {
-		kql = 10/(value); // ---
+		kql = 1.0 / value;
 	}
 
 	public double getQ() {
-		// ---
-		return kql/10.0;
+		return 1.0 / kql;
 	}
 }

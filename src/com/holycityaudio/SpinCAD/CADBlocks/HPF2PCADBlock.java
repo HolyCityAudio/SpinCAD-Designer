@@ -35,6 +35,7 @@ public class HPF2PCADBlock extends SpinCADBlock{
 	private static final long serialVersionUID = 5711126291575876825L;
 	private double f0 = 880;
 	private double kqh = 0.2;
+	private double qMin = 1.0;
 	private boolean is4Pole = false;
 
 	public HPF2PCADBlock(int x, int y) {
@@ -110,18 +111,21 @@ public class HPF2PCADBlock extends SpinCADBlock{
 			sfxb.readRegister(hp1bl,1);
 			//			wrax	lp1bl,-1
 			sfxb.writeRegister(hp1bl, -1);
-			//			rdax	lp1al,kql
 			p = this.getPin("Resonance").getPinConnection();
 			int control2 = -1;
 			if(p != null) {
 				control2 = p.getRegister();
 				temp = sfxb.allocateReg();
+				// sof interpolation: pot=0 -> Q=qMin, pot=1 -> Q=panel value
+				double dampMin = 1.0 / qMin;     // damping at pot=0 (low resonance)
+				double dampMax = kqh;             // damping at pot=1 (panel Q)
 				sfxb.writeRegister(temp, 0.0);
-				sfxb.readRegister(hp1al,-kqh);
-				sfxb.mulx(control2);
+				sfxb.readRegister(control2, 1);
+				sfxb.scaleOffset(dampMin - dampMax, -dampMin);
+				sfxb.mulx(hp1al);
 				sfxb.readRegister(temp, 1.0);
 			}
-			else {	
+			else {
 				sfxb.readRegister(hp1al,-kqh);
 			}	
 			//			rdax	fol,1
@@ -157,11 +161,11 @@ public class HPF2PCADBlock extends SpinCADBlock{
 	}
 
 	public double getQ() {
-		return kqh/10.0;
+		return 1.0 / kqh;
 	}
 
 	public void setQ(double value) {
-		kqh = 10/(value); 
+		kqh = 1.0 / value;
 	}
 
 }

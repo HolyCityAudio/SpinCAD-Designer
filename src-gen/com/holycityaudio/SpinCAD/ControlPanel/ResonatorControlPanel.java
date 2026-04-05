@@ -185,7 +185,7 @@ public ResonatorControlPanel(ResonatorCADBlock genericCADBlock) {
 		freqField.setText("Frequency " + String.format("%4.3f", gCB.getfreq()));		
 		}		
 		private void updateresoLabel() {
-		resoField.setText("Damping " + String.format("%4.3f", gCB.getreso()));		
+		resoField.setText("Damping (1/Q) " + String.format("%4.3f", gCB.getreso()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

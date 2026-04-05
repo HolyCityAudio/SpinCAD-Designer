@@ -12,11 +12,11 @@ equ freq 0.15
 
 equ qMax 5
 // variable - Name - low - high - multiplier - precision - option
-@sliderLabel qMax 'Max Resonance' 1.0 200.0 100.0 1000.0 1
+@sliderLabel qMax 'Max Q' 1.0 200.0 100.0 1000.0 1
 
 equ qMin 1
 // variable - Name - low - high - multiplier - precision - option
-@sliderLabel qMin 'Min Resonance' 1.0 50.0 100.0 1000.0 1
+@sliderLabel qMin 'Min Q' 1.0 50.0 100.0 1000.0 1
 
 equ z1 Reg0
 equ z2 Reg1

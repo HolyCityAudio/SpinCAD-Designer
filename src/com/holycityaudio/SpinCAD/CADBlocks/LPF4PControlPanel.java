@@ -102,7 +102,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 					}
 				});
 
-				int qSliderPosition = (int)(1/LPF.getQ());
+				int qSliderPosition = (int)(LPF.getQ() * 10);
 				qSlider = new FineControlSlider(JSlider.HORIZONTAL, 10, 200, qSliderPosition);
 				qSlider.addChangeListener(new LPF1PChangeListener());
 
@@ -113,12 +113,10 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 					public void actionPerformed(ActionEvent e) {
 						try {
 							String text = qField.getText().replaceAll("[^\\d.\\-]", "");
-							double displayedQ = Double.parseDouble(text);
-							// display = 0.1/q_slider_value, so q_slider_value = 0.1/displayedQ
-							int sliderVal = (int)(0.1 / displayedQ);
-							sliderVal = Math.max(10, Math.min(200, sliderVal));
-							LPF.setQ((double) sliderVal);
-							qSlider.setValue(sliderVal);
+							double val = Double.parseDouble(text);
+							val = Math.max(1.0, Math.min(20.0, val));
+							LPF.setQ(val);
+							qSlider.setValue((int)(val * 10));
 							updateQLabel();
 						} catch (NumberFormatException ex) {
 							updateQLabel();
@@ -155,7 +153,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 				updateFreqLabel();
 			}
 			else if(ce.getSource() == qSlider) {
-				LPF.setQ((double) qSlider.getValue());
+				LPF.setQ((double) qSlider.getValue() / 10.0);
 				updateQLabel();
 			}
 		}
@@ -175,8 +173,7 @@ class LPF4PControlPanel extends JFrame implements ActionListener {
 	}
 
 	public void updateQLabel() {
-//		qField.setText(" Resonance " + String.format(new DecimalFormat("#.##").format(0.1/LPF.getQ())));
-		qField.setText(" Resonance " + String.format("%3.1f",(0.1/LPF.getQ())));
+		qField.setText(" Q " + String.format("%3.1f", LPF.getQ()));
 	}
 
 	private void updateFreqLabel() {
