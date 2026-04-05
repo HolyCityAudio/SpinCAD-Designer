@@ -37,7 +37,7 @@ public class FilterDocTest {
 
     // Default display range: 20 Hz to 15 kHz
     private static final double DISPLAY_F_MIN = 10;
-    private static final double DISPLAY_F_MAX = 5000;
+    private static final double DISPLAY_F_MAX = 10000;
 
     @BeforeAll
     static void setup() {
@@ -647,7 +647,7 @@ public class FilterDocTest {
 
         // Log-scale x-axis grid and ticks
         g.setFont(new Font("Arial", Font.PLAIN, 9));
-        double[] majorTicks = {10, 100, 1000, 5000};
+        double[] majorTicks = {10, 100, 1000, 10000};
         for (double tick : majorTicks) {
             if (tick < fMin || tick > fMax) continue;
             double fx = (Math.log10(tick) - logMin) / logRange;
