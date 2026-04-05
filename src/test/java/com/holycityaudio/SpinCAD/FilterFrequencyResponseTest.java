@@ -430,9 +430,8 @@ public class FilterFrequencyResponseTest {
                 ctrl, probeLow, fmtDb(gainLow), probeHigh, fmtDb(gainHigh));
 
             if (gainLow != null) {
-                // LPF4P reads input at 0.5 gain, so inherent -6dB offset
-                assertEquals(-6.0, gainLow, TOLERANCE_DB,
-                    String.format("LPF4P ctrl=%d: gain=%.1fdB at %.0fHz, expected passband ~-6dB",
+                assertEquals(0.0, gainLow, TOLERANCE_DB,
+                    String.format("LPF4P ctrl=%d: gain=%.1fdB at %.0fHz, expected passband ~0dB",
                         ctrl, gainLow, probeLow));
             }
             if (gainHigh != null) {
