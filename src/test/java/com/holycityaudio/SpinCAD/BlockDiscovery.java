@@ -20,7 +20,7 @@ public class BlockDiscovery {
         SKIP_LIST.add("ControlPanelTestCADBlock"); // GUI test only
         SKIP_LIST.add("InstructionTestCADBlock");  // manual test block
         SKIP_LIST.add("DelayRamTestCADBlock");     // manual test block
-        SKIP_LIST.add("BassmanEQCADBlock");        // experimental: coefficients exceed FV-1 S1.14 range
+        // BassmanEQCADBlock now uses parallel 1st-order sections with coefficients in range
     }
 
     /**

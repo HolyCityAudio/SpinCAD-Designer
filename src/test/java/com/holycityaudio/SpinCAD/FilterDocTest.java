@@ -70,6 +70,9 @@ public class FilterDocTest {
         plot6BandEQ(docsDir, chirpWav);
         plotComb(docsDir, chirpWav);
         plotResonator(docsDir, chirpWav);
+        plotBassmanBass(docsDir, chirpWav);
+        plotBassmanMid(docsDir, chirpWav);
+        plotBassmanTreble(docsDir, chirpWav);
 
         System.out.println("\nAll filter PNGs written to docs/images/");
     }
@@ -578,6 +581,81 @@ public class FilterDocTest {
             "Resonator", freqAxis, curves, labels, -40, 20,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-resonator.png");
+    }
+
+    // === Bassman '59 EQ — Bass sweep ===
+    private void plotBassmanBass(File docsDir, File chirpWav) throws Exception {
+        double[] bassVals = {0.05, 0.5, 0.95};
+        String[] labels = {"Bass 0", "Bass 5", "Bass 10"};
+        double[][] curves = new double[3][];
+        double[] freqAxis = null;
+
+        for (int i = 0; i < bassVals.length; i++) {
+            BassmanEQCADBlock block = new BassmanEQCADBlock(100, 100);
+            block.setTreble(0.5);
+            block.setMid(0.5);
+            block.setBass(bassVals[i]);
+            short[] stereo = simulate(block, chirpWav, null, "Audio Output 1", null, tempDir);
+            if (stereo == null) { System.err.println("  SKIP Bassman bass at " + labels[i]); continue; }
+            double[] resp = computeFrequencyResponse(chirpWav, stereo);
+            if (freqAxis == null) freqAxis = computeFreqAxis(resp.length);
+            curves[i] = resp;
+        }
+        if (freqAxis == null) return;
+        writeFilterPlot(new File(docsDir, "filter-bassman-bass.png"),
+            "Bassman '59 — Bass Sweep", freqAxis, curves, labels, -40, 6,
+            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
+        System.out.println("  wrote filter-bassman-bass.png");
+    }
+
+    // === Bassman '59 EQ — Mid sweep ===
+    private void plotBassmanMid(File docsDir, File chirpWav) throws Exception {
+        double[] midVals = {0.05, 0.5, 0.95};
+        String[] labels = {"Mid 0", "Mid 5", "Mid 10"};
+        double[][] curves = new double[3][];
+        double[] freqAxis = null;
+
+        for (int i = 0; i < midVals.length; i++) {
+            BassmanEQCADBlock block = new BassmanEQCADBlock(100, 100);
+            block.setTreble(0.5);
+            block.setMid(midVals[i]);
+            block.setBass(0.5);
+            short[] stereo = simulate(block, chirpWav, null, "Audio Output 1", null, tempDir);
+            if (stereo == null) { System.err.println("  SKIP Bassman mid at " + labels[i]); continue; }
+            double[] resp = computeFrequencyResponse(chirpWav, stereo);
+            if (freqAxis == null) freqAxis = computeFreqAxis(resp.length);
+            curves[i] = resp;
+        }
+        if (freqAxis == null) return;
+        writeFilterPlot(new File(docsDir, "filter-bassman-mid.png"),
+            "Bassman '59 — Mid Sweep", freqAxis, curves, labels, -40, 6,
+            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
+        System.out.println("  wrote filter-bassman-mid.png");
+    }
+
+    // === Bassman '59 EQ — Treble sweep ===
+    private void plotBassmanTreble(File docsDir, File chirpWav) throws Exception {
+        double[] trebleVals = {0.05, 0.5, 0.95};
+        String[] labels = {"Treble 0", "Treble 5", "Treble 10"};
+        double[][] curves = new double[3][];
+        double[] freqAxis = null;
+
+        for (int i = 0; i < trebleVals.length; i++) {
+            BassmanEQCADBlock block = new BassmanEQCADBlock(100, 100);
+            block.setTreble(trebleVals[i]);
+            block.setMid(0.5);
+            block.setBass(0.5);
+            short[] stereo = simulate(block, chirpWav, null, "Audio Output 1", null, tempDir);
+            if (stereo == null) { System.err.println("  SKIP Bassman treble at " + labels[i]); continue; }
+            double[] resp = computeFrequencyResponse(chirpWav, stereo);
+            if (freqAxis == null) freqAxis = computeFreqAxis(resp.length);
+            curves[i] = resp;
+        }
+        if (freqAxis == null) return;
+        writeFilterPlot(new File(docsDir, "filter-bassman-treble.png"),
+            "Bassman '59 — Treble Sweep", freqAxis, curves, labels, -40, 6,
+            DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
+        System.out.println("  wrote filter-bassman-treble.png");
     }
 
     // ==================== Plot helper with reference lines ====================

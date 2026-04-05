@@ -41,6 +41,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.ResonatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_HipassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.BassmanEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.sixtapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.DrumDelayCADBlock;
@@ -507,6 +508,15 @@
 		}
 	});
 	mn_filters.add(mntm_Shelving_lowpass);
+		
+	final JMenuItem mntm_BassmanEQ = new JMenuItem("Bassman '59 EQ");
+	mntm_BassmanEQ.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new BassmanEQCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_filters.add(mntm_BassmanEQ);
 		
 	JMenu mn_delay = new JMenu("Delay");
 	menuBar.add(mn_delay);

@@ -51,7 +51,7 @@
 @menuitem "Resonator" Resonator
 @menuitem "Shelving Hipass" Shelving_Hipass
 @menuitem "Shelving Lowpass" Shelving_lowpass
-//@menuitem "Bassman '59" BassmanEQ
+@menuitem "Bassman '59 EQ" BassmanEQ
 // @menuitem "4P L-R Crossover" Crossover_4P
 
 @menu "Delay"

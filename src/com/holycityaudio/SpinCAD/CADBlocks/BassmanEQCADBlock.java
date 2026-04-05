@@ -177,130 +177,44 @@ public class BassmanEQCADBlock extends FilterCADBlock {
 	}
 
 	/**
-	 * Compute parallel 1st-order decomposition.
-	 * Returns { K, r1, p1, r2, p2, r3, p3 }
-	 * where K = direct term, ri = residues, pi = poles in z-domain.
+	 * Compute parallel 1st-order decomposition in z^{-1} form:
+	 * H(z) = K + C1/(1-p1*z^-1) + C2/(1-p2*z^-1) + C3/(1-p3*z^-1)
+	 *
+	 * Each section C_i/(1-p_i*z^-1) implements as: y_i[n] = p_i*y_i[n-1] + C_i*x[n]
+	 *
+	 * Derivation: evaluate (1-p_i*z^-1)*H(z) at z=p_i using L'Hopital:
+	 *   C_i = N(p_i) / (p_i * product_{j!=i}(p_i - p_j))
+	 * where N(z) = nb0*z^3 + nb1*z^2 + nb2*z + nb3 is the full numerator.
+	 * K = nb0 - C1 - C2 - C3 (from evaluating at z -> infinity).
+	 *
+	 * Returns { K, C1, p1, C2, p2, C3, p3 }
 	 */
 	static double[] partialFractionExpansion(double[] zCoeffs) {
 		double B0 = zCoeffs[0], B1 = zCoeffs[1], B2 = zCoeffs[2], B3 = zCoeffs[3];
 		double A0 = zCoeffs[4], A1 = zCoeffs[5], A2 = zCoeffs[6], A3 = zCoeffs[7];
 
-		// normalize: divide everything by A0
+		// normalize by A0
 		double nb0 = B0 / A0, nb1 = B1 / A0, nb2 = B2 / A0, nb3 = B3 / A0;
 		double na1 = A1 / A0, na2 = A2 / A0, na3 = A3 / A0;
 
-		// direct term K = nb3/1 (leading coeff of num / leading coeff of denom,
-		// since both are degree 3 in z^-1... but actually we need polynomial long division)
-		// H(z) = nb0 + nb1*z^-1 + nb2*z^-2 + nb3*z^-3
-		//        ------------------------------------------
-		//         1  + na1*z^-1 + na2*z^-2 + na3*z^-3
-		//
-		// The direct term K = nb3 / 1 is wrong. We need degree(num)==degree(den),
-		// so K = B3/A3 (ratio of highest-delay coefficients in descending power form).
-		// Actually: in z^-1 form, both are degree 3, so K = nb0 (ratio of z^0 terms).
-		// But we want the proper partial fraction, so let's do polynomial long division.
-		// Since num and denom have same degree, K = nb0 / 1 = nb0 is not right either
-		// because the denominator leading coeff is already 1.
-		// K = nb0 is incorrect because the "leading term" in z^-1 polynomials is the z^0 term.
-		// Actually: H(z) = K + R(z)/D(z) where K*D(z) + R(z) = N(z), with deg(R) < deg(D).
-		// Since D(z) = 1 + na1*z^-1 + ..., the leading term is 1 (for z^0).
-		// N(z) = nb0 + nb1*z^-1 + ...
-		// K = nb0. Then R(z) = N(z) - K*D(z).
-		// But wait, this gives R with z^0 term = 0, and z^-1 term = nb1 - nb0*na1, etc.
-		// That's degree < 3 in z^-1. But we need 3 partial fractions (one per pole).
-		// Let me think again...
-		//
-		// Actually the standard approach: write as ratio of polynomials in z (not z^-1):
-		// Multiply top and bottom by z^3:
-		// H(z) = (B0*z^3 + B1*z^2 + B2*z + B3) / (A0*z^3 + A1*z^2 + A2*z + A3)
-		// This is a proper rational function (degree 3 / degree 3), so K = B0/A0 = nb0.
-		// Remainder: N(z) - K * D(z) has degree < 3.
-
-		double K = nb0;
-		// remainder numerator after subtracting K * denominator
-		// r(z^-1) = (nb1 - K*na1)*z^-1 + (nb2 - K*na2)*z^-2 + (nb3 - K*na3)*z^-3
-		double rem1 = nb1 - K * na1;
-		double rem2 = nb2 - K * na2;
-		double rem3 = nb3 - K * na3;
-
-		// find poles: roots of 1 + na1*z^-1 + na2*z^-2 + na3*z^-3 = 0
-		// multiply by z^3: z^3 + na1*z^2 + na2*z + na3 = 0
+		// find z-domain poles: roots of z^3 + na1*z^2 + na2*z + na3 = 0
 		double[] poles = solveCubic(na1, na2, na3);
 		double p1 = poles[0], p2 = poles[1], p3 = poles[2];
 
-		// residues: for H_rem(z) = (rem1*z^-1 + rem2*z^-2 + rem3*z^-3) / ((1-p1*z^-1)(1-p2*z^-1)(1-p3*z^-1))
-		// = r1/(1-p1*z^-1) + r2/(1-p2*z^-1) + r3/(1-p3*z^-1)
-		//
-		// But we need to be careful. The remainder is:
-		// R(z^-1) = rem1*z^-1 + rem2*z^-2 + rem3*z^-3
-		// In terms of z: R(z) = rem1*z^2 + rem2*z + rem3  (after multiplying by z^3)
-		// D(z) = (z-p1)(z-p2)(z-p3) = z^3 + na1*z^2 + na2*z + na3
-		//
-		// Partial fractions in z:
-		// R(z)/D(z) = r1/(z-p1) + r2/(z-p2) + r3/(z-p3)
-		//
-		// Residue ri = R(pi) / product_{j!=i}(pi - pj)
+		// evaluate full numerator N(z) = nb0*z^3 + nb1*z^2 + nb2*z + nb3 at each pole
+		double N1 = nb0 * p1 * p1 * p1 + nb1 * p1 * p1 + nb2 * p1 + nb3;
+		double N2 = nb0 * p2 * p2 * p2 + nb1 * p2 * p2 + nb2 * p2 + nb3;
+		double N3 = nb0 * p3 * p3 * p3 + nb1 * p3 * p3 + nb2 * p3 + nb3;
 
-		double r1 = (rem1 * p1 * p1 + rem2 * p1 + rem3) / ((p1 - p2) * (p1 - p3));
-		double r2 = (rem1 * p2 * p2 + rem2 * p2 + rem3) / ((p2 - p1) * (p2 - p3));
-		double r3 = (rem1 * p3 * p3 + rem2 * p3 + rem3) / ((p3 - p1) * (p3 - p2));
+		// residues: C_i = N(p_i) / (p_i * product_{j!=i}(p_i - p_j))
+		double C1val = N1 / (p1 * (p1 - p2) * (p1 - p3));
+		double C2val = N2 / (p2 * (p2 - p1) * (p2 - p3));
+		double C3val = N3 / (p3 * (p3 - p1) * (p3 - p2));
 
-		// Convert from r/(z-p) to the form used in z^-1:
-		// r/(z-p) = (r/z) / (1 - p*z^-1) = r*z^-1 / (1 - p*z^-1)
-		// So the contribution to H(z) is r_i * z^-1 / (1 - p_i * z^-1)
-		// which implements as: y_i[n] = p_i * y_i[n-1] + r_i * x[n-1]
-		//
-		// But for a causal implementation we want:
-		// H_i(z) = r_i * z^-1 / (1 - p_i * z^-1)
-		//
-		// This means the output is delayed by one sample relative to direct term K.
-		// Alternatively, factor out z^-1 from the remainder and adjust K.
-		//
-		// Actually, let's reconsider. The FV-1 implementation works fine with:
-		// y[n] = K*x[n] + sum_i(state_i)
-		// state_i[n] = p_i * state_i[n-1] + r_i * x[n]  (using r_i as feedforward gain)
-		//
-		// Wait, that gives H_i(z) = r_i / (1 - p_i*z^-1), which is what partial fractions
-		// in z^-1 would give if the remainder were degree 2 in z^-1 (no z^-1 factor).
-		// Our remainder has an explicit z^-1 factor: rem1*z^-1 + rem2*z^-2 + rem3*z^-3.
-		//
-		// Let me redo this more carefully by working entirely in z^-1 form.
-		// D(z^-1) = 1 + na1*z^-1 + na2*z^-2 + na3*z^-3 = (1-p1*z^-1)(1-p2*z^-1)(1-p3*z^-1)
-		// R(z^-1) = rem1*z^-1 + rem2*z^-2 + rem3*z^-3 = z^-1 * (rem1 + rem2*z^-1 + rem3*z^-2)
-		//
-		// So R(z^-1)/D(z^-1) = z^-1 * Q(z^-1) / D(z^-1) where Q is degree 2.
-		//
-		// Q(z^-1)/D(z^-1) = s1/(1-p1*z^-1) + s2/(1-p2*z^-1) + s3/(1-p3*z^-1)
-		// where si = Q(1/pi) * pi / product_{j!=i}(pi - pj)  ... this gets complicated.
-		//
-		// Simplest approach: evaluate the full transfer function at z=p_i (residue theorem).
-		// For H(z) = N(z)/D(z) with D(z) = A0*(z-p1)*(z-p2)*(z-p3):
-		// residue at z=pi:  Ri = N(pi) / (A0 * product_{j!=i}(pi - pj))
-		// Then H(z) = K + R1*z/(z-p1) + R2*z/(z-p2) + R3*z/(z-p3)
-		//           = K + R1/(1-p1*z^-1) + R2/(1-p2*z^-1) + R3/(1-p3*z^-1)
+		// direct term: K = nb0 - C1 - C2 - C3
+		double K = nb0 - C1val - C2val - C3val;
 
-		// N(z) = B0*z^3 + B1*z^2 + B2*z + B3 (already unnormalized)
-		// D(z) = A0*z^3 + A1*z^2 + A2*z + A3
-		// D'(z) = 3*A0*z^2 + 2*A1*z + A2
-		// Residue Ri = [N(pi)/D'(pi)] (using L'Hopital / residue formula for simple poles)
-		// But we want R_i * z/(z-pi), so R_i = N(pi) / (pi * D'(pi))...
-		// Actually for partial fractions of N(z)/D(z) in the form K + sum Ri*z/(z-pi):
-		// First do K = lim_{z->inf} N(z)/D(z) = B0/A0 = nb0. ✓
-		// Then [N(z) - K*D(z)]/D(z) = sum Ri*z/(z-pi)
-		// Let F(z) = N(z) - K*D(z) = (B1-K*A1)*z^2 + (B2-K*A2)*z + (B3-K*A3)
-		//   (the z^3 term cancels)
-		// Ri = F(pi) / (pi * product_{j!=i}(pi-pj) * A0)
-		// But since we already normalized by A0 (na1,na2,na3 and rem1,rem2,rem3), and
-		// D_norm(z) = z^3 + na1*z^2 + na2*z + na3 = (z-p1)(z-p2)(z-p3):
-		// F_norm(z) = rem1*z^2 + rem2*z + rem3
-		// Ri = F_norm(pi) / (pi * product_{j!=i}(pi-pj))
-
-		// Recompute residues for H(z) = K + R1/(1-p1*z^-1) + R2/(1-p2*z^-1) + R3/(1-p3*z^-1)
-		double R1 = (rem1 * p1 * p1 + rem2 * p1 + rem3) / (p1 * (p1 - p2) * (p1 - p3));
-		double R2 = (rem1 * p2 * p2 + rem2 * p2 + rem3) / (p2 * (p2 - p1) * (p2 - p3));
-		double R3 = (rem1 * p3 * p3 + rem2 * p3 + rem3) / (p3 * (p3 - p1) * (p3 - p2));
-
-		return new double[] { K, R1, p1, R2, p2, R3, p3 };
+		return new double[] { K, C1val, p1, C2val, p2, C3val, p3 };
 	}
 
 	/**
