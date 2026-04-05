@@ -46,12 +46,12 @@
 @menuitem "2P/4P Highpass" HPF2P
 @menuitem "2P/4P Lowpass" LPF4P
 @menuitem "6-Band EQ" SixBandEQ
+@menuitem "Bassman '59 EQ" BassmanEQ
 @menuitem "Comb Filter" CombFilter
 @menuitem "Notch" Notch
 @menuitem "Resonator" Resonator
 @menuitem "Shelving Hipass" Shelving_Hipass
 @menuitem "Shelving Lowpass" Shelving_lowpass
-@menuitem "Bassman '59 EQ" BassmanEQ
 // @menuitem "4P L-R Crossover" Crossover_4P
 
 @menu "Delay"

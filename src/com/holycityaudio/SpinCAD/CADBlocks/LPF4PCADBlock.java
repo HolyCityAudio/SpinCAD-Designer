@@ -120,7 +120,7 @@ public class LPF4PCADBlock extends SpinCADBlock{
 				sfxb.readRegister(lp1al,-kql);
 			}
 
-			sfxb.readRegister(input,0.5);
+			sfxb.readRegister(input,1.0);
 			sfxb.writeRegister(hipass, 1.0);
 			sfxb.mulx(kfl);
 			sfxb.readRegister(lp1al,1);

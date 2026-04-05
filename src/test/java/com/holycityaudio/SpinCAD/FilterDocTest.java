@@ -80,7 +80,7 @@ public class FilterDocTest {
     // === LPF 1-Pole ===
     private void plotLPF1P(File docsDir, File chirpWav) throws Exception {
         double[] freqs = {0.05, 0.15, 0.4};
-        String[] labels = {"Low", "Mid", "High"};
+        String[] labels = {"270 Hz", "850 Hz", "2.7 kHz"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 
@@ -103,7 +103,7 @@ public class FilterDocTest {
     // === HPF 1-Pole — display 20 Hz to 1 kHz ===
     private void plotHPF1P(File docsDir, File chirpWav) throws Exception {
         double[] freqs = {0.005, 0.015, 0.06};
-        String[] labels = {"Low", "Mid", "High"};
+        String[] labels = {"26 Hz", "79 Hz", "320 Hz"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 
@@ -217,7 +217,7 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2p-q.png"),
-            "SVF 2-Pole LP (Q variation at 1 kHz)", freqAxis, curves, labels, -40, 20,
+            "SVF 2-Pole LP (Q variation at 1 kHz)", freqAxis, curves, labels, -40, 24,
             100, 10000, new double[]{0, 6, -6},
             new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]});
         System.out.println("  wrote filter-svf2p-q.png");
@@ -226,7 +226,7 @@ public class FilterDocTest {
     // === SVF 2-Pole Adjustable Lowpass ===
     private void plotSVF2PAdj_LP(File docsDir, File chirpWav) throws Exception {
         double[] freqs = {0.05, 0.15, 0.4};
-        String[] labels = {"Low", "Mid", "High"};
+        String[] labels = {"260 Hz", "780 Hz", "2.1 kHz"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 
@@ -251,7 +251,7 @@ public class FilterDocTest {
     // === SVF 2-Pole Adjustable Bandpass ===
     private void plotSVF2PAdj_BP(File docsDir, File chirpWav) throws Exception {
         double[] freqs = {0.05, 0.15, 0.4};
-        String[] labels = {"Low", "Mid", "High"};
+        String[] labels = {"260 Hz", "780 Hz", "2.1 kHz"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 
@@ -276,7 +276,7 @@ public class FilterDocTest {
     // === SVF 2-Pole Adjustable Highpass ===
     private void plotSVF2PAdj_HP(File docsDir, File chirpWav) throws Exception {
         double[] freqs = {0.05, 0.15, 0.4};
-        String[] labels = {"Low", "Mid", "High"};
+        String[] labels = {"260 Hz", "780 Hz", "2.1 kHz"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 
@@ -321,7 +321,7 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-svf2padj-q.png"),
-            "SVF 2-Pole Adj LP (Q variation ~1 kHz)", freqAxis, curves, labels, -40, 20,
+            "SVF 2-Pole Adj LP (Q variation ~1 kHz)", freqAxis, curves, labels, -40, 24,
             100, 10000, new double[]{0, 6, -6},
             new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]});
         System.out.println("  wrote filter-svf2padj-q.png");
@@ -347,7 +347,7 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-lpf4p.png"),
-            "LPF 2/4-Pole", freqAxis, curves, labels, -40, 6,
+            "LPF 2/4-Pole", freqAxis, curves, labels, -40, 12,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-lpf4p.png");
     }
@@ -372,7 +372,7 @@ public class FilterDocTest {
         }
         if (freqAxis == null) return;
         writeFilterPlot(new File(docsDir, "filter-hpf2p.png"),
-            "HPF 2/4-Pole", freqAxis, curves, labels, -40, 6,
+            "HPF 2/4-Pole", freqAxis, curves, labels, -40, 12,
             DISPLAY_F_MIN, DISPLAY_F_MAX, new double[]{0});
         System.out.println("  wrote filter-hpf2p.png");
     }
@@ -380,7 +380,7 @@ public class FilterDocTest {
     // === Notch ===
     private void plotNotch(File docsDir, File chirpWav) throws Exception {
         double[] freqs = {0.05, 0.15, 0.4};
-        String[] labels = {"Low", "Mid", "High"};
+        String[] labels = {"260 Hz", "780 Hz", "2.1 kHz"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 
@@ -562,7 +562,7 @@ public class FilterDocTest {
     // === Resonator ===
     private void plotResonator(File docsDir, File chirpWav) throws Exception {
         double[] freqs = {0.05, 0.2, 0.5};
-        String[] labels = {"Low", "Mid", "High"};
+        String[] labels = {"260 Hz", "1 kHz", "2.6 kHz"};
         double[][] curves = new double[3][];
         double[] freqAxis = null;
 

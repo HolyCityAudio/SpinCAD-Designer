@@ -36,12 +36,12 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.HPF2PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LPF4PCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SixBandEQCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.BassmanEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.CombFilterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.NotchCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ResonatorCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_HipassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.Shelving_lowpassCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.BassmanEQCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.sixtapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.eighttapCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.DrumDelayCADBlock;
@@ -463,7 +463,16 @@
 		}
 	});
 	mn_filters.add(mntm_SixBandEQ);
-		
+
+	final JMenuItem mntm_BassmanEQ = new JMenuItem("Bassman '59 EQ");
+	mntm_BassmanEQ.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new BassmanEQCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_filters.add(mntm_BassmanEQ);
+
 	final JMenuItem mntm_CombFilter = new JMenuItem("Comb Filter");
 	mntm_CombFilter.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -508,16 +517,7 @@
 		}
 	});
 	mn_filters.add(mntm_Shelving_lowpass);
-		
-	final JMenuItem mntm_BassmanEQ = new JMenuItem("Bassman '59 EQ");
-	mntm_BassmanEQ.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new BassmanEQCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_filters.add(mntm_BassmanEQ);
-		
+
 	JMenu mn_delay = new JMenu("Delay");
 	menuBar.add(mn_delay);
 	
