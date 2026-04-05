@@ -44,6 +44,7 @@ public class ModulationDocTest {
 
         plotChorus(docsDir);
         plotChorusQuad(docsDir);
+        plotChorusQuadLfo(docsDir);
         plotFlanger(docsDir);
         plotPhaser(docsDir);
         plotRingMod(docsDir);
@@ -53,10 +54,17 @@ public class ModulationDocTest {
     }
 
     // === Chorus ===
+    // Show stacked input/output with ~10 cycles of the 440 Hz test tone.
+    // Connect LFO control inputs and increase width for visible detuning.
+    private static final int CHORUS_DISPLAY_CYCLES = 10;
+    private static final int CHORUS_DISPLAY_SAMPLES = (int)(CHORUS_DISPLAY_CYCLES / FREQ * SAMPLE_RATE);
+
     private void plotChorus(File docsDir) throws Exception {
         try {
             File sineWav = generateSineWav(SIM_DURATION, FREQ, 0.8);
             ChorusCADBlock block = new ChorusCADBlock(100, 100);
+            // Use default settings — WLDS initializes SIN0 at rate=50
+            // (~2 Hz), amplitude=64. This gives modest but clean modulation.
 
             short[] stereo = simulate(block, sineWav, null,
                 "Output", null, tempDir);
@@ -66,7 +74,20 @@ public class ModulationDocTest {
                 return;
             }
 
-            plotInputOutput("Chorus", "chorus", sineWav, stereo, docsDir);
+            short[] left = extractChannel(stereo, 0);
+            double[] output = toDouble(left);
+            double[] input = getInputAudio(sineWav);
+
+            int start = Math.min(SKIP_SAMPLES, output.length - CHORUS_DISPLAY_SAMPLES - 1);
+            int end = Math.min(start + CHORUS_DISPLAY_SAMPLES, output.length);
+            double[] inputSlice = Arrays.copyOfRange(input, start, Math.min(end, input.length));
+            double[] outputSlice = Arrays.copyOfRange(output, start, end);
+            double[] timeMs = new double[end - start];
+            for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+            writeStackedWaveformPlot(
+                new File(docsDir, "modulation-chorus.png"),
+                "Chorus", timeMs, inputSlice, outputSlice, "Input", "Output");
         } catch (Exception e) {
             System.err.println("  SKIP Chorus: " + e.getMessage());
         }
@@ -115,6 +136,74 @@ public class ModulationDocTest {
         }
     }
 
+    // === 4-Voice Chorus LFO Phase Diagram ===
+    // Conceptual diagram: 4 LFO phases and corresponding pitch shift.
+    // Pitch shift is proportional to slope (derivative) of the LFO waveform.
+    private void plotChorusQuadLfo(File docsDir) throws Exception {
+        int N = 200;  // points per cycle, show one full LFO cycle
+        double[] phase = new double[N];
+        double[] sin0 = new double[N];
+        double[] sin90 = new double[N];
+        double[] sin180 = new double[N];
+        double[] sin270 = new double[N];
+        double[] pitch0 = new double[N];
+        double[] pitch90 = new double[N];
+        double[] pitch180 = new double[N];
+        double[] pitch270 = new double[N];
+
+        for (int i = 0; i < N; i++) {
+            double angle = 2 * Math.PI * i / N;
+            phase[i] = 360.0 * i / N;  // degrees
+            sin0[i]   = Math.sin(angle);
+            sin90[i]  = Math.sin(angle + Math.PI / 2);
+            sin180[i] = Math.sin(angle + Math.PI);
+            sin270[i] = Math.sin(angle + 3 * Math.PI / 2);
+            // Pitch shift = derivative of LFO = cos at same phase
+            pitch0[i]   = Math.cos(angle);
+            pitch90[i]  = Math.cos(angle + Math.PI / 2);
+            pitch180[i] = Math.cos(angle + Math.PI);
+            pitch270[i] = Math.cos(angle + 3 * Math.PI / 2);
+        }
+
+        int PLOT_W = 360, PLOT_H = 140;
+        int PAD_L = 50, PAD_R = 20, PAD_T = 35, PAD_B = 15;
+        int GAP = 55, LEGEND_H = 40;
+        int totalW = PAD_L + PLOT_W + PAD_R;
+        int totalH = PAD_T + PLOT_H + GAP + PLOT_H + PAD_B + LEGEND_H;
+
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
+
+        g.setFont(new Font("Arial", Font.BOLD, 11));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        String title = "4-Voice Chorus: LFO Phase & Pitch Shift";
+        g.drawString(title, PAD_L + PLOT_W / 2 - fm.stringWidth(title) / 2, 14);
+
+        int py1 = PAD_T;
+        drawPlot(g, PAD_L, py1, PLOT_W, PLOT_H, "LFO Delay Modulation",
+            "LFO Phase (degrees)", "Amplitude", 0, 360, -1.0, 1.0);
+        drawCurve(g, phase, sin0, PAD_L, py1, PLOT_W, PLOT_H, 0, 360, -1.0, 1.0, COLORS[0]);
+        drawCurve(g, phase, sin90, PAD_L, py1, PLOT_W, PLOT_H, 0, 360, -1.0, 1.0, COLORS[1]);
+        drawCurve(g, phase, sin180, PAD_L, py1, PLOT_W, PLOT_H, 0, 360, -1.0, 1.0, COLORS[2]);
+        drawCurve(g, phase, sin270, PAD_L, py1, PLOT_W, PLOT_H, 0, 360, -1.0, 1.0, COLORS[3]);
+
+        int py2 = PAD_T + PLOT_H + GAP;
+        drawPlot(g, PAD_L, py2, PLOT_W, PLOT_H, "Pitch Shift (LFO slope)",
+            "LFO Phase (degrees)", "Shift", 0, 360, -1.0, 1.0);
+        drawCurve(g, phase, pitch0, PAD_L, py2, PLOT_W, PLOT_H, 0, 360, -1.0, 1.0, COLORS[0]);
+        drawCurve(g, phase, pitch90, PAD_L, py2, PLOT_W, PLOT_H, 0, 360, -1.0, 1.0, COLORS[1]);
+        drawCurve(g, phase, pitch180, PAD_L, py2, PLOT_W, PLOT_H, 0, 360, -1.0, 1.0, COLORS[2]);
+        drawCurve(g, phase, pitch270, PAD_L, py2, PLOT_W, PLOT_H, 0, 360, -1.0, 1.0, COLORS[3]);
+
+        drawLegend2x2(g, PAD_L, py2 + PLOT_H + 42,
+            new String[]{"Voice 1 (0\u00B0)", "Voice 2 (90\u00B0)", "Voice 3 (180\u00B0)", "Voice 4 (270\u00B0)"},
+            new String[]{COLORS[0], COLORS[1], COLORS[2], COLORS[3]});
+        g.dispose();
+        ImageIO.write(img, "png", new File(docsDir, "modulation-chorusquad-lfo.png"));
+        System.out.println("  wrote modulation-chorusquad-lfo.png");
+    }
+
     // === Flanger ===
     private void plotFlanger(File docsDir) throws Exception {
         try {
@@ -136,6 +225,7 @@ public class ModulationDocTest {
     }
 
     // === Phaser ===
+    // 3-panel stacked: Input, Mix Out, Wet Out on separate graphs
     private void plotPhaser(File docsDir) throws Exception {
         try {
             File sineWav = generateSineWav(SIM_DURATION, FREQ, 0.8);
@@ -167,15 +257,58 @@ public class ModulationDocTest {
                 timeMs[i] = 1000.0 * i / SAMPLE_RATE;
             }
 
-            writePlot(new File(docsDir, "modulation-phaser.png"),
-                "Phaser", "Time (ms)", "Amplitude",
-                0, timeMs[timeMs.length - 1], -1.0, 1.0,
-                timeMs, new double[][]{curveInput, curveMix, curveWet},
-                new String[]{"Input", "Mix Out", "Wet Out"},
-                new String[]{COLORS[0], COLORS[1], COLORS[2]});
+            writeThreePanelPlot(
+                new File(docsDir, "modulation-phaser.png"),
+                "Phaser", timeMs,
+                curveInput, curveMix, curveWet,
+                "Input", "Mix Out", "Wet Out");
         } catch (Exception e) {
             System.err.println("  SKIP Phaser: " + e.getMessage());
         }
+    }
+
+    /** Write a 3-panel stacked waveform plot (input, mix, wet). */
+    private void writeThreePanelPlot(File file, String title,
+            double[] timeMs, double[] data1, double[] data2, double[] data3,
+            String label1, String label2, String label3) throws IOException {
+        int PLOT_W = 360, PLOT_H = 120;
+        int PAD_L = 50, PAD_R = 20, PAD_T = 35, PAD_B = 15;
+        int GAP = 45, LEGEND_H = 40;
+        int totalW = PAD_L + PLOT_W + PAD_R;
+        int totalH = PAD_T + PLOT_H + GAP + PLOT_H + GAP + PLOT_H + PAD_B + LEGEND_H;
+        double xMin = timeMs[0], xMax = timeMs[timeMs.length - 1];
+
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
+
+        g.setFont(new Font("Arial", Font.BOLD, 11));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(title, PAD_L + PLOT_W / 2 - fm.stringWidth(title) / 2, 14);
+
+        int py1 = PAD_T;
+        drawPlot(g, PAD_L, py1, PLOT_W, PLOT_H, label1,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, data1, PAD_L, py1, PLOT_W, PLOT_H,
+            xMin, xMax, -1.0, 1.0, COLORS[0]);
+
+        int py2 = PAD_T + PLOT_H + GAP;
+        drawPlot(g, PAD_L, py2, PLOT_W, PLOT_H, label2,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, data2, PAD_L, py2, PLOT_W, PLOT_H,
+            xMin, xMax, -1.0, 1.0, COLORS[1]);
+
+        int py3 = PAD_T + 2 * (PLOT_H + GAP);
+        drawPlot(g, PAD_L, py3, PLOT_W, PLOT_H, label3,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, data3, PAD_L, py3, PLOT_W, PLOT_H,
+            xMin, xMax, -1.0, 1.0, COLORS[2]);
+
+        drawLegend(g, PAD_L, py3 + PLOT_H + 42,
+            new String[]{label1, label2, label3},
+            new String[]{COLORS[0], COLORS[1], COLORS[2]});
+        g.dispose();
+        ImageIO.write(img, "png", file);
     }
 
     // === Ring Mod — input/output over/under + spectrum over/under ===
