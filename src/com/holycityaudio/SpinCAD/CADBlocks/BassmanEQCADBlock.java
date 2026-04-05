@@ -218,11 +218,25 @@ public class BassmanEQCADBlock extends FilterCADBlock {
 	}
 
 	/**
+	 * Log taper for bass control — models the logarithmic potentiometer
+	 * used in the real circuit (Yeh/Smith Section 1.2).
+	 * Maps linear slider [0,1] to resistance ratio [0,1] with log curve.
+	 * At slider midpoint (0.5), output is ~0.12 instead of 0.5.
+	 */
+	static double logTaper(double linear) {
+		// Standard audio-taper approximation: (a^x - 1)/(a - 1)
+		// a=50 gives a good match to typical log pots
+		final double a = 50.0;
+		return (Math.pow(a, linear) - 1.0) / (a - 1.0);
+	}
+
+	/**
 	 * Compute the 7 parallel-form parameters for given tone control settings.
+	 * Applies log taper to bass control before computing coefficients.
 	 * Returns { K, R1, p1, R2, p2, R3, p3 }
 	 */
 	double[] computeParams(double tVal, double mVal, double lVal) {
-		double[] sCoeffs = computeSCoeffs(tVal, mVal, lVal);
+		double[] sCoeffs = computeSCoeffs(tVal, mVal, logTaper(lVal));
 		double[] zCoeffs = bilinearTransform(sCoeffs, getSamplerate());
 		return partialFractionExpansion(zCoeffs);
 	}
