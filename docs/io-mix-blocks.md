@@ -193,6 +193,57 @@ of a linear crossfade.
 
 ---
 
+## Crossfade Adj
+
+A unified crossfade with an adjustable midpoint parameter that controls how
+much the two signals overlap at the center of the control range. This single
+block can reproduce the behavior of Crossfade (linear), Crossfade 2 (max
+overlap), and Crossfade 3 (equal-power), plus anything in between.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Audio In 1 | Audio In | First audio source |
+| Audio In 2 | Audio In | Second audio source |
+| Control Input | Control In | Crossfade position (0-1) |
+| Audio Output | Audio Out | Mixed output |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Midpoint | 0.25-1.00 | 0.707 | Gain of both signals at the crossfade center |
+| Input 1 Gain | -12 to 0 dB | -6 dB | Input 1 gain |
+| Input 2 Gain | -12 to 0 dB | -6 dB | Input 2 gain |
+
+### Midpoint curves
+
+The midpoint parameter sets the gain level where the two curves cross at
+control = 0.5. Lower values create a dip at the crossover point; higher
+values create more overlap.
+
+**Midpoint = 0.25** -- deep dip at center, useful for hard cuts with a
+brief crossover region.
+
+![Crossfade Adj midpoint=0.25](images/mix-crossfadeadj-025.png)
+
+**Midpoint = 0.50 (linear)** -- equivalent to Crossfade. Both signals at
+half amplitude at center, resulting in a -6 dB dip for uncorrelated signals.
+
+![Crossfade Adj midpoint=0.50](images/mix-crossfadeadj-050.png)
+
+**Midpoint = 0.707 (equal-power)** -- equivalent to Crossfade 3. Maintains
+perceived loudness through the crossover. Default setting.
+
+![Crossfade Adj midpoint=0.707](images/mix-crossfadeadj-0707.png)
+
+**Midpoint = 1.00 (max overlap)** -- equivalent to Crossfade 2. Both signals
+reach full gain at center, giving the smoothest transition with no level dip
+but a potential +6 dB boost at the crossover point with correlated signals.
+
+![Crossfade Adj midpoint=1.00](images/mix-crossfadeadj-100.png)
+
+---
+
 ## 2:1 Mixer
 
 Sums two audio inputs into a single output with independent gain controls.

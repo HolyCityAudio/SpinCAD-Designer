@@ -55,7 +55,7 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 		this.setResizable(false);
 
 		// Midpoint slider: 25-90 (displayed as 0.25-0.90)
-		midpointSlider = new FineControlSlider(JSlider.HORIZONTAL, 25, 90,
+		midpointSlider = new FineControlSlider(JSlider.HORIZONTAL, 25, 100,
 			(int) Math.round(gCB.getMidpoint() * 100));
 		midpointSlider.addChangeListener(this);
 		midpointField = new JTextField();
@@ -65,7 +65,7 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double val = Double.parseDouble(midpointField.getText().replaceAll("[^0-9.\\-]", ""));
-					val = Math.max(0.25, Math.min(0.90, val));
+					val = Math.max(0.25, Math.min(1.00, val));
 					gCB.setMidpoint(val);
 					midpointSlider.setValue((int) Math.round(val * 100));
 					updateMidpointLabel();

@@ -34,6 +34,7 @@ import com.holycityaudio.SpinCAD.SpinFXBlock;
  * <p>
  * midpoint = 0.5 gives linear crossfade (Crossfade 1 equivalent).
  * midpoint = 0.707 gives constant-power crossfade (Crossfade 3 equivalent).
+ * midpoint = 1.0 gives maximum overlap crossfade (Crossfade 2 equivalent).
  * <p>
  * When midpoint = 0.5, uses a simpler straight-line path (fewer instructions).
  * Otherwise uses a piecewise linear curve with breakpoint at ctrl = 0.5.
