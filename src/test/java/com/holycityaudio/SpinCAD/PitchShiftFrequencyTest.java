@@ -5,18 +5,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.holycityaudio.SpinCAD.CADBlocks.*;
 
 /**
  * Verifies pitch shift blocks produce the expected frequency shift.
- * Feeds a 1 kHz sine wave and checks that:
- *   - Octave up  (+12 semitones) → dominant output near 2 kHz
- *   - Octave down (-12 semitones) → dominant output near 500 Hz
+ * Feeds a 1 kHz sine wave and checks that the dominant output frequency
+ * matches 1000 * 2^(semitones/12) for each setting.
+ *
+ * Tests cover the full slider range (-12 to +19) at key intervals:
+ *   -12 (octave down), -7 (fifth down), +7 (fifth up),
+ *   +12 (octave up), +19 (octave + fifth up)
  *
  * Uses Goertzel single-frequency DFT to measure energy at candidate
  * frequencies in the steady-state portion of the output.
@@ -34,69 +41,68 @@ public class PitchShiftFrequencyTest {
     /** Tolerance: measured peak frequency must be within this ratio of expected. */
     private static final double FREQ_TOLERANCE = 0.15;
 
+    /** Semitone values to test: extremes and interior intervals. */
+    static int[] TEST_SEMITONES = { -12, -7, 7, 12, 19 };
+
     @BeforeAll
     static void setup() {
         System.setProperty("java.awt.headless", "true");
     }
 
-    // ===================== Pitch Shift Fixed =====================
-
-    @Test
-    void pitchShiftFixed_octaveUp() throws Exception {
-        PitchShiftFixedCADBlock block = new PitchShiftFixedCADBlock(100, 100);
-        block.setFreq(12);   // +12 semitones = octave up
-        block.setCents(0);
-        assertDominantFrequency(block, "Pitch Out", 2000.0,
-                "PitchShiftFixed octave up");
+    /** Expected output frequency for a given semitone shift of a 1 kHz input. */
+    static double expectedFreq(int semitones) {
+        return INPUT_FREQ * Math.pow(2.0, semitones / 12.0);
     }
 
-    @Test
-    void pitchShiftFixed_octaveDown() throws Exception {
+    // ===================== Pitch Shift Fixed =====================
+
+    static Stream<Arguments> pitchShiftFixedArgs() {
+        return Arrays.stream(TEST_SEMITONES)
+                .mapToObj(s -> Arguments.of(s, expectedFreq(s)));
+    }
+
+    @ParameterizedTest(name = "PitchShiftFixed {0} semi -> {1} Hz")
+    @MethodSource("pitchShiftFixedArgs")
+    void pitchShiftFixed(int semitones, double expected) throws Exception {
         PitchShiftFixedCADBlock block = new PitchShiftFixedCADBlock(100, 100);
-        block.setFreq(-12);  // -12 semitones = octave down
+        block.setFreq(semitones);
         block.setCents(0);
-        assertDominantFrequency(block, "Pitch Out", 500.0,
-                "PitchShiftFixed octave down");
+        assertDominantFrequency(block, "Pitch Out", expected,
+                "PitchShiftFixed " + semitones + " semi");
     }
 
     // ===================== Pitch Shift Adjustable =====================
 
-    @Test
-    void pitchShiftAdj_octaveUp() throws Exception {
-        Pitch_shift_testCADBlock block = new Pitch_shift_testCADBlock(100, 100);
-        block.setpitchSemitones(12);
-        block.setpitchCents(0);
-        assertDominantFrequency(block, "Pitch Out", 2000.0,
-                "PitchShiftAdj octave up");
+    static Stream<Arguments> pitchShiftAdjArgs() {
+        return Arrays.stream(TEST_SEMITONES)
+                .mapToObj(s -> Arguments.of(s, expectedFreq(s)));
     }
 
-    @Test
-    void pitchShiftAdj_octaveDown() throws Exception {
+    @ParameterizedTest(name = "PitchShiftAdj {0} semi -> {1} Hz")
+    @MethodSource("pitchShiftAdjArgs")
+    void pitchShiftAdj(int semitones, double expected) throws Exception {
         Pitch_shift_testCADBlock block = new Pitch_shift_testCADBlock(100, 100);
-        block.setpitchSemitones(-12);
+        block.setpitchSemitones(semitones);
         block.setpitchCents(0);
-        assertDominantFrequency(block, "Pitch Out", 500.0,
-                "PitchShiftAdj octave down");
+        assertDominantFrequency(block, "Pitch Out", expected,
+                "PitchShiftAdj " + semitones + " semi");
     }
 
     // ===================== Glitch Shift =====================
 
-    @Test
-    void glitchShift_octaveUp() throws Exception {
-        Glitch_shiftCADBlock block = new Glitch_shiftCADBlock(100, 100);
-        block.setpitchSemitones(12);
-        block.setpitchCents(0);
-        assertDominantFrequency(block, "Glitch Out", 2000.0,
-                "GlitchShift octave up");
+    static Stream<Arguments> glitchShiftArgs() {
+        return Arrays.stream(TEST_SEMITONES)
+                .mapToObj(s -> Arguments.of(s, expectedFreq(s)));
     }
 
-    @Test
-    void glitchShift_octaveDown() throws Exception {
+    @ParameterizedTest(name = "GlitchShift {0} semi -> {1} Hz")
+    @MethodSource("glitchShiftArgs")
+    void glitchShift(int semitones, double expected) throws Exception {
         Glitch_shiftCADBlock block = new Glitch_shiftCADBlock(100, 100);
-        block.setpitchSemitones(-12);
+        block.setpitchSemitones(semitones);
         block.setpitchCents(0);
-        assertDominantFrequency(block, "Glitch Out", 500.0,
-                "GlitchShift octave down");
+        assertDominantFrequency(block, "Glitch Out", expected,
+                "GlitchShift " + semitones + " semi");
     }
 
     // ===================== Helper methods =====================

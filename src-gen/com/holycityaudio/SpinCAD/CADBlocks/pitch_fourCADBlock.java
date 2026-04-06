@@ -122,47 +122,19 @@
 			sfxb.skip(ZRO, 8);
 			sfxb.scaleOffset(1.0, -0.25);
 			sfxb.skip(ZRO, 3);
-			double shift4 = 0.0;
-			if(total4 > 0) {
-				shift4 = (16384.0 * Math.pow(2.0, (total4/12.0) - 1))/32768.0;
-			}
-			else
-			{
-				shift4 = (-32.0 * Math.pow(2.0, (-total4/12.0) - 1))/32768.0;
-			}
+			double shift4 = (16384.0 * (Math.pow(2.0, total4/12.0) - 1))/32768.0;
 			sfxb.scaleOffset(0.0, shift4);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.skip(RUN, 8);
-			double shift1 = 0.0;
-			if(total3 > 0) {
-				shift1 = (16384.0 * Math.pow(2.0, (total3/12.0) - 1))/32768.0;
-			}
-			else
-			{
-				shift1 = (-32.0 * Math.pow(2.0, (-total3/12.0) - 1))/32768.0;
-			}
+			double shift1 = (16384.0 * (Math.pow(2.0, total3/12.0) - 1))/32768.0;
 			sfxb.scaleOffset(0.0, shift1);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.skip(RUN, 5);
-			double shift2 = 0.0;
-			if(total2 > 0) {
-				shift2 = (16384.0 * Math.pow(2.0, (total2/12.0) - 1))/32768.0;
-			}
-			else
-			{
-				shift2 = (-32.0 * Math.pow(2.0, (-total2/12.0) - 1))/32768.0;
-			}
+			double shift2 = (16384.0 * (Math.pow(2.0, total2/12.0) - 1))/32768.0;
 			sfxb.scaleOffset(0.0, shift2);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.skip(RUN, 2);
-			double shift3 = 0.0;
-			if(total1 > 0) {
-				shift3 = (16384.0 * Math.pow(2.0, (total1/12.0) - 1))/32768.0;
-			}
-			else
-			{
-				shift3 = (-32.0 * Math.pow(2.0, (-total1/12.0) - 1))/32768.0;
-			}
+			double shift3 = (16384.0 * (Math.pow(2.0, total1/12.0) - 1))/32768.0;
 			sfxb.scaleOffset(0.0, shift3);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.loadAccumulator(input);
@@ -180,47 +152,19 @@
 			sfxb.skip(ZRO, 8);
 			sfxb.scaleOffset(1.0, -0.25);
 			sfxb.skip(ZRO, 3);
-			double shift4 = 0.0;
-			if(total4 > 0) {
-				shift4 = (16384.0 * Math.pow(2.0, (total4/12.0) - 1))/32768.0;
-			}
-			else
-			{
-				shift4 = (-32.0 * Math.pow(2.0, (-total4/12.0) - 1))/32768.0;
-			}
+			double shift4 = (16384.0 * (Math.pow(2.0, total4/12.0) - 1))/32768.0;
 			sfxb.scaleOffset(0.0, shift4);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.skip(RUN, 8);
-			double shift1 = 0.0;
-			if(total3 > 0) {
-				shift1 = (16384.0 * Math.pow(2.0, (total3/12.0) - 1))/32768.0;
-			}
-			else
-			{
-				shift1 = (-32.0 * Math.pow(2.0, (-total3/12.0) - 1))/32768.0;
-			}
+			double shift1 = (16384.0 * (Math.pow(2.0, total3/12.0) - 1))/32768.0;
 			sfxb.scaleOffset(0.0, shift1);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.skip(RUN, 5);
-			double shift2 = 0.0;
-			if(total2 > 0) {
-				shift2 = (16384.0 * Math.pow(2.0, (total2/12.0) - 1))/32768.0;
-			}
-			else
-			{
-				shift2 = (-32.0 * Math.pow(2.0, (-total2/12.0) - 1))/32768.0;
-			}
+			double shift2 = (16384.0 * (Math.pow(2.0, total2/12.0) - 1))/32768.0;
 			sfxb.scaleOffset(0.0, shift2);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.skip(RUN, 2);
-			double shift3 = 0.0;
-			if(total1 > 0) {
-				shift3 = (16384.0 * Math.pow(2.0, (total1/12.0) - 1))/32768.0;
-			}
-			else
-			{
-				shift3 = (-32.0 * Math.pow(2.0, (-total1/12.0) - 1))/32768.0;
-			}
+			double shift3 = (16384.0 * (Math.pow(2.0, total1/12.0) - 1))/32768.0;
 			sfxb.scaleOffset(0.0, shift3);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.loadAccumulator(input);
