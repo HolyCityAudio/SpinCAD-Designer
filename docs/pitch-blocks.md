@@ -6,6 +6,66 @@ frequency offset via Hilbert transform, and arpeggiator-style stepped patterns.
 
 ---
 
+## Delay Buffer Size (Block Size)
+
+All delay-line pitch shift blocks (Pitch Shift Fixed, Pitch Shift Adjustable,
+Glitch Shift, Pitch Four, Arpeggiator) use a segment of the FV-1's delay
+memory as a circular buffer. The ramp LFO sweeps a read pointer through this
+buffer to create the pitch change. The buffer size determines both the quality
+of pitch shifting and the resources consumed.
+
+### Available sizes
+
+| Buffer Size | Duration | Delay Memory Used |
+|-------------|----------|-------------------|
+| 512 samples | 15.6 ms | 1.6% |
+| 1024 samples | 31.3 ms | 3.1% |
+| 2048 samples | 62.5 ms | 6.3% |
+| 4096 samples | 125.0 ms | 12.5% |
+
+(At the FV-1 sample rate of 32768 Hz. Total delay memory is 32768 samples.)
+
+### Tradeoffs
+
+**Larger buffers (2048-4096):**
+- Handle low frequencies cleanly. The buffer holds multiple full cycles of
+  the input, giving the crossfade smooth material to work with.
+- Produce a more natural, artifact-free pitch shift.
+- Use more delay memory, leaving less for delays, reverbs, and other effects
+  in the same patch.
+- Add more latency to the output signal.
+
+**Smaller buffers (512-1024):**
+- Use less delay memory, preserving space for other effects.
+- Lower latency.
+- Produce audible artifacts on low-pitched input because the buffer is too
+  short to hold a full cycle. The crossfade between ramp pointers hits a
+  discontinuity, causing clicks or wavering.
+
+### When the buffer is too small
+
+The pitch shift technique works by sweeping a read pointer through the delay
+buffer with a ramp LFO. Two half-ramps (RPTR and RPTR2) alternate, crossfading
+at the ramp reset point to hide the discontinuity. For this to work cleanly,
+the buffer must hold at least one full wavelength of the input signal.
+
+For a 100 Hz input (period = 10 ms), a 512-sample buffer (15.6 ms) is
+marginally long enough. But when shifting down by an octave, the output
+frequency is 50 Hz (period = 20 ms), and the ramp sweeps the buffer more
+slowly. The crossfade region can land on incomplete cycles, producing
+amplitude modulation and tonal artifacts.
+
+The plot below shows a 100 Hz sine shifted down one octave with a 512-sample
+buffer versus a 4096-sample buffer:
+
+![Block size comparison](images/pitch-blocksize.png)
+
+**Rule of thumb:** use the largest buffer size your delay memory budget allows.
+4096 samples handles guitar fundamentals down to about 25 Hz cleanly. Use 512
+only when delay memory is scarce and the input is high-frequency content.
+
+---
+
 ## Pitch Shift Fixed
 
 A fixed pitch shift using the FV-1's ramp LFO. The shift amount and LFO
@@ -26,7 +86,9 @@ through a delay buffer to create the pitch change.
 | Amp | buffer size | 512 | Delay buffer size (512/1024/2048/4096) |
 | LFO Sel | 0-1 | 0 | Select RMP0 or RMP1 |
 
-![Pitch Shift Fixed output](images/pitch-pitchshiftfixed.png)
+![Pitch Shift Fixed octave up](images/pitch-pitchshiftfixed-up.png)
+
+![Pitch Shift Fixed octave down](images/pitch-pitchshiftfixed-down.png)
 
 ---
 
@@ -54,7 +116,9 @@ control input can modulate it further based on the control range setting.
 When the Pitch Control pin is disconnected, the block uses only the
 fixed pitchCoeff value.
 
-![Pitch Shift Adjustable output](images/pitch-pitch_shift_test.png)
+![Pitch Shift Adjustable octave up](images/pitch-pitch_shift_test-up.png)
+
+![Pitch Shift Adjustable octave down](images/pitch-pitch_shift_test-down.png)
 
 ---
 
@@ -95,7 +159,9 @@ controllable via the Pitch Control input.
 | lfoSel | 0-1 | 0 | Select RMP0 or RMP1 |
 | lfoWidth | samples | 0 | Ramp LFO width setting |
 
-![Glitch Shift Adjustable output](images/pitch-glitch_shift.png)
+![Glitch Shift octave up](images/pitch-glitch_shift-up.png)
+
+![Glitch Shift octave down](images/pitch-glitch_shift-down.png)
 
 ---
 

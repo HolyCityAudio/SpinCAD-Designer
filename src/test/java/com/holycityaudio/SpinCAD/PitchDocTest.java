@@ -13,8 +13,8 @@ import com.holycityaudio.SpinCAD.CADBlocks.*;
 
 /**
  * Generates documentation plots for Pitch menu blocks.
- * Each block is fed a 440 Hz sine wave and the output waveform is plotted
- * to show the pitch shift effect.
+ * Each block shows stacked input/output waveforms to demonstrate
+ * the pitch shift effect.
  */
 public class PitchDocTest {
 
@@ -23,9 +23,7 @@ public class PitchDocTest {
 
     private static final double SIM_DURATION = 0.5;
     private static final double FREQ = 440.0;
-    // Show ~25 ms of output to reveal pitch shift
     private static final int DISPLAY_SAMPLES = (int)(0.025 * SAMPLE_RATE);
-    // Skip initial samples for block to settle
     private static final int SKIP_SAMPLES = (int)(0.2 * SAMPLE_RATE);
 
     @BeforeAll
@@ -40,50 +38,130 @@ public class PitchDocTest {
 
         File sineWav = generateSineWav(SIM_DURATION, FREQ, 0.5);
 
-        // === Pitch Shift Fixed ===
-        plotBlock("pitchshiftfixed", "Pitch Shift Fixed",
-            new PitchShiftFixedCADBlock(100, 100),
-            sineWav, null, "Pitch Out", null, docsDir);
+        // === Pitch Shift Fixed - Octave Up ===
+        PitchShiftFixedCADBlock fixedUp = new PitchShiftFixedCADBlock(100, 100);
+        fixedUp.setFreq(12);
+        plotStacked("pitchshiftfixed-up", "Pitch Shift Fixed - Octave Up",
+            fixedUp, sineWav, null, "Pitch Out", docsDir);
 
-        // === Pitch Shift Adjustable ===
-        plotBlock("pitch_shift_test", "Pitch Shift Adjustable",
-            new Pitch_shift_testCADBlock(100, 100),
-            sineWav, null, "Pitch Out", null, docsDir);
+        // === Pitch Shift Fixed - Octave Down ===
+        PitchShiftFixedCADBlock fixedDown = new PitchShiftFixedCADBlock(100, 100);
+        fixedDown.setFreq(-12);
+        plotStacked("pitchshiftfixed-down", "Pitch Shift Fixed - Octave Down",
+            fixedDown, sineWav, null, "Pitch Out", docsDir);
 
-        // === Octave Up/Down (two outputs) ===
-        plotDualOutput("pitchupdown", "Octave Up/Down",
+        // === Pitch Shift Adjustable - Octave Up ===
+        Pitch_shift_testCADBlock adjUp = new Pitch_shift_testCADBlock(100, 100);
+        adjUp.setpitchSemitones(12);
+        adjUp.setpitchCents(0);
+        plotStacked("pitch_shift_test-up", "Pitch Shift Adjustable - Octave Up",
+            adjUp, sineWav, null, "Pitch Out", docsDir);
+
+        // === Pitch Shift Adjustable - Octave Down ===
+        Pitch_shift_testCADBlock adjDown = new Pitch_shift_testCADBlock(100, 100);
+        adjDown.setpitchSemitones(-12);
+        adjDown.setpitchCents(0);
+        plotStacked("pitch_shift_test-down", "Pitch Shift Adjustable - Octave Down",
+            adjDown, sineWav, null, "Pitch Out", docsDir);
+
+        // === Octave Up/Down (three-panel: input, down, up) ===
+        plotTripleOutput("pitchupdown", "Octave Up/Down",
             new pitchupdownCADBlock(100, 100),
-            sineWav, "Pitch_Down_Out", "Pitch_Up_Out", docsDir);
+            sineWav, null, "Pitch_Down_Out", "Pitch_Up_Out", docsDir);
 
-        // === Glitch Shift Adjustable ===
-        plotBlock("glitch_shift", "Glitch Shift Adjustable",
-            new Glitch_shiftCADBlock(100, 100),
-            sineWav, null, "Glitch Out", null, docsDir);
+        // === Glitch Shift - Octave Up ===
+        Glitch_shiftCADBlock glitchUp = new Glitch_shiftCADBlock(100, 100);
+        glitchUp.setpitchSemitones(12);
+        glitchUp.setpitchCents(0);
+        plotStacked("glitch_shift-up", "Glitch Shift - Octave Up",
+            glitchUp, sineWav, null, "Glitch Out", docsDir);
+
+        // === Glitch Shift - Octave Down ===
+        Glitch_shiftCADBlock glitchDown = new Glitch_shiftCADBlock(100, 100);
+        glitchDown.setpitchSemitones(-12);
+        glitchDown.setpitchCents(0);
+        plotStacked("glitch_shift-down", "Glitch Shift - Octave Down",
+            glitchDown, sineWav, null, "Glitch Out", docsDir);
 
         // === Pitch Four ===
-        plotBlock("pitch_four", "Pitch Four",
+        plotStacked("pitch_four", "Pitch Four",
             new pitch_fourCADBlock(100, 100),
-            sineWav, null, "Pitch_Out", null, docsDir);
+            sineWav, null, "Pitch_Out", docsDir);
 
-        // === Pitch Offset ===
-        plotBlock("pitchoffset", "Pitch Offset",
+        // === Pitch Offset (needs control input for offset amount) ===
+        Map<String, Integer> pitchOffsetCtrl = new HashMap<>();
+        pitchOffsetCtrl.put("Pitch_Offset", 250);
+        plotStacked("pitchoffset", "Pitch Offset",
             new pitchoffsetCADBlock(100, 100),
-            sineWav, null, "Output", null, docsDir);
+            sineWav, pitchOffsetCtrl, "Output", docsDir);
 
-        // === Dual Output Pitch Offset (two outputs) ===
-        plotDualOutput("pitchoffset1_2", "Dual Output Pitch Offset",
+        // === Dual Output Pitch Offset (needs control inputs) ===
+        Map<String, Integer> dualOffsetCtrl = new HashMap<>();
+        dualOffsetCtrl.put("Offset 1", 250);
+        dualOffsetCtrl.put("Offset 2", 500);
+        plotTripleOutput("pitchoffset1_2", "Dual Output Pitch Offset",
             new pitchoffset1_2CADBlock(100, 100),
-            sineWav, "Output 1", "Output 2", docsDir);
+            sineWav, dualOffsetCtrl, "Output 1", "Output 2", docsDir);
 
         // === Arpeggiator ===
-        plotBlock("arpeggiator", "Arpeggiator",
+        plotStacked("arpeggiator", "Arpeggiator",
             new ArpeggiatorCADBlock(100, 100),
-            sineWav, null, "Pitch Out", null, docsDir);
+            sineWav, null, "Pitch Out", docsDir);
 
-        System.out.println("\nAll pitch PNGs written to docs/");
+        // === Block Size Demo ===
+        plotBlockSizeDemo(docsDir);
+
+        System.out.println("\nAll pitch PNGs written to docs/images/");
     }
 
-    private void plotBlock(String fileBase, String title,
+    private void plotStacked(String fileBase, String title,
+            SpinCADBlock block, File inputWav,
+            Map<String, Integer> controlInputs,
+            String outputPin, File docsDir) throws Exception {
+
+        short[] stereo;
+        try {
+            stereo = simulate(block, inputWav, controlInputs,
+                outputPin, null, tempDir);
+        } catch (Exception e) {
+            System.err.println("  SKIP " + title + ": " + e.getMessage());
+            return;
+        }
+        if (stereo == null) {
+            System.err.println("  SKIP " + title + ": simulation returned null");
+            return;
+        }
+
+        short[] left = extractChannel(stereo, 0);
+        double[] output = toDouble(left);
+
+        short[] inputStereo = readWavSamples(inputWav);
+        double[] input = toDouble(extractChannel(inputStereo, 0));
+
+        int start = Math.min(SKIP_SAMPLES, output.length - DISPLAY_SAMPLES - 1);
+        if (start < 0) start = 0;
+        int end = Math.min(start + DISPLAY_SAMPLES,
+            Math.min(output.length, input.length));
+
+        double[] outputSlice = Arrays.copyOfRange(output, start, end);
+        double[] inputSlice = Arrays.copyOfRange(input, start, end);
+
+        int len = Math.min(outputSlice.length, inputSlice.length);
+        if (outputSlice.length != len) outputSlice = Arrays.copyOf(outputSlice, len);
+        if (inputSlice.length != len) inputSlice = Arrays.copyOf(inputSlice, len);
+
+        double[] timeMs = new double[len];
+        for (int i = 0; i < len; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+        writeStackedWaveformPlot(
+            new File(docsDir, "pitch-" + fileBase + ".png"),
+            title, timeMs, inputSlice, outputSlice,
+            "Input (440 Hz)", "Output");
+
+        System.out.println("  wrote pitch-" + fileBase + ".png");
+    }
+
+    private void plotTripleOutput(String fileBase, String title,
             SpinCADBlock block, File inputWav,
             Map<String, Integer> controlInputs,
             String outputPin1, String outputPin2,
@@ -94,66 +172,9 @@ public class PitchDocTest {
             stereo = simulate(block, inputWav, controlInputs,
                 outputPin1, outputPin2, tempDir);
         } catch (Exception e) {
-            System.err.println("  SKIP " + title + ": simulation error - " + e.getMessage());
+            System.err.println("  SKIP " + title + ": " + e.getMessage());
             return;
         }
-
-        if (stereo == null) {
-            System.err.println("  SKIP " + title + ": simulation returned null");
-            return;
-        }
-
-        short[] left = extractChannel(stereo, 0);
-        double[] audio = toDouble(left);
-
-        // Also get input for comparison
-        short[] inputStereo = readWavSamples(inputWav);
-        short[] inputLeft = extractChannel(inputStereo, 0);
-        double[] inputAudio = toDouble(inputLeft);
-
-        int start = Math.min(SKIP_SAMPLES, audio.length - DISPLAY_SAMPLES - 1);
-        if (start < 0) start = 0;
-        int end = Math.min(start + DISPLAY_SAMPLES, audio.length);
-        int inputEnd = Math.min(start + DISPLAY_SAMPLES, inputAudio.length);
-
-        double[] outputCurve = Arrays.copyOfRange(audio, start, end);
-        double[] inputCurve = Arrays.copyOfRange(inputAudio, start, inputEnd);
-
-        // Ensure both curves are same length
-        int len = Math.min(outputCurve.length, inputCurve.length);
-        if (outputCurve.length != len) outputCurve = Arrays.copyOf(outputCurve, len);
-        if (inputCurve.length != len) inputCurve = Arrays.copyOf(inputCurve, len);
-
-        double[] timeMs = new double[len];
-        for (int i = 0; i < len; i++) {
-            timeMs[i] = 1000.0 * i / SAMPLE_RATE;
-        }
-
-        writePlot(new File(docsDir, "pitch-" + fileBase + ".png"),
-            title, "Time (ms)", "Amplitude",
-            0, timeMs[timeMs.length - 1], -1.0, 1.0,
-            timeMs,
-            new double[][]{inputCurve, outputCurve},
-            new String[]{"Input", "Output"},
-            new String[]{COLORS[0], COLORS[1]});
-
-        System.out.println("  wrote pitch-" + fileBase + ".png");
-    }
-
-    private void plotDualOutput(String fileBase, String title,
-            SpinCADBlock block, File inputWav,
-            String outputPin1, String outputPin2,
-            File docsDir) throws Exception {
-
-        short[] stereo;
-        try {
-            stereo = simulate(block, inputWav, null,
-                outputPin1, outputPin2, tempDir);
-        } catch (Exception e) {
-            System.err.println("  SKIP " + title + ": simulation error - " + e.getMessage());
-            return;
-        }
-
         if (stereo == null) {
             System.err.println("  SKIP " + title + ": simulation returned null");
             return;
@@ -164,30 +185,99 @@ public class PitchDocTest {
         double[] out1 = toDouble(left);
         double[] out2 = toDouble(right);
 
+        short[] inputStereo = readWavSamples(inputWav);
+        double[] input = toDouble(extractChannel(inputStereo, 0));
+
         int start = Math.min(SKIP_SAMPLES, out1.length - DISPLAY_SAMPLES - 1);
         if (start < 0) start = 0;
-        int end = Math.min(start + DISPLAY_SAMPLES, out1.length);
+        int minLen = Math.min(Math.min(out1.length, out2.length), input.length);
+        int end = Math.min(start + DISPLAY_SAMPLES, minLen);
 
-        double[] curve1 = Arrays.copyOfRange(out1, start, end);
-        double[] curve2 = Arrays.copyOfRange(out2, start, end);
+        double[] inputSlice = Arrays.copyOfRange(input, start, end);
+        double[] slice1 = Arrays.copyOfRange(out1, start, end);
+        double[] slice2 = Arrays.copyOfRange(out2, start, end);
 
-        int len = Math.min(curve1.length, curve2.length);
-        if (curve1.length != len) curve1 = Arrays.copyOf(curve1, len);
-        if (curve2.length != len) curve2 = Arrays.copyOf(curve2, len);
+        int len = Math.min(Math.min(inputSlice.length, slice1.length), slice2.length);
+        if (inputSlice.length != len) inputSlice = Arrays.copyOf(inputSlice, len);
+        if (slice1.length != len) slice1 = Arrays.copyOf(slice1, len);
+        if (slice2.length != len) slice2 = Arrays.copyOf(slice2, len);
 
         double[] timeMs = new double[len];
-        for (int i = 0; i < len; i++) {
-            timeMs[i] = 1000.0 * i / SAMPLE_RATE;
-        }
+        for (int i = 0; i < len; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
 
-        writePlot(new File(docsDir, "pitch-" + fileBase + ".png"),
-            title, "Time (ms)", "Amplitude",
-            0, timeMs[timeMs.length - 1], -1.0, 1.0,
-            timeMs,
-            new double[][]{curve1, curve2},
-            new String[]{outputPin1, outputPin2},
-            new String[]{COLORS[0], COLORS[1]});
+        writeThreePanelWaveformPlot(
+            new File(docsDir, "pitch-" + fileBase + ".png"),
+            title, timeMs, inputSlice, slice1, slice2,
+            "Input (440 Hz)", outputPin1, outputPin2);
 
         System.out.println("  wrote pitch-" + fileBase + ".png");
+    }
+
+    /**
+     * Demonstrates the effect of buffer size on low-frequency pitch shifting.
+     * Compares a 512-sample buffer (too small) against a 4096-sample buffer
+     * for an octave-down shift of a 100 Hz input.
+     */
+    private void plotBlockSizeDemo(File docsDir) throws Exception {
+        double lowFreq = 100.0;
+        File lowWav = generateSineWav(SIM_DURATION, lowFreq, 0.5);
+        int displaySamples = (int)(0.050 * SAMPLE_RATE); // 50 ms for low freq
+
+        // Small buffer (512 samples) - octave down
+        PitchShiftFixedCADBlock smallBlock = new PitchShiftFixedCADBlock(100, 100);
+        smallBlock.setFreq(-12);
+        smallBlock.setAmp(0); // index 0 = 512 samples
+
+        // Large buffer (4096 samples) - octave down
+        PitchShiftFixedCADBlock largeBlock = new PitchShiftFixedCADBlock(100, 100);
+        largeBlock.setFreq(-12);
+        // default amp = 4096
+
+        short[] smallStereo, largeStereo;
+        try {
+            smallStereo = simulate(smallBlock, lowWav, null,
+                "Pitch Out", null, tempDir);
+            largeStereo = simulate(largeBlock, lowWav, null,
+                "Pitch Out", null, tempDir);
+        } catch (Exception e) {
+            System.err.println("  SKIP block size demo: " + e.getMessage());
+            return;
+        }
+
+        if (smallStereo == null || largeStereo == null) {
+            System.err.println("  SKIP block size demo: simulation returned null");
+            return;
+        }
+
+        short[] inputStereo = readWavSamples(lowWav);
+        double[] input = toDouble(extractChannel(inputStereo, 0));
+        double[] smallOut = toDouble(extractChannel(smallStereo, 0));
+        double[] largeOut = toDouble(extractChannel(largeStereo, 0));
+
+        int start = Math.min(SKIP_SAMPLES, smallOut.length - displaySamples - 1);
+        if (start < 0) start = 0;
+        int minLen = Math.min(Math.min(input.length, smallOut.length), largeOut.length);
+        int end = Math.min(start + displaySamples, minLen);
+
+        double[] inputSlice = Arrays.copyOfRange(input, start, end);
+        double[] smallSlice = Arrays.copyOfRange(smallOut, start, end);
+        double[] largeSlice = Arrays.copyOfRange(largeOut, start, end);
+
+        int len = Math.min(Math.min(inputSlice.length, smallSlice.length),
+            largeSlice.length);
+        if (inputSlice.length != len) inputSlice = Arrays.copyOf(inputSlice, len);
+        if (smallSlice.length != len) smallSlice = Arrays.copyOf(smallSlice, len);
+        if (largeSlice.length != len) largeSlice = Arrays.copyOf(largeSlice, len);
+
+        double[] timeMs = new double[len];
+        for (int i = 0; i < len; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+        writeThreePanelWaveformPlot(
+            new File(docsDir, "pitch-blocksize.png"),
+            "Block Size: 100 Hz Octave Down", timeMs,
+            inputSlice, smallSlice, largeSlice,
+            "Input (100 Hz)", "512 samples (too small)", "4096 samples");
+
+        System.out.println("  wrote pitch-blocksize.png");
     }
 }

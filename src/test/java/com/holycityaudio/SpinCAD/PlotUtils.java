@@ -228,6 +228,90 @@ public class PlotUtils {
         }
     }
 
+    // ==================== Stacked waveform plots ====================
+
+    /** Write a 2-panel stacked waveform plot (top and bottom panels). */
+    public static void writeStackedWaveformPlot(File file, String title,
+            double[] timeMs, double[] topData, double[] bottomData,
+            String topLabel, String bottomLabel) throws IOException {
+        int plotW = 360, plotH = 160;
+        int padL = 50, padR = 20, padT = 35, padB = 15;
+        int gap = 55, legendH = 40;
+        int totalW = padL + plotW + padR;
+        int totalH = padT + plotH + gap + plotH + padB + legendH;
+        double xMin = timeMs[0], xMax = timeMs[timeMs.length - 1];
+
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
+
+        g.setFont(new Font("Arial", Font.BOLD, 11));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(title, padL + plotW / 2 - fm.stringWidth(title) / 2, 14);
+
+        int py1 = padT;
+        drawPlot(g, padL, py1, plotW, plotH, topLabel,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, topData, padL, py1, plotW, plotH,
+            xMin, xMax, -1.0, 1.0, COLORS[0]);
+
+        int py2 = padT + plotH + gap;
+        drawPlot(g, padL, py2, plotW, plotH, bottomLabel,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, bottomData, padL, py2, plotW, plotH,
+            xMin, xMax, -1.0, 1.0, COLORS[1]);
+
+        drawLegend(g, padL, py2 + plotH + 52,
+            new String[]{topLabel, bottomLabel},
+            new String[]{COLORS[0], COLORS[1]});
+        g.dispose();
+        ImageIO.write(img, "png", file);
+    }
+
+    /** Write a 3-panel stacked waveform plot. */
+    public static void writeThreePanelWaveformPlot(File file, String title,
+            double[] timeMs, double[] data1, double[] data2, double[] data3,
+            String label1, String label2, String label3) throws IOException {
+        int plotW = 360, plotH = 120;
+        int padL = 50, padR = 20, padT = 35, padB = 15;
+        int gap = 55, legendH = 40;
+        int totalW = padL + plotW + padR;
+        int totalH = padT + 3 * plotH + 2 * gap + padB + legendH;
+        double xMin = timeMs[0], xMax = timeMs[timeMs.length - 1];
+
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
+
+        g.setFont(new Font("Arial", Font.BOLD, 11));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(title, padL + plotW / 2 - fm.stringWidth(title) / 2, 14);
+
+        int py1 = padT;
+        drawPlot(g, padL, py1, plotW, plotH, label1,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, data1, padL, py1, plotW, plotH,
+            xMin, xMax, -1.0, 1.0, COLORS[0]);
+
+        int py2 = padT + plotH + gap;
+        drawPlot(g, padL, py2, plotW, plotH, label2,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, data2, padL, py2, plotW, plotH,
+            xMin, xMax, -1.0, 1.0, COLORS[1]);
+
+        int py3 = padT + 2 * (plotH + gap);
+        drawPlot(g, padL, py3, plotW, plotH, label3,
+            "Time (ms)", "Amplitude", xMin, xMax, -1.0, 1.0);
+        drawCurve(g, timeMs, data3, padL, py3, plotW, plotH,
+            xMin, xMax, -1.0, 1.0, COLORS[2]);
+
+        drawLegend(g, padL, py3 + plotH + 52,
+            new String[]{label1, label2, label3},
+            new String[]{COLORS[0], COLORS[1], COLORS[2]});
+        g.dispose();
+        ImageIO.write(img, "png", file);
+    }
+
     // ==================== WAV generation ====================
 
     /** Generate a stereo sine wave WAV at given frequency and amplitude. */
