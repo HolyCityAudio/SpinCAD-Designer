@@ -54,43 +54,37 @@ public class ModulationDocTest {
     }
 
     // === Chorus ===
-    // Show stacked input/output with ~10 cycles of the 440 Hz test tone.
-    // Connect LFO control inputs and increase width for visible detuning.
-    private static final int CHORUS_DISPLAY_CYCLES = 10;
-    private static final int CHORUS_DISPLAY_SAMPLES = (int)(CHORUS_DISPLAY_CYCLES / FREQ * SAMPLE_RATE);
-
+    // Synthetic illustration: 10 cycles of input vs. chorused output.
+    // The simulator's WLDS Ka=64 produces too little detuning for a visible
+    // cycle mismatch, so we compute the chorus output analytically:
+    //   output(t) = input(t - d(t))  where d(t) = center + A*sin(2*pi*f_lfo*t)
+    // Pitch shift = 1 - d'(t)/Fs, proportional to LFO slope.
     private void plotChorus(File docsDir) throws Exception {
-        try {
-            File sineWav = generateSineWav(SIM_DURATION, FREQ, 0.8);
-            ChorusCADBlock block = new ChorusCADBlock(100, 100);
-            // Use default settings — WLDS initializes SIN0 at rate=50
-            // (~2 Hz), amplitude=64. This gives modest but clean modulation.
+        int cycles = 10;
+        double lfoHz = 2.0;         // typical chorus LFO rate
+        double delayCenterMs = 8.0; // 8 ms base delay
+        double sweepMs = 1.5;       // ±1.5 ms modulation depth
+        double amp = 0.8;
 
-            short[] stereo = simulate(block, sineWav, null,
-                "Output", null, tempDir);
+        // generate enough to show 10 cycles with visible mismatch
+        int displaySamples = (int)(cycles / FREQ * SAMPLE_RATE);
+        double[] inputWave = new double[displaySamples];
+        double[] outputWave = new double[displaySamples];
+        double[] timeMs = new double[displaySamples];
 
-            if (stereo == null) {
-                System.err.println("  SKIP Chorus: simulation failed");
-                return;
-            }
-
-            short[] left = extractChannel(stereo, 0);
-            double[] output = toDouble(left);
-            double[] input = getInputAudio(sineWav);
-
-            int start = Math.min(SKIP_SAMPLES, output.length - CHORUS_DISPLAY_SAMPLES - 1);
-            int end = Math.min(start + CHORUS_DISPLAY_SAMPLES, output.length);
-            double[] inputSlice = Arrays.copyOfRange(input, start, Math.min(end, input.length));
-            double[] outputSlice = Arrays.copyOfRange(output, start, end);
-            double[] timeMs = new double[end - start];
-            for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
-
-            writeStackedWaveformPlot(
-                new File(docsDir, "modulation-chorus.png"),
-                "Chorus", timeMs, inputSlice, outputSlice, "Input", "Output");
-        } catch (Exception e) {
-            System.err.println("  SKIP Chorus: " + e.getMessage());
+        for (int i = 0; i < displaySamples; i++) {
+            double t = (double) i / SAMPLE_RATE;
+            timeMs[i] = t * 1000.0;
+            inputWave[i] = amp * Math.sin(2 * Math.PI * FREQ * t);
+            // chorus reads from a modulated delay tap
+            double delaySec = (delayCenterMs + sweepMs * Math.sin(2 * Math.PI * lfoHz * t)) / 1000.0;
+            double tDelayed = t - delaySec;
+            outputWave[i] = amp * Math.sin(2 * Math.PI * FREQ * tDelayed);
         }
+
+        writeStackedWaveformPlot(
+            new File(docsDir, "modulation-chorus.png"),
+            "Chorus", timeMs, inputWave, outputWave, "Input", "Output");
     }
 
     // === Chorus Quad (4-voice) ===
@@ -205,6 +199,7 @@ public class ModulationDocTest {
     }
 
     // === Flanger ===
+    // Stacked input/output like chorus
     private void plotFlanger(File docsDir) throws Exception {
         try {
             File sineWav = generateSineWav(SIM_DURATION, FREQ, 0.8);
@@ -218,7 +213,20 @@ public class ModulationDocTest {
                 return;
             }
 
-            plotInputOutput("Flanger", "flanger", sineWav, stereo, docsDir);
+            short[] left = extractChannel(stereo, 0);
+            double[] output = toDouble(left);
+            double[] input = getInputAudio(sineWav);
+
+            int start = Math.min(SKIP_SAMPLES, output.length - DISPLAY_SAMPLES - 1);
+            int end = Math.min(start + DISPLAY_SAMPLES, output.length);
+            double[] inputSlice = Arrays.copyOfRange(input, start, Math.min(end, input.length));
+            double[] outputSlice = Arrays.copyOfRange(output, start, end);
+            double[] timeMs = new double[end - start];
+            for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+            writeStackedWaveformPlot(
+                new File(docsDir, "modulation-flanger.png"),
+                "Flanger", timeMs, inputSlice, outputSlice, "Input", "Output");
         } catch (Exception e) {
             System.err.println("  SKIP Flanger: " + e.getMessage());
         }
@@ -480,6 +488,7 @@ public class ModulationDocTest {
     }
 
     // === Servo Flanger ===
+    // Stacked input/output
     private void plotServo(File docsDir) throws Exception {
         try {
             File sineWav = generateSineWav(SIM_DURATION, FREQ, 0.8);
@@ -493,7 +502,20 @@ public class ModulationDocTest {
                 return;
             }
 
-            plotInputOutput("Servo Flanger", "servo", sineWav, stereo, docsDir);
+            short[] left = extractChannel(stereo, 0);
+            double[] output = toDouble(left);
+            double[] input = getInputAudio(sineWav);
+
+            int start = Math.min(SKIP_SAMPLES, output.length - DISPLAY_SAMPLES - 1);
+            int end = Math.min(start + DISPLAY_SAMPLES, output.length);
+            double[] inputSlice = Arrays.copyOfRange(input, start, Math.min(end, input.length));
+            double[] outputSlice = Arrays.copyOfRange(output, start, end);
+            double[] timeMs = new double[end - start];
+            for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+            writeStackedWaveformPlot(
+                new File(docsDir, "modulation-servo.png"),
+                "Servo Flanger", timeMs, inputSlice, outputSlice, "Input", "Output");
         } catch (Exception e) {
             System.err.println("  SKIP Servo: " + e.getMessage());
         }
