@@ -55,6 +55,8 @@ public class StutterControlPanel extends spinCADControlPanel {
 	private JDialog frame;
 	private StutterCADBlock gCB;
 	// declare the controls
+	FineControlSlider inputGainSlider;
+	JTextField  inputGainField;
 	FineControlSlider delayLengthSlider;
 	JTextField  delayLengthField;
 	FineControlSlider fadeTimeFiltSlider;
@@ -70,6 +72,49 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 				frame = new JDialog(SpinCADFrame.getInstance(), "Stutter");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getinputGain()) * 10.0));
+						inputGainSlider.addChangeListener(new StutterListener());
+						inputGainField = new JTextField();
+						inputGainField.setHorizontalAlignment(JTextField.CENTER);
+						Border inputGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						inputGainField.setBorder(inputGainBorder1);
+						inputGainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(inputGainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 10.0);
+						sliderVal = Math.max(inputGainSlider.getMinimum(), Math.min(inputGainSlider.getMaximum(), sliderVal));
+						inputGainSlider.setValue(sliderVal);
+						gCB.setinputGain((double) sliderVal / 10.0);
+									updateinputGainLabel();
+								} catch (NumberFormatException ex) {
+									updateinputGainLabel();
+								}
+							}
+						});
+						updateinputGainLabel();
+			
+						Border inputGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel inputGaininnerPanel = new JPanel();
+			
+						inputGaininnerPanel.setLayout(new BoxLayout(inputGaininnerPanel, BoxLayout.Y_AXIS));
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGaininnerPanel.add(inputGainField);
+						inputGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						inputGaininnerPanel.add(inputGainSlider);
+						inputGaininnerPanel.setBorder(inputGainborder2);
+			
+						frame.add(inputGaininnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
@@ -168,6 +213,10 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class StutterListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
+			if(ce.getSource() == inputGainSlider) {
+			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));			    					
+				updateinputGainLabel();
+			}
 			if(ce.getSource() == delayLengthSlider) {
 			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
 				updatedelayLengthLabel();
@@ -193,6 +242,9 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
+		private void updateinputGainLabel() {
+		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
+		}		
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
 		}		

@@ -268,9 +268,9 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		paramPanel.add(makeSliderRow("Input Bandwidth", inputBwField, inputBwSlider));
 		updateInputBwLabel();
 
-		// Input Gain: -24 to 0 in slider units = -12.0 to 0.0 dB in 0.5 dB steps
-		inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, -24, 0,
-				(int)(gCB.getInputGain() * 2));
+		// Input Gain: -120 to 0 in slider units = -12.0 to 0.0 dB in 0.1 dB steps
+		inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, -120, 0,
+				(int)(gCB.getInputGain() * 10));
 		inputGainSlider.addChangeListener(this);
 		inputGainField = new JTextField();
 		inputGainField.setEditable(false);
@@ -493,7 +493,7 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 			gCB.setDiffusion(diffusionSlider.getValue() / 100.0);
 			updateDiffusionLabel();
 		} else if (src == inputGainSlider) {
-			gCB.setInputGain(inputGainSlider.getValue() / 2.0);
+			gCB.setInputGain(inputGainSlider.getValue() / 10.0);
 			updateInputGainLabel();
 		} else if (src == shimmerLevelSlider) {
 			gCB.setShimmerLevel(shimmerLevelSlider.getValue() / 100.0);

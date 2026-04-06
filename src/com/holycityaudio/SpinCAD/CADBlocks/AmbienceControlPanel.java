@@ -34,9 +34,11 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListener {
+	FineControlSlider inputGainSlider;
 	JSlider toneSlider;
 	JSlider decaySlider;
 	JSlider filterFreqSlider;
+	JTextField inputGainField;
 	JTextField toneField;
 	JTextField decayField;
 	JTextField filterFreqField;
@@ -49,6 +51,10 @@ class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListe
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 
+		inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, -120, 0,
+				(int) Math.round(acb.getInputGain() * 10));
+		inputGainSlider.addChangeListener(this);
+
 		toneSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 100, 0);
 		toneSlider.addChangeListener(this);
 
@@ -58,6 +64,23 @@ class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListe
 		// slider range 2000-8000 Hz, step 100 Hz
 		filterFreqSlider = new FineControlSlider(JSlider.HORIZONTAL, 2000, 8000, 4000);
 		filterFreqSlider.addChangeListener(this);
+
+		inputGainField = new JTextField();
+		inputGainField.setHorizontalAlignment(JTextField.CENTER);
+		inputGainField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					double val = Double.parseDouble(inputGainField.getText().replaceAll("[^0-9.\\-]", ""));
+					val = Math.max(-12.0, Math.min(0.0, val));
+					block.setInputGain(val);
+					inputGainSlider.setValue((int) Math.round(val * 10));
+					updateInputGainLabel();
+				} catch (NumberFormatException ex) {
+					updateInputGainLabel();
+				}
+			}
+		});
 
 		toneField = new JTextField();
 		toneField.setHorizontalAlignment(JTextField.CENTER);
@@ -110,6 +133,8 @@ class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListe
 			}
 		});
 
+		this.getContentPane().add(inputGainField);
+		this.getContentPane().add(inputGainSlider);
 		this.getContentPane().add(toneField);
 		this.getContentPane().add(toneSlider);
 		this.getContentPane().add(decayField);
@@ -121,6 +146,7 @@ class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListe
 		decaySlider.setValue((int) Math.round(acb.getDecay() * 100.0));
 		filterFreqSlider.setValue((int) Math.round(acb.getFilterFreq()));
 
+		updateInputGainLabel();
 		updateToneLabel();
 		updateDecayLabel();
 		updateFilterFreqLabel();
@@ -135,7 +161,10 @@ class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListe
 	}
 
 	public void stateChanged(ChangeEvent ce) {
-		if (ce.getSource() == toneSlider) {
+		if (ce.getSource() == inputGainSlider) {
+			block.setInputGain(inputGainSlider.getValue() / 10.0);
+			updateInputGainLabel();
+		} else if (ce.getSource() == toneSlider) {
 			block.setTone((double) toneSlider.getValue() / 100.0);
 			updateToneLabel();
 		} else if (ce.getSource() == decaySlider) {
@@ -145,6 +174,10 @@ class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListe
 			block.setFilterFreq((double) filterFreqSlider.getValue());
 			updateFilterFreqLabel();
 		}
+	}
+
+	private void updateInputGainLabel() {
+		inputGainField.setText(String.format("Input Gain: %4.1f dB", block.getInputGain()));
 	}
 
 	private void updateToneLabel() {

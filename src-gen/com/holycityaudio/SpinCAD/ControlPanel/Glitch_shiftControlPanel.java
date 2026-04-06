@@ -55,8 +55,10 @@ public class Glitch_shiftControlPanel extends spinCADControlPanel {
 	private JDialog frame;
 	private Glitch_shiftCADBlock gCB;
 	// declare the controls
-	FineControlSlider pitchCoeffSlider;
-	JTextField  pitchCoeffField;
+	FineControlSlider pitchSemitonesSlider;
+	JTextField  pitchSemitonesField;
+	FineControlSlider pitchCentsSlider;
+	JTextField  pitchCentsField;
 	private JComboBox <String> lfoSelComboBox; 
 	private JComboBox <String> lfoWidthComboBox; 
 
@@ -73,40 +75,77 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					pitchCoeffSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-8192 * 1.0),(int) (32767 * 1.0), (int) (gCB.getpitchCoeff() * 1.0));
-						pitchCoeffSlider.addChangeListener(new Glitch_shiftListener());
-						pitchCoeffField = new JTextField();
-						pitchCoeffField.setHorizontalAlignment(JTextField.CENTER);
-						Border pitchCoeffBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						pitchCoeffField.setBorder(pitchCoeffBorder1);
-						pitchCoeffField.addActionListener(new java.awt.event.ActionListener() {
+					pitchSemitonesSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 1.0),(int) (19 * 1.0), (int) (gCB.getpitchSemitones() * 1.0));
+						pitchSemitonesSlider.addChangeListener(new Glitch_shiftListener());
+						pitchSemitonesField = new JTextField();
+						pitchSemitonesField.setHorizontalAlignment(JTextField.CENTER);
+						Border pitchSemitonesBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						pitchSemitonesField.setBorder(pitchSemitonesBorder1);
+						pitchSemitonesField.addActionListener(new java.awt.event.ActionListener() {
 							@Override
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
-									double val = Double.parseDouble(pitchCoeffField.getText().replaceAll("[^0-9.\\-]", ""));
+									double val = Double.parseDouble(pitchSemitonesField.getText().replaceAll("[^0-9.\\-]", ""));
 						int sliderVal = (int) Math.round(val * 1.0);
-						sliderVal = Math.max(pitchCoeffSlider.getMinimum(), Math.min(pitchCoeffSlider.getMaximum(), sliderVal));
-						pitchCoeffSlider.setValue(sliderVal);
-						gCB.setpitchCoeff((double) sliderVal / 1.0);
-									updatepitchCoeffLabel();
+						sliderVal = Math.max(pitchSemitonesSlider.getMinimum(), Math.min(pitchSemitonesSlider.getMaximum(), sliderVal));
+						pitchSemitonesSlider.setValue(sliderVal);
+						gCB.setpitchSemitones((double) sliderVal / 1.0);
+									updatepitchSemitonesLabel();
 								} catch (NumberFormatException ex) {
-									updatepitchCoeffLabel();
+									updatepitchSemitonesLabel();
 								}
 							}
 						});
-						updatepitchCoeffLabel();
+						updatepitchSemitonesLabel();
 			
-						Border pitchCoeffborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel pitchCoeffinnerPanel = new JPanel();
+						Border pitchSemitonesborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel pitchSemitonesinnerPanel = new JPanel();
 			
-						pitchCoeffinnerPanel.setLayout(new BoxLayout(pitchCoeffinnerPanel, BoxLayout.Y_AXIS));
-						pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
-						pitchCoeffinnerPanel.add(pitchCoeffField);
-						pitchCoeffinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
-						pitchCoeffinnerPanel.add(pitchCoeffSlider);
-						pitchCoeffinnerPanel.setBorder(pitchCoeffborder2);
+						pitchSemitonesinnerPanel.setLayout(new BoxLayout(pitchSemitonesinnerPanel, BoxLayout.Y_AXIS));
+						pitchSemitonesinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pitchSemitonesinnerPanel.add(pitchSemitonesField);
+						pitchSemitonesinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pitchSemitonesinnerPanel.add(pitchSemitonesSlider);
+						pitchSemitonesinnerPanel.setBorder(pitchSemitonesborder2);
 			
-						frame.add(pitchCoeffinnerPanel);
+						frame.add(pitchSemitonesinnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					pitchCentsSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-99 * 1.0),(int) (99 * 1.0), (int) (gCB.getpitchCents() * 1.0));
+						pitchCentsSlider.addChangeListener(new Glitch_shiftListener());
+						pitchCentsField = new JTextField();
+						pitchCentsField.setHorizontalAlignment(JTextField.CENTER);
+						Border pitchCentsBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						pitchCentsField.setBorder(pitchCentsBorder1);
+						pitchCentsField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(pitchCentsField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1.0);
+						sliderVal = Math.max(pitchCentsSlider.getMinimum(), Math.min(pitchCentsSlider.getMaximum(), sliderVal));
+						pitchCentsSlider.setValue(sliderVal);
+						gCB.setpitchCents((double) sliderVal / 1.0);
+									updatepitchCentsLabel();
+								} catch (NumberFormatException ex) {
+									updatepitchCentsLabel();
+								}
+							}
+						});
+						updatepitchCentsLabel();
+			
+						Border pitchCentsborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel pitchCentsinnerPanel = new JPanel();
+			
+						pitchCentsinnerPanel.setLayout(new BoxLayout(pitchCentsinnerPanel, BoxLayout.Y_AXIS));
+						pitchCentsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pitchCentsinnerPanel.add(pitchCentsField);
+						pitchCentsinnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						pitchCentsinnerPanel.add(pitchCentsSlider);
+						pitchCentsinnerPanel.setBorder(pitchCentsborder2);
+			
+						frame.add(pitchCentsinnerPanel);
 				lfoSelComboBox = new JComboBox <String> ();
 				lfoSelComboBox.addItem("Ramp 0");
 				lfoSelComboBox.addItem("Ramp 1");
@@ -135,9 +174,13 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class Glitch_shiftListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
-			if(ce.getSource() == pitchCoeffSlider) {
-			gCB.setpitchCoeff((double) (pitchCoeffSlider.getValue()/1.0));
-				updatepitchCoeffLabel();
+			if(ce.getSource() == pitchSemitonesSlider) {
+			gCB.setpitchSemitones((double) (pitchSemitonesSlider.getValue()/1.0));
+				updatepitchSemitonesLabel();
+			}
+			if(ce.getSource() == pitchCentsSlider) {
+			gCB.setpitchCents((double) (pitchCentsSlider.getValue()/1.0));
+				updatepitchCentsLabel();
 			}
 			}
 		}
@@ -162,8 +205,11 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 			}
 			}
 		}
-		private void updatepitchCoeffLabel() {
-		pitchCoeffField.setText("Pitch Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
+		private void updatepitchSemitonesLabel() {
+		pitchSemitonesField.setText("Pitch (semitones) " + String.format("%4.0f", gCB.getpitchSemitones()));		
+		}		
+		private void updatepitchCentsLabel() {
+		pitchCentsField.setText("Cents " + String.format("%4.0f", gCB.getpitchCents()));		
 		}		
 		
 		class MyWindowListener implements WindowListener

@@ -82,8 +82,8 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						inputGainlSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGainl())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						inputGainlSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getinputGainl()) * 1.0));
 						inputGainlSlider.addChangeListener(new Ted_Rev_ReverbListener());
 						inputGainlField = new JTextField();
 						inputGainlField.setHorizontalAlignment(JTextField.CENTER);
@@ -94,10 +94,10 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(inputGainlField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(inputGainlSlider.getMinimum(), Math.min(inputGainlSlider.getMaximum(), sliderVal));
 						inputGainlSlider.setValue(sliderVal);
-						gCB.setinputGainl((double) sliderVal);
+						gCB.setinputGainl((double) sliderVal / 1.0);
 									updateinputGainlLabel();
 								} catch (NumberFormatException ex) {
 									updateinputGainlLabel();
@@ -125,8 +125,8 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						inputGainrSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGainr())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						inputGainrSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getinputGainr()) * 1.0));
 						inputGainrSlider.addChangeListener(new Ted_Rev_ReverbListener());
 						inputGainrField = new JTextField();
 						inputGainrField.setHorizontalAlignment(JTextField.CENTER);
@@ -137,10 +137,10 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(inputGainrField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(inputGainrSlider.getMinimum(), Math.min(inputGainrSlider.getMaximum(), sliderVal));
 						inputGainrSlider.setValue(sliderVal);
-						gCB.setinputGainr((double) sliderVal);
+						gCB.setinputGainr((double) sliderVal / 1.0);
 									updateinputGainrLabel();
 								} catch (NumberFormatException ex) {
 									updateinputGainrLabel();

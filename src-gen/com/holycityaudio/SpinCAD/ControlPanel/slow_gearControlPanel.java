@@ -76,8 +76,8 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						threshSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getthresh())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						threshSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 1.0),(int) (0.0 * 1.0), (int) (20 * Math.log10(gCB.getthresh()) * 1.0));
 						threshSlider.addChangeListener(new slow_gearListener());
 						threshField = new JTextField();
 						threshField.setHorizontalAlignment(JTextField.CENTER);
@@ -88,10 +88,10 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(threshField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(threshSlider.getMinimum(), Math.min(threshSlider.getMaximum(), sliderVal));
 						threshSlider.setValue(sliderVal);
-						gCB.setthresh((double) sliderVal);
+						gCB.setthresh((double) sliderVal / 1.0);
 									updatethreshLabel();
 								} catch (NumberFormatException ex) {
 									updatethreshLabel();

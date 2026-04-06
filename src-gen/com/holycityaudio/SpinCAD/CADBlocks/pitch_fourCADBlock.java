@@ -31,11 +31,16 @@
 			private pitch_fourControlPanel cp = null;
 			
 			private double pitch1 = -12;
+			private double cents1 = 0;
 			private double pitch2 = -7;
+			private double cents2 = 0;
 			private double pitch3 = 7;
+			private double cents3 = 0;
 			private double pitch4 = 12;
+			private double cents4 = 0;
 			private double lfoSel = 0;
 			private int pitchout;
+			private double negHundred = -100;
 
 			public pitch_fourCADBlock(int x, int y) {
 				super(x, y);
@@ -46,6 +51,10 @@
 				addOutputPin(this, "Pitch_Out");
 				addControlInputPin(this, "Pitch_Select");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -93,6 +102,14 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayd", 4096); 
 			sfxb.FXallocDelayMem("temp", 1); 
+			double negCF1 = cents1 / negHundred; 
+			double total1 = pitch1 - negCF1;
+			double negCF2 = cents2 / negHundred; 
+			double total2 = pitch2 - negCF2;
+			double negCF3 = cents3 / negHundred; 
+			double total3 = pitch3 - negCF3;
+			double negCF4 = cents4 / negHundred; 
+			double total4 = pitch4 - negCF4;
 			sfxb.skip(RUN, 2);
 			sfxb.loadRampLFO((int) lfoSel, (int) 16384, (int) 4096);
 			sfxb.readRegister(RMP0_RATE, 1.0);
@@ -106,45 +123,45 @@
 			sfxb.scaleOffset(1.0, -0.25);
 			sfxb.skip(ZRO, 3);
 			double shift4 = 0.0;
-			if(pitch4 > 0) {
-				shift4 = (16384.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
+			if(total4 > 0) {
+				shift4 = (16384.0 * Math.pow(2.0, (total4/12.0) - 1))/32768.0;
 			}
 			else
 			{
-				shift4 = (-32.0 * Math.pow(2.0, (-pitch4/12.0) - 1))/32768.0;
+				shift4 = (-32.0 * Math.pow(2.0, (-total4/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift4);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.skip(RUN, 8);
 			double shift1 = 0.0;
-			if(pitch3 > 0) {
-				shift1 = (16384.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
+			if(total3 > 0) {
+				shift1 = (16384.0 * Math.pow(2.0, (total3/12.0) - 1))/32768.0;
 			}
 			else
 			{
-				shift1 = (-32.0 * Math.pow(2.0, (-pitch3/12.0) - 1))/32768.0;
+				shift1 = (-32.0 * Math.pow(2.0, (-total3/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift1);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.skip(RUN, 5);
 			double shift2 = 0.0;
-			if(pitch2 > 0) {
-				shift2 = (16384.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
+			if(total2 > 0) {
+				shift2 = (16384.0 * Math.pow(2.0, (total2/12.0) - 1))/32768.0;
 			}
 			else
 			{
-				shift2 = (-32.0 * Math.pow(2.0, (-pitch2/12.0) - 1))/32768.0;
+				shift2 = (-32.0 * Math.pow(2.0, (-total2/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift2);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.skip(RUN, 2);
 			double shift3 = 0.0;
-			if(pitch1 > 0) {
-				shift3 = (16384.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
+			if(total1 > 0) {
+				shift3 = (16384.0 * Math.pow(2.0, (total1/12.0) - 1))/32768.0;
 			}
 			else
 			{
-				shift3 = (-32.0 * Math.pow(2.0, (-pitch1/12.0) - 1))/32768.0;
+				shift3 = (-32.0 * Math.pow(2.0, (-total1/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift3);
 			sfxb.writeRegister(RMP0_RATE, 0);
@@ -164,45 +181,45 @@
 			sfxb.scaleOffset(1.0, -0.25);
 			sfxb.skip(ZRO, 3);
 			double shift4 = 0.0;
-			if(pitch4 > 0) {
-				shift4 = (16384.0 * Math.pow(2.0, (pitch4/12.0) - 1))/32768.0;
+			if(total4 > 0) {
+				shift4 = (16384.0 * Math.pow(2.0, (total4/12.0) - 1))/32768.0;
 			}
 			else
 			{
-				shift4 = (-32.0 * Math.pow(2.0, (-pitch4/12.0) - 1))/32768.0;
+				shift4 = (-32.0 * Math.pow(2.0, (-total4/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift4);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.skip(RUN, 8);
 			double shift1 = 0.0;
-			if(pitch3 > 0) {
-				shift1 = (16384.0 * Math.pow(2.0, (pitch3/12.0) - 1))/32768.0;
+			if(total3 > 0) {
+				shift1 = (16384.0 * Math.pow(2.0, (total3/12.0) - 1))/32768.0;
 			}
 			else
 			{
-				shift1 = (-32.0 * Math.pow(2.0, (-pitch3/12.0) - 1))/32768.0;
+				shift1 = (-32.0 * Math.pow(2.0, (-total3/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift1);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.skip(RUN, 5);
 			double shift2 = 0.0;
-			if(pitch2 > 0) {
-				shift2 = (16384.0 * Math.pow(2.0, (pitch2/12.0) - 1))/32768.0;
+			if(total2 > 0) {
+				shift2 = (16384.0 * Math.pow(2.0, (total2/12.0) - 1))/32768.0;
 			}
 			else
 			{
-				shift2 = (-32.0 * Math.pow(2.0, (-pitch2/12.0) - 1))/32768.0;
+				shift2 = (-32.0 * Math.pow(2.0, (-total2/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift2);
 			sfxb.writeRegister(RMP1_RATE, 0);
 			sfxb.skip(RUN, 2);
 			double shift3 = 0.0;
-			if(pitch1 > 0) {
-				shift3 = (16384.0 * Math.pow(2.0, (pitch1/12.0) - 1))/32768.0;
+			if(total1 > 0) {
+				shift3 = (16384.0 * Math.pow(2.0, (total1/12.0) - 1))/32768.0;
 			}
 			else
 			{
-				shift3 = (-32.0 * Math.pow(2.0, (-pitch1/12.0) - 1))/32768.0;
+				shift3 = (-32.0 * Math.pow(2.0, (-total1/12.0) - 1))/32768.0;
 			}
 			sfxb.scaleOffset(0.0, shift3);
 			sfxb.writeRegister(RMP1_RATE, 0);
@@ -234,12 +251,26 @@
 			public double getpitch1() {
 				return pitch1;
 			}
+			public void setcents1(double __param) {
+				cents1 = __param;	
+			}
+			
+			public double getcents1() {
+				return cents1;
+			}
 			public void setpitch2(double __param) {
 				pitch2 = __param;	
 			}
 			
 			public double getpitch2() {
 				return pitch2;
+			}
+			public void setcents2(double __param) {
+				cents2 = __param;	
+			}
+			
+			public double getcents2() {
+				return cents2;
 			}
 			public void setpitch3(double __param) {
 				pitch3 = __param;	
@@ -248,12 +279,26 @@
 			public double getpitch3() {
 				return pitch3;
 			}
+			public void setcents3(double __param) {
+				cents3 = __param;	
+			}
+			
+			public double getcents3() {
+				return cents3;
+			}
 			public void setpitch4(double __param) {
 				pitch4 = __param;	
 			}
 			
 			public double getpitch4() {
 				return pitch4;
+			}
+			public void setcents4(double __param) {
+				cents4 = __param;	
+			}
+			
+			public double getcents4() {
+				return cents4;
 			}
 			public void setlfoSel(int __param) {
 				lfoSel = (double) __param;	

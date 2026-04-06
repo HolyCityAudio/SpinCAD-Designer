@@ -91,8 +91,8 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getgain1()) * 1.0));
 						gain1Slider.addChangeListener(new ChorusQuadListener());
 						gain1Field = new JTextField();
 						gain1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -103,10 +103,10 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gain1Field.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(gain1Slider.getMinimum(), Math.min(gain1Slider.getMaximum(), sliderVal));
 						gain1Slider.setValue(sliderVal);
-						gCB.setgain1((double) sliderVal);
+						gCB.setgain1((double) sliderVal / 1.0);
 									updategain1Label();
 								} catch (NumberFormatException ex) {
 									updategain1Label();

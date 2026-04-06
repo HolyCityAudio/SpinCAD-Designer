@@ -15,7 +15,7 @@
 
 
 equ gain 0.5 
-@sliderLabel gain 'Input Gain' -18 0.0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain 'Input Gain' -18 0.0 -6 10.0 1 DBLEVEL 
 
 equ revTimeMax 0.6 
 @sliderLabel revTimeMax 'Reverb Time' 0.0 0.9 0.6 100.0 2 

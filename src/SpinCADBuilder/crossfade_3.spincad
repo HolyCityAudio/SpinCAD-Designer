@@ -6,10 +6,10 @@
 @audioOutput output1 'Audio Output'
 
 equ gain1 0.5
-@sliderLabel gain1 'Input 1 Gain' -12 0 -6 1.0 1 DBLEVEL
+@sliderLabel gain1 'Input 1 Gain' -12 0 -6 10.0 1 DBLEVEL
 
 equ gain2 0.5
-@sliderLabel gain2 'Input 2 Gain' -12 0 -6 1.0 1 DBLEVEL
+@sliderLabel gain2 'Input 2 Gain' -12 0 -6 10.0 1 DBLEVEL
 
 ;REGISTERS
 equ   output1     reg2

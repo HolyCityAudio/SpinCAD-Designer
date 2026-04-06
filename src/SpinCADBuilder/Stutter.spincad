@@ -5,6 +5,9 @@
 @controlInput stutter Stutter
 @controlOutput fadeOut 'Fade_Filter'
 
+equ inputGain 1.0
+@sliderLabel inputGain 'Input Gain' -12 0 0 10.0 1 DBLEVEL
+
 ;REGISTERS
 equ   output  reg0
 equ   fadeFilt reg1
@@ -23,7 +26,7 @@ equ fadeTimeFilt 0.0015
 mem delayRam delayLength 
 
 @isPinConnected Input
-rdax    input,1    ;read input signal
+rdax    input,inputGain    ;read input signal
 wra	delayRam, 0
 
 @isEqualTo fadeTimeFilt 0

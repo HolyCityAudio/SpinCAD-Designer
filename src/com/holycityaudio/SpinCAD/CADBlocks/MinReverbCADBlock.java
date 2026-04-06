@@ -39,14 +39,29 @@ public class MinReverbCADBlock extends SpinCADBlock{
 	// coefficients
 	private double krt = 0.13;  // reverb time
 	private double kap = 0.325;  // AP coeff
+	private double inputGain = -12.0;  // input gain in dB
+
 	public MinReverbCADBlock(int x, int y) {
 		super(x, y);
+		hasControlPanel = true;
 		setBorderColor(new Color(0x7100fc));
 		// ---
 		addInputPin(this);
 		addOutputPin(this);
 		addControlInputPin(this, "Reverb Time");
 		setName("Min Reverb");
+	}
+
+	public void editBlock() {
+		new MinReverbControlPanel(this);
+	}
+
+	public double getInputGain() {
+		return inputGain;
+	}
+
+	public void setInputGain(double inputGain) {
+		this.inputGain = inputGain;
 	}
 
 	public void generateCode(SpinFXBlock sfxb) {
@@ -71,8 +86,9 @@ public class MinReverbCADBlock extends SpinCADBlock{
 				output = sfxb.allocateReg();
 				
 				sfxb.comment("Minimum reverb");
-				
-				sfxb.readRegister(input, 0.25);	
+
+				double linearGain = Math.pow(10.0, inputGain / 20.0);
+				sfxb.readRegister(input, linearGain);
 
 				sfxb.FXreadDelay("api1", 1.0, kap);  // read from the end of api1
 				sfxb.FXwriteAllpass("api1", 0, -1.0);  // write back in inverted

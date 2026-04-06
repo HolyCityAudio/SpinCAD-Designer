@@ -8,9 +8,12 @@
 //@audioOutput pitch2 Pitch_2_Out
 //@audioOutput pitch3 Pitch_3_Out
 
-equ pitchCoeff 8192 
-// variable - Name - low - high - multiplier - precision - option 
-@sliderLabel pitchCoeff 'Pitch Coefficient' -16384 32767 8192 1.0 0  
+equ pitchSemitones 7
+// variable - Name - low - high - default - multiplier - precision
+@sliderLabel pitchSemitones 'Pitch (semitones)' -12 19 7 1.0 0
+
+equ pitchCents 0
+@sliderLabel pitchCents 'Cents' -99 99 0 1.0 0
 
 equ controlRange 0
 @comboBox controlRange '0 -> +1' '-1 -> +1'
@@ -52,29 +55,28 @@ equ pitch reg0
 mem delayd length
 mem temp 1
 
-// these are here to test scaling factor between direct load of RMP0_RATE via WLDR and
-// on the flip side, setting the RATE register with a "double" value determined from a POT or something
+// combine semitones + cents/100 for total pitch
+equ negHundred -100
+@divideDouble negCentsFrac pitchCents negHundred
+@minusDouble totalPitch pitchSemitones negCentsFrac
 
-equ sixteen 32768
-@divideDouble scaledPitch pitchCoeff sixteen
+@isPinConnected 'Pitch Control'
+// control connected: default wldr rate, override per-sample
+@semitonesToRmpRate pitchRate totalPitch
 
 @isEqualTo lfoSel 0
-skp run, START 
-wldr 0,pitchCoeff, length 
-START: 
+skp run, START
+wldr 0, 16384, length
+START:
 @else
-skp run, START1 
-wldr 1,pitchCoeff, length 
-START1: 
+skp run, START1
+wldr 1, 16384, length
+START1:
 @endif
 
 ldax input
 wra delayd,0
 
-equ two 2.0
-@divideDouble halfPitch scaledPitch two
-
-@isPinConnected 'Pitch Control'
 // scale negative pitch shift coefficients by 0.5
 @isEqualTo controlRange 1
 rdax pitchControl, 1.0
@@ -83,7 +85,7 @@ skp gez, positive1
 sof 0.5, 0
 positive1:
 @else
-rdax pitchControl, scaledPitch
+rdax pitchControl, pitchRate
 @endif
 
 @isEqualTo lfoSel 0
@@ -93,6 +95,23 @@ wrax RMP0_RATE, 0
 @isEqualTo lfoSel 1
 wrax RMP1_RATE, 0
 @endif
+
+@else
+// no control pin: bake coefficient into wldr, no per-sample writes
+@semitonesToWldrRate wldrCoeff totalPitch
+
+@isEqualTo lfoSel 0
+skp run, START2
+wldr 0, wldrCoeff, length
+START2:
+@else
+skp run, START3
+wldr 1, wldrCoeff, length
+START3:
+@endif
+
+ldax input
+wra delayd,0
 @endif
 
 @isEqualTo lfoSel 0

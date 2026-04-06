@@ -30,14 +30,14 @@
 			private static final long serialVersionUID = 1L;
 			private Pitch_shift_testControlPanel cp = null;
 			
-			private double pitchCoeff = 8192;
+			private double pitchSemitones = 7;
+			private double pitchCents = 0;
 			private double controlRange = 0;
 			private double lfoSel = 0;
 			private double lfoWidth = 0;
 			private double length = 1;
 			private int pitch;
-			private double sixteen = 32768;
-			private double two = 2.0;
+			private double negHundred = -100;
 
 			public Pitch_shift_testCADBlock(int x, int y) {
 				super(x, y);
@@ -48,6 +48,7 @@
 				addOutputPin(this, "Pitch Out");
 				addControlInputPin(this, "Pitch Control");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -110,18 +111,19 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayd", length); 
 			sfxb.FXallocDelayMem("temp", 1); 
-			double scaledPitch = pitchCoeff / sixteen; 
+			double negCentsFrac = pitchCents / negHundred; 
+			double totalPitch = pitchSemitones - negCentsFrac;
+			double pitchRate = (16384.0 * (Math.pow(2.0, totalPitch/12.0) - 1))/32768.0;
 			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
-			sfxb.loadRampLFO((int) 0, (int) pitchCoeff, (int) length);
+			sfxb.loadRampLFO((int) 0, (int) 16384, (int) length);
 			} else {
 			sfxb.skip(RUN, 1);
-			sfxb.loadRampLFO((int) 1, (int) pitchCoeff, (int) length);
+			sfxb.loadRampLFO((int) 1, (int) 16384, (int) length);
 			}
 			
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayd", 0, 0);
-			double halfPitch = scaledPitch / two; 
 			if(this.getPin("Pitch Control").isConnected() == true) {
 			if(controlRange == 1) {
 			sfxb.readRegister(pitchControl, 1.0);
@@ -129,9 +131,19 @@
 			sfxb.skip(GEZ, 1);
 			sfxb.scaleOffset(0.5, 0);
 			} else {
-			sfxb.readRegister(pitchControl, scaledPitch);
+			sfxb.readRegister(pitchControl, pitchRate);
 			}
 			
+			if(lfoSel == 0) {
+			sfxb.writeRegister(RMP0_RATE, 0);
+			}
+			
+			if(lfoSel == 1) {
+			sfxb.writeRegister(RMP1_RATE, 0);
+			}
+			
+			} else {
+			sfxb.scaleOffset(0.0, pitchRate);
 			if(lfoSel == 0) {
 			sfxb.writeRegister(RMP0_RATE, 0);
 			}
@@ -168,12 +180,19 @@
 			}
 			
 			// create setters and getter for control panel variables
-			public void setpitchCoeff(double __param) {
-				pitchCoeff = __param;	
+			public void setpitchSemitones(double __param) {
+				pitchSemitones = __param;	
 			}
 			
-			public double getpitchCoeff() {
-				return pitchCoeff;
+			public double getpitchSemitones() {
+				return pitchSemitones;
+			}
+			public void setpitchCents(double __param) {
+				pitchCents = __param;	
+			}
+			
+			public double getpitchCents() {
+				return pitchCents;
 			}
 			public void setcontrolRange(int __param) {
 				controlRange = (double) __param;	

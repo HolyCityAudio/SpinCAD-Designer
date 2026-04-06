@@ -30,6 +30,7 @@
 			private static final long serialVersionUID = 1L;
 			private ReverseDelayControlPanel cp = null;
 			
+			private double inputGain = 1.0;
 			private int phase1;
 			private int output;
 			private int ramp;
@@ -45,6 +46,7 @@
 				addInputPin(this, "Input");
 				addOutputPin(this, "Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -89,7 +91,7 @@
 			sfxb.scaleOffset(0, -0.25);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.writeRegister(RMP0_RANGE, 0);
-			sfxb.readRegister(input, 1.0);
+			sfxb.readRegister(input, inputGain);
 			sfxb.FXwriteDelay("delay#", 0, 0.0);
 			sfxb.chorusReadValue(RMP0);
 			sfxb.writeRegister(ADDR_PTR, 1.0);
@@ -126,4 +128,11 @@
 			}
 			
 			// create setters and getter for control panel variables
+			public void setinputGain(double __param) {
+				inputGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getinputGain() {
+				return inputGain;
+			}
 		}	

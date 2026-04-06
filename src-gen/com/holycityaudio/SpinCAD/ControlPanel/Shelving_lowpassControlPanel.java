@@ -121,8 +121,8 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						shelfSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-40),(int) (-3), (int) (20 * Math.log10(gCB.getshelf())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						shelfSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-40 * 1.0),(int) (-3 * 1.0), (int) (20 * Math.log10(gCB.getshelf()) * 1.0));
 						shelfSlider.addChangeListener(new Shelving_lowpassListener());
 						shelfField = new JTextField();
 						shelfField.setHorizontalAlignment(JTextField.CENTER);
@@ -133,10 +133,10 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(shelfField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(shelfSlider.getMinimum(), Math.min(shelfSlider.getMaximum(), sliderVal));
 						shelfSlider.setValue(sliderVal);
-						gCB.setshelf((double) sliderVal);
+						gCB.setshelf((double) sliderVal / 1.0);
 									updateshelfLabel();
 								} catch (NumberFormatException ex) {
 									updateshelfLabel();

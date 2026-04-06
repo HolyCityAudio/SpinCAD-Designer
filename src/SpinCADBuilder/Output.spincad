@@ -13,10 +13,10 @@ bool mono false
 bool offset0 false
 
 equ gain1 1.0 
-@sliderLabel gain1 'Input Gain 1' -12 0 0 1.0 1 DBLEVEL 
+@sliderLabel gain1 'Input Gain 1' -12 0 0 10.0 1 DBLEVEL 
 
 equ gain2 1.0 
-@sliderLabel gain2 'Input Gain 2' -12 0 0 1.0 1 DBLEVEL 
+@sliderLabel gain2 'Input Gain 2' -12 0 0 10.0 1 DBLEVEL 
 
 @checkbox mono Mono 
 @checkbox offset0 Offset 

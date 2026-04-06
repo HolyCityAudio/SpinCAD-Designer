@@ -76,8 +76,8 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0.0), (int) (20 * Math.log10(gCB.getgain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 1.0),(int) (0.0 * 1.0), (int) (20 * Math.log10(gCB.getgain()) * 1.0));
 						gainSlider.addChangeListener(new shimmer_verbListener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -88,10 +88,10 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(gainSlider.getMinimum(), Math.min(gainSlider.getMaximum(), sliderVal));
 						gainSlider.setValue(sliderVal);
-						gCB.setgain((double) sliderVal);
+						gCB.setgain((double) sliderVal / 1.0);
 									updategainLabel();
 								} catch (NumberFormatException ex) {
 									updategainLabel();

@@ -103,8 +103,6 @@ public class EnvelopeFollowerCADBlock extends ControlCADBlock {
 		sfxb.comment("Mode: " + getDetectModeName()
 				+ "  Threshold: " + String.format("%.3f", threshold));
 
-		boolean envelopePinConnected = this.getPin("Envelope").isConnected();
-
 		// Allocate registers
 		int envReg = sfxb.allocateReg();     // envelope follower state
 		int cvReg = sfxb.allocateReg();      // smoothed CV output
@@ -149,52 +147,54 @@ public class EnvelopeFollowerCADBlock extends ControlCADBlock {
 		}
 
 		// === Step 3: Threshold scaling and CV output ===
-		sfxb.comment("--- Threshold and CV output ---");
-		sfxb.readRegister(envReg, 1.0);
+		// Only generate CV processing code when CV Out is connected
+		if (this.getPin("CV Out").isConnected()) {
+			sfxb.comment("--- Threshold and CV output ---");
+			sfxb.readRegister(envReg, 1.0);
 
-		// Apply threshold CV modulation if connected
-		SpinCADPin threshPin = this.getPin("Threshold CV").getPinConnection();
-		if (threshPin != null) {
-			// Multiply envelope by threshold CV (higher CV = more sensitive)
-			sfxb.mulx(threshPin.getRegister());
-		}
-
-		// Scale envelope so that threshold level maps to ~1.0
-		// Cap at MAX_THRESHOLD_DOUBLINGS to keep instruction count predictable
-		double effectiveThreshold = threshold;
-		if (detectMode == DETECT_RMS) {
-			effectiveThreshold = threshold * threshold;
-		}
-
-		if (effectiveThreshold > 0.001) {
-			double scaleFactor = 1.0 / effectiveThreshold;
-			int doublings = 0;
-			while (scaleFactor > 2.0 && doublings < MAX_THRESHOLD_DOUBLINGS) {
-				sfxb.scaleOffset(-2.0, 0.0);
-				sfxb.scaleOffset(-1.0, 0.0);
-				scaleFactor /= 2.0;
-				doublings++;
+			// Apply threshold CV modulation if connected
+			SpinCADPin threshPin = this.getPin("Threshold CV").getPinConnection();
+			if (threshPin != null) {
+				// Multiply envelope by threshold CV (higher CV = more sensitive)
+				sfxb.mulx(threshPin.getRegister());
 			}
-			if (scaleFactor > 1.001) {
-				sfxb.scaleOffset(-scaleFactor, 0.0);
-				sfxb.scaleOffset(-1.0, 0.0);
+
+			// Scale envelope so that threshold level maps to ~1.0
+			// Cap at MAX_THRESHOLD_DOUBLINGS to keep instruction count predictable
+			double effectiveThreshold = threshold;
+			if (detectMode == DETECT_RMS) {
+				effectiveThreshold = threshold * threshold;
 			}
+
+			if (effectiveThreshold > 0.001) {
+				double scaleFactor = 1.0 / effectiveThreshold;
+				int doublings = 0;
+				while (scaleFactor > 2.0 && doublings < MAX_THRESHOLD_DOUBLINGS) {
+					sfxb.scaleOffset(-2.0, 0.0);
+					sfxb.scaleOffset(-1.0, 0.0);
+					scaleFactor /= 2.0;
+					doublings++;
+				}
+				if (scaleFactor > 1.001) {
+					sfxb.scaleOffset(-scaleFactor, 0.0);
+					sfxb.scaleOffset(-1.0, 0.0);
+				}
+			}
+			// ACC is now envelope/threshold, naturally clipped at ~0.999
+
+			// Map to output range: output = outputMin + (outputMax - outputMin) * crossfade
+			double outputRange = outputMax - outputMin;
+			sfxb.scaleOffset(outputRange, outputMin);
+
+			// Smooth the output
+			sfxb.readRegisterFilter(cvReg, smoothCoeff);
+			sfxb.writeRegister(cvReg, 0.0);
+
+			this.getPin("CV Out").setRegister(cvReg);
 		}
-		// ACC is now envelope/threshold, naturally clipped at ~0.999
-
-		// Map to output range: output = outputMin + (outputMax - outputMin) * crossfade
-		double outputRange = outputMax - outputMin;
-		sfxb.scaleOffset(outputRange, outputMin);
-
-		// Smooth the output
-		sfxb.readRegisterFilter(cvReg, smoothCoeff);
-		sfxb.writeRegister(cvReg, 0.0);
 
 		// === Set output pins ===
-		this.getPin("CV Out").setRegister(cvReg);
-		if (envelopePinConnected) {
-			this.getPin("Envelope").setRegister(envReg);
-		}
+		this.getPin("Envelope").setRegister(envReg);
 	}
 
 	// =====================================================

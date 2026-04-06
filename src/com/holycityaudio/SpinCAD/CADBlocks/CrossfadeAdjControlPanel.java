@@ -76,9 +76,9 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			}
 		});
 
-		// Gain 1 slider: -12 to 0 dB
-		gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, -12, 0,
-			(int) Math.round(20 * Math.log10(gCB.getGain1())));
+		// Gain 1 slider: -12 to 0 dB in 0.1 dB steps
+		gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, -120, 0,
+			(int) Math.round(20 * Math.log10(gCB.getGain1()) * 10));
 		gain1Slider.addChangeListener(this);
 		gain1Field = new JTextField();
 		gain1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -87,10 +87,10 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double val = Double.parseDouble(gain1Field.getText().replaceAll("[^0-9.\\-]", ""));
-					int sliderVal = (int) Math.round(val);
-					sliderVal = Math.max(-12, Math.min(0, sliderVal));
+					int sliderVal = (int) Math.round(val * 10);
+					sliderVal = Math.max(-120, Math.min(0, sliderVal));
 					gain1Slider.setValue(sliderVal);
-					gCB.setGain1(sliderVal);
+					gCB.setGain1(sliderVal / 10.0);
 					updateGain1Label();
 					graph.repaint();
 				} catch (NumberFormatException ex) {
@@ -99,9 +99,9 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			}
 		});
 
-		// Gain 2 slider: -12 to 0 dB
-		gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, -12, 0,
-			(int) Math.round(20 * Math.log10(gCB.getGain2())));
+		// Gain 2 slider: -12 to 0 dB in 0.1 dB steps
+		gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, -120, 0,
+			(int) Math.round(20 * Math.log10(gCB.getGain2()) * 10));
 		gain2Slider.addChangeListener(this);
 		gain2Field = new JTextField();
 		gain2Field.setHorizontalAlignment(JTextField.CENTER);
@@ -110,10 +110,10 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			public void actionPerformed(ActionEvent e) {
 				try {
 					double val = Double.parseDouble(gain2Field.getText().replaceAll("[^0-9.\\-]", ""));
-					int sliderVal = (int) Math.round(val);
-					sliderVal = Math.max(-12, Math.min(0, sliderVal));
+					int sliderVal = (int) Math.round(val * 10);
+					sliderVal = Math.max(-120, Math.min(0, sliderVal));
 					gain2Slider.setValue(sliderVal);
-					gCB.setGain2(sliderVal);
+					gCB.setGain2(sliderVal / 10.0);
 					updateGain2Label();
 					graph.repaint();
 				} catch (NumberFormatException ex) {
@@ -152,10 +152,10 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			gCB.setMidpoint(midpointSlider.getValue() / 100.0);
 			updateMidpointLabel();
 		} else if (ce.getSource() == gain1Slider) {
-			gCB.setGain1(gain1Slider.getValue());
+			gCB.setGain1(gain1Slider.getValue() / 10.0);
 			updateGain1Label();
 		} else if (ce.getSource() == gain2Slider) {
-			gCB.setGain2(gain2Slider.getValue());
+			gCB.setGain2(gain2Slider.getValue() / 10.0);
 			updateGain2Label();
 		}
 		graph.repaint();

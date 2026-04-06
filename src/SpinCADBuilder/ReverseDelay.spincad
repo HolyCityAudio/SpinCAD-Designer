@@ -7,6 +7,9 @@
 ;@controlOutput ramp2 Ramp2
 ;@controlOutput xfade Xfade
 
+equ inputGain 1.0
+@sliderLabel inputGain 'Input Gain' -12 0 0 10.0 1 DBLEVEL
+
 mem delay 32767 
 equ phase1 reg0
 equ output reg3
@@ -25,7 +28,7 @@ loop:
 
 ; sof 0,0      ;clear acc
 
-rdax input, 1.0    ;read left adc
+rdax input, inputGain    ;read left adc
 wra delay#, 0.0    ;write to delay ram and clear
 cho rdal, rmp0    ;get ramp lfo
 wrax addr_ptr, 1.0    ;write data at delay ram address 

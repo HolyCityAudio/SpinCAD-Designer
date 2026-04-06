@@ -11,10 +11,10 @@
 @controlInput fbk 'Feedback Gain'
 
 equ inputGain 1.0
-@sliderLabel inputGain 'Input Gain: '  -24 0 0 1.0 1 DBLEVEL
+@sliderLabel inputGain 'Input Gain: '  -24 0 0 10.0 1 DBLEVEL
 
 equ fbkGain 0.5
-@sliderLabel fbkGain 'Feedback Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel fbkGain 'Feedback Gain: ' -24 0 -6 10.0 1 DBLEVEL 
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label

@@ -43,9 +43,11 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 @SuppressWarnings("serial")
 class PitchShiftFixedControlPanel implements ChangeListener {
 	JSlider freqSlider = new FineControlSlider(JSlider.HORIZONTAL, -12, 19, 0);
+	JSlider centsSlider = new FineControlSlider(JSlider.HORIZONTAL, -99, 99, 0);
 	JSlider ampSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 3, 2);
 
 	JTextField freqField = new JTextField();
+	JTextField centsField = new JTextField();
 	JTextField ampField = new JTextField();
 
 	private JFrame frame;
@@ -56,6 +58,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 	public PitchShiftFixedControlPanel(PitchShiftFixedCADBlock pitchShiftFixedCADBlock) {
 
 		freqSlider.addChangeListener(this);
+		centsSlider.addChangeListener(this);
 		ampSlider.addChangeListener(this);
 
 		freqField.setHorizontalAlignment(JTextField.CENTER);
@@ -70,6 +73,22 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 					updateFreqLabel();
 				} catch (NumberFormatException ex) {
 					updateFreqLabel();
+				}
+			}
+		});
+
+		centsField.setHorizontalAlignment(JTextField.CENTER);
+		centsField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int val = Integer.parseInt(centsField.getText().replaceAll("[^0-9.\\-]", "").split("\\.")[0]);
+					val = Math.max(-99, Math.min(99, val));
+					pong.setCents(val);
+					centsSlider.setValue(val);
+					updateCentsLabel();
+				} catch (NumberFormatException ex) {
+					updateCentsLabel();
 				}
 			}
 		});
@@ -117,6 +136,11 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 				frame.add(freqField);
 				updateFreqLabel();
 				frame.add(freqSlider);
+
+				frame.add(centsField);
+				updateCentsLabel();
+				frame.add(centsSlider);
+
 				frame.add(rb);
 				int i = pong.getAmp();
 				int j = 0;
@@ -135,6 +159,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 
 				ampSlider.setValue(j);
 				freqSlider.setValue((pong.getFreq()));
+				centsSlider.setValue(pong.getCents());
 
 				frame.setVisible(true);
 				frame.pack();
@@ -152,6 +177,10 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 			pong.setFreq(freqSlider.getValue());
 			updateFreqLabel();
 		}
+		else if(ce.getSource() == centsSlider) {
+			pong.setCents(centsSlider.getValue());
+			updateCentsLabel();
+		}
 	}
 
 	public void updateFreqLabel() {
@@ -159,6 +188,12 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 		String sign = semi > 0 ? "+" : "";
 		String interval = ArpeggiatorCADBlock.intervalName(semi);
 		freqField.setText("Shift: " + sign + semi + " (" + interval + ")");
+	}
+
+	public void updateCentsLabel() {
+		int c = pong.getCents();
+		String sign = c > 0 ? "+" : "";
+		centsField.setText("Cents: " + sign + c);
 	}
 
 	public void updateAmpLabel(int i) {

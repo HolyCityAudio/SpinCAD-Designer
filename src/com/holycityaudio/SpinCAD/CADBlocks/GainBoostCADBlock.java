@@ -29,9 +29,11 @@ public class GainBoostCADBlock extends ControlCADBlock{
 	/**
 	 *
 	 */
-	// gain in dB (1 dB increments)
-	int gain = 6;
-	
+	// gain in tenths of dB (e.g. 60 = 6.0 dB), 0.1 dB resolution
+	int gain = 60;
+	// version flag: false in old serialized data (was whole dB), true in new (tenths)
+	boolean gainV2 = true;
+
 	private static final long serialVersionUID = -125887536230107216L;
 
 	public GainBoostCADBlock(int x, int y) {
@@ -54,15 +56,16 @@ public class GainBoostCADBlock extends ControlCADBlock{
 
 			sfxb.readRegister(input, 1);
 
-			int full6db = gain / 6;
-			int remainderDb = gain % 6;
+			double gainDb = getGain();
+			int full6db = (int)(gainDb / 6.0);
+			double remainderDb = gainDb - (full6db * 6.0);
 
 			// Each SOF -2.0 doubles the signal (6 dB)
 			for(int i = 0; i < full6db; i++) {
 				sfxb.scaleOffset(-2.0, 0.0);
 			}
 			// Fix sign and apply remainder in one step if possible
-			if(remainderDb > 0) {
+			if(remainderDb > 0.001) {
 				double linearGain = Math.pow(10.0, remainderDb / 20.0);
 				if((full6db & 1) == 1) {
 					sfxb.scaleOffset(-linearGain, 0.0);
@@ -82,13 +85,24 @@ public class GainBoostCADBlock extends ControlCADBlock{
 	public void editBlock(){
 		new GainBoostControlPanel(this);
 	}
-	//====================================================
-	public int getGain() {
-		return gain;
+	// backward compat: old format stored whole dB, new stores tenths
+	@Override
+	protected Object readResolve() {
+		super.readResolve();
+		if (!gainV2) {
+			gain = gain * 10;
+			gainV2 = true;
+		}
+		return this;
 	}
 
-	public void setGain(int d) {
-		gain = d;
+	//====================================================
+	public double getGain() {
+		return gain / 10.0;
+	}
+
+	public void setGain(double d) {
+		gain = (int) Math.round(d * 10);
 	}
 }
 

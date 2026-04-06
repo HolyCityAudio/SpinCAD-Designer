@@ -9,7 +9,7 @@
 @controlInput input2 HF_Loss
 
 equ gain 0.5 
-@sliderLabel gain Input_Gain -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain Input_Gain -24 0 -6 10.0 1 DBLEVEL 
 
 ;now generate a pair of LFOs to modulate the APs in the loop:
 

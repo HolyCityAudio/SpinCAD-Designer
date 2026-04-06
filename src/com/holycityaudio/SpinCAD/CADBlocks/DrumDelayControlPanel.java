@@ -90,7 +90,7 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------
 					// dB level slider goes in steps of 1 dB
-						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
+						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-240),(int) (0), (int) (20 * Math.log10(gCB.getinputGain()) * 10));
 						inputGainSlider.addChangeListener(new DrumDelayListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -100,9 +100,9 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 								try {
 									String text = inputGainField.getText().replaceAll("[^\\d.\\-]", "");
 									double dbVal = Double.parseDouble(text);
-									int sliderVal = (int) Math.round(dbVal);
+									int sliderVal = (int) Math.round(dbVal * 10);
 									sliderVal = Math.max(inputGainSlider.getMinimum(), Math.min(inputGainSlider.getMaximum(), sliderVal));
-									gCB.setinputGain((double) (sliderVal/1.0));
+									gCB.setinputGain((double) (sliderVal/10.0));
 									inputGainSlider.setValue(sliderVal);
 									updateinputGainField();
 								} catch (NumberFormatException ex) {
@@ -134,7 +134,7 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------
 					// dB level slider goes in steps of 1 dB
-						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-240),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain()) * 10));
 						fbkGainSlider.addChangeListener(new DrumDelayListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -144,9 +144,9 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 								try {
 									String text = fbkGainField.getText().replaceAll("[^\\d.\\-]", "");
 									double dbVal = Double.parseDouble(text);
-									int sliderVal = (int) Math.round(dbVal);
+									int sliderVal = (int) Math.round(dbVal * 10);
 									sliderVal = Math.max(fbkGainSlider.getMinimum(), Math.min(fbkGainSlider.getMaximum(), sliderVal));
-									gCB.setfbkGain((double) (sliderVal/1.0));
+									gCB.setfbkGain((double) (sliderVal/10.0));
 									fbkGainSlider.setValue(sliderVal);
 									updatefbkGainField();
 								} catch (NumberFormatException ex) {
@@ -379,11 +379,11 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 		class DrumDelayListener implements ChangeListener {
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
+			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));
 				updateinputGainField();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/10.0));
 				updatefbkGainField();
 			}
 			if(ce.getSource() == delayLengthSlider) {

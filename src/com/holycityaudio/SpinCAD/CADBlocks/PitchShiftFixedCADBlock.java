@@ -37,6 +37,7 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 	 */
 	private static final long serialVersionUID = 3476502380095165941L;
 	private int freq = 0;
+	private int cents = 0;
 	private int amp = 512;
 	private int lfoSel = 0;
 	/**
@@ -105,7 +106,7 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 //				;N = Desired amount of pitch shift in octaves 
 //				;S is the number of semitones
 
-			octaves = (double) freq/12.0;
+			octaves = (freq + cents / 100.0) / 12.0;
 			if(freq > 0) {
 				coefficient = (int)(16384 * (Math.pow(2.0, octaves) - 1));
 			} else if (freq < 0) {
@@ -169,6 +170,14 @@ public class PitchShiftFixedCADBlock extends SpinCADBlock {
 
 	public void setFreq(int d) {
 		freq = d;
+	}
+
+	public int getCents() {
+		return cents;
+	}
+
+	public void setCents(int c) {
+		cents = c;
 	}
 	
 	//====================================================

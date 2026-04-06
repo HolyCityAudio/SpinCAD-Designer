@@ -78,8 +78,8 @@ public crossfade_2ControlPanel(crossfade_2CADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain1()) * 10.0));
 						gain1Slider.addChangeListener(new crossfade_2Listener());
 						gain1Field = new JTextField();
 						gain1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -90,10 +90,10 @@ public crossfade_2ControlPanel(crossfade_2CADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gain1Field.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(gain1Slider.getMinimum(), Math.min(gain1Slider.getMaximum(), sliderVal));
 						gain1Slider.setValue(sliderVal);
-						gCB.setgain1((double) sliderVal);
+						gCB.setgain1((double) sliderVal / 10.0);
 									updategain1Label();
 								} catch (NumberFormatException ex) {
 									updategain1Label();
@@ -121,8 +121,8 @@ public crossfade_2ControlPanel(crossfade_2CADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain2()) * 10.0));
 						gain2Slider.addChangeListener(new crossfade_2Listener());
 						gain2Field = new JTextField();
 						gain2Field.setHorizontalAlignment(JTextField.CENTER);
@@ -133,10 +133,10 @@ public crossfade_2ControlPanel(crossfade_2CADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gain2Field.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(gain2Slider.getMinimum(), Math.min(gain2Slider.getMaximum(), sliderVal));
 						gain2Slider.setValue(sliderVal);
-						gCB.setgain2((double) sliderVal);
+						gCB.setgain2((double) sliderVal / 10.0);
 									updategain2Label();
 								} catch (NumberFormatException ex) {
 									updategain2Label();
@@ -169,11 +169,11 @@ public crossfade_2ControlPanel(crossfade_2CADBlock genericCADBlock) {
 		class crossfade_2Listener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-			gCB.setgain1((double) (gain1Slider.getValue()/1.0));			    					
+			gCB.setgain1((double) (gain1Slider.getValue()/10.0));			    					
 				updategain1Label();
 			}
 			if(ce.getSource() == gain2Slider) {
-			gCB.setgain2((double) (gain2Slider.getValue()/1.0));			    					
+			gCB.setgain2((double) (gain2Slider.getValue()/10.0));			    					
 				updategain2Label();
 			}
 			}

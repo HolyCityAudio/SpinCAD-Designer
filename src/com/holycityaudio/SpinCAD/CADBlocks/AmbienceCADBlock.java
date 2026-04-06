@@ -39,6 +39,9 @@ public class AmbienceCADBlock extends SpinCADBlock {
 	// allpass coefficient
 	private static final double KAP = 0.6;
 
+	// input gain in dB (-12 to 0)
+	private double inputGain = -6.0;
+
 	// default tone (0=dark, 1=bright) used when Tone CV not connected
 	private double tone = 0.5;
 	// default decay (0-1 mapped to krt 0.2-0.85) used when Decay CV not connected
@@ -114,7 +117,8 @@ public class AmbienceCADBlock extends SpinCADBlock {
 		sfxb.writeRegister(krt, 0);
 
 		// --- get input into delay with an allpass ---
-		sfxb.readRegister(input, 0.5);
+		double linearGain = Math.pow(10.0, inputGain / 20.0);
+		sfxb.readRegister(input, linearGain);
 		sfxb.FXreadDelay("ap#", 0, KAP);
 		sfxb.FXwriteAllpass("ap", 0, -KAP);
 		sfxb.FXwriteDelay("del", 0, 0.0);
@@ -211,5 +215,13 @@ public class AmbienceCADBlock extends SpinCADBlock {
 
 	public void setFilterFreq(double filterFreq) {
 		this.filterFreq = filterFreq;
+	}
+
+	public double getInputGain() {
+		return inputGain;
+	}
+
+	public void setInputGain(double inputGain) {
+		this.inputGain = inputGain;
 	}
 }

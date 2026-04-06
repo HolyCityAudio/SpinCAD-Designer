@@ -85,8 +85,8 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getinputGain()) * 1.0));
 						inputGainSlider.addChangeListener(new servoListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -97,10 +97,10 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(inputGainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(inputGainSlider.getMinimum(), Math.min(inputGainSlider.getMaximum(), sliderVal));
 						inputGainSlider.setValue(sliderVal);
-						gCB.setinputGain((double) sliderVal);
+						gCB.setinputGain((double) sliderVal / 1.0);
 									updateinputGainLabel();
 								} catch (NumberFormatException ex) {
 									updateinputGainLabel();
@@ -128,8 +128,8 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 1.0));
 						fbkGainSlider.addChangeListener(new servoListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -140,10 +140,10 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(fbkGainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 1.0);
 						sliderVal = Math.max(fbkGainSlider.getMinimum(), Math.min(fbkGainSlider.getMaximum(), sliderVal));
 						fbkGainSlider.setValue(sliderVal);
-						gCB.setfbkGain((double) sliderVal);
+						gCB.setfbkGain((double) sliderVal / 1.0);
 									updatefbkGainLabel();
 								} catch (NumberFormatException ex) {
 									updatefbkGainLabel();

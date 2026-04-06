@@ -63,13 +63,13 @@ class LongDelayControlPanel extends JFrame implements ChangeListener, ActionList
 		interleaveSlider.setPaintLabels(true);
 		interleaveSlider.addChangeListener(this);
 
-		// dB sliders: -24 to 0 dB, matching DrumDelay convention
-		gainSlider = new FineControlSlider(JSlider.HORIZONTAL, -24, 0,
-				(int) (20 * Math.log10(block.getInputGain())));
+		// dB sliders: -24 to 0 dB in 0.1 dB steps
+		gainSlider = new FineControlSlider(JSlider.HORIZONTAL, -240, 0,
+				(int) (20 * Math.log10(block.getInputGain()) * 10));
 		gainSlider.addChangeListener(this);
 
-		feedbackSlider = new FineControlSlider(JSlider.HORIZONTAL, -24, 0,
-				(int) (20 * Math.log10(block.getFeedbackLevel())));
+		feedbackSlider = new FineControlSlider(JSlider.HORIZONTAL, -240, 0,
+				(int) (20 * Math.log10(block.getFeedbackLevel()) * 10));
 		feedbackSlider.addChangeListener(this);
 
 		filterCheck = new JCheckBox("Anti-Aliasing Filter", block.isFilterEnabled());
@@ -111,10 +111,10 @@ class LongDelayControlPanel extends JFrame implements ChangeListener, ActionList
 
 	public void stateChanged(ChangeEvent ce) {
 		if (ce.getSource() == gainSlider) {
-			block.setInputGain(gainSlider.getValue());
+			block.setInputGain(gainSlider.getValue() / 10.0);
 			updateGainField();
 		} else if (ce.getSource() == feedbackSlider) {
-			block.setFeedbackLevel(feedbackSlider.getValue());
+			block.setFeedbackLevel(feedbackSlider.getValue() / 10.0);
 			updateFeedbackField();
 		} else if (ce.getSource() == interleaveSlider) {
 			block.setInterleave(interleaveSlider.getValue());

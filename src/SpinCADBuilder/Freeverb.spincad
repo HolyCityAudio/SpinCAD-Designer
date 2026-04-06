@@ -8,7 +8,7 @@
 @controlInput input0 Reverb_Time
 
 equ gain 0.5
-@sliderLabel gain 'Input Gain' -24 0 -6 1.0 1 DBLEVEL
+@sliderLabel gain 'Input Gain' -24 0 -6 10.0 1 DBLEVEL
 
 equ krt 0.42
 @sliderLabel krt 'Reverb Time' 0.2 0.57 0.42 100.0 2

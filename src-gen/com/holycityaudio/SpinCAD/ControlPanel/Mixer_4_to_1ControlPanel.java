@@ -82,8 +82,8 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain1()) * 10.0));
 						gain1Slider.addChangeListener(new Mixer_4_to_1Listener());
 						gain1Field = new JTextField();
 						gain1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -94,10 +94,10 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gain1Field.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(gain1Slider.getMinimum(), Math.min(gain1Slider.getMaximum(), sliderVal));
 						gain1Slider.setValue(sliderVal);
-						gCB.setgain1((double) sliderVal);
+						gCB.setgain1((double) sliderVal / 10.0);
 									updategain1Label();
 								} catch (NumberFormatException ex) {
 									updategain1Label();
@@ -125,8 +125,8 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain2())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain2()) * 10.0));
 						gain2Slider.addChangeListener(new Mixer_4_to_1Listener());
 						gain2Field = new JTextField();
 						gain2Field.setHorizontalAlignment(JTextField.CENTER);
@@ -137,10 +137,10 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gain2Field.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(gain2Slider.getMinimum(), Math.min(gain2Slider.getMaximum(), sliderVal));
 						gain2Slider.setValue(sliderVal);
-						gCB.setgain2((double) sliderVal);
+						gCB.setgain2((double) sliderVal / 10.0);
 									updategain2Label();
 								} catch (NumberFormatException ex) {
 									updategain2Label();
@@ -168,8 +168,8 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gain3Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain3())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gain3Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain3()) * 10.0));
 						gain3Slider.addChangeListener(new Mixer_4_to_1Listener());
 						gain3Field = new JTextField();
 						gain3Field.setHorizontalAlignment(JTextField.CENTER);
@@ -180,10 +180,10 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gain3Field.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(gain3Slider.getMinimum(), Math.min(gain3Slider.getMaximum(), sliderVal));
 						gain3Slider.setValue(sliderVal);
-						gCB.setgain3((double) sliderVal);
+						gCB.setgain3((double) sliderVal / 10.0);
 									updategain3Label();
 								} catch (NumberFormatException ex) {
 									updategain3Label();
@@ -211,8 +211,8 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gain4Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18),(int) (0), (int) (20 * Math.log10(gCB.getgain4())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gain4Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain4()) * 10.0));
 						gain4Slider.addChangeListener(new Mixer_4_to_1Listener());
 						gain4Field = new JTextField();
 						gain4Field.setHorizontalAlignment(JTextField.CENTER);
@@ -223,10 +223,10 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gain4Field.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(gain4Slider.getMinimum(), Math.min(gain4Slider.getMaximum(), sliderVal));
 						gain4Slider.setValue(sliderVal);
-						gCB.setgain4((double) sliderVal);
+						gCB.setgain4((double) sliderVal / 10.0);
 									updategain4Label();
 								} catch (NumberFormatException ex) {
 									updategain4Label();
@@ -259,19 +259,19 @@ public Mixer_4_to_1ControlPanel(Mixer_4_to_1CADBlock genericCADBlock) {
 		class Mixer_4_to_1Listener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-			gCB.setgain1((double) (gain1Slider.getValue()/1.0));			    					
+			gCB.setgain1((double) (gain1Slider.getValue()/10.0));			    					
 				updategain1Label();
 			}
 			if(ce.getSource() == gain2Slider) {
-			gCB.setgain2((double) (gain2Slider.getValue()/1.0));			    					
+			gCB.setgain2((double) (gain2Slider.getValue()/10.0));			    					
 				updategain2Label();
 			}
 			if(ce.getSource() == gain3Slider) {
-			gCB.setgain3((double) (gain3Slider.getValue()/1.0));			    					
+			gCB.setgain3((double) (gain3Slider.getValue()/10.0));			    					
 				updategain3Label();
 			}
 			if(ce.getSource() == gain4Slider) {
-			gCB.setgain4((double) (gain4Slider.getValue()/1.0));			    					
+			gCB.setgain4((double) (gain4Slider.getValue()/10.0));			    					
 				updategain4Label();
 			}
 			}

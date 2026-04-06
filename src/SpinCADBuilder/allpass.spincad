@@ -4,7 +4,7 @@
 @audioOutput output1 Output
 
 equ gain 0.5 
-@sliderLabel gain 'Input Gain' -18 0 -6 1.0 1 DBLEVEL
+@sliderLabel gain 'Input Gain' -18 0 -6 10.0 1 DBLEVEL
 
 equ nAPs 4
 ; @sliderLabel nAPs 'All Pass Stages' 2 4 4 1.0 1 

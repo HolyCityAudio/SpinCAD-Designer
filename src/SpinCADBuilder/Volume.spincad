@@ -5,7 +5,7 @@
 @controlInput volume Volume
 
 equ gain 1.0 
-@sliderLabel gain 'Input Gain' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain 'Input Gain' -24 0 -6 10.0 1 DBLEVEL 
 
 ;REGISTERS 
 equ   output     reg0       

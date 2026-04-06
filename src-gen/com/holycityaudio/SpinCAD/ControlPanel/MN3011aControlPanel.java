@@ -92,8 +92,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getinputGain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getinputGain()) * 10.0));
 						inputGainSlider.addChangeListener(new MN3011aListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -104,10 +104,10 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(inputGainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(inputGainSlider.getMinimum(), Math.min(inputGainSlider.getMaximum(), sliderVal));
 						inputGainSlider.setValue(sliderVal);
-						gCB.setinputGain((double) sliderVal);
+						gCB.setinputGain((double) sliderVal / 10.0);
 									updateinputGainLabel();
 								} catch (NumberFormatException ex) {
 									updateinputGainLabel();
@@ -135,8 +135,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 10.0));
 						fbkGainSlider.addChangeListener(new MN3011aListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -147,10 +147,10 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(fbkGainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(fbkGainSlider.getMinimum(), Math.min(fbkGainSlider.getMaximum(), sliderVal));
 						fbkGainSlider.setValue(sliderVal);
-						gCB.setfbkGain((double) sliderVal);
+						gCB.setfbkGain((double) sliderVal / 10.0);
 									updatefbkGainLabel();
 								} catch (NumberFormatException ex) {
 									updatefbkGainLabel();
@@ -221,8 +221,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						tap1GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap1Gain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						tap1GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap1Gain()) * 10.0));
 						tap1GainSlider.addChangeListener(new MN3011aListener());
 						tap1GainField = new JTextField();
 						tap1GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -233,10 +233,10 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(tap1GainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(tap1GainSlider.getMinimum(), Math.min(tap1GainSlider.getMaximum(), sliderVal));
 						tap1GainSlider.setValue(sliderVal);
-						gCB.settap1Gain((double) sliderVal);
+						gCB.settap1Gain((double) sliderVal / 10.0);
 									updatetap1GainLabel();
 								} catch (NumberFormatException ex) {
 									updatetap1GainLabel();
@@ -264,8 +264,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						tap2GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap2Gain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						tap2GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap2Gain()) * 10.0));
 						tap2GainSlider.addChangeListener(new MN3011aListener());
 						tap2GainField = new JTextField();
 						tap2GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -276,10 +276,10 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(tap2GainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(tap2GainSlider.getMinimum(), Math.min(tap2GainSlider.getMaximum(), sliderVal));
 						tap2GainSlider.setValue(sliderVal);
-						gCB.settap2Gain((double) sliderVal);
+						gCB.settap2Gain((double) sliderVal / 10.0);
 									updatetap2GainLabel();
 								} catch (NumberFormatException ex) {
 									updatetap2GainLabel();
@@ -307,8 +307,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						tap3GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap3Gain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						tap3GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap3Gain()) * 10.0));
 						tap3GainSlider.addChangeListener(new MN3011aListener());
 						tap3GainField = new JTextField();
 						tap3GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -319,10 +319,10 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(tap3GainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(tap3GainSlider.getMinimum(), Math.min(tap3GainSlider.getMaximum(), sliderVal));
 						tap3GainSlider.setValue(sliderVal);
-						gCB.settap3Gain((double) sliderVal);
+						gCB.settap3Gain((double) sliderVal / 10.0);
 									updatetap3GainLabel();
 								} catch (NumberFormatException ex) {
 									updatetap3GainLabel();
@@ -350,8 +350,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						tap4GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap4Gain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						tap4GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap4Gain()) * 10.0));
 						tap4GainSlider.addChangeListener(new MN3011aListener());
 						tap4GainField = new JTextField();
 						tap4GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -362,10 +362,10 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(tap4GainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(tap4GainSlider.getMinimum(), Math.min(tap4GainSlider.getMaximum(), sliderVal));
 						tap4GainSlider.setValue(sliderVal);
-						gCB.settap4Gain((double) sliderVal);
+						gCB.settap4Gain((double) sliderVal / 10.0);
 									updatetap4GainLabel();
 								} catch (NumberFormatException ex) {
 									updatetap4GainLabel();
@@ -393,8 +393,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						tap5GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap5Gain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						tap5GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap5Gain()) * 10.0));
 						tap5GainSlider.addChangeListener(new MN3011aListener());
 						tap5GainField = new JTextField();
 						tap5GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -405,10 +405,10 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(tap5GainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(tap5GainSlider.getMinimum(), Math.min(tap5GainSlider.getMaximum(), sliderVal));
 						tap5GainSlider.setValue(sliderVal);
-						gCB.settap5Gain((double) sliderVal);
+						gCB.settap5Gain((double) sliderVal / 10.0);
 									updatetap5GainLabel();
 								} catch (NumberFormatException ex) {
 									updatetap5GainLabel();
@@ -436,8 +436,8 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						tap6GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24),(int) (0), (int) (20 * Math.log10(gCB.gettap6Gain())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						tap6GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap6Gain()) * 10.0));
 						tap6GainSlider.addChangeListener(new MN3011aListener());
 						tap6GainField = new JTextField();
 						tap6GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -448,10 +448,10 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(tap6GainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(tap6GainSlider.getMinimum(), Math.min(tap6GainSlider.getMaximum(), sliderVal));
 						tap6GainSlider.setValue(sliderVal);
-						gCB.settap6Gain((double) sliderVal);
+						gCB.settap6Gain((double) sliderVal / 10.0);
 									updatetap6GainLabel();
 								} catch (NumberFormatException ex) {
 									updatetap6GainLabel();
@@ -484,11 +484,11 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 		class MN3011aListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));			    					
+			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));			    					
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));			    					
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/10.0));			    					
 				updatefbkGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
@@ -496,27 +496,27 @@ public MN3011aControlPanel(MN3011aCADBlock genericCADBlock) {
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1GainSlider) {
-			gCB.settap1Gain((double) (tap1GainSlider.getValue()/1.0));			    					
+			gCB.settap1Gain((double) (tap1GainSlider.getValue()/10.0));			    					
 				updatetap1GainLabel();
 			}
 			if(ce.getSource() == tap2GainSlider) {
-			gCB.settap2Gain((double) (tap2GainSlider.getValue()/1.0));			    					
+			gCB.settap2Gain((double) (tap2GainSlider.getValue()/10.0));			    					
 				updatetap2GainLabel();
 			}
 			if(ce.getSource() == tap3GainSlider) {
-			gCB.settap3Gain((double) (tap3GainSlider.getValue()/1.0));			    					
+			gCB.settap3Gain((double) (tap3GainSlider.getValue()/10.0));			    					
 				updatetap3GainLabel();
 			}
 			if(ce.getSource() == tap4GainSlider) {
-			gCB.settap4Gain((double) (tap4GainSlider.getValue()/1.0));			    					
+			gCB.settap4Gain((double) (tap4GainSlider.getValue()/10.0));			    					
 				updatetap4GainLabel();
 			}
 			if(ce.getSource() == tap5GainSlider) {
-			gCB.settap5Gain((double) (tap5GainSlider.getValue()/1.0));			    					
+			gCB.settap5Gain((double) (tap5GainSlider.getValue()/10.0));			    					
 				updatetap5GainLabel();
 			}
 			if(ce.getSource() == tap6GainSlider) {
-			gCB.settap6Gain((double) (tap6GainSlider.getValue()/1.0));			    					
+			gCB.settap6Gain((double) (tap6GainSlider.getValue()/10.0));			    					
 				updatetap6GainLabel();
 			}
 			}

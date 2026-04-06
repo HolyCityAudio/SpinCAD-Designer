@@ -30,6 +30,7 @@
 			private static final long serialVersionUID = 1L;
 			private StutterControlPanel cp = null;
 			
+			private double inputGain = 1.0;
 			private int output;
 			private int fadeFilt;
 			private int fadeOut;
@@ -46,6 +47,7 @@
 				addControlInputPin(this, "Stutter");
 				addControlOutputPin(this, "Fade_Filter");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						}
@@ -91,7 +93,7 @@
 			int	delayOffset = sfxb.getDelayMemAllocated() + 1;
 			sfxb.FXallocDelayMem("delayRam", delayLength); 
 			if(this.getPin("Input").isConnected() == true) {
-			sfxb.readRegister(input, 1);
+			sfxb.readRegister(input, inputGain);
 			sfxb.FXwriteDelay("delayRam", 0, 0);
 			if(fadeTimeFilt == 0) {
 			if(this.getPin("Stutter").isConnected() == true) {
@@ -138,6 +140,13 @@
 			}
 			
 			// create setters and getter for control panel variables
+			public void setinputGain(double __param) {
+				inputGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getinputGain() {
+				return inputGain;
+			}
 			public void setdelayLength(double __param) {
 				delayLength = __param;	
 			}

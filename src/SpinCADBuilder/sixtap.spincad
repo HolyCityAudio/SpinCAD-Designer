@@ -8,11 +8,11 @@
 @controlInput cIn1 Delay_Time_1 
 @controlInput fbk 'Feedback Gain'
 
-equ inputGain 0.45
-@sliderLabel inputGain 'Input Gain'  0.0 1.0 0.5 1000.0 2
+equ inputGain 0.5
+@sliderLabel inputGain 'Input Gain' -12 0 -6 10.0 1 DBLEVEL
 
 equ fbkGain 0.5
-@sliderLabel fbkGain 'Feedback Gain' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel fbkGain 'Feedback Gain' -24 0 -6 10.0 1 DBLEVEL 
 
 // total allocated memory buffer for this delay
 // create a Control Panel with a Slider Label
@@ -45,22 +45,22 @@ equ tap6Ratio 0.6
 @sliderLabel tap6Ratio Tap_6_Time  0.0 1.0 0.5 1000.0 2
  
 equ tap1Gain 0.5
-@sliderLabel tap1Gain 'Tap 1 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel tap1Gain 'Tap 1 Gain: ' -24 0 -6 10.0 1 DBLEVEL 
 
 equ tap2Gain 0.5
-@sliderLabel tap2Gain 'Tap 2 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel tap2Gain 'Tap 2 Gain: ' -24 0 -6 10.0 1 DBLEVEL 
 
 equ tap3Gain 0.5
-@sliderLabel tap3Gain 'Tap 3 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel tap3Gain 'Tap 3 Gain: ' -24 0 -6 10.0 1 DBLEVEL 
 
 equ tap4Gain 0.5
-@sliderLabel tap4Gain 'Tap 4 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel tap4Gain 'Tap 4 Gain: ' -24 0 -6 10.0 1 DBLEVEL 
   
 equ tap5Gain 0.5
-@sliderLabel tap5Gain 'Tap 5 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel tap5Gain 'Tap 5 Gain: ' -24 0 -6 10.0 1 DBLEVEL 
   
 equ tap6Gain 0.8
-@sliderLabel tap6Gain 'Tap 6 Gain: ' -24 0 -6 1.0 1 DBLEVEL 
+@sliderLabel tap6Gain 'Tap 6 Gain: ' -24 0 -6 10.0 1 DBLEVEL 
   
 equ delayOffset -1
 

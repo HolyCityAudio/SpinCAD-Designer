@@ -4,17 +4,25 @@
 @audioOutput pitchout Pitch_Out 
 @controlInput select Pitch_Select 
 
-equ pitch1 -12 
+equ pitch1 -12
 @sliderLabel pitch1 'Pitch 1' -12 17 7 1.0 0
+equ cents1 0
+@sliderLabel cents1 'Cents 1' -99 99 0 1.0 0
 
-equ pitch2 -7  
+equ pitch2 -7
 @sliderLabel pitch2 'Pitch 2' -12 17 7 1.0 0
+equ cents2 0
+@sliderLabel cents2 'Cents 2' -99 99 0 1.0 0
 
-equ pitch3 7 
+equ pitch3 7
 @sliderLabel pitch3 'Pitch 3' -12 17 7 1.0 0
+equ cents3 0
+@sliderLabel cents3 'Cents 3' -99 99 0 1.0 0
 
-equ pitch4 12  
+equ pitch4 12
 @sliderLabel pitch4 'Pitch 4' -12 17 7 1.0 0
+equ cents4 0
+@sliderLabel cents4 'Cents 4' -99 99 0 1.0 0
 
 equ lfoSel 0
 @comboBox lfoSel 'Ramp 0' 'Ramp 1' 
@@ -28,6 +36,17 @@ equ pitchout reg0
 // then allocate memory 
 mem delayd 4096
 mem temp 1 
+
+// combine each pitch slot's semitones + cents/100
+equ negHundred -100
+@divideDouble negCF1 cents1 negHundred
+@minusDouble total1 pitch1 negCF1
+@divideDouble negCF2 cents2 negHundred
+@minusDouble total2 pitch2 negCF2
+@divideDouble negCF3 cents3 negHundred
+@minusDouble total3 pitch3 negCF3
+@divideDouble negCF4 cents4 negHundred
+@minusDouble total4 pitch4 negCF4
 
 // I need WLDR to take a variable for lfoSel and LFO rate and probably width too
 skp run, START 
@@ -52,25 +71,25 @@ sof 1.0, -0.25
 skp ZRO, slot1 
 slot0: 
 ; function to convert semitones to LFO coefficient
-@semitonesToRmpRate shift4 pitch4 
+@semitonesToRmpRate shift4 total4 
 sof 0.0, shift4
 wrax RMP0_RATE, 0
 ; this should be 8
 skp RUN, SHIFT
 slot1:
-@semitonesToRmpRate shift1 pitch3
+@semitonesToRmpRate shift1 total3
 sof 0.0, shift1
 wrax RMP0_RATE, 0 
 ; this should be 5
 skp RUN, SHIFT
 slot2:
-@semitonesToRmpRate shift2 pitch2
+@semitonesToRmpRate shift2 total2
 sof 0.0, shift2
 wrax RMP0_RATE, 0
 ; this should be 2
 skp RUN, SHIFT
 slot3:
-@semitonesToRmpRate shift3 pitch1
+@semitonesToRmpRate shift3 total1
 sof 0.0, shift3
 wrax RMP0_RATE, 0
 
@@ -100,25 +119,25 @@ sof 1.0, -0.25
 skp ZRO, slot1_1 
 slot0: 
 ; function to convert semitones to LFO coefficient
-@semitonesToRmpRate shift4 pitch4 
+@semitonesToRmpRate shift4 total4 
 sof 0.0, shift4
 wrax RMP1_RATE, 0
 ; this should be 8
 skp RUN, SHIFT1
 slot1_1:
-@semitonesToRmpRate shift1 pitch3
+@semitonesToRmpRate shift1 total3
 sof 0.0, shift1
 wrax RMP1_RATE, 0 
 ; this should be 5 
 skp RUN, SHIFT1
 slot2_1:
-@semitonesToRmpRate shift2 pitch2
+@semitonesToRmpRate shift2 total2
 sof 0.0, shift2
 wrax RMP1_RATE, 0
 ; this should be 2
 skp RUN, SHIFT1
 slot3_1:
-@semitonesToRmpRate shift3 pitch1
+@semitonesToRmpRate shift3 total1
 sof 0.0, shift3
 wrax RMP1_RATE, 0
 

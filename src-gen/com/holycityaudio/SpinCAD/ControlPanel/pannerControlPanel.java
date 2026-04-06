@@ -76,8 +76,8 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------						
-					// dB level slider goes in steps of 1 dB
-						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12),(int) (0), (int) (20 * Math.log10(gCB.getgain1())));
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain1()) * 10.0));
 						gain1Slider.addChangeListener(new pannerListener());
 						gain1Field = new JTextField();
 						gain1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -88,10 +88,10 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(gain1Field.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val);
+						int sliderVal = (int) Math.round(val * 10.0);
 						sliderVal = Math.max(gain1Slider.getMinimum(), Math.min(gain1Slider.getMaximum(), sliderVal));
 						gain1Slider.setValue(sliderVal);
-						gCB.setgain1((double) sliderVal);
+						gCB.setgain1((double) sliderVal / 10.0);
 									updategain1Label();
 								} catch (NumberFormatException ex) {
 									updategain1Label();
@@ -124,7 +124,7 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 		class pannerListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-			gCB.setgain1((double) (gain1Slider.getValue()/1.0));			    					
+			gCB.setgain1((double) (gain1Slider.getValue()/10.0));			    					
 				updategain1Label();
 			}
 			}

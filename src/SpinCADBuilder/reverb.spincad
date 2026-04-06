@@ -13,7 +13,7 @@ bool LFOAIs1 false
 bool LFOBIs1 false
 
 equ gain 0.5 
-@sliderLabel gain 'Input Gain' -18 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain 'Input Gain' -18 0 -6 10.0 1 DBLEVEL 
 
 mem   ap4   1274
 mem   ap4b   1382

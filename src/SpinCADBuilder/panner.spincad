@@ -6,7 +6,7 @@
 @controlInput pan Pan
 
 equ gain1 0.5 
-@sliderLabel gain1 'Input Gain' -12 0 -6 1.0 1 DBLEVEL 
+@sliderLabel gain1 'Input Gain' -12 0 -6 10.0 1 DBLEVEL 
 
 equ output1 REG01
 equ output2 REG02
