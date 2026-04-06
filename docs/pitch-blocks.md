@@ -64,6 +64,42 @@ buffer versus a 4096-sample buffer:
 4096 samples handles guitar fundamentals down to about 25 Hz cleanly. Use 512
 only when delay memory is scarce and the input is high-frequency content.
 
+### Crossfade artifacts
+
+The amplitude modulation visible in pitch-shifted output is caused by the
+phase relationship between the input signal and the delay buffer. The two
+ramp read pointers (RPTR and RPTR2) read from positions separated by half
+the buffer (2048 samples = 62.5 ms for a 4096-sample buffer). During the
+crossfade, the two copies of the signal either reinforce or cancel depending
+on whether the signal completes an integer number of full cycles in that
+62.5 ms interval.
+
+**Best case:** frequencies that complete an exact number of full cycles in
+the buffer half (multiples of 16 Hz for a 4096-sample buffer). The two
+read pointers see the signal at the same phase, so the crossfade blends
+smoothly with no amplitude variation.
+
+**Worst case:** frequencies where an odd number of half-cycles fits in the
+buffer half (odd multiples of 8 Hz). The two pointers see the signal at
+opposite phase, causing partial cancellation during crossfade.
+
+![Crossfade comparison](images/pitch-crossfade.png)
+
+In the comparison above, 440 Hz has 27.5 cycles per buffer half (55
+half-cycles, odd) so the crossfade encounters phase cancellation, producing
+a tremolo-like amplitude modulation. 448 Hz has exactly 28 cycles (56
+half-cycles, even) and crossfades cleanly with stable amplitude. The 8 Hz
+difference is less than a quarter semitone, yet the amplitude stability is
+dramatically different.
+
+For a complex signal like a guitar note, some harmonics will be near best
+case while others are near worst case. The result is that some frequency
+components pass through with stable amplitude while others undergo a
+tremolo-like amplitude modulation at the ramp cycle rate. This gives
+pitch-shifted signals their characteristic "watery" or "chorused" quality,
+and is an inherent limitation of single-delay-line pitch shifting on the
+FV-1.
+
 ---
 
 ## Pitch Shift Fixed

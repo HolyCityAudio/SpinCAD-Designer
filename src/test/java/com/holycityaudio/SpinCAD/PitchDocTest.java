@@ -111,6 +111,9 @@ public class PitchDocTest {
         // === Block Size Demo ===
         plotBlockSizeDemo(docsDir);
 
+        // === Crossfade Phase Alignment Demo ===
+        plotCrossfadeDemo(docsDir);
+
         System.out.println("\nAll pitch PNGs written to docs/images/");
     }
 
@@ -279,5 +282,72 @@ public class PitchDocTest {
             "Input (100 Hz)", "512 samples (too small)", "4096 samples");
 
         System.out.println("  wrote pitch-blocksize.png");
+    }
+
+    /**
+     * Demonstrates crossfade phase alignment artifacts.
+     * Compares worst case (440 Hz = 27.5 cycles per buffer half, odd
+     * half-cycles cause phase cancellation) against best case (448 Hz =
+     * 28 full cycles per buffer half, even half-cycles crossfade cleanly).
+     * Uses a longer display window (150 ms) to show full envelope cycles.
+     */
+    private void plotCrossfadeDemo(File docsDir) throws Exception {
+        int displaySamples = (int)(0.150 * SAMPLE_RATE); // 150 ms
+        int skipSamples = (int)(0.25 * SAMPLE_RATE);
+
+        // Worst case: 440 Hz = 55 * 8 Hz (27.5 cycles in 62.5 ms = odd half-cycles)
+        double worstFreq = 440.0;
+        File worstWav = generateSineWav(SIM_DURATION, worstFreq, 0.5);
+        PitchShiftFixedCADBlock worstBlock = new PitchShiftFixedCADBlock(100, 100);
+        worstBlock.setFreq(12);
+
+        // Best case: 448 Hz = 28 * 16 Hz (28 full cycles in 62.5 ms = even half-cycles)
+        double bestFreq = 448.0;
+        File bestWav = generateSineWav(SIM_DURATION, bestFreq, 0.5);
+        PitchShiftFixedCADBlock bestBlock = new PitchShiftFixedCADBlock(100, 100);
+        bestBlock.setFreq(12);
+
+        short[] worstStereo, bestStereo;
+        try {
+            worstStereo = simulate(worstBlock, worstWav, null,
+                "Pitch Out", null, tempDir);
+            bestStereo = simulate(bestBlock, bestWav, null,
+                "Pitch Out", null, tempDir);
+        } catch (Exception e) {
+            System.err.println("  SKIP crossfade demo: " + e.getMessage());
+            return;
+        }
+
+        if (worstStereo == null || bestStereo == null) {
+            System.err.println("  SKIP crossfade demo: simulation returned null");
+            return;
+        }
+
+        double[] worstOut = toDouble(extractChannel(worstStereo, 0));
+        double[] bestOut = toDouble(extractChannel(bestStereo, 0));
+
+        int start = Math.min(skipSamples,
+            worstOut.length - displaySamples - 1);
+        if (start < 0) start = 0;
+        int end = Math.min(start + displaySamples,
+            Math.min(worstOut.length, bestOut.length));
+
+        double[] worstSlice = Arrays.copyOfRange(worstOut, start, end);
+        double[] bestSlice = Arrays.copyOfRange(bestOut, start, end);
+
+        int len = Math.min(worstSlice.length, bestSlice.length);
+        if (worstSlice.length != len) worstSlice = Arrays.copyOf(worstSlice, len);
+        if (bestSlice.length != len) bestSlice = Arrays.copyOf(bestSlice, len);
+
+        double[] timeMs = new double[len];
+        for (int i = 0; i < len; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+        writeStackedWaveformPlot(
+            new File(docsDir, "pitch-crossfade.png"),
+            "Crossfade Artifacts (Octave Up, 4096 buffer)",
+            timeMs, worstSlice, bestSlice,
+            "440 Hz (worst case)", "448 Hz (best case)");
+
+        System.out.println("  wrote pitch-crossfade.png");
     }
 }
