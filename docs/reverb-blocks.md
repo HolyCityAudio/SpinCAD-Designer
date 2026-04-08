@@ -93,10 +93,12 @@ a long reverb tail.
 
 ## Chirp Reverb
 
-A cascaded allpass chain with geometrically increasing delay lengths
-(controlled by a stretch factor). Produces a characteristic chirped or
-dispersed impulse response where different frequencies arrive at
-different times.
+A cascade of up to 30 identical allpass filters, each with a delay of
+*stretch* samples. The allpass coefficient (which can be negative)
+controls how much different frequencies are delayed relative to each
+other. The result is a dispersive impulse response where energy at the
+resonance frequency arrives much later than at other frequencies — the
+characteristic "chirp" sound of spring reverbs and metallic resonators.
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -107,10 +109,12 @@ different times.
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain | 0-1 | 0.5 | Input gain |
-| Num APs | 1-4 | 4 | Number of allpass stages |
-| Stretch | 1-8 | 4 | Geometric stretch factor for delay lengths |
-| AP Coeff | 0-1 | 0.5 | Allpass coefficient |
+| Input Gain | -18 to 0 dB | -6 dB | Input gain |
+| Stages | 2-30 | 4 | Number of allpass stages |
+| Stretch | 1-50 | 20 | Delay length per stage (samples) |
+| All Pass | -0.98 to 0.98 | 0.5 | Allpass coefficient |
+
+### Effect of AP coefficient
 
 Each AP coefficient setting produces a distinct impulse response and
 frequency dispersion pattern. At AP=0 the impulse passes through
@@ -131,6 +135,69 @@ time — this is the characteristic "chirp" sound.
 
 ![Chirp AP=0.75](images/reverb-chirp-0.75.png)
 ![Chirp spectrogram AP=0.75](images/reverb-chirp-spec-0.75.png)
+
+### Group delay vs. stretch and AP coefficient
+
+With 30 stages (the block maximum), the group delay at the resonance
+frequency scales linearly with the stretch parameter. The sign of the
+AP coefficient determines the resonance frequency: positive AP peaks at
+f<sub>s</sub>/D, negative AP peaks at f<sub>s</sub>/(2D), where
+D = stretch and f<sub>s</sub> = 32768 Hz.
+
+The theoretical group delay at the resonance frequency is:
+
+> τ = N · D · (1 + |k|) / (1 − |k|) / f<sub>s</sub>
+
+where N = number of stages, D = stretch, k = AP coefficient.
+
+| Stretch | AP | Group Delay | Resonance Freq |
+|---------|-----|------------|----------------|
+| 5 | +0.65 | 21.4 ms | 6504 Hz |
+| 5 | -0.65 | 21.6 ms | 3276 Hz |
+| 10 | +0.65 | 42.8 ms | 3252 Hz |
+| 10 | -0.65 | 43.3 ms | 1640 Hz |
+| 20 | +0.65 | 86.6 ms | 1640 Hz |
+| 20 | -0.65 | 86.5 ms | 820 Hz |
+
+**Impulse spectrograms** (0.5 ms temporal resolution, 30 stages) show
+the dispersive chirp pattern. The annotation in each spectrogram shows
+the measured peak group delay and resonance frequency.
+
+**Stretch = 5:**
+
+![Impulse spectrogram stretch=5 AP=+0.65](images/chirp-delay-impulse-s5_appos065.png)
+![Impulse spectrogram stretch=5 AP=-0.65](images/chirp-delay-impulse-s5_apneg065.png)
+
+**Stretch = 10:**
+
+![Impulse spectrogram stretch=10 AP=+0.65](images/chirp-delay-impulse-s10_appos065.png)
+![Impulse spectrogram stretch=10 AP=-0.65](images/chirp-delay-impulse-s10_apneg065.png)
+
+**Stretch = 20:**
+
+![Impulse spectrogram stretch=20 AP=+0.65](images/chirp-delay-impulse-s20_appos065.png)
+![Impulse spectrogram stretch=20 AP=-0.65](images/chirp-delay-impulse-s20_apneg065.png)
+
+### Tone burst response
+
+A 100 ms sine burst (with 5-cycle linear fade-in and fade-out) at the
+resonance frequency confirms the group delay measurement. The output
+onset is shifted by the measured group delay relative to the input.
+
+**Stretch = 5:**
+
+![Tone burst stretch=5 AP=+0.65](images/chirp-delay-burst-s5_appos065.png)
+![Tone burst stretch=5 AP=-0.65](images/chirp-delay-burst-s5_apneg065.png)
+
+**Stretch = 10:**
+
+![Tone burst stretch=10 AP=+0.65](images/chirp-delay-burst-s10_appos065.png)
+![Tone burst stretch=10 AP=-0.65](images/chirp-delay-burst-s10_apneg065.png)
+
+**Stretch = 20:**
+
+![Tone burst stretch=20 AP=+0.65](images/chirp-delay-burst-s20_appos065.png)
+![Tone burst stretch=20 AP=-0.65](images/chirp-delay-burst-s20_apneg065.png)
 
 ---
 
