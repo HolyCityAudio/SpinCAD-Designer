@@ -341,12 +341,13 @@ public class ReverbDocTest {
                 new String[]{COLORS[0]});
             System.out.println("  wrote reverb-chirp-" + suffix + ".png");
 
-            // Spectrogram
+            // Spectrogram — fftSize=64, hopSize=8 (~0.25 ms hop) for better
+            // time resolution on the 5 ms window (12 frames vs 4 with fftSize=128)
             int specLen = Math.min(audio.length, samples5ms);
             writeSpectrogram(
                 new File(docsDir, "reverb-chirp-spec-" + suffix + ".png"),
                 String.format("Chirp Spectrogram (AP=%.2f)", apCoeffs[a]),
-                audio, specLen, SAMPLE_RATE);
+                audio, specLen, SAMPLE_RATE, 64, 8);
             System.out.println("  wrote reverb-chirp-spec-" + suffix + ".png");
         }
     }
@@ -390,8 +391,12 @@ public class ReverbDocTest {
      */
     private void writeSpectrogram(File file, String title,
             double[] audio, int totalSamples, int sampleRate) throws IOException {
-        int fftSize = 128;  // doubled from 64 for 2x frequency resolution
-        int hopSize = 8;    // ~0.25ms hop for smooth display
+        writeSpectrogram(file, title, audio, totalSamples, sampleRate, 128, 8);
+    }
+
+    private void writeSpectrogram(File file, String title,
+            double[] audio, int totalSamples, int sampleRate,
+            int fftSize, int hopSize) throws IOException {
         int numFrames = (totalSamples - fftSize) / hopSize;
         if (numFrames < 1) return;
 

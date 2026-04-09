@@ -67,6 +67,13 @@ public class ChirpDelayDocTest {
             }
         }
 
+        // Sine/square closeups at the lowest resonance frequency for each AP.
+        // Stretch=20 gives the lowest resonance for a given AP sign.
+        for (double ap : apCoeffs) {
+            System.out.printf("%n=== Waveform closeups: stretch=20, AP=%.2f ===%n", ap);
+            plotWaveformCloseups(docsDir, 20, ap);
+        }
+
         System.out.println("\nAll chirp delay PNGs written to docs/images/");
     }
 
@@ -249,6 +256,133 @@ public class ChirpDelayDocTest {
         }
 
         File wavFile = File.createTempFile("spincad_fadedburst_", ".wav");
+        wavFile.deleteOnExit();
+        AudioFormat format = new AudioFormat(SAMPLE_RATE, 16, 2, true, false);
+        ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        AudioInputStream ais = new AudioInputStream(bais, format, numFrames);
+        AudioSystem.write(ais, AudioFileFormat.Type.WAVE, wavFile);
+        ais.close();
+        return wavFile;
+    }
+
+    /**
+     * Plot 10-cycle closeup of sine and square waves processed through
+     * the chirp block at the resonance frequency.  Shows stacked
+     * input/output for each waveform type.
+     */
+    private void plotWaveformCloseups(File docsDir, int stretch, double apCoeff)
+            throws Exception {
+        // Measure resonance frequency the same way as testChirpConfig
+        ChirpCADBlock probe = new ChirpCADBlock(100, 100);
+        probe.setnAPs(N_STAGES);
+        probe.setstretch(stretch);
+        probe.setkiap(apCoeff);
+
+        File impulseWav = generateImpulseWav(SIM_DURATION, IMPULSE_AMP);
+        short[] stereo = simulate(probe, impulseWav, null, "Output", null, tempDir);
+        if (stereo == null) { System.err.println("  SKIP closeups: probe failed"); return; }
+
+        double[] audio = toDouble(extractChannel(stereo, 0));
+        int gdFftSize = 8192;
+        double[] gd = computeGroupDelay(audio, gdFftSize);
+        int gdBins = gdFftSize / 2;
+        int minBin = Math.max(1,
+            (int)((double) SAMPLE_RATE / (4.0 * stretch) * gdFftSize / SAMPLE_RATE));
+        double maxGd = 0;
+        for (int b = minBin; b < gdBins; b++)
+            if (gd[b] > maxGd) maxGd = gd[b];
+        int peakBin = minBin;
+        for (int b = minBin + 1; b < gdBins - 1; b++) {
+            if (gd[b] >= gd[b - 1] && gd[b] >= gd[b + 1] && gd[b] >= maxGd * 0.5) {
+                peakBin = b;
+                maxGd = gd[b];
+                break;
+            }
+        }
+        double freqHz = (double) peakBin * SAMPLE_RATE / gdFftSize;
+        double groupDelayMs = 1000.0 * maxGd / SAMPLE_RATE;
+
+        System.out.printf("  Resonance: %.0f Hz, group delay %.1f ms%n",
+            freqHz, groupDelayMs);
+
+        // 10-cycle display window
+        double cycleDuration = 1.0 / freqHz;
+        int displaySamples = (int)(10 * cycleDuration * SAMPLE_RATE);
+        // Skip past the group delay so we see steady-state output
+        int skipSamples = (int)((groupDelayMs / 1000.0 + 0.050) * SAMPLE_RATE);
+
+        String tag = String.format("s%d_ap%s", stretch, fmtCoeff(apCoeff));
+
+        // --- Sine wave ---
+        File sineWav = generateSineWav(SIM_DURATION, freqHz, BURST_AMP);
+        ChirpCADBlock sineBlock = new ChirpCADBlock(100, 100);
+        sineBlock.setnAPs(N_STAGES);
+        sineBlock.setstretch(stretch);
+        sineBlock.setkiap(apCoeff);
+
+        short[] sineStereo = simulate(sineBlock, sineWav, null, "Output", null, tempDir);
+        if (sineStereo == null) { System.err.println("  SKIP sine closeup"); return; }
+
+        double[] sineOut = toDouble(extractChannel(sineStereo, 0));
+        double[] sineIn = toDouble(extractChannel(readWavSamples(sineWav), 0));
+
+        int start = Math.min(skipSamples, sineOut.length - displaySamples - 1);
+        int end = Math.min(start + displaySamples, Math.min(sineOut.length, sineIn.length));
+        double[] sineInSlice = Arrays.copyOfRange(sineIn, start, end);
+        double[] sineOutSlice = Arrays.copyOfRange(sineOut, start, end);
+        double[] timeMs = new double[end - start];
+        for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+        File sineFile = new File(docsDir, "chirp-delay-sine-" + tag + ".png");
+        writeStackedWaveformPlot(sineFile,
+            String.format("Sine %.0f Hz (stretch=%d, AP=%.2f)", freqHz, stretch, apCoeff),
+            timeMs, sineInSlice, sineOutSlice,
+            String.format("Input (%.0f Hz)", freqHz), "Output");
+        System.out.println("  wrote " + sineFile.getName());
+
+        // --- Square wave ---
+        File squareWav = generateSquareWav(SIM_DURATION, freqHz, BURST_AMP);
+        ChirpCADBlock sqBlock = new ChirpCADBlock(100, 100);
+        sqBlock.setnAPs(N_STAGES);
+        sqBlock.setstretch(stretch);
+        sqBlock.setkiap(apCoeff);
+
+        short[] sqStereo = simulate(sqBlock, squareWav, null, "Output", null, tempDir);
+        if (sqStereo == null) { System.err.println("  SKIP square closeup"); return; }
+
+        double[] sqOut = toDouble(extractChannel(sqStereo, 0));
+        double[] sqIn = toDouble(extractChannel(readWavSamples(squareWav), 0));
+
+        start = Math.min(skipSamples, sqOut.length - displaySamples - 1);
+        end = Math.min(start + displaySamples, Math.min(sqOut.length, sqIn.length));
+        double[] sqInSlice = Arrays.copyOfRange(sqIn, start, end);
+        double[] sqOutSlice = Arrays.copyOfRange(sqOut, start, end);
+        timeMs = new double[end - start];
+        for (int i = 0; i < timeMs.length; i++) timeMs[i] = 1000.0 * i / SAMPLE_RATE;
+
+        File sqFile = new File(docsDir, "chirp-delay-square-" + tag + ".png");
+        writeStackedWaveformPlot(sqFile,
+            String.format("Square %.0f Hz (stretch=%d, AP=%.2f)", freqHz, stretch, apCoeff),
+            timeMs, sqInSlice, sqOutSlice,
+            String.format("Input (%.0f Hz)", freqHz), "Output");
+        System.out.println("  wrote " + sqFile.getName());
+    }
+
+    /** Generate a stereo square wave WAV. */
+    private File generateSquareWav(double durationSeconds, double freqHz,
+            double amplitude) throws IOException {
+        int numFrames = (int)(SAMPLE_RATE * durationSeconds);
+        byte[] data = new byte[numFrames * 4];
+        for (int i = 0; i < numFrames; i++) {
+            double phase = (freqHz * i / SAMPLE_RATE) % 1.0;
+            short sample = (short)(amplitude * Short.MAX_VALUE * (phase < 0.5 ? 1.0 : -1.0));
+            int offset = i * 4;
+            data[offset] = (byte)(sample & 0xff);
+            data[offset + 1] = (byte)((sample >> 8) & 0xff);
+            data[offset + 2] = (byte)(sample & 0xff);
+            data[offset + 3] = (byte)((sample >> 8) & 0xff);
+        }
+        File wavFile = File.createTempFile("spincad_square_", ".wav");
         wavFile.deleteOnExit();
         AudioFormat format = new AudioFormat(SAMPLE_RATE, 16, 2, true, false);
         ByteArrayInputStream bais = new ByteArrayInputStream(data);

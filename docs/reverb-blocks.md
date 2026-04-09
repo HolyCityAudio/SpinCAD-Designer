@@ -91,7 +91,7 @@ a long reverb tail.
 
 ---
 
-## Chirp Reverb
+## Chirp
 
 A cascade of up to 30 identical allpass filters, each with a delay of
 *stretch* samples. The allpass coefficient (which can be negative)
@@ -99,6 +99,13 @@ controls how much different frequencies are delayed relative to each
 other. The result is a dispersive impulse response where energy at the
 resonance frequency arrives much later than at other frequencies — the
 characteristic "chirp" sound of spring reverbs and metallic resonators.
+
+Long chains of allpass filters are commonly found in spring reverb
+emulations, where they model the frequency-dependent propagation
+velocity of the spring coil. The FV-1's 128-instruction limit
+constrains the chain to about 30 stages (60 instructions for
+RDA/WRAP pairs), which is not enough for a convincing spring
+emulation but is sufficient to demonstrate the dispersive effect.
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -198,6 +205,24 @@ onset is shifted by the measured group delay relative to the input.
 
 ![Tone burst stretch=20 AP=+0.65](images/chirp-delay-burst-s20_appos065.png)
 ![Tone burst stretch=20 AP=-0.65](images/chirp-delay-burst-s20_apneg065.png)
+
+### Waveform closeups
+
+Ten-cycle closeups of sine and square waves at the lowest resonance
+frequency (stretch = 20) show how the allpass cascade disperses
+harmonics. The sine wave passes through with only a gain change, while
+the square wave's harmonics are spread in time, producing a visible
+chirp-like smearing of the sharp edges.
+
+**AP = +0.65 (resonance at 1640 Hz):**
+
+![Sine closeup AP=+0.65](images/chirp-delay-sine-s20_appos065.png)
+![Square closeup AP=+0.65](images/chirp-delay-square-s20_appos065.png)
+
+**AP = −0.65 (resonance at 820 Hz):**
+
+![Sine closeup AP=-0.65](images/chirp-delay-sine-s20_apneg065.png)
+![Square closeup AP=-0.65](images/chirp-delay-square-s20_apneg065.png)
 
 ---
 
