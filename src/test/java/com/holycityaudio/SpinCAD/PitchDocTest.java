@@ -69,19 +69,21 @@ public class PitchDocTest {
             new pitchupdownCADBlock(100, 100),
             sineWav, null, "Pitch_Down_Out", "Pitch_Up_Out", docsDir);
 
-        // === Glitch Shift - Octave Up ===
+        // === Glitch Shift - Octave Up (longer window to show glitch) ===
         Glitch_shiftCADBlock glitchUp = new Glitch_shiftCADBlock(100, 100);
         glitchUp.setpitchSemitones(12);
         glitchUp.setpitchCents(0);
         plotStacked("glitch_shift-up", "Glitch Shift - Octave Up",
-            glitchUp, sineWav, null, "Glitch Out", docsDir);
+            glitchUp, sineWav, null, "Glitch Out",
+            (int)(0.150 * SAMPLE_RATE), docsDir);
 
-        // === Glitch Shift - Octave Down ===
+        // === Glitch Shift - Octave Down (longer window to show glitch) ===
         Glitch_shiftCADBlock glitchDown = new Glitch_shiftCADBlock(100, 100);
         glitchDown.setpitchSemitones(-12);
         glitchDown.setpitchCents(0);
         plotStacked("glitch_shift-down", "Glitch Shift - Octave Down",
-            glitchDown, sineWav, null, "Glitch Out", docsDir);
+            glitchDown, sineWav, null, "Glitch Out",
+            (int)(0.150 * SAMPLE_RATE), docsDir);
 
         // === Pitch Four ===
         plotStacked("pitch_four", "Pitch Four",
@@ -121,6 +123,15 @@ public class PitchDocTest {
             SpinCADBlock block, File inputWav,
             Map<String, Integer> controlInputs,
             String outputPin, File docsDir) throws Exception {
+        plotStacked(fileBase, title, block, inputWav, controlInputs,
+            outputPin, DISPLAY_SAMPLES, docsDir);
+    }
+
+    private void plotStacked(String fileBase, String title,
+            SpinCADBlock block, File inputWav,
+            Map<String, Integer> controlInputs,
+            String outputPin, int displaySamples,
+            File docsDir) throws Exception {
 
         short[] stereo;
         try {
@@ -141,9 +152,9 @@ public class PitchDocTest {
         short[] inputStereo = readWavSamples(inputWav);
         double[] input = toDouble(extractChannel(inputStereo, 0));
 
-        int start = Math.min(SKIP_SAMPLES, output.length - DISPLAY_SAMPLES - 1);
+        int start = Math.min(SKIP_SAMPLES, output.length - displaySamples - 1);
         if (start < 0) start = 0;
-        int end = Math.min(start + DISPLAY_SAMPLES,
+        int end = Math.min(start + displaySamples,
             Math.min(output.length, input.length));
 
         double[] outputSlice = Arrays.copyOfRange(output, start, end);
