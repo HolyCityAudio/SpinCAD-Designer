@@ -76,7 +76,7 @@ public class Log extends Instruction {
 		double res;
 		acc = Math.abs(acc);
 		if(acc == 0.0) {
-			res = 1.0;
+			res = -1.0;
 		}
 		else
 		{
