@@ -36,6 +36,7 @@
 			private double tap1Ratio = 0.85;
 			private double tap2Ratio = 0.60;
 			private double tap3Ratio = 0.45;
+			private double subdivision = 0.0;
 			private double delayOffset = -1;
 			private int output1;
 			private int output2;
@@ -56,6 +57,7 @@
 				addControlInputPin(this, "Delay Time 3");
 				addControlInputPin(this, "Feedback Gain");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
 						hasControlPanel = true;
@@ -224,5 +226,12 @@
 			
 			public double gettap3Ratio() {
 				return tap3Ratio;
+			}
+			public void setsubdivision(int __param) {
+				subdivision = (double) __param;
+			}
+			
+			public int getsubdivision() {
+				return (int) subdivision;
 			}
 		}	
