@@ -39,9 +39,13 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 
 	private static final long serialVersionUID = 1L;
 
+	// Ratio table: index → LFO-cycles-per-delay-period
+	public static final double[] RATIO_VALUES = {1.0/3, 0.5, 1.0, 2.0};
+	public static final String[] RATIO_LABELS = {"1/3", "1/2", "1", "2"};
+
 	// Slider defaults
 	private int delayLength = 8192;     // samples (100-500 ms at 32768 Hz)
-	private int ratio = 1;              // sync ratio: LFO cycles per delay period
+	private int ratio = 2;              // index into RATIO_VALUES (default = 1:1)
 	private double modDepth = 5.0;      // modulation depth in milliseconds (±)
 	private double fbkGain = 0.5;       // feedback gain (linear, -24..0 dB range)
 	private double dampFreq = 2000.0;   // damping LP frequency in Hz
@@ -111,7 +115,8 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 		// so the buffer must accommodate MAX_DELAY + modulation.
 		int effectiveMaxDelay = (timeCtrl != -1) ? MAX_DELAY : delayLength;
 		// Divide by ratio so that higher LFO rates don't increase pitch shift.
-		int modAmplitude = Math.max(1, (int)(modDepth * SAMPLERATE / (1000.0 * ratio)));
+		double ratioVal = getRatioValue();
+		int modAmplitude = Math.max(1, (int)(modDepth * SAMPLERATE / (1000.0 * ratioVal)));
 		int bufferLength = effectiveMaxDelay + modAmplitude + MARGIN;
 
 		int delayOffset = sfxb.getDelayMemAllocated() + 1;
@@ -136,7 +141,7 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 		double initDelay = (timeCtrl != -1)
 			? (MIN_DELAY + MAX_DELAY) / 2.0   // mid-range; overridden dynamically
 			: delayLength;
-		double rateHz = ratio * (double)SAMPLERATE / (2.0 * initDelay);
+		double rateHz = ratioVal * (double)SAMPLERATE / (2.0 * initDelay);
 		rateHz = Math.min(rateHz, 20.0);       // clamp to SIN LFO max
 
 		// Convert Hz to WLDS register value (0-511)
@@ -153,7 +158,7 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 		//  Dynamic rate update  (only when Delay Time control connected)
 		// =============================================================
 		if (timeCtrl != -1) {
-			double rateScale = ratio * RATE_SCALE_BASE;
+			double rateScale = ratioVal * RATE_SCALE_BASE;
 
 			sfxb.readRegister(timeCtrl, 1.0);                // ACC = raw control
 			sfxb.readRegisterFilter(timeSmooth, SMOOTH_COEFF);// smooth
@@ -247,8 +252,9 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 
 	public int getRatio() { return ratio; }
 	public void setRatio(int r) {
-		ratio = Math.max(1, Math.min(4, r));
+		ratio = Math.max(0, Math.min(RATIO_VALUES.length - 1, r));
 	}
+	public double getRatioValue() { return RATIO_VALUES[ratio]; }
 
 	public double getModDepth() { return modDepth; }
 	public void setModDepth(double d) {

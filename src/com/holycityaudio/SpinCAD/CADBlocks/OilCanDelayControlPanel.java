@@ -41,17 +41,16 @@ class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionL
 
 	// sliders (int range, mapped to real values via scale factors)
 	private JSlider delaySlider;      // 3277 .. 16384 (samples)
-	private JSlider ratioSlider;      // 1 .. 4
 	private JSlider modDepthSlider;   // 5 .. 200 (tenths of ms → 0.5..20 ms)
 	private JSlider fbkSlider;        // -240 .. 0 (tenths of dB)
 	private JSlider dampSlider;       // 200 .. 8000 (Hz)
 
 	private JTextField delayField;
-	private JTextField ratioField;
 	private JTextField modDepthField;
 	private JTextField fbkField;
 	private JTextField dampField;
 
+	private JComboBox<String> ratioCombo;
 	private JComboBox<String> lfoCombo;
 
 	private static final int SAMPLERATE = 32768;
@@ -72,12 +71,14 @@ class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionL
 		this.getContentPane().add(delayField);
 		this.getContentPane().add(delaySlider);
 
-		// --- Sync Ratio ---
-		ratioField = makeField();
-		ratioSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 4, block.getRatio());
-		ratioSlider.addChangeListener(this);
-		this.getContentPane().add(ratioField);
-		this.getContentPane().add(ratioSlider);
+		// --- Sync Ratio (combo box: 1/3, 1/2, 1, 2) ---
+		JTextField ratioLabel = makeField();
+		ratioLabel.setText("Sync Ratio");
+		this.getContentPane().add(ratioLabel);
+		ratioCombo = new JComboBox<>(OilCanDelayCADBlock.RATIO_LABELS);
+		ratioCombo.setSelectedIndex(block.getRatio());
+		ratioCombo.addActionListener(this);
+		this.getContentPane().add(ratioCombo);
 
 		// --- Mod Depth (slider in tenths of ms: 5..200 → 0.5..20.0 ms) ---
 		modDepthField = makeField();
@@ -131,9 +132,6 @@ class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionL
 		if (ce.getSource() == delaySlider) {
 			block.setDelayLength(delaySlider.getValue());
 			updateDelayLabel();
-		} else if (ce.getSource() == ratioSlider) {
-			block.setRatio(ratioSlider.getValue());
-			updateRatioLabel();
 		} else if (ce.getSource() == modDepthSlider) {
 			block.setModDepth(modDepthSlider.getValue() / 10.0);
 			updateModDepthLabel();
@@ -150,7 +148,10 @@ class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionL
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == lfoCombo) {
+		if (e.getSource() == ratioCombo) {
+			block.setRatio(ratioCombo.getSelectedIndex());
+			updateDelayLabel();
+		} else if (e.getSource() == lfoCombo) {
 			block.setLfoSel(lfoCombo.getSelectedIndex());
 		}
 	}
@@ -159,7 +160,6 @@ class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionL
 
 	private void updateAllLabels() {
 		updateDelayLabel();
-		updateRatioLabel();
 		updateModDepthLabel();
 		updateFbkLabel();
 		updateDampLabel();
@@ -167,13 +167,8 @@ class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionL
 
 	private void updateDelayLabel() {
 		double ms = block.getDelayLength() * 1000.0 / SAMPLERATE;
-		double syncHz = block.getRatio() * SAMPLERATE / (2.0 * block.getDelayLength());
-		delayField.setText(String.format("Delay Time  %.0f ms  (LFO %.1f Hz)", ms, syncHz));
-	}
-
-	private void updateRatioLabel() {
-		ratioField.setText(String.format("Sync Ratio  %d", block.getRatio()));
-		updateDelayLabel(); // LFO Hz changes too
+		double syncHz = block.getRatioValue() * SAMPLERATE / (2.0 * block.getDelayLength());
+		delayField.setText(String.format("Delay Time  %.0f ms  (LFO %.2f Hz)", ms, syncHz));
 	}
 
 	private void updateModDepthLabel() {
