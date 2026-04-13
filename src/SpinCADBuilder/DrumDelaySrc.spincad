@@ -24,20 +24,23 @@ equ delayLength 32767
 // tap 1 length in % (control panel value) 
 //	'@sliderLabel' ename = ID controlName = ID (minVal = SPINDOUBLE maxVal = SPINDOUBLE initVal = SPINDOUBLE multiplier = SPINDOUBLE precision = INT (option = ID)?)?
 
-equ tap1Ratio 0.85 
-@sliderLabel tap1Ratio 'Tap 1 Time (%): '  0.0 1.0 0.85 1000.0 2  
+equ tap1Ratio 0.85
+@sliderLabel tap1Ratio 'Tap 1 Time (%): '  0.0 1.0 0.85 6000.0 2 SUBDIVISION
 
 // tap 2 length in % (control panel value)
-equ tap2Ratio 0.60 
-@sliderLabel tap2Ratio 'Tap 2 Time (%): ' 0.0 1.0 0.60 1000.0 2	
+equ tap2Ratio 0.60
+@sliderLabel tap2Ratio 'Tap 2 Time (%): ' 0.0 1.0 0.60 6000.0 2 SUBDIVISION
 
 // tap 3 length in % (control panel value)
-equ tap3Ratio 0.45 
-@sliderLabel tap3Ratio 'Tap 3 Time (%): ' 0.0 1.0 0.45 1000.0 2
+equ tap3Ratio 0.45
+@sliderLabel tap3Ratio 'Tap 3 Time (%): ' 0.0 1.0 0.45 6000.0 2 SUBDIVISION
 
-// tap 3 length in % (control panel value)
-equ tap4Ratio 0.25 
-@sliderLabel tap4Ratio 'Tap 4 Time (%): ' 0.0 1.0 0.25 1000.0 2
+// tap 4 length in % (control panel value)
+equ tap4Ratio 0.25
+@sliderLabel tap4Ratio 'Tap 4 Time (%): ' 0.0 1.0 0.25 6000.0 2 SUBDIVISION
+
+// subdivision combo - place after ratio sliders so they exist at init time
+@subdivision
 
 equ heads 1.0
 

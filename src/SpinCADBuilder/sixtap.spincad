@@ -23,27 +23,30 @@ equ delayLength 32767
 // 'equ' ename = ID value = SPINDOUBLE (controlType = ID controlName = ID max = SPINDOUBLE multiplier = SPINDOUBLE)?;
 // tap1 
 
-equ tap1Ratio 0.10 
-@sliderLabel tap1Ratio 'Tap 1 Time'  0.0 1.0 0.1 1000.0 2
+equ tap1Ratio 0.10
+@sliderLabel tap1Ratio 'Tap 1 Time'  0.0 1.0 0.1 6000.0 2 SUBDIVISION
 
 // tap 2
 equ tap2Ratio 0.20
-@sliderLabel tap2Ratio 'Tap 2 Time'  0.0 1.0 0.2 1000.0 2
+@sliderLabel tap2Ratio 'Tap 2 Time'  0.0 1.0 0.2 6000.0 2 SUBDIVISION
 
-// tap 3 
+// tap 3
 equ tap3Ratio 0.30
-@sliderLabel tap3Ratio 'Tap 3 Time'  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap3Ratio 'Tap 3 Time'  0.0 1.0 0.5 6000.0 2 SUBDIVISION
 
 // tap 4
 equ tap4Ratio 0.4
-@sliderLabel tap4Ratio 'Tap 4 Time'  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap4Ratio 'Tap 4 Time'  0.0 1.0 0.5 6000.0 2 SUBDIVISION
 
 equ tap5Ratio 0.5
-@sliderLabel tap5Ratio 'Tap 5 Time'  0.0 1.0 0.5 1000.0 2
+@sliderLabel tap5Ratio 'Tap 5 Time'  0.0 1.0 0.5 6000.0 2 SUBDIVISION
 
 equ tap6Ratio 0.6
-@sliderLabel tap6Ratio Tap_6_Time  0.0 1.0 0.5 1000.0 2
- 
+@sliderLabel tap6Ratio Tap_6_Time  0.0 1.0 0.5 6000.0 2 SUBDIVISION
+
+// subdivision combo - place after ratio sliders so they exist at init time
+@subdivision
+
 equ tap1Gain 0.5
 @sliderLabel tap1Gain 'Tap 1 Gain: ' -24 0 -6 10.0 1 DBLEVEL 
 

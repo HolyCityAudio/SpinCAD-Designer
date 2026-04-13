@@ -31,6 +31,18 @@ public class FineControlSlider extends JSlider {
 	private int dragStartValue;
 	private static final double FINE_SCALE = 0.1;
 
+	/**
+	 * Sets subdivision tick spacing. When step > 0, major tick marks are
+	 * painted and the slider snaps to them during normal drag. Ctrl+drag
+	 * (fine mode) bypasses snapping entirely.
+	 */
+	public void setSubdivision(int step) {
+		setMajorTickSpacing(step);
+		setPaintTicks(step > 0);
+		setSnapToTicks(step > 0);
+		repaint();
+	}
+
 	public FineControlSlider(int orientation, int min, int max, int value) {
 		super(orientation, min, max, Math.max(min, Math.min(max, value)));
 		enableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK | java.awt.AWTEvent.MOUSE_MOTION_EVENT_MASK);

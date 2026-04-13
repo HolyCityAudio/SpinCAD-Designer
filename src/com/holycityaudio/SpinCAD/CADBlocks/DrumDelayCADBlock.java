@@ -38,6 +38,7 @@
 			private double tap4Ratio = 0.25;
 			private double heads = 1.0;
 			private double delayOffset = -1;
+			private double subdivision = 0.0;
 			private int output1;
 			private int output2;
 			private int output3;
@@ -259,4 +260,11 @@
 			public double gettap4Ratio() {
 				return tap4Ratio;
 			}
-		}	
+			public void setsubdivision(int __param) {
+				subdivision = (double) __param;
+			}
+
+			public int getsubdivision() {
+				return (int) subdivision;
+			}
+		}

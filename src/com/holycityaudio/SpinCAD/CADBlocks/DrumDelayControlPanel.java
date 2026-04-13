@@ -68,6 +68,8 @@ public class DrumDelayControlPanel extends spinCADControlPanel {
 	JTextField  tap3RatioField;
 	FineControlSlider tap4RatioSlider;
 	JTextField  tap4RatioField;
+	private JComboBox<String> subdivisionComboBox;
+	private static final int[] SUBDIVISION_STEPS = {0, 750, 1000, 1500, 2000};
 
 public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 
@@ -217,7 +219,7 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap1RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap1Ratio() * 1000.0));
+					tap1RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap1Ratio() * 6000.0));
 						tap1RatioSlider.addChangeListener(new DrumDelayListener());
 						tap1RatioField = new JTextField();
 						tap1RatioField.setHorizontalAlignment(JTextField.CENTER);
@@ -227,9 +229,9 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 								try {
 									String text = tap1RatioField.getText().replaceAll("[^\\d.\\-]", "");
 									double val = Double.parseDouble(text);
-									int sliderVal = (int) Math.round(val * 1000.0);
+									int sliderVal = (int) Math.round(val * 6000.0);
 									sliderVal = Math.max(tap1RatioSlider.getMinimum(), Math.min(tap1RatioSlider.getMaximum(), sliderVal));
-									gCB.settap1Ratio((double) (sliderVal/1000.0));
+									gCB.settap1Ratio((double) (sliderVal/6000.0));
 									tap1RatioSlider.setValue(sliderVal);
 									updatetap1RatioField();
 								} catch (NumberFormatException ex) {
@@ -255,7 +257,7 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap2RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap2Ratio() * 1000.0));
+					tap2RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap2Ratio() * 6000.0));
 						tap2RatioSlider.addChangeListener(new DrumDelayListener());
 						tap2RatioField = new JTextField();
 						tap2RatioField.setHorizontalAlignment(JTextField.CENTER);
@@ -265,9 +267,9 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 								try {
 									String text = tap2RatioField.getText().replaceAll("[^\\d.\\-]", "");
 									double val = Double.parseDouble(text);
-									int sliderVal = (int) Math.round(val * 1000.0);
+									int sliderVal = (int) Math.round(val * 6000.0);
 									sliderVal = Math.max(tap2RatioSlider.getMinimum(), Math.min(tap2RatioSlider.getMaximum(), sliderVal));
-									gCB.settap2Ratio((double) (sliderVal/1000.0));
+									gCB.settap2Ratio((double) (sliderVal/6000.0));
 									tap2RatioSlider.setValue(sliderVal);
 									updatetap2RatioField();
 								} catch (NumberFormatException ex) {
@@ -293,7 +295,7 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap3RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap3Ratio() * 1000.0));
+					tap3RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap3Ratio() * 6000.0));
 						tap3RatioSlider.addChangeListener(new DrumDelayListener());
 						tap3RatioField = new JTextField();
 						tap3RatioField.setHorizontalAlignment(JTextField.CENTER);
@@ -303,9 +305,9 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 								try {
 									String text = tap3RatioField.getText().replaceAll("[^\\d.\\-]", "");
 									double val = Double.parseDouble(text);
-									int sliderVal = (int) Math.round(val * 1000.0);
+									int sliderVal = (int) Math.round(val * 6000.0);
 									sliderVal = Math.max(tap3RatioSlider.getMinimum(), Math.min(tap3RatioSlider.getMaximum(), sliderVal));
-									gCB.settap3Ratio((double) (sliderVal/1000.0));
+									gCB.settap3Ratio((double) (sliderVal/6000.0));
 									tap3RatioSlider.setValue(sliderVal);
 									updatetap3RatioField();
 								} catch (NumberFormatException ex) {
@@ -331,7 +333,7 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					tap4RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 1000.0),(int) (1.0 * 1000.0), (int) (gCB.gettap4Ratio() * 1000.0));
+					tap4RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap4Ratio() * 6000.0));
 						tap4RatioSlider.addChangeListener(new DrumDelayListener());
 						tap4RatioField = new JTextField();
 						tap4RatioField.setHorizontalAlignment(JTextField.CENTER);
@@ -341,9 +343,9 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 								try {
 									String text = tap4RatioField.getText().replaceAll("[^\\d.\\-]", "");
 									double val = Double.parseDouble(text);
-									int sliderVal = (int) Math.round(val * 1000.0);
+									int sliderVal = (int) Math.round(val * 6000.0);
 									sliderVal = Math.max(tap4RatioSlider.getMinimum(), Math.min(tap4RatioSlider.getMaximum(), sliderVal));
-									gCB.settap4Ratio((double) (sliderVal/1000.0));
+									gCB.settap4Ratio((double) (sliderVal/6000.0));
 									tap4RatioSlider.setValue(sliderVal);
 									updatetap4RatioField();
 								} catch (NumberFormatException ex) {
@@ -366,6 +368,47 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 						tap4RatioinnerPanel.setBorder(tap4Ratioborder2);
 
 						frame.add(tap4RatioinnerPanel);
+
+				// Subdivision combo box
+				subdivisionComboBox = new JComboBox<>(new String[]{"None", "1/8", "1/6", "1/4", "1/3"});
+				subdivisionComboBox.setSelectedIndex(gCB.getsubdivision());
+				subdivisionComboBox.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int idx = subdivisionComboBox.getSelectedIndex();
+						gCB.setsubdivision(idx);
+						int step = SUBDIVISION_STEPS[idx];
+						tap1RatioSlider.setSubdivision(step);
+						tap2RatioSlider.setSubdivision(step);
+						tap3RatioSlider.setSubdivision(step);
+						tap4RatioSlider.setSubdivision(step);
+					}
+				});
+
+				Border subdivisionBorder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+				JPanel subdivisionPanel = new JPanel();
+				subdivisionPanel.setLayout(new BoxLayout(subdivisionPanel, BoxLayout.Y_AXIS));
+				JTextField subdivisionLabel = new JTextField("Subdivision");
+				subdivisionLabel.setHorizontalAlignment(JTextField.CENTER);
+				subdivisionLabel.setEditable(false);
+				Border subdivisionLabelBorder = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+				subdivisionLabel.setBorder(subdivisionLabelBorder);
+				subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
+				subdivisionPanel.add(subdivisionLabel);
+				subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
+				subdivisionPanel.add(subdivisionComboBox);
+				subdivisionPanel.setBorder(subdivisionBorder);
+				frame.add(subdivisionPanel);
+
+				// restore saved subdivision state
+				{
+					int savedStep = SUBDIVISION_STEPS[gCB.getsubdivision()];
+					tap1RatioSlider.setSubdivision(savedStep);
+					tap2RatioSlider.setSubdivision(savedStep);
+					tap3RatioSlider.setSubdivision(savedStep);
+					tap4RatioSlider.setSubdivision(savedStep);
+				}
+
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -391,19 +434,19 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 				updatedelayLengthField();
 			}
 			if(ce.getSource() == tap1RatioSlider) {
-			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/1000.0));
+			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/6000.0));
 				updatetap1RatioField();
 			}
 			if(ce.getSource() == tap2RatioSlider) {
-			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/1000.0));
+			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/6000.0));
 				updatetap2RatioField();
 			}
 			if(ce.getSource() == tap3RatioSlider) {
-			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/1000.0));
+			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/6000.0));
 				updatetap3RatioField();
 			}
 			if(ce.getSource() == tap4RatioSlider) {
-			gCB.settap4Ratio((double) (tap4RatioSlider.getValue()/1000.0));
+			gCB.settap4Ratio((double) (tap4RatioSlider.getValue()/6000.0));
 				updatetap4RatioField();
 			}
 			}
