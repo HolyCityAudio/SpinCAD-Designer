@@ -40,8 +40,15 @@ public class FineControlSlider extends JSlider {
 	 */
 	public void setSubdivision(int step) {
 		subdivisionStep = step;
-		setMajorTickSpacing(step);
-		setPaintTicks(step > 0);
+		if (step > 0) {
+			setMajorTickSpacing(step);
+			setMinorTickSpacing(step / 2);
+		} else {
+			// None: show ticks at 0.1 (600) major, 0.05 (300) minor
+			setMajorTickSpacing(600);
+			setMinorTickSpacing(300);
+		}
+		setPaintTicks(true);
 		repaint();
 	}
 
