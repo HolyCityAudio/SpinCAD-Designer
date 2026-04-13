@@ -29,17 +29,19 @@ public class FineControlSlider extends JSlider {
 	private boolean fineMode = false;
 	private int dragStartX;
 	private int dragStartValue;
+	private int subdivisionStep = 0;
 	private static final double FINE_SCALE = 0.1;
 
 	/**
 	 * Sets subdivision tick spacing. When step > 0, major tick marks are
 	 * painted and the slider snaps to them during normal drag. Ctrl+drag
-	 * (fine mode) bypasses snapping entirely.
+	 * (fine mode) bypasses snapping entirely. Changing subdivision does
+	 * NOT move the current slider value.
 	 */
 	public void setSubdivision(int step) {
+		subdivisionStep = step;
 		setMajorTickSpacing(step);
 		setPaintTicks(step > 0);
-		setSnapToTicks(step > 0);
 		repaint();
 	}
 
@@ -63,6 +65,9 @@ public class FineControlSlider extends JSlider {
 			return;
 		}
 		super.processMouseEvent(e);
+		if (!fineMode && subdivisionStep > 0 && e.getID() == MouseEvent.MOUSE_PRESSED) {
+			snapToSubdivision();
+		}
 	}
 
 	@Override
@@ -79,5 +84,17 @@ public class FineControlSlider extends JSlider {
 			return;
 		}
 		super.processMouseMotionEvent(e);
+		if (!fineMode && subdivisionStep > 0 && e.getID() == MouseEvent.MOUSE_DRAGGED) {
+			snapToSubdivision();
+		}
+	}
+
+	private void snapToSubdivision() {
+		int val = getValue();
+		int snapped = Math.round((float) val / subdivisionStep) * subdivisionStep;
+		snapped = Math.max(getMinimum(), Math.min(getMaximum(), snapped));
+		if (snapped != val) {
+			setValue(snapped);
+		}
 	}
 }

@@ -397,6 +397,7 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 				subdivisionPanel.add(subdivisionLabel);
 				subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
 				subdivisionPanel.add(subdivisionComboBox);
+				subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
 				subdivisionPanel.setBorder(subdivisionBorder);
 				frame.add(subdivisionPanel);
 
