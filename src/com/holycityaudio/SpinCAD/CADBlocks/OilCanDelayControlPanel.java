@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -35,7 +35,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class OilCanDelayControlPanel extends JFrame implements ChangeListener, ActionListener {
+class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionListener {
 
 	private OilCanDelayCADBlock block;
 
@@ -43,7 +43,7 @@ class OilCanDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 	private JSlider delaySlider;      // 3277 .. 16384 (samples)
 	private JSlider ratioSlider;      // 1 .. 4
 	private JSlider modDepthSlider;   // 5 .. 200 (tenths of ms → 0.5..20 ms)
-	private JSlider fbkSlider;        // 0 .. 95  (%)
+	private JSlider fbkSlider;        // -240 .. 0 (tenths of dB)
 	private JSlider dampSlider;       // 200 .. 8000 (Hz)
 
 	private JTextField delayField;
@@ -57,8 +57,8 @@ class OilCanDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 	private static final int SAMPLERATE = 32768;
 
 	public OilCanDelayControlPanel(OilCanDelayCADBlock b) {
+		super(SpinCADFrame.getInstance(), "Oil Can Delay", false);
 		this.block = b;
-		this.setTitle("Oil Can Delay");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 
@@ -87,10 +87,10 @@ class OilCanDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 		this.getContentPane().add(modDepthField);
 		this.getContentPane().add(modDepthSlider);
 
-		// --- Feedback ---
+		// --- Feedback (dB scale, matching mixer convention) ---
 		fbkField = makeField();
-		fbkSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 95,
-				(int)(block.getFbkGain() * 100));
+		fbkSlider = new FineControlSlider(JSlider.HORIZONTAL, -240, 0,
+				(int)(20.0 * Math.log10(Math.max(block.getFbkGain(), 0.001)) * 10.0));
 		fbkSlider.addChangeListener(this);
 		this.getContentPane().add(fbkField);
 		this.getContentPane().add(fbkSlider);
@@ -138,7 +138,7 @@ class OilCanDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 			block.setModDepth(modDepthSlider.getValue() / 10.0);
 			updateModDepthLabel();
 		} else if (ce.getSource() == fbkSlider) {
-			block.setFbkGain(fbkSlider.getValue() / 100.0);
+			block.setFbkGain(Math.pow(10.0, fbkSlider.getValue() / 10.0 / 20.0));
 			updateFbkLabel();
 		} else if (ce.getSource() == dampSlider) {
 			block.setDampFreq(dampSlider.getValue());
@@ -182,7 +182,7 @@ class OilCanDelayControlPanel extends JFrame implements ChangeListener, ActionLi
 
 	private void updateFbkLabel() {
 		double dB = 20.0 * Math.log10(Math.max(block.getFbkGain(), 0.001));
-		fbkField.setText(String.format("Feedback  %.0f%%  (%.1f dB)", block.getFbkGain() * 100, dB));
+		fbkField.setText(String.format("Feedback Gain  %4.1f dB", dB));
 	}
 
 	private void updateDampLabel() {

@@ -1,9 +1,10 @@
 {
   "formatVersion": 1,
   "type": "patch",
-  "patchFileName": "oil-can-delay.spcdj",
+  "patchFileName": "oil-can-delay-pitch.spcdj",
   "comments": {
     "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1070",
     "lines": [
       "Pot 0: ",
       "Pot 1: ",
@@ -13,9 +14,9 @@
     ]
   },
   "potValues": [
-    36.0,
-    18.0,
-    55.0
+    20.0,
+    95.0,
+    43.0
   ],
   "blocks": [
     {
@@ -137,9 +138,9 @@
       "name": "Oil Can Delay",
       "params": {
         "delayLength": 16384,
-        "ratio": 1,
-        "modDepth": 16.6,
-        "fbkGain": 0.26,
+        "ratio": 2,
+        "modDepth": 6.2,
+        "fbkGain": 0.95,
         "dampFreq": 3484.0,
         "lfoSel": 0
       }
@@ -151,26 +152,15 @@
       "y": 534,
       "name": "Pitch Shift 0",
       "params": {
-        "freq": -4,
+        "freq": 12,
         "cents": 0,
         "amp": 4096,
         "lfoSel": 0
       }
     },
     {
-      "className": "com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock",
-      "blockNum": 11,
-      "x": 887,
-      "y": 622,
-      "name": "FB In 1",
-      "params": {
-        "register": 44,
-        "lGain": 1.0
-      }
-    },
-    {
       "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
-      "blockNum": 12,
+      "blockNum": 11,
       "x": 782,
       "y": 775,
       "name": "Output",
@@ -179,6 +169,31 @@
         "offset0": false,
         "gain1": 1.0,
         "gain2": 1.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ChirpCADBlock",
+      "blockNum": 12,
+      "x": 919,
+      "y": 619,
+      "name": "Chirp",
+      "params": {
+        "gain": 0.7079457843841379,
+        "nAPs": 8.0,
+        "stretch": 16.0,
+        "kiap": 0.5,
+        "output1": 54
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.FBInputCADBlock",
+      "blockNum": 13,
+      "x": 959,
+      "y": 722,
+      "name": "FB In 1",
+      "params": {
+        "register": 44,
+        "lGain": 1.0
       }
     }
   ],
@@ -250,22 +265,28 @@
       "toPin": "Audio In"
     },
     {
-      "fromBlockIndex": 10,
-      "fromPin": "Pitch Out",
-      "toBlockIndex": 11,
-      "toPin": "Feedback Input"
-    },
-    {
       "fromBlockIndex": 9,
       "fromPin": "Audio Output",
-      "toBlockIndex": 12,
+      "toBlockIndex": 11,
       "toPin": "Input 1"
     },
     {
       "fromBlockIndex": 0,
       "fromPin": "Output 1",
-      "toBlockIndex": 12,
+      "toBlockIndex": 11,
       "toPin": "Input 2"
+    },
+    {
+      "fromBlockIndex": 10,
+      "fromPin": "Pitch Out",
+      "toBlockIndex": 12,
+      "toPin": "Input"
+    },
+    {
+      "fromBlockIndex": 12,
+      "fromPin": "Output",
+      "toBlockIndex": 13,
+      "toPin": "Feedback Input"
     }
   ]
 }

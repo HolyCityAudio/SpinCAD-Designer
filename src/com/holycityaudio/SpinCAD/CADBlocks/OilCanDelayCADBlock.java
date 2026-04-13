@@ -43,7 +43,7 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 	private int delayLength = 8192;     // samples (100-500 ms at 32768 Hz)
 	private int ratio = 1;              // sync ratio: LFO cycles per delay period
 	private double modDepth = 5.0;      // modulation depth in milliseconds (±)
-	private double fbkGain = 0.5;       // feedback gain (linear, 0-0.95)
+	private double fbkGain = 0.5;       // feedback gain (linear, -24..0 dB range)
 	private double dampFreq = 2000.0;   // damping LP frequency in Hz
 	private int lfoSel = 0;             // 0 = SIN0, 1 = SIN1
 
@@ -110,8 +110,8 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 		// When time control is connected the delay sweeps the full range,
 		// so the buffer must accommodate MAX_DELAY + modulation.
 		int effectiveMaxDelay = (timeCtrl != -1) ? MAX_DELAY : delayLength;
-		int modAmplitude = (int)(modDepth * SAMPLERATE / 1000.0);
-		if (modAmplitude < 1) modAmplitude = 1;
+		// Divide by ratio so that higher LFO rates don't increase pitch shift.
+		int modAmplitude = Math.max(1, (int)(modDepth * SAMPLERATE / (1000.0 * ratio)));
 		int bufferLength = effectiveMaxDelay + modAmplitude + MARGIN;
 
 		int delayOffset = sfxb.getDelayMemAllocated() + 1;
@@ -123,8 +123,10 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 		int dampReg  = sfxb.allocateReg();
 
 		int timeSmooth = -1;
+		int modScaleReg = -1;
 		if (timeCtrl != -1) {
 			timeSmooth = sfxb.allocateReg();
+			modScaleReg = sfxb.allocateReg();  // holds T for pitch-constant mod depth
 		}
 
 		// --- damping coefficient from frequency ---
@@ -159,6 +161,7 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 
 			// map 0..1 → 0.2..1.0 (T proportional to delay_samples)
 			sfxb.scaleOffset(0.8, 0.2);
+			sfxb.writeRegister(modScaleReg, 1.0);     // save T for mod depth scaling
 			sfxb.log(-1.0, LOG_OFFSET);                       // ≈ log2(1/T)/16 shifted
 			sfxb.exp(1.0, 0);                                 // ≈ (1/T) * K
 			sfxb.scaleOffset(rateScale, 0);                   // scale to SIN_RATE units
@@ -169,8 +172,10 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 		//  Write input + feedback to delay head
 		// =============================================================
 		if (fbkInput != -1) {
-			// External feedback path (e.g. routed through other blocks)
-			sfxb.readRegister(fbkInput, fbkGain);
+			// External feedback: read at unity since the external loop
+			// (pitch shifter, etc.) may attenuate the signal.
+			// Feedback Gain CV controls level when connected.
+			sfxb.readRegister(fbkInput, 1.0);
 		} else {
 			// Internal feedback from damped output
 			sfxb.readRegister(fbkReg, fbkGain);
@@ -200,11 +205,14 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 		double offFrac = (double)delayOffset / 32768.0;
 
 		if (timeCtrl != -1) {
-			// Dynamic delay: LFO*modFrac + timeCtrl*(MAX-MIN)/buf + MIN/buf
+			// Dynamic delay with pitch-constant modulation.
+			// modScaleReg holds T (0.2..1.0), proportional to delay time.
+			// Multiplying mod term by T compensates for the inverse rate change.
 			double rangeFracBuf = (double)(MAX_DELAY - MIN_DELAY) / bufferLength;
 			double minFracBuf   = (double)MIN_DELAY / bufferLength;
 
 			sfxb.scaleOffset(modFrac, 0);                     // ACC = LFO*modFrac
+			sfxb.mulx(modScaleReg);                           // ACC *= T (pitch-constant)
 			sfxb.readRegister(timeSmooth, rangeFracBuf);       // ACC += time*rangeFrac
 			sfxb.scaleOffset(1.0, minFracBuf);                 // ACC += minFrac
 		} else {
@@ -249,7 +257,7 @@ public class OilCanDelayCADBlock extends SpinCADBlock {
 
 	public double getFbkGain() { return fbkGain; }
 	public void setFbkGain(double g) {
-		fbkGain = Math.max(0, Math.min(0.95, g));
+		fbkGain = Math.max(0.001, Math.min(1.0, g));
 	}
 
 	public double getDampFreq() { return dampFreq; }
