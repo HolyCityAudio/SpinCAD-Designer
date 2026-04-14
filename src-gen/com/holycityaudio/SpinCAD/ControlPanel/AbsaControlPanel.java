@@ -90,7 +90,7 @@ public AbsaControlPanel(AbsaCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class AbsaActionListener implements java.awt.event.ActionListener { 
+		class AbsaActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

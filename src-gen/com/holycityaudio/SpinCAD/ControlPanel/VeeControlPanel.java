@@ -90,7 +90,7 @@ public VeeControlPanel(VeeCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class VeeActionListener implements java.awt.event.ActionListener { 
+		class VeeActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

@@ -176,17 +176,17 @@ public ExpControlPanel(ExpCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ExpActionListener implements java.awt.event.ActionListener { 
+		class ExpActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatemultiplierLabel() {
-		multiplierField.setText("Exp_Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
-		}		
+		multiplierField.setText("Exp_Multiplier " + String.format("%4.3f", gCB.getmultiplier()));
+		}
 		private void updateexp_offsetLabel() {
-		exp_offsetField.setText("Exp_Offset " + String.format("%4.3f", gCB.getexp_offset()));		
-		}		
+		exp_offsetField.setText("Exp_Offset " + String.format("%4.3f", gCB.getexp_offset()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

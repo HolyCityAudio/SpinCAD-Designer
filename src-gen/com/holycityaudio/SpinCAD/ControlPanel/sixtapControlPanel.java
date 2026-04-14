@@ -789,56 +789,56 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class sixtapActionListener implements java.awt.event.ActionListener { 
+		class sixtapActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
-		}		
+		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));
+		}
 		private void updatefbkGainLabel() {
-		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
-		}		
+		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
+		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Delay Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatetap1RatioLabel() {
-		tap1RatioField.setText("Tap 1 Time " + String.format("%4.2f", gCB.gettap1Ratio()));		
-		}		
+		tap1RatioField.setText("Tap 1 Time " + String.format("%4.2f", gCB.gettap1Ratio()));
+		}
 		private void updatetap2RatioLabel() {
-		tap2RatioField.setText("Tap 2 Time " + String.format("%4.2f", gCB.gettap2Ratio()));		
-		}		
+		tap2RatioField.setText("Tap 2 Time " + String.format("%4.2f", gCB.gettap2Ratio()));
+		}
 		private void updatetap3RatioLabel() {
-		tap3RatioField.setText("Tap 3 Time " + String.format("%4.2f", gCB.gettap3Ratio()));		
-		}		
+		tap3RatioField.setText("Tap 3 Time " + String.format("%4.2f", gCB.gettap3Ratio()));
+		}
 		private void updatetap4RatioLabel() {
-		tap4RatioField.setText("Tap 4 Time " + String.format("%4.2f", gCB.gettap4Ratio()));		
-		}		
+		tap4RatioField.setText("Tap 4 Time " + String.format("%4.2f", gCB.gettap4Ratio()));
+		}
 		private void updatetap5RatioLabel() {
-		tap5RatioField.setText("Tap 5 Time " + String.format("%4.2f", gCB.gettap5Ratio()));		
-		}		
+		tap5RatioField.setText("Tap 5 Time " + String.format("%4.2f", gCB.gettap5Ratio()));
+		}
 		private void updatetap6RatioLabel() {
-		tap6RatioField.setText("Tap_6_Time " + String.format("%4.2f", gCB.gettap6Ratio()));		
-		}		
+		tap6RatioField.setText("Tap_6_Time " + String.format("%4.2f", gCB.gettap6Ratio()));
+		}
 		private void updatetap1GainLabel() {
-		tap1GainField.setText("Tap 1 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap1Gain()))));		
-		}		
+		tap1GainField.setText("Tap 1 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap1Gain()))));
+		}
 		private void updatetap2GainLabel() {
-		tap2GainField.setText("Tap 2 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap2Gain()))));		
-		}		
+		tap2GainField.setText("Tap 2 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap2Gain()))));
+		}
 		private void updatetap3GainLabel() {
-		tap3GainField.setText("Tap 3 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap3Gain()))));		
-		}		
+		tap3GainField.setText("Tap 3 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap3Gain()))));
+		}
 		private void updatetap4GainLabel() {
-		tap4GainField.setText("Tap 4 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap4Gain()))));		
-		}		
+		tap4GainField.setText("Tap 4 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap4Gain()))));
+		}
 		private void updatetap5GainLabel() {
-		tap5GainField.setText("Tap 5 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap5Gain()))));		
-		}		
+		tap5GainField.setText("Tap 5 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap5Gain()))));
+		}
 		private void updatetap6GainLabel() {
-		tap6GainField.setText("Tap 6 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap6Gain()))));		
-		}		
+		tap6GainField.setText("Tap 6 Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap6Gain()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

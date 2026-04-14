@@ -57,6 +57,9 @@ public class ReverseDelayControlPanel extends spinCADControlPanel {
 	// declare the controls
 	FineControlSlider inputGainSlider;
 	JTextField  inputGainField;
+	FineControlSlider fbkGainSlider;
+	JTextField  fbkGainField;
+	private JComboBox <String> memModeComboBox; 
 
 public ReverseDelayControlPanel(ReverseDelayCADBlock genericCADBlock) {
 		
@@ -111,6 +114,56 @@ public ReverseDelayControlPanel(ReverseDelayCADBlock genericCADBlock) {
 						inputGaininnerPanel.setBorder(inputGainborder2);
 			
 						frame.add(inputGaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------						
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 1.0));
+						fbkGainSlider.addChangeListener(new ReverseDelayListener());
+						fbkGainField = new JTextField();
+						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
+						Border fbkGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						fbkGainField.setBorder(fbkGainBorder1);
+						fbkGainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(fbkGainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 1.0);
+						sliderVal = Math.max(fbkGainSlider.getMinimum(), Math.min(fbkGainSlider.getMaximum(), sliderVal));
+						fbkGainSlider.setValue(sliderVal);
+						gCB.setfbkGain((double) sliderVal / 1.0);
+									updatefbkGainLabel();
+								} catch (NumberFormatException ex) {
+									updatefbkGainLabel();
+								}
+							}
+						});
+						updatefbkGainLabel();
+			
+						Border fbkGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel fbkGaininnerPanel = new JPanel();
+			
+						fbkGaininnerPanel.setLayout(new BoxLayout(fbkGaininnerPanel, BoxLayout.Y_AXIS));
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						fbkGaininnerPanel.add(fbkGainField);
+						fbkGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						fbkGaininnerPanel.add(fbkGainSlider);
+						fbkGaininnerPanel.setBorder(fbkGainborder2);
+			
+						frame.add(fbkGaininnerPanel);
+				memModeComboBox = new JComboBox <String> ();
+				memModeComboBox.addItem("Half");
+				memModeComboBox.addItem("Full");
+				memModeComboBox.setSelectedIndex(gCB.getmemMode());
+				frame.add(Box.createRigidArea(new Dimension(5,8)));			
+				frame.getContentPane().add(memModeComboBox);
+				memModeComboBox.addActionListener(new ReverseDelayActionListener());
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -127,6 +180,10 @@ public ReverseDelayControlPanel(ReverseDelayCADBlock genericCADBlock) {
 			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));			    					
 				updateinputGainLabel();
 			}
+			if(ce.getSource() == fbkGainSlider) {
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));			    					
+				updatefbkGainLabel();
+			}
 			}
 		}
 
@@ -139,14 +196,20 @@ public ReverseDelayControlPanel(ReverseDelayCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ReverseDelayActionListener implements java.awt.event.ActionListener { 
+		class ReverseDelayActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+			if(arg0.getSource() == memModeComboBox) {
+				gCB.setmemMode((memModeComboBox.getSelectedIndex()));
+			}
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
-		}		
+		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));
+		}
+		private void updatefbkGainLabel() {
+		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

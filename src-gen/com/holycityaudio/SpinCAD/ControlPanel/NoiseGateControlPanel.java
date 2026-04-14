@@ -133,14 +133,14 @@ public NoiseGateControlPanel(NoiseGateCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class NoiseGateActionListener implements java.awt.event.ActionListener { 
+		class NoiseGateActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatethreshLabel() {
-		threshField.setText("Threshold " + String.format("%4.3f", gCB.getthresh()));		
-		}		
+		threshField.setText("Threshold " + String.format("%4.3f", gCB.getthresh()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

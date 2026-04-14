@@ -188,17 +188,17 @@ public Mixer_2_to_1ControlPanel(Mixer_2_to_1CADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Mixer_2_to_1ActionListener implements java.awt.event.ActionListener { 
+		class Mixer_2_to_1ActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Field.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
-		}		
+		gain1Field.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));
+		}
 		private void updategain2Label() {
-		gain2Field.setText("Input Gain 2 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
-		}		
+		gain2Field.setText("Input Gain 2 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

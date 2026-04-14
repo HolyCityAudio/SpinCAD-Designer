@@ -133,14 +133,14 @@ public RatioControlPanel(RatioCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class RatioActionListener implements java.awt.event.ActionListener { 
+		class RatioActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateinvRatioLabel() {
-		invRatioField.setText("Ratio " + String.format("%4.1f", gCB.getinvRatio()));		
-		}		
+		invRatioField.setText("Ratio " + String.format("%4.1f", gCB.getinvRatio()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

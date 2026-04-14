@@ -102,7 +102,7 @@ public LFO_ValueControlPanel(LFO_ValueCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class LFO_ValueActionListener implements java.awt.event.ActionListener { 
+		class LFO_ValueActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {

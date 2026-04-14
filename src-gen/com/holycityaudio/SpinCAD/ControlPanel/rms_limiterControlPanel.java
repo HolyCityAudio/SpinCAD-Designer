@@ -133,14 +133,14 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class rms_limiterActionListener implements java.awt.event.ActionListener { 
+		class rms_limiterActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateinGainLabel() {
-		inGainField.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));		
-		}		
+		inGainField.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

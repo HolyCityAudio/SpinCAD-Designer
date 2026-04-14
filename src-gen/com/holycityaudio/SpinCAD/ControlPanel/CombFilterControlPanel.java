@@ -274,23 +274,23 @@ public CombFilterControlPanel(CombFilterCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class CombFilterActionListener implements java.awt.event.ActionListener { 
+		class CombFilterActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Delay Length " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatefeedbackLabel() {
-		feedbackField.setText("Feedback " + String.format("%4.2f", gCB.getfeedback()));		
-		}		
+		feedbackField.setText("Feedback " + String.format("%4.2f", gCB.getfeedback()));
+		}
 		private void updatedampingLabel() {
-		dampingField.setText("LP Damping " + String.format("%4.2f", gCB.getdamping()));		
-		}		
+		dampingField.setText("LP Damping " + String.format("%4.2f", gCB.getdamping()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

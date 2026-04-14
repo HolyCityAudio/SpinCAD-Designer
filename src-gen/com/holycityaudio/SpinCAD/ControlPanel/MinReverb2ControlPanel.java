@@ -617,44 +617,44 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class MinReverb2ActionListener implements java.awt.event.ActionListener { 
+		class MinReverb2ActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatekiapLabel() {
-		kiapField.setText("Input All Pass: " + String.format("%4.2f", gCB.getkiap()));		
-		}		
+		kiapField.setText("Input All Pass: " + String.format("%4.2f", gCB.getkiap()));
+		}
 		private void updateap1lengthLabel() {
 		ap1lengthField.setText("Input AP1 (msec) " + String.format("%4.1f", (1000 * gCB.getap1length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateap2lengthLabel() {
 		ap2lengthField.setText("Input AP2 (msec) " + String.format("%4.1f", (1000 * gCB.getap2length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateap3lengthLabel() {
 		ap3lengthField.setText("Input AP3 (msec) " + String.format("%4.1f", (1000 * gCB.getap3length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateap4lengthLabel() {
 		ap4lengthField.setText("Input AP4 (msec) " + String.format("%4.1f", (1000 * gCB.getap4length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateklapLabel() {
-		klapField.setText("Loop All Pass " + String.format("%4.2f", gCB.getklap()));		
-		}		
+		klapField.setText("Loop All Pass " + String.format("%4.2f", gCB.getklap()));
+		}
 		private void updatelap1lengthLabel() {
 		lap1lengthField.setText("Loop AP1 (msec) " + String.format("%4.0f", (1000 * gCB.getlap1length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatedel1lengthLabel() {
 		del1lengthField.setText("Loop Delay 1 (msec) " + String.format("%4.0f", (1000 * gCB.getdel1length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatelap2lengthLabel() {
 		lap2lengthField.setText("Loop AP2 (msec) " + String.format("%4.0f", (1000 * gCB.getlap2length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatedel2lengthLabel() {
 		del2lengthField.setText("Loop Delay 2 (msec) " + String.format("%4.0f", (1000 * gCB.getdel2length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

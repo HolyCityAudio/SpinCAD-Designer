@@ -147,7 +147,7 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class noise_amzActionListener implements java.awt.event.ActionListener { 
+		class noise_amzActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == controlRangeComboBox) {
@@ -156,8 +156,8 @@ public noise_amzControlPanel(noise_amzCADBlock genericCADBlock) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Output Level " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Output Level " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

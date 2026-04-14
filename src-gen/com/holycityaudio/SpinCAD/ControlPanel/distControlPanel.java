@@ -90,7 +90,7 @@ public distControlPanel(distCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class distActionListener implements java.awt.event.ActionListener { 
+		class distActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

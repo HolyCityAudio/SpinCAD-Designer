@@ -90,7 +90,7 @@ public ga_demo_wahControlPanel(ga_demo_wahCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ga_demo_wahActionListener implements java.awt.event.ActionListener { 
+		class ga_demo_wahActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

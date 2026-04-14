@@ -225,20 +225,20 @@ public SpringReverbControlPanel(SpringReverbCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class SpringReverbActionListener implements java.awt.event.ActionListener { 
+		class SpringReverbActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatekrtLabel() {
-		krtField.setText("Reverb Time " + String.format("%4.2f", gCB.getkrt()));		
-		}		
+		krtField.setText("Reverb Time " + String.format("%4.2f", gCB.getkrt()));
+		}
 		private void updatekrfLabel() {
-		krfField.setText("HF Damping " + String.format("%4.2f", gCB.getkrf()));		
-		}		
+		krfField.setText("HF Damping " + String.format("%4.2f", gCB.getkrf()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

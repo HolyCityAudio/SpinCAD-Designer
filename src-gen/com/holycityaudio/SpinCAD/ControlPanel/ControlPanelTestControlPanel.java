@@ -256,7 +256,7 @@ public ControlPanelTestControlPanel(ControlPanelTestCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ControlPanelTestActionListener implements java.awt.event.ActionListener { 
+		class ControlPanelTestActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == controlRangeComboBox) {
@@ -271,13 +271,13 @@ public ControlPanelTestControlPanel(ControlPanelTestCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitchCoeffLabel() {
-		pitchCoeffField.setText("Pitch Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));		
-		}		
+		pitchCoeffField.setText("Pitch Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));
+		}
 		private void updatepitchCoeff1Label() {
 		pitchCoeff1Field.setText("Pitch Coefficient " + String.format("%4.0f", (1000 * gCB.getpitchCoeff1())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatepitchCoeff2Label() {
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

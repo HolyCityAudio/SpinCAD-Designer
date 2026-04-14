@@ -225,20 +225,20 @@ public StretchChirpControlPanel(StretchChirpCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class StretchChirpActionListener implements java.awt.event.ActionListener { 
+		class StretchChirpActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatestretchLabel() {
-		stretchField.setText("Stretch " + String.format("%4.1f", gCB.getstretch()));		
-		}		
+		stretchField.setText("Stretch " + String.format("%4.1f", gCB.getstretch()));
+		}
 		private void updateap01Label() {
-		ap01Field.setText("All Pass " + String.format("%4.2f", gCB.getap01()));		
-		}		
+		ap01Field.setText("All Pass " + String.format("%4.2f", gCB.getap01()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

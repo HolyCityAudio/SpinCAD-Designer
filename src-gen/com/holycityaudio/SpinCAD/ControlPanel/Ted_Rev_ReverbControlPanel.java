@@ -274,23 +274,23 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Ted_Rev_ReverbActionListener implements java.awt.event.ActionListener { 
+		class Ted_Rev_ReverbActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateinputGainlLabel() {
-		inputGainlField.setText("Input Gain L " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGainl()))));		
-		}		
+		inputGainlField.setText("Input Gain L " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGainl()))));
+		}
 		private void updateinputGainrLabel() {
-		inputGainrField.setText("Input Gain R " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGainr()))));		
-		}		
+		inputGainrField.setText("Input Gain R " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGainr()))));
+		}
 		private void updatepreLabel() {
-		preField.setText("Pre_Delay " + String.format("%4.0f", gCB.getpre()));		
-		}		
+		preField.setText("Pre_Delay " + String.format("%4.0f", gCB.getpre()));
+		}
 		private void updatedecayLabel() {
-		decayField.setText("Decay_Time " + String.format("%4.0f", gCB.getdecay()));		
-		}		
+		decayField.setText("Decay_Time " + String.format("%4.0f", gCB.getdecay()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

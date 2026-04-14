@@ -139,14 +139,14 @@ public slow_gearControlPanel(slow_gearCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class slow_gearActionListener implements java.awt.event.ActionListener { 
+		class slow_gearActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatethreshLabel() {
-		threshField.setText("Threshold " + String.format("%4.1f dB", (20 * Math.log10(gCB.getthresh()))));		
-		}		
+		threshField.setText("Threshold " + String.format("%4.1f dB", (20 * Math.log10(gCB.getthresh()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

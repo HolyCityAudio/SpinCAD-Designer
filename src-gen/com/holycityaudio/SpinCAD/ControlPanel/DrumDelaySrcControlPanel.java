@@ -409,32 +409,32 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class DrumDelaySrcActionListener implements java.awt.event.ActionListener { 
+		class DrumDelaySrcActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainField.setText("Input Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
-		}		
+		inputGainField.setText("Input Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));
+		}
 		private void updatefbkGainLabel() {
-		fbkGainField.setText("Feedback Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
-		}		
+		fbkGainField.setText("Feedback Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
+		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatetap1RatioLabel() {
-		tap1RatioField.setText("Tap 1 Time (%):  " + String.format("%4.2f", gCB.gettap1Ratio()));		
-		}		
+		tap1RatioField.setText("Tap 1 Time (%):  " + String.format("%4.2f", gCB.gettap1Ratio()));
+		}
 		private void updatetap2RatioLabel() {
-		tap2RatioField.setText("Tap 2 Time (%):  " + String.format("%4.2f", gCB.gettap2Ratio()));		
-		}		
+		tap2RatioField.setText("Tap 2 Time (%):  " + String.format("%4.2f", gCB.gettap2Ratio()));
+		}
 		private void updatetap3RatioLabel() {
-		tap3RatioField.setText("Tap 3 Time (%):  " + String.format("%4.2f", gCB.gettap3Ratio()));		
-		}		
+		tap3RatioField.setText("Tap 3 Time (%):  " + String.format("%4.2f", gCB.gettap3Ratio()));
+		}
 		private void updatetap4RatioLabel() {
-		tap4RatioField.setText("Tap 4 Time (%):  " + String.format("%4.2f", gCB.gettap4Ratio()));		
-		}		
+		tap4RatioField.setText("Tap 4 Time (%):  " + String.format("%4.2f", gCB.gettap4Ratio()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

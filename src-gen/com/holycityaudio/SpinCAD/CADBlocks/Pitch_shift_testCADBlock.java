@@ -113,6 +113,7 @@
 			sfxb.FXallocDelayMem("temp", 1); 
 			double negCentsFrac = pitchCents / negHundred; 
 			double totalPitch = pitchSemitones - negCentsFrac;
+			if(this.getPin("Pitch Control").isConnected() == true) {
 			double pitchRate = (16384.0 * (Math.pow(2.0, totalPitch/12.0) - 1))/32768.0;
 			if(lfoSel == 0) {
 			sfxb.skip(RUN, 1);
@@ -124,7 +125,6 @@
 			
 			sfxb.loadAccumulator(input);
 			sfxb.FXwriteDelay("delayd", 0, 0);
-			if(this.getPin("Pitch Control").isConnected() == true) {
 			if(controlRange == 1) {
 			sfxb.readRegister(pitchControl, 1.0);
 			sfxb.scaleOffset(1.0, -0.5);
@@ -143,15 +143,17 @@
 			}
 			
 			} else {
-			sfxb.scaleOffset(0.0, pitchRate);
+			int wldrCoeff = (int)(16384.0 * (Math.pow(2.0, totalPitch/12.0) - 1));
 			if(lfoSel == 0) {
-			sfxb.writeRegister(RMP0_RATE, 0);
+			sfxb.skip(RUN, 1);
+			sfxb.loadRampLFO((int) 0, (int) wldrCoeff, (int) length);
+			} else {
+			sfxb.skip(RUN, 1);
+			sfxb.loadRampLFO((int) 1, (int) wldrCoeff, (int) length);
 			}
 			
-			if(lfoSel == 1) {
-			sfxb.writeRegister(RMP1_RATE, 0);
-			}
-			
+			sfxb.loadAccumulator(input);
+			sfxb.FXwriteDelay("delayd", 0, 0);
 			}
 			
 			if(lfoSel == 0) {

@@ -629,44 +629,44 @@ public eighttapControlPanel(eighttapCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class eighttapActionListener implements java.awt.event.ActionListener { 
+		class eighttapActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
-		}		
+		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));
+		}
 		private void updatefbkGainLabel() {
-		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
-		}		
+		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
+		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Delay Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatetap1GainLabel() {
-		tap1GainField.setText("Tap 1 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap1Gain()))));		
-		}		
+		tap1GainField.setText("Tap 1 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap1Gain()))));
+		}
 		private void updatetap2GainLabel() {
-		tap2GainField.setText("Tap 2 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap2Gain()))));		
-		}		
+		tap2GainField.setText("Tap 2 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap2Gain()))));
+		}
 		private void updatetap3GainLabel() {
-		tap3GainField.setText("Tap 3 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap3Gain()))));		
-		}		
+		tap3GainField.setText("Tap 3 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap3Gain()))));
+		}
 		private void updatetap4GainLabel() {
-		tap4GainField.setText("Tap 4 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap4Gain()))));		
-		}		
+		tap4GainField.setText("Tap 4 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap4Gain()))));
+		}
 		private void updatetap5GainLabel() {
-		tap5GainField.setText("Tap 5 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap5Gain()))));		
-		}		
+		tap5GainField.setText("Tap 5 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap5Gain()))));
+		}
 		private void updatetap6GainLabel() {
-		tap6GainField.setText("Tap 6 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap6Gain()))));		
-		}		
+		tap6GainField.setText("Tap 6 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap6Gain()))));
+		}
 		private void updatetap7GainLabel() {
-		tap7GainField.setText("Tap 7 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap7Gain()))));		
-		}		
+		tap7GainField.setText("Tap 7 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap7Gain()))));
+		}
 		private void updatetap8GainLabel() {
-		tap8GainField.setText("Tap 8 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap8Gain()))));		
-		}		
+		tap8GainField.setText("Tap 8 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.gettap8Gain()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

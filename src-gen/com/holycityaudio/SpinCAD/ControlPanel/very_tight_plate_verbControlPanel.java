@@ -90,7 +90,7 @@ public very_tight_plate_verbControlPanel(very_tight_plate_verbCADBlock genericCA
 		}
 		
 		// add action listener for Combo Box
-		class very_tight_plate_verbActionListener implements java.awt.event.ActionListener { 
+		class very_tight_plate_verbActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

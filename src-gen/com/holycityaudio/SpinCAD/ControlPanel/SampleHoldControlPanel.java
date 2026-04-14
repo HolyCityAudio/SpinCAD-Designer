@@ -98,7 +98,7 @@ public SampleHoldControlPanel(SampleHoldCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class SampleHoldActionListener implements java.awt.event.ActionListener { 
+		class SampleHoldActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {

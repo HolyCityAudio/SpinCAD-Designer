@@ -237,20 +237,20 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class StutterActionListener implements java.awt.event.ActionListener { 
+		class StutterActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
-		}		
+		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));
+		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatefadeTimeFiltLabel() {
 		fadeTimeFiltField.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt()) * 1000) + " ms");		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

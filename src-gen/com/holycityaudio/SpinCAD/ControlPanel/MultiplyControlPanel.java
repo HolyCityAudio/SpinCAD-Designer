@@ -90,7 +90,7 @@ public MultiplyControlPanel(MultiplyCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class MultiplyActionListener implements java.awt.event.ActionListener { 
+		class MultiplyActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

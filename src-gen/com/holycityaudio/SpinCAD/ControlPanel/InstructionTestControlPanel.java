@@ -90,7 +90,7 @@ public InstructionTestControlPanel(InstructionTestCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class InstructionTestActionListener implements java.awt.event.ActionListener { 
+		class InstructionTestActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

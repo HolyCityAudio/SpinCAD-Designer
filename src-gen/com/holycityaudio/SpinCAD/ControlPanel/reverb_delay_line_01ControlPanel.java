@@ -464,35 +464,35 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 		}
 		
 		// add action listener for Combo Box
-		class reverb_delay_line_01ActionListener implements java.awt.event.ActionListener { 
+		class reverb_delay_line_01ActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Delay Line Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatekrtLabel() {
-		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));		
-		}		
+		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));
+		}
 		private void updatelpdfLabel() {
 		lpdfField.setText("Damping Freq Hi " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getlpdf())) + " Hz");		
-		}		
+		}
 		private void updateap1LengthLabel() {
 		ap1LengthField.setText("Allpass #1 Time " + String.format("%4.0f", (1000 * gCB.getap1Length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateap1kapLabel() {
-		ap1kapField.setText("All-Pass #1 Coefficient " + String.format("%4.2f", gCB.getap1kap()));		
-		}		
+		ap1kapField.setText("All-Pass #1 Coefficient " + String.format("%4.2f", gCB.getap1kap()));
+		}
 		private void updateap2LengthLabel() {
 		ap2LengthField.setText("Allpass #2 Time " + String.format("%4.0f", (1000 * gCB.getap2Length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateap2kapLabel() {
-		ap2kapField.setText("All-Pass #2 Coefficient " + String.format("%4.2f", gCB.getap2kap()));		
-		}		
+		ap2kapField.setText("All-Pass #2 Coefficient " + String.format("%4.2f", gCB.getap2kap()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

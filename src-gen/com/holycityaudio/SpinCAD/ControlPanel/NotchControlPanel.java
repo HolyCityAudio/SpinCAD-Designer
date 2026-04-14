@@ -225,20 +225,20 @@ public NotchControlPanel(NotchCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class NotchActionListener implements java.awt.event.ActionListener { 
+		class NotchActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqLabel() {
 		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");		
-		}		
+		}
 		private void updateqMaxLabel() {
-		qMaxField.setText("Max Q " + String.format("%4.1f", gCB.getqMax()));		
-		}		
+		qMaxField.setText("Max Q " + String.format("%4.1f", gCB.getqMax()));
+		}
 		private void updateqMinLabel() {
-		qMinField.setText("Min Q " + String.format("%4.1f", gCB.getqMin()));		
-		}		
+		qMinField.setText("Min Q " + String.format("%4.1f", gCB.getqMin()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

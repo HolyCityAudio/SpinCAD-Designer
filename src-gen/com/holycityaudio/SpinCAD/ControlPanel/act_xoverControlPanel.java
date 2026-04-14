@@ -90,7 +90,7 @@ public act_xoverControlPanel(act_xoverCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class act_xoverActionListener implements java.awt.event.ActionListener { 
+		class act_xoverActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

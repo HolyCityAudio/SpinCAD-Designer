@@ -202,7 +202,7 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Pitch_shift_testActionListener implements java.awt.event.ActionListener { 
+		class Pitch_shift_testActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == controlRangeComboBox) {
@@ -217,11 +217,11 @@ public Pitch_shift_testControlPanel(Pitch_shift_testCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitchSemitonesLabel() {
-		pitchSemitonesField.setText("Pitch (semitones) " + String.format("%4.0f", gCB.getpitchSemitones()));		
-		}		
+		pitchSemitonesField.setText("Pitch (semitones) " + String.format("%4.0f", gCB.getpitchSemitones()));
+		}
 		private void updatepitchCentsLabel() {
-		pitchCentsField.setText("Cents " + String.format("%4.0f", gCB.getpitchCents()));		
-		}		
+		pitchCentsField.setText("Cents " + String.format("%4.0f", gCB.getpitchCents()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

@@ -337,7 +337,7 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class FlangerActionListener implements java.awt.event.ActionListener { 
+		class FlangerActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {
@@ -346,20 +346,20 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
-		}		
+		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));
+		}
 		private void updatefbkGainLabel() {
-		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
-		}		
+		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
+		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Delay Time " + String.format("%4.2f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updaterateLabel() {
 		rateField.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
-		}		
+		}
 		private void updatewidthLabel() {
-		widthField.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));		
-		}		
+		widthField.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

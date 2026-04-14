@@ -90,7 +90,7 @@ public gated_verbControlPanel(gated_verbCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class gated_verbActionListener implements java.awt.event.ActionListener { 
+		class gated_verbActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

@@ -378,29 +378,29 @@ public allpassControlPanel(allpassCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class allpassActionListener implements java.awt.event.ActionListener { 
+		class allpassActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updateap1lengthLabel() {
 		ap1lengthField.setText("AP1 length " + String.format("%4.0f", (1000 * gCB.getap1length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateap2lengthLabel() {
 		ap2lengthField.setText("AP2 length " + String.format("%4.0f", (1000 * gCB.getap2length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateap3lengthLabel() {
 		ap3lengthField.setText("AP3 length " + String.format("%4.0f", (1000 * gCB.getap3length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updateap4lengthLabel() {
 		ap4lengthField.setText("AP4 length " + String.format("%4.0f", (1000 * gCB.getap4length())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatekiapLabel() {
-		kiapField.setText("All Pass " + String.format("%4.2f", gCB.getkiap()));		
-		}		
+		kiapField.setText("All Pass " + String.format("%4.2f", gCB.getkiap()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

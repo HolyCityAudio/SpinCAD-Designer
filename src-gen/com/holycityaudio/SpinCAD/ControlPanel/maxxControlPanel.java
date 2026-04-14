@@ -133,14 +133,14 @@ public maxxControlPanel(maxxCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class maxxActionListener implements java.awt.event.ActionListener { 
+		class maxxActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Gain " + String.format("%4.3f", gCB.getgain()));		
-		}		
+		gainField.setText("Gain " + String.format("%4.3f", gCB.getgain()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

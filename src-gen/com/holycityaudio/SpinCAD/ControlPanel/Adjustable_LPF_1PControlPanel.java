@@ -188,7 +188,7 @@ public Adjustable_LPF_1PControlPanel(Adjustable_LPF_1PCADBlock genericCADBlock) 
 		}
 		
 		// add action listener for Combo Box
-		class Adjustable_LPF_1PActionListener implements java.awt.event.ActionListener { 
+		class Adjustable_LPF_1PActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

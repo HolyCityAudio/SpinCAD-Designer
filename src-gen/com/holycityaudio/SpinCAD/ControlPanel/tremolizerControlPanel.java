@@ -133,14 +133,14 @@ public tremolizerControlPanel(tremolizerCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class tremolizerActionListener implements java.awt.event.ActionListener { 
+		class tremolizerActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatedepthLabel() {
-		depthField.setText("Depth " + String.format("%4.2f", gCB.getdepth()));		
-		}		
+		depthField.setText("Depth " + String.format("%4.2f", gCB.getdepth()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

@@ -194,7 +194,7 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Glitch_shiftActionListener implements java.awt.event.ActionListener { 
+		class Glitch_shiftActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {
@@ -206,11 +206,11 @@ public Glitch_shiftControlPanel(Glitch_shiftCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitchSemitonesLabel() {
-		pitchSemitonesField.setText("Pitch (semitones) " + String.format("%4.0f", gCB.getpitchSemitones()));		
-		}		
+		pitchSemitonesField.setText("Pitch (semitones) " + String.format("%4.0f", gCB.getpitchSemitones()));
+		}
 		private void updatepitchCentsLabel() {
-		pitchCentsField.setText("Cents " + String.format("%4.0f", gCB.getpitchCents()));		
-		}		
+		pitchCentsField.setText("Cents " + String.format("%4.0f", gCB.getpitchCents()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

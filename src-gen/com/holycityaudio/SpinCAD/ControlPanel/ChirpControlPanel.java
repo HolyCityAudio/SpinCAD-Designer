@@ -268,23 +268,23 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ChirpActionListener implements java.awt.event.ActionListener { 
+		class ChirpActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatenAPsLabel() {
-		nAPsField.setText("Stages " + String.format("%4.1f", gCB.getnAPs()));		
-		}		
+		nAPsField.setText("Stages " + String.format("%4.1f", gCB.getnAPs()));
+		}
 		private void updatestretchLabel() {
-		stretchField.setText("Stretch " + String.format("%4.1f", gCB.getstretch()));		
-		}		
+		stretchField.setText("Stretch " + String.format("%4.1f", gCB.getstretch()));
+		}
 		private void updatekiapLabel() {
-		kiapField.setText("All Pass " + String.format("%4.2f", gCB.getkiap()));		
-		}		
+		kiapField.setText("All Pass " + String.format("%4.2f", gCB.getkiap()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

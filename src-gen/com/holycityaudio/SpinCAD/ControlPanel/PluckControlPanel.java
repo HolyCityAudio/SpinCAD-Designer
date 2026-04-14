@@ -225,20 +225,20 @@ public PluckControlPanel(PluckCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class PluckActionListener implements java.awt.event.ActionListener { 
+		class PluckActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatethresholdLabel() {
-		thresholdField.setText("Threshold " + String.format("%4.3f", gCB.getthreshold()));		
-		}		
+		thresholdField.setText("Threshold " + String.format("%4.3f", gCB.getthreshold()));
+		}
 		private void updatepulseLevelLabel() {
-		pulseLevelField.setText("Pulse Amplitude " + String.format("%4.2f", gCB.getpulseLevel()));		
-		}		
+		pulseLevelField.setText("Pulse Amplitude " + String.format("%4.2f", gCB.getpulseLevel()));
+		}
 		private void updatepulseWidthLabel() {
 		pulseWidthField.setText("Pulse Width " + String.format("%4.0f", (1000 * gCB.getpulseWidth())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

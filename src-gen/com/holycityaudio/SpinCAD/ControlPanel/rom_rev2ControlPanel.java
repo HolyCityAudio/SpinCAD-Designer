@@ -452,35 +452,35 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class rom_rev2ActionListener implements java.awt.event.ActionListener { 
+		class rom_rev2ActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updaterevTimeMaxLabel() {
-		revTimeMaxField.setText("Reverb Time " + String.format("%4.2f", gCB.getrevTimeMax()));		
-		}		
+		revTimeMaxField.setText("Reverb Time " + String.format("%4.2f", gCB.getrevTimeMax()));
+		}
 		private void updatekapiLabel() {
-		kapiField.setText("Input AP Gain " + String.format("%4.2f", gCB.getkapi()));		
-		}		
+		kapiField.setText("Input AP Gain " + String.format("%4.2f", gCB.getkapi()));
+		}
 		private void updatekapd1Label() {
-		kapd1Field.setText("Delay AP 1 Gain " + String.format("%4.2f", gCB.getkapd1()));		
-		}		
+		kapd1Field.setText("Delay AP 1 Gain " + String.format("%4.2f", gCB.getkapd1()));
+		}
 		private void updatekapd2Label() {
-		kapd2Field.setText("Delay AP 2 Gain " + String.format("%4.2f", gCB.getkapd2()));		
-		}		
+		kapd2Field.setText("Delay AP 2 Gain " + String.format("%4.2f", gCB.getkapd2()));
+		}
 		private void updatekflLabel() {
 		kflField.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
-		}		
+		}
 		private void updatekfhLabel() {
 		kfhField.setText("High Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
-		}		
+		}
 		private void updatememscaleLabel() {
-		memscaleField.setText("Delay Scale " + String.format("%4.1f", gCB.getmemscale()));		
-		}		
+		memscaleField.setText("Delay Scale " + String.format("%4.1f", gCB.getmemscale()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

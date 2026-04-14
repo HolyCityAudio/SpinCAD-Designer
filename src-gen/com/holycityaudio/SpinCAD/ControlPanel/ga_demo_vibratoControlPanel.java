@@ -90,7 +90,7 @@ public ga_demo_vibratoControlPanel(ga_demo_vibratoCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ga_demo_vibratoActionListener implements java.awt.event.ActionListener { 
+		class ga_demo_vibratoActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

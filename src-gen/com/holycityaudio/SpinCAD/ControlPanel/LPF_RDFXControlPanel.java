@@ -139,14 +139,14 @@ public LPF_RDFXControlPanel(LPF_RDFXCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class LPF_RDFXActionListener implements java.awt.event.ActionListener { 
+		class LPF_RDFXActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqLabel() {
 		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

@@ -90,7 +90,7 @@ public ga_demo_flangerControlPanel(ga_demo_flangerCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ga_demo_flangerActionListener implements java.awt.event.ActionListener { 
+		class ga_demo_flangerActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

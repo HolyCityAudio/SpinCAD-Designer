@@ -464,35 +464,35 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class reverb_plateActionListener implements java.awt.event.ActionListener { 
+		class reverb_plateActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatekrtLabel() {
-		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));		
-		}		
+		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));
+		}
 		private void updatekfhLabel() {
 		kfhField.setText("Low Freq Damping Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
-		}		
+		}
 		private void updatekflLabel() {
 		kflField.setText("High Freq Damping Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
-		}		
+		}
 		private void updatekapiLabel() {
-		kapiField.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getkapi()));		
-		}		
+		kapiField.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getkapi()));
+		}
 		private void updatekapLabel() {
-		kapField.setText("Loop All-Pass Coefficient " + String.format("%4.2f", gCB.getkap()));		
-		}		
+		kapField.setText("Loop All-Pass Coefficient " + String.format("%4.2f", gCB.getkap()));
+		}
 		private void updaterate1Label() {
 		rate1Field.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
-		}		
+		}
 		private void updaterate2Label() {
 		rate2Field.setText("LFO_Rate_2 " + String.format("%4.2f", coeffToLFORate(gCB.getrate2())));		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

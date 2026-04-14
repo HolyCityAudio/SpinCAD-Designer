@@ -133,14 +133,14 @@ public PotSkipControlPanel(PotSkipCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class PotSkipActionListener implements java.awt.event.ActionListener { 
+		class PotSkipActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatestepsLabel() {
-		stepsField.setText("Steps " + String.format("%4.0f", gCB.getsteps()));		
-		}		
+		stepsField.setText("Steps " + String.format("%4.0f", gCB.getsteps()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

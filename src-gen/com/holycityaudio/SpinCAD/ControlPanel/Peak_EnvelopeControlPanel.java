@@ -188,7 +188,7 @@ public Peak_EnvelopeControlPanel(Peak_EnvelopeCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Peak_EnvelopeActionListener implements java.awt.event.ActionListener { 
+		class Peak_EnvelopeActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

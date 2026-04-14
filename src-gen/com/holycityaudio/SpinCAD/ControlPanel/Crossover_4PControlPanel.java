@@ -139,14 +139,14 @@ public Crossover_4PControlPanel(Crossover_4PCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Crossover_4PActionListener implements java.awt.event.ActionListener { 
+		class Crossover_4PActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqLabel() {
 		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

@@ -90,7 +90,7 @@ public pitchoffset1_2ControlPanel(pitchoffset1_2CADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class pitchoffset1_2ActionListener implements java.awt.event.ActionListener { 
+		class pitchoffset1_2ActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

@@ -176,17 +176,17 @@ public ResonatorControlPanel(ResonatorCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ResonatorActionListener implements java.awt.event.ActionListener { 
+		class ResonatorActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqLabel() {
-		freqField.setText("Frequency " + String.format("%4.3f", gCB.getfreq()));		
-		}		
+		freqField.setText("Frequency " + String.format("%4.3f", gCB.getfreq()));
+		}
 		private void updateresoLabel() {
-		resoField.setText("Damping (1/Q) " + String.format("%4.3f", gCB.getreso()));		
-		}		
+		resoField.setText("Damping (1/Q) " + String.format("%4.3f", gCB.getreso()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

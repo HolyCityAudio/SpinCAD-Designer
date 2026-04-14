@@ -90,7 +90,7 @@ public dance_ir_fla_lControlPanel(dance_ir_fla_lCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class dance_ir_fla_lActionListener implements java.awt.event.ActionListener { 
+		class dance_ir_fla_lActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

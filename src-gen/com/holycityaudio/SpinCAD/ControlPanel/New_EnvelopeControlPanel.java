@@ -284,7 +284,7 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class New_EnvelopeActionListener implements java.awt.event.ActionListener { 
+		class New_EnvelopeActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

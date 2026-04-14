@@ -90,7 +90,7 @@ public Half_WaveControlPanel(Half_WaveCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Half_WaveActionListener implements java.awt.event.ActionListener { 
+		class Half_WaveActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

@@ -147,7 +147,7 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Sine_Sample_HoldActionListener implements java.awt.event.ActionListener { 
+		class Sine_Sample_HoldActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {
@@ -157,7 +157,7 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 		}
 		private void updaterateLabel() {
 		rateField.setText("LFO Max Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

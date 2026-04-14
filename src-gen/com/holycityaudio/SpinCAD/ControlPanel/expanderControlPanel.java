@@ -176,17 +176,17 @@ public expanderControlPanel(expanderCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class expanderActionListener implements java.awt.event.ActionListener { 
+		class expanderActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateripLowLabel() {
-		ripLowField.setText("Rip_Low " + String.format("%4.3f", gCB.getripLow()));		
-		}		
+		ripLowField.setText("Rip_Low " + String.format("%4.3f", gCB.getripLow()));
+		}
 		private void updateripHighLabel() {
-		ripHighField.setText("Rip_High " + String.format("%4.3f", gCB.getripHigh()));		
-		}		
+		ripHighField.setText("Rip_High " + String.format("%4.3f", gCB.getripHigh()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

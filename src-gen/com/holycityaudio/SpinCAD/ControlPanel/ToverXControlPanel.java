@@ -133,14 +133,14 @@ public ToverXControlPanel(ToverXCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ToverXActionListener implements java.awt.event.ActionListener { 
+		class ToverXActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatenStagesLabel() {
-		nStagesField.setText("Stages " + String.format("%4.1f", gCB.getnStages()));		
-		}		
+		nStagesField.setText("Stages " + String.format("%4.1f", gCB.getnStages()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

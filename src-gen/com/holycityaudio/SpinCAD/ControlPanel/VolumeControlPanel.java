@@ -139,14 +139,14 @@ public VolumeControlPanel(VolumeCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class VolumeActionListener implements java.awt.event.ActionListener { 
+		class VolumeActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

@@ -188,17 +188,17 @@ public crossfade_3ControlPanel(crossfade_3CADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class crossfade_3ActionListener implements java.awt.event.ActionListener { 
+		class crossfade_3ActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Field.setText("Input 1 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
-		}		
+		gain1Field.setText("Input 1 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));
+		}
 		private void updategain2Label() {
-		gain2Field.setText("Input 2 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
-		}		
+		gain2Field.setText("Input 2 Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

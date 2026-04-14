@@ -366,29 +366,29 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class reverb_hallActionListener implements java.awt.event.ActionListener { 
+		class reverb_hallActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatekrtLabel() {
-		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));		
-		}		
+		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));
+		}
 		private void updatehpdfLabel() {
 		hpdfField.setText("Damping Freq Low " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.gethpdf())) + " Hz");		
-		}		
+		}
 		private void updateinputkapLabel() {
-		inputkapField.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getinputkap()));		
-		}		
+		inputkapField.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getinputkap()));
+		}
 		private void updatedlkapLabel() {
-		dlkapField.setText("Delay All-Pass Coefficient " + String.format("%4.2f", gCB.getdlkap()));		
-		}		
+		dlkapField.setText("Delay All-Pass Coefficient " + String.format("%4.2f", gCB.getdlkap()));
+		}
 		private void updaterate1Label() {
 		rate1Field.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

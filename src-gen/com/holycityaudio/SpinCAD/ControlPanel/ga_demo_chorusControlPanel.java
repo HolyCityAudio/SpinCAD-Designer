@@ -90,7 +90,7 @@ public ga_demo_chorusControlPanel(ga_demo_chorusCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ga_demo_chorusActionListener implements java.awt.event.ActionListener { 
+		class ga_demo_chorusActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

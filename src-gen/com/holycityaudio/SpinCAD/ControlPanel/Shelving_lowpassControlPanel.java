@@ -188,17 +188,17 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Shelving_lowpassActionListener implements java.awt.event.ActionListener { 
+		class Shelving_lowpassActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqLabel() {
 		freqField.setText("Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
-		}		
+		}
 		private void updateshelfLabel() {
-		shelfField.setText("Shelf Depth " + String.format("%4.1f dB", (20 * Math.log10(gCB.getshelf()))));		
-		}		
+		shelfField.setText("Shelf Depth " + String.format("%4.1f dB", (20 * Math.log10(gCB.getshelf()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

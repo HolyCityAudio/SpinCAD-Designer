@@ -139,14 +139,14 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class pannerActionListener implements java.awt.event.ActionListener { 
+		class pannerActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Field.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
-		}		
+		gain1Field.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

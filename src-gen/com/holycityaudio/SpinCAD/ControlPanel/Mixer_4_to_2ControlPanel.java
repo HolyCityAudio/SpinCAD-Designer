@@ -286,23 +286,23 @@ public Mixer_4_to_2ControlPanel(Mixer_4_to_2CADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Mixer_4_to_2ActionListener implements java.awt.event.ActionListener { 
+		class Mixer_4_to_2ActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Field.setText("Input Gain 1a " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
-		}		
+		gain1Field.setText("Input Gain 1a " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));
+		}
 		private void updategain2Label() {
-		gain2Field.setText("Input Gain 1b " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));		
-		}		
+		gain2Field.setText("Input Gain 1b " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain2()))));
+		}
 		private void updategain3Label() {
-		gain3Field.setText("Input Gain 2a " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain3()))));		
-		}		
+		gain3Field.setText("Input Gain 2a " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain3()))));
+		}
 		private void updategain4Label() {
-		gain4Field.setText("Input Gain 2b " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain4()))));		
-		}		
+		gain4Field.setText("Input Gain 2b " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain4()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

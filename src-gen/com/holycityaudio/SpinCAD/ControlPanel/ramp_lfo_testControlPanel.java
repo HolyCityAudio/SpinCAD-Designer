@@ -90,7 +90,7 @@ public ramp_lfo_testControlPanel(ramp_lfo_testCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ramp_lfo_testActionListener implements java.awt.event.ActionListener { 
+		class ramp_lfo_testActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

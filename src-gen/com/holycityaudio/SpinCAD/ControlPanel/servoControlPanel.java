@@ -331,7 +331,7 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class servoActionListener implements java.awt.event.ActionListener { 
+		class servoActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {
@@ -340,20 +340,20 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 			}
 		}
 		private void updateinputGainLabel() {
-		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));		
-		}		
+		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));
+		}
 		private void updatefbkGainLabel() {
-		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));		
-		}		
+		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
+		}
 		private void updateservoGainLabel() {
-		servoGainField.setText("Servo Gain " + String.format("%4.2f", gCB.getservoGain()));		
-		}		
+		servoGainField.setText("Servo Gain " + String.format("%4.2f", gCB.getservoGain()));
+		}
 		private void updatefreqLabel() {
 		freqField.setText("Low_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
-		}		
+		}
 		private void updatetap1RatioLabel() {
-		tap1RatioField.setText("Tap Time Ratio " + String.format("%4.3f", gCB.gettap1Ratio()));		
-		}		
+		tap1RatioField.setText("Tap Time Ratio " + String.format("%4.3f", gCB.gettap1Ratio()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

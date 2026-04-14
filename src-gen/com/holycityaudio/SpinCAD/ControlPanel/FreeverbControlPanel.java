@@ -225,20 +225,20 @@ public FreeverbControlPanel(FreeverbCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class FreeverbActionListener implements java.awt.event.ActionListener { 
+		class FreeverbActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatekrtLabel() {
-		krtField.setText("Reverb Time " + String.format("%4.2f", gCB.getkrt()));		
-		}		
+		krtField.setText("Reverb Time " + String.format("%4.2f", gCB.getkrt()));
+		}
 		private void updatedampingLabel() {
-		dampingField.setText("HF Damping " + String.format("%4.2f", gCB.getdamping()));		
-		}		
+		dampingField.setText("HF Damping " + String.format("%4.2f", gCB.getdamping()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

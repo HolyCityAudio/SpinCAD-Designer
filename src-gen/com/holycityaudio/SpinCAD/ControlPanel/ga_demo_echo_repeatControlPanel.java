@@ -90,7 +90,7 @@ public ga_demo_echo_repeatControlPanel(ga_demo_echo_repeatCADBlock genericCADBlo
 		}
 		
 		// add action listener for Combo Box
-		class ga_demo_echo_repeatActionListener implements java.awt.event.ActionListener { 
+		class ga_demo_echo_repeatActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

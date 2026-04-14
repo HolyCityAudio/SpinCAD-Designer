@@ -90,7 +90,7 @@ public soft_knee_limiterControlPanel(soft_knee_limiterCADBlock genericCADBlock) 
 		}
 		
 		// add action listener for Combo Box
-		class soft_knee_limiterActionListener implements java.awt.event.ActionListener { 
+		class soft_knee_limiterActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

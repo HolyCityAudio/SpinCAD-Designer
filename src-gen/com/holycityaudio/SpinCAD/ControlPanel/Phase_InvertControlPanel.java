@@ -90,7 +90,7 @@ public Phase_InvertControlPanel(Phase_InvertCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Phase_InvertActionListener implements java.awt.event.ActionListener { 
+		class Phase_InvertActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

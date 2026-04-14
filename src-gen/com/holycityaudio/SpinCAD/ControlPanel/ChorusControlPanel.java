@@ -239,7 +239,7 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ChorusActionListener implements java.awt.event.ActionListener { 
+		class ChorusActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {
@@ -249,13 +249,13 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Chorus Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updaterateLabel() {
 		rateField.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
-		}		
+		}
 		private void updatewidthLabel() {
-		widthField.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));		
-		}		
+		widthField.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

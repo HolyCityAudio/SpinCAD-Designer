@@ -31,6 +31,9 @@
 			private ReverseDelayControlPanel cp = null;
 			
 			private double inputGain = 1.0;
+			private double fbkGain = 0.5;
+			private double memMode = 0;
+			private double delayLen = 16383;
 			private int phase1;
 			private int output;
 			private int ramp;
@@ -44,8 +47,12 @@
 			setBorderColor(new Color(0x6060c4));
 				// Iterate through pin definitions and allocate or assign as needed
 				addInputPin(this, "Input");
+				addInputPin(this, "Feedback");
 				addOutputPin(this, "Output");
+				addControlInputPin(this, "Feedback Gain");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -77,9 +84,27 @@
 			if(sp != null) {
 				input = sp.getRegister();
 			}
+			sp = this.getPin("Feedback").getPinConnection();
+			int feedback = -1;
+			if(sp != null) {
+				feedback = sp.getRegister();
+			}
+			sp = this.getPin("Feedback Gain").getPinConnection();
+			int fbk = -1;
+			if(sp != null) {
+				fbk = sp.getRegister();
+			}
 			
 			// finally, generate the instructions
-			sfxb.FXallocDelayMem("delay", 32767); 
+			if(memMode == 0) {
+			delayLen = 16383;
+			}
+			
+			if(memMode == 1) {
+			delayLen = 32767;
+			}
+			
+			sfxb.FXallocDelayMem("delay", delayLen); 
 			phase1 = sfxb.allocateReg();
 			output = sfxb.allocateReg();
 			ramp = sfxb.allocateReg();
@@ -87,15 +112,39 @@
 			xfade = sfxb.allocateReg();
 			xfade2 = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
+			if(memMode == 0) {
 			sfxb.skip(RUN, 3);
 			sfxb.scaleOffset(0, -0.25);
 			sfxb.writeRegister(RMP0_RATE, 0);
 			sfxb.writeRegister(RMP0_RANGE, 0);
+			} else {
+			sfxb.skip(RUN, 3);
+			sfxb.scaleOffset(0, -0.125);
+			sfxb.writeRegister(RMP0_RATE, 0);
+			sfxb.writeRegister(RMP0_RANGE, 0);
+			}
+			
+			if(this.getPin("Feedback").isConnected() == true) {
+			sfxb.readRegister(feedback, fbkGain);
+			if(this.getPin("Feedback Gain").isConnected() == true) {
+			sfxb.mulx(fbk);
+			}
+			
+			}
+			
 			sfxb.readRegister(input, inputGain);
 			sfxb.FXwriteDelay("delay#", 0, 0.0);
 			sfxb.chorusReadValue(RMP0);
+			if(memMode == 0) {
 			sfxb.writeRegister(ADDR_PTR, 1.0);
 			sfxb.writeRegister(ramp, 1.0);
+			} else {
+			sfxb.writeRegister(ramp, 1.0);
+			sfxb.scaleOffset(1.999, 0);
+			sfxb.writeRegister(ADDR_PTR, 0.0);
+			sfxb.readRegister(ramp, 1.0);
+			}
+			
 			sfxb.scaleOffset(1.0, -0.25);
 			sfxb.absa();
 			sfxb.scaleOffset(-2.0, 0.25);
@@ -111,9 +160,17 @@
 			sfxb.readRegister(ramp, 1.0);
 			sfxb.scaleOffset(1.0, -0.25);
 			sfxb.writeRegister(ramp2, 1.0);
+			if(memMode == 0) {
 			sfxb.skip(GEZ, 1);
 			sfxb.scaleOffset(1.0, 0.5);
 			sfxb.writeRegister(ADDR_PTR, 0.0);
+			} else {
+			sfxb.skip(GEZ, 1);
+			sfxb.scaleOffset(1.0, 0.5);
+			sfxb.scaleOffset(1.999, 0);
+			sfxb.writeRegister(ADDR_PTR, 0.0);
+			}
+			
 			sfxb.readDelayPointer(1.0);
 			sfxb.writeRegister(xfade2, 0.0);
 			sfxb.readRegister(xfade, 1.0);
@@ -134,5 +191,19 @@
 			
 			public double getinputGain() {
 				return inputGain;
+			}
+			public void setfbkGain(double __param) {
+				fbkGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getfbkGain() {
+				return fbkGain;
+			}
+			public void setmemMode(int __param) {
+				memMode = (double) __param;	
+			}
+			
+			public int getmemMode() {
+				return (int) memMode;
 			}
 		}	

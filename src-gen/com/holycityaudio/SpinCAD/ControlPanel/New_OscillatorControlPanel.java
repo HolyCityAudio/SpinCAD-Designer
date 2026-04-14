@@ -139,14 +139,14 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class New_OscillatorActionListener implements java.awt.event.ActionListener { 
+		class New_OscillatorActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqVarLabel() {
 		freqVarField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreqVar())) + " Hz");		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

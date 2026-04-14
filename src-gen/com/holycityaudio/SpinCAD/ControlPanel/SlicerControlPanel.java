@@ -141,7 +141,7 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class SlicerActionListener implements java.awt.event.ActionListener { 
+		class SlicerActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == controlRangeComboBox) {
@@ -150,8 +150,8 @@ public SlicerControlPanel(SlicerCADBlock genericCADBlock) {
 			}
 		}
 		private void updatesliceLabel() {
-		sliceField.setText("Slice Level " + String.format("%4.2f", gCB.getslice()));		
-		}		
+		sliceField.setText("Slice Level " + String.format("%4.2f", gCB.getslice()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

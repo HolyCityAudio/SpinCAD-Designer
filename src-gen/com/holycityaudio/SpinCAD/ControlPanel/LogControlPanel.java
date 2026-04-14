@@ -176,17 +176,17 @@ public LogControlPanel(LogCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class LogActionListener implements java.awt.event.ActionListener { 
+		class LogActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatemultiplierLabel() {
-		multiplierField.setText("Log Multiplier " + String.format("%4.3f", gCB.getmultiplier()));		
-		}		
+		multiplierField.setText("Log Multiplier " + String.format("%4.3f", gCB.getmultiplier()));
+		}
 		private void updatelog_offsetLabel() {
-		log_offsetField.setText("Log_Offset " + String.format("%4.2f", gCB.getlog_offset()));		
-		}		
+		log_offsetField.setText("Log_Offset " + String.format("%4.2f", gCB.getlog_offset()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

@@ -139,14 +139,14 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class shimmer_verbActionListener implements java.awt.event.ActionListener { 
+		class shimmer_verbActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

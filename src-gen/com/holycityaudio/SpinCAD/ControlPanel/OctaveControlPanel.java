@@ -90,7 +90,7 @@ public OctaveControlPanel(OctaveCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class OctaveActionListener implements java.awt.event.ActionListener { 
+		class OctaveActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

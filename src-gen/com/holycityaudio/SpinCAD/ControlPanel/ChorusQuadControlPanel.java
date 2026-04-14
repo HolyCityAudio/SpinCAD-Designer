@@ -460,7 +460,7 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ChorusQuadActionListener implements java.awt.event.ActionListener { 
+		class ChorusQuadActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {
@@ -469,29 +469,29 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 			}
 		}
 		private void updategain1Label() {
-		gain1Field.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));		
-		}		
+		gain1Field.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));
+		}
 		private void updatedelayLengthLabel() {
 		delayLengthField.setText("Chorus_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
-		}		
+		}
 		private void updatetap1CenterLabel() {
-		tap1CenterField.setText("Tap_1_Center " + String.format("%4.3f", gCB.gettap1Center()));		
-		}		
+		tap1CenterField.setText("Tap_1_Center " + String.format("%4.3f", gCB.gettap1Center()));
+		}
 		private void updatetap2CenterLabel() {
-		tap2CenterField.setText("Tap_2_Center " + String.format("%4.3f", gCB.gettap2Center()));		
-		}		
+		tap2CenterField.setText("Tap_2_Center " + String.format("%4.3f", gCB.gettap2Center()));
+		}
 		private void updatetap3CenterLabel() {
-		tap3CenterField.setText("Tap_3_Center " + String.format("%4.3f", gCB.gettap3Center()));		
-		}		
+		tap3CenterField.setText("Tap_3_Center " + String.format("%4.3f", gCB.gettap3Center()));
+		}
 		private void updatetap4CenterLabel() {
-		tap4CenterField.setText("Tap_4_Center " + String.format("%4.3f", gCB.gettap4Center()));		
-		}		
+		tap4CenterField.setText("Tap_4_Center " + String.format("%4.3f", gCB.gettap4Center()));
+		}
 		private void updaterateLabel() {
 		rateField.setText("LFO_Rate " + String.format("%4.1f", coeffToLFORate(gCB.getrate())));		
-		}		
+		}
 		private void updatewidthLabel() {
-		widthField.setText("LFO_Width " + String.format("%4.1f", gCB.getwidth()));		
-		}		
+		widthField.setText("LFO_Width " + String.format("%4.1f", gCB.getwidth()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

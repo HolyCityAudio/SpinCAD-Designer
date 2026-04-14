@@ -90,7 +90,7 @@ public Two_StageControlPanel(Two_StageCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class Two_StageActionListener implements java.awt.event.ActionListener { 
+		class Two_StageActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

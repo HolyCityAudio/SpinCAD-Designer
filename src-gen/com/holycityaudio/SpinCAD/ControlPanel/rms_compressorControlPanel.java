@@ -403,32 +403,32 @@ public rms_compressorControlPanel(rms_compressorCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class rms_compressorActionListener implements java.awt.event.ActionListener { 
+		class rms_compressorActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updateinGainLabel() {
-		inGainField.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));		
-		}		
+		inGainField.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));
+		}
 		private void updatestrengthLabel() {
-		strengthField.setText("Strength " + String.format("%4.2f", gCB.getstrength()));		
-		}		
+		strengthField.setText("Strength " + String.format("%4.2f", gCB.getstrength()));
+		}
 		private void updatethreshDbLabel() {
-		threshDbField.setText("Threshold (dB) " + String.format("%4.1f", gCB.getthreshDb()));		
-		}		
+		threshDbField.setText("Threshold (dB) " + String.format("%4.1f", gCB.getthreshDb()));
+		}
 		private void updateattTimeLabel() {
 		attTimeField.setText("Attack " + String.format("%4.1f", SpinCADBlock.filtToTime(gCB.getattTime()) * 1000) + " ms");		
-		}		
+		}
 		private void updaterelTimeLabel() {
 		relTimeField.setText("Release " + String.format("%4.1f", SpinCADBlock.filtToTime(gCB.getrelTime()) * 1000) + " ms");		
-		}		
+		}
 		private void updatemakeupDbLabel() {
-		makeupDbField.setText("Makeup (dB) " + String.format("%4.1f", gCB.getmakeupDb()));		
-		}		
+		makeupDbField.setText("Makeup (dB) " + String.format("%4.1f", gCB.getmakeupDb()));
+		}
 		private void updatetrimLabel() {
-		trimField.setText("Output_Trim " + String.format("%4.2f", gCB.gettrim()));		
-		}		
+		trimField.setText("Output_Trim " + String.format("%4.2f", gCB.gettrim()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

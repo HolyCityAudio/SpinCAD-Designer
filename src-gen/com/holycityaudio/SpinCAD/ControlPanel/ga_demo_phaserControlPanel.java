@@ -90,7 +90,7 @@ public ga_demo_phaserControlPanel(ga_demo_phaserCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class ga_demo_phaserActionListener implements java.awt.event.ActionListener { 
+		class ga_demo_phaserActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}

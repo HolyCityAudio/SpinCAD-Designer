@@ -442,7 +442,7 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class pitch_fourActionListener implements java.awt.event.ActionListener { 
+		class pitch_fourActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			if(arg0.getSource() == lfoSelComboBox) {
@@ -451,29 +451,29 @@ public pitch_fourControlPanel(pitch_fourCADBlock genericCADBlock) {
 			}
 		}
 		private void updatepitch1Label() {
-		pitch1Field.setText("Pitch 1 " + String.format("%4.0f", gCB.getpitch1()));		
-		}		
+		pitch1Field.setText("Pitch 1 " + String.format("%4.0f", gCB.getpitch1()));
+		}
 		private void updatecents1Label() {
-		cents1Field.setText("Cents 1 " + String.format("%4.0f", gCB.getcents1()));		
-		}		
+		cents1Field.setText("Cents 1 " + String.format("%4.0f", gCB.getcents1()));
+		}
 		private void updatepitch2Label() {
-		pitch2Field.setText("Pitch 2 " + String.format("%4.0f", gCB.getpitch2()));		
-		}		
+		pitch2Field.setText("Pitch 2 " + String.format("%4.0f", gCB.getpitch2()));
+		}
 		private void updatecents2Label() {
-		cents2Field.setText("Cents 2 " + String.format("%4.0f", gCB.getcents2()));		
-		}		
+		cents2Field.setText("Cents 2 " + String.format("%4.0f", gCB.getcents2()));
+		}
 		private void updatepitch3Label() {
-		pitch3Field.setText("Pitch 3 " + String.format("%4.0f", gCB.getpitch3()));		
-		}		
+		pitch3Field.setText("Pitch 3 " + String.format("%4.0f", gCB.getpitch3()));
+		}
 		private void updatecents3Label() {
-		cents3Field.setText("Cents 3 " + String.format("%4.0f", gCB.getcents3()));		
-		}		
+		cents3Field.setText("Cents 3 " + String.format("%4.0f", gCB.getcents3()));
+		}
 		private void updatepitch4Label() {
-		pitch4Field.setText("Pitch 4 " + String.format("%4.0f", gCB.getpitch4()));		
-		}		
+		pitch4Field.setText("Pitch 4 " + String.format("%4.0f", gCB.getpitch4()));
+		}
 		private void updatecents4Label() {
-		cents4Field.setText("Cents 4 " + String.format("%4.0f", gCB.getcents4()));		
-		}		
+		cents4Field.setText("Cents 4 " + String.format("%4.0f", gCB.getcents4()));
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

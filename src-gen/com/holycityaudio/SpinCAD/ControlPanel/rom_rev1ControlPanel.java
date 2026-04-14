@@ -366,29 +366,29 @@ public rom_rev1ControlPanel(rom_rev1CADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class rom_rev1ActionListener implements java.awt.event.ActionListener { 
+		class rom_rev1ActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updategainLabel() {
-		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));		
-		}		
+		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
+		}
 		private void updatekiapLabel() {
-		kiapField.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));		
-		}		
+		kiapField.setText("Input_All_Pass " + String.format("%4.2f", gCB.getkiap()));
+		}
 		private void updatenDLsLabel() {
-		nDLsField.setText("Delay_Stages " + String.format("%4.0f", gCB.getnDLs()));		
-		}		
+		nDLsField.setText("Delay_Stages " + String.format("%4.0f", gCB.getnDLs()));
+		}
 		private void updatekapd1Label() {
-		kapd1Field.setText("Delay_All_Pass_1_Gain " + String.format("%4.2f", gCB.getkapd1()));		
-		}		
+		kapd1Field.setText("Delay_All_Pass_1_Gain " + String.format("%4.2f", gCB.getkapd1()));
+		}
 		private void updatekflLabel() {
 		kflField.setText("Low_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
-		}		
+		}
 		private void updatekfhLabel() {
 		kfhField.setText("High_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

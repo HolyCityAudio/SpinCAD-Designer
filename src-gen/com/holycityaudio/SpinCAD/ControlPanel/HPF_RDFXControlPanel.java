@@ -139,14 +139,14 @@ public HPF_RDFXControlPanel(HPF_RDFXCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class HPF_RDFXActionListener implements java.awt.event.ActionListener { 
+		class HPF_RDFXActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		}
 		private void updatefreqLabel() {
 		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
-		}		
+		}
 		
 		class MyWindowListener implements WindowListener
 		{

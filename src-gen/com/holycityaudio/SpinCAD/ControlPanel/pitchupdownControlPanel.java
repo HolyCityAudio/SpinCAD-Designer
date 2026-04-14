@@ -90,7 +90,7 @@ public pitchupdownControlPanel(pitchupdownCADBlock genericCADBlock) {
 		}
 		
 		// add action listener for Combo Box
-		class pitchupdownActionListener implements java.awt.event.ActionListener { 
+		class pitchupdownActionListener implements java.awt.event.ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
