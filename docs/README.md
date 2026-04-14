@@ -1,5 +1,9 @@
 # SpinCAD Designer Documentation
 
+## Tutorials
+
+- [Using SpinCAD Designer](using-spincad.md) -- getting started, user interface guide, and creating your first patch
+
 ## Block Reference
 
 - [I/O - Mix Blocks](io-mix-blocks.md) -- input, output, volume, gain, panning, crossfade, and mixer blocks
