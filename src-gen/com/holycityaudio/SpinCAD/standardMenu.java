@@ -47,6 +47,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.DrumDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.LongDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MN3011aCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.OilCanDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ReverseDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.StutterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
@@ -566,6 +567,15 @@
 		}
 	});
 	mn_delay.add(mntm_MN3011a);
+		
+	final JMenuItem mntm_OilCanDelay = new JMenuItem("Oil Can Delay");
+	mntm_OilCanDelay.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new OilCanDelayCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_delay.add(mntm_OilCanDelay);
 		
 	final JMenuItem mntm_ReverseDelay = new JMenuItem("Reverse");
 	mntm_ReverseDelay.addActionListener(new ActionListener() {

@@ -60,6 +60,7 @@
 @menuitem "Drum Delay" DrumDelay
 @menuitem "Long Delay" LongDelay
 @menuitem "MN3011" MN3011a
+@menuitem "Oil Can Delay" OilCanDelay  // hand-written in src/
 @menuitem "Reverse" ReverseDelay
 @menuitem "Stutter" Stutter
 @menuitem "ThreeTap" TripleTap
