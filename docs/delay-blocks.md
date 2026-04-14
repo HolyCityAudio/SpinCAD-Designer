@@ -166,18 +166,32 @@ tap 5 = 83.8%, tap 6 = 100%.
 ## Reverse Delay
 
 Plays back the delay buffer in reverse, creating a backwards echo
-effect. Uses two interleaved ramps with crossfading to provide a
-continuous reversed output without clicks.
+effect. A ramp LFO sweeps a read pointer backward through the delay
+buffer, producing reversed audio at 1× speed. Two interleaved ramps,
+offset by half a cycle, are crossfaded to provide continuous output
+without clicks at the ramp reset points.
+
+The Memory selector chooses between two modes: **Half** allocates
+16384 samples of delay, freeing the other half for other blocks.
+**Full** allocates all 32768 samples and scales the ramp output by
+~2× to sweep the entire buffer, doubling the reversed chunk length.
 
 | Pin | Type | Description |
 |-----|------|-------------|
 | Input | Audio In | Audio signal |
+| Feedback | Audio In | External feedback path |
 | Output | Audio Out | Reversed audio output |
+| Feedback Gain | Control In | Feedback level control |
 
-This block has no control panel parameters. The delay length is fixed
-at 32767 samples (approximately 1 second at the FV-1 sample rate).
+**Control panel parameters:**
 
-![Reverse Delay impulse response](images/delay-reversedelay.png)
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Input Gain | -12 to 0 dB | 0 dB | Input level |
+| Feedback Gain | -24 to 0 dB | -6 dB | Feedback amount |
+| Memory | Half / Full | Half | Delay memory allocation and chunk length |
+
+![Reverse Delay algorithm overview](images/delay-reversedelay.png)
 
 ---
 
