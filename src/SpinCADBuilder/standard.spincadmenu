@@ -1,6 +1,14 @@
 // Standard Menu
 
-@menu "I/O - Mix"
+@menu "I/O - Pots"
+@menuitem "Input" Input
+@menuitem "Output" Output
+@menuitem "Pot 0" Pot0
+@menuitem "Pot 1" Pot1
+@menuitem "Pot 2" Pot2
+// @menuitem "Pot Skip" PotSkip
+
+@menu "Mixers/Gain"
 @menuitem "2:1 (x2) Mixer" Mixer_4_to_2
 @menuitem "2:1 Mixer" Mixer_2_to_1
 @menuitem "3:1 Mixer" Mixer_3_to_1
@@ -10,8 +18,6 @@
 @menuitem "Crossfade 3" crossfade_3
 @menuitem "Crossfade Adj" CrossfadeAdj  // hand-written in src/
 @menuitem "Gain Boost" GainBoost
-@menuitem "Input" Input
-@menuitem "Output" Output
 @menuitem "Panner" panner
 @menuitem "Phase Invert" Phase_Invert
 @menuitem "Volume" Volume
@@ -74,6 +80,7 @@
 @menuitem "Chirp" Chirp
 @menuitem "Freeverb" Freeverb
 @menuitem "Hall Reverb" reverb_hall
+@menuitem "Parker Spring" ParkerSpringReverb  // hand-written in src/
 @menuitem "Plate Reverb" DattorroPlateReverb  // hand-written in src/
 @menuitem "Reverb Designer" ReverbDesigner
 @menuitem "ROM Reverb 1" rom_rev1
@@ -81,7 +88,6 @@
 @menuitem "Room Reverb" reverb_room
 @menuitem "Small Reverb" MinReverb
 @menuitem "Small Reverb 2" MinReverb2
-@menuitem "Parker Spring" ParkerSpringReverb  // hand-written in src/
 @menuitem "Spring Reverb" SpringReverb
 // @menuitem "Gated Reverb" gated_verb
 // @menuitem "Reverb Delay Line 01" reverb_delay_line_01
@@ -119,12 +125,6 @@
 //@menuitem "GA Phaser" ga_demo_phaser
 //@menuitem "GA Vibrato" ga_demo_vibrato
 //@menuitem "GA Wah" ga_demo_wah
-
-@menu "Pots"
-@menuitem "Pot 0" Pot0
-@menuitem "Pot 1" Pot1
-@menuitem "Pot 2" Pot2
-// @menuitem "Pot Skip" PotSkip
 
 @menu "Oscillators"
 @menuitem "LFO Value" LFO_Value
