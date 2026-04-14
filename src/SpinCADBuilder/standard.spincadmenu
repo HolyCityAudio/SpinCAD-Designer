@@ -64,7 +64,7 @@
 @menuitem "Stutter" Stutter
 @menuitem "ThreeTap" TripleTap
 // @menuitem "Coarse Delay" CoarseDelay
-// @menuitem "Single Delay" SingleDelay
+@menuitem "Single Delay" SingleDelay  // hand-written in src/
 
 @menu "Reverb"
 @menuitem "Adjustable Reverb" reverb

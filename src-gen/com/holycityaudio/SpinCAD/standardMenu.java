@@ -50,6 +50,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.ReverseDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.StutterCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TripleTapCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.SingleDelayCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.reverbCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.allpassCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.AmbienceCADBlock;
@@ -592,6 +593,15 @@
 		}
 	});
 	mn_delay.add(mntm_TripleTap);
+		
+	final JMenuItem mntm_SingleDelay = new JMenuItem("Single Delay");
+	mntm_SingleDelay.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new SingleDelayCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_delay.add(mntm_SingleDelay);
 		
 	JMenu mn_reverb = new JMenu("Reverb");
 	menuBar.add(mn_reverb);
