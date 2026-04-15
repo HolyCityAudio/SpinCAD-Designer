@@ -42,11 +42,23 @@ public class SpinCADJsonSerializer {
 
 	private static final int FORMAT_VERSION = 1;
 
+	// ==================== LOAD WARNING STATE =======================
+
+	private static int lastLoadBuildNumber = -1;
+	private static final List<String> lastLoadMissingBlocks = new ArrayList<>();
+
+	/** Returns the buildNumber from the last loaded file, or -1 if not present. */
+	public static int getLastLoadBuildNumber() { return lastLoadBuildNumber; }
+
+	/** Returns the class names of blocks that could not be instantiated during the last load. */
+	public static List<String> getLastLoadMissingBlocks() { return new ArrayList<>(lastLoadMissingBlocks); }
+
 	// ========================= PATCH WRITE =========================
 
 	public static void writePatch(SpinCADPatch patch, String filePath) throws IOException {
 		Map<String, Object> root = new LinkedHashMap<>();
 		root.put("formatVersion", FORMAT_VERSION);
+		root.put("buildNumber", SpinCADFrame.buildNum);
 		root.put("type", "patch");
 		root.put("patchFileName", patch.patchFileName);
 
@@ -79,6 +91,9 @@ public class SpinCADJsonSerializer {
 	// ========================= PATCH READ ==========================
 
 	public static SpinCADPatch readPatch(String filePath) throws IOException {
+		lastLoadBuildNumber = -1;
+		lastLoadMissingBlocks.clear();
+
 		String json;
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			StringBuilder sb = new StringBuilder();
@@ -90,6 +105,9 @@ public class SpinCADJsonSerializer {
 		}
 
 		Map<String, Object> root = parseJsonObject(json);
+		if (root.containsKey("buildNumber")) {
+			lastLoadBuildNumber = toInt(root.get("buildNumber"));
+		}
 		SpinCADPatch patch = new SpinCADPatch();
 		patch.patchFileName = getStringOrDefault(root, "patchFileName", "Untitled");
 
@@ -130,6 +148,7 @@ public class SpinCADJsonSerializer {
 	public static void writeBank(SpinCADBank bank, String filePath) throws IOException {
 		Map<String, Object> root = new LinkedHashMap<>();
 		root.put("formatVersion", FORMAT_VERSION);
+		root.put("buildNumber", SpinCADFrame.buildNum);
 		root.put("type", "bank");
 		root.put("bankFileName", bank.bankFileName);
 		root.put("comments", serializeCommentBlock(bank.cb));
@@ -148,6 +167,9 @@ public class SpinCADJsonSerializer {
 	// ========================= BANK READ ===========================
 
 	public static SpinCADBank readBank(String filePath) throws IOException {
+		lastLoadBuildNumber = -1;
+		lastLoadMissingBlocks.clear();
+
 		String json;
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			StringBuilder sb = new StringBuilder();
@@ -159,6 +181,9 @@ public class SpinCADJsonSerializer {
 		}
 
 		Map<String, Object> root = parseJsonObject(json);
+		if (root.containsKey("buildNumber")) {
+			lastLoadBuildNumber = toInt(root.get("buildNumber"));
+		}
 		SpinCADBank bank = new SpinCADBank();
 		bank.bankFileName = getStringOrDefault(root, "bankFileName", "Untitled");
 
@@ -271,6 +296,7 @@ public class SpinCADJsonSerializer {
 			SpinCADBlock block = instantiateBlock(className, x, y);
 			if (block == null) {
 				System.err.println("WARNING: Could not instantiate block: " + className);
+				lastLoadMissingBlocks.add(className);
 				continue;
 			}
 

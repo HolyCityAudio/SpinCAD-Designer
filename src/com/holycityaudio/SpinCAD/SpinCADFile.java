@@ -345,6 +345,7 @@ public class SpinCADFile {
 				SpinCADDialogs.MessageBox(dialogParent, "File open failed!", "This file may be from\nan incompatible version of \nSpinCAD Designer.");
 			}
 			// FIX #8: only update MRU and metadata on success, not in finally
+			showLoadWarnings("Patch");
 			saveMRUPatchFolder(filePath);
 			recentPatchFileList.add(file);
 			String fileName = file.getName();
@@ -398,6 +399,7 @@ public class SpinCADFile {
 				e.printStackTrace();
 				//				MessageBox("File open failed!", "This spbk file may be from\nan incompatible version of \nSpinCAD Designer.");
 			}
+			showLoadWarnings("Bank");
 			String filePath = file.getPath();
 			String fileName = file.getName();
 			saveMRUBankFolder(filePath);
@@ -413,6 +415,38 @@ public class SpinCADFile {
 			System.out.println("Open command cancelled by user."
 					+ newline);
 			return null;
+		}
+	}
+
+	private void showLoadWarnings(String fileType) {
+		int fileBuild = SpinCADJsonSerializer.getLastLoadBuildNumber();
+		java.util.List<String> missing = SpinCADJsonSerializer.getLastLoadMissingBlocks();
+
+		StringBuilder warnings = new StringBuilder();
+
+		if (fileBuild > SpinCADFrame.buildNum) {
+			warnings.append("This ").append(fileType.toLowerCase())
+				.append(" was saved by SpinCAD Designer build ").append(fileBuild)
+				.append(".\nYou are using build ").append(SpinCADFrame.buildNum)
+				.append(".\nBlocks and features may be missing.");
+		}
+
+		if (!missing.isEmpty()) {
+			if (warnings.length() > 0) warnings.append("\n\n");
+			warnings.append("The following blocks were not found in this version of SpinCAD Designer:\n");
+			java.util.LinkedHashSet<String> unique = new java.util.LinkedHashSet<>();
+			for (String name : missing) {
+				String simpleName = name.contains(".") ? name.substring(name.lastIndexOf('.') + 1) : name;
+				unique.add(simpleName);
+			}
+			for (String name : unique) {
+				warnings.append("  - ").append(name).append("\n");
+			}
+		}
+
+		if (warnings.length() > 0) {
+			JOptionPane.showMessageDialog(dialogParent, warnings.toString(),
+				fileType + " Load Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 
