@@ -22,6 +22,10 @@
 * [Control Blocks](control-blocks.md)
 * [Instructions Blocks](instructions-blocks.md)
 
+## Patches
+
+* [Making a Tremolo Patch](patches/making-a-tremolo-patch.md)
+
 ## References
 
 * [DSP References](DSP-references.md)

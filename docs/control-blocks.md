@@ -100,6 +100,59 @@ response for volume, filter cutoff, or delay feedback controls. Two Power
 blocks can be used in conjunction with the straight pot signal to fade 3
 signals in one at a time with the rotation of a single pot.
 
+**Companion:** The [Root](#root) block is the natural companion to Power --
+where Power compresses the response toward zero (quadratic, cubic), Root
+expands the response away from zero (square root, cube root). Use Power
+when you want fine resolution at the top of a pot's travel and Root when
+you want fine resolution at the bottom.
+
+---
+
+## Root
+
+**Menu:** Controls > Root
+
+The Root block shapes control signals by raising them to the reciprocal
+of an integer power, producing curves like the square root (power=2),
+cube root (power=3), and so on. Internally it is implemented as a LOG/EXP
+pair: the LOG instruction divides the logarithm by N and the EXP
+instruction converts back to linear, effectively computing
+`input^(1/N)`.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Control Input 1 | Control In | 0–1 control signal |
+| Control Output 1 | Control Out | Shaped output |
+
+**Parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Root | integer | 2 | Root degree (2 = square root, 3 = cube root, etc.) |
+| Invert | on/off | off | Negate and offset input before computing root |
+| Flip | on/off | off | Negate and offset output after computing root |
+
+The Invert option transforms the input via `x' = -x + 1.0` before the
+root computation. The Flip option applies the same transformation to
+the output. These are useful for inverting the shape of the curve.
+
+**Behavior at zero:** Because the Root block uses LOG internally, inputs
+at or very near zero produce extreme values (LOG of zero is negative
+infinity). The FV-1 saturates this to its minimum value, causing a spike
+near zero as shown in the plot. For practical use, ensure inputs stay
+above approximately 0.01.
+
+![Root](images/instructions-root.png)
+
+**Typical use:** A square-root curve on a pot gives fine resolution at
+the low end of the range -- ideal when the quiet or subtle part of a
+parameter is where the interesting behavior lives (e.g. low feedback
+amounts, shallow modulation depths, the start of a reverb time sweep).
+
+**Companion:** The [Power](#power) block is the natural companion to Root --
+where Root expands the response away from zero, Power compresses the
+response toward zero.
+
 ---
 
 ## Two Stage
