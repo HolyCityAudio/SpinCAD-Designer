@@ -5,6 +5,7 @@
 ## Tutorials
 
 * [Using SpinCAD Designer](using-spincad.md)
+* [Using Control Signals](control-signals.md)
 
 ## Block Reference
 
