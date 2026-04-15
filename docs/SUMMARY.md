@@ -6,6 +6,7 @@
 
 * [Using SpinCAD Designer](using-spincad.md)
 * [Using Control Signals](control-signals.md)
+* [Managing Headroom](managing-headroom.md)
 
 ## Block Reference
 
