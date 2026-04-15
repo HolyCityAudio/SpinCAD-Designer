@@ -338,7 +338,11 @@ the pot travel. For example, in a delay with infinite feedback hold: over most
 of the pot travel (0 to 0.9), the delay input volume is 1.0 and feedback is 0.
 At the top of the pot (0.9 to 1.0), the input fades to 0 and feedback goes to
 1.0, creating an infinite loop. Using Clip with high gain and Flip, the
-transition happens over just the last 10% of pot travel.
+transition happens over just the last 10% of pot travel. The delay's
+Feedback gain setting (0 dB, i.e. 1.0) and the FB In Gain (1.0) together
+give unity loop gain, so the signal in the delay line loops indefinitely.
+
+[Download the example patch: Delay-infinite-fb-demo.spcd](https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/patches/Delay-infinite-fb-demo.spcd)
 
 ---
 
@@ -474,7 +478,8 @@ envelope:
 **Typical use:** Build a tremolo patch by connecting a Sine LFO (scaled 0 to 1)
 to the Tremolizer's LFO Input, then connect the Tremolizer output to a Volume
 control block. Use a Pot on the LFO Width input to control tremolo depth from
-the front panel.
+the front panel. See [Making a Tremolo Patch](patches/making-a-tremolo-patch.md)
+for a full walkthrough.
 
 For a variable-shape tremolo, feed the LFO through a **Slicer** and then a
 **Smoother** before the Tremolizer. The Smoother's corner frequency controls
@@ -489,6 +494,12 @@ If you use the width parameter input on the LFO block directly, it shrinks
 about its midpoint, so with the width all the way down you get a 6 dB drop
 in the output level. This is more subtle but closer to typical Fender guitar
 amp tremolo sounds.
+
+This midpoint-shrink approach arguably reflects real tremolo behavior
+better than a full-chop envelope: any tremolo necessarily reduces the
+average signal level, and many standalone tremolo pedals include a
+separate gain knob or other compensation to keep the perceived loudness
+constant when the effect is engaged.
 
 ---
 
