@@ -76,9 +76,10 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			}
 		});
 
-		// Gain 1 slider: -12 to 0 dB in 0.1 dB steps
+		// Gain 1 slider: -12 to 0 dB, 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 		gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, -120, 0,
 			(int) Math.round(20 * Math.log10(gCB.getGain1()) * 10));
+		gain1Slider.setSubdivision(10);
 		gain1Slider.addChangeListener(this);
 		gain1Field = new JTextField();
 		gain1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -99,9 +100,10 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 			}
 		});
 
-		// Gain 2 slider: -12 to 0 dB in 0.1 dB steps
+		// Gain 2 slider: -12 to 0 dB, 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 		gain2Slider = new FineControlSlider(JSlider.HORIZONTAL, -120, 0,
 			(int) Math.round(20 * Math.log10(gCB.getGain2()) * 10));
+		gain2Slider.setSubdivision(10);
 		gain2Slider.addChangeListener(this);
 		gain2Field = new JTextField();
 		gain2Field.setHorizontalAlignment(JTextField.CENTER);

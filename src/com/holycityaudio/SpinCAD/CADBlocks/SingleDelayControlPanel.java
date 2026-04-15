@@ -61,8 +61,9 @@ class SingleDelayControlPanel extends spinCADControlPanel {
 				frame = new JDialog(SpinCADFrame.getInstance(), "Single Delay");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
-				// Input Gain slider (dB): -24 to 0 dB, 0.1 dB steps
+				// Input Gain slider (dB): -24 to 0 dB, 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 				inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getinputGain()) * 10.0));
+				inputGainSlider.setSubdivision(10);
 				inputGainSlider.addChangeListener(new SingleDelayListener());
 				inputGainField = new JTextField();
 				inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -97,8 +98,9 @@ class SingleDelayControlPanel extends spinCADControlPanel {
 
 				frame.add(inputGaininnerPanel);
 
-				// Feedback Gain slider (dB): -24 to 0 dB, 0.1 dB steps
+				// Feedback Gain slider (dB): -24 to 0 dB, 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 				fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 10.0));
+				fbkGainSlider.setSubdivision(10);
 				fbkGainSlider.addChangeListener(new SingleDelayListener());
 				fbkGainField = new JTextField();
 				fbkGainField.setHorizontalAlignment(JTextField.CENTER);

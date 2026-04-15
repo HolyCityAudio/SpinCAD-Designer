@@ -268,9 +268,10 @@ public class ReverbDesignerControlPanel implements ChangeListener, ActionListene
 		paramPanel.add(makeSliderRow("Input Bandwidth", inputBwField, inputBwSlider));
 		updateInputBwLabel();
 
-		// Input Gain: -120 to 0 in slider units = -12.0 to 0.0 dB in 0.1 dB steps
+		// Input Gain: -12.0 to 0.0 dB, 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 		inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, -120, 0,
 				(int)(gCB.getInputGain() * 10));
+		inputGainSlider.setSubdivision(10);
 		inputGainSlider.addChangeListener(this);
 		inputGainField = new JTextField();
 		inputGainField.setEditable(false);

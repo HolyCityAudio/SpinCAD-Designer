@@ -63,13 +63,15 @@ class LongDelayControlPanel extends JFrame implements ChangeListener, ActionList
 		interleaveSlider.setPaintLabels(true);
 		interleaveSlider.addChangeListener(this);
 
-		// dB sliders: -24 to 0 dB in 0.1 dB steps
+		// dB sliders: -24 to 0 dB, 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 		gainSlider = new FineControlSlider(JSlider.HORIZONTAL, -240, 0,
 				(int) (20 * Math.log10(block.getInputGain()) * 10));
+		gainSlider.setSubdivision(10);
 		gainSlider.addChangeListener(this);
 
 		feedbackSlider = new FineControlSlider(JSlider.HORIZONTAL, -240, 0,
 				(int) (20 * Math.log10(block.getFeedbackLevel()) * 10));
+		feedbackSlider.setSubdivision(10);
 		feedbackSlider.addChangeListener(this);
 
 		filterCheck = new JCheckBox("Anti-Aliasing Filter", block.isFilterEnabled());

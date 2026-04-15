@@ -42,7 +42,7 @@ class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionL
 	// sliders (int range, mapped to real values via scale factors)
 	private JSlider delaySlider;      // 3277 .. 16384 (samples)
 	private JSlider modDepthSlider;   // 5 .. 200 (tenths of ms → 0.5..20 ms)
-	private JSlider fbkSlider;        // -240 .. 0 (tenths of dB)
+	private FineControlSlider fbkSlider;        // -240 .. 0 (tenths of dB)
 	private JSlider dampSlider;       // 200 .. 8000 (Hz)
 
 	private JTextField delayField;
@@ -88,10 +88,11 @@ class OilCanDelayControlPanel extends JDialog implements ChangeListener, ActionL
 		this.getContentPane().add(modDepthField);
 		this.getContentPane().add(modDepthSlider);
 
-		// --- Feedback (dB scale, matching mixer convention) ---
+		// --- Feedback (dB scale): 1 dB normal drag, 0.1 dB fine (Ctrl+drag) ---
 		fbkField = makeField();
 		fbkSlider = new FineControlSlider(JSlider.HORIZONTAL, -240, 0,
 				(int)(20.0 * Math.log10(Math.max(block.getFbkGain(), 0.001)) * 10.0));
+		fbkSlider.setSubdivision(10);
 		fbkSlider.addChangeListener(this);
 		this.getContentPane().add(fbkField);
 		this.getContentPane().add(fbkSlider);

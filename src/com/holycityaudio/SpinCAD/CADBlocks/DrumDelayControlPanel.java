@@ -91,8 +91,9 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------
-					// dB level slider goes in steps of 1 dB
+					// dB level slider: 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-240),(int) (0), (int) (20 * Math.log10(gCB.getinputGain()) * 10));
+						inputGainSlider.setSubdivision(10);
 						inputGainSlider.addChangeListener(new DrumDelayListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -135,8 +136,9 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------
-					// dB level slider goes in steps of 1 dB
+					// dB level slider: 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-240),(int) (0), (int) (20 * Math.log10(gCB.getfbkGain()) * 10));
+						fbkGainSlider.setSubdivision(10);
 						fbkGainSlider.addChangeListener(new DrumDelayListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);

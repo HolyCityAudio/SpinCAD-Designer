@@ -35,7 +35,7 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 @SuppressWarnings("serial")
 class ParkerSpringReverbControlPanel extends JFrame implements ChangeListener, ActionListener {
 
-	private JSlider gainSlider;
+	private FineControlSlider gainSlider;
 	private JSlider reverbTimeSlider;
 	private JSlider dampingSlider;
 	private JSlider dispersionSlider;
@@ -53,8 +53,9 @@ class ParkerSpringReverbControlPanel extends JFrame implements ChangeListener, A
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 
-		// Gain: -24 to 0 dB (slider units: -240 to 0, /10)
+		// Gain: -24 to 0 dB, 1 dB normal drag, 0.1 dB fine (Ctrl+drag)
 		gainSlider = new FineControlSlider(JSlider.HORIZONTAL, -240, 0, 0);
+		gainSlider.setSubdivision(10);
 		gainSlider.addChangeListener(this);
 
 		// Reverb Time (feedback gain): 0.10 to 0.95 (slider 10-95)

@@ -42,6 +42,7 @@ public class GainBoostControlPanel implements ChangeListener {
 	private GainBoostCADBlock pC;
 
 	public GainBoostControlPanel(GainBoostCADBlock gainBoostCADBlock) {
+		gainSlider.setSubdivision(10);
 		gainSlider.addChangeListener(this);
 
 		this.pC = gainBoostCADBlock;
