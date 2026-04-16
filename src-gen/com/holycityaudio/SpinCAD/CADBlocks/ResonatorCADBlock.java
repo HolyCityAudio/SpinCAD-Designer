@@ -31,7 +31,7 @@
 			private ResonatorControlPanel cp = null;
 			
 			private double freq = 0.2;
-			private double reso = 0.01;
+			private double reso = 0.02;
 			private int output1;
 			private int bp;
 			private int temp;

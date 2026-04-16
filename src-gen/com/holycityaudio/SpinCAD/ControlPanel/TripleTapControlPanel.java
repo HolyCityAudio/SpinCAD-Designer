@@ -86,9 +86,12 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getinputGain()) * 10.0));
+						inputGainSlider.setSubdivision((int) 10.0);
 						inputGainSlider.addChangeListener(new TripleTapListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -129,9 +132,12 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 10.0));
+						fbkGainSlider.setSubdivision((int) 10.0);
 						fbkGainSlider.addChangeListener(new TripleTapListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -173,7 +179,9 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new TripleTapListener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -215,7 +223,9 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap1RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap1Ratio() * 6000.0));
 						tap1RatioSlider.addChangeListener(new TripleTapListener());
 						tap1RatioField = new JTextField();
@@ -257,7 +267,9 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap2RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap2Ratio() * 6000.0));
 						tap2RatioSlider.addChangeListener(new TripleTapListener());
 						tap2RatioField = new JTextField();
@@ -299,7 +311,9 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap3RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap3Ratio() * 6000.0));
 						tap3RatioSlider.addChangeListener(new TripleTapListener());
 						tap3RatioField = new JTextField();
@@ -350,6 +364,7 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 			subdivisionPanel.add(subdivisionLabel);
 			subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
 			subdivisionPanel.add(subdivisionComboBox);
+			subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
 			subdivisionPanel.setBorder(subdivisionBorder);
 			frame.add(subdivisionPanel);
 			
@@ -374,27 +389,27 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 		class TripleTapListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));			    					
+			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/10.0));			    					
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/10.0));
 				updatefbkGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1RatioSlider) {
-			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/6000.0));			    					
+			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/6000.0));
 				updatetap1RatioLabel();
 			}
 			if(ce.getSource() == tap2RatioSlider) {
-			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/6000.0));			    					
+			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/6000.0));
 				updatetap2RatioLabel();
 			}
 			if(ce.getSource() == tap3RatioSlider) {
-			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/6000.0));			    					
+			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/6000.0));
 				updatetap3RatioLabel();
 			}
 			}
@@ -430,7 +445,7 @@ public TripleTapControlPanel(TripleTapCADBlock genericCADBlock) {
 		fbkGainField.setText("Feedback Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updatetap1RatioLabel() {
 		tap1RatioField.setText("Tap 1 Time (%):  " + String.format("%4.2f", gCB.gettap1Ratio()));

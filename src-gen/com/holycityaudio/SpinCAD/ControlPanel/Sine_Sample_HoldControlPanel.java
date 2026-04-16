@@ -76,7 +76,9 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rateSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new Sine_Sample_HoldListener());
 						rateField = new JTextField();
@@ -132,7 +134,7 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 		class Sine_Sample_HoldListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == rateSlider) {
-			gCB.setrate((double) (rateSlider.getValue()/100.0));			    					
+			gCB.setrate((double) (rateSlider.getValue()/100.0));
 				updaterateLabel();
 			}
 			}
@@ -156,7 +158,7 @@ public Sine_Sample_HoldControlPanel(Sine_Sample_HoldCADBlock genericCADBlock) {
 			}
 		}
 		private void updaterateLabel() {
-		rateField.setText("LFO Max Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
+		rateField.setText("LFO Max Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));
 		}
 		
 		class MyWindowListener implements WindowListener

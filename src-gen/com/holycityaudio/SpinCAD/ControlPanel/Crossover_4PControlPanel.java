@@ -77,7 +77,9 @@ public Crossover_4PControlPanel(Crossover_4PCADBlock genericCADBlock) {
 						freqSlider = SpinCADBlock.LogSlider(80,5000,gCB.getfreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						freqSlider.addChangeListener(new Crossover_4PListener());
 						freqField = new JTextField();
 						freqField.setHorizontalAlignment(JTextField.CENTER);
@@ -145,7 +147,7 @@ public Crossover_4PControlPanel(Crossover_4PCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqLabel() {
-		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
+		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");
 		}
 		
 		class MyWindowListener implements WindowListener

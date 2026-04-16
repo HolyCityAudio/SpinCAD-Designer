@@ -84,9 +84,12 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getinputGain()) * 1.0));
+						inputGainSlider.setSubdivision((int) 1.0);
 						inputGainSlider.addChangeListener(new FlangerListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -127,9 +130,12 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 1.0));
+						fbkGainSlider.setSubdivision((int) 1.0);
 						fbkGainSlider.addChangeListener(new FlangerListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -171,7 +177,9 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new FlangerListener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -213,7 +221,9 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rateSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new FlangerListener());
 						rateField = new JTextField();
@@ -306,19 +316,19 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 		class FlangerListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));			    					
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));			    					
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
 				updatefbkGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == rateSlider) {
-			gCB.setrate((double) (rateSlider.getValue()/100.0));			    					
+			gCB.setrate((double) (rateSlider.getValue()/100.0));
 				updaterateLabel();
 			}
 			if(ce.getSource() == widthSlider) {
@@ -352,10 +362,10 @@ public FlangerControlPanel(FlangerCADBlock genericCADBlock) {
 		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Delay Time " + String.format("%4.2f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Time " + String.format("%4.2f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updaterateLabel() {
-		rateField.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
+		rateField.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));
 		}
 		private void updatewidthLabel() {
 		widthField.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));

@@ -77,7 +77,9 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 						freqVarSlider = SpinCADBlock.LogSlider(20,5000,gCB.getfreqVar(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						freqVarSlider.addChangeListener(new New_OscillatorListener());
 						freqVarField = new JTextField();
 						freqVarField.setHorizontalAlignment(JTextField.CENTER);
@@ -145,7 +147,7 @@ public New_OscillatorControlPanel(New_OscillatorCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqVarLabel() {
-		freqVarField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreqVar())) + " Hz");		
+		freqVarField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreqVar())) + " Hz");
 		}
 		
 		class MyWindowListener implements WindowListener

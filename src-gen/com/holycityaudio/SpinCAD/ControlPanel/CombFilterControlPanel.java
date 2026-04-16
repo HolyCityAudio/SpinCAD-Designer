@@ -81,9 +81,12 @@ public CombFilterControlPanel(CombFilterCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getgain()) * 1.0));
+						gainSlider.setSubdivision((int) 1.0);
 						gainSlider.addChangeListener(new CombFilterListener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -125,7 +128,9 @@ public CombFilterControlPanel(CombFilterCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new CombFilterListener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -247,11 +252,11 @@ public CombFilterControlPanel(CombFilterCADBlock genericCADBlock) {
 		class CombFilterListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/1.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == feedbackSlider) {
@@ -283,7 +288,7 @@ public CombFilterControlPanel(CombFilterCADBlock genericCADBlock) {
 		gainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Delay Length " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Length " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updatefeedbackLabel() {
 		feedbackField.setText("Feedback " + String.format("%4.2f", gCB.getfeedback()));

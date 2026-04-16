@@ -120,7 +120,9 @@ public ControlPanelTestControlPanel(ControlPanelTestCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						pitchCoeff1Slider.addChangeListener(new ControlPanelTestListener());
 						pitchCoeff1Field = new JTextField();
 						pitchCoeff1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -162,7 +164,9 @@ public ControlPanelTestControlPanel(ControlPanelTestCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					pitchCoeff2Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-16384 * 1.0),(int) (32767 * 1.0), (int) ((gCB.getpitchCoeff2()) * 1.0));
 						pitchCoeff2Slider.addChangeListener(new ControlPanelTestListener());
 						pitchCoeff2Field = new JTextField();
@@ -237,11 +241,11 @@ public ControlPanelTestControlPanel(ControlPanelTestCADBlock genericCADBlock) {
 				updatepitchCoeffLabel();
 			}
 			if(ce.getSource() == pitchCoeff1Slider) {
-			gCB.setpitchCoeff1((double) (pitchCoeff1Slider.getValue()/1.0));			    					
+			gCB.setpitchCoeff1((double) (pitchCoeff1Slider.getValue()/1.0));
 				updatepitchCoeff1Label();
 			}
 			if(ce.getSource() == pitchCoeff2Slider) {
-			gCB.setpitchCoeff2((double) (pitchCoeff2Slider.getValue()/1.0));			    					
+			gCB.setpitchCoeff2((double) (pitchCoeff2Slider.getValue()/1.0));
 				updatepitchCoeff2Label();
 			}
 			}
@@ -274,7 +278,7 @@ public ControlPanelTestControlPanel(ControlPanelTestCADBlock genericCADBlock) {
 		pitchCoeffField.setText("Pitch Coefficient " + String.format("%4.0f", gCB.getpitchCoeff()));
 		}
 		private void updatepitchCoeff1Label() {
-		pitchCoeff1Field.setText("Pitch Coefficient " + String.format("%4.0f", (1000 * gCB.getpitchCoeff1())/ElmProgram.getSamplerate()));		
+		pitchCoeff1Field.setText("Pitch Coefficient " + String.format("%4.0f", (1000 * gCB.getpitchCoeff1())/ElmProgram.getSamplerate()));
 		}
 		private void updatepitchCoeff2Label() {
 		}

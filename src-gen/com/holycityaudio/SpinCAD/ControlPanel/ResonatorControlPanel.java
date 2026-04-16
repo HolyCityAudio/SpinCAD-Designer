@@ -73,7 +73,15 @@ public ResonatorControlPanel(ResonatorCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					freqSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.01 * 1000.0),(int) (0.5 * 1000.0), (int) (gCB.getfreq() * 1000.0));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// multiplier is points per decade here
+						freqSlider = SpinCADBlock.LogSlider(50,2500,gCB.getfreq(), "LOGFREQ2", 100.0);
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						freqSlider.addChangeListener(new ResonatorListener());
 						freqField = new JTextField();
 						freqField.setHorizontalAlignment(JTextField.CENTER);
@@ -84,10 +92,10 @@ public ResonatorControlPanel(ResonatorCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(freqField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val * 1000.0);
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 100.0);
 						sliderVal = Math.max(freqSlider.getMinimum(), Math.min(freqSlider.getMaximum(), sliderVal));
 						freqSlider.setValue(sliderVal);
-						gCB.setfreq((double) sliderVal / 1000.0);
+						gCB.setfreq(SpinCADBlock.freqToFiltSVF(SpinCADBlock.sliderToLogval(sliderVal, 100.0)));
 									updatefreqLabel();
 								} catch (NumberFormatException ex) {
 									updatefreqLabel();
@@ -110,7 +118,15 @@ public ResonatorControlPanel(ResonatorCADBlock genericCADBlock) {
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
-					resoSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.001 * 1000.0),(int) (0.05 * 1000.0), (int) (gCB.getreso() * 1000.0));
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// multiplier is points per decade here
+						resoSlider = SpinCADBlock.LogSlider(10,50,gCB.getreso(), "QFACTOR", 1000.0);
+					// ---------------------------------------------
 						resoSlider.addChangeListener(new ResonatorListener());
 						resoField = new JTextField();
 						resoField.setHorizontalAlignment(JTextField.CENTER);
@@ -121,10 +137,10 @@ public ResonatorControlPanel(ResonatorCADBlock genericCADBlock) {
 							public void actionPerformed(java.awt.event.ActionEvent e) {
 								try {
 									double val = Double.parseDouble(resoField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val * 1000.0);
+						int sliderVal = SpinCADBlock.logvalToSlider(val, 1000.0);
 						sliderVal = Math.max(resoSlider.getMinimum(), Math.min(resoSlider.getMaximum(), sliderVal));
 						resoSlider.setValue(sliderVal);
-						gCB.setreso((double) sliderVal / 1000.0);
+						gCB.setreso(1.0 / SpinCADBlock.sliderToLogval(sliderVal, 1000.0));
 									updateresoLabel();
 								} catch (NumberFormatException ex) {
 									updateresoLabel();
@@ -157,11 +173,11 @@ public ResonatorControlPanel(ResonatorCADBlock genericCADBlock) {
 		class ResonatorListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == freqSlider) {
-			gCB.setfreq((double) (freqSlider.getValue()/1000.0));
+			gCB.setfreq((double) SpinCADBlock.freqToFiltSVF(SpinCADBlock.sliderToLogval((int)(freqSlider.getValue()), 100.0)));
 				updatefreqLabel();
 			}
 			if(ce.getSource() == resoSlider) {
-			gCB.setreso((double) (resoSlider.getValue()/1000.0));
+			gCB.setreso(1.0 / SpinCADBlock.sliderToLogval((int)(resoSlider.getValue()), 1000.0));
 				updateresoLabel();
 			}
 			}
@@ -182,10 +198,10 @@ public ResonatorControlPanel(ResonatorCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqLabel() {
-		freqField.setText("Frequency " + String.format("%4.3f", gCB.getfreq()));
+		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");
 		}
 		private void updateresoLabel() {
-		resoField.setText("Damping (1/Q) " + String.format("%4.3f", gCB.getreso()));
+		resoField.setText("Q " + String.format("%4.0f", 1.0 / gCB.getreso()));
 		}
 		
 		class MyWindowListener implements WindowListener

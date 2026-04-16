@@ -81,7 +81,9 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 					// LOGFREQ2 is used for 2-pole SVF
 					// multiplier is points per decade here
 						freqSlider = SpinCADBlock.LogSlider(20,5000,gCB.getfreq(), "LOGFREQ2", 100.0);
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						freqSlider.addChangeListener(new SVF_2P_adjustableListener());
 						freqField = new JTextField();
 						freqField.setHorizontalAlignment(JTextField.CENTER);
@@ -231,7 +233,7 @@ public SVF_2P_adjustableControlPanel(SVF_2P_adjustableCADBlock genericCADBlock) 
 			}
 		}
 		private void updatefreqLabel() {
-		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");		
+		freqField.setText("Frequency (Hz) " + String.format("%4.1f", SpinCADBlock.filtToFreqSVF(gCB.getfreq())) + " Hz");
 		}
 		private void updateqMaxLabel() {
 		qMaxField.setText("Max Q " + String.format("%4.1f", gCB.getqMax()));

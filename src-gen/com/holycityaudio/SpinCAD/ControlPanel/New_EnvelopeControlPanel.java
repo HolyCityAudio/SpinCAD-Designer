@@ -82,6 +82,8 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						threshholdSlider.addChangeListener(new New_EnvelopeListener());
 						threshholdField = new JTextField();
 						threshholdField.setHorizontalAlignment(JTextField.CENTER);
@@ -124,6 +126,8 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 						attackFreqSlider = SpinCADBlock.LogSlider(0.51,20,gCB.getattackFreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
 					// ---------------------------------------------
 						attackFreqSlider.addChangeListener(new New_EnvelopeListener());
 						attackFreqField = new JTextField();
@@ -168,6 +172,8 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						decayFreqSlider.addChangeListener(new New_EnvelopeListener());
 						decayFreqField = new JTextField();
 						decayFreqField.setHorizontalAlignment(JTextField.CENTER);
@@ -210,6 +216,8 @@ public New_EnvelopeControlPanel(New_EnvelopeCADBlock genericCADBlock) {
 						postFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getpostFreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
 					// ---------------------------------------------
 						postFreqSlider.addChangeListener(new New_EnvelopeListener());
 						postFreqField = new JTextField();

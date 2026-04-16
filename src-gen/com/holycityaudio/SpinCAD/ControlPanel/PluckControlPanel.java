@@ -154,7 +154,9 @@ public PluckControlPanel(PluckCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						pulseWidthSlider.addChangeListener(new PluckListener());
 						pulseWidthField = new JTextField();
 						pulseWidthField.setHorizontalAlignment(JTextField.CENTER);
@@ -210,7 +212,7 @@ public PluckControlPanel(PluckCADBlock genericCADBlock) {
 				updatepulseLevelLabel();
 			}
 			if(ce.getSource() == pulseWidthSlider) {
-			gCB.setpulseWidth((double) (pulseWidthSlider.getValue()/1));			    					
+			gCB.setpulseWidth((double) (pulseWidthSlider.getValue()/1));
 				updatepulseWidthLabel();
 			}
 			}
@@ -237,7 +239,7 @@ public PluckControlPanel(PluckCADBlock genericCADBlock) {
 		pulseLevelField.setText("Pulse Amplitude " + String.format("%4.2f", gCB.getpulseLevel()));
 		}
 		private void updatepulseWidthLabel() {
-		pulseWidthField.setText("Pulse Width " + String.format("%4.0f", (1000 * gCB.getpulseWidth())/ElmProgram.getSamplerate()));		
+		pulseWidthField.setText("Pulse Width " + String.format("%4.0f", (1000 * gCB.getpulseWidth())/ElmProgram.getSamplerate()));
 		}
 		
 		class MyWindowListener implements WindowListener

@@ -90,9 +90,12 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getgain1()) * 1.0));
+						gain1Slider.setSubdivision((int) 1.0);
 						gain1Slider.addChangeListener(new ChorusQuadListener());
 						gain1Field = new JTextField();
 						gain1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -134,7 +137,9 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new ChorusQuadListener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -324,7 +329,9 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rateSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new ChorusQuadListener());
 						rateField = new JTextField();
@@ -417,11 +424,11 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 		class ChorusQuadListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-			gCB.setgain1((double) (gain1Slider.getValue()/1.0));			    					
+			gCB.setgain1((double) (gain1Slider.getValue()/1.0));
 				updategain1Label();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1CenterSlider) {
@@ -441,7 +448,7 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 				updatetap4CenterLabel();
 			}
 			if(ce.getSource() == rateSlider) {
-			gCB.setrate((double) (rateSlider.getValue()/100.0));			    					
+			gCB.setrate((double) (rateSlider.getValue()/100.0));
 				updaterateLabel();
 			}
 			if(ce.getSource() == widthSlider) {
@@ -472,7 +479,7 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 		gain1Field.setText("Input Gain 1 " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain1()))));
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Chorus_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Chorus_Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updatetap1CenterLabel() {
 		tap1CenterField.setText("Tap_1_Center " + String.format("%4.3f", gCB.gettap1Center()));
@@ -487,7 +494,7 @@ public ChorusQuadControlPanel(ChorusQuadCADBlock genericCADBlock) {
 		tap4CenterField.setText("Tap_4_Center " + String.format("%4.3f", gCB.gettap4Center()));
 		}
 		private void updaterateLabel() {
-		rateField.setText("LFO_Rate " + String.format("%4.1f", coeffToLFORate(gCB.getrate())));		
+		rateField.setText("LFO_Rate " + String.format("%4.1f", coeffToLFORate(gCB.getrate())));
 		}
 		private void updatewidthLabel() {
 		widthField.setText("LFO_Width " + String.format("%4.1f", gCB.getwidth()));

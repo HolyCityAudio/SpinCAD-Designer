@@ -79,9 +79,12 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getinputGain()) * 10.0));
+						inputGainSlider.setSubdivision((int) 10.0);
 						inputGainSlider.addChangeListener(new StutterListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -123,7 +126,9 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new StutterListener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -166,7 +171,9 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						fadeTimeFiltSlider.addChangeListener(new StutterListener());
 						fadeTimeFiltField = new JTextField();
 						fadeTimeFiltField.setHorizontalAlignment(JTextField.CENTER);
@@ -214,11 +221,11 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		class StutterListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));			    					
+			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == fadeTimeFiltSlider) {
@@ -246,10 +253,10 @@ public StutterControlPanel(StutterCADBlock genericCADBlock) {
 		inputGainField.setText("Input Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getinputGain()))));
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updatefadeTimeFiltLabel() {
-		fadeTimeFiltField.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt()) * 1000) + " ms");		
+		fadeTimeFiltField.setText("Fade Time (ms):  " + String.format("%4.0f", SpinCADBlock.filtToTime(gCB.getfadeTimeFilt()) * 1000) + " ms");
 		}
 		
 		class MyWindowListener implements WindowListener
