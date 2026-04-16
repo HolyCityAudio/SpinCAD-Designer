@@ -1,0 +1,146 @@
+{
+  "formatVersion": 1,
+  "type": "patch",
+  "patchFileName": "arpeggiator.spcdj",
+  "comments": {
+    "fileName": "Untitled",
+    "version": "Patch saved from SpinCAD Designer version 1069",
+    "lines": [
+      "Pot 0: ",
+      "Pot 1: ",
+      "Pot 2: ",
+      "",
+      ""
+    ]
+  },
+  "potValues": [
+    82.0,
+    18.0,
+    55.0
+  ],
+  "blocks": [
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.InputCADBlock",
+      "blockNum": 0,
+      "x": 764,
+      "y": 144,
+      "name": "Input"
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.Pot0CADBlock",
+      "blockNum": 1,
+      "x": 351,
+      "y": 288,
+      "name": "Pot 0",
+      "params": {
+        "speedup": false,
+        "potRegister": 16
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock",
+      "blockNum": 2,
+      "x": 465,
+      "y": 282,
+      "name": "Scale/Offset",
+      "params": {
+        "inLow": 0.0,
+        "inHigh": 1.0,
+        "outLow": 0.32,
+        "outHigh": 1.0
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.SinCosLFOACADBlock",
+      "blockNum": 3,
+      "x": 600,
+      "y": 279,
+      "name": "LFO 0",
+      "params": {
+        "lfoRate": 242,
+        "lfoWidth": 32767,
+        "lfoSel": 0,
+        "outputRange": 1
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.ArpeggiatorCADBlock",
+      "blockNum": 4,
+      "x": 737,
+      "y": 282,
+      "name": "Arpeggiator",
+      "params": {
+        "threshold": 0.25,
+        "numSteps": 8.0,
+        "slope": 0,
+        "semitones": [
+          0,
+          4,
+          7,
+          12,
+          7,
+          4,
+          0,
+          -12,
+          0,
+          0,
+          0,
+          0
+        ],
+        "lfoSel": 0,
+        "bufferSize": 4096
+      }
+    },
+    {
+      "className": "com.holycityaudio.SpinCAD.CADBlocks.OutputCADBlock",
+      "blockNum": 5,
+      "x": 752,
+      "y": 438,
+      "name": "Output",
+      "params": {
+        "mono": true,
+        "offset0": false,
+        "gain1": 1.0,
+        "gain2": 1.0
+      }
+    }
+  ],
+  "connections": [
+    {
+      "fromBlockIndex": 1,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 2,
+      "toPin": "Control Input 1"
+    },
+    {
+      "fromBlockIndex": 2,
+      "fromPin": "Control Output 1",
+      "toBlockIndex": 3,
+      "toPin": "Speed"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 4,
+      "toPin": "Audio In"
+    },
+    {
+      "fromBlockIndex": 3,
+      "fromPin": "Sine",
+      "toBlockIndex": 4,
+      "toPin": "Trigger"
+    },
+    {
+      "fromBlockIndex": 4,
+      "fromPin": "Pitch Out",
+      "toBlockIndex": 5,
+      "toPin": "Input 1"
+    },
+    {
+      "fromBlockIndex": 0,
+      "fromPin": "Output 1",
+      "toBlockIndex": 5,
+      "toPin": "Input 2"
+    }
+  ]
+}
