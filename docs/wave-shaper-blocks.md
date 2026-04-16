@@ -9,8 +9,8 @@ shows a 440 Hz sine wave at three input levels (0 dB, -6 dB, -18 dB).
 | | | |
 |-|-|-|
 | [Aliaser](#aliaser) | [Cube](#cube) | [Distortion](#distortion) |
-| [Octave Fuzz](#octave-fuzz) | [Overdrive](#overdrive) | [Quantizer](#quantizer) |
-| [T/X](#tx) | | |
+| [Noise AMZ](#noise-amz) | [Octave Fuzz](#octave-fuzz) | [Overdrive](#overdrive) |
+| [Quantizer](#quantizer) | [T/X](#tx) | |
 
 ---
 
@@ -19,6 +19,10 @@ shows a 440 Hz sine wave at three input levels (0 dB, -6 dB, -18 dB).
 Reduces the effective sample rate of the audio signal by sample-and-hold
 decimation, producing aliasing artifacts that add metallic, lo-fi character.
 Two outputs are provided: a smoothed version and the raw decimated signal.
+
+Based on [Frank Thompson's code](http://spinsemi.com/forum/viewtopic.php?t=262)
+from Spin Semiconductor. The Smoothed output uses more instructions than Raw;
+if only Raw is connected, those instructions are saved.
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -39,6 +43,9 @@ There is no control panel; the Rip control input sets the effect depth.
 Applies a cubic waveshaping function to the input signal. The cubic
 transfer curve produces soft clipping that adds odd harmonics (3rd, 5th, etc.)
 while preserving the signal's zero crossings. There is no control panel.
+
+Implements the [cubed distortion algorithm](http://spinsemi.com/knowledge_base/pgm_quick.html#Cube%20Distortion:)
+from Spin's Knowledge Base.
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -61,12 +68,40 @@ Cascaded SOF instructions with a coefficient of -2.0 drive the signal
 into clipping, producing aggressive square-wave-like distortion rich
 in odd harmonics. There is no control panel.
 
+Based on [Keith Barr's distortion program](http://spinsemi.com/get_spn.php?spn=dist.spn&prodnum=SPN1001)
+from the Spin Semiconductor Free DSP Programs, and described in
+[this article](http://spinsemi.com/knowledge_base/effects.html#Distortion)
+at Spin's Knowledge Base.
+
 | Pin | Type | Description |
 |-----|------|-------------|
 | Audio Input 1 | Audio In | Audio signal |
 | Audio Output 1 | Audio Out | Distorted output |
 
 ![Distortion](images/waveshaper-distortion.png)
+
+---
+
+## Noise AMZ
+
+A white noise generator using a 24-bit maximal-period Galois LFSR
+(linear-feedback shift register). Contributed by Jack Orman of
+[AMZ-FX](http://www.muzique.com/).
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Output | Audio Out | Noise output |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Output Level | -24 to 0 dB | -6 dB | Peak output level |
+| Range | 0->+1 / -1->+1 | 0->+1 | Output range selection |
+
+When set to 0->+1, the LFSR output is rectified (ABSA) to produce
+unipolar noise suitable for control modulation. When set to -1->+1,
+the raw bipolar noise is output for audio use.
 
 ---
 
@@ -82,6 +117,9 @@ frequency, creating an aggressive octave-up tone.
 | Audio_Output | Audio Out | Fuzzed octave-up output |
 
 There is no control panel.
+
+It is recommended to follow this block with a high pass filter to
+avoid a DC offset in the audio path from the rectification.
 
 ![Octave Fuzz](images/waveshaper-octavefuzz.png)
 

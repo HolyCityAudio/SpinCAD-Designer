@@ -207,3 +207,8 @@ window sounds musical -- the extremes are either clamped shut or
 essentially bypass. Inserting a Scale/Offset block between the pot and
 the filter lets you confine the pot's motion to that useful window,
 dramatically improving the feel of the control.
+
+**Tip for fine adjustments:** If you find it difficult to set an exact value
+by dragging a slider handle with the mouse, click on the handle to select it,
+then use the left and right arrow keys to increment the parameter by its
+smallest step.

@@ -24,7 +24,11 @@
 
 ## Patches
 
+* [4-Phase LFO Driven Mixer](patches/4-phase-lfo-driven-mixer.md)
+* [Making a Pitch Shifting Delay](patches/making-a-pitch-shifting-delay.md)
 * [Making a Tremolo Patch](patches/making-a-tremolo-patch.md)
+* [Making a Vibrato/Chorus Patch](patches/making-a-vibrato-chorus-patch.md)
+* [Multi-Head Drum/Tape Delay](patches/multi-head-drum-tape-delay.md)
 
 ## References
 

@@ -132,6 +132,8 @@ only Input 1; at 1 you hear only Input 2.
 
 This is a linear crossfade. At the midpoint (0.5), both signals are at
 half amplitude, resulting in a perceived -3 dB dip for uncorrelated signals.
+Based on [this code](http://spinsemi.com/knowledge_base/coding_examples.html#Cross_fading)
+at Spin's Knowledge Base.
 
 ---
 
@@ -159,6 +161,7 @@ smoother gain ramping.
 ## Crossfade 3
 
 An equal-power crossfade that maintains perceived loudness at the midpoint.
+This requires the most FV-1 instructions of the three Crossfade variants.
 Uses a more complex gain curve (0.707 multiplier) to avoid the -3 dB dip
 of a linear crossfade.
 

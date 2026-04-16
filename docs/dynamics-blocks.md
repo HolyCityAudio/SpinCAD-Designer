@@ -190,6 +190,8 @@ range of the input signal. Loud signals are attenuated (limiting) while
 quiet signals are boosted (expansion), resulting in a more consistent
 output level. This block has no adjustable parameters -- the limiting and
 expansion curves are fixed.
+This block implements the code from Spin Semiconductor's
+[Free DSP Programs](http://spinsemi.com/get_spn.php?spn=rms_lim_exp.spn&prodnum=SPN1001).
 
 | Pin | Type | Description |
 |-----|------|-------------|

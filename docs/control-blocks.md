@@ -21,10 +21,11 @@ They are found in the **Controls** menu of SpinCAD Designer.
 
 | | | |
 |-|-|-|
-| [Clip](#clip) | [Half Wave](#half-wave) | [Invert](#invert) |
-| [Power](#power) | [Ratio](#ratio) | [Root](#root) |
-| [Slicer](#slicer) | [Tap Tempo](#tap-tempo) | [Tremolizer](#tremolizer) |
-| [Two Stage](#two-stage) | [Vee](#vee) | |
+| [Clip](#clip) | [Envelope Follower](#envelope-follower) | [Half Wave](#half-wave) |
+| [Invert](#invert) | [Power](#power) | [Ratio](#ratio) |
+| [Root](#root) | [Slicer](#slicer) | [Smoother](#smoother) |
+| [Tap Tempo](#tap-tempo) | [Tremolizer](#tremolizer) | [Two Stage](#two-stage) |
+| [Vee](#vee) | | |
 
 ---
 
@@ -75,6 +76,61 @@ Feedback gain setting (0 dB, i.e. 1.0) and the FB In Gain (1.0) together
 give unity loop gain, so the signal in the delay line loops indefinitely.
 
 [Download the example patch: Delay-infinite-fb-demo.spcd](https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/patches/Delay-infinite-fb-demo.spcd)
+
+---
+
+## Envelope Follower
+
+**Menu:** Controls > Envelope Follower
+
+Detects the amplitude envelope of an audio signal and produces a smoothed
+control voltage (0-1) suitable for modulating any parameter. Replaces the
+deprecated Envelope and Envelope II blocks with a more flexible design.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Audio Input 1 | Audio In | Signal to detect |
+| Side Chain | Audio In | Optional: detect from a different signal |
+| Threshold CV | Control In | Optional: modulate threshold externally |
+| CV Out | Control Out | Scaled, smoothed control voltage |
+| Envelope | Control Out | Raw envelope for monitoring |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Detect Mode | Average / RMS / Peak | Average | Envelope detection method |
+| Gain | 0-6 (×6 dB steps) | 2 (12 dB) | Input gain before detection |
+| Attack | coefficient | 0.001 | Attack filter speed (higher = faster) |
+| Release | coefficient | 0.0003 | Release filter speed (higher = faster) |
+| Threshold | 0-1 | 0.1 | Envelope level that maps to full CV output |
+| Output Min | 0-1 | 0.0 | Minimum CV output |
+| Output Max | 0-1 | 1.0 | Maximum CV output |
+| Smooth | coefficient | 0.0002 | Output smoothing filter |
+
+**Detection modes:**
+
+- **Average** — rectifies the signal (ABSA) and lowpass filters it. The
+  simplest and most efficient mode.
+- **RMS** — squares the signal (MULX self) and lowpass filters, giving a
+  power-proportional envelope. Better for measuring perceived loudness.
+- **Peak** — peak-hold with exponential decay (MAXX-based follower). Tracks
+  transients more aggressively.
+
+When the Side Chain input is connected, the envelope is derived from that
+signal instead of the main audio input. This is useful for ducking effects
+(detect vocals, compress music) or envelope-following a different instrument.
+
+The Threshold parameter sets the input level that maps to full-scale CV
+output. Lower thresholds make the follower more sensitive to quiet signals.
+When Threshold CV is connected, it multiplies the envelope, allowing dynamic
+sensitivity control from a pot or LFO.
+
+**Typical use:** Build an auto-wah by connecting the Envelope Follower's CV
+Out to a bandpass filter's frequency input via a Scale/Offset block. The
+filter sweeps in response to picking dynamics. Use the Gain and Threshold
+controls to set the sensitivity, and Output Min/Max to constrain the
+frequency sweep range.
 
 ---
 
@@ -138,9 +194,19 @@ the multiplier C is S1.14 format and the offset D is S.10 format.)
 Note that because the Invert block fades linearly from 0 to 1, at its
 midpoint both the original and inverted signals will be 0.5. If used for
 crossfading, this results in a perceived level drop of -3 dB due to our ears'
-sensitivity being related to the added power of both signals. The **Crossfade**
-block (under I/O-Mix) merges the Invert block's control signal inversion with
-a 2-input mixer to handle this in one step.
+sensitivity being related to the added power of both signals (assuming both
+signals are active at the same time, which might not be true). The
+**Crossfade** block (under I/O-Mix) merges the Invert block's control signal
+inversion with a 2-input mixer to handle this in one step.
+
+**Example application:** Use a **Mixer 4:1** block to mix the dry signal with
+various taps from a **ThreeTap** delay. The longest delay (Tap 1) comes
+through all the time. Using Pot 2 with an Invert block driving one of the
+level inputs, you can blend between just Tap 2, just Tap 3, or some mix of
+them as the pot sweeps from one end to the other.
+
+A companion bank file demonstrating these patches is available here:
+[Patreon-Controls-01.spbk](https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/patches/Patreon-Controls-01.spbk).
 
 ---
 
@@ -186,10 +252,17 @@ of the output change happens in the upper quarter of the input range.
 A power of 1 is possible but wastes instructions and a register since
 the output equals the input.
 
+**Efficiency note:** If you only use the output of the Power block, then
+turning Invert on produces the same waveform shape as leaving it off -- the
+peaks just line up differently. Since Invert adds an instruction, leave it
+off unless you specifically need the input-side phase.
+
 **Typical use:** Convert a linear pot to an audio-taper or logarithmic-feel
 response for volume, filter cutoff, or delay feedback controls. Two Power
 blocks can be used in conjunction with the straight pot signal to fade 3
-signals in one at a time with the rotation of a single pot.
+signals in one at a time with the rotation of a single pot -- see the
+[Multi-Head Drum Tape Delay](https://holy-city-audio.gitbook.io/spincad-designer/patches/multi-head-drum-tape-delay)
+article for a worked example.
 
 **Companion:** The [Root](#root) block is the natural companion to Power --
 where Power compresses the response toward zero (quadratic, cubic), Root
@@ -242,6 +315,14 @@ This starts at 1 when x=0 and decreases to 1/ratio when x=1.
 
 ![Ratio output](images/control-ratio-ratio.png)
 
+**Why this form:** A naive `1/(ratio * x)` saturates at 1.0 for `x < 1/ratio`
+and blows up near zero, which is not what you want. Instead, the block
+feeds the linear FullRange output into the `1/(ratio * x)` function. Since
+FullRange never drops below `1/ratio`, the inverse stays bounded, and the
+curve is "stretched" so that it hits `(0, 1)` on the left and `(1, 1/ratio)`
+on the right. Only the 0-to-1 range matters on the FV-1 — signals outside
+that range aren't processable.
+
 **Key property:** Multiply these together, and the product is the constant
 value 1/ratio across the entire input range. For each ratio setting, the
 FullRange curve intersects the y-axis (x=0) at the same value as the Ratio
@@ -256,6 +337,13 @@ compute the inverse function in the logarithmic domain.
 from a single pot. As the speed increases, the width automatically decreases
 to maintain consistent perceived detuning. Add a Multiply block with a second
 pot to allow independent depth control that still tracks proportionally.
+
+![Ratio wired to Chorus speed and width, with Pot 1 scaling width](images/control-ratio-patch.png)
+
+*Pot 0 feeds the Ratio block; FullRange drives the Chorus LFO speed and
+the Ratio output is multiplied by Pot 1 before feeding the Chorus width.
+This gives a single "rate" knob with width that tracks inversely, plus a
+separate depth knob that still respects the tracking.*
 
 ---
 
@@ -359,6 +447,47 @@ Another application: use the Slicer to drive a **Crossfade** block, creating an
 instant switch between two effects (e.g., phaser and flanger) at the 50% point
 of a pot. Combined with a **Vee** block on the same pot, you can independently
 boost feedback for each effect on opposite sides of the crossover point.
+[Download the phaser-flanger patch](https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/patches/phaser-flanger.spcd).
+
+---
+
+## Smoother
+
+**Menu:** Controls > Smoother
+
+The Smoother block adds exponential rise and fall times to sharp transitions.
+It is a single-pole lowpass filter operating at very low frequencies,
+implemented with one FV-1 instruction (`RDFX`). The control panel displays
+the rise time in milliseconds.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Control Input | Control In | Signal to smooth |
+| Control Output | Control Out | Smoothed signal |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Rise Time | ms (log scale) | ~350 ms | Time for the output to reach ~63% of a step change |
+
+Lower rise time values (faster) let sharp transitions through with minimal
+rounding. Higher values (slower) turn square edges into gentle exponential
+curves.
+
+**Typical use:** Place after a **Slicer** block to convert the hard square
+wave into a variable-shape tremolo envelope. The Smoother's rise time controls
+the attack/decay character — fast values give hard chop, slow values give
+soft sine-like modulation. Note that very slow settings also reduce the
+effective modulation depth, since the filter doesn't have time to reach full
+excursion between transitions.
+
+The other major use is smoothing delay time changes. Abrupt delay time jumps
+cause the FV-1 to skip its read pointer, producing clicks or pitch pops. A
+Smoother makes the pointer drift gradually, producing a smooth pitch bend
+instead — like a tape machine spooling up or slowing down.
+
+[Download the slicer-tremolo example patch](https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/patches/slicer-tremolo.spcd).
 
 ---
 
@@ -530,7 +659,11 @@ As the input goes from 0.5 to 1.0:
 **Typical use:** Use a single pot to sequence two parameters. For example:
 0 to 0.5 turns up the LFO speed, 0.5 to 1.0 turns up the LFO width. You can
 add Scale/Offset, Power, or other shaping blocks to either output to fine-tune
-the response.
+the response for a more subtle change in the algorithm.
+
+This is one of those blocks whose best uses may still be undiscovered --
+someone usually finds an interesting application that hadn't been considered,
+so let me know if you do.
 
 ---
 
@@ -578,3 +711,6 @@ pot 2 controls the FX blend through a Vee block: in the middle it is just dry,
 all the way left brings in chorus, all the way right brings in flanger. The LFO
 speed and width of the two modulation stages can be individually scaled with
 separate Scale/Offset blocks.
+
+Patch file demonstrating this:
+[vee-control.spcd](https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/patches/vee-control.spcd).
