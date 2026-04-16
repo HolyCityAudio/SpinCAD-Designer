@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -34,7 +34,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class OverdriveControlPanel extends JFrame implements ChangeListener, ActionListener {
+class OverdriveControlPanel extends JDialog implements ChangeListener, ActionListener {
 	JSlider stagesSlider;
 	JTextField stagesField;
 	JSlider gainSlider;
@@ -45,8 +45,8 @@ class OverdriveControlPanel extends JFrame implements ChangeListener, ActionList
 	private OverdriveCADBlock oD;
 
 	public OverdriveControlPanel(OverdriveCADBlock odCb) {
+		super(SpinCADFrame.getInstance(), "Overdrive");
 		this.oD = odCb;
-		this.setTitle("Overdrive");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 

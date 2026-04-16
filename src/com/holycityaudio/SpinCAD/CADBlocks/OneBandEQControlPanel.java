@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -33,7 +33,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
-class OneBandEQControlPanel extends JFrame implements ChangeListener {
+class OneBandEQControlPanel extends JDialog implements ChangeListener {
 	/**
 	 *
 	 */
@@ -51,8 +51,8 @@ class OneBandEQControlPanel extends JFrame implements ChangeListener {
 	private OneBandEQCADBlock filter;
 
 	public OneBandEQControlPanel(OneBandEQCADBlock b) {
+		super(SpinCADFrame.getInstance(), "1-Band EQ");
 		this.filter = b;
-		this.setTitle("1-Band EQ");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		eqSlider0 = new FineControlSlider(JSlider.HORIZONTAL, -100, 199, 0);

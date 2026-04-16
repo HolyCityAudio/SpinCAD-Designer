@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -33,7 +33,7 @@ import javax.swing.event.ChangeListener;
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
-public class SixBandEQControlPanel extends JFrame {
+public class SixBandEQControlPanel extends JDialog {
 	/**
 	 *
 	 */
@@ -58,10 +58,10 @@ public class SixBandEQControlPanel extends JFrame {
 	private SixBandEQCADBlock filter;
 
 	public SixBandEQControlPanel(SixBandEQCADBlock b) {
+		super(SpinCADFrame.getInstance(), "6-Band EQ");
 		this.filter = b;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				setTitle("6-Band EQ");
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
 				SixBandChangeListener sixCL = new SixBandChangeListener();

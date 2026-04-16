@@ -26,7 +26,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -39,7 +39,7 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 @SuppressWarnings("serial")
-public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
+public class ScaleOffsetControlPanel extends JDialog implements ChangeListener{
 	JSlider inLowSlider;
 	JSlider inHighSlider;
 	JSlider outLowSlider;
@@ -60,8 +60,8 @@ public class ScaleOffsetControlPanel extends JFrame implements ChangeListener{
 	private ScaleOffsetControlCADBlock sof;
 
 	public ScaleOffsetControlPanel(ScaleOffsetControlCADBlock scaleOffsetControlCADBlock) {
+		super(SpinCADFrame.getInstance(), "Scale Offset");
 		this.sof = scaleOffsetControlCADBlock;
-		this.setTitle("Scale Offset");
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

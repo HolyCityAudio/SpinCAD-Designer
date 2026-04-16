@@ -29,7 +29,7 @@ import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -42,7 +42,7 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 
-public class PowerControlControlPanel extends JFrame {
+public class PowerControlControlPanel extends JDialog {
 
 	/**
 	 *
@@ -57,6 +57,7 @@ public class PowerControlControlPanel extends JFrame {
 	private PowerControlCADBlock pC;
 
 	public PowerControlControlPanel(PowerControlCADBlock powerControlCADBlock) {
+		super(SpinCADFrame.getInstance(), "Power");
 		this.pC = powerControlCADBlock;
 
 		powerField.setHorizontalAlignment(JTextField.CENTER);
@@ -78,7 +79,6 @@ public class PowerControlControlPanel extends JFrame {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				setTitle("Power");
 				setResizable(false);
 
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

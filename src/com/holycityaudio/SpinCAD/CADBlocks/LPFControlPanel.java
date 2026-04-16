@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -35,7 +35,7 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 @SuppressWarnings("serial")
-class LPFControlPanel extends JFrame implements ChangeListener, ActionListener {
+class LPFControlPanel extends JDialog implements ChangeListener, ActionListener {
 	FineControlSlider freqSlider;
 	FineControlSlider resSlider;
 
@@ -45,8 +45,8 @@ class LPFControlPanel extends JFrame implements ChangeListener, ActionListener {
 	private LPFCADBlock LPF;
 
 	public LPFControlPanel(LPFCADBlock lpfcadBlock) {
+		super(SpinCADFrame.getInstance(), "Low pass Filter");
 		this.LPF = lpfcadBlock;
-		this.setTitle("Low pass Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 100, 0);

@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -34,20 +34,20 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-public class ConstantControlPanel extends JFrame implements ChangeListener {
+public class ConstantControlPanel extends JDialog implements ChangeListener {
 	FineControlSlider constantSlider;
 	JTextField constantField;
 
 	private ConstantCADBlock sof;
 
 	public ConstantControlPanel(final ConstantCADBlock cCB) {
+		super(SpinCADFrame.getInstance(), "Constant");
 		constantSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 999, 0);
 		constantSlider.addChangeListener(this);
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				sof = cCB;
-				setTitle("Constant");
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
 				constantField = new JTextField();

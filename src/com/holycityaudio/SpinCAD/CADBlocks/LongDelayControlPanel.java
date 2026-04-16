@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -37,7 +37,7 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class LongDelayControlPanel extends JFrame implements ChangeListener, ActionListener {
+class LongDelayControlPanel extends JDialog implements ChangeListener, ActionListener {
 	FineControlSlider feedbackSlider;
 	FineControlSlider gainSlider;
 	JSlider interleaveSlider;
@@ -50,8 +50,8 @@ class LongDelayControlPanel extends JFrame implements ChangeListener, ActionList
 	private LongDelayCADBlock block;
 
 	public LongDelayControlPanel(LongDelayCADBlock longDelayBlock) {
+		super(SpinCADFrame.getInstance(), "Long Delay");
 		this.block = longDelayBlock;
-		this.setTitle("Long Delay");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 

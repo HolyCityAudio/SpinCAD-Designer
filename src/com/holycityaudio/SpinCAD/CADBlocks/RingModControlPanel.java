@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -34,7 +34,7 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class RingModControlPanel extends JFrame implements ChangeListener, ActionListener {
+class RingModControlPanel extends JDialog implements ChangeListener, ActionListener {
 	JSlider lfoSlider;
 	JTextField lfoField;
 	private final int sliderMax;
@@ -42,9 +42,9 @@ class RingModControlPanel extends JFrame implements ChangeListener, ActionListen
 	private RingModCADBlock outBlock;
 
 	public RingModControlPanel(RingModCADBlock ringModCADBlock) {
+		super(SpinCADFrame.getInstance(), "Ring Mod");
 		this.outBlock = ringModCADBlock;
 		sliderMax = (int) Math.round(SpinCADBlock.freqToFilt(1200.0) * 500.0);
-		this.setTitle("Ring Mod");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		lfoSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, sliderMax, 0);

@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -37,7 +37,7 @@ public class GainBoostControlPanel implements ChangeListener {
 
 	private FineControlSlider gainSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 480, 1);
 	private JTextField gainField = new JTextField();
-	private JFrame frame;
+	private JDialog frame;
 
 	private GainBoostCADBlock pC;
 
@@ -67,9 +67,8 @@ public class GainBoostControlPanel implements ChangeListener {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Gain Boost");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Gain Boost");
 				pC.controlPanelFrame = frame;
-				frame.setTitle("Gain Boost");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 

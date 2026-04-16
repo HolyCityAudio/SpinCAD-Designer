@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -34,7 +34,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class ThreeTapControlPanel extends JFrame implements ChangeListener, ActionListener {
+class ThreeTapControlPanel extends JDialog implements ChangeListener, ActionListener {
 	JSlider tapSlider0;
 	JSlider tapSlider1;
 
@@ -53,8 +53,8 @@ class ThreeTapControlPanel extends JFrame implements ChangeListener, ActionListe
 	private ThreeTapCADBlock pong;
 
 	public ThreeTapControlPanel(ThreeTapCADBlock ppcb) {
+		super(SpinCADFrame.getInstance(), "Ping Pong Delay");
 		this.pong = ppcb;
-		this.setTitle("Ping Pong Delay");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 

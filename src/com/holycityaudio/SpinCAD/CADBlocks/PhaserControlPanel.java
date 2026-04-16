@@ -30,7 +30,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -64,7 +64,7 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 	};
 
 
-	private JFrame frame;
+	private JDialog frame;
 
 	private PhaserCADBlock pong;
 
@@ -95,9 +95,8 @@ class PhaserControlPanel implements ChangeListener, ActionListener {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Phaser");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Phaser");
 				pong.controlPanelFrame = frame;
-				frame.setTitle("Phaser");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				frame.setResizable(false);
 

@@ -28,7 +28,7 @@ import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -55,7 +55,7 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 
 	private LFORadioButtons rb;
 
-	private JFrame frame;
+	private JDialog frame;
 	private RampLFOCADBlock pC;
 
 	public RampLFOControlPanel(RampLFOCADBlock rampLFOCADBlock) {
@@ -112,8 +112,7 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("LFO");
-				frame.setTitle("");
+				frame = new JDialog(SpinCADFrame.getInstance(), "");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());
@@ -135,7 +134,6 @@ public class RampLFOControlPanel implements ChangeListener, ActionListener, Item
 				frame.add(rb);
 
 				frame.setVisible(true);
-				frame.setAlwaysOnTop(true);
 				frame.pack();
 			}
 		});

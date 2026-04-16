@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -48,7 +48,7 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 	private FineControlSlider decaySlider = null;
 	private JTextField decayField = new JTextField();
 
-	private JFrame frame;
+	private JDialog frame;
 
 	private EnvelopeControlCADBlock pC;
 
@@ -127,9 +127,8 @@ public class EnvelopeControlControlPanel implements ChangeListener, ActionListen
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Envelope");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Envelope");
 				pC.controlPanelFrame = frame;
-				frame.setTitle("Envelope");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 

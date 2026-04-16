@@ -20,7 +20,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -46,12 +46,13 @@ import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 import com.holycityaudio.SpinCAD.spinCADControlPanel;
 import com.holycityaudio.SpinCAD.FineControlSlider;
 
 @SuppressWarnings("unused")
 public class DrumDelayControlPanel extends spinCADControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	private DrumDelayCADBlock gCB;
 	// declare the controls
 	FineControlSlider inputGainSlider;
@@ -78,9 +79,8 @@ public DrumDelayControlPanel(DrumDelayCADBlock genericCADBlock) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
+				frame = new JDialog(SpinCADFrame.getInstance(), "Drum Delay");
 				gCB.controlPanelFrame = frame;
-				frame.setTitle("Drum Delay");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 			//

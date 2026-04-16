@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -39,7 +39,7 @@ import java.awt.Dimension;
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
-class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener {
+class SVF2PControlPanel extends JDialog implements ChangeListener, ActionListener {
 	/**
 	 *
 	 */
@@ -54,9 +54,9 @@ class SVF2PControlPanel extends JFrame implements ChangeListener, ActionListener
 	private SVF2PCADBlock cadBlock;
 
 	public SVF2PControlPanel(SVF2PCADBlock svf2pcadBlock) {
+		super(SpinCADFrame.getInstance(), "State Variable Filter");
 		// TODO make this thread safe
 		this.cadBlock = svf2pcadBlock;
-		this.setTitle("State Variable Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 800, 25000, 10000);

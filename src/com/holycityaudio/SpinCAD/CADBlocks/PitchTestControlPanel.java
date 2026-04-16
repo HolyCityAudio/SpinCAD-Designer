@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -34,7 +34,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class PitchTestControlPanel extends JFrame implements ChangeListener {
+class PitchTestControlPanel extends JDialog implements ChangeListener {
 	JSlider freqSlider;
 	JSlider ampSlider;
 
@@ -44,8 +44,8 @@ class PitchTestControlPanel extends JFrame implements ChangeListener {
 	private PitchTestCADBlock pong;
 
 	public PitchTestControlPanel(PitchTestCADBlock ppcb) {
+		super(SpinCADFrame.getInstance(), "Pitch Shift Test");
 		this.pong = ppcb;
-		this.setTitle("Pitch Shift Test");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 

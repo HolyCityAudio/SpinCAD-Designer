@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -37,7 +37,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionListener {
+class CrossfadeAdjControlPanel extends JDialog implements ChangeListener, ActionListener {
 	private FineControlSlider midpointSlider;
 	private JTextField midpointField;
 	private FineControlSlider gain1Slider;
@@ -49,8 +49,8 @@ class CrossfadeAdjControlPanel extends JFrame implements ChangeListener, ActionL
 	private CrossfadeAdjCADBlock gCB;
 
 	public CrossfadeAdjControlPanel(CrossfadeAdjCADBlock block) {
+		super(SpinCADFrame.getInstance(), "Crossfade Adj");
 		this.gCB = block;
-		this.setTitle("Crossfade Adj");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 

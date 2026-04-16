@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -39,16 +39,15 @@ class QuantizerControlPanel {
 	private QuantizerCADBlock BC;
 	private JSlider bitSlider;
 	private JTextField bitField;
-	private JFrame frame;
+	private JDialog frame;
 
 	public QuantizerControlPanel(QuantizerCADBlock b) {
 		this.BC = b;
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame();
+				frame = new JDialog(SpinCADFrame.getInstance(), "Quantizer");
 				BC.controlPanelFrame = frame;
-				frame.setTitle("Quantizer");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				bitSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 16, BC.getBits());
 				bitSlider.addChangeListener(new bitSliderListener());

@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -50,7 +50,7 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 	JTextField centsField = new JTextField();
 	JTextField ampField = new JTextField();
 
-	private JFrame frame;
+	private JDialog frame;
 
 	private PitchShiftFixedCADBlock pong;
 	private static LFORadioButtons rb;
@@ -120,9 +120,8 @@ class PitchShiftFixedControlPanel implements ChangeListener {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Ramp LFO");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Pitch Shift Fixed");
 				pong.controlPanelFrame = frame;
-				frame.setTitle("Pitch Shift Fixed");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				frame.setResizable(false);
 
