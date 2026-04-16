@@ -278,10 +278,17 @@ filtering effects or as a simple sine oscillator.
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Frequency | 50-2600 Hz | 1040 | Center frequency |
-| Q | 2-100 | 100 | Resonance (higher = sharper peak) |
+| Frequency | 50-2500 Hz | 1000 | Center frequency |
+| Q | 10-50 | 50 | Resonance (higher = sharper peak) |
 
 ![Resonator response at three frequency settings](images/filter-resonator.png)
+
+Simulated frequency response with fc fixed at 440 Hz, sweeping input sine across
+80-2000 Hz for Q = 10, 20, and 50. Peak gain at resonance scales with Q:
++20 dB, +26 dB, and +34 dB respectively. Input level is −46 dBFS to keep the
+Q = 50 peak below clipping.
+
+![Resonator Q overlay at fc=440 Hz](images/filter-resonator-q-overlay.png)
 
 ---
 
