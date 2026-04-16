@@ -4,6 +4,16 @@ These blocks implement pitch shifting effects using the FV-1's ramp LFO and
 delay memory. Techniques include standard pitch shifting, glitch shifting,
 frequency offset via Hilbert transform, and arpeggiator-style stepped patterns.
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [Arpeggiator](#arpeggiator) | [Dual Output Pitch Offset](#dual-output-pitch-offset) | [Glitch Shift Adjustable](#glitch-shift-adjustable) |
+| [Octave Up/Down](#octave-updown) | [Pitch Four](#pitch-four) | [Pitch Offset](#pitch-offset) |
+| [Pitch Shift Adjustable](#pitch-shift-adjustable) | [Pitch Shift Fixed](#pitch-shift-fixed) | |
+
+Common background for all pitch blocks: [Delay Buffer Size (Block Size)](#delay-buffer-size-block-size).
+
 ---
 
 ## Delay Buffer Size (Block Size)
@@ -102,75 +112,55 @@ FV-1.
 
 ---
 
-## Pitch Shift Fixed
+## Arpeggiator
 
-A fixed pitch shift using the FV-1's ramp LFO. The shift amount and LFO
-parameters are set from the control panel. This block uses the classic
-delay-line pitch shifting technique where a ramp LFO sweeps a read pointer
-through a delay buffer to create the pitch change.
+A stepped pitch shifter that cycles through a sequence of semitone intervals,
+triggered by a control input. When the trigger crosses the threshold, the
+block advances to the next step in the pattern. The pattern can ascend,
+descend, or ping-pong depending on the Slope setting.
+
+This is a hand-written block (not code-generated) with a full control panel
+for editing the step sequence.
 
 | Pin | Type | Description |
 |-----|------|-------------|
 | Audio In | Audio In | Input signal |
-| Pitch Out | Audio Out | Pitch-shifted output |
+| Trigger | Control In | Step advance trigger |
+| Pitch Out | Audio Out | Arpeggiated pitch output |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Freq | LFO rate | 0 | Pitch shift amount (ramp rate) |
-| Amp | buffer size | 512 | Delay buffer size (512/1024/2048/4096) |
+| Threshold | 0-1 | 0.25 | Trigger level for step advance |
+| Num Steps | 3-12 | 8 | Number of steps in the pattern |
+| Slope | pos/neg/both | positive | Pattern direction |
+| Semitone 1-12 | -12 to +19 | varies | Semitone offset per step |
 | LFO Sel | 0-1 | 0 | Select RMP0 or RMP1 |
 
-![Pitch Shift Fixed octave up](images/pitch-pitchshiftfixed-up.png)
+Default pattern: 0, +4, +7, +12, +7, +4, 0, -12 (major arpeggio up and back).
 
-![Pitch Shift Fixed octave down](images/pitch-pitchshiftfixed-down.png)
+![Arpeggiator output](images/pitch-arpeggiator.png)
 
 ---
 
-## Pitch Shift Adjustable
+## Dual Output Pitch Offset
 
-An adjustable pitch shifter with a control input for real-time pitch
-modulation. The base pitch coefficient sets the shift amount and the
-control input can modulate it further based on the control range setting.
+A dual-output version of the Pitch Offset block. Each output has its own
+independent frequency offset controlled by separate control inputs. Useful
+for creating detuned stereo effects or dual-voice pitch shifting.
 
 | Pin | Type | Description |
 |-----|------|-------------|
 | Input | Audio In | Input signal |
-| Pitch Out | Audio Out | Pitch-shifted output |
-| Pitch Control | Control In | Pitch modulation (0-1) |
+| Output 1 | Audio Out | First frequency-offset output |
+| Output 2 | Audio Out | Second frequency-offset output |
+| Offset 1 | Control In | Offset amount for Output 1 (0-1) |
+| Offset 2 | Control In | Offset amount for Output 2 (0-1) |
 
-**Control panel parameters:**
+No control panel parameters. All control comes from the Offset pins.
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| pitchCoeff | coefficient | 8192 | Base pitch shift coefficient |
-| controlRange | coefficient | 0 | Modulation depth from control input |
-| lfoSel | 0-1 | 0 | Select RMP0 or RMP1 |
-| lfoWidth | samples | 0 | Ramp LFO width setting |
-
-When the Pitch Control pin is disconnected, the block uses only the
-fixed pitchCoeff value.
-
-![Pitch Shift Adjustable octave up](images/pitch-pitch_shift_test-up.png)
-
-![Pitch Shift Adjustable octave down](images/pitch-pitch_shift_test-down.png)
-
----
-
-## Octave Up/Down
-
-Produces two simultaneous outputs: one pitched down by one octave and one
-pitched up by one octave. Uses two ramp LFOs (RMP0 and RMP1) with fixed
-rate settings. There is no control panel.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Pitch_Down_Out | Audio Out | One octave down |
-| Pitch_Up_Out | Audio Out | One octave up |
-
-![Octave Up/Down output](images/pitch-pitchupdown.png)
+![Dual Output Pitch Offset output](images/pitch-pitchoffset1_2.png)
 
 ---
 
@@ -198,6 +188,22 @@ controllable via the Pitch Control input.
 ![Glitch Shift octave up](images/pitch-glitch_shift-up.png)
 
 ![Glitch Shift octave down](images/pitch-glitch_shift-down.png)
+
+---
+
+## Octave Up/Down
+
+Produces two simultaneous outputs: one pitched down by one octave and one
+pitched up by one octave. Uses two ramp LFOs (RMP0 and RMP1) with fixed
+rate settings. There is no control panel.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Input signal |
+| Pitch_Down_Out | Audio Out | One octave down |
+| Pitch_Up_Out | Audio Out | One octave up |
+
+![Octave Up/Down output](images/pitch-pitchupdown.png)
 
 ---
 
@@ -248,52 +254,56 @@ No control panel parameters. All control comes from the Pitch_Offset pin.
 
 ---
 
-## Dual Output Pitch Offset
+## Pitch Shift Adjustable
 
-A dual-output version of the Pitch Offset block. Each output has its own
-independent frequency offset controlled by separate control inputs. Useful
-for creating detuned stereo effects or dual-voice pitch shifting.
+An adjustable pitch shifter with a control input for real-time pitch
+modulation. The base pitch coefficient sets the shift amount and the
+control input can modulate it further based on the control range setting.
 
 | Pin | Type | Description |
 |-----|------|-------------|
 | Input | Audio In | Input signal |
-| Output 1 | Audio Out | First frequency-offset output |
-| Output 2 | Audio Out | Second frequency-offset output |
-| Offset 1 | Control In | Offset amount for Output 1 (0-1) |
-| Offset 2 | Control In | Offset amount for Output 2 (0-1) |
-
-No control panel parameters. All control comes from the Offset pins.
-
-![Dual Output Pitch Offset output](images/pitch-pitchoffset1_2.png)
-
----
-
-## Arpeggiator
-
-A stepped pitch shifter that cycles through a sequence of semitone intervals,
-triggered by a control input. When the trigger crosses the threshold, the
-block advances to the next step in the pattern. The pattern can ascend,
-descend, or ping-pong depending on the Slope setting.
-
-This is a hand-written block (not code-generated) with a full control panel
-for editing the step sequence.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Audio In | Audio In | Input signal |
-| Trigger | Control In | Step advance trigger |
-| Pitch Out | Audio Out | Arpeggiated pitch output |
+| Pitch Out | Audio Out | Pitch-shifted output |
+| Pitch Control | Control In | Pitch modulation (0-1) |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Threshold | 0-1 | 0.25 | Trigger level for step advance |
-| Num Steps | 3-12 | 8 | Number of steps in the pattern |
-| Slope | pos/neg/both | positive | Pattern direction |
-| Semitone 1-12 | -12 to +19 | varies | Semitone offset per step |
+| pitchCoeff | coefficient | 8192 | Base pitch shift coefficient |
+| controlRange | coefficient | 0 | Modulation depth from control input |
+| lfoSel | 0-1 | 0 | Select RMP0 or RMP1 |
+| lfoWidth | samples | 0 | Ramp LFO width setting |
+
+When the Pitch Control pin is disconnected, the block uses only the
+fixed pitchCoeff value.
+
+![Pitch Shift Adjustable octave up](images/pitch-pitch_shift_test-up.png)
+
+![Pitch Shift Adjustable octave down](images/pitch-pitch_shift_test-down.png)
+
+---
+
+## Pitch Shift Fixed
+
+A fixed pitch shift using the FV-1's ramp LFO. The shift amount and LFO
+parameters are set from the control panel. This block uses the classic
+delay-line pitch shifting technique where a ramp LFO sweeps a read pointer
+through a delay buffer to create the pitch change.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Audio In | Audio In | Input signal |
+| Pitch Out | Audio Out | Pitch-shifted output |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Freq | LFO rate | 0 | Pitch shift amount (ramp rate) |
+| Amp | buffer size | 512 | Delay buffer size (512/1024/2048/4096) |
 | LFO Sel | 0-1 | 0 | Select RMP0 or RMP1 |
 
-Default pattern: 0, +4, +7, +12, +7, +4, 0, -12 (major arpeggio up and back).
+![Pitch Shift Fixed octave up](images/pitch-pitchshiftfixed-up.png)
 
-![Arpeggiator output](images/pitch-arpeggiator.png)
+![Pitch Shift Fixed octave down](images/pitch-pitchshiftfixed-down.png)

@@ -8,6 +8,13 @@ are clamped to the -1.0 to +0.999 range. The compressor and limiter blocks
 use the FV-1's LOG and EXP instructions to compute gain in the logarithmic
 domain.
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [Noise Gate](#noise-gate) | [Peak Compressor](#peak-compressor) | [RMS Compressor](#rms-compressor) |
+| [RMS Limiter](#rms-limiter) | [RMS Limiter/Expander](#rms-limiterexpander) | [Soft Knee Limiter](#soft-knee-limiter) |
+
 ---
 
 ## Noise Gate
@@ -129,34 +136,6 @@ Input-vs-output transfer curve at strength=0.75 for two threshold settings.
 
 ---
 
-## RMS Limiter/Expander
-
-**Menu:** Dynamics > RMS Limiter/Expander
-
-A combined RMS limiter and expander that automatically controls the dynamic
-range of the input signal. Loud signals are attenuated (limiting) while
-quiet signals are boosted (expansion), resulting in a more consistent
-output level. This block has no adjustable parameters -- the limiting and
-expansion curves are fixed.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input_Left | Audio In | Input signal |
-| Audio_Output | Audio Out | Level-controlled output |
-
-This block uses cascaded SOF instructions to amplify the signal before
-computing the expansion envelope, providing sensitivity to low-level
-signals. The combination of LOG/EXP for limiting and a second LOG/EXP
-stage for expansion creates a two-slope transfer characteristic.
-
-![RMS Limiter/Expander transfer curve](images/dynamics-rms_lim_exp.png)
-
-Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps. Note
-how the output range is compressed compared to the input: loud signals
-are reduced and quiet signals are boosted relative to unity gain.
-
----
-
 ## RMS Limiter
 
 **Menu:** Dynamics > RMS Limiter
@@ -199,6 +178,34 @@ Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps.
 Waveform at 0 dB input showing distortion. The 1.5x output scale factor
 in the algorithm causes hard clipping when the RMS gain envelope does not
 reduce the signal enough to keep the product below 1.0.
+
+---
+
+## RMS Limiter/Expander
+
+**Menu:** Dynamics > RMS Limiter/Expander
+
+A combined RMS limiter and expander that automatically controls the dynamic
+range of the input signal. Loud signals are attenuated (limiting) while
+quiet signals are boosted (expansion), resulting in a more consistent
+output level. This block has no adjustable parameters -- the limiting and
+expansion curves are fixed.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input_Left | Audio In | Input signal |
+| Audio_Output | Audio Out | Level-controlled output |
+
+This block uses cascaded SOF instructions to amplify the signal before
+computing the expansion envelope, providing sensitivity to low-level
+signals. The combination of LOG/EXP for limiting and a second LOG/EXP
+stage for expansion creates a two-slope transfer characteristic.
+
+![RMS Limiter/Expander transfer curve](images/dynamics-rms_lim_exp.png)
+
+Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps. Note
+how the output range is compressed compared to the input: loud signals
+are reduced and quiet signals are boosted relative to unity gain.
 
 ---
 

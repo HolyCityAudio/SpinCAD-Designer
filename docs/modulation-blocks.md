@@ -10,41 +10,12 @@ LFO or custom oscillator to modulate delay taps or signal phase.
 > moments of full phase alignment. Reduce input gain (e.g., to 0.5) or
 > apply post-attenuation to avoid clipping.
 
----
+### Block Index
 
-## Chorus
-
-A single-voice chorus effect using an internal sine/cosine LFO to modulate
-a delay line tap. Produces a thickening, detuning effect on the input signal.
-
-The **Delay Length** parameter sets the base delay buffer size. Shorter delay
-times (under ~5 ms / ~160 samples) produce flanging-like effects; longer
-times (10–30+ ms / 320–1000 samples) produce classic chorus sounds. The
-LFO modulates the read position within this delay buffer, creating a
-continuously varying pitch shift.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Audio signal |
-| Output | Audio Out | Chorused output |
-| LFO_Rate | Control In | LFO speed (scales panel setting) |
-| LFO_Width | Control In | LFO depth (scales panel setting) |
-
-**Control panel parameters:**
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Delay Length | 128–2048 samples | 512 (~15.6 ms) | Base delay buffer size |
-| Rate | 0–511 (0–20.3 Hz) | 20 (~0.80 Hz) | LFO rate |
-| Width | 5–100 % | 30 | LFO modulation depth |
-| LFO Select | 0/1 | 0 | Selects SIN0 or SIN1 LFO |
-
-The LFO rate in Hz follows the formula from Spin AN-0001:
-**f = Fs × coeff / (2π × 2¹⁷)**, where Fs = 32768 Hz. At the default
-coefficient of 20, the LFO runs at approximately 0.80 Hz. The maximum
-rate (coefficient 511) is approximately 20.3 Hz.
-
-![Chorus input/output waveform](images/modulation-chorus.png)
+| | | |
+|-|-|-|
+| [4-Voice Chorus](#4-voice-chorus) | [Chorus](#chorus) | [Flanger](#flanger) |
+| [Phaser](#phaser) | [Ring Modulator](#ring-modulator) | [Servo Flanger](#servo-flanger) |
 
 ---
 
@@ -89,6 +60,42 @@ instantaneous pitch shift — the delay time is changing direction.
 | LFO Select | 0/1 | 0 | Selects SIN0 or SIN1 LFO |
 
 ![4-Voice Chorus output waveform](images/modulation-chorusquad.png)
+
+---
+
+## Chorus
+
+A single-voice chorus effect using an internal sine/cosine LFO to modulate
+a delay line tap. Produces a thickening, detuning effect on the input signal.
+
+The **Delay Length** parameter sets the base delay buffer size. Shorter delay
+times (under ~5 ms / ~160 samples) produce flanging-like effects; longer
+times (10–30+ ms / 320–1000 samples) produce classic chorus sounds. The
+LFO modulates the read position within this delay buffer, creating a
+continuously varying pitch shift.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Audio signal |
+| Output | Audio Out | Chorused output |
+| LFO_Rate | Control In | LFO speed (scales panel setting) |
+| LFO_Width | Control In | LFO depth (scales panel setting) |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Delay Length | 128–2048 samples | 512 (~15.6 ms) | Base delay buffer size |
+| Rate | 0–511 (0–20.3 Hz) | 20 (~0.80 Hz) | LFO rate |
+| Width | 5–100 % | 30 | LFO modulation depth |
+| LFO Select | 0/1 | 0 | Selects SIN0 or SIN1 LFO |
+
+The LFO rate in Hz follows the formula from Spin AN-0001:
+**f = Fs × coeff / (2π × 2¹⁷)**, where Fs = 32768 Hz. At the default
+coefficient of 20, the LFO runs at approximately 0.80 Hz. The maximum
+rate (coefficient 511) is approximately 20.3 Hz.
+
+![Chorus input/output waveform](images/modulation-chorus.png)
 
 ---
 

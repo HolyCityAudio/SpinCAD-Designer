@@ -3,126 +3,111 @@
 These blocks handle audio input/output and signal routing: level control,
 mixing, crossfading, and panning.
 
----
+### Block Index
 
-## Input
-
-The Input block provides access to the FV-1's stereo ADC (analog-to-digital
-converter). It has no control panel and no adjustable parameters.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Output 1 | Audio Out | Left ADC input (ADCL) |
-| Output 2 | Audio Out | Right ADC input (ADCR) |
-
-Not all patches require an Input block, but it is the only way to get
-audio into the patch from the ADC. A patch with internal oscillators
-feeding the Output block directly is still valid. The Input block is
-placed automatically when you create a new patch with Ctrl-N.
+| | | |
+|-|-|-|
+| [2:1 Mixer](#21-mixer) | [2:1 (x2) Mixer](#21-x2-mixer) | [3:1 Mixer](#31-mixer) |
+| [4:1 Mixer](#41-mixer) | [Crossfade](#crossfade) | [Crossfade 2](#crossfade-2) |
+| [Crossfade 3](#crossfade-3) | [Crossfade Adj](#crossfade-adj) | [Gain Boost](#gain-boost) |
+| [Input](#input) | [Output](#output) | [Panner](#panner) |
+| [Phase Invert](#phase-invert) | [Volume](#volume) | |
 
 ---
 
-## Output
+## 2:1 Mixer
 
-The Output block routes audio to the FV-1's stereo DAC (digital-to-analog
-converter).
+Sums two audio inputs into a single output with independent gain controls.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Input 1 | Audio In | Left DAC output (DACL) |
-| Input 2 | Audio In | Right DAC output (DACR) |
+| Input 1 | Audio In | First audio source |
+| Input 2 | Audio In | Second audio source |
+| Level 1 | Control In | Input 1 level |
+| Level 2 | Control In | Input 2 level |
+| Output | Audio Out | Mixed output |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain 1 | dB | 0 dB | Left channel output gain |
-| Gain 2 | dB | 0 dB | Right channel output gain |
-| Mono | on/off | off | Routes both inputs to DACL only |
-| DC Offset | on/off | off | Adds 0.02 DC offset (compensates for very early FV-1 revisions; probably not needed) |
+| Gain 1 | dB | 0 dB | Input 1 gain |
+| Gain 2 | dB | 0 dB | Input 2 gain |
 
-Every patch needs exactly one Output block.
+When a Level control pin is connected, it multiplies the corresponding
+input in addition to the panel gain setting.
 
 ---
 
-## Volume
+## 2:1 (x2) Mixer
 
-Multiplies an audio signal by a gain value. When the Volume control input
-is connected, the signal is also multiplied by the control value, making
-this block useful for VCA-style amplitude modulation.
+Two independent 2:1 mixers in one block, producing stereo output. Inputs
+1a+1b mix to Output 1; inputs 2a+2b mix to Output 2.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Input | Audio In | Audio signal |
-| Volume | Control In | 0-1 volume multiplier |
-| Output | Audio Out | Scaled audio signal |
+| Input 1a | Audio In | First input, channel 1 |
+| Input 1b | Audio In | Second input, channel 1 |
+| Input 2a | Audio In | First input, channel 2 |
+| Input 2b | Audio In | Second input, channel 2 |
+| Level 1a | Control In | Input 1a level |
+| Level 1b | Control In | Input 1b level |
+| Level 2a | Control In | Input 2a level |
+| Level 2b | Control In | Input 2b level |
+| Output1 | Audio Out | Channel 1 mix |
+| Output2 | Audio Out | Channel 2 mix |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain | dB | 0 dB | Fixed gain applied to input |
-
-When the Volume control pin is connected, the output is:
-`output = input * gain * control_value`. When disconnected:
-`output = input * gain`.
+| Gain 1-4 | dB | 0 dB | Individual input gains |
 
 ---
 
-## Gain Boost
+## 3:1 Mixer
 
-Applies a fixed digital gain in 1 dB increments. Internally optimized to use
-cascaded `SOF -2.0, 0` instructions for each full 6 dB, with a single SOF
-for the remainder. Useful for boosting quiet signals before further processing.
+Sums three audio inputs into a single output with independent gain controls.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Audio Input | Audio In | Signal to boost |
-| Audio Output | Audio Out | Boosted signal |
+| Input 1 | Audio In | First audio source |
+| Input 2 | Audio In | Second audio source |
+| Input 3 | Audio In | Third audio source |
+| Level 1 | Control In | Input 1 level |
+| Level 2 | Control In | Input 2 level |
+| Level 3 | Control In | Input 3 level |
+| Output | Audio Out | Mixed output |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain | 1-48 dB | 6 dB | Gain boost in 1 dB steps |
-
-Be careful with high gain values as clipping will occur if the signal
-exceeds the FV-1's -1.0 to +0.999 range.
+| Gain 1-3 | dB | 0 dB | Individual input gains |
 
 ---
 
-## Phase Invert
+## 4:1 Mixer
 
-Inverts the polarity of an audio signal by multiplying by -1.0. There is
-no control panel. Useful for correcting phase issues or creating
-difference signals.
+Sums four audio inputs into a single output with independent gain controls.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Input | Audio In | Audio signal |
-| Output | Audio Out | Phase-inverted signal |
-
-Implements: `output = input * -1.0`
-
----
-
-## Panner
-
-Distributes a mono audio input across two stereo outputs based on a control
-signal. At control value 0 the signal is fully left; at 1 it is fully right.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Mono audio signal |
-| Pan | Control In | Pan position (0 = left, 1 = right) |
-| Output 1 | Audio Out | Left output |
-| Output 2 | Audio Out | Right output |
+| Input 1 | Audio In | First audio source |
+| Input 2 | Audio In | Second audio source |
+| Input 3 | Audio In | Third audio source |
+| Input 4 | Audio In | Fourth audio source |
+| Level 1 | Control In | Input 1 level |
+| Level 2 | Control In | Input 2 level |
+| Level 3 | Control In | Input 3 level |
+| Level 4 | Control In | Input 4 level |
+| Output | Audio Out | Mixed output |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain | dB | -6 dB | Overall output gain |
+| Gain 1-4 | dB | 0 dB | Individual input gains |
 
 ---
 
@@ -244,96 +229,121 @@ but a potential +6 dB boost at the crossover point with correlated signals.
 
 ---
 
-## 2:1 Mixer
+## Gain Boost
 
-Sums two audio inputs into a single output with independent gain controls.
+Applies a fixed digital gain in 1 dB increments. Internally optimized to use
+cascaded `SOF -2.0, 0` instructions for each full 6 dB, with a single SOF
+for the remainder. Useful for boosting quiet signals before further processing.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Input 1 | Audio In | First audio source |
-| Input 2 | Audio In | Second audio source |
-| Level 1 | Control In | Input 1 level |
-| Level 2 | Control In | Input 2 level |
-| Output | Audio Out | Mixed output |
+| Audio Input | Audio In | Signal to boost |
+| Audio Output | Audio Out | Boosted signal |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain 1 | dB | 0 dB | Input 1 gain |
-| Gain 2 | dB | 0 dB | Input 2 gain |
+| Gain | 1-48 dB | 6 dB | Gain boost in 1 dB steps |
 
-When a Level control pin is connected, it multiplies the corresponding
-input in addition to the panel gain setting.
+Be careful with high gain values as clipping will occur if the signal
+exceeds the FV-1's -1.0 to +0.999 range.
 
 ---
 
-## 2:1 (x2) Mixer
+## Input
 
-Two independent 2:1 mixers in one block, producing stereo output. Inputs
-1a+1b mix to Output 1; inputs 2a+2b mix to Output 2.
+The Input block provides access to the FV-1's stereo ADC (analog-to-digital
+converter). It has no control panel and no adjustable parameters.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Input 1a | Audio In | First input, channel 1 |
-| Input 1b | Audio In | Second input, channel 1 |
-| Input 2a | Audio In | First input, channel 2 |
-| Input 2b | Audio In | Second input, channel 2 |
-| Level 1a | Control In | Input 1a level |
-| Level 1b | Control In | Input 1b level |
-| Level 2a | Control In | Input 2a level |
-| Level 2b | Control In | Input 2b level |
-| Output1 | Audio Out | Channel 1 mix |
-| Output2 | Audio Out | Channel 2 mix |
+| Output 1 | Audio Out | Left ADC input (ADCL) |
+| Output 2 | Audio Out | Right ADC input (ADCR) |
 
-**Control panel parameters:**
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Gain 1-4 | dB | 0 dB | Individual input gains |
+Not all patches require an Input block, but it is the only way to get
+audio into the patch from the ADC. A patch with internal oscillators
+feeding the Output block directly is still valid. The Input block is
+placed automatically when you create a new patch with Ctrl-N.
 
 ---
 
-## 3:1 Mixer
+## Output
 
-Sums three audio inputs into a single output with independent gain controls.
+The Output block routes audio to the FV-1's stereo DAC (digital-to-analog
+converter).
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Input 1 | Audio In | First audio source |
-| Input 2 | Audio In | Second audio source |
-| Input 3 | Audio In | Third audio source |
-| Level 1 | Control In | Input 1 level |
-| Level 2 | Control In | Input 2 level |
-| Level 3 | Control In | Input 3 level |
-| Output | Audio Out | Mixed output |
+| Input 1 | Audio In | Left DAC output (DACL) |
+| Input 2 | Audio In | Right DAC output (DACR) |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain 1-3 | dB | 0 dB | Individual input gains |
+| Gain 1 | dB | 0 dB | Left channel output gain |
+| Gain 2 | dB | 0 dB | Right channel output gain |
+| Mono | on/off | off | Routes both inputs to DACL only |
+| DC Offset | on/off | off | Adds 0.02 DC offset (compensates for very early FV-1 revisions; probably not needed) |
+
+Every patch needs exactly one Output block.
 
 ---
 
-## 4:1 Mixer
+## Panner
 
-Sums four audio inputs into a single output with independent gain controls.
+Distributes a mono audio input across two stereo outputs based on a control
+signal. At control value 0 the signal is fully left; at 1 it is fully right.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Input 1 | Audio In | First audio source |
-| Input 2 | Audio In | Second audio source |
-| Input 3 | Audio In | Third audio source |
-| Input 4 | Audio In | Fourth audio source |
-| Level 1 | Control In | Input 1 level |
-| Level 2 | Control In | Input 2 level |
-| Level 3 | Control In | Input 3 level |
-| Level 4 | Control In | Input 4 level |
-| Output | Audio Out | Mixed output |
+| Input | Audio In | Mono audio signal |
+| Pan | Control In | Pan position (0 = left, 1 = right) |
+| Output 1 | Audio Out | Left output |
+| Output 2 | Audio Out | Right output |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Gain 1-4 | dB | 0 dB | Individual input gains |
+| Gain | dB | -6 dB | Overall output gain |
+
+---
+
+## Phase Invert
+
+Inverts the polarity of an audio signal by multiplying by -1.0. There is
+no control panel. Useful for correcting phase issues or creating
+difference signals.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Audio signal |
+| Output | Audio Out | Phase-inverted signal |
+
+Implements: `output = input * -1.0`
+
+---
+
+## Volume
+
+Multiplies an audio signal by a gain value. When the Volume control input
+is connected, the signal is also multiplied by the control value, making
+this block useful for VCA-style amplitude modulation.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Audio signal |
+| Volume | Control In | 0-1 volume multiplier |
+| Output | Audio Out | Scaled audio signal |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Gain | dB | 0 dB | Fixed gain applied to input |
+
+When the Volume control pin is connected, the output is:
+`output = input * gain * control_value`. When disconnected:
+`output = input * gain`.

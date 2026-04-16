@@ -3,6 +3,13 @@
 These blocks perform mathematical operations on control signals using
 FV-1 DSP instructions. They are found in the Instructions menu.
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [Absolute Value](#absolute-value) | [Exp](#exp) | [Half Wave](#half-wave) |
+| [Log](#log) | [Maximum](#maximum) | [Scale/Offset](#scale-offset) |
+
 ---
 
 ## Absolute Value
@@ -21,26 +28,6 @@ The plot shows a sine wave input and the resulting full-wave rectified
 output, with negative half-cycles folded to positive.
 
 ![Absolute Value](images/instructions-absa.png)
-
----
-
-## Half Wave
-
-Half-wave rectifier that passes positive values through and clamps
-negative values to zero. Uses a conditional skip (SKP GEZ) to clear
-the accumulator when the input is negative. There is no control panel.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Control In | Input signal |
-| Output | Control Out | Rectified output (negative values become 0) |
-
-Implements: `output = max(input, 0)`
-
-The plot shows a sine wave input and the half-wave rectified output,
-where negative half-cycles are clamped to zero.
-
-![Half Wave](images/instructions-halfwave.png)
 
 ---
 
@@ -72,6 +59,26 @@ exponential mapping. Without offset (D=0), C=1.0 already outputs 1.0
 at x=0 and clips immediately.
 
 ![Exp](images/instructions-exp.png)
+
+---
+
+## Half Wave
+
+Half-wave rectifier that passes positive values through and clamps
+negative values to zero. Uses a conditional skip (SKP GEZ) to clear
+the accumulator when the input is negative. There is no control panel.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Control In | Input signal |
+| Output | Control Out | Rectified output (negative values become 0) |
+
+Implements: `output = max(input, 0)`
+
+The plot shows a sine wave input and the half-wave rectified output,
+where negative half-cycles are clamped to zero.
+
+![Half Wave](images/instructions-halfwave.png)
 
 ---
 

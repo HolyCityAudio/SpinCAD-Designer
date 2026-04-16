@@ -5,6 +5,16 @@ simple allpass chains to full plate and hall reverbs. Each plot shows the
 impulse response envelope at three reverb-time settings (short, medium, long)
 with control pins disconnected.
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [Adjustable Reverb](#adjustable-reverb) | [Allpass](#allpass) | [Ambience](#ambience) |
+| [Chirp](#chirp) | [Dattorro Plate Reverb](#dattorro-plate-reverb) | [Freeverb](#freeverb) |
+| [Hall Reverb](#hall-reverb) | [Min Reverb](#min-reverb) | [Reverb Designer](#reverb-designer) |
+| [ROM Reverb 1](#rom-reverb-1) | [ROM Reverb 2](#rom-reverb-2) | [Room Reverb](#room-reverb) |
+| [Small Reverb (Stereo)](#small-reverb-stereo) | [Spring Reverb](#spring-reverb) | |
+
 ---
 
 ## Adjustable Reverb
@@ -226,6 +236,37 @@ chirp-like smearing of the sharp edges.
 
 ---
 
+## Dattorro Plate Reverb
+
+An implementation of the Jon Dattorro plate reverb from "Effect Design"
+(JAES, 1997). Features four input diffusers feeding a cross-coupled
+modulated tank with multi-tap stereo output. Produces a dense, smooth
+plate-style reverb.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Audio Input L | Audio In | Left audio input |
+| Audio Input R | Audio In | Right audio input |
+| Audio Output L | Audio Out | Left reverb output |
+| Audio Output R | Audio Out | Right reverb output |
+| Reverb Time | Control In | Decay time |
+| HF Loss | Control In | High-frequency damping |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Gain | -24 to 0 dB | -6 dB | Input gain |
+| Decay | 0.1-0.95 | 0.5 | Tank decay coefficient |
+| Damping | 0-0.95 | 0.5 | HF damping in tank |
+| Bandwidth | 0.1-0.7 | 0.32 | Input bandwidth filter |
+
+![Dattorro Plate Reverb (Short)](images/reverb-dattorro-short.png)
+![Dattorro Plate Reverb (Medium)](images/reverb-dattorro-medium.png)
+![Dattorro Plate Reverb (Long)](images/reverb-dattorro-long.png)
+
+---
+
 ## Freeverb
 
 An FV-1 implementation of the Freeverb algorithm (Jezar). Uses eight
@@ -285,34 +326,23 @@ the direct sound from the reverb onset, simulating a large acoustic space.
 
 ---
 
-## Dattorro Plate Reverb
+## Min Reverb
 
-An implementation of the Jon Dattorro plate reverb from "Effect Design"
-(JAES, 1997). Features four input diffusers feeding a cross-coupled
-modulated tank with multi-tap stereo output. Produces a dense, smooth
-plate-style reverb.
+A minimal reverb based on the Spin Semiconductor "minimum reverb"
+example. Uses four input allpass diffusers feeding two cross-coupled
+delay loops. Small code footprint but limited control -- reverb time
+is set via the control input pin only.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Audio Input L | Audio In | Left audio input |
-| Audio Input R | Audio In | Right audio input |
-| Audio Output L | Audio Out | Left reverb output |
-| Audio Output R | Audio Out | Right reverb output |
-| Reverb Time | Control In | Decay time |
-| HF Loss | Control In | High-frequency damping |
+| Audio Input 1 | Audio In | Audio input (auto-named) |
+| Audio Output 1 | Audio Out | Audio output (auto-named) |
+| Reverb Time | Control In | Reverb decay time |
 
-**Control panel parameters:**
+No control panel parameters (reverb time is controlled exclusively by
+the control input pin).
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Gain | -24 to 0 dB | -6 dB | Input gain |
-| Decay | 0.1-0.95 | 0.5 | Tank decay coefficient |
-| Damping | 0-0.95 | 0.5 | HF damping in tank |
-| Bandwidth | 0.1-0.7 | 0.32 | Input bandwidth filter |
-
-![Dattorro Plate Reverb (Short)](images/reverb-dattorro-short.png)
-![Dattorro Plate Reverb (Medium)](images/reverb-dattorro-medium.png)
-![Dattorro Plate Reverb (Long)](images/reverb-dattorro-long.png)
+![Min Reverb impulse response](images/reverb-minreverb.png)
 
 ---
 
@@ -443,26 +473,6 @@ simulate a smaller acoustic space.
 **Pre-delay effect:**
 
 ![Room Reverb pre-delay comparison](images/reverb-room-predelay.png)
-
----
-
-## Min Reverb
-
-A minimal reverb based on the Spin Semiconductor "minimum reverb"
-example. Uses four input allpass diffusers feeding two cross-coupled
-delay loops. Small code footprint but limited control -- reverb time
-is set via the control input pin only.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Audio Input 1 | Audio In | Audio input (auto-named) |
-| Audio Output 1 | Audio Out | Audio output (auto-named) |
-| Reverb Time | Control In | Reverb decay time |
-
-No control panel parameters (reverb time is controlled exclusively by
-the control input pin).
-
-![Min Reverb impulse response](images/reverb-minreverb.png)
 
 ---
 

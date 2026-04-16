@@ -9,6 +9,16 @@ bandpass, notch, shelving EQ, parametric EQ, comb filters, and resonators.
 > a 1000 Hz cutoff corresponds to approximately 1346 Hz at 44.1 kHz
 > (x 1.346) and 1465 Hz at 48 kHz (x 1.465).
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [1-Band EQ](#1-band-eq) | [6-Band EQ](#6-band-eq) | [Bassman '59 EQ](#bassman-59-eq) |
+| [Comb Filter](#comb-filter) | [HPF 1-Pole (RDFX)](#hpf-1-pole-rdfx) | [HPF 2/4-Pole](#hpf-24-pole) |
+| [LPF 1-Pole (RDFX)](#lpf-1-pole-rdfx) | [LPF 2/4-Pole](#lpf-24-pole) | [Notch (Band-Reject)](#notch-band-reject) |
+| [Resonator](#resonator) | [Shelving Highpass](#shelving-highpass) | [Shelving Lowpass](#shelving-lowpass) |
+| [SVF 2-Pole](#svf-2-pole) | [SVF 2-Pole Adjustable](#svf-2-pole-adjustable) | |
+
 ---
 
 ## 1-Band EQ

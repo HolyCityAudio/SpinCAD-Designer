@@ -4,6 +4,34 @@ These blocks apply nonlinear waveshaping to audio signals: soft clipping,
 hard clipping, fuzz, sample-rate reduction, and bit crushing. Each plot
 shows a 440 Hz sine wave at three input levels (0 dB, -6 dB, -18 dB).
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [Aliaser](#aliaser) | [Cube](#cube) | [Distortion](#distortion) |
+| [Octave Fuzz](#octave-fuzz) | [Overdrive](#overdrive) | [Quantizer](#quantizer) |
+| [T/X](#tx) | | |
+
+---
+
+## Aliaser
+
+Reduces the effective sample rate of the audio signal by sample-and-hold
+decimation, producing aliasing artifacts that add metallic, lo-fi character.
+Two outputs are provided: a smoothed version and the raw decimated signal.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Audio signal |
+| Rip | Control In | Decimation amount (0 = subtle, 1 = extreme) |
+| Smooth | Audio Out | Filtered decimated output |
+| Raw | Audio Out | Raw decimated output |
+
+There is no control panel; the Rip control input sets the effect depth.
+
+![Aliaser Smooth (input/output)](images/waveshaper-aliaser-smooth.png)
+![Aliaser Raw (input/output)](images/waveshaper-aliaser-raw.png)
+
 ---
 
 ## Cube
@@ -42,6 +70,23 @@ in odd harmonics. There is no control panel.
 
 ---
 
+## Octave Fuzz
+
+Full-wave rectifies the input signal to produce an octave-up effect
+combined with fuzz distortion. The rectification doubles the fundamental
+frequency, creating an aggressive octave-up tone.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Audio signal |
+| Audio_Output | Audio Out | Fuzzed octave-up output |
+
+There is no control panel.
+
+![Octave Fuzz](images/waveshaper-octavefuzz.png)
+
+---
+
 ## Overdrive
 
 A multi-stage overdrive with adjustable gain and drive depth. Uses
@@ -69,61 +114,6 @@ the control value instead of the fixed gain setting.
 
 ---
 
-## Octave Fuzz
-
-Full-wave rectifies the input signal to produce an octave-up effect
-combined with fuzz distortion. The rectification doubles the fundamental
-frequency, creating an aggressive octave-up tone.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Audio signal |
-| Audio_Output | Audio Out | Fuzzed octave-up output |
-
-There is no control panel.
-
-![Octave Fuzz](images/waveshaper-octavefuzz.png)
-
----
-
-## T/X
-
-Divides a fixed value by the input signal magnitude, producing an
-inverse/reciprocal waveshaper. At low input levels the output is large
-(clipped), and at high input levels the output approaches zero. This
-creates an unusual compression/expansion characteristic.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Audio signal |
-| Audio_Output | Audio Out | T/X shaped output |
-
-There is no control panel.
-
-![T/X](images/waveshaper-toverx.png)
-
----
-
-## Aliaser
-
-Reduces the effective sample rate of the audio signal by sample-and-hold
-decimation, producing aliasing artifacts that add metallic, lo-fi character.
-Two outputs are provided: a smoothed version and the raw decimated signal.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Audio signal |
-| Rip | Control In | Decimation amount (0 = subtle, 1 = extreme) |
-| Smooth | Audio Out | Filtered decimated output |
-| Raw | Audio Out | Raw decimated output |
-
-There is no control panel; the Rip control input sets the effect depth.
-
-![Aliaser Smooth (input/output)](images/waveshaper-aliaser-smooth.png)
-![Aliaser Raw (input/output)](images/waveshaper-aliaser-raw.png)
-
----
-
 ## Quantizer
 
 Reduces the bit depth of the audio signal, producing stepped quantization
@@ -147,3 +137,21 @@ input is connected, the number of quantization levels varies between
 the panel setting and a coarser resolution based on the control value.
 
 ![Quantizer](images/waveshaper-quantizer.png)
+
+---
+
+## T/X
+
+Divides a fixed value by the input signal magnitude, producing an
+inverse/reciprocal waveshaper. At low input levels the output is large
+(clipped), and at high input levels the output approaches zero. This
+creates an unusual compression/expansion characteristic.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Audio signal |
+| Audio_Output | Audio Out | T/X shaped output |
+
+There is no control panel.
+
+![T/X](images/waveshaper-toverx.png)

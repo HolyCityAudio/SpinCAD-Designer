@@ -17,6 +17,97 @@ SIN/COS LFO which naturally puts out a signal from -1.0 to 1.0.
 The blocks in this section shape, scale, and transform control signals.
 They are found in the **Controls** menu of SpinCAD Designer.
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [Clip](#clip) | [Half Wave](#half-wave) | [Invert](#invert) |
+| [Power](#power) | [Ratio](#ratio) | [Root](#root) |
+| [Slicer](#slicer) | [Tap Tempo](#tap-tempo) | [Tremolizer](#tremolizer) |
+| [Two Stage](#two-stage) | [Vee](#vee) | |
+
+---
+
+## Clip
+
+**Menu:** Controls > Clip
+
+The Clip block adds an adjustable amount of gain to a control signal with hard
+clipping at the 0-1 boundaries. The way to think about this block is: "I want
+the incoming control signal to be 0 (or 1) up to a specific point of the pot's
+rotation, after which it ramps linearly to 1 (or 0)."
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Control Input 1 | Control In | 0-1 control signal |
+| Control Output 1 | Control Out | Amplified and clipped signal |
+
+**Parameters:**
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Gain | 1-10 | 3 | Amplification factor before clipping |
+| Flip | on/off | off | Reverse input direction before clipping |
+| Invert | on/off | off | Invert output after clipping |
+
+![Clip transfer curves at different gains](images/control-clip.png)
+
+The four combinations of Flip and Invert (shown here at gain=10):
+
+| Flip | Invert | Equation | Description |
+|------|--------|----------|-------------|
+| off | off | 0 <= x <= 0.1: y = 10x; x > 0.1: y = 1.0 | Ramps up fast then clips high |
+| on | off | x <= 0.9: y = 1.0; x > 0.9: y = 10(1-x) | Stays high, drops at the end |
+| off | on | x <= 0.1: y = 1 - 10x; x > 0.1: y = 0 | Drops fast from 1, then stays at 0 |
+| on | on | x <= 0.9: y = 0; x > 0.9: y = 10(x - 0.9) | Stays low, ramps up at the end |
+
+![Clip: normal (no flip, no invert)](images/control-clip-0.png)
+![Clip: flip only](images/control-clip-1.png)
+![Clip: invert only](images/control-clip-2.png)
+![Clip: flip + invert](images/control-clip-3.png)
+
+**Typical use:** Smoothly "switch" between settings at either extreme end of
+the pot travel. For example, in a delay with infinite feedback hold: over most
+of the pot travel (0 to 0.9), the delay input volume is 1.0 and feedback is 0.
+At the top of the pot (0.9 to 1.0), the input fades to 0 and feedback goes to
+1.0, creating an infinite loop. Using Clip with high gain and Flip, the
+transition happens over just the last 10% of pot travel. The delay's
+Feedback gain setting (0 dB, i.e. 1.0) and the FB In Gain (1.0) together
+give unity loop gain, so the signal in the delay line loops indefinitely.
+
+[Download the example patch: Delay-infinite-fb-demo.spcd](https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/patches/Delay-infinite-fb-demo.spcd)
+
+---
+
+## Half Wave
+
+**Menu:** Controls > Half Wave
+
+Half-wave rectifier: passes positive values unchanged, clamps negative values
+to zero. Implemented using the FV-1's `SKP GEZ` (skip if greater than or equal
+to zero) instruction followed by `CLR` (clear accumulator).
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Control In | Control signal (may include negative values) |
+| Output | Control Out | max(0, input) |
+
+![Half Wave DC transfer](images/control-halfwave.png)
+
+**Transfer function:** output = max(0, input)
+
+Since control signals from pots are typically 0-1, this block acts as a
+pass-through for normal pot signals. Its primary use is in signal chains where
+a control signal might go negative, for example after subtraction, mixing with
+a bipolar LFO, or modulation.
+
+Applied to a full-range sine wave (-1 to +1), the output retains only the
+positive half-cycles:
+
+![Half Wave on sine wave](images/control-halfwave-sine.png)
+
+**Typical use:** Clamp the output of a mixer or difference block to prevent
+negative control values from causing unexpected behavior in downstream blocks.
+
 ---
 
 ## Invert
@@ -108,6 +199,66 @@ you want fine resolution at the bottom.
 
 ---
 
+## Ratio
+
+**Menu:** Controls > Ratio
+
+Sometimes you want a single pot to control two things where one goes up while
+the other goes down, and you'd like the values to remain balanced over the
+full sweep of the pot.
+
+A classic example is a chorus with independent controls for LFO speed and
+width. If you control both directly, the amount of detuning increases with
+both LFO frequency *and* width. The Ratio block lets you make them track
+together properly so that the amount of detuning remains fixed regardless
+of speed.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Control In | 0-1 control signal |
+| FullRange | Control Out | Linear scaled output |
+| Ratio | Control Out | Inverse proportional output |
+
+**Parameters:**
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Ratio | 2-100 | 5 | Compression ratio |
+
+**Transfer function:**
+
+The **FullRange** output is a linear ramp:
+
+    y = (1 + (ratio-1) * x) / ratio
+
+This starts at 1/ratio when x=0 and ramps linearly to 1 when x=1.
+
+![Ratio FullRange output](images/control-ratio-fullrange.png)
+
+The **Ratio** output is an inverse curve:
+
+    y = 1 / (1 + (ratio-1) * x)
+
+This starts at 1 when x=0 and decreases to 1/ratio when x=1.
+
+![Ratio output](images/control-ratio-ratio.png)
+
+**Key property:** Multiply these together, and the product is the constant
+value 1/ratio across the entire input range. For each ratio setting, the
+FullRange curve intersects the y-axis (x=0) at the same value as the Ratio
+curve intersects the x=1 line.
+
+![Ratio FullRange x Ratio product](images/control-ratio-product.png)
+
+This is implemented on the FV-1 using the LOG and EXP instructions, which
+compute the inverse function in the logarithmic domain.
+
+**Typical use:** Control a chorus LFO speed (FullRange) and width (Ratio)
+from a single pot. As the speed increases, the width automatically decreases
+to maintain consistent perceived detuning. Add a Multiply block with a second
+pot to allow independent depth control that still tracks proportionally.
+
+---
+
 ## Root
 
 **Menu:** Controls > Root
@@ -152,6 +303,200 @@ amounts, shallow modulation depths, the start of a reverb time sweep).
 **Companion:** The [Power](#power) block is the natural companion to Root --
 where Root expands the response away from zero, Power compresses the
 response toward zero.
+
+---
+
+## Slicer
+
+**Menu:** Controls > Slicer
+
+The Slicer is a binary comparator that converts continuous control signals into
+hard on/off switches. The most straightforward application is to get a square
+wave from a sine wave.
+
+Set the **Slice Level** at 50%, and the **Slicer Out** goes high when the
+**Control In** is below this amount, and low when above. (This may seem
+backwards, but that's how it works: output is high when input is *below*
+the threshold.)
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Control In | Control In | 0-1 control signal to compare |
+| Slice Level | Control In | Optional: modulate threshold from another control |
+| Slicer Out | Control Out | Binary output |
+
+**Parameters:**
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Slice Level | 0.0-0.95 | 0.5 | Comparator threshold |
+| Control Range | 0->+1 / -1->+1 | 0->+1 | Output range selection |
+
+**Output modes:**
+- **0 -> +1**: output is 0 (low) or ~1.0 (high)
+- **-1 -> +1**: output is -1.0 (low) or +1.0 (high)
+
+![Slicer DC transfer at different thresholds](images/control-slicer.png)
+
+**Pulse Width Modulation:** When a sine wave LFO feeds the Control In, the
+Slicer produces a square wave. Varying the Slice Level changes the duty cycle,
+creating classic PWM:
+
+![Slicer PWM: slice level 25%](images/control-slicer-sine-0.png)
+![Slicer PWM: slice level 50%](images/control-slicer-sine-1.png)
+![Slicer PWM: slice level 75%](images/control-slicer-sine-2.png)
+
+When a Pot is connected to the Slice Level input, varying the pot modulates
+the pulse width over its full range. At pot=0, pulses stop entirely (slice
+level is zero). To set a minimum pulse width, use a Scale/Offset block between
+the pot and the Slice Level input.
+
+**Typical use:** Feed an 8 Hz sine wave into the Slicer to generate a square
+wave for tremolo effects. Follow with a **Smoother** block to add exponential
+rise/fall times to the transitions, creating a variable-shape tremolo. Combine
+with the **Tremolizer** block to control tremolo depth.
+
+Another application: use the Slicer to drive a **Crossfade** block, creating an
+instant switch between two effects (e.g., phaser and flanger) at the 50% point
+of a pot. Combined with a **Vee** block on the same pot, you can independently
+boost feedback for each effect on opposite sides of the crossover point.
+
+---
+
+## Tap Tempo
+
+**Menu:** Controls > Tap Tempo
+
+At the very bottom of the Controls menu. There's one input that reads a
+tap signal, and three outputs: Ramp, Latch, and Tap Tempo. The first two
+are internal signals brought out for testing; the magic all happens on
+the last one.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Control Input | Control In | Tap signal (high/low transitions) |
+| Latch | Control Out | Internal latch signal (testing) |
+| Ramp | Control Out | Internal ramp signal (testing) |
+| Tap Tempo | Control Out | 0-1 value representing the tapped interval |
+
+![Tap-Tempo block](images/control-tap-tempo.png)
+
+### Origin
+
+This block was submitted by **diystompboxes** forum member "Slacker" who
+describes it somewhere in the middle of
+[this gigantic thread](https://www.diystompboxes.com/smfforum/index.php?topic=104291.0).
+Slacker got to the FV-1 party before I did and came up with some innovative
+patches in a pedal he called "Babelfish". One of them includes a tap tempo
+delay which is tied to a specific hardware implementation whereby a couple
+of resistors are added in series between the wiper of a pot and where it
+would normally connect to the FV-1's POT input pin.
+
+![Tap tempo hardware wiring](images/control-tap-tempo-hardware.png)
+
+See [this schematic](https://github.com/slackDSP/Babelfish/blob/master/babelfishschem.jpg).
+
+Here is Slacker's original [tap tempo patch](https://github.com/slackDSP/Babelfish/blob/master/bf_taptempodelay.spn)
+and the [entire Babelfish project](https://github.com/slackDSP/Babelfish).
+
+### How It Works
+
+The general idea is that you count sample periods between debounced button
+pushes, represent this as a fractional number from 0 to 1, and then use
+that with the RMPA instruction — having allocated the entire RAM to a
+delay — to give you a delay time equal to the tap interval. In the
+SpinCAD world, you'd set up a delay (e.g. Triple Tap) and set that to use
+all the delay RAM (Delay Time = 1000 msec at 32768 Hz sampling frequency).
+
+![Tap tempo patch example](images/control-tap-tempo-patch.png)
+
+This 0-1 value could also go to the LFO Speed input of any block and
+then it would scale that LFO's speed proportionally. Would it match the
+tap interval? To make that work you'd need to do a 1/X trick.
+
+### Limitations
+
+I never implemented Slacker's hardware idea, so I actually do not know
+if it works. A consulting job I did used the ADCR input for tap detection
+since it was a mono-in pedal, but that code didn't end up in SpinCAD.
+It's nice to see that the [FXCore chip](http://www.experimentalnoize.com/product_FXCore.php) has a dedicated tap tempo input.
+
+As shown, the delay will jump abruptly from one setting to the next when
+it changes. You could add a Smoother to the Tap 1 Delay time input to
+introduce some lag to the delay time changes. This will, of course, cause
+pitch bending. That behavior is better suited for LFO changes, like the
+inertia of a Leslie speaker.
+
+There are delay implementations (for example, in the
+[Faust](https://faustdoc.grame.fr/examples/delayEcho/#smoothdelay) libraries) that manage two delay taps internally and fade between them quickly when the control signal for delay time changes — so you can change delay time on the fly without pitch bending. That logic takes a lot of the FV-1's code, which is why it isn't a SpinCAD block yet.
+
+---
+
+## Tremolizer
+
+**Menu:** Controls > Tremolizer
+
+The Tremolizer takes an LFO signal (0 to 1) and converts it into a volume
+envelope that *reduces* gain from 1.0. Unlike simply multiplying an LFO by
+a width control (which gives you nothing out when the width is zero), the
+Tremolizer uses the control signal's value above zero to reduce gain from
+unity. So at zero depth, you get full signal; at maximum depth, the LFO
+fully chops the signal.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| LFO Input | Control In | 0-1 LFO signal |
+| LFO Width | Control In | Optional: external width modulation |
+| Control Output | Control Out | Volume envelope (1 minus scaled LFO) |
+
+**Parameters:**
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Depth | 0.5-1.0 | 0.75 | Maximum depth of volume reduction |
+
+**Transfer function:**
+
+    output = 1 - (depth * input * width)
+
+When the LFO Width pin is not connected:
+
+    output = 1 - (depth * input)
+
+At depth=1.0, the output goes from 1.0 (when LFO=0) down to 0.0 (when LFO=1),
+giving "full chop" tremolo. At lower depth values, the output doesn't go as
+low, producing a gentler volume modulation.
+
+![Tremolizer DC transfer at different depths](images/control-tremolizer.png)
+
+Applied to a 0-1 sine wave LFO, the Tremolizer produces an inverted volume
+envelope:
+
+![Tremolizer volume envelope from sine LFO](images/control-tremolizer-sine.png)
+
+**Typical use:** Build a tremolo patch by connecting a Sine LFO (scaled 0 to 1)
+to the Tremolizer's LFO Input, then connect the Tremolizer output to a Volume
+control block. Use a Pot on the LFO Width input to control tremolo depth from
+the front panel. See [Making a Tremolo Patch](patches/making-a-tremolo-patch.md)
+for a full walkthrough.
+
+For a variable-shape tremolo, feed the LFO through a **Slicer** and then a
+**Smoother** before the Tremolizer. The Smoother's corner frequency controls
+the rise/fall time of the chopped waveform, giving everything from smooth sine
+tremolo to hard square-wave chop. Notice that decreasing the Smoother frequency
+also reduces the effective chop depth, since the LFO takes longer to reach
+full excursion.
+
+### Alternatives
+
+If you use the width parameter input on the LFO block directly, it shrinks
+about its midpoint, so with the width all the way down you get a 6 dB drop
+in the output level. This is more subtle but closer to typical Fender guitar
+amp tremolo sounds.
+
+This midpoint-shrink approach arguably reflects real tremolo behavior
+better than a full-chop envelope: any tremolo necessarily reduces the
+average signal level, and many standalone tremolo pedals include a
+separate gain knob or other compensation to keep the perceived loudness
+constant when the effect is engaged.
 
 ---
 
@@ -233,282 +578,3 @@ pot 2 controls the FX blend through a Vee block: in the middle it is just dry,
 all the way left brings in chorus, all the way right brings in flanger. The LFO
 speed and width of the two modulation stages can be individually scaled with
 separate Scale/Offset blocks.
-
----
-
-## Ratio
-
-**Menu:** Controls > Ratio
-
-Sometimes you want a single pot to control two things where one goes up while
-the other goes down, and you'd like the values to remain balanced over the
-full sweep of the pot.
-
-A classic example is a chorus with independent controls for LFO speed and
-width. If you control both directly, the amount of detuning increases with
-both LFO frequency *and* width. The Ratio block lets you make them track
-together properly so that the amount of detuning remains fixed regardless
-of speed.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Control In | 0-1 control signal |
-| FullRange | Control Out | Linear scaled output |
-| Ratio | Control Out | Inverse proportional output |
-
-**Parameters:**
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Ratio | 2-100 | 5 | Compression ratio |
-
-**Transfer function:**
-
-The **FullRange** output is a linear ramp:
-
-    y = (1 + (ratio-1) * x) / ratio
-
-This starts at 1/ratio when x=0 and ramps linearly to 1 when x=1.
-
-![Ratio FullRange output](images/control-ratio-fullrange.png)
-
-The **Ratio** output is an inverse curve:
-
-    y = 1 / (1 + (ratio-1) * x)
-
-This starts at 1 when x=0 and decreases to 1/ratio when x=1.
-
-![Ratio output](images/control-ratio-ratio.png)
-
-**Key property:** Multiply these together, and the product is the constant
-value 1/ratio across the entire input range. For each ratio setting, the
-FullRange curve intersects the y-axis (x=0) at the same value as the Ratio
-curve intersects the x=1 line.
-
-![Ratio FullRange x Ratio product](images/control-ratio-product.png)
-
-This is implemented on the FV-1 using the LOG and EXP instructions, which
-compute the inverse function in the logarithmic domain.
-
-**Typical use:** Control a chorus LFO speed (FullRange) and width (Ratio)
-from a single pot. As the speed increases, the width automatically decreases
-to maintain consistent perceived detuning. Add a Multiply block with a second
-pot to allow independent depth control that still tracks proportionally.
-
----
-
-## Clip
-
-**Menu:** Controls > Clip
-
-The Clip block adds an adjustable amount of gain to a control signal with hard
-clipping at the 0-1 boundaries. The way to think about this block is: "I want
-the incoming control signal to be 0 (or 1) up to a specific point of the pot's
-rotation, after which it ramps linearly to 1 (or 0)."
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Control Input 1 | Control In | 0-1 control signal |
-| Control Output 1 | Control Out | Amplified and clipped signal |
-
-**Parameters:**
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Gain | 1-10 | 3 | Amplification factor before clipping |
-| Flip | on/off | off | Reverse input direction before clipping |
-| Invert | on/off | off | Invert output after clipping |
-
-![Clip transfer curves at different gains](images/control-clip.png)
-
-The four combinations of Flip and Invert (shown here at gain=10):
-
-| Flip | Invert | Equation | Description |
-|------|--------|----------|-------------|
-| off | off | 0 <= x <= 0.1: y = 10x; x > 0.1: y = 1.0 | Ramps up fast then clips high |
-| on | off | x <= 0.9: y = 1.0; x > 0.9: y = 10(1-x) | Stays high, drops at the end |
-| off | on | x <= 0.1: y = 1 - 10x; x > 0.1: y = 0 | Drops fast from 1, then stays at 0 |
-| on | on | x <= 0.9: y = 0; x > 0.9: y = 10(x - 0.9) | Stays low, ramps up at the end |
-
-![Clip: normal (no flip, no invert)](images/control-clip-0.png)
-![Clip: flip only](images/control-clip-1.png)
-![Clip: invert only](images/control-clip-2.png)
-![Clip: flip + invert](images/control-clip-3.png)
-
-**Typical use:** Smoothly "switch" between settings at either extreme end of
-the pot travel. For example, in a delay with infinite feedback hold: over most
-of the pot travel (0 to 0.9), the delay input volume is 1.0 and feedback is 0.
-At the top of the pot (0.9 to 1.0), the input fades to 0 and feedback goes to
-1.0, creating an infinite loop. Using Clip with high gain and Flip, the
-transition happens over just the last 10% of pot travel. The delay's
-Feedback gain setting (0 dB, i.e. 1.0) and the FB In Gain (1.0) together
-give unity loop gain, so the signal in the delay line loops indefinitely.
-
-[Download the example patch: Delay-infinite-fb-demo.spcd](https://github.com/HolyCityAudio/SpinCAD-Designer/raw/master/patches/Delay-infinite-fb-demo.spcd)
-
----
-
-## Half Wave
-
-**Menu:** Controls > Half Wave
-
-Half-wave rectifier: passes positive values unchanged, clamps negative values
-to zero. Implemented using the FV-1's `SKP GEZ` (skip if greater than or equal
-to zero) instruction followed by `CLR` (clear accumulator).
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Control In | Control signal (may include negative values) |
-| Output | Control Out | max(0, input) |
-
-![Half Wave DC transfer](images/control-halfwave.png)
-
-**Transfer function:** output = max(0, input)
-
-Since control signals from pots are typically 0-1, this block acts as a
-pass-through for normal pot signals. Its primary use is in signal chains where
-a control signal might go negative, for example after subtraction, mixing with
-a bipolar LFO, or modulation.
-
-Applied to a full-range sine wave (-1 to +1), the output retains only the
-positive half-cycles:
-
-![Half Wave on sine wave](images/control-halfwave-sine.png)
-
-**Typical use:** Clamp the output of a mixer or difference block to prevent
-negative control values from causing unexpected behavior in downstream blocks.
-
----
-
-## Slicer
-
-**Menu:** Controls > Slicer
-
-The Slicer is a binary comparator that converts continuous control signals into
-hard on/off switches. The most straightforward application is to get a square
-wave from a sine wave.
-
-Set the **Slice Level** at 50%, and the **Slicer Out** goes high when the
-**Control In** is below this amount, and low when above. (This may seem
-backwards, but that's how it works: output is high when input is *below*
-the threshold.)
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Control In | Control In | 0-1 control signal to compare |
-| Slice Level | Control In | Optional: modulate threshold from another control |
-| Slicer Out | Control Out | Binary output |
-
-**Parameters:**
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Slice Level | 0.0-0.95 | 0.5 | Comparator threshold |
-| Control Range | 0->+1 / -1->+1 | 0->+1 | Output range selection |
-
-**Output modes:**
-- **0 -> +1**: output is 0 (low) or ~1.0 (high)
-- **-1 -> +1**: output is -1.0 (low) or +1.0 (high)
-
-![Slicer DC transfer at different thresholds](images/control-slicer.png)
-
-**Pulse Width Modulation:** When a sine wave LFO feeds the Control In, the
-Slicer produces a square wave. Varying the Slice Level changes the duty cycle,
-creating classic PWM:
-
-![Slicer PWM: slice level 25%](images/control-slicer-sine-0.png)
-![Slicer PWM: slice level 50%](images/control-slicer-sine-1.png)
-![Slicer PWM: slice level 75%](images/control-slicer-sine-2.png)
-
-When a Pot is connected to the Slice Level input, varying the pot modulates
-the pulse width over its full range. At pot=0, pulses stop entirely (slice
-level is zero). To set a minimum pulse width, use a Scale/Offset block between
-the pot and the Slice Level input.
-
-**Typical use:** Feed an 8 Hz sine wave into the Slicer to generate a square
-wave for tremolo effects. Follow with a **Smoother** block to add exponential
-rise/fall times to the transitions, creating a variable-shape tremolo. Combine
-with the **Tremolizer** block to control tremolo depth.
-
-Another application: use the Slicer to drive a **Crossfade** block, creating an
-instant switch between two effects (e.g., phaser and flanger) at the 50% point
-of a pot. Combined with a **Vee** block on the same pot, you can independently
-boost feedback for each effect on opposite sides of the crossover point.
-
----
-
-## Tremolizer
-
-**Menu:** Controls > Tremolizer
-
-The Tremolizer takes an LFO signal (0 to 1) and converts it into a volume
-envelope that *reduces* gain from 1.0. Unlike simply multiplying an LFO by
-a width control (which gives you nothing out when the width is zero), the
-Tremolizer uses the control signal's value above zero to reduce gain from
-unity. So at zero depth, you get full signal; at maximum depth, the LFO
-fully chops the signal.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| LFO Input | Control In | 0-1 LFO signal |
-| LFO Width | Control In | Optional: external width modulation |
-| Control Output | Control Out | Volume envelope (1 minus scaled LFO) |
-
-**Parameters:**
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Depth | 0.5-1.0 | 0.75 | Maximum depth of volume reduction |
-
-**Transfer function:**
-
-    output = 1 - (depth * input * width)
-
-When the LFO Width pin is not connected:
-
-    output = 1 - (depth * input)
-
-At depth=1.0, the output goes from 1.0 (when LFO=0) down to 0.0 (when LFO=1),
-giving "full chop" tremolo. At lower depth values, the output doesn't go as
-low, producing a gentler volume modulation.
-
-![Tremolizer DC transfer at different depths](images/control-tremolizer.png)
-
-Applied to a 0-1 sine wave LFO, the Tremolizer produces an inverted volume
-envelope:
-
-![Tremolizer volume envelope from sine LFO](images/control-tremolizer-sine.png)
-
-**Typical use:** Build a tremolo patch by connecting a Sine LFO (scaled 0 to 1)
-to the Tremolizer's LFO Input, then connect the Tremolizer output to a Volume
-control block. Use a Pot on the LFO Width input to control tremolo depth from
-the front panel. See [Making a Tremolo Patch](patches/making-a-tremolo-patch.md)
-for a full walkthrough.
-
-For a variable-shape tremolo, feed the LFO through a **Slicer** and then a
-**Smoother** before the Tremolizer. The Smoother's corner frequency controls
-the rise/fall time of the chopped waveform, giving everything from smooth sine
-tremolo to hard square-wave chop. Notice that decreasing the Smoother frequency
-also reduces the effective chop depth, since the LFO takes longer to reach
-full excursion.
-
-### Alternatives
-
-If you use the width parameter input on the LFO block directly, it shrinks
-about its midpoint, so with the width all the way down you get a 6 dB drop
-in the output level. This is more subtle but closer to typical Fender guitar
-amp tremolo sounds.
-
-This midpoint-shrink approach arguably reflects real tremolo behavior
-better than a full-chop envelope: any tremolo necessarily reduces the
-average signal level, and many standalone tremolo pedals include a
-separate gain knob or other compensation to keep the perceived loudness
-constant when the effect is engaged.
-
----
-
-## Generating Updated Curves
-
-The per-block SVG curves above are generated by running:
-
-```
-./gradlew test --tests "com.holycityaudio.SpinCAD.ControlBlockSweepTest"
-```
-
-Individual SVGs are written to the `docs/` directory.
