@@ -12,24 +12,27 @@ A few things to know going in: this project is maintained by one person on a spo
 - [Project Overview](#project-overview)
 - [Getting Started](#getting-started)
 - [How to Contribute](#how-to-contribute)
+  - [Reporting Bugs](#reporting-bugs)
+  - [Requesting Features](#requesting-features)
+  - [Contributing New Modules](#contributing-new-modules-most-welcome)
+  - [Contributing Bug Fixes and Other Code](#contributing-bug-fixes-and-other-code)
 - [Pull Request Process](#pull-request-process)
 - [Style Guidelines](#style-guidelines)
-- [Reporting Bugs](#reporting-bugs)
-- [Requesting Features](#requesting-features)
+- [A Note on AI-Assisted Development](#a-note-on-ai-assisted-development)
 
 ---
 
 ## Code of Conduct
 
-This project follows the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). By participating, you agree to uphold it. Please report unacceptable behavior to the project maintainer via a GitHub issue marked `[conduct]`.
+This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it. Unacceptable behavior can be reported by opening a GitHub issue labeled `conduct` or by using GitHub's built-in [reporting tools](https://docs.github.com/en/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam).
 
 ---
 
 ## Project Overview
 
-SpinCAD Designer is a graphical editor for building FV-1 DSP programs by connecting audio processing modules. It is written primarily in **Java** and uses **Eclipse** as its development environment.
+[SpinCAD Designer](https://github.com/HolyCityAudio/SpinCAD-Designer) is a graphical editor for building FV-1 DSP programs by connecting audio processing modules. It is written primarily in **Java** and uses **Eclipse** as its development environment.
 
-The companion project **SpinCAD Builder** (located in a separate repository) generates the Java module code from a domain-specific language, and is written in **Xtext** and **Xtend**.
+The companion project [SpinCAD Builder](https://github.com/HolyCityAudio/SpinCAD-Builder) generates the Java module code from a domain-specific language, and is written in **Xtext** and **Xtend**.
 
 ---
 
@@ -49,7 +52,10 @@ The companion project **SpinCAD Builder** (located in a separate repository) gen
 2. Clone your fork locally:
    ```bash
    git clone https://github.com/YOUR_USERNAME/SpinCAD-Designer.git
+   cd SpinCAD-Designer
+   git remote add upstream https://github.com/HolyCityAudio/SpinCAD-Designer.git
    ```
+   Adding the upstream remote lets you pull in future changes from the main repo with `git fetch upstream`.
 3. Import the project into Eclipse:
    - **File → Import → Existing Projects into Workspace**
    - Select the cloned directory
