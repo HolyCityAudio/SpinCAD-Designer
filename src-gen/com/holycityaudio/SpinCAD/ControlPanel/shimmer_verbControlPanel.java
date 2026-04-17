@@ -75,9 +75,12 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 1.0),(int) (0.0 * 1.0), (int) (20 * Math.log10(gCB.getgain()) * 1.0));
+						gainSlider.setSubdivision((int) 1.0);
 						gainSlider.addChangeListener(new shimmer_verbListener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -124,7 +127,7 @@ public shimmer_verbControlPanel(shimmer_verbCADBlock genericCADBlock) {
 		class shimmer_verbListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/1.0));
 				updategainLabel();
 			}
 			}

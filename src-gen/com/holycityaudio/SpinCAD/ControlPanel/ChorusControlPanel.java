@@ -81,7 +81,9 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new ChorusListener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -123,7 +125,9 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rateSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (511.0 * 100.0), (int) ((gCB.getrate()) * 100.0));
 						rateSlider.addChangeListener(new ChorusListener());
 						rateField = new JTextField();
@@ -216,11 +220,11 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 		class ChorusListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == rateSlider) {
-			gCB.setrate((double) (rateSlider.getValue()/100.0));			    					
+			gCB.setrate((double) (rateSlider.getValue()/100.0));
 				updaterateLabel();
 			}
 			if(ce.getSource() == widthSlider) {
@@ -248,10 +252,10 @@ public ChorusControlPanel(ChorusCADBlock genericCADBlock) {
 			}
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Chorus Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Chorus Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updaterateLabel() {
-		rateField.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));		
+		rateField.setText("LFO Rate " + String.format("%4.2f", coeffToLFORate(gCB.getrate())));
 		}
 		private void updatewidthLabel() {
 		widthField.setText("LFO Width " + String.format("%4.1f", gCB.getwidth()));

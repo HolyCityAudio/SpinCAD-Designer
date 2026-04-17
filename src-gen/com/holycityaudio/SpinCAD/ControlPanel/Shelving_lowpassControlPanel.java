@@ -79,7 +79,9 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 						freqSlider = SpinCADBlock.LogSlider(20,2500,gCB.getfreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						freqSlider.addChangeListener(new Shelving_lowpassListener());
 						freqField = new JTextField();
 						freqField.setHorizontalAlignment(JTextField.CENTER);
@@ -120,9 +122,12 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						shelfSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-40 * 1.0),(int) (-3 * 1.0), (int) (20 * Math.log10(gCB.getshelf()) * 1.0));
+						shelfSlider.setSubdivision((int) 1.0);
 						shelfSlider.addChangeListener(new Shelving_lowpassListener());
 						shelfField = new JTextField();
 						shelfField.setHorizontalAlignment(JTextField.CENTER);
@@ -173,7 +178,7 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 				updatefreqLabel();
 			}
 			if(ce.getSource() == shelfSlider) {
-			gCB.setshelf((double) (shelfSlider.getValue()/1.0));			    					
+			gCB.setshelf((double) (shelfSlider.getValue()/1.0));
 				updateshelfLabel();
 			}
 			}
@@ -194,7 +199,7 @@ public Shelving_lowpassControlPanel(Shelving_lowpassCADBlock genericCADBlock) {
 			}
 		}
 		private void updatefreqLabel() {
-		freqField.setText("Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
+		freqField.setText("Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");
 		}
 		private void updateshelfLabel() {
 		shelfField.setText("Shelf Depth " + String.format("%4.1f dB", (20 * Math.log10(gCB.getshelf()))));

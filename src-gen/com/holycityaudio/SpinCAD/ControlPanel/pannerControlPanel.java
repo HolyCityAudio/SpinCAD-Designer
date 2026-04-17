@@ -75,9 +75,12 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain1()) * 10.0));
+						gain1Slider.setSubdivision((int) 10.0);
 						gain1Slider.addChangeListener(new pannerListener());
 						gain1Field = new JTextField();
 						gain1Field.setHorizontalAlignment(JTextField.CENTER);
@@ -124,7 +127,7 @@ public pannerControlPanel(pannerCADBlock genericCADBlock) {
 		class pannerListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gain1Slider) {
-			gCB.setgain1((double) (gain1Slider.getValue()/10.0));			    					
+			gCB.setgain1((double) (gain1Slider.getValue()/10.0));
 				updategain1Label();
 			}
 			}

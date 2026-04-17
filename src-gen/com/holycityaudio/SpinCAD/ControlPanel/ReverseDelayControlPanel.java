@@ -78,9 +78,12 @@ public ReverseDelayControlPanel(ReverseDelayCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getinputGain()) * 10.0));
+						inputGainSlider.setSubdivision((int) 10.0);
 						inputGainSlider.addChangeListener(new ReverseDelayListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -121,9 +124,12 @@ public ReverseDelayControlPanel(ReverseDelayCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 1.0));
+						fbkGainSlider.setSubdivision((int) 1.0);
 						fbkGainSlider.addChangeListener(new ReverseDelayListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -177,11 +183,11 @@ public ReverseDelayControlPanel(ReverseDelayCADBlock genericCADBlock) {
 		class ReverseDelayListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));			    					
+			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));			    					
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
 				updatefbkGainLabel();
 			}
 			}

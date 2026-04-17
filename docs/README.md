@@ -1,5 +1,7 @@
 # SpinCAD Designer Documentation
 
+![SpinCAD Designer](images/spincad.png)
+
 SpinCAD Designer is an open-source Java application for creating and simulating audio patches for the [Spin Semiconductor FV-1](http://www.spinsemi.com/products.html) DSP chip. Drag and drop DSP blocks onto a schematic canvas, wire them together, and SpinCAD generates the Spin ASM assembly code you can load onto the chip.
 
 - **Downloads:** [GitHub Releases](https://github.com/HolyCityAudio/SpinCAD-Designer/releases)
@@ -16,7 +18,8 @@ A *block* is a single DSP unit -- a filter, a delay, a reverb tank, an LFO, and 
 
 The block reference pages below describe each block's pins, controls, and typical uses:
 
-- [I/O - Mix Blocks](io-mix-blocks.md) -- input, output, volume, gain, panning, crossfade, and mixer blocks
+- [I/O - Pots Blocks](io-pots-blocks.md) -- input, output, and hardware potentiometer blocks
+- [Mixers/Gain Blocks](mixers-gain-blocks.md) -- volume, gain, panning, crossfade, and mixer blocks
 - [Wave Shaper Blocks](wave-shaper-blocks.md) -- distortion, overdrive, fuzz, and bit-reduction effects
 - [Dynamics Blocks](dynamics-blocks.md) -- compressors, limiters, expanders, and noise gates
 - [Filter Blocks](filter-blocks.md) -- low-pass, high-pass, and state-variable filters

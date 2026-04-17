@@ -84,9 +84,12 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getinputGain()) * 1.0));
+						inputGainSlider.setSubdivision((int) 1.0);
 						inputGainSlider.addChangeListener(new servoListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -127,9 +130,12 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 1.0));
+						fbkGainSlider.setSubdivision((int) 1.0);
 						fbkGainSlider.addChangeListener(new servoListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -209,7 +215,9 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 						freqSlider = SpinCADBlock.LogSlider(500,7500,gCB.getfreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						freqSlider.addChangeListener(new servoListener());
 						freqField = new JTextField();
 						freqField.setHorizontalAlignment(JTextField.CENTER);
@@ -300,11 +308,11 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 		class servoListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));			    					
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));			    					
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
 				updatefbkGainLabel();
 			}
 			if(ce.getSource() == servoGainSlider) {
@@ -349,7 +357,7 @@ public servoControlPanel(servoCADBlock genericCADBlock) {
 		servoGainField.setText("Servo Gain " + String.format("%4.2f", gCB.getservoGain()));
 		}
 		private void updatefreqLabel() {
-		freqField.setText("Low_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");		
+		freqField.setText("Low_Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getfreq())) + " Hz");
 		}
 		private void updatetap1RatioLabel() {
 		tap1RatioField.setText("Tap Time Ratio " + String.format("%4.3f", gCB.gettap1Ratio()));

@@ -88,9 +88,12 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getinputGain()) * 1.0));
+						inputGainSlider.setSubdivision((int) 1.0);
 						inputGainSlider.addChangeListener(new DrumDelaySrcListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -131,9 +134,12 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 1.0));
+						fbkGainSlider.setSubdivision((int) 1.0);
 						fbkGainSlider.addChangeListener(new DrumDelaySrcListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -175,7 +181,9 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new DrumDelaySrcListener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -217,7 +225,9 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap1RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap1Ratio() * 6000.0));
 						tap1RatioSlider.addChangeListener(new DrumDelaySrcListener());
 						tap1RatioField = new JTextField();
@@ -259,7 +269,9 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap2RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap2Ratio() * 6000.0));
 						tap2RatioSlider.addChangeListener(new DrumDelaySrcListener());
 						tap2RatioField = new JTextField();
@@ -301,7 +313,9 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap3RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap3Ratio() * 6000.0));
 						tap3RatioSlider.addChangeListener(new DrumDelaySrcListener());
 						tap3RatioField = new JTextField();
@@ -343,7 +357,9 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap4RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap4Ratio() * 6000.0));
 						tap4RatioSlider.addChangeListener(new DrumDelaySrcListener());
 						tap4RatioField = new JTextField();
@@ -394,6 +410,7 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 			subdivisionPanel.add(subdivisionLabel);
 			subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
 			subdivisionPanel.add(subdivisionComboBox);
+			subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
 			subdivisionPanel.setBorder(subdivisionBorder);
 			frame.add(subdivisionPanel);
 			
@@ -419,31 +436,31 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 		class DrumDelaySrcListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));			    					
+			gCB.setinputGain((double) (inputGainSlider.getValue()/1.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));			    					
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/1.0));
 				updatefbkGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1RatioSlider) {
-			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/6000.0));			    					
+			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/6000.0));
 				updatetap1RatioLabel();
 			}
 			if(ce.getSource() == tap2RatioSlider) {
-			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/6000.0));			    					
+			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/6000.0));
 				updatetap2RatioLabel();
 			}
 			if(ce.getSource() == tap3RatioSlider) {
-			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/6000.0));			    					
+			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/6000.0));
 				updatetap3RatioLabel();
 			}
 			if(ce.getSource() == tap4RatioSlider) {
-			gCB.settap4Ratio((double) (tap4RatioSlider.getValue()/6000.0));			    					
+			gCB.settap4Ratio((double) (tap4RatioSlider.getValue()/6000.0));
 				updatetap4RatioLabel();
 			}
 			}
@@ -480,7 +497,7 @@ public DrumDelaySrcControlPanel(DrumDelaySrcCADBlock genericCADBlock) {
 		fbkGainField.setText("Feedback Gain:  " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Time (ms):  " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updatetap1RatioLabel() {
 		tap1RatioField.setText("Tap 1 Time (%):  " + String.format("%4.2f", gCB.gettap1Ratio()));

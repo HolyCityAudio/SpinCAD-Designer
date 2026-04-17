@@ -89,9 +89,12 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 10.0),(int) (0.0 * 10.0), (int) (20 * Math.log10(gCB.getgain()) * 10.0));
+						gainSlider.setSubdivision((int) 10.0);
 						gainSlider.addChangeListener(new rom_rev2Listener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -282,7 +285,9 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 						kflSlider = SpinCADBlock.LogSlider(500,5000,gCB.getkfl(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						kflSlider.addChangeListener(new rom_rev2Listener());
 						kflField = new JTextField();
 						kflField.setHorizontalAlignment(JTextField.CENTER);
@@ -325,7 +330,9 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 						kfhSlider = SpinCADBlock.LogSlider(40,1000,gCB.getkfh(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						kfhSlider.addChangeListener(new rom_rev2Listener());
 						kfhField = new JTextField();
 						kfhField.setHorizontalAlignment(JTextField.CENTER);
@@ -409,7 +416,7 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 		class rom_rev2Listener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/10.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/10.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == revTimeMaxSlider) {
@@ -473,10 +480,10 @@ public rom_rev2ControlPanel(rom_rev2CADBlock genericCADBlock) {
 		kapd2Field.setText("Delay AP 2 Gain " + String.format("%4.2f", gCB.getkapd2()));
 		}
 		private void updatekflLabel() {
-		kflField.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
+		kflField.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");
 		}
 		private void updatekfhLabel() {
-		kfhField.setText("High Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
+		kfhField.setText("High Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");
 		}
 		private void updatememscaleLabel() {
 		memscaleField.setText("Delay Scale " + String.format("%4.1f", gCB.getmemscale()));

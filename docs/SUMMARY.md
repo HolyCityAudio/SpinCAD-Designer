@@ -8,7 +8,8 @@
 
 ## Block Reference
 
-* [I/O - Mix Blocks](io-mix-blocks.md)
+* [I/O - Pots Blocks](io-pots-blocks.md)
+* [Mixers/Gain Blocks](mixers-gain-blocks.md)
 * [Wave Shaper Blocks](wave-shaper-blocks.md)
 * [Dynamics Blocks](dynamics-blocks.md)
 * [Filter Blocks](filter-blocks.md)

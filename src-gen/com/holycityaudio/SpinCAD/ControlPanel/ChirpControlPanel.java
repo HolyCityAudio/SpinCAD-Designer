@@ -81,9 +81,12 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain()) * 10.0));
+						gainSlider.setSubdivision((int) 10.0);
 						gainSlider.addChangeListener(new ChirpListener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -241,7 +244,7 @@ public ChirpControlPanel(ChirpCADBlock genericCADBlock) {
 		class ChirpListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/10.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/10.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == nAPsSlider) {

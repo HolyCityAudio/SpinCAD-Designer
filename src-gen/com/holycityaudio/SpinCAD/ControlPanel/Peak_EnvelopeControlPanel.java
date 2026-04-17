@@ -80,6 +80,8 @@ public Peak_EnvelopeControlPanel(Peak_EnvelopeCADBlock genericCADBlock) {
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
 					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						attackFreqSlider.addChangeListener(new Peak_EnvelopeListener());
 						attackFreqField = new JTextField();
 						attackFreqField.setHorizontalAlignment(JTextField.CENTER);
@@ -122,6 +124,8 @@ public Peak_EnvelopeControlPanel(Peak_EnvelopeCADBlock genericCADBlock) {
 						decayFreqSlider = SpinCADBlock.LogSlider(0.51,10,gCB.getdecayFreq(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
 					// ---------------------------------------------
 						decayFreqSlider.addChangeListener(new Peak_EnvelopeListener());
 						decayFreqField = new JTextField();

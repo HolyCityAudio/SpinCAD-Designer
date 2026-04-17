@@ -89,9 +89,12 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getgain()) * 1.0));
+						gainSlider.setSubdivision((int) 1.0);
 						gainSlider.addChangeListener(new reverb_delay_line_01Listener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -133,7 +136,9 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new reverb_delay_line_01Listener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -214,7 +219,9 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 						lpdfSlider = SpinCADBlock.LogSlider(500,2500,gCB.getlpdf(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						lpdfSlider.addChangeListener(new reverb_delay_line_01Listener());
 						lpdfField = new JTextField();
 						lpdfField.setHorizontalAlignment(JTextField.CENTER);
@@ -256,7 +263,9 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						ap1LengthSlider.addChangeListener(new reverb_delay_line_01Listener());
 						ap1LengthField = new JTextField();
 						ap1LengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -336,7 +345,9 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						ap2LengthSlider.addChangeListener(new reverb_delay_line_01Listener());
 						ap2LengthField = new JTextField();
 						ap2LengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -421,11 +432,11 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 		class reverb_delay_line_01Listener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/1.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == krtSlider) {
@@ -437,7 +448,7 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 				updatelpdfLabel();
 			}
 			if(ce.getSource() == ap1LengthSlider) {
-			gCB.setap1Length((double) (ap1LengthSlider.getValue()/1));			    					
+			gCB.setap1Length((double) (ap1LengthSlider.getValue()/1));
 				updateap1LengthLabel();
 			}
 			if(ce.getSource() == ap1kapSlider) {
@@ -445,7 +456,7 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 				updateap1kapLabel();
 			}
 			if(ce.getSource() == ap2LengthSlider) {
-			gCB.setap2Length((double) (ap2LengthSlider.getValue()/1));			    					
+			gCB.setap2Length((double) (ap2LengthSlider.getValue()/1));
 				updateap2LengthLabel();
 			}
 			if(ce.getSource() == ap2kapSlider) {
@@ -473,22 +484,22 @@ public reverb_delay_line_01ControlPanel(reverb_delay_line_01CADBlock genericCADB
 		gainField.setText("Input_Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getgain()))));
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Delay Line Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Line Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updatekrtLabel() {
 		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));
 		}
 		private void updatelpdfLabel() {
-		lpdfField.setText("Damping Freq Hi " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getlpdf())) + " Hz");		
+		lpdfField.setText("Damping Freq Hi " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getlpdf())) + " Hz");
 		}
 		private void updateap1LengthLabel() {
-		ap1LengthField.setText("Allpass #1 Time " + String.format("%4.0f", (1000 * gCB.getap1Length())/ElmProgram.getSamplerate()));		
+		ap1LengthField.setText("Allpass #1 Time " + String.format("%4.0f", (1000 * gCB.getap1Length())/ElmProgram.getSamplerate()));
 		}
 		private void updateap1kapLabel() {
 		ap1kapField.setText("All-Pass #1 Coefficient " + String.format("%4.2f", gCB.getap1kap()));
 		}
 		private void updateap2LengthLabel() {
-		ap2LengthField.setText("Allpass #2 Time " + String.format("%4.0f", (1000 * gCB.getap2Length())/ElmProgram.getSamplerate()));		
+		ap2LengthField.setText("Allpass #2 Time " + String.format("%4.0f", (1000 * gCB.getap2Length())/ElmProgram.getSamplerate()));
 		}
 		private void updateap2kapLabel() {
 		ap2kapField.setText("All-Pass #2 Coefficient " + String.format("%4.2f", gCB.getap2kap()));

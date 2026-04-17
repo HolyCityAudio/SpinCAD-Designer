@@ -95,9 +95,12 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain()) * 10.0));
+						gainSlider.setSubdivision((int) 10.0);
 						gainSlider.addChangeListener(new MinReverb2Listener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -176,7 +179,9 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						ap1lengthSlider.addChangeListener(new MinReverb2Listener());
 						ap1lengthField = new JTextField();
 						ap1lengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -219,7 +224,9 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						ap2lengthSlider.addChangeListener(new MinReverb2Listener());
 						ap2lengthField = new JTextField();
 						ap2lengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -262,7 +269,9 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						ap3lengthSlider.addChangeListener(new MinReverb2Listener());
 						ap3lengthField = new JTextField();
 						ap3lengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -305,7 +314,9 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						ap4lengthSlider.addChangeListener(new MinReverb2Listener());
 						ap4lengthField = new JTextField();
 						ap4lengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -385,7 +396,9 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						lap1lengthSlider.addChangeListener(new MinReverb2Listener());
 						lap1lengthField = new JTextField();
 						lap1lengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -428,7 +441,9 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						del1lengthSlider.addChangeListener(new MinReverb2Listener());
 						del1lengthField = new JTextField();
 						del1lengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -471,7 +486,9 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						lap2lengthSlider.addChangeListener(new MinReverb2Listener());
 						lap2lengthField = new JTextField();
 						lap2lengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -514,7 +531,9 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						del2lengthSlider.addChangeListener(new MinReverb2Listener());
 						del2lengthField = new JTextField();
 						del2lengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -562,7 +581,7 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 		class MinReverb2Listener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/10.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/10.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == kiapSlider) {
@@ -570,19 +589,19 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 				updatekiapLabel();
 			}
 			if(ce.getSource() == ap1lengthSlider) {
-			gCB.setap1length((double) (ap1lengthSlider.getValue()/1));			    					
+			gCB.setap1length((double) (ap1lengthSlider.getValue()/1));
 				updateap1lengthLabel();
 			}
 			if(ce.getSource() == ap2lengthSlider) {
-			gCB.setap2length((double) (ap2lengthSlider.getValue()/1));			    					
+			gCB.setap2length((double) (ap2lengthSlider.getValue()/1));
 				updateap2lengthLabel();
 			}
 			if(ce.getSource() == ap3lengthSlider) {
-			gCB.setap3length((double) (ap3lengthSlider.getValue()/1));			    					
+			gCB.setap3length((double) (ap3lengthSlider.getValue()/1));
 				updateap3lengthLabel();
 			}
 			if(ce.getSource() == ap4lengthSlider) {
-			gCB.setap4length((double) (ap4lengthSlider.getValue()/1));			    					
+			gCB.setap4length((double) (ap4lengthSlider.getValue()/1));
 				updateap4lengthLabel();
 			}
 			if(ce.getSource() == klapSlider) {
@@ -590,19 +609,19 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 				updateklapLabel();
 			}
 			if(ce.getSource() == lap1lengthSlider) {
-			gCB.setlap1length((double) (lap1lengthSlider.getValue()/1));			    					
+			gCB.setlap1length((double) (lap1lengthSlider.getValue()/1));
 				updatelap1lengthLabel();
 			}
 			if(ce.getSource() == del1lengthSlider) {
-			gCB.setdel1length((double) (del1lengthSlider.getValue()/1));			    					
+			gCB.setdel1length((double) (del1lengthSlider.getValue()/1));
 				updatedel1lengthLabel();
 			}
 			if(ce.getSource() == lap2lengthSlider) {
-			gCB.setlap2length((double) (lap2lengthSlider.getValue()/1));			    					
+			gCB.setlap2length((double) (lap2lengthSlider.getValue()/1));
 				updatelap2lengthLabel();
 			}
 			if(ce.getSource() == del2lengthSlider) {
-			gCB.setdel2length((double) (del2lengthSlider.getValue()/1));			    					
+			gCB.setdel2length((double) (del2lengthSlider.getValue()/1));
 				updatedel2lengthLabel();
 			}
 			}
@@ -629,31 +648,31 @@ public MinReverb2ControlPanel(MinReverb2CADBlock genericCADBlock) {
 		kiapField.setText("Input All Pass: " + String.format("%4.2f", gCB.getkiap()));
 		}
 		private void updateap1lengthLabel() {
-		ap1lengthField.setText("Input AP1 (msec) " + String.format("%4.1f", (1000 * gCB.getap1length())/ElmProgram.getSamplerate()));		
+		ap1lengthField.setText("Input AP1 (msec) " + String.format("%4.1f", (1000 * gCB.getap1length())/ElmProgram.getSamplerate()));
 		}
 		private void updateap2lengthLabel() {
-		ap2lengthField.setText("Input AP2 (msec) " + String.format("%4.1f", (1000 * gCB.getap2length())/ElmProgram.getSamplerate()));		
+		ap2lengthField.setText("Input AP2 (msec) " + String.format("%4.1f", (1000 * gCB.getap2length())/ElmProgram.getSamplerate()));
 		}
 		private void updateap3lengthLabel() {
-		ap3lengthField.setText("Input AP3 (msec) " + String.format("%4.1f", (1000 * gCB.getap3length())/ElmProgram.getSamplerate()));		
+		ap3lengthField.setText("Input AP3 (msec) " + String.format("%4.1f", (1000 * gCB.getap3length())/ElmProgram.getSamplerate()));
 		}
 		private void updateap4lengthLabel() {
-		ap4lengthField.setText("Input AP4 (msec) " + String.format("%4.1f", (1000 * gCB.getap4length())/ElmProgram.getSamplerate()));		
+		ap4lengthField.setText("Input AP4 (msec) " + String.format("%4.1f", (1000 * gCB.getap4length())/ElmProgram.getSamplerate()));
 		}
 		private void updateklapLabel() {
 		klapField.setText("Loop All Pass " + String.format("%4.2f", gCB.getklap()));
 		}
 		private void updatelap1lengthLabel() {
-		lap1lengthField.setText("Loop AP1 (msec) " + String.format("%4.0f", (1000 * gCB.getlap1length())/ElmProgram.getSamplerate()));		
+		lap1lengthField.setText("Loop AP1 (msec) " + String.format("%4.0f", (1000 * gCB.getlap1length())/ElmProgram.getSamplerate()));
 		}
 		private void updatedel1lengthLabel() {
-		del1lengthField.setText("Loop Delay 1 (msec) " + String.format("%4.0f", (1000 * gCB.getdel1length())/ElmProgram.getSamplerate()));		
+		del1lengthField.setText("Loop Delay 1 (msec) " + String.format("%4.0f", (1000 * gCB.getdel1length())/ElmProgram.getSamplerate()));
 		}
 		private void updatelap2lengthLabel() {
-		lap2lengthField.setText("Loop AP2 (msec) " + String.format("%4.0f", (1000 * gCB.getlap2length())/ElmProgram.getSamplerate()));		
+		lap2lengthField.setText("Loop AP2 (msec) " + String.format("%4.0f", (1000 * gCB.getlap2length())/ElmProgram.getSamplerate()));
 		}
 		private void updatedel2lengthLabel() {
-		del2lengthField.setText("Loop Delay 2 (msec) " + String.format("%4.0f", (1000 * gCB.getdel2length())/ElmProgram.getSamplerate()));		
+		del2lengthField.setText("Loop Delay 2 (msec) " + String.format("%4.0f", (1000 * gCB.getdel2length())/ElmProgram.getSamplerate()));
 		}
 		
 		class MyWindowListener implements WindowListener

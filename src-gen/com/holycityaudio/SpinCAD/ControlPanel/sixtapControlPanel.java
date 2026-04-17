@@ -104,9 +104,12 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-12 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getinputGain()) * 10.0));
+						inputGainSlider.setSubdivision((int) 10.0);
 						inputGainSlider.addChangeListener(new sixtapListener());
 						inputGainField = new JTextField();
 						inputGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -147,9 +150,12 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						fbkGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getfbkGain()) * 10.0));
+						fbkGainSlider.setSubdivision((int) 10.0);
 						fbkGainSlider.addChangeListener(new sixtapListener());
 						fbkGainField = new JTextField();
 						fbkGainField.setHorizontalAlignment(JTextField.CENTER);
@@ -191,7 +197,9 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						delayLengthSlider.addChangeListener(new sixtapListener());
 						delayLengthField = new JTextField();
 						delayLengthField.setHorizontalAlignment(JTextField.CENTER);
@@ -233,7 +241,9 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap1RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap1Ratio() * 6000.0));
 						tap1RatioSlider.addChangeListener(new sixtapListener());
 						tap1RatioField = new JTextField();
@@ -275,7 +285,9 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap2RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap2Ratio() * 6000.0));
 						tap2RatioSlider.addChangeListener(new sixtapListener());
 						tap2RatioField = new JTextField();
@@ -317,7 +329,9 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap3RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap3Ratio() * 6000.0));
 						tap3RatioSlider.addChangeListener(new sixtapListener());
 						tap3RatioField = new JTextField();
@@ -359,7 +373,9 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap4RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap4Ratio() * 6000.0));
 						tap4RatioSlider.addChangeListener(new sixtapListener());
 						tap4RatioField = new JTextField();
@@ -401,7 +417,9 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap5RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap5Ratio() * 6000.0));
 						tap5RatioSlider.addChangeListener(new sixtapListener());
 						tap5RatioField = new JTextField();
@@ -443,7 +461,9 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					tap6RatioSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 6000.0),(int) (1.0 * 6000.0), (int) (gCB.gettap6Ratio() * 6000.0));
 						tap6RatioSlider.addChangeListener(new sixtapListener());
 						tap6RatioField = new JTextField();
@@ -494,6 +514,7 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 			subdivisionPanel.add(subdivisionLabel);
 			subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
 			subdivisionPanel.add(subdivisionComboBox);
+			subdivisionPanel.add(Box.createRigidArea(new Dimension(5,4)));
 			subdivisionPanel.setBorder(subdivisionBorder);
 			frame.add(subdivisionPanel);
 			
@@ -515,9 +536,12 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						tap1GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap1Gain()) * 10.0));
+						tap1GainSlider.setSubdivision((int) 10.0);
 						tap1GainSlider.addChangeListener(new sixtapListener());
 						tap1GainField = new JTextField();
 						tap1GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -558,9 +582,12 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						tap2GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap2Gain()) * 10.0));
+						tap2GainSlider.setSubdivision((int) 10.0);
 						tap2GainSlider.addChangeListener(new sixtapListener());
 						tap2GainField = new JTextField();
 						tap2GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -601,9 +628,12 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						tap3GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap3Gain()) * 10.0));
+						tap3GainSlider.setSubdivision((int) 10.0);
 						tap3GainSlider.addChangeListener(new sixtapListener());
 						tap3GainField = new JTextField();
 						tap3GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -644,9 +674,12 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						tap4GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap4Gain()) * 10.0));
+						tap4GainSlider.setSubdivision((int) 10.0);
 						tap4GainSlider.addChangeListener(new sixtapListener());
 						tap4GainField = new JTextField();
 						tap4GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -687,9 +720,12 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						tap5GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap5Gain()) * 10.0));
+						tap5GainSlider.setSubdivision((int) 10.0);
 						tap5GainSlider.addChangeListener(new sixtapListener());
 						tap5GainField = new JTextField();
 						tap5GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -730,9 +766,12 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						tap6GainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.gettap6Gain()) * 10.0));
+						tap6GainSlider.setSubdivision((int) 10.0);
 						tap6GainSlider.addChangeListener(new sixtapListener());
 						tap6GainField = new JTextField();
 						tap6GainField.setHorizontalAlignment(JTextField.CENTER);
@@ -779,63 +818,63 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 		class sixtapListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainSlider) {
-			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));			    					
+			gCB.setinputGain((double) (inputGainSlider.getValue()/10.0));
 				updateinputGainLabel();
 			}
 			if(ce.getSource() == fbkGainSlider) {
-			gCB.setfbkGain((double) (fbkGainSlider.getValue()/10.0));			    					
+			gCB.setfbkGain((double) (fbkGainSlider.getValue()/10.0));
 				updatefbkGainLabel();
 			}
 			if(ce.getSource() == delayLengthSlider) {
-			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));			    					
+			gCB.setdelayLength((double) (delayLengthSlider.getValue()/1));
 				updatedelayLengthLabel();
 			}
 			if(ce.getSource() == tap1RatioSlider) {
-			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/6000.0));			    					
+			gCB.settap1Ratio((double) (tap1RatioSlider.getValue()/6000.0));
 				updatetap1RatioLabel();
 			}
 			if(ce.getSource() == tap2RatioSlider) {
-			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/6000.0));			    					
+			gCB.settap2Ratio((double) (tap2RatioSlider.getValue()/6000.0));
 				updatetap2RatioLabel();
 			}
 			if(ce.getSource() == tap3RatioSlider) {
-			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/6000.0));			    					
+			gCB.settap3Ratio((double) (tap3RatioSlider.getValue()/6000.0));
 				updatetap3RatioLabel();
 			}
 			if(ce.getSource() == tap4RatioSlider) {
-			gCB.settap4Ratio((double) (tap4RatioSlider.getValue()/6000.0));			    					
+			gCB.settap4Ratio((double) (tap4RatioSlider.getValue()/6000.0));
 				updatetap4RatioLabel();
 			}
 			if(ce.getSource() == tap5RatioSlider) {
-			gCB.settap5Ratio((double) (tap5RatioSlider.getValue()/6000.0));			    					
+			gCB.settap5Ratio((double) (tap5RatioSlider.getValue()/6000.0));
 				updatetap5RatioLabel();
 			}
 			if(ce.getSource() == tap6RatioSlider) {
-			gCB.settap6Ratio((double) (tap6RatioSlider.getValue()/6000.0));			    					
+			gCB.settap6Ratio((double) (tap6RatioSlider.getValue()/6000.0));
 				updatetap6RatioLabel();
 			}
 			if(ce.getSource() == tap1GainSlider) {
-			gCB.settap1Gain((double) (tap1GainSlider.getValue()/10.0));			    					
+			gCB.settap1Gain((double) (tap1GainSlider.getValue()/10.0));
 				updatetap1GainLabel();
 			}
 			if(ce.getSource() == tap2GainSlider) {
-			gCB.settap2Gain((double) (tap2GainSlider.getValue()/10.0));			    					
+			gCB.settap2Gain((double) (tap2GainSlider.getValue()/10.0));
 				updatetap2GainLabel();
 			}
 			if(ce.getSource() == tap3GainSlider) {
-			gCB.settap3Gain((double) (tap3GainSlider.getValue()/10.0));			    					
+			gCB.settap3Gain((double) (tap3GainSlider.getValue()/10.0));
 				updatetap3GainLabel();
 			}
 			if(ce.getSource() == tap4GainSlider) {
-			gCB.settap4Gain((double) (tap4GainSlider.getValue()/10.0));			    					
+			gCB.settap4Gain((double) (tap4GainSlider.getValue()/10.0));
 				updatetap4GainLabel();
 			}
 			if(ce.getSource() == tap5GainSlider) {
-			gCB.settap5Gain((double) (tap5GainSlider.getValue()/10.0));			    					
+			gCB.settap5Gain((double) (tap5GainSlider.getValue()/10.0));
 				updatetap5GainLabel();
 			}
 			if(ce.getSource() == tap6GainSlider) {
-			gCB.settap6Gain((double) (tap6GainSlider.getValue()/10.0));			    					
+			gCB.settap6Gain((double) (tap6GainSlider.getValue()/10.0));
 				updatetap6GainLabel();
 			}
 			}
@@ -874,7 +913,7 @@ public sixtapControlPanel(sixtapCADBlock genericCADBlock) {
 		fbkGainField.setText("Feedback Gain " + String.format("%4.1f dB", (20 * Math.log10(gCB.getfbkGain()))));
 		}
 		private void updatedelayLengthLabel() {
-		delayLengthField.setText("Delay Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));		
+		delayLengthField.setText("Delay Time " + String.format("%4.0f", (1000 * gCB.getdelayLength())/ElmProgram.getSamplerate()));
 		}
 		private void updatetap1RatioLabel() {
 		tap1RatioField.setText("Tap 1 Time " + String.format("%4.2f", gCB.gettap1Ratio()));

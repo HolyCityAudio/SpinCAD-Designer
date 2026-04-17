@@ -91,9 +91,12 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-18 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain()) * 10.0));
+						gainSlider.setSubdivision((int) 10.0);
 						gainSlider.addChangeListener(new reverbListener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -247,7 +250,9 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 						kflSlider = SpinCADBlock.LogSlider(500,5000,gCB.getkfl(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						kflSlider.addChangeListener(new reverbListener());
 						kflField = new JTextField();
 						kflField.setHorizontalAlignment(JTextField.CENTER);
@@ -290,7 +295,9 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 						kfhSlider = SpinCADBlock.LogSlider(40,1000,gCB.getkfh(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						kfhSlider.addChangeListener(new reverbListener());
 						kfhField = new JTextField();
 						kfhField.setHorizontalAlignment(JTextField.CENTER);
@@ -345,7 +352,9 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rate1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
 						rate1Slider.addChangeListener(new reverbListener());
 						rate1Field = new JTextField();
@@ -388,7 +397,9 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rate2Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate2()) * 100.0));
 						rate2Slider.addChangeListener(new reverbListener());
 						rate2Field = new JTextField();
@@ -437,7 +448,7 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 		class reverbListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/10.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/10.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == kiapSlider) {
@@ -461,11 +472,11 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 				updatekfhLabel();
 			}
 			if(ce.getSource() == rate1Slider) {
-			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
+			gCB.setrate1((double) (rate1Slider.getValue()/100.0));
 				updaterate1Label();
 			}
 			if(ce.getSource() == rate2Slider) {
-			gCB.setrate2((double) (rate2Slider.getValue()/100.0));			    					
+			gCB.setrate2((double) (rate2Slider.getValue()/100.0));
 				updaterate2Label();
 			}
 			}
@@ -504,16 +515,16 @@ public reverbControlPanel(reverbCADBlock genericCADBlock) {
 		klapField.setText("Loop All Pass " + String.format("%4.2f", gCB.getklap()));
 		}
 		private void updatekflLabel() {
-		kflField.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
+		kflField.setText("Low Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");
 		}
 		private void updatekfhLabel() {
-		kfhField.setText("High Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
+		kfhField.setText("High Pass " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");
 		}
 		private void updaterate1Label() {
-		rate1Field.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
+		rate1Field.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));
 		}
 		private void updaterate2Label() {
-		rate2Field.setText("LFO_Rate_2 " + String.format("%4.2f", coeffToLFORate(gCB.getrate2())));		
+		rate2Field.setText("LFO_Rate_2 " + String.format("%4.2f", coeffToLFORate(gCB.getrate2())));
 		}
 		
 		class MyWindowListener implements WindowListener

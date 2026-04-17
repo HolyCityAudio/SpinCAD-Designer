@@ -81,9 +81,12 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainlSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getinputGainl()) * 1.0));
+						inputGainlSlider.setSubdivision((int) 1.0);
 						inputGainlSlider.addChangeListener(new Ted_Rev_ReverbListener());
 						inputGainlField = new JTextField();
 						inputGainlField.setHorizontalAlignment(JTextField.CENTER);
@@ -124,9 +127,12 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						inputGainrSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getinputGainr()) * 1.0));
+						inputGainrSlider.setSubdivision((int) 1.0);
 						inputGainrSlider.addChangeListener(new Ted_Rev_ReverbListener());
 						inputGainrField = new JTextField();
 						inputGainrField.setHorizontalAlignment(JTextField.CENTER);
@@ -247,11 +253,11 @@ public Ted_Rev_ReverbControlPanel(Ted_Rev_ReverbCADBlock genericCADBlock) {
 		class Ted_Rev_ReverbListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == inputGainlSlider) {
-			gCB.setinputGainl((double) (inputGainlSlider.getValue()/1.0));			    					
+			gCB.setinputGainl((double) (inputGainlSlider.getValue()/1.0));
 				updateinputGainlLabel();
 			}
 			if(ce.getSource() == inputGainrSlider) {
-			gCB.setinputGainr((double) (inputGainrSlider.getValue()/1.0));			    					
+			gCB.setinputGainr((double) (inputGainrSlider.getValue()/1.0));
 				updateinputGainrLabel();
 			}
 			if(ce.getSource() == preSlider) {

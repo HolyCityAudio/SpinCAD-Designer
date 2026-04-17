@@ -85,9 +85,12 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 10.0),(int) (0 * 10.0), (int) (20 * Math.log10(gCB.getgain()) * 10.0));
+						gainSlider.setSubdivision((int) 10.0);
 						gainSlider.addChangeListener(new reverb_hallListener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -167,7 +170,9 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 						hpdfSlider = SpinCADBlock.LogSlider(40,1000,gCB.gethpdf(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						hpdfSlider.addChangeListener(new reverb_hallListener());
 						hpdfField = new JTextField();
 						hpdfField.setHorizontalAlignment(JTextField.CENTER);
@@ -282,7 +287,9 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rate1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
 						rate1Slider.addChangeListener(new reverb_hallListener());
 						rate1Field = new JTextField();
@@ -331,7 +338,7 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 		class reverb_hallListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/10.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/10.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == krtSlider) {
@@ -351,7 +358,7 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 				updatedlkapLabel();
 			}
 			if(ce.getSource() == rate1Slider) {
-			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
+			gCB.setrate1((double) (rate1Slider.getValue()/100.0));
 				updaterate1Label();
 			}
 			}
@@ -378,7 +385,7 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));
 		}
 		private void updatehpdfLabel() {
-		hpdfField.setText("Damping Freq Low " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.gethpdf())) + " Hz");		
+		hpdfField.setText("Damping Freq Low " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.gethpdf())) + " Hz");
 		}
 		private void updateinputkapLabel() {
 		inputkapField.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getinputkap()));
@@ -387,7 +394,7 @@ public reverb_hallControlPanel(reverb_hallCADBlock genericCADBlock) {
 		dlkapField.setText("Delay All-Pass Coefficient " + String.format("%4.2f", gCB.getdlkap()));
 		}
 		private void updaterate1Label() {
-		rate1Field.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
+		rate1Field.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));
 		}
 		
 		class MyWindowListener implements WindowListener

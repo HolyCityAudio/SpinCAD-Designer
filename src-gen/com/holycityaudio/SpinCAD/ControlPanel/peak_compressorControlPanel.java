@@ -125,7 +125,9 @@ public peak_compressorControlPanel(peak_compressorCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						attTimeSlider.addChangeListener(new peak_compressorListener());
 						attTimeField = new JTextField();
 						attTimeField.setHorizontalAlignment(JTextField.CENTER);
@@ -168,7 +170,9 @@ public peak_compressorControlPanel(peak_compressorCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						relTimeSlider.addChangeListener(new peak_compressorListener());
 						relTimeField = new JTextField();
 						relTimeField.setHorizontalAlignment(JTextField.CENTER);
@@ -412,10 +416,10 @@ public peak_compressorControlPanel(peak_compressorCADBlock genericCADBlock) {
 		inGainField.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));
 		}
 		private void updateattTimeLabel() {
-		attTimeField.setText("Attack " + String.format("%4.1f", SpinCADBlock.filtToTime(gCB.getattTime()) * 1000) + " ms");		
+		attTimeField.setText("Attack " + String.format("%4.1f", SpinCADBlock.filtToTime(gCB.getattTime()) * 1000) + " ms");
 		}
 		private void updaterelTimeLabel() {
-		relTimeField.setText("Release " + String.format("%4.1f", SpinCADBlock.filtToTime(gCB.getrelTime()) * 1000) + " ms");		
+		relTimeField.setText("Release " + String.format("%4.1f", SpinCADBlock.filtToTime(gCB.getrelTime()) * 1000) + " ms");
 		}
 		private void updateratioLabel() {
 		ratioField.setText("Ratio " + String.format("%4.1f", gCB.getratio()));

@@ -89,9 +89,12 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
 						gainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(-24 * 1.0),(int) (0 * 1.0), (int) (20 * Math.log10(gCB.getgain()) * 1.0));
+						gainSlider.setSubdivision((int) 1.0);
 						gainSlider.addChangeListener(new reverb_plateListener());
 						gainField = new JTextField();
 						gainField.setHorizontalAlignment(JTextField.CENTER);
@@ -171,7 +174,9 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 						kfhSlider = SpinCADBlock.LogSlider(40,500,gCB.getkfh(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						kfhSlider.addChangeListener(new reverb_plateListener());
 						kfhField = new JTextField();
 						kfhField.setHorizontalAlignment(JTextField.CENTER);
@@ -214,7 +219,9 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 						kflSlider = SpinCADBlock.LogSlider(1000,8000,gCB.getkfl(), "LOGFREQ", 100.0);
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 						kflSlider.addChangeListener(new reverb_plateListener());
 						kflField = new JTextField();
 						kflField.setHorizontalAlignment(JTextField.CENTER);
@@ -329,7 +336,9 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rate1Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate1()) * 100.0));
 						rate1Slider.addChangeListener(new reverb_plateListener());
 						rate1Field = new JTextField();
@@ -372,7 +381,9 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 					// LOGFREQ is used for single pole filters
 					//---------------------------------------------
 					// LOGFREQ2 is used for 2-pole SVF
-					// ---------------------------------------------						
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
 					rate2Slider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.0 * 100.0),(int) (51.0 * 100.0), (int) ((gCB.getrate2()) * 100.0));
 						rate2Slider.addChangeListener(new reverb_plateListener());
 						rate2Field = new JTextField();
@@ -421,7 +432,7 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 		class reverb_plateListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
 			if(ce.getSource() == gainSlider) {
-			gCB.setgain((double) (gainSlider.getValue()/1.0));			    					
+			gCB.setgain((double) (gainSlider.getValue()/1.0));
 				updategainLabel();
 			}
 			if(ce.getSource() == krtSlider) {
@@ -445,11 +456,11 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 				updatekapLabel();
 			}
 			if(ce.getSource() == rate1Slider) {
-			gCB.setrate1((double) (rate1Slider.getValue()/100.0));			    					
+			gCB.setrate1((double) (rate1Slider.getValue()/100.0));
 				updaterate1Label();
 			}
 			if(ce.getSource() == rate2Slider) {
-			gCB.setrate2((double) (rate2Slider.getValue()/100.0));			    					
+			gCB.setrate2((double) (rate2Slider.getValue()/100.0));
 				updaterate2Label();
 			}
 			}
@@ -476,10 +487,10 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 		krtField.setText("Reverb Time Coefficient " + String.format("%4.2f", gCB.getkrt()));
 		}
 		private void updatekfhLabel() {
-		kfhField.setText("Low Freq Damping Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");		
+		kfhField.setText("Low Freq Damping Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfh())) + " Hz");
 		}
 		private void updatekflLabel() {
-		kflField.setText("High Freq Damping Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");		
+		kflField.setText("High Freq Damping Frequency " + String.format("%4.1f", SpinCADBlock.filtToFreq(gCB.getkfl())) + " Hz");
 		}
 		private void updatekapiLabel() {
 		kapiField.setText("Input All-Pass Coefficient " + String.format("%4.2f", gCB.getkapi()));
@@ -488,10 +499,10 @@ public reverb_plateControlPanel(reverb_plateCADBlock genericCADBlock) {
 		kapField.setText("Loop All-Pass Coefficient " + String.format("%4.2f", gCB.getkap()));
 		}
 		private void updaterate1Label() {
-		rate1Field.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));		
+		rate1Field.setText("LFO_Rate_1 " + String.format("%4.2f", coeffToLFORate(gCB.getrate1())));
 		}
 		private void updaterate2Label() {
-		rate2Field.setText("LFO_Rate_2 " + String.format("%4.2f", coeffToLFORate(gCB.getrate2())));		
+		rate2Field.setText("LFO_Rate_2 " + String.format("%4.2f", coeffToLFORate(gCB.getrate2())));
 		}
 		
 		class MyWindowListener implements WindowListener
