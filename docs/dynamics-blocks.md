@@ -160,8 +160,13 @@ A combined RMS limiter and expander that automatically controls the dynamic
 range of the input signal. Loud signals are attenuated (limiting) while
 quiet signals are boosted (expansion), resulting in a more consistent
 output level. Based on code from Spin Semiconductor's Free Programs
-library. This block has no adjustable parameters -- the limiting and
-expansion curves are fixed.
+library.
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Makeup (dB) | 0--6 dB | 0 dB | Post-limiter makeup gain |
 
 ![RMS Limiter/Expander block](images/dynamics-rms_lim_exp-block.png)
 
@@ -218,6 +223,7 @@ frequency-selective limiting.
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
 | Input Gain | linear | 1.0 | Output level (detection runs at full scale) |
+| Makeup (dB) | 0--6 dB | 0 dB | Post-limiter makeup gain |
 
 The four diagnostic control outputs (RMS, Square, Log, Avg) expose
 intermediate signals from the detector chain, which can be connected to

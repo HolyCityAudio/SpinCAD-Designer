@@ -37,6 +37,7 @@
 			private int square;
 			private int logPin;
 			private double inGain = 1.0;
+			private double makeupGain = 1.0;
 			private double filt = 0.001;
 
 			public rms_limiterCADBlock(int x, int y) {
@@ -52,6 +53,7 @@
 				addControlOutputPin(this, "Log");
 				addControlOutputPin(this, "Avg");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -114,7 +116,7 @@
 			}
 			
 			sfxb.mulx(rms);
-			sfxb.scaleOffset(1.5, 0);
+			sfxb.scaleOffset(makeupGain, 0);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Output").setRegister(output);
 			this.getPin("RMS").setRegister(rms);
@@ -133,5 +135,12 @@
 			
 			public double getinGain() {
 				return inGain;
+			}
+			public void setmakeupGain(double __param) {
+				makeupGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getmakeupGain() {
+				return makeupGain;
 			}
 		}	

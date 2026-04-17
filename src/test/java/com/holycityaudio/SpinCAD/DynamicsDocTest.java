@@ -41,7 +41,7 @@ public class DynamicsDocTest {
         return levels;
     }
 
-    /** Measure steady-state output RMS in dB for a single input level. */
+    /** Measure steady-state output peak in dB for a single input level. */
     private double measureDb(SpinCADBlock block, String outputPin, double inputDb)
             throws Exception {
         double amplitude = Math.pow(10, inputDb / 20.0);
@@ -51,7 +51,10 @@ public class DynamicsDocTest {
         short[] left = extractChannel(stereo, 0);
         double[] audio = toDouble(left);
         int start = audio.length * 3 / 4;
-        return rmsDb(audio, start, audio.length);
+        double pk = 0;
+        for (int i = start; i < audio.length; i++)
+            pk = Math.max(pk, Math.abs(audio[i]));
+        return pk > 0 ? 20 * Math.log10(pk) : -100;
     }
 
     // ==================== Noise Gate ====================

@@ -57,6 +57,8 @@ public class rms_limiterControlPanel extends spinCADControlPanel {
 	// declare the controls
 	FineControlSlider inGainSlider;
 	JTextField  inGainField;
+	FineControlSlider makeupGainSlider;
+	JTextField  makeupGainField;
 
 public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 		
@@ -105,6 +107,52 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 						inGaininnerPanel.setBorder(inGainborder2);
 			
 						frame.add(inGaininnerPanel);
+			//
+			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
+			//
+					//---------------------------------------------
+					// LOGFREQ is used for single pole filters
+					//---------------------------------------------
+					// LOGFREQ2 is used for 2-pole SVF
+					// ---------------------------------------------
+					// QFACTOR is a log-scale Q slider; stored value = 1/Q
+					// ---------------------------------------------
+					// dB level slider: multiplier sets steps per dB (e.g. 10 = 0.1 dB steps)
+						makeupGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0 * 10.0),(int) (6 * 10.0), (int) (20 * Math.log10(gCB.getmakeupGain()) * 10.0));
+						makeupGainSlider.setSubdivision((int) 10.0);
+						makeupGainSlider.addChangeListener(new rms_limiterListener());
+						makeupGainField = new JTextField();
+						makeupGainField.setHorizontalAlignment(JTextField.CENTER);
+						Border makeupGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
+						makeupGainField.setBorder(makeupGainBorder1);
+						makeupGainField.addActionListener(new java.awt.event.ActionListener() {
+							@Override
+							public void actionPerformed(java.awt.event.ActionEvent e) {
+								try {
+									double val = Double.parseDouble(makeupGainField.getText().replaceAll("[^0-9.\\-]", ""));
+						int sliderVal = (int) Math.round(val * 10.0);
+						sliderVal = Math.max(makeupGainSlider.getMinimum(), Math.min(makeupGainSlider.getMaximum(), sliderVal));
+						makeupGainSlider.setValue(sliderVal);
+						gCB.setmakeupGain((double) sliderVal / 10.0);
+									updatemakeupGainLabel();
+								} catch (NumberFormatException ex) {
+									updatemakeupGainLabel();
+								}
+							}
+						});
+						updatemakeupGainLabel();
+			
+						Border makeupGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+						JPanel makeupGaininnerPanel = new JPanel();
+			
+						makeupGaininnerPanel.setLayout(new BoxLayout(makeupGaininnerPanel, BoxLayout.Y_AXIS));
+						makeupGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						makeupGaininnerPanel.add(makeupGainField);
+						makeupGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
+						makeupGaininnerPanel.add(makeupGainSlider);
+						makeupGaininnerPanel.setBorder(makeupGainborder2);
+			
+						frame.add(makeupGaininnerPanel);
 				frame.addWindowListener(new MyWindowListener());
 				frame.pack();
 				frame.setResizable(false);
@@ -120,6 +168,10 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 			if(ce.getSource() == inGainSlider) {
 			gCB.setinGain((double) (inGainSlider.getValue()/100.0));
 				updateinGainLabel();
+			}
+			if(ce.getSource() == makeupGainSlider) {
+			gCB.setmakeupGain((double) (makeupGainSlider.getValue()/10.0));
+				updatemakeupGainLabel();
 			}
 			}
 		}
@@ -140,6 +192,9 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 		}
 		private void updateinGainLabel() {
 		inGainField.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));
+		}
+		private void updatemakeupGainLabel() {
+		makeupGainField.setText("Makeup (dB) " + String.format("%4.1f dB", (20 * Math.log10(gCB.getmakeupGain()))));
 		}
 		
 		class MyWindowListener implements WindowListener

@@ -21,6 +21,9 @@ equ logPin reg5
 equ inGain 1.0
 @sliderLabel inGain Input_Gain 0.1 1.0 1.0 100.0 2
 
+equ makeupGain 1.0
+@sliderLabel makeupGain 'Makeup (dB)' 0 6 0 10.0 1 DBLEVEL
+
 equ filt 0.001
 
 @isPinConnected Input
@@ -40,7 +43,7 @@ rdax	sidechain, inGain
 rdax	input, inGain
 @endif
 mulx	rms		;apply RMS gain
-sof	1.5, 0		;restore gain
+sof	makeupGain, 0	;makeup gain
 wrax	output, 0
 @setOutputPin Output output
 @setOutputPin RMS rms

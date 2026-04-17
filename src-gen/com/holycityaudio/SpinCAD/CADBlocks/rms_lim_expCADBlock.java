@@ -35,6 +35,7 @@
 			private int gain;
 			private int expavg;
 			private int output;
+			private double makeupGain = 1.0;
 
 			public rms_lim_expCADBlock(int x, int y) {
 				super(x, y);
@@ -44,6 +45,7 @@
 				addInputPin(this, "Input_Left");
 				addOutputPin(this, "Audio_Output");
 			// if any control panel elements declared, set hasControlPanel to true
+						hasControlPanel = true;
 						}
 		
 			// In the event there are parameters editable by control panel
@@ -107,7 +109,7 @@
 			sfxb.mulx(gain);
 			sfxb.writeRegister(gain, 1);
 			sfxb.mulx(adcl);
-			sfxb.scaleOffset(1.5, 0);
+			sfxb.scaleOffset(makeupGain, 0);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Audio_Output").setRegister(output);
 			}
@@ -116,4 +118,11 @@
 			}
 			
 			// create setters and getter for control panel variables
+			public void setmakeupGain(double __param) {
+				makeupGain = Math.pow(10.0, __param/20.0);	
+			}
+			
+			public double getmakeupGain() {
+				return makeupGain;
+			}
 		}	

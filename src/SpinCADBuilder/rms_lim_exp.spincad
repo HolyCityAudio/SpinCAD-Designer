@@ -8,11 +8,11 @@
 equ	sigin	reg0
 equ	avg	reg1
 equ	gain	reg2
-// equ	expg	reg3
 equ	expavg	reg4
-// equ	test	reg5
 equ output reg6
-// equ dacr reg7
+
+equ makeupGain 1.0
+@sliderLabel makeupGain 'Makeup (dB)' 0 6 0 10.0 1 DBLEVEL
 @isPinConnected Input_Left
 
 rdax	adcl,1.0
@@ -44,7 +44,7 @@ mulx	gain		;multiply by gain
 wrax	gain,1
 
 mulx	adcl		;use final gain value to affect output
-sof	1.5,0		;restore gain, to avoid output clipping
+sof	makeupGain,0	;makeup gain
 wrax	output,0
 @setOutputPin Audio_Output output
 @endif
