@@ -263,47 +263,10 @@ public class DynamicsDocTest {
         writePlot(new File(docsDir, "dynamics-rms_limiter.png"),
             "RMS Limiter", "Input (dB)", "Output (dB)",
             -80, 0, -80, 0, inputDb,
-            new double[][]{outputDb}, new String[]{"output"},
-            new String[]{COLORS[0]});
+            new double[][]{inputDb, outputDb}, new String[]{"input", "output"},
+            new String[]{"#aaaaaa", COLORS[0]});
 
-        // Waveform at 0 dB to show distortion
-        File sineWav = generateSineWav(0.5, 440, 1.0);
-        rms_limiterCADBlock b0 = new rms_limiterCADBlock(100, 100);
-        b0.setinGain(1.0);
-        short[] stereo = simulate(b0, sineWav, null, "Output", null, tempDir);
-        if (stereo != null) {
-            double[] audio = toDouble(extractChannel(stereo, 0));
-            // Measure distortion: peak vs RMS ratio (pure sine = sqrt(2))
-            int qStart = audio.length * 3 / 4;
-            double outRms = rms(audio, qStart, audio.length);
-            double outPeak = 0;
-            for (int i = qStart; i < audio.length; i++)
-                outPeak = Math.max(outPeak, Math.abs(audio[i]));
-            double crestFactor = outPeak / outRms;
-            System.out.printf("%nRMS Limiter at 0 dB input:%n");
-            System.out.printf("  Output peak: %.4f  RMS: %.4f  Crest: %.3f (sine=%.3f)%n",
-                outPeak, outRms, crestFactor, Math.sqrt(2));
-            if (outPeak > 0.99)
-                System.out.println("  ** Output is clipping — the 1.5x output "
-                    + "scale factor causes hard clipping at 0 dB input");
-
-            int skipSamples = (int) (0.25 * SAMPLE_RATE);
-            int displaySamples = (int) (3.0 / 440 * SAMPLE_RATE);
-            int start = Math.min(skipSamples, audio.length - displaySamples - 1);
-            int end = start + displaySamples;
-            double[] wave = Arrays.copyOfRange(audio, start, end);
-            double[] timeMs = new double[wave.length];
-            for (int i = 0; i < timeMs.length; i++)
-                timeMs[i] = 1000.0 * i / SAMPLE_RATE;
-
-            writePlot(new File(docsDir, "dynamics-rms_limiter_0db.png"),
-                "RMS Limiter (0 dB input)", "Time (ms)", "Amplitude",
-                0, timeMs[timeMs.length - 1], -1, 1, timeMs,
-                new double[][]{wave}, new String[]{"0 dB in"},
-                new String[]{COLORS[0]});
-        }
-
-        System.out.println("  wrote dynamics-rms_limiter.png, dynamics-rms_limiter_0db.png");
+        System.out.println("  wrote dynamics-rms_limiter.png");
     }
 
     // ==================== Soft Knee Limiter ====================
@@ -329,8 +292,8 @@ public class DynamicsDocTest {
         writePlot(new File(docsDir, "dynamics-soft_knee_limiter.png"),
             "Soft Knee Limiter", "Input (dB)", "Output (dB)",
             -80, 0, -80, 0, inputDb,
-            new double[][]{outputDb}, new String[]{"output"},
-            new String[]{COLORS[0]});
+            new double[][]{inputDb, outputDb}, new String[]{"input", "output"},
+            new String[]{"#aaaaaa", COLORS[0]});
         System.out.println("  wrote dynamics-soft_knee_limiter.png");
     }
 

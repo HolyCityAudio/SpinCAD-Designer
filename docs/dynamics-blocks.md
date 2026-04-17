@@ -217,7 +217,7 @@ frequency-selective limiting.
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Input Gain | linear | 0.1 | Pre-limiter input gain |
+| Input Gain | linear | 1.0 | Output level (detection runs at full scale) |
 
 The four diagnostic control outputs (RMS, Square, Log, Avg) expose
 intermediate signals from the detector chain, which can be connected to
@@ -225,17 +225,12 @@ a VU meter or other monitoring blocks for visualization.
 
 When the Side Chain input is connected, the limiter's gain reduction is
 driven by the side chain signal rather than the main input. When only the
-Input is connected, the Side Chain defaults to the second ADC channel.
+Input is connected, the gain is applied directly to the input signal.
 
 ![RMS Limiter transfer curve](images/dynamics-rms_limiter.png)
 
-Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps.
-
-![RMS Limiter at 0 dB input](images/dynamics-rms_limiter_0db.png)
-
-Waveform at 0 dB input showing distortion. The 1.5x output scale factor
-in the algorithm causes hard clipping when the RMS gain envelope does not
-reduce the signal enough to keep the product below 1.0.
+Input-vs-output transfer curve (gray = unity reference). Limiting begins
+around -10 dBFS.
 
 ![RMS Limiter tone burst response](images/dynamics-rms_limiter-burst.png)
 
@@ -266,9 +261,12 @@ to ensure stable behavior at very low signal levels.
 
 ![Soft Knee Limiter transfer curve](images/dynamics-soft_knee_limiter.png)
 
-Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps. The soft
-knee behavior is visible as a gradual change in slope rather than a sharp
-break at a fixed threshold.
+Input-vs-output transfer curve (gray = unity reference). The soft knee
+behavior is visible as a gradual change in slope rather than a sharp
+break at a fixed threshold. The ~1.3 dB offset below unity at low levels
+is inherent to the algorithm: the `SOF 0, 0.125` bias through
+`LOG(-0.4, -0.25)` / `EXP(1,0)` produces a gain of 0.1436, which
+doesn't quite compensate for the 6x output scaling.
 
 ![Soft Knee Limiter tone burst response](images/dynamics-soft_knee_limiter-burst.png)
 
