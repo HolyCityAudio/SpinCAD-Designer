@@ -93,6 +93,10 @@ The knee point shifts with the threshold.
 
 Stepped 1 kHz tone bursts from -60 to 0 dBFS (ratio=8:1, threshold=-25 dB).
 The loudest bursts are compressed to nearly the same level in the output.
+The brief spike visible on the leading edge of each compressed burst is the
+attack transient — the compressor takes a short time to respond to the sudden
+level change. The Attack Time parameter controls how quickly the compressor
+reacts; shorter attack times reduce this overshoot.
 
 ---
 
@@ -141,7 +145,10 @@ Input-vs-output transfer curve at strength=0.75 for two threshold settings.
 
 Stepped 1 kHz tone bursts from -60 to 0 dBFS (strength=1.0, threshold=-25 dB).
 The output levels are compressed above threshold, producing a narrower
-dynamic range than the input.
+dynamic range than the input. The brief spike visible on the leading edge of
+each compressed burst is the attack transient — the compressor takes a short
+time to respond to the sudden level change. The Attack Time parameter controls
+how quickly the compressor reacts; shorter attack times reduce this overshoot.
 
 ---
 

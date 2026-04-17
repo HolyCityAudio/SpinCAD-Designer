@@ -312,6 +312,66 @@ public class PlotUtils {
         ImageIO.write(img, "png", file);
     }
 
+    // ==================== dB envelope plots ====================
+
+    /** Compute windowed RMS envelope in dB from raw sample data. */
+    public static double[] envelopeDb(double[] data, int windowSamples, double floorDb) {
+        int numWindows = data.length / windowSamples;
+        double[] env = new double[numWindows];
+        for (int i = 0; i < numWindows; i++) {
+            int start = i * windowSamples;
+            double sumSq = 0;
+            for (int j = start; j < start + windowSamples; j++) {
+                sumSq += data[j] * data[j];
+            }
+            double rmsVal = Math.sqrt(sumSq / windowSamples);
+            env[i] = rmsVal > 0 ? 20 * Math.log10(rmsVal) : floorDb;
+            if (env[i] < floorDb) env[i] = floorDb;
+        }
+        return env;
+    }
+
+    /** Write a 2-panel stacked dB envelope plot. */
+    public static void writeStackedEnvelopePlot(File file, String title,
+            double[] timeMs, double[] topDbData, double[] bottomDbData,
+            String topLabel, String bottomLabel,
+            double dbMin, double dbMax) throws IOException {
+        int plotW = 360, plotH = 160;
+        int padL = 50, padR = 20, padT = 35, padB = 15;
+        int gap = 55, legendH = 40;
+        int totalW = padL + plotW + padR;
+        int totalH = padT + plotH + gap + plotH + padB + legendH;
+        double xMin = timeMs[0], xMax = timeMs[timeMs.length - 1];
+
+        BufferedImage img = new BufferedImage(totalW, totalH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = createGraphics(img, totalW, totalH);
+
+        g.setFont(new Font("Arial", Font.BOLD, 11));
+        g.setColor(Color.BLACK);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(title, padL + plotW / 2 - fm.stringWidth(title) / 2, 14);
+
+        int numYTicks = (int) ((dbMax - dbMin) / 10);
+
+        int py1 = padT;
+        drawPlot(g, padL, py1, plotW, plotH, topLabel,
+            "Time (ms)", "dB", xMin, xMax, dbMin, dbMax, 5, numYTicks);
+        drawCurve(g, timeMs, topDbData, padL, py1, plotW, plotH,
+            xMin, xMax, dbMin, dbMax, COLORS[0]);
+
+        int py2 = padT + plotH + gap;
+        drawPlot(g, padL, py2, plotW, plotH, bottomLabel,
+            "Time (ms)", "dB", xMin, xMax, dbMin, dbMax, 5, numYTicks);
+        drawCurve(g, timeMs, bottomDbData, padL, py2, plotW, plotH,
+            xMin, xMax, dbMin, dbMax, COLORS[1]);
+
+        drawLegend(g, padL, py2 + plotH + 52,
+            new String[]{topLabel, bottomLabel},
+            new String[]{COLORS[0], COLORS[1]});
+        g.dispose();
+        ImageIO.write(img, "png", file);
+    }
+
     // ==================== WAV generation ====================
 
     /** Generate a stereo sine wave WAV at given frequency and amplitude. */

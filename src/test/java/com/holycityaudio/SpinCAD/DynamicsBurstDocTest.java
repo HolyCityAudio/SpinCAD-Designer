@@ -12,10 +12,10 @@ import org.junit.jupiter.api.io.TempDir;
 import com.holycityaudio.SpinCAD.CADBlocks.*;
 
 /**
- * Generates stepped-tone-burst waveform plots for dynamics blocks.
+ * Generates stepped-tone-burst dB envelope plots for dynamics blocks.
  *
  * Input: 1 kHz tone bursts at -60 to 0 dBFS in 10 dB steps,
- * 200 ms on / 200 ms off. Output: stacked input/output PNG.
+ * 200 ms on / 200 ms off. Output: stacked input/output dB envelope PNG.
  */
 public class DynamicsBurstDocTest {
 
@@ -26,6 +26,8 @@ public class DynamicsBurstDocTest {
     private static final double BURST_DURATION = 0.200;
     private static final double SILENCE_DURATION = 0.200;
     private static final double[] LEVELS_DB = {-60, -50, -40, -30, -20, -10, 0};
+    private static final int ENV_WINDOW = 64; // ~2 ms at 32768 Hz
+    private static final double DB_FLOOR = -70;
     private static final File DOCS_DIR = new File("docs/images");
 
     @BeforeAll
@@ -106,13 +108,13 @@ public class DynamicsBurstDocTest {
         double[] input = toDouble(extractChannel(inputStereo, 0));
         double[] output = toDouble(extractChannel(stereo, 0));
 
-        int decimation = 8;
-        double[] inputDec = decimate(input, decimation);
-        double[] outputDec = decimate(output, decimation);
-        double[] timeMs = timeAxisMs(inputDec.length, SAMPLE_RATE / decimation);
+        double[] inputEnv = envelopeDb(input, ENV_WINDOW, DB_FLOOR);
+        double[] outputEnv = envelopeDb(output, ENV_WINDOW, DB_FLOOR);
+        double[] timeMs = timeAxisMs(inputEnv.length, SAMPLE_RATE / ENV_WINDOW);
 
-        writeStackedWaveformPlot(new File(DOCS_DIR, filename), title,
-            timeMs, inputDec, outputDec, "Input", "Output");
+        writeStackedEnvelopePlot(new File(DOCS_DIR, filename), title,
+            timeMs, inputEnv, outputEnv, "Input", "Output",
+            DB_FLOOR, 0);
         System.out.println("  wrote " + filename);
     }
 
