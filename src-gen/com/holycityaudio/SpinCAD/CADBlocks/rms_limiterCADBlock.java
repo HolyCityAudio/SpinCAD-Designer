@@ -36,8 +36,8 @@
 			private int output;
 			private int square;
 			private int logPin;
-			private double inGain = 0.1;
-			private double filt = 0.1;
+			private double inGain = 1.0;
+			private double filt = 0.001;
 
 			public rms_limiterCADBlock(int x, int y) {
 				super(x, y);
@@ -97,7 +97,7 @@
 			square = sfxb.allocateReg();
 			logPin = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
-			sfxb.readRegister(input, inGain);
+			sfxb.readRegister(input, 1.0);
 			sfxb.writeRegister(sigin, 1);
 			sfxb.mulx(sigin);
 			sfxb.writeRegister(square, 1.0);
@@ -106,8 +106,14 @@
 			sfxb.log(-0.5, -0.125);
 			sfxb.writeRegister(logPin, 1.0);
 			sfxb.exp(1, 0);
-			sfxb.writeRegister(rms, 1);
-			sfxb.mulx(sidechain);
+			sfxb.writeRegister(rms, 0);
+			if(this.getPin("Side Chain").isConnected() == true) {
+			sfxb.readRegister(sidechain, inGain);
+			} else {
+			sfxb.readRegister(input, inGain);
+			}
+			
+			sfxb.mulx(rms);
 			sfxb.scaleOffset(1.5, 0);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Output").setRegister(output);

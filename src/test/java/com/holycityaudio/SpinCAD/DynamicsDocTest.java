@@ -250,7 +250,7 @@ public class DynamicsDocTest {
         double[] outputDb = new double[inputDb.length];
         for (int li = 0; li < inputDb.length; li++) {
             rms_limiterCADBlock b = new rms_limiterCADBlock(100, 100);
-            b.setinGain(0.5);
+            b.setinGain(1.0);
             outputDb[li] = measureDb(b, "Output", inputDb[li]);
         }
 
@@ -269,7 +269,7 @@ public class DynamicsDocTest {
         // Waveform at 0 dB to show distortion
         File sineWav = generateSineWav(0.5, 440, 1.0);
         rms_limiterCADBlock b0 = new rms_limiterCADBlock(100, 100);
-        b0.setinGain(0.5);
+        b0.setinGain(1.0);
         short[] stereo = simulate(b0, sineWav, null, "Output", null, tempDir);
         if (stereo != null) {
             double[] audio = toDouble(extractChannel(stereo, 0));
