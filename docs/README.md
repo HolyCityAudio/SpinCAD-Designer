@@ -36,3 +36,4 @@ The block reference pages below describe each block's pins, controls, and typica
 - [DSP References](DSP-references.md) -- external DSP learning resources
 - [Release Notes 0.99-1069](release-notes-0.99-1069.md)
 - [Legacy Forum Archive](legacy-archive.md) -- discussion threads saved from the old Holy City Audio phpBB forum
+- [Acknowledgements](acknowledgements.md) -- people who made SpinCAD possible

@@ -7,9 +7,7 @@ potentiometer inputs.
 |-------|-------------|
 | [Input](#input) | Stereo ADC input |
 | [Output](#output) | Stereo DAC output |
-| [Pot 0](#pot-0) | Hardware potentiometer 0 |
-| [Pot 1](#pot-1) | Hardware potentiometer 1 |
-| [Pot 2](#pot-2) | Hardware potentiometer 2 |
+| [Pot 0 / 1 / 2](#pot-0--1--2) | Hardware potentiometer inputs |
 
 ---
 
@@ -61,47 +59,16 @@ A minimal bypass patch wires Input directly to Output:
 
 ---
 
-## Pot 0
+## Pot 0 / 1 / 2
 
-Reads the FV-1 hardware potentiometer 0 (POT0) and outputs its value as
-a control signal. The three Pot blocks are the primary way to give the
-end user real-time control over a patch's parameters.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Control Output 1 | Control Out | Pot 0 value (0-1) |
-
-**Control panel parameters:**
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Speed Up | on/off | off | Applies a shelving high-pass filter for faster pot response and full-range recovery |
-
----
-
-## Pot 1
-
-Reads hardware potentiometer 1 (POT1).
+Each Pot block reads one of the FV-1's three hardware potentiometers
+(POT0, POT1, POT2) and outputs its value as a control signal. The Pot
+blocks are the primary way to give the end user real-time control over
+a patch's parameters.
 
 | Pin | Type | Description |
 |-----|------|-------------|
-| Control Output 1 | Control Out | Pot 1 value (0-1) |
-
-**Control panel parameters:**
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Speed Up | on/off | off | Applies a shelving high-pass filter for faster pot response and full-range recovery |
-
----
-
-## Pot 2
-
-Reads hardware potentiometer 2 (POT2).
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Control Output 1 | Control Out | Pot 2 value (0-1) |
+| Control Output 1 | Control Out | Pot value (0-1) |
 
 **Control panel parameters:**
 

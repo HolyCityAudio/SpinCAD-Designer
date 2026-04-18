@@ -29,3 +29,7 @@
 ## Legacy Forum Archive
 
 * [Legacy Forum Archive](legacy-archive.md)
+
+## Acknowledgements
+
+* [Acknowledgements](acknowledgements.md)
