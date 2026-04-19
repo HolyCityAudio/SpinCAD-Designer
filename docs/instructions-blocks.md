@@ -3,6 +3,13 @@
 These blocks perform mathematical operations on control signals using
 FV-1 DSP instructions. They are found in the Instructions menu.
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [Absolute Value](#absolute-value) | [Exp](#exp) | [Half Wave](#half-wave) |
+| [Log](#log) | [Maximum](#maximum) | [Scale/Offset](#scale-offset) |
+
 ---
 
 ## Absolute Value
@@ -21,26 +28,6 @@ The plot shows a sine wave input and the resulting full-wave rectified
 output, with negative half-cycles folded to positive.
 
 ![Absolute Value](images/instructions-absa.png)
-
----
-
-## Half Wave
-
-Half-wave rectifier that passes positive values through and clamps
-negative values to zero. Uses a conditional skip (SKP GEZ) to clear
-the accumulator when the input is negative. There is no control panel.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Control In | Input signal |
-| Output | Control Out | Rectified output (negative values become 0) |
-
-Implements: `output = max(input, 0)`
-
-The plot shows a sine wave input and the half-wave rectified output,
-where negative half-cycles are clamped to zero.
-
-![Half Wave](images/instructions-halfwave.png)
 
 ---
 
@@ -75,6 +62,26 @@ at x=0 and clips immediately.
 
 ---
 
+## Half Wave
+
+Half-wave rectifier that passes positive values through and clamps
+negative values to zero. Uses a conditional skip (SKP GEZ) to clear
+the accumulator when the input is negative. There is no control panel.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Control In | Input signal |
+| Output | Control Out | Rectified output (negative values become 0) |
+
+Implements: `output = max(input, 0)`
+
+The plot shows a sine wave input and the half-wave rectified output,
+where negative half-cycles are clamped to zero.
+
+![Half Wave](images/instructions-halfwave.png)
+
+---
+
 ## Log
 
 Applies the FV-1 LOG instruction, which computes a base-2 logarithm of
@@ -105,40 +112,6 @@ Negative C inverts the curve. The plot uses a logarithmic input scale
 
 ---
 
-## Root
-
-Computes the Nth root of the input signal using a LOG/EXP pair. By
-default it computes the square root. The LOG instruction divides the
-logarithm by N, and the EXP instruction converts back to linear,
-effectively computing `input^(1/N)`.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Control Input 1 | Control In | Input signal |
-| Control Output 1 | Control Out | Nth root of input |
-
-**Control panel parameters:**
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Root | integer | 2 | Root degree (2 = square root, 3 = cube root, etc.) |
-| Invert | on/off | off | Negate and offset input before computing root |
-| Flip | on/off | off | Negate and offset output after computing root |
-
-The Invert option transforms the input via `x' = -x + 1.0` before the
-root computation. The Flip option applies the same transformation to
-the output. These are useful for inverting the shape of the curve.
-
-**Behavior at zero:** Because the Root block uses LOG internally, inputs
-at or very near zero produce extreme values (LOG of zero is negative
-infinity). The FV-1 saturates this to its minimum value, causing a spike
-near zero as shown in the plot. For practical use, ensure inputs stay
-above approximately 0.01.
-
-![Root](images/instructions-root.png)
-
----
-
 ## Maximum
 
 Outputs the larger of two input signals using the FV-1 MAXX instruction,
@@ -166,3 +139,76 @@ Input 2. The output follows the sine when it exceeds the threshold,
 and holds at 0.4 otherwise.
 
 ![Maximum](images/instructions-maximum.png)
+
+---
+
+## Scale/Offset
+
+The Scale/Offset instruction is used extensively in SpinCAD. A very
+common use is to transform the 0 to 1 range of a Pot to a more limited
+range to control an audio circuit block.
+
+It implements the linear formula `output = m * input + b`, where `m` is
+the Scale (slope) and `b` is the Offset (y-axis intercept). The FV-1's
+ALU clips the output to the range ±1.
+
+Rather than entering `m` and `b` directly, the control panel presents
+four sliders that specify an input range and the desired output range.
+The derived Scale and Offset values are shown at the bottom of the
+panel.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Control In | Input signal |
+| Output | Control Out | Scaled and offset signal |
+
+**Control panel parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| Input Low | The low end of the expected input range |
+| Input High | The high end of the expected input range |
+| Output Low | Desired output value when input is at Input Low |
+| Output High | Desired output value when input is at Input High |
+
+![Scale/Offset in a patch](images/instructions-scale-offset.png)
+
+*A Pot feeds a Scale/Offset block into the frequency control of an
+SVF 2P filter. The Output Low/High sliders restrict the pot's effective
+range to 0.25 to 0.95 -- the useful musical range for this filter.*
+
+Each slider has low and high thumbs for the two endpoints:
+
+![Slider thumbs](images/instructions-scale-offset-slider.png)
+
+### Range Limits
+
+The FV-1's SOF instruction can only realize Scale values between
+approximately −2.0 and +2.0. If the input and output ranges you request
+imply a Scale outside that window, the derived value appears in red and
+the mapping cannot be produced exactly.
+
+![Scale/Offset out-of-range](images/instructions-scale-offset-error.png)
+
+*Here, mapping an input of 0 to 1 onto an output of 1.00 down to −1.04
+would require a Scale of −2.04, which is beyond the instruction's range.
+Tighten the input or output range to bring the derived Scale back within
+limits.*
+
+### Why Scale/Offset Matters
+
+Consider a wah-style filter built from an SVF 2P connected directly to
+a pot:
+
+![Wah without Scale/Offset](images/instructions-scale-offset-wah.png)
+
+The pot sweeps the filter over its full 0 to 1 travel, but only a narrow
+window sounds musical -- the extremes are either clamped shut or
+essentially bypass. Inserting a Scale/Offset block between the pot and
+the filter lets you confine the pot's motion to that useful window,
+dramatically improving the feel of the control.
+
+**Tip for fine adjustments:** If you find it difficult to set an exact value
+by dragging a slider handle with the mouse, click on the handle to select it,
+then use the left and right arrow keys to increment the parameter by its
+smallest step.

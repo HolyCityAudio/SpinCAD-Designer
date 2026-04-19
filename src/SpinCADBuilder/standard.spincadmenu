@@ -148,6 +148,7 @@
 @menuitem "Power" PowerControl
 @menuitem "Ramp Sample/Hold" SampleHold
 @menuitem "Ratio" Ratio
+@menuitem "Root" Root
 @menuitem "Slicer" Slicer
 @menuitem "Smoother" control_smoother
 @menuitem "Tap Tempo" TapTempo
@@ -165,6 +166,5 @@
 @menuitem "Log" Log
 @menuitem "Maximum" maxx
 @menuitem "Multiply" Multiply
-@menuitem "Root" Root
 @menuitem "Scale/Offset" ScaleOffsetControl
 // @menuitem "Control Panel Test" ControlPanelTest

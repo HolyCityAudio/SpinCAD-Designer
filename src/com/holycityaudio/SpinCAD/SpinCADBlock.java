@@ -713,6 +713,9 @@ public class SpinCADBlock extends SpinFXBlock {
 		case "FILTTOTIME":
 			initial = logvalToSlider(filtToTime(initVal), pointsPerDecade);
 			break;
+		case "QFACTOR":
+			initial = logvalToSlider(1.0 / initVal, pointsPerDecade);
+			break;
 		default:
 			initial = leftLimit;
 		}

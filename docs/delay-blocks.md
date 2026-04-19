@@ -5,64 +5,13 @@ drum echo, BBD emulation, reverse delay, and stutter/glitch effects.
 All delays use the FV-1's on-chip delay memory (32768 samples max at
 32768 Hz sample rate, approximately 1 second).
 
----
+### Block Index
 
-## Six Tap Delay
-
-A 6-tap stereo delay with independent tap ratios and gains. Taps are
-mixed into two stereo outputs (L/R), with the full delay endpoint
-available as a separate output for feedback routing.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Audio signal |
-| Feedback In | Audio In | External feedback path |
-| Mix L Out | Audio Out | Left stereo mix of taps |
-| Mix R Out | Audio Out | Right stereo mix of taps |
-| Delay_Out_End | Audio Out | End-of-delay output |
-| Delay_Time_1 | Control In | Delay time control |
-| Feedback Gain | Control In | Feedback level control |
-
-**Control panel parameters:**
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Input Gain | linear | 0.45 | Input level |
-| Feedback Gain | linear | 0.5 | Feedback amount |
-| Delay Length | samples | 32767 | Delay buffer size |
-| Tap 1-5 Ratio | 0-1 | 0.1-0.5 | Tap position as fraction of delay |
-| Tap 1-6 Gain | linear | 0.5-0.8 | Individual tap levels |
-
-![Six Tap impulse response](images/delay-sixtap.png)
-
----
-
-## Eight Tap Delay
-
-An 8-tap delay with independent tap ratios and gains. Taps 1-4 are
-mixed to output 1, taps 5-8 to output 2, with tap 8 available as a
-separate output for feedback.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Audio signal |
-| Feedback | Audio In | External feedback path |
-| Mix 1 Out | Audio Out | Mix of taps 1-4 |
-| Mix 2 Out | Audio Out | Mix of taps 5-8 |
-| Tap 8 Out | Audio Out | Tap 8 output (for feedback) |
-| Delay Time 1 | Control In | Delay time control |
-| Feedback Gain | Control In | Feedback level control |
-
-**Control panel parameters:**
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Input Gain | linear | 1.0 | Input level |
-| Feedback Gain | linear | 0.5 | Feedback amount |
-| Delay Length | samples | 32767 | Delay buffer size |
-| Tap 1-8 Gain | linear | 0.5 | Individual tap levels |
-
-![Eight Tap impulse response](images/delay-eighttap.png)
+| | | |
+|-|-|-|
+| [Drum Delay](#drum-delay) | [Eight Tap Delay](#eight-tap-delay) | [Long Delay](#long-delay) |
+| [MN3011 BBD Emulation](#mn3011-bbd-emulation) | [Reverse Delay](#reverse-delay) | [Six Tap Delay](#six-tap-delay) |
+| [Stutter](#stutter) | [Triple Tap Delay](#triple-tap-delay) | |
 
 ---
 
@@ -95,6 +44,35 @@ delay buffer.
 | Tap 1-4 Ratio | 0-1 | 0.25-0.85 | Head positions as fraction of delay |
 
 ![Drum Delay impulse response](images/delay-drumdelay.png)
+
+---
+
+## Eight Tap Delay
+
+An 8-tap delay with independent tap ratios and gains. Taps 1-4 are
+mixed to output 1, taps 5-8 to output 2, with tap 8 available as a
+separate output for feedback.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Audio signal |
+| Feedback | Audio In | External feedback path |
+| Mix 1 Out | Audio Out | Mix of taps 1-4 |
+| Mix 2 Out | Audio Out | Mix of taps 5-8 |
+| Tap 8 Out | Audio Out | Tap 8 output (for feedback) |
+| Delay Time 1 | Control In | Delay time control |
+| Feedback Gain | Control In | Feedback level control |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Input Gain | linear | 1.0 | Input level |
+| Feedback Gain | linear | 0.5 | Feedback amount |
+| Delay Length | samples | 32767 | Delay buffer size |
+| Tap 1-8 Gain | linear | 0.5 | Individual tap levels |
+
+![Eight Tap impulse response](images/delay-eighttap.png)
 
 ---
 
@@ -192,6 +170,36 @@ The Memory selector chooses between two modes: **Half** allocates
 | Memory | Half / Full | Half | Delay memory allocation and chunk length |
 
 ![Reverse Delay algorithm overview](images/delay-reversedelay.png)
+
+---
+
+## Six Tap Delay
+
+A 6-tap stereo delay with independent tap ratios and gains. Taps are
+mixed into two stereo outputs (L/R), with the full delay endpoint
+available as a separate output for feedback routing.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Audio signal |
+| Feedback In | Audio In | External feedback path |
+| Mix L Out | Audio Out | Left stereo mix of taps |
+| Mix R Out | Audio Out | Right stereo mix of taps |
+| Delay_Out_End | Audio Out | End-of-delay output |
+| Delay_Time_1 | Control In | Delay time control |
+| Feedback Gain | Control In | Feedback level control |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Input Gain | linear | 0.45 | Input level |
+| Feedback Gain | linear | 0.5 | Feedback amount |
+| Delay Length | samples | 32767 | Delay buffer size |
+| Tap 1-5 Ratio | 0-1 | 0.1-0.5 | Tap position as fraction of delay |
+| Tap 1-6 Gain | linear | 0.5-0.8 | Individual tap levels |
+
+![Six Tap impulse response](images/delay-sixtap.png)
 
 ---
 

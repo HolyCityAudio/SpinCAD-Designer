@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -43,16 +43,15 @@ class CoarseDelayControlPanel {
 	private FineControlSlider delaySliderFine;
 	private JTextField delayFieldCoarse;
 	private JTextField delayFieldFine;
-	private JFrame frame;
+	private JDialog frame;
 
 	public CoarseDelayControlPanel(CoarseDelayCADBlock sDCB) {
 		this.mD = sDCB;
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame();
+				frame = new JDialog(SpinCADFrame.getInstance(), "Servo Delay");
 				mD.controlPanelFrame = frame;
-				frame.setTitle("Servo Delay");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				// XXX debug, this may not be correct
 				int timeCoarse = calcDelayTimeCoarse(mD.getDelayLength());

@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -33,7 +33,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListener {
+class AmbienceControlPanel extends JDialog implements ChangeListener, ActionListener {
 	FineControlSlider inputGainSlider;
 	JSlider toneSlider;
 	JSlider decaySlider;
@@ -46,8 +46,8 @@ class AmbienceControlPanel extends JFrame implements ChangeListener, ActionListe
 	private AmbienceCADBlock block;
 
 	public AmbienceControlPanel(AmbienceCADBlock acb) {
+		super(SpinCADFrame.getInstance(), "Ambience");
 		this.block = acb;
-		this.setTitle("Ambience");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 

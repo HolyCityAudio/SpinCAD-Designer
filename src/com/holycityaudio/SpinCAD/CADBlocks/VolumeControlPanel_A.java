@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -36,7 +36,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class VolumeControlPanel_A {
-	private JFrame frame;
+	private JDialog frame;
 	JSlider gainSlider;
 	JTextField gainField;
 
@@ -49,9 +49,8 @@ class VolumeControlPanel_A {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
+				frame = new JDialog(SpinCADFrame.getInstance(), "Volume");
 				spbVol.controlPanelFrame = frame;
-				frame.setTitle("Volume");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				gainSlider = new FineControlSlider(JSlider.HORIZONTAL, -48, 0, spbVol.getGain());

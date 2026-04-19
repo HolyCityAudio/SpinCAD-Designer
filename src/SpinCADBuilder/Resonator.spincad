@@ -7,10 +7,10 @@
 @controlInput resoIn Resonance
 
 equ freq 0.2
-@sliderLabel freq 'Frequency' 0.01 0.5 0.2 1000.0 3
+@sliderLabel freq 'Frequency (Hz)' 50 2500 1000.0 100.0 1 LOGFREQ2
 
-equ reso 0.01
-@sliderLabel reso 'Damping (1/Q)' 0.001 0.05 0.01 1000.0 3
+equ reso 0.02
+@sliderLabel reso 'Q' 10 50 100.0 1000.0 0 QFACTOR
 
 ; Tuned feedback resonator (2-pole)
 ; Produces strong resonance at a single frequency

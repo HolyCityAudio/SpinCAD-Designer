@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -32,7 +32,7 @@ import javax.swing.event.ChangeListener;
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
-class FBInputControlPanel extends JFrame implements ChangeListener, ActionListener {
+class FBInputControlPanel extends JDialog implements ChangeListener, ActionListener {
 	/**
 	 *
 	 */
@@ -43,8 +43,8 @@ class FBInputControlPanel extends JFrame implements ChangeListener, ActionListen
 	private FBInputCADBlock inBlock;
 
 	public FBInputControlPanel(FBInputCADBlock fbInputCADBlock) {
+		super(SpinCADFrame.getInstance(), fbInputCADBlock.getName());
 		inBlock = fbInputCADBlock;
-		this.setTitle(inBlock.getName());
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		lGainSlider = new FineControlSlider(JSlider.HORIZONTAL, -190, 190, 0);

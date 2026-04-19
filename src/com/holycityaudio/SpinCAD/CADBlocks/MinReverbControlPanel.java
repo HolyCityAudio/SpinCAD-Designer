@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -32,15 +32,15 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class MinReverbControlPanel extends JFrame implements ChangeListener {
+class MinReverbControlPanel extends JDialog implements ChangeListener {
 	FineControlSlider inputGainSlider;
 	JTextField inputGainField;
 
 	private MinReverbCADBlock block;
 
 	public MinReverbControlPanel(MinReverbCADBlock mrb) {
+		super(SpinCADFrame.getInstance(), "Min Reverb");
 		this.block = mrb;
-		this.setTitle("Min Reverb");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 

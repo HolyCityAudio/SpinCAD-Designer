@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -35,7 +35,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
-class HPF1PControlPanel extends JFrame {
+class HPF1PControlPanel extends JDialog {
 	/**
 	 *
 	 */
@@ -47,6 +47,7 @@ class HPF1PControlPanel extends JFrame {
 	private HPF1PCADBlock HPF;
 
 	public HPF1PControlPanel(HPF1PCADBlock hpf1pcadBlock) {
+		super(SpinCADFrame.getInstance(), "High pass 1 pole");
 		this.HPF = hpf1pcadBlock;
 		createAndShowUI();
 	}
@@ -54,7 +55,6 @@ class HPF1PControlPanel extends JFrame {
 	private void createAndShowUI() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				setTitle("High pass 1 pole");
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
 				freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 800, 25000, 10000);

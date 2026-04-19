@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -33,7 +33,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
-class OscillatorControlPanel extends JFrame implements ChangeListener, ActionListener {
+class OscillatorControlPanel extends JDialog implements ChangeListener, ActionListener {
 	/**
 	 *
 	 */
@@ -45,9 +45,9 @@ class OscillatorControlPanel extends JFrame implements ChangeListener, ActionLis
 	private OscillatorCADBlock outBlock;
 
 	public OscillatorControlPanel(OscillatorCADBlock osc) {
+		super(SpinCADFrame.getInstance(), "Oscillator");
 		this.outBlock = osc;
 		sliderMax = (int) Math.round(SpinCADBlock.freqToFilt(5000.0) * 100000.0);
-		this.setTitle("Oscillator");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		lfoSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, sliderMax, 0);

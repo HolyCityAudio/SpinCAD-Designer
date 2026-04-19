@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -35,7 +35,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class BassmanEQControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 
 	FineControlSlider lSlider;	// "low"
 	JTextField lField;
@@ -55,9 +55,8 @@ class BassmanEQControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
+				frame = new JDialog(SpinCADFrame.getInstance(), "Bassman '59 EQ");
 				spbBMEQ.controlPanelFrame = frame;
-				frame.setTitle("Bassman '59 EQ");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				lSlider = new FineControlSlider(JSlider.HORIZONTAL, 1, 100, (int) (100 * spbBMEQ.getBass()));

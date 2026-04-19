@@ -8,6 +8,13 @@ are clamped to the -1.0 to +0.999 range. The compressor and limiter blocks
 use the FV-1's LOG and EXP instructions to compute gain in the logarithmic
 domain.
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [Noise Gate](#noise-gate) | [Peak Compressor](#peak-compressor) | [RMS Compressor](#rms-compressor) |
+| [RMS Limiter](#rms-limiter) | [RMS Limiter/Expander](#rms-limiterexpander) | [Soft Knee Limiter](#soft-knee-limiter) |
+
 ---
 
 ## Noise Gate
@@ -152,6 +159,43 @@ how quickly the compressor reacts; shorter attack times reduce this overshoot.
 
 ---
 
+## RMS Limiter
+
+**Menu:** Dynamics > RMS Limiter
+
+An RMS limiter with an external side chain input for keyed limiting. The
+side chain allows the gain reduction to be driven by a different signal
+than the one being processed -- useful for ducking, de-essing, or
+frequency-selective limiting.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input | Audio In | Signal to be limited |
+| Side Chain | Audio In | Signal that drives the detector |
+| Output | Audio Out | Limited output |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Makeup (dB) | 0--6 dB | 0 dB | Post-limiter makeup gain |
+
+When the Side Chain input is connected, the limiter's gain reduction is
+driven by the side chain signal rather than the main input. When only the
+Input is connected, the gain is applied directly to the input signal.
+
+![RMS Limiter transfer curve](images/dynamics-rms_limiter.png)
+
+Input-vs-output transfer curve (gray = unity reference). Limiting begins
+around -10 dBFS.
+
+![RMS Limiter tone burst response](images/dynamics-rms_limiter-burst.png)
+
+Stepped 1 kHz tone bursts from -60 to 0 dBFS. The limiter reduces the
+level of the loudest bursts while passing quieter signals unchanged.
+
+---
+
 ## RMS Limiter/Expander
 
 **Menu:** Dynamics > RMS Limiter/Expander
@@ -196,43 +240,6 @@ The limiting and expansion regions are visible -- loud signals are
 compressed while quiet signals are boosted:
 
 ![RMS Limiter/Expander expansion and limiting](images/dynamics-rms_lim_exp-expansion.png)
-
----
-
-## RMS Limiter
-
-**Menu:** Dynamics > RMS Limiter
-
-An RMS limiter with an external side chain input for keyed limiting. The
-side chain allows the gain reduction to be driven by a different signal
-than the one being processed -- useful for ducking, de-essing, or
-frequency-selective limiting.
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Signal to be limited |
-| Side Chain | Audio In | Signal that drives the detector |
-| Output | Audio Out | Limited output |
-
-**Control panel parameters:**
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Makeup (dB) | 0--6 dB | 0 dB | Post-limiter makeup gain |
-
-When the Side Chain input is connected, the limiter's gain reduction is
-driven by the side chain signal rather than the main input. When only the
-Input is connected, the gain is applied directly to the input signal.
-
-![RMS Limiter transfer curve](images/dynamics-rms_limiter.png)
-
-Input-vs-output transfer curve (gray = unity reference). Limiting begins
-around -10 dBFS.
-
-![RMS Limiter tone burst response](images/dynamics-rms_limiter-burst.png)
-
-Stepped 1 kHz tone bursts from -60 to 0 dBFS. The limiter reduces the
-level of the loudest bursts while passing quieter signals unchanged.
 
 ---
 

@@ -33,7 +33,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -60,7 +60,7 @@ public class SinCosLFOAControlPanel extends spinCADControlPanel implements Chang
 	private JLabel outputRangeLabel = new JLabel("Output Range");
 	private JComboBox<String> outputRange;
 
-	private JFrame frame;
+	private JDialog frame;
 	private SinCosLFOACADBlock pC;
 
 	private String listOptions[] = {
@@ -125,9 +125,8 @@ public class SinCosLFOAControlPanel extends spinCADControlPanel implements Chang
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("LFO");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Sin/Cos LFO");
 				pC.controlPanelFrame = frame;
-				frame.setTitle("Sin/Cos LFO");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				frame.setLocationRelativeTo(SpinCADFrame.getInstance());

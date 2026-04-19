@@ -102,6 +102,7 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.PowerControlCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SampleHoldCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.RatioCADBlock;
+	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.SlicerCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.control_smootherCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.TapTempoCADBlock;
@@ -114,7 +115,6 @@
 	import com.holycityaudio.SpinCAD.CADBlocks.LogCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.maxxCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.MultiplyCADBlock;
-	import com.holycityaudio.SpinCAD.CADBlocks.RootCADBlock;
 	import com.holycityaudio.SpinCAD.CADBlocks.ScaleOffsetControlCADBlock;
 
 	import java.awt.event.ActionEvent;
@@ -1081,6 +1081,15 @@
 	});
 	mn_control.add(mntm_Ratio);
 		
+	final JMenuItem mntm_Root = new JMenuItem("Root");
+	mntm_Root.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			SpinCADBlock pcB = new RootCADBlock(50, 100);
+			f.dropBlock(panel, pcB);
+		}
+	});
+	mn_control.add(mntm_Root);
+		
 	final JMenuItem mntm_Slicer = new JMenuItem("Slicer");
 	mntm_Slicer.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -1191,15 +1200,6 @@
 		}
 	});
 	mn_instructions.add(mntm_Multiply);
-		
-	final JMenuItem mntm_Root = new JMenuItem("Root");
-	mntm_Root.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			SpinCADBlock pcB = new RootCADBlock(50, 100);
-			f.dropBlock(panel, pcB);
-		}
-	});
-	mn_instructions.add(mntm_Root);
 		
 	final JMenuItem mntm_ScaleOffsetControl = new JMenuItem("Scale/Offset");
 	mntm_ScaleOffsetControl.addActionListener(new ActionListener() {

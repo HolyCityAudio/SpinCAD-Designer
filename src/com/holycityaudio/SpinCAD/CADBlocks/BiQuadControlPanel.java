@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
@@ -42,7 +42,7 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
 class BiQuadControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 	FineControlSlider freqSlider;
 	FineControlSlider resSlider;
 
@@ -60,9 +60,8 @@ class BiQuadControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
+				frame = new JDialog(SpinCADFrame.getInstance(), "BiQuad Filter");
 				spbBQF.controlPanelFrame = frame;
-				frame.setTitle("BiQuad Filter");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 1200, 36000, (int) (spbBQF.getFreq() * 10));

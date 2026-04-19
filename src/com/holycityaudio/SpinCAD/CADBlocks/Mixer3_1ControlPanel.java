@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -35,7 +35,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 class Mixer3_1ControlPanel {
-	private JFrame frame;
+	private JDialog frame;
 
 	FineControlSlider gain1Slider;
 	JTextField gain1Field;
@@ -53,9 +53,8 @@ class Mixer3_1ControlPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 
-				frame = new JFrame();
+				frame = new JDialog(SpinCADFrame.getInstance(), "Mixer 3-1");
 				spbMix.controlPanelFrame = frame;
-				frame.setTitle("Mixer 3-1");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
 				gain1Slider = new FineControlSlider(JSlider.HORIZONTAL, 1, 50, (int) (spbMix.getGain1() * 100));

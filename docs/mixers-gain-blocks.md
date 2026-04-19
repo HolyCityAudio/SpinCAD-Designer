@@ -1,21 +1,41 @@
-# Mixers/Gain Blocks Reference
+# I/O - Mix Blocks Reference
 
-These blocks handle signal level control, mixing, crossfading, and panning.
+These blocks handle audio input/output and signal routing: level control,
+mixing, crossfading, and panning.
 
-| Block | Description |
-|-------|-------------|
-| [2:1 (x2) Mixer](#21-x2-mixer) | Dual stereo 2-input mixer |
-| [2:1 Mixer](#21-mixer) | Two-input mono mixer |
-| [3:1 Mixer](#31-mixer) | Three-input mono mixer |
-| [4:1 Mixer](#41-mixer) | Four-input mono mixer |
-| [Crossfade](#crossfade) | Linear crossfade between two inputs |
-| [Crossfade 2](#crossfade-2) | Smooth-ramping crossfade |
-| [Crossfade 3](#crossfade-3) | Equal-power crossfade |
-| [Crossfade Adj](#crossfade-adj) | Adjustable-midpoint crossfade |
-| [Gain Boost](#gain-boost) | Fixed digital gain in 1 dB steps |
-| [Panner](#panner) | Mono-to-stereo pan |
-| [Phase Invert](#phase-invert) | Polarity inversion |
-| [Volume](#volume) | Gain with optional VCA control |
+### Block Index
+
+| | | |
+|-|-|-|
+| [2:1 Mixer](#21-mixer) | [2:1 (x2) Mixer](#21-x2-mixer) | [3:1 Mixer](#31-mixer) |
+| [4:1 Mixer](#41-mixer) | [Crossfade](#crossfade) | [Crossfade 2](#crossfade-2) |
+| [Crossfade 3](#crossfade-3) | [Crossfade Adj](#crossfade-adj) | [Gain Boost](#gain-boost) |
+| [Input](#input) | [Output](#output) | [Panner](#panner) |
+| [Phase Invert](#phase-invert) | [Volume](#volume) | |
+
+---
+
+## 2:1 Mixer
+
+Sums two audio inputs into a single output with independent gain controls.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input 1 | Audio In | First audio source |
+| Input 2 | Audio In | Second audio source |
+| Level 1 | Control In | Input 1 level |
+| Level 2 | Control In | Input 2 level |
+| Output | Audio Out | Mixed output |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Gain 1 | dB | 0 dB | Input 1 gain |
+| Gain 2 | dB | 0 dB | Input 2 gain |
+
+When a Level control pin is connected, it multiplies the corresponding
+input in addition to the panel gain setting.
 
 ---
 
@@ -23,8 +43,6 @@ These blocks handle signal level control, mixing, crossfading, and panning.
 
 Two independent 2:1 mixers in one block, producing stereo output. Inputs
 1a+1b mix to Output 1; inputs 2a+2b mix to Output 2.
-
-![2:1 (x2) Mixer block](images/mix-mixer42-block.png)
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -47,39 +65,9 @@ Two independent 2:1 mixers in one block, producing stereo output. Inputs
 
 ---
 
-## 2:1 Mixer
-
-Sums two audio inputs into a single output with independent gain controls.
-
-![2:1 Mixer block](images/mix-mixer21-block.png)
-
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input 1 | Audio In | First audio source |
-| Input 2 | Audio In | Second audio source |
-| Level 1 | Control In | Input 1 level |
-| Level 2 | Control In | Input 2 level |
-| Output | Audio Out | Mixed output |
-
-**Control panel:**
-
-![2:1 Mixer control panel](images/mix-mixer21-panel.png)
-
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Gain 1 | dB | 0 dB | Input 1 gain |
-| Gain 2 | dB | 0 dB | Input 2 gain |
-
-When a Level control pin is connected, it multiplies the corresponding
-input in addition to the panel gain setting.
-
----
-
 ## 3:1 Mixer
 
 Sums three audio inputs into a single output with independent gain controls.
-
-![3:1 Mixer block](images/mix-mixer31-block.png)
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -102,8 +90,6 @@ Sums three audio inputs into a single output with independent gain controls.
 ## 4:1 Mixer
 
 Sums four audio inputs into a single output with independent gain controls.
-
-![4:1 Mixer block](images/mix-mixer41-block.png)
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -130,8 +116,6 @@ Sums four audio inputs into a single output with independent gain controls.
 Crossfades between two audio inputs using a control signal. At 0 you hear
 only Input 1; at 1 you hear only Input 2.
 
-![Crossfade block](images/mix-crossfade-block.png)
-
 | Pin | Type | Description |
 |-----|------|-------------|
 | Input 1 | Audio In | First audio source |
@@ -139,9 +123,7 @@ only Input 1; at 1 you hear only Input 2.
 | Fade | Control In | Crossfade position (0-1) |
 | Audio Output | Audio Out | Mixed output |
 
-**Control panel:**
-
-![Crossfade control panel](images/mix-crossfade-panel.png)
+**Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
@@ -150,6 +132,8 @@ only Input 1; at 1 you hear only Input 2.
 
 This is a linear crossfade. At the midpoint (0.5), both signals are at
 half amplitude, resulting in a perceived -3 dB dip for uncorrelated signals.
+Based on [this code](http://spinsemi.com/knowledge_base/coding_examples.html#Cross_fading)
+at Spin's Knowledge Base.
 
 ---
 
@@ -158,8 +142,6 @@ half amplitude, resulting in a perceived -3 dB dip for uncorrelated signals.
 An alternative crossfade implementation using scale/offset operations for
 smoother gain ramping.
 
-![Crossfade 2 block](images/mix-crossfade2-block.png)
-
 | Pin | Type | Description |
 |-----|------|-------------|
 | Audio In 1 | Audio In | First audio source |
@@ -173,18 +155,15 @@ smoother gain ramping.
 |-----------|-------|---------|-------------|
 | Gain 1 | dB | -6 dB | Input 1 gain |
 | Gain 2 | dB | -6 dB | Input 2 gain |
-
-![Crossfade 2 gain curves](images/mix-crossfade2-curve.png)
 
 ---
 
 ## Crossfade 3
 
 An equal-power crossfade that maintains perceived loudness at the midpoint.
+This requires the most FV-1 instructions of the three Crossfade variants.
 Uses a more complex gain curve (0.707 multiplier) to avoid the -3 dB dip
 of a linear crossfade.
-
-![Crossfade 3 block](images/mix-crossfade3-block.png)
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -199,8 +178,6 @@ of a linear crossfade.
 |-----------|-------|---------|-------------|
 | Gain 1 | dB | -6 dB | Input 1 gain |
 | Gain 2 | dB | -6 dB | Input 2 gain |
-
-![Crossfade 3 gain curves](images/mix-crossfade3-curve.png)
 
 ---
 
@@ -261,16 +238,12 @@ Applies a fixed digital gain in 1 dB increments. Internally optimized to use
 cascaded `SOF -2.0, 0` instructions for each full 6 dB, with a single SOF
 for the remainder. Useful for boosting quiet signals before further processing.
 
-![Gain Boost block](images/mix-gainboost-block.png)
-
 | Pin | Type | Description |
 |-----|------|-------------|
 | Audio Input | Audio In | Signal to boost |
 | Audio Output | Audio Out | Boosted signal |
 
-**Control panel:**
-
-![Gain Boost control panel](images/mix-gainboost-panel.png)
+**Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
@@ -281,12 +254,50 @@ exceeds the FV-1's -1.0 to +0.999 range.
 
 ---
 
+## Input
+
+The Input block provides access to the FV-1's stereo ADC (analog-to-digital
+converter). It has no control panel and no adjustable parameters.
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Output 1 | Audio Out | Left ADC input (ADCL) |
+| Output 2 | Audio Out | Right ADC input (ADCR) |
+
+Not all patches require an Input block, but it is the only way to get
+audio into the patch from the ADC. A patch with internal oscillators
+feeding the Output block directly is still valid. The Input block is
+placed automatically when you create a new patch with Ctrl-N.
+
+---
+
+## Output
+
+The Output block routes audio to the FV-1's stereo DAC (digital-to-analog
+converter).
+
+| Pin | Type | Description |
+|-----|------|-------------|
+| Input 1 | Audio In | Left DAC output (DACL) |
+| Input 2 | Audio In | Right DAC output (DACR) |
+
+**Control panel parameters:**
+
+| Parameter | Range | Default | Description |
+|-----------|-------|---------|-------------|
+| Gain 1 | dB | 0 dB | Left channel output gain |
+| Gain 2 | dB | 0 dB | Right channel output gain |
+| Mono | on/off | off | Routes both inputs to DACL only |
+| DC Offset | on/off | off | Adds 0.02 DC offset (compensates for very early FV-1 revisions; probably not needed) |
+
+Every patch needs exactly one Output block.
+
+---
+
 ## Panner
 
 Distributes a mono audio input across two stereo outputs based on a control
 signal. At control value 0 the signal is fully left; at 1 it is fully right.
-
-![Panner block](images/mix-panner-block.png)
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -295,9 +306,7 @@ signal. At control value 0 the signal is fully left; at 1 it is fully right.
 | Output 1 | Audio Out | Left output |
 | Output 2 | Audio Out | Right output |
 
-**Control panel:**
-
-![Panner control panel](images/mix-panner-panel.png)
+**Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
@@ -310,8 +319,6 @@ signal. At control value 0 the signal is fully left; at 1 it is fully right.
 Inverts the polarity of an audio signal by multiplying by -1.0. There is
 no control panel. Useful for correcting phase issues or creating
 difference signals.
-
-![Phase Invert block](images/mix-phaseinvert-block.png)
 
 | Pin | Type | Description |
 |-----|------|-------------|
@@ -328,17 +335,13 @@ Multiplies an audio signal by a gain value. When the Volume control input
 is connected, the signal is also multiplied by the control value, making
 this block useful for VCA-style amplitude modulation.
 
-![Volume block](images/mix-volume-block.png)
-
 | Pin | Type | Description |
 |-----|------|-------------|
 | Input | Audio In | Audio signal |
 | Volume | Control In | 0-1 volume multiplier |
 | Output | Audio Out | Scaled audio signal |
 
-**Control panel:**
-
-![Volume control panel](images/mix-volume-panel.png)
+**Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|

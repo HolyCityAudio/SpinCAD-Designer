@@ -26,7 +26,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -41,7 +41,7 @@ import com.holycityaudio.SpinCAD.SpinCADFrame;
 public class EnvelopeFollowerControlPanel implements ChangeListener, ActionListener {
 
 	private EnvelopeFollowerCADBlock block;
-	private JFrame frame;
+	private JDialog frame;
 
 	// Detection mode selector
 	private JComboBox<String> detectModeCombo;
@@ -122,9 +122,8 @@ public class EnvelopeFollowerControlPanel implements ChangeListener, ActionListe
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Envelope Follower");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Envelope Follower");
 				block.controlPanelFrame = frame;
-				frame.setTitle("Envelope Follower");
 				frame.setResizable(false);
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 

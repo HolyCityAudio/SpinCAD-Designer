@@ -4,16 +4,13 @@ These blocks apply nonlinear waveshaping to audio signals: soft clipping,
 hard clipping, fuzz, sample-rate reduction, and bit crushing. Each plot
 shows a 440 Hz sine wave at three input levels (0 dB, -6 dB, -18 dB).
 
-| Block | Description |
-|-------|-------------|
-| [Aliaser](#aliaser) | Sample-rate reduction / decimation |
-| [Cube](#cube) | Cubic soft clipping |
-| [Distortion](#distortion) | Hard clipping |
-| [Noise AMZ](#noise-amz) | LFSR pseudo-random noise generator |
-| [Octave Fuzz](#octave-fuzz) | Full-wave rectifier octave-up fuzz |
-| [Overdrive](#overdrive) | Multi-stage soft overdrive |
-| [Quantizer](#quantizer) | Bit-depth reduction |
-| [T/X](#tx) | Inverse/reciprocal waveshaper |
+### Block Index
+
+| | | |
+|-|-|-|
+| [Aliaser](#aliaser) | [Cube](#cube) | [Distortion](#distortion) |
+| [Noise AMZ](#noise-amz) | [Octave Fuzz](#octave-fuzz) | [Overdrive](#overdrive) |
+| [Quantizer](#quantizer) | [T/X](#tx) | |
 
 ---
 

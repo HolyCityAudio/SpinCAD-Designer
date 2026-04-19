@@ -29,7 +29,7 @@ import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -40,7 +40,7 @@ import javax.swing.event.ChangeListener;
 import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
-public class RootControlControlPanel extends JFrame {
+public class RootControlControlPanel extends JDialog {
 
 	/**
 	 *
@@ -55,10 +55,10 @@ public class RootControlControlPanel extends JFrame {
 	private RootCADBlock pC;
 
 	public RootControlControlPanel(RootCADBlock rCB) {
+		super(SpinCADFrame.getInstance(), "Root");
 		this.pC = rCB;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				setTitle("Root");
 				setResizable(false);
 
 				setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

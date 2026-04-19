@@ -23,8 +23,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
+
+import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
 public class PotControlPanel implements ItemListener {
@@ -34,7 +36,7 @@ public class PotControlPanel implements ItemListener {
 	 */
 
 	private JCheckBox speedupCB = new JCheckBox();
-	private JFrame frame;
+	private JDialog frame;
 	private PotCADBlock pC;
 
 	public PotControlPanel(final PotCADBlock pCB) {
@@ -42,9 +44,8 @@ public class PotControlPanel implements ItemListener {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				String panelName = String.format("Pot %d response", pCB.getPotNum());
-				frame = new JFrame(panelName);
+				frame = new JDialog(SpinCADFrame.getInstance(), panelName);
 				pC.controlPanelFrame = frame;
-				frame.setTitle(panelName);
 				frame.setResizable(false);
 
 				speedupCB.setText("Speed Up");

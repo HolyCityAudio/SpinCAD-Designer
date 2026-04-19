@@ -21,7 +21,7 @@
 package com.holycityaudio.SpinCAD.CADBlocks;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
@@ -30,6 +30,8 @@ import javax.swing.event.ChangeListener;
 
 import org.andrewkilpatrick.elmGen.ElmProgram;
 
+import com.holycityaudio.SpinCAD.SpinCADFrame;
+
 class ServoDelayControlPanel {
 
 	private CoarseDelayCADBlock mD;
@@ -37,16 +39,15 @@ class ServoDelayControlPanel {
 	private JSlider delaySliderFine;
 	private JLabel delayLabelCoarse;
 	private JLabel delayLabelFine;
-	private JFrame frame;
+	private JDialog frame;
 
 	public ServoDelayControlPanel(CoarseDelayCADBlock sDCB) {
 		this.mD = sDCB;
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame();
+				frame = new JDialog(SpinCADFrame.getInstance(), "Servo Delay");
 				mD.controlPanelFrame = frame;
-				frame.setTitle("Servo Delay");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 				// XXX debug, this may not be correct
 				int timeCoarse = calcDelayTimeCoarse(mD.getDelayLength());

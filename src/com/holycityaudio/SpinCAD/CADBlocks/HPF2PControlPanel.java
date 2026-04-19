@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -39,7 +39,7 @@ import com.holycityaudio.SpinCAD.SpinCADBlock;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
-class HPF2PControlPanel extends JFrame implements ActionListener {
+class HPF2PControlPanel extends JDialog implements ActionListener {
 	/**
 	 *
 	 */
@@ -62,6 +62,7 @@ class HPF2PControlPanel extends JFrame implements ActionListener {
 
 
 	public HPF2PControlPanel(HPF2PCADBlock lpf1pcadBlock) {
+		super(SpinCADFrame.getInstance(), "Hi pass 2 pole");
 		this.hPF = lpf1pcadBlock;
 		nPoles = new JComboBox<Object>(listOptions);
 		nPoles.addActionListener(this);

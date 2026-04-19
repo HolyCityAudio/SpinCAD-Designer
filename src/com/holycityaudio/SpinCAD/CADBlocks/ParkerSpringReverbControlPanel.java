@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -33,7 +33,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 @SuppressWarnings("serial")
-class ParkerSpringReverbControlPanel extends JFrame implements ChangeListener, ActionListener {
+class ParkerSpringReverbControlPanel extends JDialog implements ChangeListener, ActionListener {
 
 	private FineControlSlider gainSlider;
 	private JSlider reverbTimeSlider;
@@ -48,8 +48,8 @@ class ParkerSpringReverbControlPanel extends JFrame implements ChangeListener, A
 	private ParkerSpringReverbCADBlock block;
 
 	public ParkerSpringReverbControlPanel(ParkerSpringReverbCADBlock blk) {
+		super(SpinCADFrame.getInstance(), "Parker Spring Reverb");
 		this.block = blk;
-		this.setTitle("Parker Spring Reverb");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.setResizable(false);
 

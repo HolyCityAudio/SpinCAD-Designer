@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -37,7 +37,7 @@ import com.holycityaudio.SpinCAD.FineControlSlider;
 import com.holycityaudio.SpinCAD.SpinCADFrame;
 
 
-public class HPFControlPanel extends JFrame implements ChangeListener {
+public class HPFControlPanel extends JDialog implements ChangeListener {
 	/**
 	 *
 	 */
@@ -52,6 +52,7 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
 	private HPFCADBlock HPF;
 
 	public HPFControlPanel(HPFCADBlock b) {
+		super(SpinCADFrame.getInstance(), "High pass Filter");
 		this.HPF = b;
 
         EventQueue.invokeLater(new Runnable()
@@ -64,7 +65,6 @@ public class HPFControlPanel extends JFrame implements ChangeListener {
     }
 
 	private void createAndShowUI() {
-		this.setTitle("High pass Filter");
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		freqSlider = new FineControlSlider(JSlider.HORIZONTAL, 0, 100, 0);

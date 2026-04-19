@@ -9,6 +9,16 @@ bandpass, notch, shelving EQ, parametric EQ, comb filters, and resonators.
 > a 1000 Hz cutoff corresponds to approximately 1346 Hz at 44.1 kHz
 > (x 1.346) and 1465 Hz at 48 kHz (x 1.465).
 
+### Block Index
+
+| | | |
+|-|-|-|
+| [1-Band EQ](#1-band-eq) | [6-Band EQ](#6-band-eq) | [Bassman '59 EQ](#bassman-59-eq) |
+| [Comb Filter](#comb-filter) | [HPF 1-Pole (RDFX)](#hpf-1-pole-rdfx) | [HPF 2/4-Pole](#hpf-24-pole) |
+| [LPF 1-Pole (RDFX)](#lpf-1-pole-rdfx) | [LPF 2/4-Pole](#lpf-24-pole) | [Notch (Band-Reject)](#notch-band-reject) |
+| [Resonator](#resonator) | [Shelving Highpass](#shelving-highpass) | [Shelving Lowpass](#shelving-lowpass) |
+| [SVF 2-Pole](#svf-2-pole) | [SVF 2-Pole Adjustable](#svf-2-pole-adjustable) | |
+
 ---
 
 ## 1-Band EQ
@@ -268,10 +278,17 @@ filtering effects or as a simple sine oscillator.
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Frequency | 50-2600 Hz | 1040 | Center frequency |
-| Q | 2-100 | 100 | Resonance (higher = sharper peak) |
+| Frequency | 50-2500 Hz | 1000 | Center frequency |
+| Q | 10-50 | 50 | Resonance (higher = sharper peak) |
 
 ![Resonator response at three frequency settings](images/filter-resonator.png)
+
+Simulated frequency response with fc fixed at 440 Hz, sweeping input sine across
+80-2000 Hz for Q = 10, 20, and 50. Peak gain at resonance scales with Q:
++20 dB, +26 dB, and +34 dB respectively. Input level is −46 dBFS to keep the
+Q = 50 peak below clipping.
+
+![Resonator Q overlay at fc=440 Hz](images/filter-resonator-q-overlay.png)
 
 ---
 

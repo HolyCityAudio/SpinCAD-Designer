@@ -29,7 +29,7 @@ import java.awt.event.ItemListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -46,7 +46,7 @@ public class ClipControlControlPanel implements ChangeListener, ActionListener, 
 	private JTextField gainField = new JTextField();
 	private JCheckBox invert = new JCheckBox();
 	private JCheckBox flip = new JCheckBox();
-	private JFrame frame;
+	private JDialog frame;
 	private ClipPanel graph;
 
 	private ClipControlCADBlock pC;
@@ -79,9 +79,8 @@ public class ClipControlControlPanel implements ChangeListener, ActionListener, 
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				frame = new JFrame("Clip Control");
+				frame = new JDialog(SpinCADFrame.getInstance(), "Control Clipper");
 				pC.controlPanelFrame = frame;
-				frame.setTitle("Control Clipper");
 				frame.setResizable(false);
 				graph = new ClipPanel();
 				frame.getContentPane().add(graph);
