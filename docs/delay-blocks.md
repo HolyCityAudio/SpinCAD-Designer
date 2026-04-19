@@ -37,8 +37,6 @@ A 4-tap drum echo emulation inspired by vintage tape echo units with multiple pl
 | Delay Length  | samples | 32767     | Delay buffer size                   |
 | Tap 1-4 Ratio | 0-1     | 0.25-0.85 | Head positions as fraction of delay |
 
-![Drum Delay impulse response](.gitbook/assets/delay-drumdelay.png)
-
 ***
 
 ## Eight Tap Delay
@@ -64,13 +62,11 @@ An 8-tap delay with independent tap ratios and gains. Taps 1-4 are mixed to outp
 | Delay Length  | samples | 32767   | Delay buffer size     |
 | Tap 1-8 Gain  | linear  | 0.5     | Individual tap levels |
 
-![Eight Tap impulse response](.gitbook/assets/delay-eighttap.png)
-
 ***
 
 ## Long Delay
 
-An extended delay that uses interleaved memory access to achieve delay times beyond the FV-1's single buffer limit. By writing and reading with a stride (interleave factor), the effective delay time is multiplied by that factor. Includes an optional low-pass filter to reduce artifacts from the interleaved read pattern.
+An extended delay that uses interleaved memory access to achieve delay times beyond the FV-1's single buffer limit. By writing and reading with a stride (interleave factor), the effective delay time is multiplied by that factor. Includes an optional low-pass filter to reduce aliasing artifacts from the interleaved read pattern.
 
 | Pin           | Type       | Description            |
 | ------------- | ---------- | ---------------------- |
@@ -88,15 +84,13 @@ An extended delay that uses interleaved memory access to achieve delay times bey
 | Input Gain     | dB     | 0 dB    | Input level                                      |
 | Filter Enabled | on/off | on      | Low-pass filter on output                        |
 
-Note: The interleaved memory technique trades bandwidth for delay length. Higher interleave factors produce longer delays but reduce the effective sample rate, rolling off high frequencies.
-
-![Long Delay impulse response](.gitbook/assets/delay-longdelay.png)
+Note: The interleaved memory technique trades bandwidth for delay length. Higher interleave factors produce longer delays but reduce the effective sample rate, rolling off high frequencies.  Due to aliasing you will hear some artifacts.
 
 ***
 
 ## MN3011 BBD Emulation
 
-Emulates the Panasonic MN3011 bucket-brigade device, a classic analog delay IC with 6 taps at fixed ratios. The tap positions match the MN3011's actual tap spacing. All taps are summed into a single mix output, with tap 6 (end of line) available separately for feedback.
+Emulates the tap timing of the Panasonic MN3011 bucket-brigade device, a classic analog delay IC with 6 taps at fixed ratios. The tap positions match the MN3011's actual tap spacing. All taps are summed into a single mix output, with tap 6 (end of line) available separately for feedback.
 
 | Pin            | Type       | Description             |
 | -------------- | ---------- | ----------------------- |
@@ -118,15 +112,13 @@ Emulates the Panasonic MN3011 bucket-brigade device, a classic analog delay IC w
 
 The fixed tap ratios mirror the MN3011 datasheet: tap 1 = 11.9%, tap 2 = 19.9%, tap 3 = 35.9%, tap 4 = 51.9%, tap 5 = 83.8%, tap 6 = 100%.
 
-![MN3011 impulse response](.gitbook/assets/delay-mn3011a.png)
-
 ***
 
 ## Reverse Delay
 
 Plays back the delay buffer in reverse, creating a backwards echo effect. A ramp LFO sweeps a read pointer backward through the delay buffer, producing reversed audio at 1× speed. Two interleaved ramps, offset by half a cycle, are crossfaded to provide continuous output without clicks at the ramp reset points.
 
-The Memory selector chooses between two modes: **Half** allocates 16384 samples of delay, freeing the other half for other blocks. **Full** allocates all 32768 samples and scales the ramp output by \~2× to sweep the entire buffer, doubling the reversed chunk length.
+The Memory selector chooses between two modes: **Half** allocates 16384 samples of delay, freeing the other half for other blocks. **Full** allocates all 32768 samples and scales the ramp output by \~2× to sweep the entire buffer, doubling the reversed chunk length.  At the "Half" setting, it's pretty hard to discern the reverse behavior as the slices are pretty short.  This block is more subtle than you might expect from a commercial Reverse Delay.
 
 | Pin           | Type       | Description            |
 | ------------- | ---------- | ---------------------- |
@@ -142,8 +134,6 @@ The Memory selector chooses between two modes: **Half** allocates 16384 samples 
 | Input Gain    | -12 to 0 dB | 0 dB    | Input level                              |
 | Feedback Gain | -24 to 0 dB | -6 dB   | Feedback amount                          |
 | Memory        | Half / Full | Half    | Delay memory allocation and chunk length |
-
-![Reverse Delay algorithm overview](.gitbook/assets/delay-reversedelay.png)
 
 ***
 
@@ -171,20 +161,18 @@ A 6-tap stereo delay with independent tap ratios and gains. Taps are mixed into 
 | Tap 1-5 Ratio | 0-1     | 0.1-0.5 | Tap position as fraction of delay |
 | Tap 1-6 Gain  | linear  | 0.5-0.8 | Individual tap levels             |
 
-![Six Tap impulse response](.gitbook/assets/delay-sixtap.png)
-
 ***
 
 ## Stutter
 
-A glitch/stutter effect that freezes and loops a segment of audio when triggered. The Stutter control input gates the effect: when active, the current buffer contents are looped; when inactive, the buffer records normally.
+A glitch/stutter effect that lets you crossfade between the input and output of a delay delay with a 0-1 control signal.&#x20;
 
-| Pin          | Type        | Description            |
-| ------------ | ----------- | ---------------------- |
-| Input        | Audio In    | Audio signal           |
-| Stutter      | Control In  | Stutter trigger (gate) |
-| Output       | Audio Out   | Audio output           |
-| Fade\_Filter | Control Out | Fade envelope output   |
+| Pin          | Type        | Description          |
+| ------------ | ----------- | -------------------- |
+| Input        | Audio In    | Audio signal         |
+| Stutter      | Control In  | Stutter crossfade    |
+| Output       | Audio Out   | Audio output         |
+| Fade\_Filter | Control Out | Fade envelope output |
 
 **Control panel parameters:**
 
@@ -219,5 +207,3 @@ A 3-tap delay with independent delay time controls for each tap. Unlike the six-
 | Feedback Gain | linear  | 0.5       | Feedback amount                    |
 | Delay Length  | samples | 32767     | Delay buffer size                  |
 | Tap 1-3 Ratio | 0-1     | 0.45-0.85 | Tap positions as fraction of delay |
-
-![Triple Tap impulse response](.gitbook/assets/delay-tripletap.png)
