@@ -40,7 +40,7 @@ The File menu handles patch and bank operations.
 * **Save Patch As** (Ctrl+A) -- save the current patch with a new name
 * **Patch Information** (Ctrl+I) -- document your patch with title, description, and notes (included as comments when exporting to Spin ASM).  The top line shows the SPCD(J) saved file name, or "Untitled" if you haven't saved it yet.
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 **ASM export:**
 
@@ -69,7 +69,7 @@ The File menu handles patch and bank operations.
 
 Typical editing commands with keyboard shortcuts. ^ means the **CTRL** key on Windows and the **command** key on MacOS.
 
-<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 * **Copy** (Ctrl+C)
 * **Paste** (Ctrl+V)
@@ -166,18 +166,24 @@ Connections can be made in either direction -- output to input or input to outpu
 
 ### Right-Click Pin Menu
 
+<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+
 Right-clicking on an input pin opens a popup menu with two options:
 
 * **Delete Wire** -- removes the connection to this pin
 *   **Mute This Pin** -- silences the signal at this input without removing the wire. When muted:
 
     * The pin turns **black** and the wire turns **red** to indicate the muted state
-    * The signal is treated as if the pin were disconnected during code generation
+    * The signal is treated as if the pin were muted during code generation
     * The wire remains in place so you can easily unmute it later
 
     Mute is useful for **debugging and A/B testing** -- you can quickly hear what a patch sounds like with and without a particular connection, without having to delete and recreate wires. For example, mute the feedback input on a delay to hear the dry delay taps, or mute a modulation source to isolate its effect.
 
     > **Note:** Mute changes take effect the next time you start the simulator. If the simulator is already running, you will see a status message indicating the change will apply after the simulator stops.
+    >
+    > **Note:** Pin mute state is not preserved through file save/load.
+
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Control Panels
 
@@ -205,3 +211,5 @@ When a slider has subdivision snap points, Ctrl+drag also **bypasses snapping**,
 ### Documenting Your Patch
 
 Use **Patch Information** (Ctrl+I on Windows) to add a title, description, and notes to your patch. This information is included as comments when you export to Spin ASM format.
+
+<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
