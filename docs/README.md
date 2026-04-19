@@ -14,7 +14,7 @@ New users should start with [Using SpinCAD Designer](using-spincad.md), which co
 
 ## Block Reference
 
-A _block_ is a single DSP unit -- a filter, a delay, a reverb tank, an LFO, and so on. You build patches by placing blocks on the schematic canvas and connecting their input and output pins. Each block has a control panel where you tune its parameters.
+A _block_ is a single DSP unit -- a filter, a delay, a reverb tank, an LFO, and so on. You build patches by placing blocks on the schematic canvas and connecting their input and output pins. Many blocks have a control panel where you tune its parameters.
 
 The block reference pages below describe each block's pins, controls, and typical uses:
 
