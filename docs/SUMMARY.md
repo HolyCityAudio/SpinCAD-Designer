@@ -22,6 +22,7 @@
 * [Oscillator Blocks](oscillators-blocks.md)
 * [Control Blocks](control-blocks.md)
 * [Instructions Blocks](instructions-blocks.md)
+* [Special Blocks](special-blocks.md)
 
 ## Patches
 
