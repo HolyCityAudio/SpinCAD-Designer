@@ -4,16 +4,16 @@ SpinCAD Designer would not exist without the contributions and inspiration of th
 
 * [**Keith Barr**](https://spinsemi.com/meet_designers.html) -- founder of Spin Semiconductor and inventor of the FV-1 chip that makes all of this possible.
 * **Frank Thompson** -- co-inventor of the FV-1 and maintainer of Keith Barr's legacy.
-* **Andrew Kilpatrick** -- who wrote and published ElmGen, the Java FV-1 simulator underpinning SpinCAD Designer.
-* **Matthew Farrow** (Disaster Area) -- for many ideas early on in the development of SpinCAD.
-* **Jack Orman** -- for the LFSR noise generator.
+* [**Andrew Kilpatrick**](https://www.kilpatrickaudio.com/?p=contact) -- who wrote and published ElmGen, the Java FV-1 simulator underpinning SpinCAD Designer.
+* **Matthew Farrow** ([Disaster Area](https://www.disasterareadesigns.com/)) -- for many ideas early on in the development of SpinCAD.
+* [**Jack Orman**](https://amzfx.com/) -- for the LFSR noise generator.
 * **Madbean** -- for support and encouragement.
 * **ICE-9** -- for supplying my first FV-1 pedal.
 * **Slacker** -- for the tap tempo code and circuit.
 * **Don Stavely** for the Pot Speedup code
 * **mstratman** -- for the excellent archive of FV-1 programs at Github.
 * **Cybercow** -- for support and encouragement in recent years.
-* **Kodek at Erica Synths** -- for inspiring new features and all the synth modules.
+* **Kodek at** [**Erica Synths**](https://www.ericasynths.lv/) -- for inspiring new features and all the synth modules.
 * A variety of other people on the DIY forums who contributed financially and/or made me feel like I'd done something worthwhile.
 
 {% hint style="info" %}
