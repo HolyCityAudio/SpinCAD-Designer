@@ -1,327 +1,257 @@
-# Pitch Blocks Reference
+# Pitch Blocks
 
-These blocks implement pitch shifting effects using the FV-1's ramp LFO and
-delay memory. Techniques include standard pitch shifting, glitch shifting,
-frequency offset via Hilbert transform, and arpeggiator-style stepped patterns.
+These blocks implement pitch shifting effects using the FV-1's ramp LFO and delay memory. Techniques include standard pitch shifting, glitch shifting, frequency offset via Hilbert transform, and arpeggiator-style stepped patterns.
 
 ### Block Index
 
-| | | |
-|-|-|-|
-| [Arpeggiator](#arpeggiator) | [Dual Output Pitch Offset](#dual-output-pitch-offset) | [Glitch Shift Adjustable](#glitch-shift-adjustable) |
-| [Octave Up/Down](#octave-updown) | [Pitch Four](#pitch-four) | [Pitch Offset](#pitch-offset) |
-| [Pitch Shift Adjustable](#pitch-shift-adjustable) | [Pitch Shift Fixed](#pitch-shift-fixed) | |
+|                                                                  |                                                                      |                                                                    |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [Arpeggiator](pitch-blocks.md#arpeggiator)                       | [Dual Output Pitch Offset](pitch-blocks.md#dual-output-pitch-offset) | [Glitch Shift Adjustable](pitch-blocks.md#glitch-shift-adjustable) |
+| [Octave Up/Down](pitch-blocks.md#octave-updown)                  | [Pitch Four](pitch-blocks.md#pitch-four)                             | [Pitch Offset](pitch-blocks.md#pitch-offset)                       |
+| [Pitch Shift Adjustable](pitch-blocks.md#pitch-shift-adjustable) | [Pitch Shift Fixed](pitch-blocks.md#pitch-shift-fixed)               |                                                                    |
 
-Common background for all pitch blocks: [Delay Buffer Size (Block Size)](#delay-buffer-size-block-size).
+Common background for all pitch blocks: [Delay Buffer Size (Block Size)](pitch-blocks.md#delay-buffer-size-block-size).
 
----
+***
 
 ## Delay Buffer Size (Block Size)
 
-All delay-line pitch shift blocks (Pitch Shift Fixed, Pitch Shift Adjustable,
-Glitch Shift, Pitch Four, Arpeggiator) use a segment of the FV-1's delay
-memory as a circular buffer. The ramp LFO sweeps a read pointer through this
-buffer to create the pitch change. The buffer size determines both the quality
-of pitch shifting and the resources consumed.
+All delay-line pitch shift blocks (Pitch Shift Fixed, Pitch Shift Adjustable, Glitch Shift, Pitch Four, Arpeggiator) use a segment of the FV-1's delay memory as a circular buffer. The ramp LFO sweeps a read pointer through this buffer to create the pitch change. The buffer size determines both the quality of pitch shifting and the resources consumed.
 
 ### Available sizes
 
-| Buffer Size | Duration | Delay Memory Used |
-|-------------|----------|-------------------|
-| 512 samples | 15.6 ms | 1.6% |
-| 1024 samples | 31.3 ms | 3.1% |
-| 2048 samples | 62.5 ms | 6.3% |
-| 4096 samples | 125.0 ms | 12.5% |
+| Buffer Size  | Duration | Delay Memory Used |
+| ------------ | -------- | ----------------- |
+| 512 samples  | 15.6 ms  | 1.6%              |
+| 1024 samples | 31.3 ms  | 3.1%              |
+| 2048 samples | 62.5 ms  | 6.3%              |
+| 4096 samples | 125.0 ms | 12.5%             |
 
 (At the FV-1 sample rate of 32768 Hz. Total delay memory is 32768 samples.)
 
 ### Tradeoffs
 
 **Larger buffers (2048-4096):**
-- Handle low frequencies cleanly. The buffer holds multiple full cycles of
-  the input, giving the crossfade smooth material to work with.
-- Produce a more natural, artifact-free pitch shift.
-- Use more delay memory, leaving less for delays, reverbs, and other effects
-  in the same patch.
-- Add more latency to the output signal.
+
+* Handle low frequencies cleanly. The buffer holds multiple full cycles of the input, giving the crossfade smooth material to work with.
+* Produce a more natural, artifact-free pitch shift.
+* Use more delay memory, leaving less for delays, reverbs, and other effects in the same patch.
+* Add more latency to the output signal.
 
 **Smaller buffers (512-1024):**
-- Use less delay memory, preserving space for other effects.
-- Lower latency.
-- Produce audible artifacts on low-pitched input because the buffer is too
-  short to hold a full cycle. The crossfade between ramp pointers hits a
-  discontinuity, causing clicks or wavering.
+
+* Use less delay memory, preserving space for other effects.
+* Lower latency.
+* Produce audible artifacts on low-pitched input because the buffer is too short to hold a full cycle. The crossfade between ramp pointers hits a discontinuity, causing clicks or wavering.
 
 ### When the buffer is too small
 
-The pitch shift technique works by sweeping a read pointer through the delay
-buffer with a ramp LFO. Two half-ramps (RPTR and RPTR2) alternate, crossfading
-at the ramp reset point to hide the discontinuity. For this to work cleanly,
-the buffer must hold at least one full wavelength of the input signal.
+The pitch shift technique works by sweeping a read pointer through the delay buffer with a ramp LFO. Two half-ramps (RPTR and RPTR2) alternate, crossfading at the ramp reset point to hide the discontinuity. For this to work cleanly, the buffer must hold at least one full wavelength of the input signal.
 
-For a 100 Hz input (period = 10 ms), a 512-sample buffer (15.6 ms) is
-marginally long enough. But when shifting down by an octave, the output
-frequency is 50 Hz (period = 20 ms), and the ramp sweeps the buffer more
-slowly. The crossfade region can land on incomplete cycles, producing
-amplitude modulation and tonal artifacts.
+For a 100 Hz input (period = 10 ms), a 512-sample buffer (15.6 ms) is marginally long enough. But when shifting down by an octave, the output frequency is 50 Hz (period = 20 ms), and the ramp sweeps the buffer more slowly. The crossfade region can land on incomplete cycles, producing amplitude modulation and tonal artifacts.
 
-The plot below shows a 100 Hz sine shifted down one octave with a 512-sample
-buffer versus a 4096-sample buffer:
+The plot below shows a 100 Hz sine shifted down one octave with a 512-sample buffer versus a 4096-sample buffer:
 
-![Block size comparison](images/pitch-blocksize.png)
+![Block size comparison](.gitbook/assets/pitch-blocksize.png)
 
-**Rule of thumb:** use the largest buffer size your delay memory budget allows.
-4096 samples handles guitar fundamentals down to about 25 Hz cleanly. Use 512
-only when delay memory is scarce and the input is high-frequency content.
+**Rule of thumb:** use the largest buffer size your delay memory budget allows. 4096 samples handles guitar fundamentals down to about 25 Hz cleanly. Use 512 only when delay memory is scarce and the input is high-frequency content.
 
 ### Crossfade artifacts
 
-The amplitude modulation visible in pitch-shifted output is caused by the
-phase relationship between the input signal and the delay buffer. The two
-ramp read pointers (RPTR and RPTR2) read from positions separated by half
-the buffer (2048 samples = 62.5 ms for a 4096-sample buffer). During the
-crossfade, the two copies of the signal either reinforce or cancel depending
-on whether the signal completes an integer number of full cycles in that
-62.5 ms interval.
+The amplitude modulation visible in pitch-shifted output is caused by the phase relationship between the input signal and the delay buffer. The two ramp read pointers (RPTR and RPTR2) read from positions separated by half the buffer (2048 samples = 62.5 ms for a 4096-sample buffer). During the crossfade, the two copies of the signal either reinforce or cancel depending on whether the signal completes an integer number of full cycles in that 62.5 ms interval.
 
-**Best case:** frequencies that complete an exact number of full cycles in
-the buffer half (multiples of 16 Hz for a 4096-sample buffer). The two
-read pointers see the signal at the same phase, so the crossfade blends
-smoothly with no amplitude variation.
+**Best case:** frequencies that complete an exact number of full cycles in the buffer half (multiples of 16 Hz for a 4096-sample buffer). The two read pointers see the signal at the same phase, so the crossfade blends smoothly with no amplitude variation.
 
-**Worst case:** frequencies where an odd number of half-cycles fits in the
-buffer half (odd multiples of 8 Hz). The two pointers see the signal at
-opposite phase, causing partial cancellation during crossfade.
+**Worst case:** frequencies where an odd number of half-cycles fits in the buffer half (odd multiples of 8 Hz). The two pointers see the signal at opposite phase, causing partial cancellation during crossfade.
 
-![Crossfade comparison](images/pitch-crossfade.png)
+![Crossfade comparison](.gitbook/assets/pitch-crossfade.png)
 
-In the comparison above, 440 Hz has 27.5 cycles per buffer half (55
-half-cycles, odd) so the crossfade encounters phase cancellation, producing
-a tremolo-like amplitude modulation. 448 Hz has exactly 28 cycles (56
-half-cycles, even) and crossfades cleanly with stable amplitude. The 8 Hz
-difference is less than a quarter semitone, yet the amplitude stability is
-dramatically different.
+In the comparison above, 440 Hz has 27.5 cycles per buffer half (55 half-cycles, odd) so the crossfade encounters phase cancellation, producing a tremolo-like amplitude modulation. 448 Hz has exactly 28 cycles (56 half-cycles, even) and crossfades cleanly with stable amplitude. The 8 Hz difference is less than a quarter semitone, yet the amplitude stability is dramatically different.
 
-For a complex signal like a guitar note, some harmonics will be near best
-case while others are near worst case. The result is that some frequency
-components pass through with stable amplitude while others undergo a
-tremolo-like amplitude modulation at the ramp cycle rate. This gives
-pitch-shifted signals their characteristic "watery" or "chorused" quality,
-and is an inherent limitation of single-delay-line pitch shifting on the
-FV-1.
+For a complex signal like a guitar note, some harmonics will be near best case while others are near worst case. The result is that some frequency components pass through with stable amplitude while others undergo a tremolo-like amplitude modulation at the ramp cycle rate. This gives pitch-shifted signals their characteristic "watery" or "chorused" quality, and is an inherent limitation of single-delay-line pitch shifting on the FV-1.
 
----
+***
 
 ## Arpeggiator
 
-A stepped pitch shifter that cycles through a sequence of semitone intervals,
-triggered by a control input. When the trigger crosses the threshold, the
-block advances to the next step in the pattern. The pattern can ascend,
-descend, or ping-pong depending on the Slope setting.
+A stepped pitch shifter that cycles through a sequence of semitone intervals, triggered by a control input. When the trigger crosses the threshold, the block advances to the next step in the pattern. The pattern can ascend, descend, or ping-pong depending on the Slope setting.
 
-This is a hand-written block (not code-generated) with a full control panel
-for editing the step sequence.
+This is a hand-written block (not code-generated) with a full control panel for editing the step sequence.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Audio In | Audio In | Input signal |
-| Trigger | Control In | Step advance trigger |
-| Pitch Out | Audio Out | Arpeggiated pitch output |
+| Pin       | Type       | Description              |
+| --------- | ---------- | ------------------------ |
+| Audio In  | Audio In   | Input signal             |
+| Trigger   | Control In | Step advance trigger     |
+| Pitch Out | Audio Out  | Arpeggiated pitch output |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Threshold | 0-1 | 0.25 | Trigger level for step advance |
-| Num Steps | 3-12 | 8 | Number of steps in the pattern |
-| Slope | pos/neg/both | positive | Pattern direction |
-| Semitone 1-12 | -12 to +19 | varies | Semitone offset per step |
-| LFO Sel | 0-1 | 0 | Select RMP0 or RMP1 |
+| Parameter     | Range        | Default  | Description                    |
+| ------------- | ------------ | -------- | ------------------------------ |
+| Threshold     | 0-1          | 0.25     | Trigger level for step advance |
+| Num Steps     | 3-12         | 8        | Number of steps in the pattern |
+| Slope         | pos/neg/both | positive | Pattern direction              |
+| Semitone 1-12 | -12 to +19   | varies   | Semitone offset per step       |
+| LFO Sel       | 0-1          | 0        | Select RMP0 or RMP1            |
 
 Default pattern: 0, +4, +7, +12, +7, +4, 0, -12 (major arpeggio up and back).
 
-![Arpeggiator output](images/pitch-arpeggiator.png)
+![Arpeggiator output](.gitbook/assets/pitch-arpeggiator.png)
 
----
+***
 
 ## Dual Output Pitch Offset
 
-A dual-output version of the Pitch Offset block. Each output has its own
-independent frequency offset controlled by separate control inputs. Useful
-for creating detuned stereo effects or dual-voice pitch shifting.
+A dual-output version of the Pitch Offset block. Each output has its own independent frequency offset controlled by separate control inputs. Useful for creating detuned stereo effects or dual-voice pitch shifting.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Output 1 | Audio Out | First frequency-offset output |
-| Output 2 | Audio Out | Second frequency-offset output |
+| Pin      | Type       | Description                      |
+| -------- | ---------- | -------------------------------- |
+| Input    | Audio In   | Input signal                     |
+| Output 1 | Audio Out  | First frequency-offset output    |
+| Output 2 | Audio Out  | Second frequency-offset output   |
 | Offset 1 | Control In | Offset amount for Output 1 (0-1) |
 | Offset 2 | Control In | Offset amount for Output 2 (0-1) |
 
 No control panel parameters. All control comes from the Offset pins.
 
-For the dual-output version, the two outputs share the input filter to fit
-within the FV-1's resource limits, so the processing is not fully independent.
+For the dual-output version, the two outputs share the input filter to fit within the FV-1's resource limits, so the processing is not fully independent.
 
-Example patches demonstrating both pitch offset blocks:
-[pitch-shifter-examples.spbk](https://github.com/HolyCityAudio/SpinCAD-Designer/blob/master/patches/pitch-shifter-examples.spbk).
+Example patches demonstrating both pitch offset blocks: [pitch-shifter-examples.spbk](../patches/pitch-shifter-examples.spbk).
 
-![Dual Output Pitch Offset output](images/pitch-pitchoffset1_2.png)
+![Dual Output Pitch Offset output](.gitbook/assets/pitch-pitchoffset1_2.png)
 
----
+***
 
 ## Glitch Shift Adjustable
 
-A "glitch" pitch shifter that uses a single ramp LFO without crossfading,
-producing intentional discontinuities (glitches) at the ramp reset point.
-This creates a lo-fi, textured pitch effect. The pitch amount is
-controllable via the Pitch Control input.
+A "glitch" pitch shifter that uses a single ramp LFO without crossfading, producing intentional discontinuities (glitches) at the ramp reset point. This creates a lo-fi, textured pitch effect. The pitch amount is controllable via the Pitch Control input.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Glitch Out | Audio Out | Glitched pitch output |
+| Pin           | Type       | Description            |
+| ------------- | ---------- | ---------------------- |
+| Input         | Audio In   | Input signal           |
+| Glitch Out    | Audio Out  | Glitched pitch output  |
 | Pitch Control | Control In | Pitch modulation (0-1) |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| pitchCoeff | coefficient | 8192 | Base pitch shift coefficient |
-| lfoSel | 0-1 | 0 | Select RMP0 or RMP1 |
-| lfoWidth | samples | 0 | Ramp LFO width setting |
+| Parameter  | Range       | Default | Description                  |
+| ---------- | ----------- | ------- | ---------------------------- |
+| pitchCoeff | coefficient | 8192    | Base pitch shift coefficient |
+| lfoSel     | 0-1         | 0       | Select RMP0 or RMP1          |
+| lfoWidth   | samples     | 0       | Ramp LFO width setting       |
 
-![Glitch Shift octave up](images/pitch-glitch_shift-up.png)
+![Glitch Shift octave up](.gitbook/assets/pitch-glitch_shift-up.png)
 
-![Glitch Shift octave down](images/pitch-glitch_shift-down.png)
+![Glitch Shift octave down](.gitbook/assets/pitch-glitch_shift-down.png)
 
----
+***
 
 ## Octave Up/Down
 
-Produces two simultaneous outputs: one pitched down by one octave and one
-pitched up by one octave. Uses two ramp LFOs (RMP0 and RMP1) with fixed
-rate settings. There is no control panel.
+Produces two simultaneous outputs: one pitched down by one octave and one pitched up by one octave. Uses two ramp LFOs (RMP0 and RMP1) with fixed rate settings. There is no control panel.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Pitch_Down_Out | Audio Out | One octave down |
-| Pitch_Up_Out | Audio Out | One octave up |
+| Pin              | Type      | Description     |
+| ---------------- | --------- | --------------- |
+| Input            | Audio In  | Input signal    |
+| Pitch\_Down\_Out | Audio Out | One octave down |
+| Pitch\_Up\_Out   | Audio Out | One octave up   |
 
-![Octave Up/Down output](images/pitch-pitchupdown.png)
+![Octave Up/Down output](.gitbook/assets/pitch-pitchupdown.png)
 
----
+***
 
 ## Pitch Four
 
-Selects between four preset pitch shift values using a control input.
-The control voltage is divided into four zones, each mapping to one of
-the four pitch presets (default: -12, -7, +7, +12 semitones).
+Selects between four preset pitch shift values using a control input. The control voltage is divided into four zones, each mapping to one of the four pitch presets (default: -12, -7, +7, +12 semitones).
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Pitch_Out | Audio Out | Pitch-shifted output |
-| Pitch_Select | Control In | Selects which of four pitches (0-1) |
+| Pin           | Type       | Description                         |
+| ------------- | ---------- | ----------------------------------- |
+| Input         | Audio In   | Input signal                        |
+| Pitch\_Out    | Audio Out  | Pitch-shifted output                |
+| Pitch\_Select | Control In | Selects which of four pitches (0-1) |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| pitch1 | semitones | -12 | First pitch preset |
-| pitch2 | semitones | -7 | Second pitch preset |
-| pitch3 | semitones | +7 | Third pitch preset |
-| pitch4 | semitones | +12 | Fourth pitch preset |
-| lfoSel | 0-1 | 0 | Select RMP0 or RMP1 |
+| Parameter | Range     | Default | Description         |
+| --------- | --------- | ------- | ------------------- |
+| pitch1    | semitones | -12     | First pitch preset  |
+| pitch2    | semitones | -7      | Second pitch preset |
+| pitch3    | semitones | +7      | Third pitch preset  |
+| pitch4    | semitones | +12     | Fourth pitch preset |
+| lfoSel    | 0-1       | 0       | Select RMP0 or RMP1 |
 
-![Pitch Four output](images/pitch-pitch_four.png)
+![Pitch Four output](.gitbook/assets/pitch-pitch_four.png)
 
----
+***
 
 ## Pitch Offset
 
-A frequency offset (pitch offset) block using a Hilbert-transform approach.
-Unlike standard pitch shifting which multiplies frequency, this block adds
-a fixed frequency offset to all harmonics. A 440 Hz input with a +100 Hz
-offset becomes 540 Hz, not 550 Hz as a ratio-based shifter would produce.
+A frequency offset (pitch offset) block using a Hilbert-transform approach. Unlike standard pitch shifting which multiplies frequency, this block adds a fixed frequency offset to all harmonics. A 440 Hz input with a +100 Hz offset becomes 540 Hz, not 550 Hz as a ratio-based shifter would produce.
 
-The offset amount is set by the Pitch_Offset control input.
+The offset amount is set by the Pitch\_Offset control input.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input_Left | Audio In | Input signal |
-| Output | Audio Out | Frequency-offset output |
-| Pitch_Offset | Control In | Offset amount (0-1) |
+| Pin           | Type       | Description             |
+| ------------- | ---------- | ----------------------- |
+| Input\_Left   | Audio In   | Input signal            |
+| Output        | Audio Out  | Frequency-offset output |
+| Pitch\_Offset | Control In | Offset amount (0-1)     |
 
-No control panel parameters. All control comes from the Pitch_Offset pin.
+No control panel parameters. All control comes from the Pitch\_Offset pin.
 
-The Pitch Offset block implements a [Hilbert transform](http://spinsemi.com/knowledge_base/effects.html#Pitch_shifting)
-as described in the Spin Knowledge Base. Zero offset occurs at a control input
-of 0.5. Below 0.5 shifts upward; above 0.5 shifts downward. The maximum
-offset is approximately ±370 Hz.
+The Pitch Offset block implements a [Hilbert transform](http://spinsemi.com/knowledge_base/effects.html#Pitch_shifting) as described in the Spin Knowledge Base. Zero offset occurs at a control input of 0.5. Below 0.5 shifts upward; above 0.5 shifts downward. The maximum offset is approximately ±370 Hz.
 
-**Usage tip:** Scaling the control signal to a very narrow range around 0.5
-(e.g. 0.49 to 0.51 via a Scale/Offset block) produces a beautiful
-tremolo/chorus effect rather than the goofy sci-fi sounds you get at full
-range. You can run this in stereo or summed to mono — each is a unique sound.
+**Usage tip:** Scaling the control signal to a very narrow range around 0.5 (e.g. 0.49 to 0.51 via a Scale/Offset block) produces a beautiful tremolo/chorus effect rather than the goofy sci-fi sounds you get at full range. You can run this in stereo or summed to mono — each is a unique sound.
 
 This block uses a lot of registers and instructions.
 
-![Pitch Offset output](images/pitch-pitchoffset.png)
+![Pitch Offset output](.gitbook/assets/pitch-pitchoffset.png)
 
----
+***
 
 ## Pitch Shift Adjustable
 
-An adjustable pitch shifter with a control input for real-time pitch
-modulation. The base pitch coefficient sets the shift amount and the
-control input can modulate it further based on the control range setting.
+An adjustable pitch shifter with a control input for real-time pitch modulation. The base pitch coefficient sets the shift amount and the control input can modulate it further based on the control range setting.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Pitch Out | Audio Out | Pitch-shifted output |
+| Pin           | Type       | Description            |
+| ------------- | ---------- | ---------------------- |
+| Input         | Audio In   | Input signal           |
+| Pitch Out     | Audio Out  | Pitch-shifted output   |
 | Pitch Control | Control In | Pitch modulation (0-1) |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| pitchCoeff | coefficient | 8192 | Base pitch shift coefficient |
-| controlRange | coefficient | 0 | Modulation depth from control input |
-| lfoSel | 0-1 | 0 | Select RMP0 or RMP1 |
-| lfoWidth | samples | 0 | Ramp LFO width setting |
+| Parameter    | Range       | Default | Description                         |
+| ------------ | ----------- | ------- | ----------------------------------- |
+| pitchCoeff   | coefficient | 8192    | Base pitch shift coefficient        |
+| controlRange | coefficient | 0       | Modulation depth from control input |
+| lfoSel       | 0-1         | 0       | Select RMP0 or RMP1                 |
+| lfoWidth     | samples     | 0       | Ramp LFO width setting              |
 
-When the Pitch Control pin is disconnected, the block uses only the
-fixed pitchCoeff value.
+When the Pitch Control pin is disconnected, the block uses only the fixed pitchCoeff value.
 
-![Pitch Shift Adjustable octave up](images/pitch-pitch_shift_test-up.png)
+![Pitch Shift Adjustable octave up](.gitbook/assets/pitch-pitch_shift_test-up.png)
 
-![Pitch Shift Adjustable octave down](images/pitch-pitch_shift_test-down.png)
+![Pitch Shift Adjustable octave down](.gitbook/assets/pitch-pitch_shift_test-down.png)
 
----
+***
 
 ## Pitch Shift Fixed
 
-A fixed pitch shift using the FV-1's ramp LFO. The shift amount and LFO
-parameters are set from the control panel. This block uses the classic
-delay-line pitch shifting technique where a ramp LFO sweeps a read pointer
-through a delay buffer to create the pitch change.
+A fixed pitch shift using the FV-1's ramp LFO. The shift amount and LFO parameters are set from the control panel. This block uses the classic delay-line pitch shifting technique where a ramp LFO sweeps a read pointer through a delay buffer to create the pitch change.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Audio In | Audio In | Input signal |
+| Pin       | Type      | Description          |
+| --------- | --------- | -------------------- |
+| Audio In  | Audio In  | Input signal         |
 | Pitch Out | Audio Out | Pitch-shifted output |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Freq | LFO rate | 0 | Pitch shift amount (ramp rate) |
-| Amp | buffer size | 512 | Delay buffer size (512/1024/2048/4096) |
-| LFO Sel | 0-1 | 0 | Select RMP0 or RMP1 |
+| Parameter | Range       | Default | Description                            |
+| --------- | ----------- | ------- | -------------------------------------- |
+| Freq      | LFO rate    | 0       | Pitch shift amount (ramp rate)         |
+| Amp       | buffer size | 512     | Delay buffer size (512/1024/2048/4096) |
+| LFO Sel   | 0-1         | 0       | Select RMP0 or RMP1                    |
 
-![Pitch Shift Fixed octave up](images/pitch-pitchshiftfixed-up.png)
+![Pitch Shift Fixed octave up](.gitbook/assets/pitch-pitchshiftfixed-up.png)
 
-![Pitch Shift Fixed octave down](images/pitch-pitchshiftfixed-down.png)
+![Pitch Shift Fixed octave down](.gitbook/assets/pitch-pitchshiftfixed-down.png)

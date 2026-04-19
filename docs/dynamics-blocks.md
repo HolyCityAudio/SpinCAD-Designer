@@ -1,284 +1,214 @@
-# Dynamics Blocks Reference
+# Dynamics Blocks
 
-These blocks implement dynamics processing: compression, limiting, expansion,
-and noise gating. They are found in the **Dynamics** menu of SpinCAD Designer.
+These blocks implement dynamics processing: compression, limiting, expansion, and noise gating. They are found in the **Dynamics** menu of SpinCAD Designer.
 
-All dynamics blocks operate on the FV-1's fixed-point arithmetic, so signals
-are clamped to the -1.0 to +0.999 range. The compressor and limiter blocks
-use the FV-1's LOG and EXP instructions to compute gain in the logarithmic
-domain.
+All dynamics blocks operate on the FV-1's fixed-point arithmetic, so signals are clamped to the -1.0 to +0.999 range. The compressor and limiter blocks use the FV-1's LOG and EXP instructions to compute gain in the logarithmic domain.
 
 ### Block Index
 
-| | | |
-|-|-|-|
-| [Noise Gate](#noise-gate) | [Peak Compressor](#peak-compressor) | [RMS Compressor](#rms-compressor) |
-| [RMS Limiter](#rms-limiter) | [RMS Limiter/Expander](#rms-limiterexpander) | [Soft Knee Limiter](#soft-knee-limiter) |
+|                                               |                                                                |                                                           |
+| --------------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------- |
+| [Noise Gate](dynamics-blocks.md#noise-gate)   | [Peak Compressor](dynamics-blocks.md#peak-compressor)          | [RMS Compressor](dynamics-blocks.md#rms-compressor)       |
+| [RMS Limiter](dynamics-blocks.md#rms-limiter) | [RMS Limiter/Expander](dynamics-blocks.md#rms-limiterexpander) | [Soft Knee Limiter](dynamics-blocks.md#soft-knee-limiter) |
 
----
+***
 
 ## Noise Gate
 
 **Menu:** Dynamics > Noise Gate
 
-A simple noise gate that silences the output when the input level falls
-below an adjustable threshold. The gate uses an envelope follower with
-ABSA (absolute value) detection and a single-pole smoothing filter to
-track the signal level.
+A simple noise gate that silences the output when the input level falls below an adjustable threshold. The gate uses an envelope follower with ABSA (absolute value) detection and a single-pole smoothing filter to track the signal level.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Audio In | Audio In | Input signal |
+| Pin       | Type      | Description  |
+| --------- | --------- | ------------ |
+| Audio In  | Audio In  | Input signal |
 | Audio Out | Audio Out | Gated output |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Threshold | 0.0-1.0 | 0.02 | Gate open threshold (linear amplitude) |
+| Parameter | Range   | Default | Description                            |
+| --------- | ------- | ------- | -------------------------------------- |
+| Threshold | 0.0-1.0 | 0.02    | Gate open threshold (linear amplitude) |
 
-When the input level is above the threshold, the gate opens and passes
-audio. When it drops below, the output fades to silence via the envelope
-follower's decay time.
+When the input level is above the threshold, the gate opens and passes audio. When it drops below, the output fades to silence via the envelope follower's decay time.
 
-![Noise Gate transfer curve](images/dynamics-noisegate.png)
+![Noise Gate transfer curve](.gitbook/assets/dynamics-noisegate.png)
 
-Input-vs-output transfer curve at two threshold settings (-40 dB and
--80 dB). Above the threshold, the gate passes audio at unity gain.
-Below the threshold, the output drops sharply as the gate closes.
+Input-vs-output transfer curve at two threshold settings (-40 dB and -80 dB). Above the threshold, the gate passes audio at unity gain. Below the threshold, the output drops sharply as the gate closes.
 
-![Noise Gate tone burst response](images/dynamics-noisegate-burst.png)
+![Noise Gate tone burst response](.gitbook/assets/dynamics-noisegate-burst.png)
 
-Stepped 1 kHz tone bursts from -60 to 0 dBFS (threshold=-40 dB). The
-three quietest bursts (-60, -50, -40 dBFS) are gated in the output.
+Stepped 1 kHz tone bursts from -60 to 0 dBFS (threshold=-40 dB). The three quietest bursts (-60, -50, -40 dBFS) are gated in the output.
 
----
+***
 
 ## Peak Compressor
 
 **Menu:** Dynamics > Peak Compressor
 
-A peak-detecting compressor with adjustable ratio, threshold, attack/release
-times, and makeup gain. The detector tracks the instantaneous peak level
-of the input signal using ABSA, and the gain computer operates in the
-logarithmic domain via LOG/EXP.
+A peak-detecting compressor with adjustable ratio, threshold, attack/release times, and makeup gain. The detector tracks the instantaneous peak level of the input signal using ABSA, and the gain computer operates in the logarithmic domain via LOG/EXP.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Audio_Output | Audio Out | Compressed output |
+| Pin            | Type        | Description                   |
+| -------------- | ----------- | ----------------------------- |
+| Input          | Audio In    | Input signal                  |
+| Audio\_Output  | Audio Out   | Compressed output             |
 | Gain Reduction | Control Out | Current gain reduction amount |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Input Gain | linear | 1.0 | Pre-compression input gain |
-| Attack Time | 0-1 | 0.01 | Attack coefficient (higher = faster) |
-| Release Time | 0-1 | 0.001 | Release coefficient (higher = faster) |
-| Ratio | 1:1 and up | 4:1 | Compression ratio |
-| Threshold | dB | -25 dB | Compression threshold |
-| Makeup Gain | dB | 0 dB | Post-compression gain |
-| Trim | linear | 1.0 | Final output trim |
+| Parameter    | Range      | Default | Description                           |
+| ------------ | ---------- | ------- | ------------------------------------- |
+| Input Gain   | linear     | 1.0     | Pre-compression input gain            |
+| Attack Time  | 0-1        | 0.01    | Attack coefficient (higher = faster)  |
+| Release Time | 0-1        | 0.001   | Release coefficient (higher = faster) |
+| Ratio        | 1:1 and up | 4:1     | Compression ratio                     |
+| Threshold    | dB         | -25 dB  | Compression threshold                 |
+| Makeup Gain  | dB         | 0 dB    | Post-compression gain                 |
+| Trim         | linear     | 1.0     | Final output trim                     |
 
-The compressor only reduces gain when the signal exceeds the threshold.
-Below threshold, the signal passes unaffected (plus any makeup gain).
-The Gain Reduction output can be connected to a VU meter or other
-monitoring block.
+The compressor only reduces gain when the signal exceeds the threshold. Below threshold, the signal passes unaffected (plus any makeup gain). The Gain Reduction output can be connected to a VU meter or other monitoring block.
 
-![Peak Compressor at different ratios](images/dynamics-peak_compressor.png)
+![Peak Compressor at different ratios](.gitbook/assets/dynamics-peak_compressor.png)
 
-Input-vs-output transfer curve at threshold=-25 dB for three compression
-ratios. Higher ratios produce more gain reduction above the threshold.
+Input-vs-output transfer curve at threshold=-25 dB for three compression ratios. Higher ratios produce more gain reduction above the threshold.
 
-![Peak Compressor at different thresholds](images/dynamics-peak_compressor_thresh.png)
+![Peak Compressor at different thresholds](.gitbook/assets/dynamics-peak_compressor_thresh.png)
 
-Input-vs-output transfer curve at ratio=4:1 for two threshold settings.
-The knee point shifts with the threshold.
+Input-vs-output transfer curve at ratio=4:1 for two threshold settings. The knee point shifts with the threshold.
 
-![Peak Compressor tone burst response](images/dynamics-peak_compressor-burst.png)
+![Peak Compressor tone burst response](.gitbook/assets/dynamics-peak_compressor-burst.png)
 
-Stepped 1 kHz tone bursts from -60 to 0 dBFS (ratio=8:1, threshold=-25 dB).
-The loudest bursts are compressed to nearly the same level in the output.
-The brief spike visible on the leading edge of each compressed burst is the
-attack transient — the compressor takes a short time to respond to the sudden
-level change. The Attack Time parameter controls how quickly the compressor
-reacts; shorter attack times reduce this overshoot.
+Stepped 1 kHz tone bursts from -60 to 0 dBFS (ratio=8:1, threshold=-25 dB). The loudest bursts are compressed to nearly the same level in the output. The brief spike visible on the leading edge of each compressed burst is the attack transient — the compressor takes a short time to respond to the sudden level change. The Attack Time parameter controls how quickly the compressor reacts; shorter attack times reduce this overshoot.
 
----
+***
 
 ## RMS Compressor
 
 **Menu:** Dynamics > RMS Compressor
 
-An RMS-detecting compressor that responds to the average power of the input
-rather than instantaneous peaks. This produces smoother, more musical
-compression that follows the perceived loudness of the signal. The RMS
-level is computed by squaring the input and low-pass filtering the result.
+An RMS-detecting compressor that responds to the average power of the input rather than instantaneous peaks. This produces smoother, more musical compression that follows the perceived loudness of the signal. The RMS level is computed by squaring the input and low-pass filtering the result.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Audio_Output | Audio Out | Compressed output |
+| Pin            | Type        | Description                   |
+| -------------- | ----------- | ----------------------------- |
+| Input          | Audio In    | Input signal                  |
+| Audio\_Output  | Audio Out   | Compressed output             |
 | Gain Reduction | Control Out | Current gain reduction amount |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Input Gain | linear | 1.0 | Pre-compression input gain |
-| Strength | 0-1 | 0.5 | Compression strength (0 = no compression) |
-| Threshold | dB | -25 dB | Compression threshold |
-| Attack Time | 0-1 | 0.01 | Attack coefficient (higher = faster) |
-| Release Time | 0-1 | 0.001 | Release coefficient (higher = faster) |
-| Makeup Gain | dB | 0 dB | Post-compression gain |
-| Trim | linear | 1.0 | Final output trim |
+| Parameter    | Range  | Default | Description                               |
+| ------------ | ------ | ------- | ----------------------------------------- |
+| Input Gain   | linear | 1.0     | Pre-compression input gain                |
+| Strength     | 0-1    | 0.5     | Compression strength (0 = no compression) |
+| Threshold    | dB     | -25 dB  | Compression threshold                     |
+| Attack Time  | 0-1    | 0.01    | Attack coefficient (higher = faster)      |
+| Release Time | 0-1    | 0.001   | Release coefficient (higher = faster)     |
+| Makeup Gain  | dB     | 0 dB    | Post-compression gain                     |
+| Trim         | linear | 1.0     | Final output trim                         |
 
-The "strength" parameter controls how aggressively the compressor reduces
-gain above threshold. At strength=0, no compression occurs. At strength=1,
-the compressor applies maximum gain reduction (equivalent to hard limiting
-for signals well above threshold).
+The "strength" parameter controls how aggressively the compressor reduces gain above threshold. At strength=0, no compression occurs. At strength=1, the compressor applies maximum gain reduction (equivalent to hard limiting for signals well above threshold).
 
-![RMS Compressor at different strengths](images/dynamics-rms_compressor.png)
+![RMS Compressor at different strengths](.gitbook/assets/dynamics-rms_compressor.png)
 
-Input-vs-output transfer curve at threshold=-25 dB for three strength
-settings. Higher strength produces more gain reduction above threshold.
+Input-vs-output transfer curve at threshold=-25 dB for three strength settings. Higher strength produces more gain reduction above threshold.
 
-![RMS Compressor at different thresholds](images/dynamics-rms_compressor_thresh.png)
+![RMS Compressor at different thresholds](.gitbook/assets/dynamics-rms_compressor_thresh.png)
 
 Input-vs-output transfer curve at strength=0.75 for two threshold settings.
 
-![RMS Compressor tone burst response](images/dynamics-rms_compressor-burst.png)
+![RMS Compressor tone burst response](.gitbook/assets/dynamics-rms_compressor-burst.png)
 
-Stepped 1 kHz tone bursts from -60 to 0 dBFS (strength=1.0, threshold=-25 dB).
-The output levels are compressed above threshold, producing a narrower
-dynamic range than the input. The brief spike visible on the leading edge of
-each compressed burst is the attack transient — the compressor takes a short
-time to respond to the sudden level change. The Attack Time parameter controls
-how quickly the compressor reacts; shorter attack times reduce this overshoot.
+Stepped 1 kHz tone bursts from -60 to 0 dBFS (strength=1.0, threshold=-25 dB). The output levels are compressed above threshold, producing a narrower dynamic range than the input. The brief spike visible on the leading edge of each compressed burst is the attack transient — the compressor takes a short time to respond to the sudden level change. The Attack Time parameter controls how quickly the compressor reacts; shorter attack times reduce this overshoot.
 
----
+***
 
 ## RMS Limiter
 
 **Menu:** Dynamics > RMS Limiter
 
-An RMS limiter with an external side chain input for keyed limiting. The
-side chain allows the gain reduction to be driven by a different signal
-than the one being processed -- useful for ducking, de-essing, or
-frequency-selective limiting.
+An RMS limiter with an external side chain input for keyed limiting. The side chain allows the gain reduction to be driven by a different signal than the one being processed -- useful for ducking, de-essing, or frequency-selective limiting.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Signal to be limited |
-| Side Chain | Audio In | Signal that drives the detector |
-| Output | Audio Out | Limited output |
+| Pin        | Type      | Description                     |
+| ---------- | --------- | ------------------------------- |
+| Input      | Audio In  | Signal to be limited            |
+| Side Chain | Audio In  | Signal that drives the detector |
+| Output     | Audio Out | Limited output                  |
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Makeup (dB) | 0--6 dB | 0 dB | Post-limiter makeup gain |
+| Parameter   | Range   | Default | Description              |
+| ----------- | ------- | ------- | ------------------------ |
+| Makeup (dB) | 0--6 dB | 0 dB    | Post-limiter makeup gain |
 
-When the Side Chain input is connected, the limiter's gain reduction is
-driven by the side chain signal rather than the main input. When only the
-Input is connected, the gain is applied directly to the input signal.
+When the Side Chain input is connected, the limiter's gain reduction is driven by the side chain signal rather than the main input. When only the Input is connected, the gain is applied directly to the input signal.
 
-![RMS Limiter transfer curve](images/dynamics-rms_limiter.png)
+![RMS Limiter transfer curve](.gitbook/assets/dynamics-rms_limiter.png)
 
-Input-vs-output transfer curve (gray = unity reference). Limiting begins
-around -10 dBFS.
+Input-vs-output transfer curve (gray = unity reference). Limiting begins around -10 dBFS.
 
-![RMS Limiter tone burst response](images/dynamics-rms_limiter-burst.png)
+![RMS Limiter tone burst response](.gitbook/assets/dynamics-rms_limiter-burst.png)
 
-Stepped 1 kHz tone bursts from -60 to 0 dBFS. The limiter reduces the
-level of the loudest bursts while passing quieter signals unchanged.
+Stepped 1 kHz tone bursts from -60 to 0 dBFS. The limiter reduces the level of the loudest bursts while passing quieter signals unchanged.
 
----
+***
 
 ## RMS Limiter/Expander
 
 **Menu:** Dynamics > RMS Limiter/Expander
 
-A combined RMS limiter and expander that automatically controls the dynamic
-range of the input signal. Loud signals are attenuated (limiting) while
-quiet signals are boosted (expansion), resulting in a more consistent
-output level. Based on code from Spin Semiconductor's Free Programs
-library.
+A combined RMS limiter and expander that automatically controls the dynamic range of the input signal. Loud signals are attenuated (limiting) while quiet signals are boosted (expansion), resulting in a more consistent output level. Based on code from Spin Semiconductor's Free Programs library.
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description |
-|-----------|-------|---------|-------------|
-| Makeup (dB) | 0--6 dB | 0 dB | Post-limiter makeup gain |
+| Parameter   | Range   | Default | Description              |
+| ----------- | ------- | ------- | ------------------------ |
+| Makeup (dB) | 0--6 dB | 0 dB    | Post-limiter makeup gain |
 
-![RMS Limiter/Expander block](images/dynamics-rms_lim_exp-block.png)
+![RMS Limiter/Expander block](.gitbook/assets/dynamics-rms_lim_exp-block.png)
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input_Left | Audio In | Input signal |
-| Audio_Output | Audio Out | Level-controlled output |
+| Pin           | Type      | Description             |
+| ------------- | --------- | ----------------------- |
+| Input\_Left   | Audio In  | Input signal            |
+| Audio\_Output | Audio Out | Level-controlled output |
 
-This block uses cascaded SOF instructions to amplify the signal before
-computing the expansion envelope, providing sensitivity to low-level
-signals. The combination of LOG/EXP for limiting and a second LOG/EXP
-stage for expansion creates a two-slope transfer characteristic.
+This block uses cascaded SOF instructions to amplify the signal before computing the expansion envelope, providing sensitivity to low-level signals. The combination of LOG/EXP for limiting and a second LOG/EXP stage for expansion creates a two-slope transfer characteristic.
 
-![RMS Limiter/Expander transfer curve](images/dynamics-rms_lim_exp.png)
+![RMS Limiter/Expander transfer curve](.gitbook/assets/dynamics-rms_lim_exp.png)
 
-Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps. Note
-how the output range is compressed compared to the input: loud signals
-are reduced and quiet signals are boosted relative to unity gain.
+Input-vs-output transfer curve from 0 to -80 dB in 10 dB steps. Note how the output range is compressed compared to the input: loud signals are reduced and quiet signals are boosted relative to unity gain.
 
-Test signals at 110, 440, and 2200 Hz (top trace is input, bottom is
-output). The limiter restricts input signals to approximately -12 dB FS:
+Test signals at 110, 440, and 2200 Hz (top trace is input, bottom is output). The limiter restricts input signals to approximately -12 dB FS:
 
-![RMS Limiter/Expander linear response](images/dynamics-rms_lim_exp-linear.png)
+![RMS Limiter/Expander linear response](.gitbook/assets/dynamics-rms_lim_exp-linear.png)
 
-White noise swept from -60 to 0 dB FS in 10 dB steps, shown in dB scale.
-The limiting and expansion regions are visible -- loud signals are
-compressed while quiet signals are boosted:
+White noise swept from -60 to 0 dB FS in 10 dB steps, shown in dB scale. The limiting and expansion regions are visible -- loud signals are compressed while quiet signals are boosted:
 
-![RMS Limiter/Expander expansion and limiting](images/dynamics-rms_lim_exp-expansion.png)
+![RMS Limiter/Expander expansion and limiting](.gitbook/assets/dynamics-rms_lim_exp-expansion.png)
 
----
+***
 
 ## Soft Knee Limiter
 
 **Menu:** Dynamics > Soft Knee Limiter
 
-A soft knee limiter that gradually increases gain reduction as the signal
-approaches and exceeds the threshold, rather than applying a hard
-transition. This produces a more transparent and natural-sounding result,
-especially on transient-rich material. The block has no user-adjustable
-parameters -- the knee shape and threshold are fixed in the algorithm.
+A soft knee limiter that gradually increases gain reduction as the signal approaches and exceeds the threshold, rather than applying a hard transition. This produces a more transparent and natural-sounding result, especially on transient-rich material. The block has no user-adjustable parameters -- the knee shape and threshold are fixed in the algorithm.
 
-| Pin | Type | Description |
-|-----|------|-------------|
-| Input | Audio In | Input signal |
-| Audio_Output | Audio Out | Limited output |
+| Pin           | Type      | Description    |
+| ------------- | --------- | -------------- |
+| Input         | Audio In  | Input signal   |
+| Audio\_Output | Audio Out | Limited output |
 
-The soft knee characteristic is implemented using LOG with fractional
-coefficients and an offset, which creates a gradual gain reduction curve.
-A constant offset (`SOF 0, 0.125`) adds a small bias to the RMS detector
-to ensure stable behavior at very low signal levels.
+The soft knee characteristic is implemented using LOG with fractional coefficients and an offset, which creates a gradual gain reduction curve. A constant offset (`SOF 0, 0.125`) adds a small bias to the RMS detector to ensure stable behavior at very low signal levels.
 
-![Soft Knee Limiter transfer curve](images/dynamics-soft_knee_limiter.png)
+![Soft Knee Limiter transfer curve](.gitbook/assets/dynamics-soft_knee_limiter.png)
 
-Input-vs-output transfer curve (gray = unity reference). The soft knee
-behavior is visible as a gradual change in slope rather than a sharp
-break at a fixed threshold. The ~1.3 dB offset below unity at low levels
-is inherent to the algorithm: the `SOF 0, 0.125` bias through
-`LOG(-0.4, -0.25)` / `EXP(1,0)` produces a gain of 0.1436, which
-doesn't quite compensate for the 6x output scaling.
+Input-vs-output transfer curve (gray = unity reference). The soft knee behavior is visible as a gradual change in slope rather than a sharp break at a fixed threshold. The \~1.3 dB offset below unity at low levels is inherent to the algorithm: the `SOF 0, 0.125` bias through `LOG(-0.4, -0.25)` / `EXP(1,0)` produces a gain of 0.1436, which doesn't quite compensate for the 6x output scaling.
 
-![Soft Knee Limiter tone burst response](images/dynamics-soft_knee_limiter-burst.png)
+![Soft Knee Limiter tone burst response](.gitbook/assets/dynamics-soft_knee_limiter-burst.png)
 
-Stepped 1 kHz tone bursts from -60 to 0 dBFS. The soft knee gradually
-limits the louder bursts, producing a smoother output envelope than a
-hard-knee limiter.
+Stepped 1 kHz tone bursts from -60 to 0 dBFS. The soft knee gradually limits the louder bursts, producing a smoother output envelope than a hard-knee limiter.
 
----
+***
 
 ## Generating Updated Plots
 
