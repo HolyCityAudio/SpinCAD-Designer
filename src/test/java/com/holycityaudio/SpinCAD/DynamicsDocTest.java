@@ -253,7 +253,6 @@ public class DynamicsDocTest {
         double[] outputDb = new double[inputDb.length];
         for (int li = 0; li < inputDb.length; li++) {
             rms_limiterCADBlock b = new rms_limiterCADBlock(100, 100);
-            b.setinGain(1.0);
             outputDb[li] = measureDb(b, "Output", inputDb[li]);
         }
 

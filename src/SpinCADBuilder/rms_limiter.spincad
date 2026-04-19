@@ -3,10 +3,6 @@
 @audioInput input Input
 @audioInput sidechain 'Side Chain'
 @audioOutput output Output
-@controlOutput rms RMS
-@controlOutput square Square
-@controlOutput logPin Log
-@controlOutput avg Avg
 
 ; rms limiter, approx 10dB limiting range.
 ; detection runs at full scale; sidechain is optional.
@@ -15,11 +11,6 @@ equ	sigin reg0
 equ	avg	reg1
 equ	rms	reg2
 equ output reg3
-equ square reg4
-equ logPin reg5
-
-equ inGain 1.0
-@sliderLabel inGain Input_Gain 0.1 1.0 1.0 100.0 2
 
 equ makeupGain 1.0
 @sliderLabel makeupGain 'Makeup (dB)' 0 6 0 10.0 1 DBLEVEL
@@ -30,25 +21,19 @@ equ filt 0.001
 rdax	input, 1.0
 wrax	sigin, 1	;full-scale signal for RMS detection
 mulx	sigin		;square input
-wrax	square, 1.0
 rdfx	avg, filt	;average squared result
 wrax	avg, 1		;avg stored and in ACC
 log	-0.5, -0.125	;square root and 1/x combined
-wrax	logPin, 1.0	;debug, write log value to output
 exp	1, 0
 wrax	rms, 0		;store gain, clear ACC
 @isPinConnected 'Side Chain'
-rdax	sidechain, inGain
+rdax	sidechain, 1.0
 @else
-rdax	input, inGain
+rdax	input, 1.0
 @endif
 mulx	rms		;apply RMS gain
 sof	makeupGain, 0	;makeup gain
 wrax	output, 0
 @setOutputPin Output output
-@setOutputPin RMS rms
-@setOutputPin Square square
-@setOutputPin Log logPin
-@setOutputPin Avg avg
 @endif
 

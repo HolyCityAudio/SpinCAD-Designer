@@ -213,21 +213,12 @@ frequency-selective limiting.
 | Input | Audio In | Signal to be limited |
 | Side Chain | Audio In | Signal that drives the detector |
 | Output | Audio Out | Limited output |
-| RMS | Control Out | RMS level of the detector |
-| Square | Control Out | Squared input (pre-filter) |
-| Log | Control Out | Log-domain detector signal |
-| Avg | Control Out | Averaged (filtered) detector signal |
 
 **Control panel parameters:**
 
 | Parameter | Range | Default | Description |
 |-----------|-------|---------|-------------|
-| Input Gain | linear | 1.0 | Output level (detection runs at full scale) |
 | Makeup (dB) | 0--6 dB | 0 dB | Post-limiter makeup gain |
-
-The four diagnostic control outputs (RMS, Square, Log, Avg) expose
-intermediate signals from the detector chain, which can be connected to
-a VU meter or other monitoring blocks for visualization.
 
 When the Side Chain input is connected, the limiter's gain reduction is
 driven by the side chain signal rather than the main input. When only the

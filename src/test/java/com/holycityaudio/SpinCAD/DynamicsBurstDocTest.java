@@ -78,7 +78,6 @@ public class DynamicsBurstDocTest {
     @Test
     void generateRmsLimiterBurst() throws Exception {
         rms_limiterCADBlock block = new rms_limiterCADBlock(100, 100);
-        block.setinGain(1.0);
         generateBurstPlot(block, "Output",
             "RMS Limiter",
             "dynamics-rms_limiter-burst.png");

@@ -34,9 +34,6 @@
 			private int avg;
 			private int rms;
 			private int output;
-			private int square;
-			private int logPin;
-			private double inGain = 1.0;
 			private double makeupGain = 1.0;
 			private double filt = 0.001;
 
@@ -48,12 +45,7 @@
 				addInputPin(this, "Input");
 				addInputPin(this, "Side Chain");
 				addOutputPin(this, "Output");
-				addControlOutputPin(this, "RMS");
-				addControlOutputPin(this, "Square");
-				addControlOutputPin(this, "Log");
-				addControlOutputPin(this, "Avg");
 			// if any control panel elements declared, set hasControlPanel to true
-						hasControlPanel = true;
 						hasControlPanel = true;
 						}
 		
@@ -96,46 +88,31 @@
 			avg = sfxb.allocateReg();
 			rms = sfxb.allocateReg();
 			output = sfxb.allocateReg();
-			square = sfxb.allocateReg();
-			logPin = sfxb.allocateReg();
 			if(this.getPin("Input").isConnected() == true) {
 			sfxb.readRegister(input, 1.0);
 			sfxb.writeRegister(sigin, 1);
 			sfxb.mulx(sigin);
-			sfxb.writeRegister(square, 1.0);
 			sfxb.readRegisterFilter(avg, filt);
 			sfxb.writeRegister(avg, 1);
 			sfxb.log(-0.5, -0.125);
-			sfxb.writeRegister(logPin, 1.0);
 			sfxb.exp(1, 0);
 			sfxb.writeRegister(rms, 0);
 			if(this.getPin("Side Chain").isConnected() == true) {
-			sfxb.readRegister(sidechain, inGain);
+			sfxb.readRegister(sidechain, 1.0);
 			} else {
-			sfxb.readRegister(input, inGain);
+			sfxb.readRegister(input, 1.0);
 			}
 			
 			sfxb.mulx(rms);
 			sfxb.scaleOffset(makeupGain, 0);
 			sfxb.writeRegister(output, 0);
 			this.getPin("Output").setRegister(output);
-			this.getPin("RMS").setRegister(rms);
-			this.getPin("Square").setRegister(square);
-			this.getPin("Log").setRegister(logPin);
-			this.getPin("Avg").setRegister(avg);
 			}
 			
 
 			}
 			
 			// create setters and getter for control panel variables
-			public void setinGain(double __param) {
-				inGain = __param;	
-			}
-			
-			public double getinGain() {
-				return inGain;
-			}
 			public void setmakeupGain(double __param) {
 				makeupGain = Math.pow(10.0, __param/20.0);	
 			}

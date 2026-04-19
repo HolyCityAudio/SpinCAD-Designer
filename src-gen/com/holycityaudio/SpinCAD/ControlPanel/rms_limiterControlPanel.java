@@ -55,8 +55,6 @@ public class rms_limiterControlPanel extends spinCADControlPanel {
 	private JDialog frame;
 	private rms_limiterCADBlock gCB;
 	// declare the controls
-	FineControlSlider inGainSlider;
-	JTextField  inGainField;
 	FineControlSlider makeupGainSlider;
 	JTextField  makeupGainField;
 
@@ -70,43 +68,6 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 				frame = new JDialog(SpinCADFrame.getInstance(), "RMS_Limiter");
 				frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
-			//
-			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
-			//
-					inGainSlider = new FineControlSlider(JSlider.HORIZONTAL, (int)(0.1 * 100.0),(int) (1.0 * 100.0), (int) (gCB.getinGain() * 100.0));
-						inGainSlider.addChangeListener(new rms_limiterListener());
-						inGainField = new JTextField();
-						inGainField.setHorizontalAlignment(JTextField.CENTER);
-						Border inGainBorder1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
-						inGainField.setBorder(inGainBorder1);
-						inGainField.addActionListener(new java.awt.event.ActionListener() {
-							@Override
-							public void actionPerformed(java.awt.event.ActionEvent e) {
-								try {
-									double val = Double.parseDouble(inGainField.getText().replaceAll("[^0-9.\\-]", ""));
-						int sliderVal = (int) Math.round(val * 100.0);
-						sliderVal = Math.max(inGainSlider.getMinimum(), Math.min(inGainSlider.getMaximum(), sliderVal));
-						inGainSlider.setValue(sliderVal);
-						gCB.setinGain((double) sliderVal / 100.0);
-									updateinGainLabel();
-								} catch (NumberFormatException ex) {
-									updateinGainLabel();
-								}
-							}
-						});
-						updateinGainLabel();
-			
-						Border inGainborder2 = BorderFactory.createBevelBorder(BevelBorder.RAISED);
-						JPanel inGaininnerPanel = new JPanel();
-			
-						inGaininnerPanel.setLayout(new BoxLayout(inGaininnerPanel, BoxLayout.Y_AXIS));
-						inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
-						inGaininnerPanel.add(inGainField);
-						inGaininnerPanel.add(Box.createRigidArea(new Dimension(5,4)));
-						inGaininnerPanel.add(inGainSlider);
-						inGaininnerPanel.setBorder(inGainborder2);
-			
-						frame.add(inGaininnerPanel);
 			//
 			// these functions translate between slider values, which have to be integers, to whatever in program value you wish.
 			//
@@ -165,10 +126,6 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 		// add change listener for Sliders, Spinners 
 		class rms_limiterListener implements ChangeListener { 
 		public void stateChanged(ChangeEvent ce) {
-			if(ce.getSource() == inGainSlider) {
-			gCB.setinGain((double) (inGainSlider.getValue()/100.0));
-				updateinGainLabel();
-			}
 			if(ce.getSource() == makeupGainSlider) {
 			gCB.setmakeupGain((double) (makeupGainSlider.getValue()/10.0));
 				updatemakeupGainLabel();
@@ -189,9 +146,6 @@ public rms_limiterControlPanel(rms_limiterCADBlock genericCADBlock) {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
-		}
-		private void updateinGainLabel() {
-		inGainField.setText("Input_Gain " + String.format("%4.2f", gCB.getinGain()));
 		}
 		private void updatemakeupGainLabel() {
 		makeupGainField.setText("Makeup (dB) " + String.format("%4.1f dB", (20 * Math.log10(gCB.getmakeupGain()))));
