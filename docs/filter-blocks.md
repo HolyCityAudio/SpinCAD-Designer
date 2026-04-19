@@ -233,7 +233,7 @@ A 2-pole notch filter that rejects a narrow frequency band while passing all oth
 
 ## Resonator
 
-A resonant bandpass filter that emphasizes a narrow frequency band. At high Q settings, it approaches self-oscillation and can be used for pitched filtering effects or as a simple sine oscillator.
+A resonant bandpass filter that emphasizes a narrow frequency band. At high Q settings, it approaches self-oscillation and can be used for pitched filtering effects.
 
 | Pin       | Type       | Description                 |
 | --------- | ---------- | --------------------------- |
@@ -249,9 +249,7 @@ A resonant bandpass filter that emphasizes a narrow frequency band. At high Q se
 | Frequency | 50-2500 Hz | 1000    | Center frequency                  |
 | Q         | 10-50      | 50      | Resonance (higher = sharper peak) |
 
-![Resonator response at three frequency settings](.gitbook/assets/filter-resonator.png)
-
-Simulated frequency response with fc fixed at 440 Hz, sweeping input sine across 80-2000 Hz for Q = 10, 20, and 50. Peak gain at resonance scales with Q: +20 dB, +26 dB, and +34 dB respectively. Input level is −46 dBFS to keep the Q = 50 peak below clipping.
+Simulated frequency response with fc fixed at 440 Hz, sweeping input sine across 80-2000 Hz for Q = 10, 20, and 50. Peak gain at resonance scales with Q: +20 dB, +26 dB, and +34 dB respectively. Input level is −46 dBFS to keep the Q = 50 peak below clipping.  Watch your input levels!
 
 ![Resonator Q overlay at fc=440 Hz](.gitbook/assets/filter-resonator-q-overlay.png)
 
