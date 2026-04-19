@@ -4,8 +4,7 @@
 
 ### Video Tutorial
 
-A video walkthrough of SpinCAD Designer is available on YouTube:
-[SpinCAD Designer Tutorial](https://www.youtube.com/watch?v=fPKpGW04NrA)
+A video walkthrough of SpinCAD Designer is available on YouTube: [SpinCAD Designer Tutorial](https://www.youtube.com/watch?v=fPKpGW04NrA)
 
 > **Note:** This video shows an older version of the designer. Some menus and features have changed since it was recorded, but the core workflow remains the same.
 
@@ -19,10 +18,10 @@ Before you start designing patches, you'll need audio files in the correct forma
 
 Two sample files are provided in the repository:
 
-- **Clean guitar loop** (`spincad-guitar-loop-32-khz.wav`)
-- **Drum beat** (`spincad-drum-beat-32-khz.wav`)
+* **Clean guitar loop** (`spincad-guitar-loop-32-khz.wav`)
+* **Drum beat** (`spincad-drum-beat-32-khz.wav`)
 
----
+***
 
 ## The User Interface
 
@@ -33,70 +32,81 @@ Two sample files are provided in the repository:
 The File menu handles patch and bank operations.
 
 **Patch operations:**
-- **New Patch** (Ctrl+N) -- create a new empty patch
-- **Open Patch** (Ctrl+O) -- load a saved patch file
-- **Open Hex** (Ctrl+H) -- open a hex file
-- **Save Patch** (Ctrl+S) -- save the current patch
-- **Save Patch As** (Ctrl+A) -- save the current patch with a new name
-- **Patch Information** (Ctrl+I) -- document your patch with title, description, and notes (included as comments when exporting to Spin ASM)
+
+* **New Patch** (Ctrl+N) -- create a new empty patch
+* **Open Patch** (Ctrl+O) -- load a saved patch file
+* **Open Hex** (Ctrl+H) -- open a hex file
+* **Save Patch** (Ctrl+S) -- save the current patch
+* **Save Patch As** (Ctrl+A) -- save the current patch with a new name
+* **Patch Information** (Ctrl+I) -- document your patch with title, description, and notes (included as comments when exporting to Spin ASM).  The top line shows the SPCD(J) saved file name, or "Untitled" if you haven't saved it yet.
+
+<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
 **ASM export:**
-- **Save Patch as ASM** -- export the current patch as a Spin ASM source file
-- **Copy ASM to Clipboard** -- copy the generated Spin ASM code for pasting into the Spin IDE
+
+* **Save Patch as ASM** -- export the current patch as a Spin ASM source file
+* **Copy ASM to Clipboard** -- copy the generated Spin ASM code for pasting into the Spin IDE
 
 **Bank operations:**
-- **New Bank** (Alt+N) -- create a new bank
-- **Open Bank** (Alt+O) -- load a saved bank file
-- **Save Bank** (Alt+S) -- save the current bank
-- **Save Bank As** (Alt+A) -- save the bank with a new name
-- **Bank Information** (Alt+I) -- document the bank
+
+* **New Bank** (Alt+N) -- create a new bank
+* **Open Bank** (Alt+O) -- load a saved bank file
+* **Save Bank** (Alt+S) -- save the current bank
+* **Save Bank As** (Alt+A) -- save the bank with a new name
+* **Bank Information** (Alt+I) -- document the bank
 
 **Export:**
-- **Export Bank to Hex** -- export the entire bank to a HEX file for EEPROM programming (via CH341 or PICKit2)
-- **Export Bank to Spin Project** -- export for use with the Spin Development Board
+
+* **Export Bank to Hex** -- export the entire bank to a HEX file for EEPROM programming (via CH341, PICKit2 or similar device)
+* **Export Bank to Spin Project** -- export for use with the Spin Development Board
 
 **Other:**
-- **Preferences...** -- application settings
-- **Exit** -- close SpinCAD Designer
+
+* **Preferences...** -- application settings
+* **Exit** -- close SpinCAD Designer
 
 #### Edit
 
-- **Copy** (Ctrl+C)
-- **Paste** (Ctrl+V)
-- **Cut** (Ctrl+X)
-- **Undo** (Ctrl+Z)
+Typical editing commands with keyboard shortcuts. ^ means the **CTRL** key on Windows and the **command** key on MacOS.
+
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+
+* **Copy** (Ctrl+C)
+* **Paste** (Ctrl+V)
+* **Cut** (Ctrl+X)
+* **Undo** (Ctrl+Z)
 
 #### Special
 
-- **Feedback Loop** -- drops a pair of feedback input and output blocks into your patch for creating feedback loops
-- **Scope Probe** -- adds a scope probe block for signal visualization
-- **VU Meter** -- adds a VU meter block for level monitoring
+* **Feedback Loop** -- drops a pair of feedback input and output blocks into your patch for creating feedback loops
+* **Scope Probe** -- adds a scope probe block for signal visualization
+* **VU Meter** -- adds a VU meter block for level monitoring
 
 #### Block Menus
 
 The block menus are organized into categories. Select a block from any menu and click on the patch display to place it.
 
-- **I/O - Pots** -- Input, Output, Pot 0, Pot 1, Pot 2
-- **Mixers/Gain** -- mixers (2:1, 3:1, 4:1), crossfades, gain boost, panner, phase invert, volume
-- **Wave Shaper** -- aliaser, cube, distortion, noise, octave fuzz, overdrive, quantizer, T/X
-- **Dynamics** -- noise gate, compressors (peak, RMS), limiters, expander
-- **Filters** -- 1-pole and 2-pole filters, EQ, comb filter, notch, resonator, shelving filters
-- **Delay** -- multi-tap delays, drum delay, oil can, reverse, stutter, single delay, and more
-- **Reverb** -- allpass, ambience, chirp, freeverb, hall, plate, room, spring, and reverb designer
-- **Modulation** -- chorus, flanger, phaser, ring modulator, servo flanger
-- **Pitch** -- pitch shifters, arpeggiator, glitch shift, octave up/down
-- **Oscillators** -- LFOs, oscillators, sin/cos LFO, ramp LFO, tremolizer
-- **Control** -- envelope follower, sample/hold, smoother, tap tempo, pattern generator, and other control-signal processing blocks
-- **Instructions** -- math and utility blocks (absolute value, constant, exp, log, max, multiply, root, scale/offset)
+* **I/O - Pots** -- Input, Output, Pot 0, Pot 1, Pot 2
+* **Mixers/Gain** -- mixers (2:1, 3:1, 4:1), crossfades, gain boost, panner, phase invert, volume
+* **Wave Shaper** -- aliaser, cube, distortion, noise, octave fuzz, overdrive, quantizer, T/X
+* **Dynamics** -- noise gate, compressors (peak, RMS), limiters, expander
+* **Filters** -- 1-pole and 2-pole filters, EQ, comb filter, notch, resonator, shelving filters
+* **Delay** -- multi-tap delays, drum delay, oil can, reverse, stutter, single delay, and more
+* **Reverb** -- allpass, ambience, chirp, freeverb, hall, plate, room, spring, and reverb designer
+* **Modulation** -- chorus, flanger, phaser, ring modulator, servo flanger
+* **Pitch** -- pitch shifters, arpeggiator, glitch shift, octave up/down
+* **Oscillators** -- LFOs, oscillators, sin/cos LFO, ramp LFO, tremolizer
+* **Control** -- envelope follower, sample/hold, smoother, tap tempo, pattern generator, and other control-signal processing blocks
+* **Instructions** -- math and utility blocks (absolute value, constant, exp, log, max, multiply, root, scale/offset)
 
 #### Simulator
 
-- **Simulator Options...** -- configure simulator settings
+* **Simulator Options...** -- configure simulator settings
 
 #### Help
 
-- **Help** -- opens the [SpinCAD Designer documentation](https://holy-city-audio.gitbook.io/spincad-designer)
-- **About** -- version and credits
+* **Help** -- opens the [SpinCAD Designer documentation](https://holy-city-audio.gitbook.io/spincad-designer)
+* **About** -- version and credits
 
 ### Patch Selector
 
@@ -118,14 +128,14 @@ The patch display panel is the main work area. This is where you place blocks, c
 
 Displays how much of the FV-1's resources your patch is using:
 
-- **Instructions** -- 128 total
-- **Registers** -- 32 total
-- **Delay RAM** -- 32,768 samples total
-- **LFOs** -- 2 Sin/Cos, 2 Ramp
+* **Instructions** -- 128 total
+* **Registers** -- 32 total
+* **Delay RAM** -- 32,768 samples total
+* **LFOs** -- 2 Sin/Cos, 2 Ramp
 
 Indicators turn red when you are approaching or exceeding resource limits.
 
----
+***
 
 ## Creating a Patch
 
@@ -150,22 +160,24 @@ To connect two blocks:
 Connections can be made in either direction -- output to input or input to output.
 
 **Connection rules:**
-- Output pins can have multiple connections going out
-- Input pins can only have one connection coming in
+
+* Output pins can have multiple connections going out
+* Input pins can only have one connection coming in
 
 ### Right-Click Pin Menu
 
 Right-clicking on an input pin opens a popup menu with two options:
 
-- **Delete Wire** -- removes the connection to this pin
-- **Mute This Pin** -- silences the signal at this input without removing the wire. When muted:
-  - The pin turns **black** and the wire turns **red** to indicate the muted state
-  - The signal is treated as if the pin were disconnected during code generation
-  - The wire remains in place so you can easily unmute it later
+* **Delete Wire** -- removes the connection to this pin
+*   **Mute This Pin** -- silences the signal at this input without removing the wire. When muted:
 
-  Mute is useful for **debugging and A/B testing** -- you can quickly hear what a patch sounds like with and without a particular connection, without having to delete and recreate wires. For example, mute the feedback input on a delay to hear the dry delay taps, or mute a modulation source to isolate its effect.
+    * The pin turns **black** and the wire turns **red** to indicate the muted state
+    * The signal is treated as if the pin were disconnected during code generation
+    * The wire remains in place so you can easily unmute it later
 
-  > **Note:** Mute changes take effect the next time you start the simulator. If the simulator is already running, you will see a status message indicating the change will apply after the simulator stops.
+    Mute is useful for **debugging and A/B testing** -- you can quickly hear what a patch sounds like with and without a particular connection, without having to delete and recreate wires. For example, mute the feedback input on a delay to hear the dry delay taps, or mute a modulation source to isolate its effect.
+
+    > **Note:** Mute changes take effect the next time you start the simulator. If the simulator is already running, you will see a status message indicating the change will apply after the simulator stops.
 
 ### Control Panels
 
@@ -183,9 +195,10 @@ Control panels contain sliders and other controls for adjusting the block's beha
 Most control panel sliders support **Ctrl+drag for fine adjustment**. Hold the **Ctrl** key while dragging a slider to move it at **1/10th of the normal speed**, giving you much more precise control over parameter values.
 
 This is especially useful for:
-- Dialing in exact delay times or filter frequencies
-- Setting precise gain or mix levels
-- Fine-tuning any parameter where small changes matter
+
+* Dialing in exact delay times or filter frequencies
+* Setting precise gain or mix levels
+* Fine-tuning any parameter where small changes matter
 
 When a slider has subdivision snap points, Ctrl+drag also **bypasses snapping**, allowing you to set values between the snap points.
 
