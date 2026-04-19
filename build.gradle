@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'com.github.spotbugs' version '5.2.5'
+    id 'org.owasp.dependencycheck' version '9.2.0'
 }
 
 group = 'com.holycityaudio'
@@ -33,6 +35,9 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'lib', include: ['*.jar'])
+    implementation 'commons-io:commons-io:2.18.0'
+
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'org.junit.platform:junit-platform-launcher:1.10.2'
@@ -67,4 +72,29 @@ task guiTest(type: Test) {
         showStandardStreams = true
         exceptionFormat 'full'
     }
+}
+
+// ==================== Security Scanning ====================
+
+spotbugs {
+    toolVersion = '4.7.3'
+    effort = 'max'
+    reportLevel = 'medium'
+    excludeFilter = file('config/spotbugs/exclude.xml')
+    // Don't fail the build — review HTML report manually
+    // Once findings are triaged, can set to false to enforce
+    ignoreFailures = true
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    reports {
+        xml.required = false
+        html.required = true
+    }
+}
+
+dependencyCheck {
+    scanConfigurations = ['runtimeClasspath']
+    failBuildOnCVSS = 7.0f
+    formats = ['HTML']
 }

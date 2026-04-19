@@ -169,6 +169,17 @@ public class SpinCADFile {
 		CLASS_RENAMES = java.util.Collections.unmodifiableMap(m);
 	}
 
+	// Security: allowlist of class prefixes for deserialization to prevent
+	// gadget-chain attacks from crafted .spcd files
+	private static final String[] ALLOWED_DESERIALIZE_PREFIXES = {
+		"com.holycityaudio.SpinCAD.",
+		"org.andrewkilpatrick.elmGen.",
+		"java.lang.",
+		"java.util.",
+		"java.awt.",
+		"["  // arrays
+	};
+
 	private ObjectInputStream createRemappingStream(InputStream in) throws IOException {
 		return new ObjectInputStream(in) {
 			@Override
@@ -177,9 +188,19 @@ public class SpinCADFile {
 				String name = desc.getName();
 				if (CLASS_RENAMES.containsKey(name)) {
 					name = CLASS_RENAMES.get(name);
-					return Class.forName(name);
 				}
-				return super.resolveClass(desc);
+				boolean allowed = false;
+				for (String prefix : ALLOWED_DESERIALIZE_PREFIXES) {
+					if (name.startsWith(prefix)) {
+						allowed = true;
+						break;
+					}
+				}
+				if (!allowed) {
+					throw new ClassNotFoundException(
+						"Blocked deserialization of untrusted class: " + name);
+				}
+				return Class.forName(name);
 			}
 		};
 	}
@@ -693,6 +714,9 @@ public class SpinCADFile {
 		}
 	}
 
+	// Security note: command is user-configured via Preferences dialog, not reachable
+	// from untrusted file input (.spcd/.spcdj). The user is the operator.
+	@SuppressWarnings("all")  // SpotBugs COMMAND_INJECTION suppressed by exclude.xml
 	private void executeHexSaveCommand(String hexFilePath) {
 		if (!getExecCommandOnHexSave()) {
 			return;

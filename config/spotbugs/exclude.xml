@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Swing inner classes are inherently non-static (reference enclosing panel) -->
+    <Match>
+        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+    </Match>
+
+    <!-- Swing panels intentionally store mutable references to their CADBlock -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+
+    <!-- Swing panels don't need serialVersionUID -->
+    <Match>
+        <Bug pattern="SE_NO_SERIALVERSIONID"/>
+    </Match>
+
+    <!-- Class naming: many generated blocks use snake_case (e.g., rms_limiterCADBlock) -->
+    <Match>
+        <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+    </Match>
+
+    <!-- executeHexSaveCommand: user-configured preference, not reachable from
+         untrusted file input. The user is the operator. -->
+    <Match>
+        <Class name="com.holycityaudio.SpinCAD.SpinCADFile"/>
+        <Method name="executeHexSaveCommand"/>
+        <Bug pattern="COMMAND_INJECTION"/>
+    </Match>
+</FindBugsFilter>

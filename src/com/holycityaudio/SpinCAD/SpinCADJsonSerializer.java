@@ -515,9 +515,26 @@ public class SpinCADJsonSerializer {
 		}
 	}
 
+	private static final String ALLOWED_BLOCK_PACKAGE = "com.holycityaudio.SpinCAD.CADBlocks.";
+
 	private static SpinCADBlock instantiateBlock(String className, int x, int y) {
+		// Security: only allow classes from the CADBlocks package to prevent
+		// malicious .spcdj files from instantiating arbitrary classes
+		if (className == null || !className.startsWith(ALLOWED_BLOCK_PACKAGE)) {
+			System.err.println("WARNING: Blocked instantiation of untrusted class: " + className);
+			return null;
+		}
+		String simpleName = className.substring(ALLOWED_BLOCK_PACKAGE.length());
+		if (simpleName.contains(".")) {
+			System.err.println("WARNING: Blocked instantiation of class outside CADBlocks: " + className);
+			return null;
+		}
 		try {
 			Class<?> clazz = Class.forName(className);
+			if (!SpinCADBlock.class.isAssignableFrom(clazz)) {
+				System.err.println("WARNING: " + className + " is not a SpinCADBlock subclass");
+				return null;
+			}
 			java.lang.reflect.Constructor<?> ctor = clazz.getConstructor(int.class, int.class);
 			return (SpinCADBlock) ctor.newInstance(x, y);
 		} catch (Exception e) {
