@@ -24,6 +24,10 @@
 * [Instructions Blocks](instructions-blocks.md)
 * [Special Blocks](special-blocks.md)
 
+## Simulator
+
+* [Simulator](simulator.md)
+
 ## Patches
 
 * [4-Phase LFO Driven Mixer](patches/4-phase-lfo-driven-mixer.md)
