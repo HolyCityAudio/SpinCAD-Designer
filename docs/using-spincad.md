@@ -27,6 +27,8 @@ Two sample files are provided in the repository:
 
 ### Menu Bar
 
+<figure><img src=".gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
+
 #### File
 
 The File menu handles patch and bank operations.
@@ -110,21 +112,27 @@ The block menus are organized into categories. Select a block from any menu and 
 
 ### Patch Selector
 
+<figure><img src=".gitbook/assets/image (19).png" alt=""><figcaption></figcaption></figure>
+
 SpinCAD Designer lets you work on 8 patches at once in a "Bank." Click on a patch number (0 through 7) to select the patch you want to work on. These correspond to patches 0-7 on the FV-1 once the program is loaded into an EEPROM.
 
 ### Simulator Control Bar
+
+<figure><img src=".gitbook/assets/image (20).png" alt=""><figcaption></figcaption></figure>
 
 The **Start Simulation** button begins simulation of the current patch. The three sliders to the right correspond to Pot 0, Pot 1, and Pot 2 as used in your FV-1 code.
 
 ### Scope Feature Control Bar
 
-The scope can be used to visualize signals in your patch by connecting them to scope probe blocks (added via **Special > Scope Probe**).
+The scope can be used to visualize signals in your patch.  By default, the Output Block inputs are automatically connected.  You can visualise internal signals in your patch by connecting them to a scope probe block (added via **Special > Scope Probe**).
 
 ### Patch Display Panel
 
 The patch display panel is the main work area. This is where you place blocks, connect them, and adjust their parameters.
 
 ### Resource Allocation Toolbar
+
+<figure><img src=".gitbook/assets/image (21).png" alt=""><figcaption></figcaption></figure>
 
 Displays how much of the FV-1's resources your patch is using:
 
@@ -133,7 +141,9 @@ Displays how much of the FV-1's resources your patch is using:
 * **Delay RAM** -- 32,768 samples total
 * **LFOs** -- 2 Sin/Cos, 2 Ramp
 
-Indicators turn red when you are approaching or exceeding resource limits.
+Indicators turn red when you are approaching or exceeding resource limits.  Hover over one of the resource bars to show a tooltip with the exact count.
+
+
 
 ***
 
