@@ -27,7 +27,7 @@ Two sample files are provided in the repository:
 
 ### Menu Bar
 
-<figure><img src=".gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
 #### File
 
@@ -71,18 +71,12 @@ The File menu handles patch and bank operations.
 
 Typical editing commands with keyboard shortcuts. ^ means the **CTRL** key on Windows and the **command** key on MacOS.
 
-<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 * **Copy** (Ctrl+C)
 * **Paste** (Ctrl+V)
 * **Cut** (Ctrl+X)
 * **Undo** (Ctrl+Z)
-
-#### Special
-
-* **Feedback Loop** -- drops a pair of feedback input and output blocks into your patch for creating feedback loops
-* **Scope Probe** -- adds a scope probe block for signal visualization
-* **VU Meter** -- adds a VU meter block for level monitoring
 
 #### Block Menus
 
@@ -101,13 +95,19 @@ The block menus are organized into categories. Select a block from any menu and 
 * **Control** -- envelope follower, sample/hold, smoother, tap tempo, pattern generator, and other control-signal processing blocks
 * **Instructions** -- math and utility blocks (absolute value, constant, exp, log, max, multiply, root, scale/offset)
 
+#### Special
+
+* **Feedback Loop** -- drops a pair of feedback input and output blocks into your patch for creating feedback loops
+* **Scope Probe** -- adds a scope probe block for signal visualization
+* **VU Meter** -- adds a VU meter block for level monitoring
+
 #### Simulator
 
 * **Simulator Options...** -- configure simulator settings
 
 #### Help
 
-* **Help** -- opens the [SpinCAD Designer documentation](https://holy-city-audio.gitbook.io/spincad-designer)
+* **Help** -- opens the [SpinCAD Designer documentation](https://holy-city-audio-1.gitbook.io/spincad-designer) - which you're looking at right now!
 * **About** -- version and credits
 
 ### Patch Selector
@@ -124,7 +124,7 @@ The **Start Simulation** button begins simulation of the current patch. The thre
 
 ### Scope Feature Control Bar
 
-The scope can be used to visualize signals in your patch.  By default, the Output Block inputs are automatically connected.  You can visualise internal signals in your patch by connecting them to a scope probe block (added via **Special > Scope Probe**).
+The scope can be used to visualize signals in your patch.  By default, the Output Block inputs are automatically connected.  You can visualize internal signals in your patch by connecting them to a scope probe block (added via **Special > Scope Probe**).
 
 ### Patch Display Panel
 
@@ -176,7 +176,7 @@ Connections can be made in either direction -- output to input or input to outpu
 
 ### Right-Click Pin Menu
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 Right-clicking on an input pin opens a popup menu with two options:
 
@@ -193,7 +193,7 @@ Right-clicking on an input pin opens a popup menu with two options:
     >
     > **Note:** Pin mute state is not preserved through file save/load.
 
-<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Control Panels
 
