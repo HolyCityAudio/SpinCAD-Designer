@@ -18,6 +18,8 @@ These blocks handle audio input/output and signal routing: level control, mixing
 
 Sums two audio inputs into a single output with independent gain controls.
 
+<figure><img src=".gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
+
 | Pin     | Type       | Description         |
 | ------- | ---------- | ------------------- |
 | Input 1 | Audio In   | First audio source  |
@@ -40,6 +42,8 @@ When a Level control pin is connected, it multiplies the corresponding input in 
 ## 2:1 (x2) Mixer
 
 Two independent 2:1 mixers in one block, producing stereo output. Inputs 1a+1b mix to Output 1; inputs 2a+2b mix to Output 2.
+
+<figure><img src=".gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
 
 | Pin      | Type       | Description             |
 | -------- | ---------- | ----------------------- |
@@ -66,6 +70,8 @@ Two independent 2:1 mixers in one block, producing stereo output. Inputs 1a+1b m
 
 Sums three audio inputs into a single output with independent gain controls.
 
+<figure><img src=".gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+
 | Pin     | Type       | Description         |
 | ------- | ---------- | ------------------- |
 | Input 1 | Audio In   | First audio source  |
@@ -87,6 +93,8 @@ Sums three audio inputs into a single output with independent gain controls.
 ## 4:1 Mixer
 
 Sums four audio inputs into a single output with independent gain controls.
+
+<figure><img src=".gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
 
 | Pin     | Type       | Description         |
 | ------- | ---------- | ------------------- |
@@ -112,6 +120,8 @@ Sums four audio inputs into a single output with independent gain controls.
 
 Crossfades between two audio inputs using a control signal. At 0 you hear only Input 1; at 1 you hear only Input 2.
 
+<figure><img src=".gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
+
 | Pin          | Type       | Description              |
 | ------------ | ---------- | ------------------------ |
 | Input 1      | Audio In   | First audio source       |
@@ -126,13 +136,19 @@ Crossfades between two audio inputs using a control signal. At 0 you hear only I
 | Gain 1    | dB    | -6 dB   | Input 1 gain |
 | Gain 2    | dB    | -6 dB   | Input 2 gain |
 
-This is a linear crossfade. At the midpoint (0.5), both signals are at half amplitude, resulting in a perceived -3 dB dip for uncorrelated signals. Based on [this code](http://spinsemi.com/knowledge_base/coding_examples.html#Cross_fading) at Spin's Knowledge Base.
+This is a linear crossfade. At the midpoint (0.5), both signals are at half amplitude, resulting in a perceived -3 dB dip for uncorrelated signals. Based on [this code](http://spinsemi.com/knowledge_base/coding_examples.html#Cross_fading) at Spin's Knowledge Base. &#x20;
+
+<figure><img src=".gitbook/assets/image (10).png" alt=""><figcaption></figcaption></figure>
+
+Due to the way it is implemented, if both inputs are at full scale and out of phase, the signal will clip.  It is recommend to keep the input gains at -6 dB to prevent this.
 
 ***
 
 ## Crossfade 2
 
-An alternative crossfade implementation using scale/offset operations for smoother gain ramping.
+Implements a 2-segment gain curve as shown. This results in a +6 dB boost when the control value is 0.5.
+
+<figure><img src=".gitbook/assets/image (11).png" alt=""><figcaption></figcaption></figure>
 
 | Pin           | Type       | Description              |
 | ------------- | ---------- | ------------------------ |
@@ -152,7 +168,9 @@ An alternative crossfade implementation using scale/offset operations for smooth
 
 ## Crossfade 3
 
-An equal-power crossfade that maintains perceived loudness at the midpoint. This requires the most FV-1 instructions of the three Crossfade variants. Uses a more complex gain curve (0.707 multiplier) to avoid the -3 dB dip of a linear crossfade.
+An approximate equal-power crossfade that maintains perceived loudness at the midpoint. This requires the most FV-1 instructions of the three Crossfade variants. Uses a more complex gain curve (0.707 multiplier) to avoid the -3 dB dip of a linear crossfade.
+
+<figure><img src=".gitbook/assets/image (12).png" alt=""><figcaption></figcaption></figure>
 
 | Pin           | Type       | Description              |
 | ------------- | ---------- | ------------------------ |
@@ -213,7 +231,9 @@ The midpoint parameter sets the gain level where the two curves cross at control
 
 ## Gain Boost
 
-Applies a fixed digital gain in 1 dB increments. Internally optimized to use cascaded `SOF -2.0, 0` instructions for each full 6 dB, with a single SOF for the remainder. Useful for boosting quiet signals before further processing.
+Applies a fixed digital gain in 1 dB increments. Hold CTRL before clicking on the slider handle to get 0.1 dB resolution.  Internally optimized to use cascaded `SOF -2.0, 0` instructions for each full 6 dB, with a single SOF for the remainder. Useful for boosting quiet signals before further processing.
+
+<figure><img src=".gitbook/assets/image (13).png" alt=""><figcaption></figcaption></figure>
 
 | Pin          | Type      | Description     |
 | ------------ | --------- | --------------- |
@@ -222,52 +242,19 @@ Applies a fixed digital gain in 1 dB increments. Internally optimized to use cas
 
 **Control panel parameters:**
 
-| Parameter | Range   | Default | Description              |
-| --------- | ------- | ------- | ------------------------ |
-| Gain      | 1-48 dB | 6 dB    | Gain boost in 1 dB steps |
+| Parameter | Range      | Default | Description                                                    |
+| --------- | ---------- | ------- | -------------------------------------------------------------- |
+| Gain      | 0.11-48 dB | 6 dB    | Gain boost in 1 dB steps.  CRTL-drag to get 0.1 dB resolution. |
 
 Be careful with high gain values as clipping will occur if the signal exceeds the FV-1's -1.0 to +0.999 range.
-
-***
-
-## Input
-
-The Input block provides access to the FV-1's stereo ADC (analog-to-digital converter). It has no control panel and no adjustable parameters.
-
-| Pin      | Type      | Description            |
-| -------- | --------- | ---------------------- |
-| Output 1 | Audio Out | Left ADC input (ADCL)  |
-| Output 2 | Audio Out | Right ADC input (ADCR) |
-
-Not all patches require an Input block, but it is the only way to get audio into the patch from the ADC. A patch with internal oscillators feeding the Output block directly is still valid. The Input block is placed automatically when you create a new patch with Ctrl-N.
-
-***
-
-## Output
-
-The Output block routes audio to the FV-1's stereo DAC (digital-to-analog converter).
-
-| Pin     | Type     | Description             |
-| ------- | -------- | ----------------------- |
-| Input 1 | Audio In | Left DAC output (DACL)  |
-| Input 2 | Audio In | Right DAC output (DACR) |
-
-**Control panel parameters:**
-
-| Parameter | Range  | Default | Description                                                                          |
-| --------- | ------ | ------- | ------------------------------------------------------------------------------------ |
-| Gain 1    | dB     | 0 dB    | Left channel output gain                                                             |
-| Gain 2    | dB     | 0 dB    | Right channel output gain                                                            |
-| Mono      | on/off | off     | Routes both inputs to DACL only                                                      |
-| DC Offset | on/off | off     | Adds 0.02 DC offset (compensates for very early FV-1 revisions; probably not needed) |
-
-Every patch needs exactly one Output block.
 
 ***
 
 ## Panner
 
 Distributes a mono audio input across two stereo outputs based on a control signal. At control value 0 the signal is fully left; at 1 it is fully right.
+
+<figure><img src=".gitbook/assets/image (14).png" alt=""><figcaption></figcaption></figure>
 
 | Pin      | Type       | Description                        |
 | -------- | ---------- | ---------------------------------- |
@@ -288,6 +275,8 @@ Distributes a mono audio input across two stereo outputs based on a control sign
 
 Inverts the polarity of an audio signal by multiplying by -1.0. There is no control panel. Useful for correcting phase issues or creating difference signals.
 
+<figure><img src=".gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
+
 | Pin    | Type      | Description           |
 | ------ | --------- | --------------------- |
 | Input  | Audio In  | Audio signal          |
@@ -301,6 +290,8 @@ Implements: `output = input * -1.0`
 
 Multiplies an audio signal by a gain value. When the Volume control input is connected, the signal is also multiplied by the control value, making this block useful for VCA-style amplitude modulation.
 
+<figure><img src=".gitbook/assets/image (16).png" alt=""><figcaption></figcaption></figure>
+
 | Pin    | Type       | Description           |
 | ------ | ---------- | --------------------- |
 | Input  | Audio In   | Audio signal          |
@@ -309,8 +300,8 @@ Multiplies an audio signal by a gain value. When the Volume control input is con
 
 **Control panel parameters:**
 
-| Parameter | Range | Default | Description                 |
-| --------- | ----- | ------- | --------------------------- |
-| Gain      | dB    | 0 dB    | Fixed gain applied to input |
+| Parameter | Range       | Default | Description                 |
+| --------- | ----------- | ------- | --------------------------- |
+| Gain      | 0 to -24 dB | 0 dB    | Fixed gain applied to input |
 
 When the Volume control pin is connected, the output is: `output = input * gain * control_value`. When disconnected: `output = input * gain`.
