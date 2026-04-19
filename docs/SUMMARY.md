@@ -39,6 +39,7 @@
 ## References
 
 * [DSP References](DSP-references.md)
+* [Release Notes 0.99-1070](release-notes-0.99-1070.md)
 * [Release Notes 0.99-1069](release-notes-0.99-1069.md)
 
 ## Legacy Forum Archive
