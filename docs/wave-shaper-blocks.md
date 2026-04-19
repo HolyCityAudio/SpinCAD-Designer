@@ -97,16 +97,18 @@ A pseudo-random noise generator using a Linear Feedback Shift Register (LFSR) al
 
 ## Octave Fuzz
 
-Full-wave rectifies the input signal to produce an octave-up effect combined with fuzz distortion. The rectification doubles the fundamental frequency, creating an aggressive octave-up tone.
+Full-wave rectifies the input signal to produce an octave-up effect combined with fuzz distortion. The rectification doubles the fundamental frequency, creating an aggressive octave-up tone.  This also create aliasing so you may wish to try taming that is low pass filtering (or not).
 
-![Octave Fuzz block](.gitbook/assets/waveshaper-octavefuzz-block.png)
+<figure><img src=".gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
+
+
 
 | Pin           | Type      | Description             |
 | ------------- | --------- | ----------------------- |
 | Input         | Audio In  | Audio signal            |
 | Audio\_Output | Audio Out | Fuzzed octave-up output |
 
-There is no control panel.
+There is no control panel.  As the block itself creates a DC offset, it is recommended to follow it with a highpass filter.  The result of highpassing is shown below.
 
 ![Octave Fuzz](.gitbook/assets/waveshaper-octavefuzz.png)
 
