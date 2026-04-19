@@ -14,7 +14,7 @@ These blocks provide access to the FV-1's audio converters and hardware potentio
 
 The Input block provides access to the FV-1's stereo ADC (analog-to-digital converter). It has no control panel and no adjustable parameters.
 
-<figure><img src=".gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 | Pin      | Type      | Description            |
 | -------- | --------- | ---------------------- |

@@ -27,7 +27,7 @@ Two sample files are provided in the repository:
 
 ### Menu Bar
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 #### File
 
@@ -42,7 +42,7 @@ The File menu handles patch and bank operations.
 * **Save Patch As** (Ctrl+A) -- save the current patch with a new name
 * **Patch Information** (Ctrl+I) -- document your patch with title, description, and notes (included as comments when exporting to Spin ASM).  The top line shows the SPCD(J) saved file name, or "Untitled" if you haven't saved it yet.
 
-<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
 
 **ASM export:**
 
@@ -71,7 +71,7 @@ The File menu handles patch and bank operations.
 
 Typical editing commands with keyboard shortcuts. ^ means the **CTRL** key on Windows and the **command** key on MacOS.
 
-<figure><img src=".gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 * **Copy** (Ctrl+C)
 * **Paste** (Ctrl+V)
@@ -176,7 +176,7 @@ Connections can be made in either direction -- output to input or input to outpu
 
 ### Right-Click Pin Menu
 
-<figure><img src=".gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 Right-clicking on an input pin opens a popup menu with two options:
 
@@ -193,7 +193,7 @@ Right-clicking on an input pin opens a popup menu with two options:
     >
     > **Note:** Pin mute state is not preserved through file save/load.
 
-<figure><img src=".gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (1) (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 ### Control Panels
 
@@ -222,4 +222,4 @@ When a slider has subdivision snap points, Ctrl+drag also **bypasses snapping**,
 
 Use **Patch Information** (Ctrl+I on Windows) to add a title, description, and notes to your patch. This information is included as comments when you export to Spin ASM format.
 
-<figure><img src=".gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure>
