@@ -5,11 +5,9 @@ SpinCAD Designer is an open source Java project which allows creation and audio 
 
 New as of July 2022, I am developing video and written tutorials for SpinCAD to help you get the most out of it.
 
-Please visit: [The SpinCAD Designer Gitbook site](https://holy-city-audio.gitbook.io/spincad-designer)
+Please visit: [The SpinCAD Designer Gitbook site](https://holy-city-audio-1.gitbook.io/holy-city-audio)
 
 Updated block documentation can be found [here](https://github.com/HolyCityAudio/SpinCAD-Designer/blob/master/docs/README.md).
-
-Eventually I will have to rebuild the Gitbook site as I no longer have access to that account.
 
 ![SpinCAD Designer](/spincad.png)
 
