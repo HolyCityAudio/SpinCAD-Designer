@@ -159,8 +159,6 @@ Range restriction, curve bending, and the smoother stay exactly the same. The so
 
 **Control inputs only scale downward.** A value of 1 gives the block's internal maximum; you cannot overdrive past it. Output High should never exceed 1.0 in normalized terms.
 
-**Scale/Offset is mandatory after Slicer, S/H, Ratio, and similar blocks.** Their outputs reflect whatever their inputs cover -- not a pre-scaled useful range.
-
 **Scale/Offset usually goes last.** Curve-shaping blocks -- Power, Two-Stage, Vee, Log, Exp -- should generally come *before* Scale/Offset in the chain, with Scale/Offset at the end just before the controlled block. This way the shaping is applied to the full 0–1 signal, and Scale/Offset maps the shaped result into your target range. The output stays within the range you chose (0.27–0.75 in this example) and the curve shape controls how the signal distributes its time within that range.
 
 If Scale/Offset comes first and the shaping block comes after, the shaping operates on the already-scaled values. For example, with a range of 0.27–0.75 followed by Power (4): 0.75^4 = 0.316 and 0.27^4 = 0.005, so the output collapses to roughly 0.005–0.316 -- much smaller than intended.
