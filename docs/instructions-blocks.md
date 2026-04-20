@@ -6,8 +6,9 @@ These blocks perform mathematical operations on control signals using FV-1 DSP i
 
 |                                                         |                                           |                                                     |
 | ------------------------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
-| [Absolute Value](instructions-blocks.md#absolute-value) | [Exp](instructions-blocks.md#exp)         | [Half Wave](instructions-blocks.md#half-wave)       |
-| [Log](instructions-blocks.md#log)                       | [Maximum](instructions-blocks.md#maximum) | [Scale/Offset](instructions-blocks.md#scale-offset) |
+| [Absolute Value](instructions-blocks.md#absolute-value) | [Constant](instructions-blocks.md#constant) | [Exp](instructions-blocks.md#exp)                   |
+| [Half Wave](instructions-blocks.md#half-wave)            | [Log](instructions-blocks.md#log)            | [Maximum](instructions-blocks.md#maximum)            |
+| [Scale/Offset](instructions-blocks.md#scale-offset)      |                                              |                                                      |
 
 ***
 
@@ -25,6 +26,30 @@ Implements: `output = |input|`
 The plot shows a sine wave input and the resulting full-wave rectified output, with negative half-cycles folded to positive.
 
 ![Absolute Value](.gitbook/assets/instructions-absa.png)
+
+***
+
+## Constant
+
+**Menu:** Controls > Instructions > Constant
+
+Outputs a fixed value set at design time. The block has no input -- it simply writes a constant to a register that other blocks can read.
+
+| Pin    | Type        | Description          |
+| ------ | ----------- | -------------------- |
+| Value  | Control Out | Fixed constant value |
+
+**Control panel parameters:**
+
+| Parameter | Range       | Default | Description            |
+| --------- | ----------- | ------- | ---------------------- |
+| Value     | 0.000-0.999 | 0.999   | Constant output value  |
+
+<!-- TODO: add screenshot of Constant control panel -->
+
+Internally, the block uses a `SOF 0, constant` instruction to load the value into the accumulator, then writes it to a register.
+
+**Typical use:** Provide a fixed bias or default value to a control input. Historically this was needed for blocks that required a connected pin to build correctly. Most blocks now have sensible defaults when pins are unconnected, making this block an edge case.
 
 ***
 

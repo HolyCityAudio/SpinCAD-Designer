@@ -12,13 +12,45 @@ The blocks in this section shape, scale, and transform control signals. They are
 
 ### Block Index
 
-|                                          |                                                          |                                          |
-| ---------------------------------------- | -------------------------------------------------------- | ---------------------------------------- |
-| [Clip](control-blocks.md#clip)           | [Envelope Follower](control-blocks.md#envelope-follower) | [Half Wave](control-blocks.md#half-wave) |
-| [Invert](control-blocks.md#invert)       | [Power](control-blocks.md#power)                         | [Ratio](control-blocks.md#ratio)         |
-| [Root](control-blocks.md#root)           | [Slicer](control-blocks.md#slicer)                       | [Smoother](control-blocks.md#smoother)   |
-| [Tap Tempo](control-blocks.md#tap-tempo) | [Tremolizer](control-blocks.md#tremolizer)               | [Two Stage](control-blocks.md#two-stage) |
-| [Vee](control-blocks.md#vee)             |                                                          |                                          |
+|                                                                |                                                          |                                          |
+| -------------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------- |
+| [Adj. Change Detector](control-blocks.md#adj-change-detector)  | [Clip](control-blocks.md#clip)                           | [Envelope Follower](control-blocks.md#envelope-follower) |
+| [Half Wave](control-blocks.md#half-wave)                       | [Invert](control-blocks.md#invert)                       | [Power](control-blocks.md#power)         |
+| [Ratio](control-blocks.md#ratio)                               | [Root](control-blocks.md#root)                           | [Slicer](control-blocks.md#slicer)       |
+| [Smoother](control-blocks.md#smoother)                         | [Tap Tempo](control-blocks.md#tap-tempo)                 | [Tremolizer](control-blocks.md#tremolizer) |
+| [Two Stage](control-blocks.md#two-stage)                       | [Vee](control-blocks.md#vee)                             |                                          |
+
+***
+
+## Adj. Change Detector
+
+**Menu:** Controls > Adj. Change Detector
+
+The Adj. Change Detector is a high-pass filter for control signals. It subtracts a lowpass-filtered copy of the input from the original, removing slow drift and DC offset while passing only changes. The result is centered at zero -- when the input is steady, the output is zero; when the input changes, the output spikes in the direction of the change and then decays back to zero.
+
+| Pin            | Type        | Description                                  |
+| -------------- | ----------- | -------------------------------------------- |
+| Control Input  | Control In  | Signal to detect changes in                  |
+| Speed CV       | Control In  | Optional: modulate cutoff frequency          |
+| Control Output | Control Out | High-pass filtered output (changes only)     |
+
+**Control panel parameters:**
+
+| Parameter        | Range              | Default | Description                                     |
+| ---------------- | ------------------ | ------- | ----------------------------------------------- |
+| Cutoff Frequency | ~0.003 Hz - 35 Hz  | ~1 Hz   | Frequency below which changes are filtered out  |
+
+The cutoff frequency determines what counts as "slow" versus "change." At very low cutoff frequencies (~0.003 Hz), only extremely slow drift is removed. At higher frequencies (up to 35 Hz), faster variations are also filtered out, leaving only the sharpest transients.
+
+When the Speed CV input is connected, it multiplies the filter coefficient, allowing the cutoff frequency to be modulated dynamically by a pot, LFO, or other control source.
+
+![Adj. Change Detector: step response and sine response](images/control-change-detector.png)
+
+_Left: a step input produces a spike that decays exponentially back to zero -- the block detects the moment of change but ignores the steady state. Right: a 2 Hz sine wave is passed with reduced amplitude and its DC offset removed -- the output is centered at zero.  A phase shift relative to the input sine wave is also introduced, which may or may not be important._
+
+**Typical use:** Extract transient spikes from a noisy control signal, remove DC bias from a drifting control source, or isolate the "attack" component of an envelope. Pairs naturally with the [Smoother](control-blocks.md#smoother) -- use a Smoother to tame raw noise into visible spikes, then a Change Detector to strip away the average so only the spikes remain. See the [Using Control Signals](control-signals.md) tutorial for a worked example of this chain.
+
+**Removing DC offset:** The Change Detector, being a highpass filter, removes DC offset.  However, most control signals want a DC offset rather than going negative.  Depending on what you are going for, you may choose to add a DC offset using Scale/Offset (Scale = 1, Offset = the desired Offset) or use the Absolute Value block which will fold the control signal around the zero point.
 
 ***
 

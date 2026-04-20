@@ -37,7 +37,7 @@ Delay blocks are a little unusual: most of them limit internally at 5% of maximu
 
 Many beginners wire a full 0–1 LFO directly into a filter and wonder why it sounds broken at most settings. The target parameter almost always only responds musically over a narrow window, and the control signal spends most of its travel in useless territory.
 
-## Step 3: Map the Range with a Scale/Offset Block
+## Step 3: Map the Range with a [Scale/Offset](instructions-blocks.md#scale-offset) Block
 
 Use the Scale/Offset block to remap the incoming 0–1 signal into the useful window you found above. It corresponds to the FV-1's SOF instruction, expressed in the GUI as "Output Low" and "Output High":
 
@@ -64,53 +64,55 @@ A Scale/Offset block then compresses the 0–1 signal into your useful range. Th
 
 **Use an LFO for:** tremolo, chorus, vibrato, filter sweeps, flanger, phaser, auto-pan.
 
-### Envelope Follower
+### [Envelope Follower](control-blocks.md#envelope-follower)
 
 The Envelope block tracks the amplitude of the audio input and outputs a value that follows loudness. SpinCAD provides both Envelope and Envelope II. The output is in the 0–1 range, compatible with the same Scale/Offset workflow as an LFO.
 
 **Use an envelope for:** auto-wah, dynamic reverb send, envelope-triggered tremolo depth -- any effect where the sound should modulate itself in response to playing dynamics.
 
-### Constant
+### [Constant](instructions-blocks.md#constant)
 
 Outputs a fixed value set at design time. Useful for hardcoding a parameter or biasing a control that combines a constant with a dynamic modulation signal. Historically this was needed for blocks that didn't have default behavior when pins were not connected, so building the patch would fail. Its use is most likely an edge case now.
 
-### Other Sources (Slicer, S/H, Ratio, etc.)
+### Other Sources ([Slicer](control-blocks.md#slicer), S/H, [Ratio](control-blocks.md#ratio), etc.)
 
-SpinCAD also includes a Slicer (rhythmic gate), Tap Tempo, sample-and-hold, and 4-phase sample-and-hold. When using any of these -- as well as the Ratio block -- a Scale/Offset block at the output before the controlled block is usually necessary. These sources produce values that span whatever range their inputs cover, which is rarely the window your target parameter needs. Treat Scale/Offset as a mandatory fixture at the output of any of these blocks.
+SpinCAD also includes a [Slicer](control-blocks.md#slicer) (rhythmic gate), [Tap Tempo](control-blocks.md#tap-tempo), sample-and-hold, and 4-phase sample-and-hold. When using any of these -- as well as the [Ratio](control-blocks.md#ratio) block -- a Scale/Offset block at the output before the controlled block is usually necessary. These sources produce values that span whatever range their inputs cover, which is rarely the window your target parameter needs. Treat Scale/Offset as a mandatory fixture at the output of any of these blocks.
 
 ## Step 5: Shape the Curve
 
 Sometimes the _shape_ of the response across the control range matters as much as the range itself. Filter cutoff is perceptually logarithmic -- a linear sweep spends most of its travel in the high-frequency range where differences are subtle, blowing through the interesting midrange too quickly.
 
-### Power Block
+### [Power Block](control-blocks.md#power)
 
-Squares the input: `output = input × input`. In the 0–1 range this produces a quadratic curve -- rising slowly at first, then accelerating. The control spends more travel in the lower portion of the range, giving finer resolution where tonal character lives. In the filter-tremolo patch from the SpinCAD repository, the depth pot is squared before use:
+When Power = 2, squares the input: `output = input × input`. In the 0–1 range this produces a quadratic curve -- rising slowly at first, then accelerating. The control spends more travel in the lower portion of the range, giving finer resolution where tonal character lives.
 
-```asm
-;------ Power
-RDAX POT2,1.0000000000
-WRAX REG2,1.0000000000
-MULX REG2
-WRAX REG3,0.0000000000
-```
+![Power transfer curves](.gitbook/assets/control-power.png)
 
-### Invert Block
+### [Invert Block](control-blocks.md#invert)
 
 Flips the signal direction: 0→1 and 1→0. Useful when a parameter must move opposite to its source -- e.g., driving a second filter down while the LFO drives the first one up.
 
-### Two-Stage Block
+![Invert transfer curve](.gitbook/assets/control-invert.png)
+
+### [Two-Stage Block](control-blocks.md#two-stage)
 
 Piecewise-linear with a configurable knee. Creates dead zones at the bottom of a pot's travel or compresses a wide range of control motion into a narrower output range.
 
-### Vee Block
+![Two Stage transfer curves](.gitbook/assets/control-two-stage.png)
+
+### [Vee Block](control-blocks.md#vee)
 
 V-shaped response -- output falls to a minimum at the center of the input range, then rises again. Both extremes of control motion produce "more" effect; the center produces the minimum.
 
-### Log and Exp (Instructions submenu)
+![Vee transfer curves](.gitbook/assets/control-vee.png)
+
+### [Log](instructions-blocks.md#log) and [Exp](instructions-blocks.md#exp) (Instructions submenu)
 
 True logarithmic and exponential transforms, useful for pitch control or perceptually smooth filter sweeps.
 
-### Smoother Block
+![Log transfer curves](.gitbook/assets/instructions-log.png)
+
+### [Smoother Block](control-blocks.md#smoother)
 
 A one-pole IIR filter using the RDFX instruction with a small coefficient, causing the output to creep toward the input rather than jump instantly.
 
@@ -118,7 +120,7 @@ If you're driving a parameter with a sine LFO, the signal is already smooth and 
 
 The other major use is delay time control. Abrupt changes cause the FV-1 to jump its read pointer, producing a glitch or pitch pop. A Smoother makes the pointer drift gradually, producing a smooth pitch bend. With a slow enough coefficient this sounds like a tape machine spooling up or slowing down -- a useful creative effect in its own right.
 
-### Change Detector Block
+### [Change Detector Block](control-blocks.md#adj-change-detector)
 
 The Change Detector is a high-pass filter: it subtracts a lowpass-filtered copy of the input from the original, removing slow drift and DC offset while passing only changes. The adjustable cutoff frequency (~0.003–35 Hz) controls what counts as "slow" versus "change." An optional Speed CV input lets you modulate the cutoff dynamically.
 
