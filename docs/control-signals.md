@@ -29,6 +29,12 @@ The most important first step is understanding what range of the 0–1 space act
 3. Sweep the pot slowly from 0 to 1. Find where the effect becomes useful, where it's sweetest, and where it becomes unusable. The useful window might be something like 0.05 to 0.35 -- below 0.05 the filter is clamped shut, above 0.35 it sounds like bypass.
 4. Write those numbers down. These become your "Output Low" and "Output High" in the Scale/Offset block.
 
+**How control inputs work:** The value you set on a block's control panel -- for example, a delay time or filter frequency -- represents the *maximum*. That is the value the block uses when no control signal is attached. When a control signal is connected, the control panel setting is achieved when the control input equals 1, and it scales downward from there toward 0 as the control input approaches 0. In other words, the control input acts as a multiplier on the panel setting.
+
+To constrain the lower end -- for example, to prevent a parameter from going below 35% of its maximum -- place a Scale/Offset block before the control input with Output Low = 0.35 and Output High = 1. The control signal then sweeps from 35% to 100% of the panel setting instead of from 0% to 100%.
+
+Delay blocks are a little unusual: most of them limit internally at 5% of maximum when the delay time control input is 0, so the delay never collapses completely. In practice, the upper limit of a parameter is often set by the control panel of the controlled block, while the lower limit is set by the Scale/Offset block directly before the control input pin.
+
 Many beginners wire a full 0–1 LFO directly into a filter and wonder why it sounds broken at most settings. The target parameter almost always only responds musically over a narrow window, and the control signal spends most of its travel in useless territory.
 
 ## Step 3: Map the Range with a Scale/Offset Block
@@ -112,39 +118,27 @@ If you're driving a parameter with a sine LFO, the signal is already smooth and 
 
 The other major use is delay time control. Abrupt changes cause the FV-1 to jump its read pointer, producing a glitch or pitch pop. A Smoother makes the pointer drift gradually, producing a smooth pitch bend. With a slow enough coefficient this sounds like a tape machine spooling up or slowing down -- a useful creative effect in its own right.
 
-## Step 6: A Complete Filter Sweep Patch
+## Step 6: Putting It Together -- Power Shaping and Scaling
 
-Block chain:
+To see how the pieces combine, consider a sine LFO scaled to 0–1, run through a Power block (power = 4), and then scaled to a useful range of 0.27–0.75.
 
-1. Sine LFO 0
-2. Scale/Offset A -- shifts LFO to 0–1 (handled by LFO block's range option)
-3. Scale/Offset B -- compresses to useful range, e.g. 0.05–0.30
-4. Smoother -- softens transitions if needed
-5. SVF 2P filter -- control input receives the result
+**Normal (power = 4):**
 
-Pot assignments: Pot 0 → LFO Speed, Pot 1 → LFO Range (depth)
+1. **Sine (0–1)** -- a smooth sine wave filling the full 0–1 range.
+2. **Power = 4** -- raises each sample to the 4th power. Values near zero are compressed hard toward zero while 1.0 stays at 1.0. The signal spends most of its time near the bottom of the range with brief, sharp peaks.
+3. **Scale to 0.27–0.75** -- the shaped signal now mostly sits near 0.27 with short excursions up to 0.75. This is ideal when you want a control to rest at a baseline and only briefly spike -- for example, a filter that stays warm and occasionally opens.
 
-```asm
-;------ LFO 0
-SKP RUN, 1
-WLDS 0, 162, 32767
-RDAX POT0, 0.317       ; pot scales LFO rate
-WRAX SIN0_RATE, 0.0
-RDAX POT1, 1.0
-WRAX SIN0_RANGE, 0.0
-CHO RDAL, 0            ; read sine LFO
-WRAX REG0, 0.0
+**Inverted (power = 4):**
 
-;------ Scale/Offset B: compress to useful range
-RDAX REG0, 1.0
-SOF 0.25, 0.05
-WRAX REG3, 0.0
+1. **Sine (0–1)** -- same starting signal.
+2. **Power = 4, inverted** -- the formula `1 − (1 − input)^4` compresses values near 1.0 instead. The signal spends most of its time near the top of the range with brief dips.
+3. **Scale to 0.27–0.75** -- the shaped signal now mostly sits near 0.75 with short dips down to 0.27. Use this when you want a control to rest high and briefly duck -- for example, a filter that stays open and momentarily closes.
 
-;------ Smoother
-RDAX REG3, 1.0
-RDFX REG4, 0.00021
-WRAX REG4, 0.0
-```
+![Power block shaping: normal vs inverted](images/control_signal_power_demo.png)
+
+<!-- TODO: add screenshot of SpinCAD blocks -->
+
+The key insight is that the Power block reshapes *where the signal spends its time* without changing the endpoints. Normal power makes it linger at the low end; inverted power makes it linger at the high end. The Scale/Offset block then maps that shaped signal into whatever output range your destination parameter needs.
 
 ## Step 7: Swapping Sources
 

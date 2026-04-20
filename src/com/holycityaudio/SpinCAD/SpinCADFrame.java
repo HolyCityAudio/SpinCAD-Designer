@@ -794,7 +794,7 @@ public class SpinCADFrame extends JFrame {
 		mntmHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					openWebpage(new URL("https://holy-city-audio.gitbook.io/spincad-designer"));
+					openWebpage(new URL("https://holy-city-audio-1.gitbook.io/holy-city-audio"));
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
