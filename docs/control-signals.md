@@ -118,6 +118,29 @@ If you're driving a parameter with a sine LFO, the signal is already smooth and 
 
 The other major use is delay time control. Abrupt changes cause the FV-1 to jump its read pointer, producing a glitch or pitch pop. A Smoother makes the pointer drift gradually, producing a smooth pitch bend. With a slow enough coefficient this sounds like a tape machine spooling up or slowing down -- a useful creative effect in its own right.
 
+### Change Detector Block
+
+The Change Detector is a high-pass filter: it subtracts a lowpass-filtered copy of the input from the original, removing slow drift and DC offset while passing only changes. The adjustable cutoff frequency (~0.003–35 Hz) controls what counts as "slow" versus "change." An optional Speed CV input lets you modulate the cutoff dynamically.
+
+Where the Smoother removes fast changes and keeps the slow-moving trend, the Change Detector does the opposite -- it removes the trend and keeps only the transients. The output is centered at zero, with peaks rising above and dipping below in response to sudden changes in the input.
+
+**Use a Change Detector for:** extracting transient spikes from a noisy control signal, removing DC bias from a control source that drifts, or isolating the "attack" component of an envelope. It pairs naturally with the Smoother -- the Smoother can tame raw noise into something with visible spikes, and the Change Detector can then strip away the average so only those spikes remain.
+
+### Example: Noise AMZ → Smoother → Change Detector → Absa
+
+This chain demonstrates how the Smoother, Change Detector, and Absa work together to turn raw noise into a useful control signal of random spikes above zero.
+
+1. **Noise AMZ (0–1):** The LFSR noise generator in 0→+1 mode produces white noise filling the full 0–1 range. Every sample is a new random value -- far too jumpy to use as a control signal directly.
+2. **After Smoother (~10 ms rise time):** A Smoother at its minimum rise time removes sample-to-sample jitter but lets through slower transient spikes. The signal still wanders around an average of ~0.5 -- the spikes are visible but ride on top of that DC offset.
+3. **After Change Detector:** The high-pass filter strips away the ~0.5 average. What remains are the spikes centered on a zero baseline. Positive peaks represent moments where the smoothed noise was above average; negative dips represent moments below average.
+4. **After Absa:** The absolute value block folds the negative dips above zero, doubling the number of usable peaks. All spikes now rise from a zero baseline -- no negative values remain.
+
+![Noise AMZ through Smoother, Change Detector, and Absa](images/noise_smoother_changedet.png)
+
+The larger bump visible at the start of panels 3 and 4 is a startup transient -- the Change Detector's high-pass filter has not yet settled, so the first few milliseconds produce an artificially large deviation. This is typical of any high-pass filter at power-on and settles quickly.
+
+The result is a random trigger-like control signal with peaks emerging from silence -- useful for driving a parameter with unpredictable bursts rather than a steady modulation. Follow this chain with a Scale/Offset block to map the peaks into whatever range your destination parameter needs.
+
 ## Step 6: Putting It Together -- Power Shaping and Scaling
 
 To see how the pieces combine, consider a sine LFO scaled to 0–1, run through a Power block (power = 4), and then scaled to a useful range of 0.27–0.75.
