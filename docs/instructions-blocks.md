@@ -148,14 +148,16 @@ The Scale/Offset instruction is used extensively in SpinCAD. A very common use i
 
 It implements the linear formula `output = m * input + b`, where `m` is the Scale (slope) and `b` is the Offset (y-axis intercept). The FV-1's ALU clips the output to the range ±1.
 
-Rather than entering `m` and `b` directly, the control panel presents four sliders that specify an input range and the desired output range. The derived Scale and Offset values are shown at the bottom of the panel.
+The control panel offers two modes, selected by a combo box at the top: **Mapped** and **Direct**. All sliders have 0.001 resolution. The derived or entered Scale and Offset values are shown at the bottom of the panel in both modes.
 
 | Pin    | Type        | Description              |
 | ------ | ----------- | ------------------------ |
 | Input  | Control In  | Input signal             |
 | Output | Control Out | Scaled and offset signal |
 
-**Control panel parameters:**
+### Mapped Mode (Default)
+
+Rather than entering `m` and `b` directly, Mapped mode presents four sliders that specify an input range and the desired output range.
 
 | Parameter   | Description                                      |
 | ----------- | ------------------------------------------------ |
@@ -164,17 +166,32 @@ Rather than entering `m` and `b` directly, the control panel presents four slide
 | Output Low  | Desired output value when input is at Input Low  |
 | Output High | Desired output value when input is at Input High |
 
-![Scale/Offset in a patch](.gitbook/assets/instructions-scale-offset.png)
+![Scale/Offset Mapped mode](.gitbook/assets/instructions-scale-offset-mapped.png)
 
-_A Pot feeds a Scale/Offset block into the frequency control of an SVF 2P filter. The Output Low/High sliders restrict the pot's effective range to 0.25 to 0.95 -- the useful musical range for this filter._
+_Mapped mode -- a Pot feeds a Scale/Offset block into the frequency control of an SVF 2P filter. The Output Low/High sliders restrict the pot's effective range to 0.25 to 0.95._
 
-Each slider has low and high thumbs for the two endpoints:
+### Direct Mode
 
-![Slider thumbs](.gitbook/assets/instructions-scale-offset-slider.png)
+Direct mode exposes the raw Scale and Offset parameters of the FV-1's SOF instruction.
+
+| Parameter | Range          | Description                       |
+| --------- | -------------- | --------------------------------- |
+| Scale     | −2.000 to 1.999 | Multiplier applied to input      |
+| Offset    | −1.000 to 1.000 | Constant added after scaling     |
+
+![Scale/Offset Direct mode](.gitbook/assets/instructions-scale-offset-direct.png)
+
+_Direct mode -- Scale and Offset sliders control the SOF instruction parameters directly._
+
+### Switching Between Modes
+
+When switching from Mapped to Direct, the computed Scale and Offset values are transferred to the Direct sliders. When switching from Direct to Mapped, the Mapped sliders reset to their defaults (Input 0–1, Output 0–0.75).
+
+The selected mode and all parameter values are saved with the patch.
 
 ### Range Limits
 
-The FV-1's SOF instruction can only realize Scale values between approximately −2.0 and +2.0. If the input and output ranges you request imply a Scale outside that window, the derived value appears in red and the mapping cannot be produced exactly.
+The FV-1's SOF instruction can only realize Scale values between approximately −2.0 and +2.0. In Mapped mode, if the input and output ranges you request imply a Scale outside that window, the derived value appears in red and the mapping cannot be produced exactly.
 
 ![Scale/Offset out-of-range](.gitbook/assets/instructions-scale-offset-error.png)
 

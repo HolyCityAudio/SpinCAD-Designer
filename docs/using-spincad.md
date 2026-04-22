@@ -197,7 +197,13 @@ Right-clicking on an input pin opens a popup menu with two options:
 
 ### Control Panels
 
-Blocks with a white outline have adjustable parameters. To open a block's control panel:
+Blocks that have adjustable parameters display a small blue triangle (a "dog ear") in the upper-right corner of the block rectangle, providing a visual cue that a control panel is available.
+
+![Dog-ear indicator](.gitbook/assets/using-dog-ear-indicator.png)
+
+_The blue dog-ear in the upper-right corner indicates this block has a control panel._
+
+To open a block's control panel:
 
 1. Right-click on the block
 2. Select **Control Panel**

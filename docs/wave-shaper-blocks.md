@@ -42,7 +42,7 @@ When the Rip control input is connected, the decimation amount varies between Ri
 
 ## Cube
 
-Applies a cubic waveshaping function to the input signal. The cubic transfer curve produces soft clipping that adds odd harmonics (3rd, 5th, etc.) while preserving the signal's zero crossings. There is no control panel.
+Applies a cubic waveshaping function to the input signal. The cubic transfer curve produces soft clipping that adds odd harmonics (3rd, 5th, etc.) while preserving the signal's zero crossings.
 
 ![Cube block](.gitbook/assets/waveshaper-cube-block.png)
 
@@ -51,11 +51,25 @@ Applies a cubic waveshaping function to the input signal. The cubic transfer cur
 | Audio Input 1  | Audio In  | Audio signal |
 | Audio Output 1 | Audio Out | Cubed output |
 
-Implements: `output = input^3`
+**Control panel:**
 
-At low levels the effect is subtle; at higher levels the signal is compressed toward the peaks, producing warm saturation.
+![Cube control panel](.gitbook/assets/waveshaper-cube-panel.png)
 
-![Cube](.gitbook/assets/waveshaper-cubegain.png)
+| Parameter   | Range | Default | Description                                                                 |
+| ----------- | ----- | ------- | --------------------------------------------------------------------------- |
+| Wavefolding | 0-100% | 100%   | Controls the depth of the cubic waveshaping from gentle saturation to full wavefolding |
+
+Implements: `output = input^3` with a variable coefficient that controls the amount of wavefolding.
+
+At low Wavefolding values (0%), the effect is a gentle cubic saturation. At higher values (100%), the signal is driven harder into the cubic transfer function, producing more pronounced wavefolding with additional harmonic content.
+
+![Cube at Wavefolding = 0%](.gitbook/assets/waveshaper-cube-wavefolding-0.png)
+
+_Wavefolding at 0% -- gentle cubic saturation with minimal harmonic addition._
+
+![Cube at Wavefolding = 100%](.gitbook/assets/waveshaper-cube-wavefolding-100.png)
+
+_Wavefolding at 100% -- full wavefolding with pronounced odd harmonics._
 
 ***
 
