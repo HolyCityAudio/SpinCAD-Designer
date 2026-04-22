@@ -32,6 +32,10 @@ public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 	private double inHigh = 1.0;
 	private double outLow;
 	private double outHigh;
+
+	private boolean directMode = false;
+	private double directScale = 1.0;
+	private double directOffset = 0.0;
 	
 	public ScaleOffsetControlCADBlock(int x, int y) {
 		super(x, y);
@@ -57,8 +61,15 @@ public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 			
 			sfxb.readRegister(controlInput, 1.0);
 
-			double scale = (outHigh - outLow)/(inHigh - inLow);
-			double offset = outLow - (inLow * scale);
+			double scale;
+			double offset;
+			if (directMode) {
+				scale = directScale;
+				offset = directOffset;
+			} else {
+				scale = (outHigh - outLow)/(inHigh - inLow);
+				offset = outLow - (inLow * scale);
+			}
 			if(offset > 0.999) {
 				offset = 0.999;
 			}
@@ -101,5 +112,29 @@ public class ScaleOffsetControlCADBlock extends ControlCADBlock{
 
 	public double getInHigh() {
 		return inHigh;
+	}
+
+	public boolean isDirectMode() {
+		return directMode;
+	}
+
+	public void setDirectMode(boolean directMode) {
+		this.directMode = directMode;
+	}
+
+	public double getDirectScale() {
+		return directScale;
+	}
+
+	public void setDirectScale(double directScale) {
+		this.directScale = directScale;
+	}
+
+	public double getDirectOffset() {
+		return directOffset;
+	}
+
+	public void setDirectOffset(double directOffset) {
+		this.directOffset = directOffset;
 	}
 }
