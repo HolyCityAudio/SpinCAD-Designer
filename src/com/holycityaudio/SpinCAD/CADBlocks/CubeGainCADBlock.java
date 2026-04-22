@@ -26,38 +26,49 @@ import com.holycityaudio.SpinCAD.SpinFXBlock;
 public class CubeGainCADBlock extends GainCADBlock{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7292138111130632016L;
+
+	private double wavefolding = 1.0;
 
 	public CubeGainCADBlock(int x, int y) {
 		super(x, y);
 		setName("Cubed");
+		hasControlPanel = true;
 	}
-	
+
 	public void generateCode(SpinFXBlock sfxb) {
 		int input = this.getPin("Audio Input 1").getPinConnection().getRegister();
-//		int Control1 = -1;
-		
+
 		int temp = sfxb.allocateReg();
 		int output = sfxb.allocateReg();
 		sfxb.comment("Cube gain");
 
-		sfxb.readRegister(input,1.0);  // read left 100%
+		// wavefolding 0 -> -0.33333, wavefolding 1 -> -0.93333
+		double coeff = -0.33333 - (wavefolding * 0.6);
 
-//		wrax    temp,-0.33333
-		sfxb.writeRegister(temp, -0.93333);
-//		mulx    temp
+		sfxb.readRegister(input,1.0);
+		sfxb.writeRegister(temp, coeff);
 		sfxb.mulx(temp);
-//		mulx    temp
 		sfxb.mulx(temp);
-//		rdax     temp,1
 		sfxb.readRegister(temp, 1);
-		//		sof       1.5,0
 		sfxb.scaleOffset(1.5, 0);
 		sfxb.writeRegister(output, 0);
-		
+
 		SpinCADPin p = this.getPin("Audio Output 1");
 		p.setRegister(output);
+	}
+
+	public void editBlock(){
+		new CubeGainControlPanel(this);
+	}
+
+	public double getWavefolding() {
+		return wavefolding;
+	}
+
+	public void setWavefolding(double wavefolding) {
+		this.wavefolding = wavefolding;
 	}
 }
