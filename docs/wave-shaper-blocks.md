@@ -55,21 +55,26 @@ Applies a cubic waveshaping function to the input signal. The cubic transfer cur
 
 ![Cube control panel](.gitbook/assets/waveshaper-cube-panel.png)
 
-| Parameter   | Range | Default | Description                                                                 |
-| ----------- | ----- | ------- | --------------------------------------------------------------------------- |
-| Wavefolding | 0-100% | 100%   | Controls the depth of the cubic waveshaping from gentle saturation to full wavefolding |
+| Parameter   | Range  | Default | Description                                                        |
+| ----------- | ------ | ------- | ------------------------------------------------------------------ |
+| Wavefolding | 0-100% | 100%    | Controls the strength of the cubic term from gentle to full folding |
 
-Implements: `output = input^3` with a variable coefficient that controls the amount of wavefolding.
+The transfer function is `output = 1.5 * (input + C * input³)`, where `C` is a negative coefficient controlled by the Wavefolding slider. This combines a linear pass-through with a phase-inverted cubic term. At low signal levels the linear term dominates and the output closely tracks the input. As the signal approaches 0 dB, the cubic term begins to subtract from the linear term, compressing the peaks.
 
-At low Wavefolding values (0%), the effect is a gentle cubic saturation. At higher values (100%), the signal is driven harder into the cubic transfer function, producing more pronounced wavefolding with additional harmonic content.
+The Wavefolding slider controls how aggressively the cubic term counteracts the linear term:
+
+- At **0%**, the cubic term is mild. The transfer curve rises smoothly to 1.0 at full-scale input, producing gentle saturation that slightly rounds the peaks and adds a small amount of odd harmonics.
+- At **100%**, the cubic term is strong enough to overpower the linear term at high levels. The transfer curve peaks before full-scale input and then folds back downward, inverting the tops of the waveform. This creates pronounced wavefolding with rich odd-harmonic content.
+
+> **Note:** The effect is not noticeable until the signal level is above approximately −6 dB. Below that, the cubic term is too small relative to the linear term to produce audible waveshaping.
 
 ![Cube at Wavefolding = 0%](.gitbook/assets/waveshaper-cube-wavefolding-0.png)
 
-_Wavefolding at 0% -- gentle cubic saturation with minimal harmonic addition._
+_Wavefolding at 0% -- gentle saturation, peaks slightly rounded._
 
 ![Cube at Wavefolding = 100%](.gitbook/assets/waveshaper-cube-wavefolding-100.png)
 
-_Wavefolding at 100% -- full wavefolding with pronounced odd harmonics._
+_Wavefolding at 100% -- the waveform folds back at the peaks, adding rich odd harmonics._
 
 ***
 
