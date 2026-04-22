@@ -380,6 +380,17 @@ public class SpinCADBlock extends SpinFXBlock {
 		}
 		g2.draw(rect);
 
+		// Draw a small blue "dog ear" in the upper-right corner if block has a control panel
+		if (hasControlPanel) {
+			int earSize = 8;
+			int rx = (int)(rect.getMaxX());
+			int ry = (int)(rect.getMinY());
+			int[] xPoints = { rx - earSize, rx, rx };
+			int[] yPoints = { ry, ry, ry + earSize };
+			g2.setColor(new Color(50, 100, 220));
+			g2.fillPolygon(xPoints, yPoints, 3);
+		}
+
 		Point pt = new Point(0,0);
 		pt.setLocation(rect.getMinX() + 5, 5 + (rect.getMaxY() + rect.getMinY())/2);
 		//		System.out.println("Text:" + pt.getX() + pt.getY());
