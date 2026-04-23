@@ -14,11 +14,58 @@ The blocks in this section shape, scale, and transform control signals. They are
 
 |                                                                |                                                          |                                          |
 | -------------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------- |
-| [Adj. Change Detector](control-blocks.md#adj-change-detector)  | [Clip](control-blocks.md#clip)                           | [Envelope Follower](control-blocks.md#envelope-follower) |
-| [Half Wave](control-blocks.md#half-wave)                       | [Invert](control-blocks.md#invert)                       | [Power](control-blocks.md#power)         |
-| [Ratio](control-blocks.md#ratio)                               | [Root](control-blocks.md#root)                           | [Slicer](control-blocks.md#slicer)       |
-| [Smoother](control-blocks.md#smoother)                         | [Tap Tempo](control-blocks.md#tap-tempo)                 | [Tremolizer](control-blocks.md#tremolizer) |
-| [Two Stage](control-blocks.md#two-stage)                       | [Vee](control-blocks.md#vee)                             |                                          |
+| [4-Phase Sample/Hold](control-blocks.md#4-phase-samplehold)    | [Adj. Change Detector](control-blocks.md#adj-change-detector) | [Clip](control-blocks.md#clip)      |
+| [Envelope Follower](control-blocks.md#envelope-follower)       | [Half Wave](control-blocks.md#half-wave)                 | [Invert](control-blocks.md#invert)       |
+| [Power](control-blocks.md#power)                               | [Ratio](control-blocks.md#ratio)                         | [Root](control-blocks.md#root)           |
+| [Sample/Hold](control-blocks.md#samplehold)                    | [Slicer](control-blocks.md#slicer)                       | [Smoother](control-blocks.md#smoother)   |
+| [Tap Tempo](control-blocks.md#tap-tempo)                       | [Tremolizer](control-blocks.md#tremolizer)               | [Two Stage](control-blocks.md#two-stage) |
+| [Vee](control-blocks.md#vee)                                   |                                                          |                                          |
+
+***
+
+## Sample/Hold Blocks — Overview
+
+A sample/hold (S/H) block periodically latches the value of an input signal and holds it constant until the next sample point. The result is a staircase waveform — discrete steps rather than a continuous signal.
+
+The most common use is to feed **noise** (e.g., from the [AMZ Noise](oscillators-blocks.md#noise-amz) block, which produces a pseudo-random LFSR signal) into the S/H input, producing a **stepped random waveform**. This is the classic S/H sound used to drive filter frequency, filter Q, volume (for random tremolo), panning, or any other parameter that benefits from randomized stepped modulation.
+
+However, noise is not the only useful source. Any control signal — an LFO, an envelope follower, a pot — can be sampled. For example, sampling a slow sine LFO produces a quantized staircase version of that sine, while sampling a pot captures its position at discrete intervals.
+
+The **Rate** input controls how often a new sample is taken. An interesting technique is to mix the random output itself (after smoothing) back into the rate control, which **randomizes the timing** between steps as well as the step values. This produces a more organic, less metronomic feel than a fixed-rate S/H.
+
+SpinCAD provides two S/H blocks:
+
+- **[Sample/Hold](control-blocks.md#samplehold)** — single output, clocked by a ramp LFO
+- **[4-Phase Sample/Hold](control-blocks.md#4-phase-samplehold)** — four outputs staggered by 90 degrees, clocked by a sine LFO, useful for driving multiple parameters with decorrelated stepped modulation from a single source
+
+***
+
+## 4-Phase Sample/Hold
+
+**Menu:** Controls > 4-Phase Sample/Hold
+
+Samples a control input using a sine LFO's zero-crossings, producing four staircase outputs staggered by 90 degrees per LFO cycle. The block detects zero-crossings on both the sine and cosine outputs of the LFO, creating four sample points per cycle. At each crossing, it latches the Source input into one of the four outputs.
+
+The result is four interleaved sample-and-hold signals, each updating once per LFO cycle but staggered in phase. When driven by noise, this produces four decorrelated stepped random waveforms from a single source — useful for simultaneously driving filter frequency, Q, volume, and panning (for example) with related but different random modulation.
+
+| Pin          | Type        | Description                                              |
+| ------------ | ----------- | -------------------------------------------------------- |
+| Source       | Control In  | Signal to be sampled                                     |
+| LFO Rate     | Control In  | Modulates the LFO speed (optional)                      |
+| S/H Output 1 | Control Out | Sampled at sine rising zero-crossing (0 degrees)        |
+| S/H Output 2 | Control Out | Sampled at cosine rising zero-crossing (90 degrees)     |
+| S/H Output 3 | Control Out | Sampled at sine falling zero-crossing (180 degrees)     |
+| S/H Output 4 | Control Out | Sampled at cosine falling zero-crossing (270 degrees)   |
+| Test Point   | Control Out | Internal LFO state (for debugging)                       |
+
+**Control panel:**
+
+| Parameter    | Range          | Default    | Description                |
+| ------------ | -------------- | ---------- | -------------------------- |
+| LFO Max Rate | ~0.04 to 20 Hz | ~2 Hz     | Sine LFO frequency         |
+| LFO Select   | SIN LFO 0 / 1 | SIN LFO 0 | Which sine LFO to use      |
+
+The LFO frequency sets the base cycle rate. Since the block samples at all four zero-crossings (sine and cosine), the effective step rate is **4x the LFO frequency** — from roughly 0.16 steps/sec up to ~80 steps/sec. When the optional LFO Rate pin is connected, it scales the LFO speed relative to the slider setting.
 
 ***
 
@@ -323,6 +370,30 @@ The Invert option transforms the input via `x' = -x + 1.0` before the root compu
 **Typical use:** A square-root curve on a pot gives fine resolution at the low end of the range -- ideal when the quiet or subtle part of a parameter is where the interesting behavior lives (e.g. low feedback amounts, shallow modulation depths, the start of a reverb time sweep).
 
 **Companion:** The [Power](control-blocks.md#power) block is the natural companion to Root -- where Root expands the response away from zero, Power compresses the response toward zero.
+
+***
+
+## Sample/Hold
+
+**Menu:** Controls > Sample/Hold
+
+Samples a control input at intervals determined by an internal ramp LFO, producing a single staircase output. See [Sample/Hold Blocks — Overview](control-blocks.md#samplehold-blocks--overview) for general S/H concepts and typical usage.
+
+| Pin         | Type        | Description                 |
+| ----------- | ----------- | --------------------------- |
+| Control In  | Control In  | Signal to be sampled        |
+| Rate        | Control In  | Controls the sampling speed |
+| Sample Hold | Control Out | Held output value           |
+
+**Control panel:**
+
+| Parameter  | Options        | Default | Description                            |
+| ---------- | -------------- | ------- | -------------------------------------- |
+| LFO Select | Ramp 0 / Ramp 1 | Ramp 0 | Which of the FV-1's ramp LFOs to use |
+
+The sampling rate is set entirely by the **Rate** input pin — there is no rate slider on the control panel. The Rate value is cubed internally to give an exponential-style taper, then scaled to a range that gives musically useful S/H speeds. This cubed taper puts most of the control range toward the slower speeds where fine adjustment matters most.
+
+Both the Control In and Rate pins must be connected for the block to generate code.
 
 ***
 

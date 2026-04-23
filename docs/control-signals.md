@@ -74,9 +74,9 @@ The Envelope block tracks the amplitude of the audio input and outputs a value t
 
 Outputs a fixed value set at design time. Useful for hardcoding a parameter or biasing a control that combines a constant with a dynamic modulation signal. Historically this was needed for blocks that didn't have default behavior when pins were not connected, so building the patch would fail. Its use is most likely an edge case now.
 
-### Other Sources ([Slicer](control-blocks.md#slicer), S/H, [Ratio](control-blocks.md#ratio), etc.)
+### Other Sources ([Slicer](control-blocks.md#slicer), [S/H](control-blocks.md#samplehold), [Ratio](control-blocks.md#ratio), etc.)
 
-SpinCAD also includes a [Slicer](control-blocks.md#slicer) (rhythmic gate), [Tap Tempo](control-blocks.md#tap-tempo), sample-and-hold, and 4-phase sample-and-hold. When using any of these -- as well as the [Ratio](control-blocks.md#ratio) block -- a Scale/Offset block at the output before the controlled block is usually necessary. These sources produce values that span whatever range their inputs cover, which is rarely the window your target parameter needs. Treat Scale/Offset as a mandatory fixture at the output of any of these blocks.
+SpinCAD also includes a [Slicer](control-blocks.md#slicer) (rhythmic gate), [Tap Tempo](control-blocks.md#tap-tempo), [Sample/Hold](control-blocks.md#samplehold), and [4-Phase Sample/Hold](control-blocks.md#4-phase-samplehold). When using any of these -- as well as the [Ratio](control-blocks.md#ratio) block -- a Scale/Offset block at the output before the controlled block is usually necessary. These sources produce values that span whatever range their inputs cover, which is rarely the window your target parameter needs. Treat Scale/Offset as a mandatory fixture at the output of any of these blocks.
 
 ## Step 5: Shape the Curve
 
