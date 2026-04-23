@@ -116,6 +116,8 @@ No control panel parameters. All control comes from the Offset pins.
 
 For the dual-output version, the two outputs share the input filter to fit within the FV-1's resource limits, so the processing is not fully independent.
 
+**Built-in control processing:** Both Offset control inputs are internally read at 10% gain and offset by -0.05, producing symmetric ±ranges centered at zero — the same processing as the single-output Pitch Offset block.
+
 Example patches demonstrating both pitch offset blocks: [pitch-shifter-examples.spbk](../patches/pitch-shifter-examples.spbk).
 
 ![Dual Output Pitch Offset output](.gitbook/assets/pitch-pitchoffset1_2.png)
@@ -199,6 +201,8 @@ The offset amount is set by the Pitch\_Offset control input.
 No control panel parameters. All control comes from the Pitch\_Offset pin.
 
 The Pitch Offset block implements a [Hilbert transform](http://spinsemi.com/knowledge_base/effects.html#Pitch_shifting) as described in the Spin Knowledge Base. Zero offset occurs at a control input of 0.5. Below 0.5 shifts upward; above 0.5 shifts downward. The maximum offset is approximately ±370 Hz.
+
+**Built-in control processing:** The Pitch Offset control input is internally read at 10% gain (multiplied by 0.1) and offset by -0.05, producing a symmetric range centered at zero. This maps the 0–1 control range to approximately ±370 Hz.
 
 **Usage tip:** Scaling the control signal to a very narrow range around 0.5 (e.g. 0.49 to 0.51 via a Scale/Offset block) produces a beautiful tremolo/chorus effect rather than the goofy sci-fi sounds you get at full range. You can run this in stereo or summed to mono — each is a unique sound.
 

@@ -37,6 +37,8 @@ A 4-tap drum echo emulation inspired by vintage tape echo units with multiple pl
 | Delay Length  | samples | 32767     | Delay buffer size                   |
 | Tap 1-4 Ratio | 0-1     | 0.25-0.85 | Head positions as fraction of delay |
 
+**Built-in control processing:** When the Delay Time pin is connected, the delay time is internally limited to a minimum of 5% of the buffer length per tap. This prevents the read pointer from reaching the write pointer, which would cause clicks or pass-through instead of delay.
+
 ***
 
 ## Eight Tap Delay
@@ -112,6 +114,8 @@ Emulates the tap timing of the Panasonic MN3011 bucket-brigade device, a classic
 
 The fixed tap ratios mirror the MN3011 datasheet: tap 1 = 11.9%, tap 2 = 19.9%, tap 3 = 35.9%, tap 4 = 51.9%, tap 5 = 83.8%, tap 6 = 100%.
 
+**Built-in control processing:** The Delay Time and Feedback controls are applied directly via multiplication — no internal range limiting or taper shaping is applied.
+
 ***
 
 ## Reverse Delay
@@ -181,6 +185,8 @@ A glitch/stutter effect that lets you crossfade between the input and output of 
 | Delay Length     | samples | 32767   | Loop buffer size                |
 | Fade Time Filter | linear  | 0.0015  | Crossfade smoothing coefficient |
 
+**Built-in control processing:** The Stutter control input is offset by -0.5 internally before comparison, so a control value of 0.5 is the crossfade midpoint.
+
 ***
 
 ## Triple Tap Delay
@@ -207,3 +213,5 @@ A 3-tap delay with independent delay time controls for each tap. Unlike the six-
 | Feedback Gain | linear  | 0.5       | Feedback amount                    |
 | Delay Length  | samples | 32767     | Delay buffer size                  |
 | Tap 1-3 Ratio | 0-1     | 0.45-0.85 | Tap positions as fraction of delay |
+
+**Built-in control processing:** When Delay Time pins are connected, the delay time for each tap is internally limited to a minimum of 5% of the buffer length (scaled by each tap's ratio). This prevents the read pointer from reaching the write pointer.

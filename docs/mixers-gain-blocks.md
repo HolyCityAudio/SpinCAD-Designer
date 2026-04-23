@@ -164,6 +164,8 @@ Implements a 2-segment gain curve as shown. This results in a +6 dB boost when t
 | Gain 1    | dB    | -6 dB   | Input 1 gain |
 | Gain 2    | dB    | -6 dB   | Input 2 gain |
 
+**Built-in control processing:** The control input is squared internally to produce the curved crossfade response shown above. This is why the gain peaks at +6 dB at the midpoint.
+
 ***
 
 ## Crossfade 3
@@ -185,6 +187,8 @@ An approximate equal-power crossfade that maintains perceived loudness at the mi
 | --------- | ----- | ------- | ------------ |
 | Gain 1    | dB    | -6 dB   | Input 1 gain |
 | Gain 2    | dB    | -6 dB   | Input 2 gain |
+
+**Built-in control processing:** The control input is squared internally as part of the equal-power crossfade approximation, shaping the gain curve to maintain perceived loudness at the midpoint.
 
 ***
 

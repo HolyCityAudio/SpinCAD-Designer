@@ -37,6 +37,8 @@ A configurable reverb with input allpass diffusers and delay loops with low-pass
 | LF Filter       | 0-1   | 0.4     | Low-frequency filter coefficient          |
 | HF Filter       | 0-1   | 0.01    | High-frequency filter coefficient         |
 
+**Built-in control processing:** The Reverb Time control input is internally remapped via Scale/Offset to the range 0.30–0.85, preventing the feedback from reaching unity (which would cause runaway oscillation) or dropping to zero.
+
 ![Adjustable Reverb impulse response](.gitbook/assets/reverb-reverb.png)
 
 ***
@@ -84,6 +86,8 @@ Based on the Spin Semiconductor P16\_V\_Ambience program. Uses multi-tapped dela
 | Tone        | 0-1          | 0.5     | Tone control                     |
 | Decay       | 0-1          | 0.5     | Decay amount                     |
 | Filter Freq | 2000-8000 Hz | 4000    | Low-pass filter corner frequency |
+
+**Built-in control processing:** The Decay control input is internally scaled to the range 0.20–0.85 (read at 65% gain, then offset by 0.2). This prevents the feedback from reaching unity or dropping too low.
 
 ![Ambience impulse response](.gitbook/assets/reverb-ambience.png)
 
@@ -208,6 +212,8 @@ An implementation of the Jon Dattorro plate reverb from "Effect Design" (JAES, 1
 | Damping   | 0-0.95      | 0.5     | HF damping in tank     |
 | Bandwidth | 0.1-0.7     | 0.32    | Input bandwidth filter |
 
+**Built-in control processing:** The Reverb Time control internally derives a secondary "decay diffusion 2" coefficient that is clamped to the range 0.25–0.50 via conditional logic. This prevents the cross-coupled tank from becoming unstable at extreme decay settings.
+
 ![Dattorro Plate Reverb (Short)](.gitbook/assets/reverb-dattorro-short.png) ![Dattorro Plate Reverb (Medium)](.gitbook/assets/reverb-dattorro-medium.png) ![Dattorro Plate Reverb (Long)](.gitbook/assets/reverb-dattorro-long.png)
 
 ***
@@ -264,6 +270,8 @@ A hall-style reverb with pre-delay, allpass diffusion, and cross-coupled delay l
 **Pre-delay effect:**
 
 ![Hall Reverb pre-delay comparison](.gitbook/assets/reverb-hall-predelay.png)
+
+**Built-in control processing:** The Pre-Delay control is read at 10% gain internally, limiting the effective pre-delay range. Reverb Time and HF Loss are applied directly as multipliers in the feedback loop.
 
 ***
 
@@ -341,6 +349,8 @@ A stereo reverb based on the FV-1 ROM programs. Uses input allpass diffusers, mu
 | LF Filter  | 0-1   | 0.4     | Low-frequency filter      |
 | HF Filter  | 0-1   | 0.01    | High-frequency filter     |
 
+**Built-in control processing:** The Reverb Time control is internally remapped via Scale/Offset before being used as a feedback multiplier. Low Freq and High Freq controls are applied as direct multipliers on their respective filter paths.
+
 ***
 
 ## ROM Reverb 2
@@ -366,6 +376,8 @@ A mono-output reverb with configurable delay lengths and memory scaling. Uses a 
 | Delay AP 2   | 0-1   | 0.5     | Second delay allpass coefficient |
 | LF Filter    | 0-1   | 0.4     | Low-frequency filter             |
 | HF Filter    | 0-1   | 0.01    | High-frequency filter            |
+
+**Built-in control processing:** The Reverb Time control is internally remapped via Scale/Offset (0.9, 0.1) to the range 0.10–1.0. LF Response and HF Response controls are applied as direct multipliers on their respective filter outputs.
 
 ![ROM Reverb 2 impulse response](.gitbook/assets/reverb-rom_rev2.png)
 
@@ -399,6 +411,8 @@ A room-style reverb with pre-delay. Similar architecture to the Hall Reverb but 
 **Pre-delay effect:**
 
 ![Room Reverb pre-delay comparison](.gitbook/assets/reverb-room-predelay.png)
+
+**Built-in control processing:** The Reverb Time and HF Loss controls are applied as direct multipliers in the feedback loop. No internal range limiting is applied beyond the feedback topology itself.
 
 ***
 
@@ -447,5 +461,7 @@ Simulates a mechanical spring reverb tank. Uses short allpass chains with negati
 | Gain        | 0-1   | 0.5     | Input gain                        |
 | Reverb Time | 0-1   | 0.85    | Feedback coefficient (decay time) |
 | Damping     | 0-1   | 0.55    | Spring resonance / damping        |
+
+**Built-in control processing:** The Reverb Time and Damping controls are applied as direct multipliers in the feedback loop — no additional taper or range limiting.
 
 ![Spring Reverb impulse response](.gitbook/assets/reverb-spring.png)

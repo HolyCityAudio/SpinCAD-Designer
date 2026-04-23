@@ -36,6 +36,8 @@ Reduces the effective sample rate of the audio signal by sample-and-hold decimat
 
 When the Rip control input is connected, the decimation amount varies between Rip Low and Rip High based on the control value.
 
+**Built-in control processing:** The Rip control input is internally remapped via Scale/Offset using the Rip Low and Rip High panel values, constraining the decimation to the range you specify.
+
 ![Aliaser Smooth (input/output)](.gitbook/assets/waveshaper-aliaser-smooth.png) ![Aliaser Raw (input/output)](.gitbook/assets/waveshaper-aliaser-raw.png)
 
 ***
